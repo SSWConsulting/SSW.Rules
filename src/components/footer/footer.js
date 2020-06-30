@@ -72,7 +72,13 @@ const Footer = () => {
                   CONSTANT CONTINUOUS DEPLOYMENT
                 </a>
                 . Last deployed {getLastDeployTime()} ago (Build #{' '}
-                {process.env.VERSION_DEPLOYED})
+                <a
+                  className="footer-link"
+                  href={`https://github.com/SSWConsulting/rules.ssw.com.au/releases/${process.env.VERSION_DEPLOYED}`}
+                >
+                  {process.env.VERSION_DEPLOYED}
+                </a>
+                )
               </div>
               <div className="md:text-right py-2">
                 Powered by{' '}

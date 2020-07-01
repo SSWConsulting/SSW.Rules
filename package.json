@@ -8,6 +8,7 @@
     "build:dir": "mkdirp ./public/icons/",
     "build:favicons": "node scripts/favicons",
     "build": "npm run build:dir && npm run build:favicons && gatsby build --prefix-paths --log-pages",
+    "build:incremental": "gatsby build --log-pages",
     "devbuild": "gatsby clean && npm run build:dir && npm run build:favicons && gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",

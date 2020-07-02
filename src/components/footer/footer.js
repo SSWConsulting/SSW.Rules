@@ -74,7 +74,7 @@ const Footer = () => {
                 . Last deployed {getLastDeployTime()} ago (Build #{' '}
                 <a
                   className="footer-link"
-                  href="https://github.com/SSWConsulting/rules.ssw.com.au/releases/latest"
+                  href={`https://ssw.visualstudio.com/SSW.Rules/_build/results?buildId=${process.env.BUILD_ID}&view=results`}
                 >
                   {process.env.VERSION_DEPLOYED}
                 </a>

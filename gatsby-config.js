@@ -22,7 +22,7 @@ module.exports = {
         // Optionally supply a branch. If none supplied, you'll get the default branch.
         //53120-CreateIndexTemplate
         //branch: 'content-migration-staging',
-        branch: 'content-sample',
+        branch: 'FixImages',
         // Tailor which files get imported eg. import the docs folder from a codebase.
         patterns: ['categories/**/*.md', 'rules/**/*'],
       },
@@ -64,6 +64,56 @@ module.exports = {
               maxWidth: 590,
             },
           },
+          'gatsby-remark-copy-linked-files',
+          {
+            resolve: 'gatsby-remark-custom-blocks',
+            options: {
+              blocks: {
+                imgBadge: {
+                  classes: 'img-badge',
+                },
+                imgBanner: {
+                  classes: 'img-banner',
+                },
+                imgLg: {
+                  classes: 'img-large',
+                },
+                imgMd: {
+                  classes: 'img-medium',
+                },
+                imgSm: {
+                  classes: 'img-small',
+                },
+                imgGood: {
+                  classes: 'img-good-example',
+                },
+                imgBad: {
+                  classes: 'img-bad-example',
+                },
+                imgOK: {
+                  classes: 'img-ok-example',
+                },
+              },
+            },
+          },
+          {
+            resolve: 'gatsby-remark-embed-video',
+            options: {
+              maxWidth: 800,
+              ratio: 1.77, // Optional: Defaults to 16/9 = 1.77
+              height: 400, // Optional: Overrides optional.ratio
+              related: false, //Optional: Will remove related videos from the end of an embedded YouTube video.
+              noIframeBorder: true, //Optional: Disable insertion of <style> border: 0
+              urlOverrides: [
+                {
+                  id: 'youtube',
+                  embedURL: videoId =>
+                    `https://www.youtube-nocookie.com/embed/${videoId}`,
+                },
+              ], //Optional: Override URL of a service provider, e.g to enable youtube-nocookie support
+            },
+          },
+          'gatsby-remark-responsive-iframe',
         ],
       },
     },

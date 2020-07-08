@@ -146,7 +146,7 @@ const Rule = ({ data, location }) => {
                     >
                       <img
                         className="rounded-full inline"
-                        src={`https://github.com/SSWConsulting/People/raw/master/${author.title.replace(
+                        src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
                           ' ',
                           '-'
                         )}/Images/${author.title.replace(

@@ -21,7 +21,7 @@ VERSION_DEPLOYED=
 ```
 
 ### Development
-1. Branch off master for your PBI
+1. Branch off main for your PBI
 2. Run *npm run-script build* (.env.production is required for this step)
 3. Do your work
 4. Run the site in development mode by *npm run-script develop* (.env.development is required for this step)
@@ -33,7 +33,7 @@ VERSION_DEPLOYED=
 
 - Code Compiles
 - Check the Acceptance Criteria.
-- Code is squash-merged to master via a pull request that was approved by a 2nd developer.
+- Code is squash-merged to main via a pull request that was approved by a 2nd developer.
 - Another team member agrees it’s ready for Production.
 - Pushed to Production.
 - Use @Mention (**OR** Send email) to notify Product Owner/PBI stakeholder that PBI is done (be sure to include screenshots/done video as proof) 
@@ -42,23 +42,23 @@ VERSION_DEPLOYED=
 
 ### Branches
 - Branching strategy is based off [Release Flow](https://docs.microsoft.com/en-us/azure/devops/learn/devops-at-microsoft/release-flow) 
-- **Master** is the main 'dev' branch
+- **Main** is the main 'dev' branch
 - **Release/xx** is the 'production' one (where xx is the Sprint number)
 - Always create a new branch for your PBIs 
 - Always delete your branch once your PR has been merged
 
 ### Builds
 - Changes made to http://github.com/SSWConsulting/SSW.Rules.Content (i.e. rule changes) trigger builds that deploy:
-  - **master** to the **staging** site: https://sydiisp01.sydney.ssw.com.au/rules/
+  - **main** to the **staging** site: https://sydiisp01.sydney.ssw.com.au/rules/
   - latest **release/xx** to the **production** site: https://www.ssw.com.au/rules
   
-- Branching off **master** to **release/xx**, or making changes to **release/xx** will build and deploy to the **production** site: https://www.ssw.com.au/rules
+- Branching off **main** to **release/xx**, or making changes to **release/xx** will build and deploy to the **production** site: https://www.ssw.com.au/rules
 
 
 ### Rules repository
 
 > Rules repository lives here: https://github.com/SSWConsulting/SSW.Rules.Content
 
-Merging changes to **master** on this repo will trigger:
-- a build/release of the **master** branch in Staging (https://sydiisp01.sydney.ssw.com.au/rules/).
+Merging changes to **main** on this repo will trigger:
+- a build/release of the **main** branch in Staging (https://sydiisp01.sydney.ssw.com.au/rules/).
 - a build/release of the **release** branch Production (https://www.ssw.com.au/rules)

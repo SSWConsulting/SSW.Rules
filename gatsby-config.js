@@ -18,7 +18,7 @@ module.exports = {
       resolve: 'gatsby-source-git',
       options: {
         name: 'categories',
-        remote: 'https://github.com/SSWConsulting/SSW.Rules.git',
+        remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
         // Optionally supply a branch. If none supplied, you'll get the default branch.
         //53120-CreateIndexTemplate
         //branch: 'content-migration-staging',

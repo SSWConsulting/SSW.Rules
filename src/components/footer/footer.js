@@ -16,7 +16,7 @@ const Footer = () => {
           source. This page is on{' '}
           <a
             className="action-button-label"
-            href="https://github.com/SSWConsulting/rules.ssw.com.au"
+            href="https://github.com/SSWConsulting/SSW.Rules"
           >
             GitHub <FontAwesomeIcon icon={faGithub} />
           </a>
@@ -33,7 +33,7 @@ const Footer = () => {
               <div className="w-full md:w-3/6 md:text-right py-2">
                 <a
                   className="footer-link"
-                  href="https://github.com/SSWConsulting/rules.ssw.com.au/issues"
+                  href="https://github.com/SSWConsulting/SSW.Rules/issues"
                 >
                   FEEDBACK TO SSW
                 </a>
@@ -74,7 +74,7 @@ const Footer = () => {
                 . Last deployed {getLastDeployTime()} ago (Build #{' '}
                 <a
                   className="footer-link"
-                  href="https://github.com/SSWConsulting/rules.ssw.com.au/releases/latest"
+                  href="https://github.com/SSWConsulting/SSW.Rules/releases/latest"
                 >
                   {process.env.VERSION_DEPLOYED}
                 </a>

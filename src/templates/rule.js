@@ -187,7 +187,7 @@ const Rule = ({ data, location }) => {
             </p>
             <p>
               <small className="suggestion">
-                <a href="https://github.com/SSWConsulting/SSW.Rules/issues">
+                <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
                   Make a suggestion
                 </a>
               </small>

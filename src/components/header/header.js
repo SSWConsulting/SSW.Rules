@@ -40,7 +40,7 @@ const Header = ({ displayActions, ruleUri }) => {
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href={`https://github.com/SSWConsulting/SSW.Rules/blob/content-migration-staging/${ruleUri}`}
+                href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/content-migration-staging/${ruleUri}`}
                 className="action-btn-link"
               >
                 <div className="action-btn-label">Edit</div>

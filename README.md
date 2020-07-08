@@ -3,7 +3,7 @@
 v2 of the Rules.
 
 This is a Gatsby generated site pulling data from:
-- [SSW Rules Repo](https://github.com/SSWConsulting/SSW.Rules)
+- [SSW Rules Repo](https://github.com/SSWConsulting/SSW.Rules.Content)
 
 
 ## Getting Started
@@ -12,7 +12,7 @@ This is a Gatsby generated site pulling data from:
 - Install nodejs via https://nodejs.org/en/ (required versions: ^8.10.0 or ^10.13.0 or >=11.10.1)
 
 ### Getting ready for development
-- Clone the repo from https://github.com/SSWConsulting/rules.ssw.com.au
+- Clone the repo from https://github.com/SSWConsulting/SSW.Rules
 - Run *npm install* to install packages
 - Create environment files (.env.development and .env.production) and fill out the values for the following keys:
 ```
@@ -48,7 +48,7 @@ VERSION_DEPLOYED=
 - Always delete your branch once your PR has been merged
 
 ### Builds
-- Changes made to http://github.com/SSWConsulting/SSW.Rules (i.e. profile changes) trigger builds that deploy:
+- Changes made to http://github.com/SSWConsulting/SSW.Rules.Content (i.e. rule changes) trigger builds that deploy:
   - **master** to the **staging** site: https://sydiisp01.sydney.ssw.com.au/rules/
   - latest **release/xx** to the **production** site: https://www.ssw.com.au/rules
   
@@ -57,7 +57,7 @@ VERSION_DEPLOYED=
 
 ### Rules repository
 
-> Rules repository lives here: https://github.com/SSWConsulting/SSW.Rules
+> Rules repository lives here: https://github.com/SSWConsulting/SSW.Rules.Content
 
 Merging changes to **master** on this repo will trigger:
 - a build/release of the **master** branch in Staging (https://sydiisp01.sydney.ssw.com.au/rules/).

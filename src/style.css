@@ -336,10 +336,7 @@ button:focus {
   max-width: 200px;
 }
 
-
-
 figure{
-  width: fit-content;
   background-color: #f5f5f5;
   margin-bottom: 1rem;
   padding: 4px;
@@ -351,12 +348,21 @@ figure figcaption {
   position: relative;
 }
 
-figure figcaption::before {
+figure figcaption::before,
+div.ok-example .custom-block-heading::before,
+div.bad-example .custom-block-heading::before ,
+div.good-example .custom-block-heading::before  {
   content: 'Figure: ';
+}
+
+.good-example figure figcaption::before,
+.bad-example figure figcaption::before,
+.ok-example figure figcaption::before {
   padding-left: 1.5rem;
 }
 
-.img-good-example figure figcaption::after {
+.good-example figure figcaption::after,
+div.good-example .custom-block-heading::after {
   content: "\f14a ";
   font-family: FontAwesome;
   font-style: normal;
@@ -368,7 +374,8 @@ figure figcaption::before {
   left: 0px;
 }
 
-.img-bad-example figure figcaption::after {
+.bad-example figure figcaption::after,
+div.bad-example .custom-block-heading::after {
   content: "\f2d3 ";
   font-family: FontAwesome;
   font-style: normal;
@@ -380,7 +387,8 @@ figure figcaption::before {
   left: 0px;
 }
 
-.img-ok-example figure figcaption::after {
+.ok-example figure figcaption::after,
+div.ok-example .custom-block-heading::after {
   content: "\f11a ";
   font-family: FontAwesome;
   font-style: normal;
@@ -392,6 +400,39 @@ figure figcaption::before {
   left: 0px;
 }
 
+div.ok-example,
+div.good-example,
+div.bad-example{
+  position: relative;
+}
+
+div.ok-example .custom-block-heading,
+div.good-example .custom-block-heading,
+div.bad-example .custom-block-heading{
+  caption-side: bottom;
+  display: table-caption;
+  padding-left: 1rem;
+  font-weight: 700;
+  margin: 0.5rem 0.5rem 6px;
+  line-height: initial;
+}
+
+div.ok-example .custom-block-body,
+div.good-example .custom-block-body,
+div.bad-example .custom-block-body{
+  padding: 1rem;
+  background-color: #f5f5f5;
+}
+
+div.ok-example,
+div.good-example,
+div.bad-example {
+  max-width: 95%;
+  display: table;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 div.youtube-playlist li {
   background: none;
 }
@@ -401,14 +442,14 @@ div.youtube-playlist li {
   justify-content: space-between
 }
 
-.blockquote {
+/*.blockquote {
   font-style: italic;
   padding: .5rem 1rem;
   background-color: #eee;
   border-left: 4px solid #cc4141;
   border-radius: 0 .25rem .25rem 0;
   margin: 1rem 0;
-}
+}*/
 
 .rule-title {
   font-weight: bold;;
@@ -466,9 +507,13 @@ pre {
 @media screen and (min-width: 600px) {
   .img-large,
   .img-banner img,
-  .img-banner {
+  .img-banner,
+  .good-example,
+  .bad-example,
+  .ok-example {
     height: auto;
-    min-width: 600px;
+    min-width: 590px;
+    width: max-content;
   }
 }
 

@@ -7,6 +7,23 @@
 
 @tailwind base;
 
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.eot?v=4.4.0');
+  src: url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.eot?#iefix&v=4.4.0')
+      format('embedded-opentype'),
+    url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.woff2?v=4.4.0')
+      format('woff2'),
+    url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.woff?v=4.4.0')
+      format('woff'),
+    url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.ttf?v=4.4.0')
+      format('truetype'),
+    url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular')
+      format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html {
   font-family: "Helvetica", "SegoeUILight", "sans-serif"
 }
@@ -319,22 +336,101 @@ button:focus {
   max-width: 200px;
 }
 
-.img-large .gatsby-resp-image-wrapper,
-.img-medium .gatsby-resp-image-wrapper,
-.img-small .gatsby-resp-image-wrapper {
-  border: 5px solid #eee;
-  border-radius: .25rem;
-
+figure{
+  background-color: #f5f5f5;
+  margin-bottom: 1rem;
+  padding: 4px;
 }
-
 figure figcaption {
   font-weight: 700;
-  margin-top: 5px;
+  margin: 0.5rem 0.5rem 6px;
+  line-height: initial;
+  position: relative;
+}
+
+figure figcaption::before,
+div.ok-example .custom-block-heading::before,
+div.bad-example .custom-block-heading::before ,
+div.good-example .custom-block-heading::before  {
+  content: 'Figure: ';
+}
+
+.good-example figure figcaption::before,
+.bad-example figure figcaption::before,
+.ok-example figure figcaption::before {
+  padding-left: 1.5rem;
+}
+
+.good-example figure figcaption::after,
+div.good-example .custom-block-heading::after {
+  content: "\f14a ";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  color: #8dc63f;
+  padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+}
+
+.bad-example figure figcaption::after,
+div.bad-example .custom-block-heading::after {
+  content: "\f2d3 ";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  color: #cc4141;
+  padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+}
+
+.ok-example figure figcaption::after,
+div.ok-example .custom-block-heading::after {
+  content: "\f11a ";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  color: #777;
+  padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+}
+
+div.ok-example,
+div.good-example,
+div.bad-example{
+  position: relative;
+}
+
+div.ok-example .custom-block-heading,
+div.good-example .custom-block-heading,
+div.bad-example .custom-block-heading{
+  caption-side: bottom;
+  display: table-caption;
+  padding-left: 1rem;
+  font-weight: 700;
+  margin: 0.5rem 0.5rem 6px;
   line-height: initial;
 }
 
-figure figcaption:before {
-  content: 'Figure: ';
+div.ok-example .custom-block-body,
+div.good-example .custom-block-body,
+div.bad-example .custom-block-body{
+  padding: 1rem;
+  background-color: #f5f5f5;
+}
+
+div.ok-example,
+div.good-example,
+div.bad-example {
+  max-width: 95%;
+  display: table;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 div.youtube-playlist li {
@@ -346,14 +442,14 @@ div.youtube-playlist li {
   justify-content: space-between
 }
 
-.blockquote {
+/*.blockquote {
   font-style: italic;
   padding: .5rem 1rem;
   background-color: #eee;
   border-left: 4px solid #cc4141;
   border-radius: 0 .25rem .25rem 0;
   margin: 1rem 0;
-}
+}*/
 
 .rule-title {
   font-weight: bold;;
@@ -411,9 +507,13 @@ pre {
 @media screen and (min-width: 600px) {
   .img-large,
   .img-banner img,
-  .img-banner {
+  .img-banner,
+  .good-example,
+  .bad-example,
+  .ok-example {
     height: auto;
-    min-width: 600px;
+    min-width: 590px;
+    width: max-content;
   }
 }
 
@@ -719,11 +819,11 @@ blockquote p:before {
   list-style-type: circle;
 }
 
-.rule-content figure {
+/*.rule-content figure {
   background-color: #f5f5f5;
   padding: 4px;
   margin-bottom: 1rem;
-}
+}*/
 
 .rule-content figure img {
   max-width: 100%;
@@ -734,7 +834,7 @@ blockquote p:before {
   font-weight: bold;
 }
 
-.rule-content figure figcaption.bad:before {
+.rule-content figure figcaption.bad-example:before {
   content: "\f2d3 ";
   font-family: FontAwesome;
   font-style: normal;
@@ -744,7 +844,7 @@ blockquote p:before {
   padding-right: 0.5rem;
 }
 
-.rule-content figure figcaption.good:before {
+.rule-content figure figcaption.good-example:before {
   content: "\f14a ";
   font-family: FontAwesome;
   font-style: normal;
@@ -754,7 +854,7 @@ blockquote p:before {
   padding-right: 0.5rem;
 }
 
-.rule-content figure figcaption.ok:before {
+.rule-content figure figcaption.ok-example:before {
   content: "\f11a ";
   font-family: FontAwesome;
   font-style: normal;

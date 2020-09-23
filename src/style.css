@@ -65,7 +65,6 @@ a, a:visited {
     color: #222;
     text-decoration: none;
     transition: color 0.25s ease;
-    border-bottom: 1px solid transparent;
     &:hover {
       @apply text-ssw-red;
       border-bottom: 1px solid #cc4141;
@@ -539,6 +538,7 @@ pre {
   display: -ms-inline-flexbox;
   display: inline-flex;
   margin-right: 1rem;
+  align-items: baseline;
 }
 .custom-control {
   position: relative;
@@ -1087,6 +1087,9 @@ html {
 #sidebar .get-started-text {
   padding-top: 10px;
 }
+
+.rules-counter{text-align:center;}
+.rules-counter h2{margin-bottom:0;}
 
 .preview{
   display:none;

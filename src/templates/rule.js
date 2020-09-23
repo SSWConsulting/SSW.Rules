@@ -18,7 +18,7 @@ const Rule = ({ data, location }) => {
   //const rules = data.rules.nodes;
   return (
     <div className="rule-single rounded">
-      <section className="rule-content p-12 mb-12">
+      <section className="rule-content p-12 mb-20">
         <h1>{rule.frontmatter.title}</h1>
         <small className="history">
           Created on {rule.frontmatter.created} | Last updated by{' '}

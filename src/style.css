@@ -221,6 +221,7 @@ ul li {
 
 .twitter-hashtag-button{
   background-color: #1b95e0;
+  text-decoration: none !important;
 }
 
 .twitter-hashtag-button:hover{
@@ -1045,6 +1046,10 @@ html {
 
 #sidebar section {
   margin-bottom: 2rem;
+}
+
+#sidebar {
+  text-align: center;
 }
 
 #sidebar h4 {

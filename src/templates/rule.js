@@ -152,7 +152,7 @@ const Rule = ({ data, location }) => {
                         )}/Images/${author.title.replace(
                           ' ',
                           '-'
-                        )}-Profile-Square.jpg`}
+                        )}-Profile.jpg`}
                         alt={author.title}
                       />
                     </a>

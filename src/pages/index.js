@@ -63,6 +63,10 @@ const Index = ({ data }) => {
           </div>
 
           <div className="w-1/4 px-4" id="sidebar">
+            <section className="rules-counter">
+              <h2>{data.rules.nodes.length}</h2>
+              <p>SSW Rules</p>
+            </section>
             <section>
               <h4>Why all these rules?</h4>
               <p>
@@ -212,9 +216,18 @@ const IndexWithQuery = (props) => (
             }
           }
         }
+        rules: allMarkdownRemark(
+          filter: { frontmatter: { type: { eq: "rule" } } }
+        ) {
+          nodes {
+            frontmatter {
+              title
+            }
+          }
+        }
       }
     `}
-    render={(data) => <Index {...data.HomepageQuery} {...props} />}
+    render={(data) => <Index data={data} {...props} />}
   />
 );
 

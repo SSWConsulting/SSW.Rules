@@ -174,7 +174,6 @@ ul li {
   align-items: center;
 
   span {
-    min-width: 1.5rem;
     opacity: .5; 
     font-weight: 100;
   }
@@ -211,6 +210,12 @@ ul li {
 
 .breadcrumb__link__active:hover{
   color:black ;
+}
+
+.breadcrumb__separator::before,
+.breadcrumb__separator::after{
+  content: " ";
+  white-space: pre;
 }
 
 .hovered {

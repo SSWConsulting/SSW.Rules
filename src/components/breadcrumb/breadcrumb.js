@@ -4,7 +4,7 @@ import { Breadcrumb } from 'gatsby-plugin-breadcrumb';
 import { parentSiteUrl } from '../../../site-config';
 import Icon from '../../images/icon.png';
 
-const Breadcrumbs = ({ crumbs, crumbLabel }) => {
+const Breadcrumbs = ({ location, crumbLabel }) => {
   return (
     <div className="breadcrumb-container">
       <div className="mx-6 mb-3 breadcrumb">
@@ -13,9 +13,9 @@ const Breadcrumbs = ({ crumbs, crumbLabel }) => {
         </a>
         <span> &gt; </span>
         <Breadcrumb
-          crumbs={crumbs}
+          location={location}
           crumbLabel={crumbLabel}
-          crumbSeparator=" > "
+          crumbSeparator="&nbsp;>&nbsp;"
         />
       </div>
     </div>
@@ -23,7 +23,7 @@ const Breadcrumbs = ({ crumbs, crumbLabel }) => {
 };
 
 Breadcrumbs.propTypes = {
-  crumbs: PropTypes.array,
+  location: PropTypes.any,
   crumbLabel: PropTypes.string,
 };
 

@@ -27,12 +27,20 @@ module.exports = {
         patterns: ['categories/**/*.md', 'rules/**/*'],
       },
     },
+    'gatsby-plugin-remove-trailing-slashes',
     {
       resolve: 'gatsby-plugin-breadcrumb',
       options: {
-        useAutoGen: true,
-        autoGenHomeLabel: 'SSW.Rules',
-        useClassNames: true,
+        defaultCrumb: {
+          location: {
+            pathname: '/',
+          },
+          crumbLabel: siteConfig.breadcrumbDefault,
+          crumbSeparator: ' > ',
+        },
+        usePathPrefix: `${
+          process.env.NODE_ENV === 'production' ? '/rules' : ''
+        }`,
       },
     },
     {

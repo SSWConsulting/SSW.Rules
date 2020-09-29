@@ -18,7 +18,7 @@ const Layout = ({
   displayActions,
   ruleUri,
   pageTitle,
-  crumbs,
+  crumbLocation,
   crumbLabel,
 }) => {
   const node = useRef();
@@ -53,8 +53,8 @@ const Layout = ({
           <Header displayActions={displayActions} ruleUri={ruleUri} />
           <GoogleAnalytics pageTitle={pageTitle}></GoogleAnalytics>
           <Menu onClickToggle={() => actionOnToggleClick()}></Menu>
-          {crumbs ? (
-            <Breadcrumbs crumbs={crumbs} crumbLabel={crumbLabel} />
+          {crumbLocation ? (
+            <Breadcrumbs location={crumbLocation} crumbLabel={crumbLabel} />
           ) : (
             <div></div>
           )}
@@ -73,7 +73,7 @@ Layout.propTypes = {
   displayActions: PropTypes.bool.isRequired,
   ruleUri: PropTypes.string,
   pageTitle: PropTypes.string,
-  crumbs: PropTypes.array,
+  crumbLocation: PropTypes.array,
   crumbLabel: PropTypes.string,
 };
 

@@ -35,7 +35,7 @@ module.exports = {
             pathname: '/',
           },
           crumbLabel: siteConfig.breadcrumbDefault,
-          crumbSeparator: ' > ',
+          crumbSeparator: '>',
         },
         usePathPrefix: `${
           process.env.NODE_ENV === 'production' ? '/rules' : ''

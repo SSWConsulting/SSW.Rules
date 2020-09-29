@@ -11,11 +11,11 @@ const Breadcrumbs = ({ location, crumbLabel }) => {
         <a href={parentSiteUrl}>
           <img alt={'SSW Consulting'} src={Icon} className="w-4" />
         </a>
-        <span> &gt; </span>
+        <span className="breadcrumb__separator">&gt;</span>
         <Breadcrumb
           location={location}
           crumbLabel={crumbLabel}
-          crumbSeparator="&nbsp;>&nbsp;"
+          crumbSeparator=">"
         />
       </div>
     </div>

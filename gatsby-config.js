@@ -27,7 +27,6 @@ module.exports = {
         patterns: ['categories/**/*.md', 'rules/**/*'],
       },
     },
-    'gatsby-plugin-remove-trailing-slashes',
     {
       resolve: 'gatsby-plugin-breadcrumb',
       options: {

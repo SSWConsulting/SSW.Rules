@@ -342,7 +342,6 @@ button:focus {
 }
 
 figure{
-  background-color: #f5f5f5;
   margin-bottom: 1rem;
   padding: 4px;
 }
@@ -377,6 +376,7 @@ div.good-example .custom-block-heading::after {
   padding-right: 0.5rem;
   position: absolute;
   left: 0px;
+  top:0px;
 }
 
 .bad-example figure figcaption::after,
@@ -390,6 +390,7 @@ div.bad-example .custom-block-heading::after {
   padding-right: 0.5rem;
   position: absolute;
   left: 0px;
+  top:0px;
 }
 
 .ok-example figure figcaption::after,
@@ -403,6 +404,7 @@ div.ok-example .custom-block-heading::after {
   padding-right: 0.5rem;
   position: absolute;
   left: 0px;
+  top:0px;
 }
 
 div.ok-example,
@@ -426,7 +428,14 @@ div.ok-example .custom-block-body,
 div.good-example .custom-block-body,
 div.bad-example .custom-block-body{
   padding: 1rem;
-  background-color: #f5f5f5;
+  background-color: #fff;
+}
+
+div.ok-example .custom-block-body:has(img),
+div.good-example .custom-block-body:has(img),
+div.bad-example .custom-block-body:has(img){
+  padding: 1rem;
+  background-color: #fff !important;
 }
 
 div.ok-example,
@@ -510,6 +519,7 @@ pre {
 }
 
 @media screen and (min-width: 600px) {
+  .rule-content figure,
   .img-large,
   .img-banner img,
   .img-banner,
@@ -520,6 +530,7 @@ pre {
     min-width: 590px;
     width: max-content;
   }
+  
 }
 
 @media screen and (max-width: 600px) {
@@ -769,13 +780,17 @@ blockquote p:before {
 .rule-content h3, .rule-content h4 {
   color: #777;
 }
-
-.rule-content a {
+.rule-content-title a {
+  text-decoration:none !important;
+}
+.rule-content a,
+.rule-category a {
   text-decoration:underline;
   transition: color 0.25s ease;
 }
 
-.rule-content a:hover {
+.rule-content a:hover,
+.rule-category a:hover {
   text-decoration:underline;;
   color: #cc4141;
 }
@@ -798,8 +813,14 @@ blockquote p:before {
 .history a:after {
   content: none !important;
 }
+
+
+.rule-content figure{display:table}
+.rule-content figcaption{display:table-caption;caption-side:bottom}
+
 .rule-content figure.greybox {
   display: block;
+  
 }
 
 .rule-content figure.greybox div {

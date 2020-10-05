@@ -11,6 +11,18 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     });
   }
 };
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions;
+  const typeDefs = `
+    type MarkdownRemark implements Node {
+      frontmatter: Frontmatter
+    }
+    type Frontmatter {   
+      related: String
+    }
+  `;
+  createTypes(typeDefs);
+};
 
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;

@@ -18,21 +18,41 @@ module.exports = {
       resolve: 'gatsby-source-git',
       options: {
         name: 'categories',
-        remote: 'https://github.com/SSWConsulting/SSW.Rules.git',
+        remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
         // Optionally supply a branch. If none supplied, you'll get the default branch.
         //53120-CreateIndexTemplate
         //branch: 'content-migration-staging',
-        branch: 'content-sample',
+        branch: 'content-migration-09',
         // Tailor which files get imported eg. import the docs folder from a codebase.
         patterns: ['categories/**/*.md', 'rules/**/*'],
       },
     },
     {
+      resolve: 'gatsby-source-git',
+      options: {
+        name: 'categories',
+        remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
+        // Optionally supply a branch. If none supplied, you'll get the default branch.
+        //53120-CreateIndexTemplate
+        //branch: 'content-migration-staging',
+        branch: 'content-migration-09',
+        // Tailor which files get imported eg. import the docs folder from a codebase.
+        patterns: ['assets/**'],
+      },
+    },
+    {
       resolve: 'gatsby-plugin-breadcrumb',
       options: {
-        useAutoGen: true,
-        autoGenHomeLabel: 'Rules',
-        useClassNames: true,
+        defaultCrumb: {
+          location: {
+            pathname: '/',
+          },
+          crumbLabel: siteConfig.breadcrumbDefault,
+          crumbSeparator: '>',
+        },
+        usePathPrefix: `${
+          process.env.NODE_ENV === 'production' ? '/rules' : ''
+        }`,
       },
     },
     {
@@ -64,9 +84,93 @@ module.exports = {
               maxWidth: 590,
             },
           },
+          'gatsby-remark-copy-linked-files',
+          {
+            resolve: 'gatsby-remark-custom-blocks',
+            options: {
+              blocks: {
+                imgBadge: {
+                  classes: 'img-badge',
+                },
+                imgBanner: {
+                  classes: 'img-banner',
+                },
+                imgLg: {
+                  classes: 'img-large',
+                },
+                imgMd: {
+                  classes: 'img-medium',
+                },
+                imgSm: {
+                  classes: 'img-small',
+                },
+                goodExample: {
+                  classes: 'good-example',
+                  title: 'optional',
+                },
+                badExample: {
+                  classes: 'bad-example',
+                  title: 'optional',
+                },
+                oKExample: {
+                  classes: 'ok-example',
+                  title: 'optional',
+                },
+              },
+            },
+          },
+          {
+            resolve: 'gatsby-remark-embed-video',
+            options: {
+              maxWidth: 800,
+              ratio: 1.77, // Optional: Defaults to 16/9 = 1.77
+              height: 400, // Optional: Overrides optional.ratio
+              related: false, //Optional: Will remove related videos from the end of an embedded YouTube video.
+              noIframeBorder: true, //Optional: Disable insertion of <style> border: 0
+              urlOverrides: [
+                {
+                  id: 'youtube',
+                  embedURL: (videoId) =>
+                    `https://www.youtube-nocookie.com/embed/${videoId}`,
+                },
+              ], //Optional: Override URL of a service provider, e.g to enable youtube-nocookie support
+            },
+          },
+          'gatsby-remark-responsive-iframe',
         ],
       },
     },
     'gatsby-source-local-git',
+    {
+      resolve: 'gatsby-remark-prismjs',
+      options: {
+        classPrefix: 'language-',
+        inlineCodeMarker: null,
+
+        aliases: {},
+        showLineNumbers: false,
+        noInlineHighlight: false,
+        languageExtensions: [
+          {
+            language: 'superscript',
+            extend: 'javascript',
+            definition: {
+              superscript_types: /(SuperType)/,
+            },
+            insertBefore: {
+              function: {
+                superscript_keywords: /(superif|superelse)/,
+              },
+            },
+          },
+        ],
+        prompt: {
+          user: 'root',
+          host: 'localhost',
+          global: false,
+        },
+        escapeEntities: {},
+      },
+    },
   ],
 };

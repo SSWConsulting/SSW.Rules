@@ -7,10 +7,10 @@ import {
   faArchive,
   faFlag,
   faQuoteLeft,
-  faMobileAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TopCategory from '../components/top-category/top-category';
+import Contact from '../components/contact/contact';
 
 config.autoAddCss = false;
 
@@ -63,6 +63,10 @@ const Index = ({ data }) => {
           </div>
 
           <div className="w-1/4 px-4" id="sidebar">
+            <section className="rules-counter">
+              <h2>{data.rules.nodes.length}</h2>
+              <p>SSW Rules</p>
+            </section>
             <section>
               <h4>Why all these rules?</h4>
               <p>
@@ -124,14 +128,7 @@ const Index = ({ data }) => {
               </p>
             </section>
             <section>
-              <p className="get-started-icon float-left">
-                <FontAwesomeIcon icon={faMobileAlt} />
-              </p>
-              <p className="get-started-text">
-                Call us on
-                <br /> <strong>+61 2 9953 3000</strong> to get a new project
-                started!
-              </p>
+              <Contact />
             </section>
           </div>
         </div>
@@ -212,9 +209,18 @@ const IndexWithQuery = (props) => (
             }
           }
         }
+        rules: allMarkdownRemark(
+          filter: { frontmatter: { type: { eq: "rule" } } }
+        ) {
+          nodes {
+            frontmatter {
+              title
+            }
+          }
+        }
       }
     `}
-    render={(data) => <Index {...data.HomepageQuery} {...props} />}
+    render={(data) => <Index data={data} {...props} />}
   />
 );
 

@@ -16,7 +16,7 @@ export default function Category({ data }) {
   return (
     <div className="w-full">
       <div className="rule-category rounded">
-        <section className="mb-5 pb-2 rounded">
+        <section className="mb-20 pb-2 rounded">
           <h2 className="cat-title py-4 px-12 rounded-t">
             {category.frontmatter.title}
             <span className="rule-count">
@@ -74,7 +74,7 @@ export default function Category({ data }) {
                     <>
                       <li className="pb-4">
                         <section className="rule-content-title px-4">
-                          <h1>
+                          <h2>
                             <Link
                               ref={linkRef}
                               to={`/${rule.frontmatter.uri}`}
@@ -82,7 +82,7 @@ export default function Category({ data }) {
                             >
                               {rule.frontmatter.title}
                             </Link>
-                          </h1>
+                          </h2>
                         </section>
                         <section
                           className={`rule-content px-4 mb-5 ${

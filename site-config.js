@@ -15,4 +15,5 @@ module.exports = {
     fbAppId: `120920301257947`,
   },
   parentSiteUrl: `https://ssw.com.au`,
+  breadcrumbDefault: `SSW Rules`,
 };

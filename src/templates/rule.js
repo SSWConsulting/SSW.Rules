@@ -18,7 +18,7 @@ const Rule = ({ data, location }) => {
   //const rules = data.rules.nodes;
   return (
     <div className="rule-single rounded">
-      <section className="rule-content p-12 mb-12">
+      <section className="rule-content p-12 mb-20">
         <h1>{rule.frontmatter.title}</h1>
         <small className="history">
           Created on {rule.frontmatter.created} | Last updated by{' '}
@@ -146,13 +146,13 @@ const Rule = ({ data, location }) => {
                     >
                       <img
                         className="rounded-full inline"
-                        src={`https://github.com/SSWConsulting/People/raw/master/${author.title.replace(
+                        src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
                           ' ',
                           '-'
                         )}/Images/${author.title.replace(
                           ' ',
                           '-'
-                        )}-Profile-Square.jpg`}
+                        )}-Profile.jpg`}
                         alt={author.title}
                       />
                     </a>
@@ -187,7 +187,7 @@ const Rule = ({ data, location }) => {
             </p>
             <p>
               <small className="suggestion">
-                <a href="https://github.com/SSWConsulting/SSW.Rules/issues">
+                <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
                   Make a suggestion
                 </a>
               </small>

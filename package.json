@@ -22,6 +22,7 @@
     "classnames": "^2.2.6",
     "favicons": "^6.0.0",
     "gatsby": "^2.21.0",
+    "gatsby-custom-md": "^1.3.0",
     "gatsby-plugin-breadcrumb": "^10.0.0",
     "gatsby-plugin-postcss": "^2.3.0",
     "gatsby-plugin-react-helmet": "^3.3.0",
@@ -52,6 +53,7 @@
     "react-helmet": "^6.0.0",
     "react-modal": "^3.11.2",
     "react-pose": "^4.0.10",
+    "rehype-react": "^6.1.0",
     "svg-react-loader": "^0.4.6"
   },
   "devDependencies": {

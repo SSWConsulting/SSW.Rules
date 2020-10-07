@@ -551,6 +551,13 @@ pre {
 * Rules CSS
 */
 
+.greybox{
+  border: 1px solid #ccc;
+    background: #eee;
+    padding: 6px 12px;
+    margin: 1em 0 1em 1em;
+    max-width: 95%;
+}
 .custom-control-inline {
   display: -ms-inline-flexbox;
   display: inline-flex;

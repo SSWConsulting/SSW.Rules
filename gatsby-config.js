@@ -22,7 +22,7 @@ module.exports = {
         // Optionally supply a branch. If none supplied, you'll get the default branch.
         //53120-CreateIndexTemplate
         //branch: 'content-migration-staging',
-        branch: 'content-migration-09',
+        branch: 'content-migration-10',
         // Tailor which files get imported eg. import the docs folder from a codebase.
         patterns: ['categories/**/*.md', 'rules/**/*'],
       },
@@ -35,7 +35,7 @@ module.exports = {
         // Optionally supply a branch. If none supplied, you'll get the default branch.
         //53120-CreateIndexTemplate
         //branch: 'content-migration-staging',
-        branch: 'content-migration-09',
+        branch: 'content-migration-10',
         // Tailor which files get imported eg. import the docs folder from a codebase.
         patterns: ['assets/**'],
       },
@@ -114,6 +114,10 @@ module.exports = {
                 },
                 oKExample: {
                   classes: 'ok-example',
+                  title: 'optional',
+                },
+                greyBox: {
+                  classes: 'greybox',
                   title: 'optional',
                 },
               },

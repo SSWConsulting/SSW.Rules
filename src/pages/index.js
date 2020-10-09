@@ -11,6 +11,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TopCategory from '../components/top-category/top-category';
 import Contact from '../components/contact/contact';
+import NumberFormat from 'react-number-format';
 
 config.autoAddCss = false;
 
@@ -64,7 +65,13 @@ const Index = ({ data }) => {
 
           <div className="w-1/4 px-4" id="sidebar">
             <section className="rules-counter">
-              <h2>{data.rules.nodes.length}</h2>
+              <h2>
+                <NumberFormat
+                  value={data.rules.nodes.length}
+                  displayType={'text'}
+                  thousandSeparator={true}
+                />
+              </h2>
               <p>SSW Rules</p>
             </section>
             <section>

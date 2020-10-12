@@ -17,7 +17,7 @@ export default function Category({ data }) {
   };
 
   const components = {
-    greybox: GreyBox,
+    greyBox: GreyBox,
   };
 
   return (

@@ -37,7 +37,7 @@ const Rule = ({ data, location }) => {
         </small>
         <hr />
         <div dangerouslySetInnerHTML={{ __html: rule.html }} />
-        {rule.frontmatter.related && (
+        {rule.frontmatter.related && rule.frontmatter.related.length > 0 && (
           <div>
             <h2>Related Rules</h2>
             <ol>

@@ -85,6 +85,7 @@ module.exports = {
             },
           },
           'gatsby-remark-copy-linked-files',
+          'gatsby-remark-fenced-divs',
           {
             resolve: 'gatsby-remark-custom-blocks',
             options: {

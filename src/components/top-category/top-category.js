@@ -38,7 +38,7 @@ const TopCategory = ({ topcategory, categories }) => {
                   return 0;
                 }
               })
-              .reduce((total, currentValue) => total + currentValue)}
+              .reduce((total, currentValue) => total + currentValue, 0)}
             )
           </span>
           <span className="collapse-icon">

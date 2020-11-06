@@ -4,7 +4,7 @@ import posed from 'react-pose';
 import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
 import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 import InfoIcon from '-!svg-react-loader!../../images/info.svg';
-import { parentSiteUrl } from '../../../site-config';
+import { parentSiteUrl, rulesContentBranch } from '../../../site-config';
 
 // Example of a component-specific page transition
 const AnimatedContainer = posed.div({
@@ -40,7 +40,7 @@ const Header = ({ displayActions, ruleUri }) => {
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/content-migration-staging/${ruleUri}`}
+                href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${rulesContentBranch}/${ruleUri}`}
                 className="action-btn-link"
               >
                 <div className="action-btn-label">Edit</div>

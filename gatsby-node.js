@@ -1,4 +1,18 @@
 const { createFilePath } = require('gatsby-source-filesystem');
+const appInsights = require('applicationinsights');
+
+if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+  // Log build time stats to appInsights
+  appInsights
+    .setup()
+    .setAutoCollectConsole(true, true) // Enable logging of console.xxx
+    .start();
+} else {
+  // eslint-disable-next-line no-console
+  console.warn(
+    'Missing APPINSIGHTS_INSTRUMENTATIONKEY, this build will not be logged to Application Insights'
+  );
+}
 
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;

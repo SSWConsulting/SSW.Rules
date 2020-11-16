@@ -19,6 +19,8 @@
     "lint": "eslint --max-warnings=0 . --ext ts --ext tsx --ext js --ext jsx"
   },
   "dependencies": {
+    "@microsoft/applicationinsights-web": "^2.5.9",
+    "applicationinsights": "^1.8.8",
     "autoprefixer": "^9.7.6",
     "classnames": "^2.2.6",
     "favicons": "^6.0.0",

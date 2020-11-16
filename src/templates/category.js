@@ -1,6 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { graphql, Link } from 'gatsby';
 import PropTypes from 'prop-types';
+import MD from 'gatsby-custom-md';
+import GreyBox from '../components/greybox/greybox';
+
 export default function Category({ data }) {
   const linkRef = useRef();
   const category = data.markdownRemark;
@@ -13,6 +16,10 @@ export default function Category({ data }) {
     setTitleOnly(e.target.value === 'titleOnly');
   };
 
+  const components = {
+    greyBox: GreyBox,
+  };
+
   return (
     <div className="w-full">
       <div className="rule-category rounded">
@@ -23,10 +30,7 @@ export default function Category({ data }) {
               {category.frontmatter.index.length}
             </span>
           </h2>
-          <div
-            className="description px-12 pt-0 pb-4"
-            dangerouslySetInnerHTML={{ __html: category.html }}
-          ></div>
+          <MD components={components} htmlAst={category.htmlAst} />
           <div className="how-to-view text-center p-4 d-print-none">
             <div className="custom-control custom-radio custom-control-inline">
               <input
@@ -89,6 +93,7 @@ export default function Category({ data }) {
                             isTitleOnly ? 'hidden' : 'visible'
                           }`}
                         >
+                          <MD components={components} htmlAst={rule.htmlAst} />
                           <div
                             dangerouslySetInnerHTML={{ __html: rule.html }}
                           />
@@ -114,7 +119,7 @@ Category.propTypes = {
 export const query = graphql`
   query($slug: String!, $index: [String]!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
-      html
+      htmlAst
       frontmatter {
         title
         index
@@ -132,7 +137,7 @@ export const query = graphql`
           uri
           title
         }
-        html
+        htmlAst
       }
     }
   }

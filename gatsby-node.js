@@ -32,7 +32,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       frontmatter: Frontmatter
     }
     type Frontmatter {   
-      related: String
+      related: [String]
     }
   `;
   createTypes(typeDefs);

@@ -353,9 +353,7 @@ figure figcaption {
 }
 
 figure figcaption::before,
-div.ok-example .custom-block-heading::before,
-div.bad-example .custom-block-heading::before ,
-div.good-example .custom-block-heading::before  {
+.custom-block-heading::before {
   content: 'Figure: ';
 }
 
@@ -409,26 +407,30 @@ div.ok-example .custom-block-heading::after {
 
 div.ok-example,
 div.good-example,
-div.bad-example{
+div.bad-example,
+div.greybox{
   position: relative;
 }
 
 div.ok-example .custom-block-heading,
 div.good-example .custom-block-heading,
-div.bad-example .custom-block-heading{
+div.bad-example .custom-block-heading,
+div.greybox .custom-block-heading{
   caption-side: bottom;
   display: table-caption;
   padding-left: 1rem;
   font-weight: 700;
   margin: 0.5rem 0.5rem 6px;
   line-height: initial;
+  position: relative
 }
 
 div.ok-example .custom-block-body,
 div.good-example .custom-block-body,
-div.bad-example .custom-block-body{
+div.bad-example .custom-block-body,
+div.greybox .custom-block-body{
   padding: 1rem;
-  background-color: #fff;
+  background-color: #f5f5f5;
 }
 
 div.ok-example .custom-block-body:has(img),
@@ -440,7 +442,8 @@ div.bad-example .custom-block-body:has(img){
 
 div.ok-example,
 div.good-example,
-div.bad-example {
+div.bad-example,
+div.greybox {
   max-width: 95%;
   display: table;
   margin-top: 1rem;
@@ -551,6 +554,13 @@ pre {
 * Rules CSS
 */
 
+/*.greybox{
+  border: 1px solid #ccc;
+    background: #eee;
+    padding: 6px 12px;
+    margin: 1em 0 1em 1em;
+    max-width: 95%;
+}*/
 .custom-control-inline {
   display: -ms-inline-flexbox;
   display: inline-flex;

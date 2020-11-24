@@ -21,7 +21,7 @@ const Rule = ({ data, location }) => {
       <section className="rule-content p-12 mb-20">
         <h1>{rule.frontmatter.title}</h1>
         <small className="history">
-          Created on {rule.frontmatter.created} | Last updated by{' '}
+          Created on { data.githubData.data.repository.content.blame.ranges.map(r => r.commit.committedDate).sort()[0] } | Last updated by{' '}
           {rule.frontmatter.authors && rule.frontmatter.authors.length > 0 && (
             <a
               href={`https://ssw.com.au/people/${rule.frontmatter.authors[0].title.replace(
@@ -254,5 +254,22 @@ export const query = graphql`
         }
       }
     }
+
+    githubData {
+      data {
+        repository {
+          content {
+            blame {
+              ranges {
+                commit {
+                  committedDate
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
   }
 `;

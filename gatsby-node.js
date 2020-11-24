@@ -101,6 +101,7 @@ exports.createPages = async ({ graphql, actions }) => {
         slug: node.fields.slug,
         related: node.frontmatter.related ? node.frontmatter.related : [''],
         uri: node.frontmatter.uri,
+        path: node.frontmatter.uri
       },
     });
   });

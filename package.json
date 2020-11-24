@@ -42,6 +42,7 @@
     "gatsby-remark-responsive-iframe": "^2.4.10",
     "gatsby-source-filesystem": "^2.3.8",
     "gatsby-source-git": "^1.0.2",
+    "gatsby-source-github-api": "^0.2.1",
     "gatsby-source-local-git": "^1.0.0",
     "gatsby-transformer-json": "^2.4.0",
     "gatsby-transformer-remark": "^2.8.13",

@@ -13,7 +13,7 @@ This is a Gatsby generated site pulling data from:
 
 ### Getting ready for development
 - Clone the repo from https://github.com/SSWConsulting/SSW.Rules
-- Run *npm install* to install packages
+- Run *yarn install* to install packages
 - Create environment files (.env.development and .env.production) and fill out the values for the following keys:
 ```
 GOOGLE_ANALYTICS=
@@ -22,7 +22,7 @@ VERSION_DEPLOYED=
 
 ### Development
 1. Branch off main for your PBI
-2. Run *npm run-script build* (.env.production is required for this step)
+2. Run *yarn build* (.env.production is required for this step)
 3. Do your work
 4. Run the site in development mode by *npm run-script develop* (.env.development is required for this step)
 5. Commit code and push

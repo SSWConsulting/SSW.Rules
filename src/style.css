@@ -561,6 +561,37 @@ pre {
     margin: 1em 0 1em 1em;
     max-width: 95%;
 }*/
+
+.greybox {
+  padding: 1rem 1.5rem;
+  background-color: #eee;
+  width: 100%;
+}
+
+
+.good, .bad, .ok {
+  font-weight: bold;
+}
+
+
+.good:before {
+  content: '\f14a ';
+  font-family: FontAwesome;
+  color: #8dc63f;
+}
+
+.bad:before {
+  content: '\f057 ';
+  font-family: FontAwesome;
+  color: #cc4141;
+}
+
+.ok:before {
+  content: '\f11a ';
+  font-family: FontAwesome;
+  color: #777;
+}
+
 .custom-control-inline {
   display: -ms-inline-flexbox;
   display: inline-flex;

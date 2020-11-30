@@ -608,6 +608,11 @@ ol ol, ol li ol {
 
 }
 
+.list-decimal li::marker {
+  color: #cc4141 !important;
+  font-size: 25px;
+}
+
 h6.top-category-header,
 h6.top-category-header button {
   background-color: #777;

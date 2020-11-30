@@ -10,6 +10,7 @@ This is a Gatsby generated site pulling data from:
 
 ### Required Tools
 - Install nodejs via https://nodejs.org/en/ (required versions: ^8.10.0 or ^10.13.0 or >=11.10.1)
+- Install yarn via https://classic.yarnpkg.com/en/
 
 ### Getting ready for development
 - Clone the repo from https://github.com/SSWConsulting/SSW.Rules

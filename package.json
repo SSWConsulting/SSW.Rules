@@ -59,7 +59,8 @@
     "react-number-format": "^4.4.1",
     "react-pose": "^4.0.10",
     "rehype-react": "^6.1.0",
-    "svg-react-loader": "^0.4.6"
+    "svg-react-loader": "^0.4.6",
+    "yarn": "^1.22.10"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.31",

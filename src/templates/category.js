@@ -23,8 +23,8 @@ export default function Category({ data }) {
   return (
     <div className="w-full">
       <div className="rule-category rounded">
-        <section className="mb-20 pb-2 rounded">
-          <h2 className="cat-title py-4 px-12 rounded-t">
+        <section className="mb-20 pb-2 pt-4 px-12  rounded">
+          <h2 className="cat-title rounded-t">
             {category.frontmatter.title}
             <span className="rule-count">
               {category.frontmatter.index.length}

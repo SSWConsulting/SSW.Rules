@@ -357,6 +357,7 @@ figure figcaption::before,
   content: 'Figure: ';
 }
 
+.good::before, .bad::before, .ok::before,
 .good-example figure figcaption::before,
 .bad-example figure figcaption::before,
 .ok-example figure figcaption::before {
@@ -364,6 +365,7 @@ figure figcaption::before,
 }
 
 .good-example figure figcaption::after,
+.good::after, 
 div.good-example .custom-block-heading::after {
   content: "\f14a ";
   font-family: FontAwesome;
@@ -378,6 +380,7 @@ div.good-example .custom-block-heading::after {
 }
 
 .bad-example figure figcaption::after,
+.bad::after,
 div.bad-example .custom-block-heading::after {
   content: "\f2d3 ";
   font-family: FontAwesome;
@@ -392,6 +395,7 @@ div.bad-example .custom-block-heading::after {
 }
 
 .ok-example figure figcaption::after,
+.ok::after,
 div.ok-example .custom-block-heading::after {
   content: "\f11a ";
   font-family: FontAwesome;
@@ -568,28 +572,14 @@ pre {
   width: 100%;
 }
 
-
 .good, .bad, .ok {
-  font-weight: bold;
-}
-
-
-.good:before {
-  content: '\f14a ';
-  font-family: FontAwesome;
-  color: #8dc63f;
-}
-
-.bad:before {
-  content: '\f057 ';
-  font-family: FontAwesome;
-  color: #cc4141;
-}
-
-.ok:before {
-  content: '\f11a ';
-  font-family: FontAwesome;
-  color: #777;
+  font-weight: bold;  
+  caption-side: bottom;
+  padding-left: 1.2rem;
+  font-weight: 700;
+  margin: 0.5rem 0.5rem 6px;
+  line-height: initial;
+  position: relative
 }
 
 .custom-control-inline {

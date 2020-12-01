@@ -608,6 +608,17 @@ ol ol, ol li ol {
 
 }
 
+.rule-number {
+  list-style: decimal;
+  color: #cc4141 !important;
+  font-size: 28px;
+}
+
+.rule-content {
+  color: black;
+  font-size: 16px;
+}
+
 h6.top-category-header,
 h6.top-category-header button {
   background-color: #777;

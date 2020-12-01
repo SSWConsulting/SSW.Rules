@@ -30,7 +30,9 @@ export default function Category({ data }) {
               {category.frontmatter.index.length}
             </span>
           </h2>
-          <MD components={components} htmlAst={category.htmlAst} />
+          <div className="pt-5 py-4 px-12">
+            <MD components={components} htmlAst={category.htmlAst} />
+          </div>
           <div className="how-to-view text-center p-4 d-print-none">
             <div className="custom-control custom-radio custom-control-inline">
               <input
@@ -68,7 +70,7 @@ export default function Category({ data }) {
             </div>
           </div>
           <div className="p-12">
-            <ol className="list-decimal">
+            <ol className="rule-number">
               {category.frontmatter.index.map((ruleUri) => {
                 const rule = data.rule.nodes.find(
                   (r) => r.frontmatter.uri === ruleUri

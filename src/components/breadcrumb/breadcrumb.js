@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { parentSiteUrl } from '../../../site-config';
 import Icon from '../../images/icon.png';
 
-const Breadcrumbs2 = ( props ) => {
+const Breadcrumbs2 = (props) => {
   return (
     <div className="breadcrumb-container">
       <div className="mx-6 mb-3 breadcrumb">
@@ -11,7 +11,7 @@ const Breadcrumbs2 = ( props ) => {
           <img alt={'SSW Consulting'} src={Icon} className="w-4" />
         </a>
         <span className="breadcrumb__separator">&gt;</span>
-        {props.category} {">"} {props.title}
+        {props.category} {'>'} {props.title}
       </div>
     </div>
   );

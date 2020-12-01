@@ -6,7 +6,6 @@ import Header from '../header/header';
 import Footer from '../footer/footer';
 import '../../style.css';
 import Breadcrumbs from '../breadcrumb/breadcrumb';
-import GoogleAnalytics from '../google-analytics/google-analytics';
 import Menu from '../../../lib/ssw.megamenu/menu/menu';
 import MobileMenu from '../../../lib/ssw.megamenu/mobile-menu/mobile-menu';
 import { config } from '@fortawesome/fontawesome-svg-core';
@@ -51,7 +50,6 @@ const Layout = ({
         <div className="flex flex-col min-h-screen main-container">
           <Head pageTitle={pageTitle} />
           <Header displayActions={displayActions} ruleUri={ruleUri} />
-          <GoogleAnalytics pageTitle={pageTitle}></GoogleAnalytics>
           <Menu onClickToggle={() => actionOnToggleClick()}></Menu>
           {crumbLocation ? (
             <Breadcrumbs location={crumbLocation} crumbLabel={crumbLabel} />

@@ -9,6 +9,7 @@ import {
   faAngleDoubleRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
 
 const Rule = ({ data, location }) => {
   const cat = location.state ? location.state.category : null;
@@ -17,6 +18,20 @@ const Rule = ({ data, location }) => {
   const categories = data.categories.nodes;
   //const rules = data.rules.nodes;
   return (
+    <div>
+      <Breadcrumb
+      title={rule.frontmatter.title}
+      category={categories.map((category, i) => (
+        <div key={i}>
+            <Link ref={linkRef} to={`/${category.parent.name}`}>
+              <div className="px-1 text-gray-800 hover:text-gray-600">
+                {category.frontmatter.title
+                  .replace('Rules to Better ', '')
+                  .replace('Rules to ', '')}
+              </div>
+            </Link>
+        </div> 
+      ))} />
     <div className="rule-single rounded">
       <section className="rule-content p-12 mb-20">
         <h1>{rule.frontmatter.title}</h1>
@@ -195,6 +210,7 @@ const Rule = ({ data, location }) => {
           </div>
         </section>
       </section>
+    </div>
     </div>
     //  </Layout>
   );

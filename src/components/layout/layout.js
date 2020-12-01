@@ -5,7 +5,8 @@ import Head from '../head/head';
 import Header from '../header/header';
 import Footer from '../footer/footer';
 import '../../style.css';
-import Breadcrumbs from '../breadcrumb/breadcrumb';
+// import Breadcrumbs from '../breadcrumb/breadcrumb';
+import Breadcrumb from '../breadcrumb/breadcrumb2';
 import GoogleAnalytics from '../google-analytics/google-analytics';
 import Menu from '../../../lib/ssw.megamenu/menu/menu';
 import MobileMenu from '../../../lib/ssw.megamenu/mobile-menu/mobile-menu';
@@ -18,8 +19,6 @@ const Layout = ({
   displayActions,
   ruleUri,
   pageTitle,
-  crumbLocation,
-  crumbLabel,
 }) => {
   const node = useRef();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
@@ -53,11 +52,6 @@ const Layout = ({
           <Header displayActions={displayActions} ruleUri={ruleUri} />
           <GoogleAnalytics pageTitle={pageTitle}></GoogleAnalytics>
           <Menu onClickToggle={() => actionOnToggleClick()}></Menu>
-          {crumbLocation ? (
-            <Breadcrumbs location={crumbLocation} crumbLabel={crumbLabel} />
-          ) : (
-            <div></div>
-          )}
           <main className="flex-1">{children}</main>
         </div>
         <Footer />

@@ -31,7 +31,7 @@ export default function Category({ data }) {
             </span>
           </h2>
           <div className="pt-5 py-4 px-12">
-          <MD components={components} htmlAst={category.htmlAst} />
+            <MD components={components} htmlAst={category.htmlAst} />
           </div>
           <div className="how-to-view text-center p-4 d-print-none">
             <div className="custom-control custom-radio custom-control-inline">

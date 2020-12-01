@@ -35,6 +35,19 @@ const Rule = ({ data, location }) => {
           {' on '}
           {rule.frontmatter.created}
         </small>
+        {rule.frontmatter.archivedreason &&
+          rule.frontmatter.archivedreason.length > 0 && (
+            <div>
+              <br />
+              <div className="attentionIcon archived">
+                This rule is currently archived
+              </div>
+              <div className="RuleArchivedReasonContainer">
+                <span className="ReasonTitle">Archived Reason:</span>
+                {rule.frontmatter.archivedreason}
+              </div>
+            </div>
+          )}
         <hr />
         <div dangerouslySetInnerHTML={{ __html: rule.html }} />
         {rule.frontmatter.related && rule.frontmatter.related.length > 0 && (
@@ -221,6 +234,7 @@ export const query = graphql`
           title
         }
         created(formatString: "DD MMM YYYY")
+        archivedreason
         related
       }
       parent {

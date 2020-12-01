@@ -31,7 +31,8 @@ exports.createSchemaCustomization = ({ actions }) => {
     type MarkdownRemark implements Node {
       frontmatter: Frontmatter
     }
-    type Frontmatter {   
+    type Frontmatter {
+      archivedreason: String   
       related: [String]
     }
   `;
@@ -72,6 +73,7 @@ exports.createPages = async ({ graphql, actions }) => {
           }
           frontmatter {
             uri
+            archivedreason
             related
           }
         }

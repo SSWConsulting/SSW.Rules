@@ -23,7 +23,7 @@ export default function Category({ data }) {
   return (
     <div className="w-full">
       <div className="rule-category rounded">
-        <section className="mb-20 pb-2 pt-4 px-12 rounded">
+        <section className="mb-20 pb-2 pt-4 px-12  rounded">
           <h2 className="cat-title rounded-t">
             {category.frontmatter.title}
             <span className="rule-count">
@@ -68,7 +68,7 @@ export default function Category({ data }) {
             </div>
           </div>
           <div className="p-12">
-            <ol className="list-decimal">
+            <ol className="rule-number">
               {category.frontmatter.index.map((ruleUri) => {
                 const rule = data.rule.nodes.find(
                   (r) => r.frontmatter.uri === ruleUri

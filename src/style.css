@@ -608,9 +608,15 @@ ol ol, ol li ol {
 
 }
 
-.list-decimal li::marker {
+.rule-number {
+  list-style: decimal;
   color: #cc4141 !important;
-  font-size: 25px;
+  font-size: 28px;
+}
+
+.rule-content {
+  color: black;
+  font-size: 16px;
 }
 
 h6.top-category-header,

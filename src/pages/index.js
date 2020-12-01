@@ -85,7 +85,7 @@ const Index = ({ data }) => {
                 >
                   History of SSW Rules
                 </a>
-                , published in Code Magazine.
+                , published in CoDe Magazine.
               </p>
             </section>
 

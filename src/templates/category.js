@@ -75,7 +75,7 @@ export default function Category({ data }) {
                 const rule = data.rule.nodes.find(
                   (r) => r.frontmatter.uri === ruleUri
                 );
-                if (rule) {
+                if (rule && rule.frontmatter.archivedreason == null) {
                   return (
                     <>
                       <li className="pb-4">
@@ -137,6 +137,7 @@ export const query = graphql`
       nodes {
         frontmatter {
           uri
+          archivedreason
           title
         }
         htmlAst

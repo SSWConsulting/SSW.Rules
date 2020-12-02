@@ -1,5 +1,10 @@
 const { createFilePath } = require('gatsby-source-filesystem');
 const appInsights = require('applicationinsights');
+const makePluginData = require('./src/helpers/plugin-data');
+const createRewriteMap = require('./src/helpers/createRewriteMap');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
+const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
+const path = require('path');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
@@ -13,6 +18,8 @@ if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
     'Missing APPINSIGHTS_INSTRUMENTATIONKEY, this build will not be logged to Application Insights'
   );
 }
+
+let assetsManifest = {};
 
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
@@ -33,9 +40,29 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
     type Frontmatter {   
       related: [String]
+      redirects: [String]
     }
   `;
   createTypes(typeDefs);
+};
+
+exports.onCreateWebpackConfig = ({ stage, loaders, getConfig, actions }) => {
+  actions.setWebpackConfig({
+    plugins: [
+      new WebpackAssetsManifest({
+        assets: assetsManifest, // mutates object with entries
+        merge: true,
+      }),
+    ],
+    resolve: {
+      modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+      plugins: [
+        new DirectoryNamedWebpackPlugin({
+          exclude: /node_modules/,
+        }),
+      ],
+    },
+  });
 };
 
 exports.createPages = async ({ graphql, actions }) => {
@@ -73,6 +100,7 @@ exports.createPages = async ({ graphql, actions }) => {
           frontmatter {
             uri
             related
+            redirects
           }
         }
       }
@@ -101,7 +129,31 @@ exports.createPages = async ({ graphql, actions }) => {
         slug: node.fields.slug,
         related: node.frontmatter.related ? node.frontmatter.related : [''],
         uri: node.frontmatter.uri,
+        redirects: node.frontmatter.redirects,
       },
     });
   });
+};
+
+exports.onPostBuild = async ({ store, pathPrefix }) => {
+  const { pages } = store.getState();
+  const pluginData = makePluginData(store, assetsManifest, pathPrefix);
+  const rewrites = Array.from(pages.values())
+    .filter((page) => page.context.redirects)
+    .reduce((acc, page) => {
+      acc = acc.concat(
+        page.context.redirects.map((redirect) => {
+          return {
+            fromPath: pathPrefix + '/' + redirect,
+            toPath: pathPrefix + page.path,
+          };
+        })
+      );
+      return acc;
+    }, []);
+
+  const allRewritesUnique = [
+    ...new Map(rewrites.map((item) => [item.fromPath, item])).values(),
+  ];
+  await createRewriteMap.writeRewriteMapsFile(pluginData, allRewritesUnique);
 };

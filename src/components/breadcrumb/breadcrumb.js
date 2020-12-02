@@ -11,13 +11,14 @@ const Breadcrumbs = (props) => {
           <img alt={'SSW Consulting'} src={Icon} className="w-4" />
         </a>
         <span className="breadcrumb__separator">&gt;</span>
-        <a className="px-1" href={siteUrl}> SSW Rules </a>
+        <a className="px-1" href={siteUrl}>
+          {' '}
+          SSW Rules{' '}
+        </a>
         <span className="breadcrumb__separator">&gt;</span>
-        <div className="text-left">
-        {props.category} 
-        </div>
+        <div className="text-left">{props.category}</div>
         <div className="px-1 text-gray-900">
-        {">"} {props.title}
+          {'>'} {props.title}
         </div>
       </div>
     </div>

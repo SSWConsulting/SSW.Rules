@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TopCategory from '../components/top-category/top-category';
 import Contact from '../components/contact/contact';
 import NumberFormat from 'react-number-format';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
 
 config.autoAddCss = false;
 
@@ -34,6 +35,7 @@ const Index = ({ data }) => {
       <div className="container" id="rules">
         <div className="flex">
           <div className="w-3/4 px-4">
+            <Breadcrumb isCategory={false} />
             <div className="rule-index no-gutters rounded">
               {data.main.nodes.map((element) => {
                 return element.frontmatter.index.map((category) => {

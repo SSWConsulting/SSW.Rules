@@ -33,6 +33,7 @@ Breadcrumbs.propTypes = {
   title: PropTypes.any,
   category: PropTypes.any,
   categoryTitle: PropTypes.any,
+  isCategory: PropTypes.bool,
 };
 
 export default Breadcrumbs;

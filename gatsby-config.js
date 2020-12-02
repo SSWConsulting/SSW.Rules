@@ -37,58 +37,6 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-source-graphql',
-      options: {
-        typeName: 'GitHub',
-        fieldName: 'github',
-        url: 'https://api.github.com/graphql',
-        // HTTP headers
-        headers: {
-          // Learn about environment variables: https://gatsby.dev/env-vars
-          Authorization: `bearer ${process.env.GITHUB_TOKEN}`,
-        },
-        // Additional options to pass to node-fetch
-        fetchOptions: {},
-        batch: true,
-        // See https://github.com/graphql/dataloader#new-dataloaderbatchloadfn--options
-        // for a full list of DataLoader options
-        dataLoaderOptions: {
-          maxBatchSize: 10,
-        },
-      },
-    },
-    /*{
-      resolve: `gatsby-source-github-api`,
-      options: {
-        url: 'https://api.github.com/graphql',
-        token: process.env.GITHUB_TOKEN,
-        graphQLQuery: `
-        query ($owner: String!, $repo: String!, $branch: String!, $path: String!){
-          repository(name:$repo, owner: $owner) {
-            content:object(expression: $branch) {
-                    ... on Commit {
-                blame(path: $path) {
-                  ranges {
-                    commit {
-                      committedDate
-                    }
-                  }
-                }      
-              }
-            }
-          }
-        }
-        `,
-
-         variables: {
-           owner: "SSWConsulting",
-           repo: "SSW.Rules.Content",
-           branch: siteConfig.rulesContentBranch,
-           path: "README.md",
-         }
-      }
-    },*/
-    {
       resolve: 'gatsby-plugin-breadcrumb',
       options: {
         defaultCrumb: {
@@ -223,13 +171,6 @@ module.exports = {
           global: false,
         },
         escapeEntities: {},
-      },
-    },
-    {
-      resolve: 'gatsby-plugin-google-analytics',
-      options: {
-        // replace "UA-XXXXXXXXX-X" with your own Tracking ID
-        trackingId: process.env.GOOGLE_ANALYTICS,
       },
     },
   ],

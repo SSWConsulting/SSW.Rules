@@ -46,7 +46,7 @@ exports.createSchemaCustomization = ({ actions }) => {
   createTypes(typeDefs);
 };
 
-exports.onCreateWebpackConfig = ({ stage, loaders, getConfig, actions }) => {
+exports.onCreateWebpackConfig = ({ actions }) => {
   actions.setWebpackConfig({
     plugins: [
       new WebpackAssetsManifest({

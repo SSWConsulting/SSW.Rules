@@ -54,6 +54,23 @@ export default function Category({ data }) {
             <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
+                id="customRadioInline3"
+                name="customRadioInline1"
+                className="custom-control-input"
+                value="blurb"
+                checked={selectedOption === 'blurb'}
+                onChange={handleOptionChange}
+              />
+              <label
+                className="custom-control-label ml-1"
+                htmlFor="customRadioInline3"
+              >
+                Show Blurb
+              </label>
+            </div>
+            <div className="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
                 id="customRadioInline2"
                 name="customRadioInline1"
                 className="custom-control-input"

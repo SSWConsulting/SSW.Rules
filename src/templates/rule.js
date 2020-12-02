@@ -24,10 +24,8 @@ const Rule = ({ data, location }) => {
         category={categories.map((category, i) => (
           <div key={i}>
             <Link ref={linkRef} to={`/${category.parent.name}`}>
-              <div className="px-1 text-gray-800 hover:text-gray-600">
-                {category.frontmatter.title
-                  .replace('Rules to Better ', '')
-                  .replace('Rules to ', '')}
+              <div className="px-1 hover:text-red-600">
+                {category.frontmatter.title}
               </div>
             </Link>
           </div>

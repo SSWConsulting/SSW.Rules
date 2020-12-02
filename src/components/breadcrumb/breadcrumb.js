@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { parentSiteUrl } from '../../../site-config';
+import { parentSiteUrl, siteUrl } from '../../../site-config';
 import Icon from '../../images/icon.png';
 
 const Breadcrumbs = (props) => {
@@ -11,7 +11,14 @@ const Breadcrumbs = (props) => {
           <img alt={'SSW Consulting'} src={Icon} className="w-4" />
         </a>
         <span className="breadcrumb__separator">&gt;</span>
-        {props.category} {'>'} {props.title}
+        <a className="px-1" href={siteUrl}> SSW Rules </a>
+        <span className="breadcrumb__separator">&gt;</span>
+        <div className="text-left">
+        {props.category} 
+        </div>
+        <div className="px-1 text-gray-900">
+        {">"} {props.title}
+        </div>
       </div>
     </div>
   );

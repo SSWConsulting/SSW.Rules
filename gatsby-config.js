@@ -37,21 +37,6 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-plugin-breadcrumb',
-      options: {
-        defaultCrumb: {
-          location: {
-            pathname: '/',
-          },
-          crumbLabel: siteConfig.breadcrumbDefault,
-          crumbSeparator: '>',
-        },
-        usePathPrefix: `${
-          process.env.NODE_ENV === 'production' ? '/rules' : ''
-        }`,
-      },
-    },
-    {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'content',
@@ -171,6 +156,13 @@ module.exports = {
           global: false,
         },
         escapeEntities: {},
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-google-analytics',
+      options: {
+        // replace "UA-XXXXXXXXX-X" with your own Tracking ID
+        trackingId: process.env.GOOGLE_ANALYTICS,
       },
     },
   ],

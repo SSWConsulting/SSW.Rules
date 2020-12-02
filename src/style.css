@@ -186,7 +186,7 @@ ul li {
 .breadcrumb a,
 .breadcrumb a:visited{
   &:not(.breadcrumb__link__active){
-    color: #999;
+    color: #222;
   }
   &.breadcrumb__link__active{
     color:black ;

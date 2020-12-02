@@ -3,6 +3,7 @@ import { graphql, Link } from 'gatsby';
 import PropTypes from 'prop-types';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../components/greybox/greybox';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
 
 export default function Category({ data }) {
   const linkRef = useRef();
@@ -21,93 +22,119 @@ export default function Category({ data }) {
   };
 
   return (
-    <div className="w-full">
-      <div className="rule-category rounded">
-        <section className="mb-20 pb-2 rounded">
-          <h2 className="cat-title py-4 px-12 rounded-t">
-            {category.frontmatter.title}
-            <span className="rule-count">
-              {category.frontmatter.index.length}
-            </span>
-          </h2>
-          <div className="pt-5 py-4 px-12">
-            <MD components={components} htmlAst={category.htmlAst} />
-          </div>
-          <div className="how-to-view text-center p-4 d-print-none">
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="customRadioInline1"
-                name="customRadioInline1"
-                className="custom-control-input"
-                value="titleOnly"
-                checked={selectedOption === 'titleOnly'}
-                onChange={handleOptionChange}
-              />
-              <label
-                className="custom-control-label ml-1"
-                htmlFor="customRadioInline1"
-              >
-                View titles only
-              </label>
+    <div>
+      <Breadcrumb
+        categoryTitle={category.frontmatter.title}
+        isCategory={true}
+      />
+      <div className="w-full">
+        <div className="rule-category rounded">
+          <section className="mb-20 pb-2 rounded">
+            <h2 className="cat-title py-4 px-12 rounded-t">
+              {category.frontmatter.title}
+              <span className="rule-count">
+                {category.frontmatter.index.length}
+              </span>
+            </h2>
+            <div className="pt-5 py-4 px-12">
+              <MD components={components} htmlAst={category.htmlAst} />
             </div>
-            <div className="custom-control custom-radio custom-control-inline">
-              <input
-                type="radio"
-                id="customRadioInline2"
-                name="customRadioInline1"
-                className="custom-control-input"
-                value="all"
-                checked={selectedOption === 'all'}
-                onChange={handleOptionChange}
-              />
-              <label
-                className="custom-control-label ml-1"
-                htmlFor="customRadioInline2"
-              >
-                Show everything
-              </label>
+            <div className="how-to-view text-center p-4 d-print-none">
+              <div className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  id="customRadioInline1"
+                  name="customRadioInline1"
+                  className="custom-control-input"
+                  value="titleOnly"
+                  checked={selectedOption === 'titleOnly'}
+                  onChange={handleOptionChange}
+                />
+                <label
+                  className="custom-control-label ml-1"
+                  htmlFor="customRadioInline1"
+                >
+                  View titles only
+                </label>
+              </div>
+              <div className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  id="customRadioInline3"
+                  name="customRadioInline1"
+                  className="custom-control-input"
+                  value="blurb"
+                  checked={selectedOption === 'blurb'}
+                  onChange={handleOptionChange}
+                />
+                <label
+                  className="custom-control-label ml-1"
+                  htmlFor="customRadioInline3"
+                >
+                  Show Blurb
+                </label>
+              </div>
+              <div className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  id="customRadioInline2"
+                  name="customRadioInline1"
+                  className="custom-control-input"
+                  value="all"
+                  checked={selectedOption === 'all'}
+                  onChange={handleOptionChange}
+                />
+                <label
+                  className="custom-control-label ml-1"
+                  htmlFor="customRadioInline2"
+                >
+                  Show everything
+                </label>
+              </div>
             </div>
-          </div>
-          <div className="p-12">
-            <ol className="rule-number">
-              {category.frontmatter.index.map((ruleUri) => {
-                const rule = data.rule.nodes.find(
-                  (r) => r.frontmatter.uri === ruleUri
-                );
-                if (rule && rule.frontmatter.archivedreason == null) {
-                  return (
-                    <>
-                      <li className="pb-4">
-                        <section className="rule-content-title px-4">
-                          <h2>
-                            <Link
-                              ref={linkRef}
-                              to={`/${rule.frontmatter.uri}`}
-                              state={{ category: category.parent.name }}
-                            >
-                              {rule.frontmatter.title}
-                            </Link>
-                          </h2>
-                        </section>
-                        <section
-                          className={`rule-content px-4 mb-5 ${
-                            isTitleOnly ? 'hidden' : 'visible'
-                          }`}
-                        >
-                          <MD components={components} htmlAst={rule.htmlAst} />
-                          <div
-                            dangerouslySetInnerHTML={{ __html: rule.html }}
-                          />
-                        </section>
-                      </li>
-                    </>
+            <div className="p-12">
+              <ol className="rule-number">
+                {category.frontmatter.index.map((ruleUri) => {
+                  const rule = data.rule.nodes.find(
+                    (r) => r.frontmatter.uri === ruleUri
                   );
-                }
-              })}
-            </ol>
-          </div>
-        </section>
+                  if (rule && rule.frontmatter.archivedreason == null) {
+                    return (
+                      <>
+                        <li className="pb-4">
+                          <section className="rule-content-title px-4">
+                            <h2>
+                              <Link
+                                ref={linkRef}
+                                to={`/${rule.frontmatter.uri}`}
+                                state={{ category: category.parent.name }}
+                              >
+                                {rule.frontmatter.title}
+                              </Link>
+                            </h2>
+                          </section>
+                          <section
+                            className={`rule-content px-4 mb-5 ${
+                              isTitleOnly ? 'hidden' : 'visible'
+                            }`}
+                          >
+                            <MD
+                              components={components}
+                              htmlAst={rule.htmlAst}
+                            />
+                            <div
+                              dangerouslySetInnerHTML={{ __html: rule.html }}
+                            />
+                          </section>
+                        </li>
+                      </>
+                    );
+                  }
+                })}
+              </ol>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );

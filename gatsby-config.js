@@ -37,21 +37,6 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-plugin-breadcrumb',
-      options: {
-        defaultCrumb: {
-          location: {
-            pathname: '/',
-          },
-          crumbLabel: siteConfig.breadcrumbDefault,
-          crumbSeparator: '>',
-        },
-        usePathPrefix: `${
-          process.env.NODE_ENV === 'production' ? '/rules' : ''
-        }`,
-      },
-    },
-    {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'content',

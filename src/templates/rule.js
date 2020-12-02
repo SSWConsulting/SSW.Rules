@@ -51,18 +51,18 @@ const Rule = ({ data, location }) => {
             {rule.frontmatter.created}
           </small>
           {rule.frontmatter.archivedreason &&
-          rule.frontmatter.archivedreason.length > 0 && (
-            <div>
-              <br />
-              <div className="attentionIcon archived">
-                This rule is currently archived
+            rule.frontmatter.archivedreason.length > 0 && (
+              <div>
+                <br />
+                <div className="attentionIcon archived">
+                  This rule is currently archived
+                </div>
+                <div className="RuleArchivedReasonContainer">
+                  <span className="ReasonTitle">Archived Reason:</span>
+                  {rule.frontmatter.archivedreason}
+                </div>
               </div>
-              <div className="RuleArchivedReasonContainer">
-                <span className="ReasonTitle">Archived Reason:</span>
-                {rule.frontmatter.archivedreason}
-              </div>
-            </div>
-          )}
+            )}
           <hr />
           <div dangerouslySetInnerHTML={{ __html: rule.html }} />
           {rule.frontmatter.related && rule.frontmatter.related.length > 0 && (

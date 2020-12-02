@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { graphql, Link } from 'gatsby';
+import { format, parseISO } from 'date-fns';
 //import Layout from '../components/layout/layout';
 import PropTypes from 'prop-types';
 import {
@@ -10,31 +11,51 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const Rule = ({ data, location }) => {
+const Rule = ({ data, location, pageContext }) => {
   const cat = location.state ? location.state.category : null;
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
+
+  const getHistoryLine = () => {
+    var firstCommitDate = pageContext.commits
+      .map((r) => r.commit.committedDate)
+      .sort()[0];
+
+    var lastCommit = pageContext.commits
+      .map((r) => {
+        return {
+          date: r.commit.committedDate,
+          author: r.commit.author,
+        };
+      })
+      .sort((a, b) => {
+        if (a.date < b.date) return 1;
+        else if (a.date > b.date) return -1;
+        else return 0;
+      })[0];
+
+    return (
+      <small className="history">
+        Created on {format(parseISO(firstCommitDate), 'dd MMM yyyy')} | Last
+        updated by{' '}
+        <strong>
+          {(lastCommit.author.user !== null && (
+            <a href={lastCommit.author.user.url}>{lastCommit.author.name}</a>
+          )) ||
+            (lastCommit.author.user === null && lastCommit.author.name)}
+        </strong>{' '}
+        on {format(parseISO(lastCommit.date), 'dd MMM yyyy')}
+      </small>
+    );
+  };
+
   //const rules = data.rules.nodes;
   return (
     <div className="rule-single rounded">
       <section className="rule-content p-12 mb-20">
         <h1>{rule.frontmatter.title}</h1>
-        <small className="history">
-          Created on {rule.frontmatter.created} | Last updated by{' '}
-          {rule.frontmatter.authors && rule.frontmatter.authors.length > 0 && (
-            <a
-              href={`https://ssw.com.au/people/${rule.frontmatter.authors[0].title.replace(
-                ' ',
-                '-'
-              )}`}
-            >
-              {rule.frontmatter.authors[0].title}
-            </a>
-          )}
-          {' on '}
-          {rule.frontmatter.created}
-        </small>
+        {getHistoryLine()}
         <hr />
         <div dangerouslySetInnerHTML={{ __html: rule.html }} />
         {rule.frontmatter.related && rule.frontmatter.related.length > 0 && (
@@ -208,7 +229,11 @@ Rule.propTypes = {
 export default Rule;
 
 export const query = graphql`
-  query($slug: String!, $uri: String!, $related: [String]!) {
+  query(
+    $slug: String!
+    $uri: String!
+    $related: [String]!
+  ) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
       fields {
         slug

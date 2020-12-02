@@ -17,9 +17,13 @@ const Breadcrumbs = (props) => {
         </a>
         <span className="breadcrumb__separator">&gt;</span>
         <div className="text-left">{props.category}</div>
-        <div className="px-1 text-gray-900">
-          {'>'} {props.title}
-        </div>
+        {props.isCategory ? (
+          <div className="px-1 text-gray-900">{props.categoryTitle}</div>
+        ) : (
+          <div className="px-1 text-gray-900">
+            {'>'} {props.title}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -28,6 +32,7 @@ const Breadcrumbs = (props) => {
 Breadcrumbs.propTypes = {
   title: PropTypes.any,
   category: PropTypes.any,
+  categoryTitle: PropTypes.any,
 };
 
 export default Breadcrumbs;

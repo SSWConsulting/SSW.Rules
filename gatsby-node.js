@@ -5,6 +5,7 @@ const createRewriteMap = require('./src/helpers/createRewriteMap');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
+const Map = require('core-js/features/map');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights

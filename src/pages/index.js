@@ -32,10 +32,10 @@ const Index = ({ data }) => {
 
   return (
     <div className="w-full">
+      <Breadcrumb isHomePage={true} />
       <div className="container" id="rules">
         <div className="flex">
           <div className="w-3/4 px-4">
-            <Breadcrumb isCategory={false} />
             <div className="rule-index no-gutters rounded">
               {data.main.nodes.map((element) => {
                 return element.frontmatter.index.map((category) => {

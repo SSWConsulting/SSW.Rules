@@ -16,18 +16,14 @@ const Breadcrumbs = (props) => {
           SSW Rules{' '}
         </a>
 
-        {props.isCategory || props.isRule ? (
-          <span className="breadcrumb__separator">&gt;</span>
-        ) : (
-          ''
-        )}
+        {props.isCategory || props.isRule ? '>' : ''}
 
         <div className="text-left">{props.category}</div>
         {props.isCategory ? (
           <div className="px-1 text-gray-900">{props.categoryTitle}</div>
         ) : (
           <div className="px-1 text-gray-900">
-            {'>'} {props.title}
+            {props.isHomePage ? '' : '>'} {props.title}
           </div>
         )}
       </div>
@@ -41,6 +37,7 @@ Breadcrumbs.propTypes = {
   categoryTitle: PropTypes.any,
   isCategory: PropTypes.bool,
   isRule: PropTypes.bool,
+  isHomePage: PropTypes.bool,
 };
 
 export default Breadcrumbs;

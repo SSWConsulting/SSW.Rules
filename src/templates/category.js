@@ -122,14 +122,22 @@ export default function Category({ data }) {
                             />
                           </section>
 
-                          <section className={`rule-content px-4 mb-5
-                          ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}>
-                          <div                        
-                            dangerouslySetInnerHTML={{ __html: rule.excerpt }}
-                          />
-                          <p className="pt-5 pb-0">
-                            Read more about <a href={rule.frontmatter.uri} className="underline">{rule.frontmatter.title}</a>
-                          </p>
+                          <section
+                            className={`rule-content px-4 mb-5
+                          ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
+                          >
+                            <div
+                              dangerouslySetInnerHTML={{ __html: rule.excerpt }}
+                            />
+                            <p className="pt-5 pb-0">
+                              Read more about{' '}
+                              <a
+                                href={rule.frontmatter.uri}
+                                className="underline"
+                              >
+                                {rule.frontmatter.title}
+                              </a>
+                            </p>
                           </section>
                         </li>
                       </>

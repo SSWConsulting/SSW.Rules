@@ -20,6 +20,7 @@ const Rule = ({ data, location }) => {
   return (
     <div>
       <Breadcrumb
+        isRule={true}
         title={rule.frontmatter.title}
         category={categories.map((category, i) => (
           <div key={i}>

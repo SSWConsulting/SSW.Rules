@@ -122,11 +122,15 @@ export default function Category({ data }) {
                             />
                           </section>
 
-                          <div
-                            className={`rule-content px-4 mb-5
-                          ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
+                          <section className={`rule-content px-4 mb-5
+                          ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}>
+                          <div                        
                             dangerouslySetInnerHTML={{ __html: rule.excerpt }}
                           />
+                          <p className="pt-5 pb-0">
+                            Read more about <a href={rule.frontmatter.uri} className="underline">{rule.frontmatter.title}</a>
+                          </p>
+                          </section>
                         </li>
                       </>
                     );
@@ -149,7 +153,6 @@ Category.propTypes = {
 export const query = graphql`
   query($slug: String!, $index: [String]!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
-      excerpt
       htmlAst
       frontmatter {
         title
@@ -164,7 +167,7 @@ export const query = graphql`
     }
     rule: allMarkdownRemark(filter: { frontmatter: { uri: { in: $index } } }) {
       nodes {
-        excerpt(format: MARKDOWN)
+        excerpt(format: HTML, pruneLength: 500)
         frontmatter {
           uri
           archivedreason

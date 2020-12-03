@@ -47,6 +47,7 @@ module.exports = {
     {
       resolve: 'gatsby-transformer-remark',
       options: {
+        excerpt_separator: '<!--endintro-->',
         plugins: [
           {
             resolve: 'gatsby-remark-figure-caption',

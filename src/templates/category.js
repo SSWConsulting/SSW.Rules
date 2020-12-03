@@ -10,11 +10,9 @@ export default function Category({ data }) {
   const category = data.markdownRemark;
 
   const [selectedOption, setSelectedOption] = useState('all');
-  const [isTitleOnly, setTitleOnly] = useState(false);
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
-    setTitleOnly(e.target.value === 'titleOnly');
   };
 
   const components = {
@@ -113,19 +111,22 @@ export default function Category({ data }) {
                               </Link>
                             </h2>
                           </section>
+
                           <section
-                            className={`rule-content px-4 mb-5 ${
-                              isTitleOnly ? 'hidden' : 'visible'
-                            }`}
+                            className={`rule-content px-4 mb-5
+                            ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                           >
                             <MD
                               components={components}
                               htmlAst={rule.htmlAst}
                             />
-                            <div
-                              dangerouslySetInnerHTML={{ __html: rule.html }}
-                            />
                           </section>
+
+                          <div
+                            className={`rule-content px-4 mb-5
+                          ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
+                            dangerouslySetInnerHTML={{ __html: rule.excerpt }}
+                          />
                         </li>
                       </>
                     );
@@ -148,6 +149,7 @@ Category.propTypes = {
 export const query = graphql`
   query($slug: String!, $index: [String]!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
+      excerpt
       htmlAst
       frontmatter {
         title
@@ -162,6 +164,7 @@ export const query = graphql`
     }
     rule: allMarkdownRemark(filter: { frontmatter: { uri: { in: $index } } }) {
       nodes {
+        excerpt(format: MARKDOWN)
         frontmatter {
           uri
           archivedreason

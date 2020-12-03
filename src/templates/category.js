@@ -10,11 +10,9 @@ export default function Category({ data }) {
   const category = data.markdownRemark;
 
   const [selectedOption, setSelectedOption] = useState('all');
-  const [isTitleOnly, setTitleOnly] = useState(false);
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
-    setTitleOnly(e.target.value === 'titleOnly');
   };
 
   const components = {
@@ -113,18 +111,33 @@ export default function Category({ data }) {
                               </Link>
                             </h2>
                           </section>
+
                           <section
-                            className={`rule-content px-4 mb-5 ${
-                              isTitleOnly ? 'hidden' : 'visible'
-                            }`}
+                            className={`rule-content px-4 mb-5
+                            ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                           >
                             <MD
                               components={components}
                               htmlAst={rule.htmlAst}
                             />
+                          </section>
+
+                          <section
+                            className={`rule-content px-4 mb-5
+                          ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
+                          >
                             <div
-                              dangerouslySetInnerHTML={{ __html: rule.html }}
+                              dangerouslySetInnerHTML={{ __html: rule.excerpt }}
                             />
+                            <p className="pt-5 pb-0">
+                              Read more about{' '}
+                              <a
+                                href={rule.frontmatter.uri}
+                                className="underline"
+                              >
+                                {rule.frontmatter.title}
+                              </a>
+                            </p>
                           </section>
                         </li>
                       </>
@@ -162,6 +175,7 @@ export const query = graphql`
     }
     rule: allMarkdownRemark(filter: { frontmatter: { uri: { in: $index } } }) {
       nodes {
+        excerpt(format: HTML, pruneLength: 500)
         frontmatter {
           uri
           archivedreason

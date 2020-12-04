@@ -50,7 +50,7 @@ const Index = ({ data }) => {
                 });
               })}
             </div>
-            <section>
+            <section className="pb-8">
               <p>
                 <a href="/archived">
                   <FontAwesomeIcon icon={faArchive} /> Show archived rules

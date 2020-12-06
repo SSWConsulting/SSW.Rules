@@ -167,7 +167,16 @@ const Rule = ({ data, location }) => {
               <div className="flex flex-row flex-wrap justify-center">
                 {rule.frontmatter.authors &&
                   rule.frontmatter.authors.map((author, index) => (
-                    <div className="avatar py-1 px-4 " key={`author_${index}`}>
+                    <div
+                      style={{
+                        width: '75px',
+                        height: '75px',
+                        overflow: 'hidden',
+                        borderRadius: '50%',
+                        marginRight: '10px',
+                      }}
+                      key={`author_${index}`}
+                    >
                       <a
                         href={`https://ssw.com.au/people/${author.title.replace(
                           ' ',
@@ -175,7 +184,6 @@ const Rule = ({ data, location }) => {
                         )}`}
                       >
                         <img
-                          className="rounded-full inline"
                           src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
                             ' ',
                             '-'

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { parentSiteUrl, siteUrl } from '../../../site-config';
 import Icon from '../../images/icon.png';
+import { parentSiteUrl, siteUrl } from '../../../site-config';
 
 const Breadcrumbs = (props) => {
   return (
@@ -10,17 +10,23 @@ const Breadcrumbs = (props) => {
         <a href={parentSiteUrl}>
           <img alt={'SSW Consulting'} src={Icon} className="w-4" />
         </a>
+
         <span className="breadcrumb__separator">&gt;</span>
+
         <a className="px-1" href={siteUrl}>
-          {' '}
-          SSW Rules{' '}
+          SSW Rules
         </a>
 
-        {props.isCategory || props.isRule ? '>' : ''}
+        <div className="px-1">
+          {props.isCategory || props.isRule ? '>' : ''}
+        </div>
 
-        <div className="text-left">{props.category}</div>
+        <div className="text-left underline">{props.category}</div>
+
         {props.isCategory ? (
-          <div className="px-1 text-gray-900">{props.categoryTitle}</div>
+          <div className="px-1 underline text-gray-900">
+            {props.categoryTitle}
+          </div>
         ) : (
           <div className="px-1 text-gray-900">
             {props.isHomePage ? '' : '>'} {props.title}

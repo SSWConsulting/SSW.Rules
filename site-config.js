@@ -16,5 +16,5 @@ module.exports = {
   },
   parentSiteUrl: `https://ssw.com.au`,
   breadcrumbDefault: `SSW Rules`,
-  rulesContentBranch: `content-migration-11`,
+  rulesContentBranch: `51629-related-rules-sample`,
 };

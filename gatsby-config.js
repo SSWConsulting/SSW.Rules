@@ -5,7 +5,7 @@ require('dotenv').config({
 });
 
 module.exports = {
-  pathPrefix: '/rules',
+  pathPrefix: `${siteConfig.pathPrefix}`,
   siteMetadata: {
     ...siteConfig,
   },

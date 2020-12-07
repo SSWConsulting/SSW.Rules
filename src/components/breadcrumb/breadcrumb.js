@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from '../../images/icon.png';
-import { parentSiteUrl } from '../../../site-config';
+import { parentSiteUrl, pathPrefix } from '../../../site-config';
 
 const Breadcrumbs = (props) => {
   return (
@@ -13,7 +13,7 @@ const Breadcrumbs = (props) => {
 
         <span className="breadcrumb__separator">&gt;</span>
 
-        <a className="px-1" href={'/'}>
+        <a className="px-1" href={pathPrefix}>
           SSW Rules
         </a>
 

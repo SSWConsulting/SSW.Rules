@@ -418,7 +418,6 @@ div.bad-example .custom-block-heading,
 div.greybox .custom-block-heading{
   caption-side: bottom;
   display: table-caption;
-  padding-left: 1rem;
   font-weight: 700;
   margin: 0.5rem 0.5rem 6px;
   line-height: initial;

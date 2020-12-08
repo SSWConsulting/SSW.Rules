@@ -582,6 +582,8 @@ pre {
     margin: 1em 0 1em 1em;
     max-width: 95%;
 }*/
+.greybox p:last-child {margin-bottom:0;}
+
 .custom-control-inline {
   display: -ms-inline-flexbox;
   display: inline-flex;

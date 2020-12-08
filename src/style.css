@@ -632,7 +632,8 @@ ol ol, ol li ol {
 .rule-number {
   list-style: decimal;
   color: #cc4141 !important;
-  font-size: 28px;
+  font-size: 1.875rem;
+  font-weight: 100;
 }
 
 .rule-content {

@@ -37,6 +37,17 @@ module.exports = {
       },
     },
     {
+      resolve: 'gatsby-source-git',
+      options: {
+        name: 'history',
+        remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
+        // Optionally supply a branch. If none supplied, you'll get the default branch.
+        branch: siteConfig.rulesContentBranch,
+        // Tailor which files get imported eg. import the docs folder from a codebase.
+        patterns: ['history.json'],
+      },
+    },
+    {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'content',

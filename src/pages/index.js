@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TopCategory from '../components/top-category/top-category';
 import Contact from '../components/contact/contact';
 import NumberFormat from 'react-number-format';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
 
 config.autoAddCss = false;
 
@@ -31,6 +32,7 @@ const Index = ({ data }) => {
 
   return (
     <div className="w-full">
+      <Breadcrumb isHomePage={true} />
       <div className="container" id="rules">
         <div className="flex">
           <div className="w-3/4 px-4">
@@ -48,7 +50,7 @@ const Index = ({ data }) => {
                 });
               })}
             </div>
-            <section>
+            <section className="pb-8">
               <p>
                 <a href="/archived">
                   <FontAwesomeIcon icon={faArchive} /> Show archived rules

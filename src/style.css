@@ -186,7 +186,7 @@ ul li {
 .breadcrumb a,
 .breadcrumb a:visited{
   &:not(.breadcrumb__link__active){
-    color: #999;
+    color: #222;
   }
   &.breadcrumb__link__active{
     color:black ;
@@ -422,7 +422,6 @@ div.bad-example .custom-block-heading,
 div.greybox .custom-block-heading{
   caption-side: bottom;
   display: table-caption;
-  padding-left: 1rem;
   font-weight: 700;
   margin: 0.5rem 0.5rem 6px;
   line-height: initial;
@@ -557,6 +556,27 @@ pre {
 /**
 * Rules CSS
 */
+.attentionIcon.archived {
+  color: #fff;
+  font-size: 1.2em;
+  font-weight: bold;
+  background: #CC4141 url("https://rules.ssw.com.au/Style Library/SSW/RulesImages/zzunpulished.png") no-repeat 10px;
+  padding: 10px;
+  padding-left: 35px;
+  border-radius: 3px 3px 0 0;
+}
+
+.RuleArchivedReasonContainer {
+  background: rgba(0,49,79,.08);
+  color: rgba(34,59,74,.5);
+  border-radius: 0 0 3px 3px;
+  padding: 10px;
+  outline: 0;
+  font-weight: 700;
+  font-size: 12px;
+  margin-bottom: 15px;
+  border: 1px #cc4141 solid;
+}
 
 /*.greybox{
   border: 1px solid #ccc;
@@ -581,6 +601,7 @@ pre {
   line-height: initial;
   position: relative
 }
+.greybox p:last-child {margin-bottom:0;}
 
 .custom-control-inline {
   display: -ms-inline-flexbox;
@@ -627,6 +648,18 @@ hr {
 ol ol, ol li ol {
   list-style: lower-alpha;
 
+}
+
+.rule-number {
+  list-style: decimal;
+  color: #cc4141 !important;
+  font-size: 1.875rem;
+  font-weight: 100;
+}
+
+.rule-content {
+  color: black;
+  font-size: 16px;
 }
 
 h6.top-category-header,

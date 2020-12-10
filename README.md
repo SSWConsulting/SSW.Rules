@@ -10,19 +10,23 @@ This is a Gatsby generated site pulling data from:
 
 ### Required Tools
 - Install nodejs via https://nodejs.org/en/ (required versions: ^8.10.0 or ^10.13.0 or >=11.10.1)
+- Install yarn via https://classic.yarnpkg.com/en/
 
 ### Getting ready for development
 - Clone the repo from https://github.com/SSWConsulting/SSW.Rules
-- Run *npm install* to install packages
+- Run *yarn install* to install packages
 - Create environment files (.env.development and .env.production) and fill out the values for the following keys:
 ```
-GOOGLE_ANALYTICS=
-VERSION_DEPLOYED=
+GOOGLE_ANALYTICS=#{GOOGLE_ANALYTICS}
+RECAPTCHA_KEY=#{RECAPTCHA_KEY}
+CONTACT_API=#{CONTACT_API}
+VERSION_DEPLOYED=#{VERSION_DEPLOYED}
+APPINSIGHTS_INSTRUMENTATIONKEY=#{APPINSIGHTS_INSTRUMENTATIONKEY}
 ```
 
 ### Development
 1. Branch off main for your PBI
-2. Run *npm run-script build* (.env.production is required for this step)
+2. Run *yarn build* (.env.production is required for this step)
 3. Do your work
 4. Run the site in development mode by *npm run-script develop* (.env.development is required for this step)
 5. Commit code and push

@@ -825,7 +825,7 @@ blockquote p:before {
   color: #777;
 }
 .rule-content-title a {
-  text-decoration:none !important;
+  text-decoration:underline !important;
 }
 .rule-content a,
 .rule-category a {

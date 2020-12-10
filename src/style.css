@@ -632,7 +632,7 @@ ol ol, ol li ol {
 
 .rule-number {
   list-style: decimal;
-  color: #cc4141 !important;
+  color: gray !important;
   font-size: 1.875rem;
   font-weight: 100;
 }
@@ -799,7 +799,7 @@ blockquote p:before {
 }
 
 .rule-content-title h1, .rule-content-title a {
-  color: #cc4141 !important;
+  color: gray !important;
   font-weight: 100 !important;
 }
 

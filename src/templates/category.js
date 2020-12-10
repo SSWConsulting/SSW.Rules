@@ -31,7 +31,7 @@ export default function Category({ data }) {
             <h2 className="cat-title py-4 px-12 rounded-t">
               {category.frontmatter.title}
               <span className="rule-count">
-                {category.frontmatter.index.length}
+                {category.frontmatter.index.length} {category.frontmatter.index.length > 1 ? 'Rules' : 'Rule'}
               </span>
             </h2>
             <div className="pt-5 py-4 px-12">

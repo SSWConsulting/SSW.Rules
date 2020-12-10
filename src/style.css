@@ -357,6 +357,7 @@ figure figcaption::before,
   content: 'Figure: ';
 }
 
+.good::before, .bad::before, .ok::before,
 .good-example figure figcaption::before,
 .bad-example figure figcaption::before,
 .ok-example figure figcaption::before {
@@ -364,6 +365,7 @@ figure figcaption::before,
 }
 
 .good-example figure figcaption::after,
+.good::after, 
 div.good-example .custom-block-heading::after {
   content: "\f14a ";
   font-family: FontAwesome;
@@ -378,6 +380,7 @@ div.good-example .custom-block-heading::after {
 }
 
 .bad-example figure figcaption::after,
+.bad::after,
 div.bad-example .custom-block-heading::after {
   content: "\f2d3 ";
   font-family: FontAwesome;
@@ -392,6 +395,7 @@ div.bad-example .custom-block-heading::after {
 }
 
 .ok-example figure figcaption::after,
+.ok::after,
 div.ok-example .custom-block-heading::after {
   content: "\f11a ";
   font-family: FontAwesome;
@@ -581,6 +585,22 @@ pre {
     margin: 1em 0 1em 1em;
     max-width: 95%;
 }*/
+
+.greybox {
+  padding: 1rem 1.5rem;
+  background-color: #eee;
+  width: 100%;
+}
+
+.good, .bad, .ok {
+  font-weight: bold;  
+  caption-side: bottom;
+  padding-left: 1.2rem;
+  font-weight: 700;
+  margin: 0.5rem 0.5rem 6px;
+  line-height: initial;
+  position: relative
+}
 .greybox p:last-child {margin-bottom:0;}
 
 .custom-control-inline {

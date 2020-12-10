@@ -17,8 +17,11 @@ This is a Gatsby generated site pulling data from:
 - Run *yarn install* to install packages
 - Create environment files (.env.development and .env.production) and fill out the values for the following keys:
 ```
-GOOGLE_ANALYTICS=
-VERSION_DEPLOYED=
+GOOGLE_ANALYTICS=#{GOOGLE_ANALYTICS}
+RECAPTCHA_KEY=#{RECAPTCHA_KEY}
+CONTACT_API=#{CONTACT_API}
+VERSION_DEPLOYED=#{VERSION_DEPLOYED}
+APPINSIGHTS_INSTRUMENTATIONKEY=#{APPINSIGHTS_INSTRUMENTATIONKEY}
 ```
 
 ### Development

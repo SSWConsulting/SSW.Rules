@@ -51,14 +51,9 @@ export default function Category({ data }) {
                   onChange={handleOptionChange}
                 />
                 <label
-                  className="custom-control-label ml-1"
+                  className="view-title custom-control-label ml-1"
                   htmlFor="customRadioInline1"
                 >
-                  <img
-                    className="inline"
-                    src="https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-title.png"
-                    alt="view title"
-                  />{' '}
                   View titles only
                 </label>
               </div>
@@ -73,14 +68,9 @@ export default function Category({ data }) {
                   onChange={handleOptionChange}
                 />
                 <label
-                  className="custom-control-label ml-1"
+                  className="view-blurb custom-control-label ml-1"
                   htmlFor="customRadioInline3"
                 >
-                  <img
-                    className="inline"
-                    src="https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-blurb.png"
-                    alt="view blurb"
-                  />{' '}
                   Show Blurb
                 </label>
               </div>
@@ -95,14 +85,9 @@ export default function Category({ data }) {
                   onChange={handleOptionChange}
                 />
                 <label
-                  className="custom-control-label ml-1"
+                  className="view-full custom-control-label ml-1"
                   htmlFor="customRadioInline2"
                 >
-                  <img
-                    className="inline"
-                    src="https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-full.png"
-                    alt="view full"
-                  />{' '}
                   Gimme everything!
                 </label>
               </div>

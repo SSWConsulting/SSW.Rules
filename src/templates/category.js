@@ -38,8 +38,9 @@ export default function Category({ data }) {
             <div className="pt-5 py-4 px-12">
               <MD components={components} htmlAst={category.htmlAst} />
             </div>
-            <div className="how-to-view text-center p-4 d-print-none">
-              <div className="custom-control custom-radio custom-control-inline">
+            <div className="grid grid-cols-5 radio-toolbar how-to-view text-left p-4 d-print-none">
+              <div></div>
+              <div>
                 <input
                   type="radio"
                   id="customRadioInline1"
@@ -53,10 +54,15 @@ export default function Category({ data }) {
                   className="custom-control-label ml-1"
                   htmlFor="customRadioInline1"
                 >
+                  <img
+                    className="inline"
+                    src="https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-title.png"
+                    alt="view title"
+                  />{' '}
                   View titles only
                 </label>
               </div>
-              <div className="custom-control custom-radio custom-control-inline">
+              <div>
                 <input
                   type="radio"
                   id="customRadioInline3"
@@ -70,10 +76,15 @@ export default function Category({ data }) {
                   className="custom-control-label ml-1"
                   htmlFor="customRadioInline3"
                 >
+                  <img
+                    className="inline"
+                    src="https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-blurb.png"
+                    alt="view blurb"
+                  />{' '}
                   Show Blurb
                 </label>
               </div>
-              <div className="custom-control custom-radio custom-control-inline">
+              <div>
                 <input
                   type="radio"
                   id="customRadioInline2"
@@ -87,9 +98,15 @@ export default function Category({ data }) {
                   className="custom-control-label ml-1"
                   htmlFor="customRadioInline2"
                 >
-                  Show everything
+                  <img
+                    className="inline"
+                    src="https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-full.png"
+                    alt="view full"
+                  />{' '}
+                  Gimme everything!
                 </label>
               </div>
+              <div></div>
             </div>
             <div className="p-12">
               <ol className="rule-number">

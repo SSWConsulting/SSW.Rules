@@ -725,6 +725,48 @@ blockquote p:before {
   margin-right: 0.2em;
 }
 
+.radio-toolbar input[type="radio"] {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+.radio-toolbar .view-title {
+    font-size: 16px;
+    padding: 12px 12px 12px 42px;
+    width: 200px;
+    background: #ddd url(https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-title.png) no-repeat 10px;
+}
+
+.radio-toolbar .view-blurb {
+  font-size: 16px;
+  padding: 12px 12px 12px 42px;
+  width: 200px;
+  background: #ddd url(https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-blurb.png) no-repeat 10px;
+}
+
+.radio-toolbar .view-full {
+  font-size: 16px;
+  padding: 12px 12px 12px 42px;
+  width: 200px;
+  background: #ddd url(https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-full.png) no-repeat 10px;
+}
+
+.radio-toolbar label:hover {
+  background-color: #444;
+  color: white;
+}
+
+.radio-toolbar input[type="radio"]:focus + label {
+    border:#444;
+    color: white;
+}
+
+.radio-toolbar input[type="radio"]:checked + label {
+    background-color: #444;
+    color: white;
+}
+
 /* Bootstrap correction 
 -------------------------------------------------- */
 
@@ -821,6 +863,7 @@ blockquote p:before {
 .rule-content-title h1, .rule-content-title a {
   color: #cc4141 !important;
   font-weight: 100 !important;
+  text-decoration:underline !important;
 }
 
 /* Single Rule
@@ -844,9 +887,11 @@ blockquote p:before {
 .rule-content h3, .rule-content h4 {
   color: #777;
 }
-.rule-content-title a {
-  text-decoration:none !important;
+
+.rule-content-title a:hover {
+  color: #cc4141 !important;
 }
+
 .rule-content a,
 .rule-category a {
   text-decoration:underline;

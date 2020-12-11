@@ -821,6 +821,7 @@ blockquote p:before {
 .rule-content-title h1, .rule-content-title a {
   color: #cc4141 !important;
   font-weight: 100 !important;
+  text-decoration:underline !important;
 }
 
 /* Single Rule
@@ -844,9 +845,11 @@ blockquote p:before {
 .rule-content h3, .rule-content h4 {
   color: #777;
 }
-.rule-content-title a {
-  text-decoration:none !important;
+
+.rule-content-title a:hover {
+  color: #cc4141 !important;
 }
+
 .rule-content a,
 .rule-category a {
   text-decoration:underline;

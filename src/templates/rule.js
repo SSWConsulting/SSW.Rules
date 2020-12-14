@@ -81,28 +81,28 @@ const Rule = ({ data, location }) => {
               <ol>
                 {rule.frontmatter.related
                   ? rule.frontmatter.related.map((relatedRuleUri) => {
-                    const relatedRule = data.relatedRules.nodes.find(
-                      (r) => r.frontmatter.uri === relatedRuleUri
-                    );
-                    if (relatedRule) {
-                      return (
-                        <>
-                          <li>
-                            <section>
-                              <p>
-                                <Link
-                                  ref={linkRef}
-                                  to={`/${relatedRule.frontmatter.uri}`}
-                                >
-                                  {relatedRule.frontmatter.title}
-                                </Link>
-                              </p>
-                            </section>
-                          </li>
-                        </>
+                      const relatedRule = data.relatedRules.nodes.find(
+                        (r) => r.frontmatter.uri === relatedRuleUri
                       );
-                    }
-                  })
+                      if (relatedRule) {
+                        return (
+                          <>
+                            <li>
+                              <section>
+                                <p>
+                                  <Link
+                                    ref={linkRef}
+                                    to={`/${relatedRule.frontmatter.uri}`}
+                                  >
+                                    {relatedRule.frontmatter.title}
+                                  </Link>
+                                </p>
+                              </section>
+                            </li>
+                          </>
+                        );
+                      }
+                    })
                   : ''}
               </ol>
             </div>
@@ -124,8 +124,9 @@ const Rule = ({ data, location }) => {
                             {indexCat > 0 && (
                               <Link
                                 ref={linkRef}
-                                to={`/${category.frontmatter.index[indexCat - 1]
-                                  }`}
+                                to={`/${
+                                  category.frontmatter.index[indexCat - 1]
+                                }`}
                                 state={{ category: cat }}
                                 className={'unstyled'}
                               >
@@ -143,23 +144,24 @@ const Rule = ({ data, location }) => {
                           <div className="w-1/2 pl-6 text-left">
                             {indexCat <
                               category.frontmatter.index.length - 1 && (
-                                <Link
-                                  ref={linkRef}
-                                  to={`/${category.frontmatter.index[indexCat + 1]
-                                    }`}
-                                  state={{ category: cat }}
-                                >
-                                  <button className="button-next bg-ssw-red text-white">
-                                    <FontAwesomeIcon icon={faAngleDoubleRight} />
-                                  </button>
-                                </Link>
-                              )}
-                            {indexCat ==
-                              category.frontmatter.index.length - 1 && (
-                                <button className="button-next bg-ssw-grey text-white">
+                              <Link
+                                ref={linkRef}
+                                to={`/${
+                                  category.frontmatter.index[indexCat + 1]
+                                }`}
+                                state={{ category: cat }}
+                              >
+                                <button className="button-next bg-ssw-red text-white">
                                   <FontAwesomeIcon icon={faAngleDoubleRight} />
                                 </button>
-                              )}
+                              </Link>
+                            )}
+                            {indexCat ==
+                              category.frontmatter.index.length - 1 && (
+                              <button className="button-next bg-ssw-grey text-white">
+                                <FontAwesomeIcon icon={faAngleDoubleRight} />
+                              </button>
+                            )}
                           </div>
                         </div>
                       </>

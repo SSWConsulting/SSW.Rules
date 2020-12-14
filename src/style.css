@@ -1169,11 +1169,11 @@ blockquote p:before {
 #more .likes span {
   margin: 0 0 4px;
   display: inline-block;
-  padding: 0 20px;
+  padding: 0 10px;
 }
 
 #more .likes span .bad, #more .likes span .good {
-  font-size: 1.5rem;
+  font-size: 2rem;
   transition: color 0.25s ease;
   cursor: pointer;
   padding: 0 3px;
@@ -1185,6 +1185,12 @@ blockquote p:before {
 
 #more .likes span .bad:hover {
   color: #cc4141;
+}
+
+.likes-counter-container {
+  position: relative;
+  bottom: .65rem;
+  display: inline-block;
 }
 
 /* Responsiveness

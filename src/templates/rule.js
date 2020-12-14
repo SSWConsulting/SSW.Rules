@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
 import formatDistance from 'date-fns/formatDistance';
@@ -22,7 +22,8 @@ const Rule = ({ data, location }) => {
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
-
+  const [likesCount, setLikesCount] = useState(0);
+  const [dislikesCount, setDisikesCount] = useState(0);
   return (
     <div>
       <Breadcrumb
@@ -80,28 +81,28 @@ const Rule = ({ data, location }) => {
               <ol>
                 {rule.frontmatter.related
                   ? rule.frontmatter.related.map((relatedRuleUri) => {
-                      const relatedRule = data.relatedRules.nodes.find(
-                        (r) => r.frontmatter.uri === relatedRuleUri
+                    const relatedRule = data.relatedRules.nodes.find(
+                      (r) => r.frontmatter.uri === relatedRuleUri
+                    );
+                    if (relatedRule) {
+                      return (
+                        <>
+                          <li>
+                            <section>
+                              <p>
+                                <Link
+                                  ref={linkRef}
+                                  to={`/${relatedRule.frontmatter.uri}`}
+                                >
+                                  {relatedRule.frontmatter.title}
+                                </Link>
+                              </p>
+                            </section>
+                          </li>
+                        </>
                       );
-                      if (relatedRule) {
-                        return (
-                          <>
-                            <li>
-                              <section>
-                                <p>
-                                  <Link
-                                    ref={linkRef}
-                                    to={`/${relatedRule.frontmatter.uri}`}
-                                  >
-                                    {relatedRule.frontmatter.title}
-                                  </Link>
-                                </p>
-                              </section>
-                            </li>
-                          </>
-                        );
-                      }
-                    })
+                    }
+                  })
                   : ''}
               </ol>
             </div>
@@ -123,9 +124,8 @@ const Rule = ({ data, location }) => {
                             {indexCat > 0 && (
                               <Link
                                 ref={linkRef}
-                                to={`/${
-                                  category.frontmatter.index[indexCat - 1]
-                                }`}
+                                to={`/${category.frontmatter.index[indexCat - 1]
+                                  }`}
                                 state={{ category: cat }}
                                 className={'unstyled'}
                               >
@@ -143,24 +143,23 @@ const Rule = ({ data, location }) => {
                           <div className="w-1/2 pl-6 text-left">
                             {indexCat <
                               category.frontmatter.index.length - 1 && (
-                              <Link
-                                ref={linkRef}
-                                to={`/${
-                                  category.frontmatter.index[indexCat + 1]
-                                }`}
-                                state={{ category: cat }}
-                              >
-                                <button className="button-next bg-ssw-red text-white">
-                                  <FontAwesomeIcon icon={faAngleDoubleRight} />
-                                </button>
-                              </Link>
-                            )}
+                                <Link
+                                  ref={linkRef}
+                                  to={`/${category.frontmatter.index[indexCat + 1]
+                                    }`}
+                                  state={{ category: cat }}
+                                >
+                                  <button className="button-next bg-ssw-red text-white">
+                                    <FontAwesomeIcon icon={faAngleDoubleRight} />
+                                  </button>
+                                </Link>
+                              )}
                             {indexCat ==
                               category.frontmatter.index.length - 1 && (
-                              <button className="button-next bg-ssw-grey text-white">
-                                <FontAwesomeIcon icon={faAngleDoubleRight} />
-                              </button>
-                            )}
+                                <button className="button-next bg-ssw-grey text-white">
+                                  <FontAwesomeIcon icon={faAngleDoubleRight} />
+                                </button>
+                              )}
                           </div>
                         </div>
                       </>
@@ -223,12 +222,22 @@ const Rule = ({ data, location }) => {
             </div>
             <div className="likes w-1/3">
               <h5>Feedback</h5>
-              <p className="preview">
+              <p>
                 <span>
-                  8 <FontAwesomeIcon icon={faThumbsUp} className="good" />
-                </span>{' '}
+                  <div className="likes-counter-container">{likesCount}</div>
+                  <FontAwesomeIcon
+                    icon={faThumbsUp}
+                    className="good"
+                    onClick={() => setLikesCount(likesCount + 1)}
+                  />
+                </span>
                 <span>
-                  <FontAwesomeIcon icon={faThumbsDown} className="bad" /> 2
+                  <FontAwesomeIcon
+                    icon={faThumbsDown}
+                    className="bad"
+                    onClick={() => setDisikesCount(dislikesCount + 1)}
+                  />
+                  <div className="likes-counter-container">{dislikesCount}</div>
                 </span>
               </p>
               <p>

@@ -91,7 +91,6 @@ export default function Category({ data }) {
                   Gimme everything!
                 </label>
               </div>
-              <div></div>
             </div>
             <div className="p-12">
               <ol className="rule-number">

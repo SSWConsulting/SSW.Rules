@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { graphql, Link } from 'gatsby';
-//import Layout from '../components/layout/layout';
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import {
   faThumbsUp,
@@ -12,6 +12,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 
 const Rule = ({ data, location }) => {
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   const cat = location.state ? location.state.category : null;
   const linkRef = useRef();
   const rule = data.markdownRemark;
@@ -37,20 +41,17 @@ const Rule = ({ data, location }) => {
         <section className="rule-content p-12 mb-20">
           <h1>{rule.frontmatter.title}</h1>
           <small className="history">
-            Created on {rule.frontmatter.created} | Last updated by{' '}
-            {rule.frontmatter.authors &&
-              rule.frontmatter.authors.length > 0 && (
-                <a
-                  href={`https://ssw.com.au/people/${rule.frontmatter.authors[0].title.replace(
-                    ' ',
-                    '-'
-                  )}`}
-                >
-                  {rule.frontmatter.authors[0].title}
-                </a>
-              )}
+            Created on{' '}
+            {format(new Date(data.history.nodes[0].created), 'dd MMM yyyy')} |
+            Last updated by{' '}
+            <strong>
+              {capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)}
+            </strong>
             {' on '}
-            {rule.frontmatter.created}
+            {format(
+              new Date(data.history.nodes[0].lastUpdated),
+              'dd MMM yyyy hh:mm aaa'
+            )}
           </small>
           {rule.frontmatter.archivedreason &&
             rule.frontmatter.archivedreason.length > 0 && (
@@ -248,7 +249,7 @@ Rule.propTypes = {
 export default Rule;
 
 export const query = graphql`
-  query($slug: String!, $uri: String!, $related: [String]!) {
+  query($slug: String!, $uri: String!, $related: [String]!, $file: String!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
       fields {
         slug
@@ -293,6 +294,16 @@ export const query = graphql`
           title
           uri
         }
+      }
+    }
+    history: allHistoryJson(filter: { file: { eq: $file } }) {
+      nodes {
+        file
+        lastUpdatedBy
+        lastUpdatedByEmail
+        lastUpdated
+        createdBy
+        created
       }
     }
   }

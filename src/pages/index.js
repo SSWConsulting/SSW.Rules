@@ -25,7 +25,7 @@ const Index = ({ data }) => {
   };
 
   return (
-    <div className="w-full lg:w-3/">
+    <div className="w-full">
       <Breadcrumb isHomePage={true} />
       <div className="container" id="rules">
         <div className="flex flex-wrap">

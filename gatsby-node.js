@@ -133,6 +133,7 @@ exports.createPages = async ({ graphql, actions }) => {
         related: node.frontmatter.related ? node.frontmatter.related : [''],
         uri: node.frontmatter.uri,
         redirects: node.frontmatter.redirects,
+        file: `rules/${node.frontmatter.uri}/rule.md`,
       },
     });
   });

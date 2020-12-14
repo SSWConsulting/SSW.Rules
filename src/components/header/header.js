@@ -4,6 +4,7 @@ import posed from 'react-pose';
 import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
 import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 import InfoIcon from '-!svg-react-loader!../../images/info.svg';
+import SignIn from '../signin/signin';
 import { parentSiteUrl, rulesContentBranch } from '../../../site-config';
 
 // Example of a component-specific page transition
@@ -35,30 +36,33 @@ const Header = ({ displayActions, ruleUri }) => {
               Rules <sup className="text-ssw-red">beta</sup>
             </h1>
           </div>
-          {displayActions ? (
-            <div className="action-btn-container">
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${rulesContentBranch}/${ruleUri}`}
-                className="action-btn-link"
-              >
-                <div className="action-btn-label">Edit</div>
-                <GitHubIcon aria-label="logo" className="action-btn-icon" />
-              </a>
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://rules.ssw.com.au/make-your-site-easy-to-maintain"
-                className="action-btn-link"
-              >
-                <div className="action-btn-label">Info</div>
-                <InfoIcon aria-label="logo" className="action-btn-icon" />
-              </a>
-            </div>
-          ) : (
-            <div></div>
-          )}
+          <div className="action-btn-container">
+            <SignIn />
+            {displayActions ? (
+              <>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${rulesContentBranch}/${ruleUri}`}
+                  className="action-btn-link"
+                >
+                  <div className="action-btn-label">Edit</div>
+                  <GitHubIcon aria-label="logo" className="action-btn-icon" />
+                </a>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://rules.ssw.com.au/make-your-site-easy-to-maintain"
+                  className="action-btn-link"
+                >
+                  <div className="action-btn-label">Info</div>
+                  <InfoIcon aria-label="logo" className="action-btn-icon" />
+                </a>
+              </>
+            ) : (
+              <div></div>
+            )}
+          </div>
         </div>
       </header>
     </AnimatedContainer>

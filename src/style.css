@@ -163,6 +163,7 @@ ul li {
   display: flex;
   margin-right: auto;
   align-items: center;
+  order: 2;
   margin-left: 12px;
 }
 

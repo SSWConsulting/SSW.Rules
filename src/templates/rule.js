@@ -22,24 +22,15 @@ const Rule = ({ data, location }) => {
       <Breadcrumb
         isRule={true}
         title={rule.frontmatter.title}
-        category={
-          rule.frontmatter.archivedreason ? (
-            <div>
-              <Link ref={linkRef} to={'/archived'}>
-                <div className="px-1 hover:text-red-600">Archived</div>
-              </Link>
-            </div>
-          ) : (
-            categories.map((category, i) => (
-              <div key={i}>
-                <Link ref={linkRef} to={`/${category.parent.name}`}>
-                  <div className="px-1 hover:text-red-600">
-                    {category.frontmatter.title}
-                  </div>
-                </Link>
-              </div>
-            ))
-          )
+        categories={
+          rule.frontmatter.archivedreason
+            ? [{ link: '/archived', title: 'Archived' }]
+            : categories.map((category) => {
+                return {
+                  link: `/${category.parent.name}`,
+                  title: category.frontmatter.title,
+                };
+              })
         }
       />
       <div className="rule-single rounded">

@@ -1,9 +1,23 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'gatsby';
 import Icon from '../../images/icon.png';
 import { parentSiteUrl, siteUrl } from '../../../site-config';
 
 const Breadcrumbs = (props) => {
+  const linkRef = useRef();
+  const getCategories = () => {
+    return props.categories.map((cat, i) => {
+      return (
+        <div key={i} className="text-left underline">
+          <Link ref={linkRef} to={cat.link}>
+            <div className="px-1 hover:text-red-600">{cat.title}</div>
+          </Link>
+        </div>
+      );
+    });
+  };
+
   return (
     <div className="breadcrumb-container">
       <div className="mx-6 mb-3 breadcrumb">
@@ -20,15 +34,13 @@ const Breadcrumbs = (props) => {
         <div className="px-1">
           {props.isCategory || props.isRule || props.isArchived ? '>' : ''}
         </div>
-
-        <div className="text-left underline">{props.category}</div>
-
+        {props.categories && (
+          <div className="text-left underline">{getCategories()}</div>
+        )}
         {props.isArchived ? (
-          'Archived'
+          <div className="px-1 text-gray-900">Archived</div>
         ) : props.isCategory ? (
-          <div className="px-1 underline text-gray-900">
-            {props.categoryTitle}
-          </div>
+          <div className="px-1 text-gray-900">{props.categoryTitle}</div>
         ) : (
           <div className="px-1 text-gray-900">
             {props.isHomePage ? '' : '>'} {props.title}
@@ -41,8 +53,8 @@ const Breadcrumbs = (props) => {
 
 Breadcrumbs.propTypes = {
   title: PropTypes.any,
-  category: PropTypes.any,
-  categoryTitle: PropTypes.any,
+  categories: PropTypes.array,
+  categoryTitle: PropTypes.string,
   isCategory: PropTypes.bool,
   isRule: PropTypes.bool,
   isHomePage: PropTypes.bool,

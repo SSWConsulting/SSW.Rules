@@ -357,6 +357,7 @@ figure figcaption::before,
   content: 'Figure: ';
 }
 
+.good::before, .bad::before, .ok::before,
 .good-example figure figcaption::before,
 .bad-example figure figcaption::before,
 .ok-example figure figcaption::before {
@@ -364,6 +365,7 @@ figure figcaption::before,
 }
 
 .good-example figure figcaption::after,
+.good::after, 
 div.good-example .custom-block-heading::after {
   content: "\f14a ";
   font-family: FontAwesome;
@@ -378,6 +380,7 @@ div.good-example .custom-block-heading::after {
 }
 
 .bad-example figure figcaption::after,
+.bad::after,
 div.bad-example .custom-block-heading::after {
   content: "\f2d3 ";
   font-family: FontAwesome;
@@ -392,6 +395,7 @@ div.bad-example .custom-block-heading::after {
 }
 
 .ok-example figure figcaption::after,
+.ok::after,
 div.ok-example .custom-block-heading::after {
   content: "\f11a ";
   font-family: FontAwesome;
@@ -418,7 +422,6 @@ div.bad-example .custom-block-heading,
 div.greybox .custom-block-heading{
   caption-side: bottom;
   display: table-caption;
-  padding-left: 1rem;
   font-weight: 700;
   margin: 0.5rem 0.5rem 6px;
   line-height: initial;
@@ -582,6 +585,22 @@ pre {
     margin: 1em 0 1em 1em;
     max-width: 95%;
 }*/
+
+.greybox {
+  padding: 1rem 1.5rem;
+  background-color: #eee;
+  width: 100%;
+}
+
+.good, .bad, .ok {
+  font-weight: bold;  
+  caption-side: bottom;
+  padding-left: 1.2rem;
+  font-weight: 700;
+  margin: 0.5rem 0.5rem 6px;
+  line-height: initial;
+  position: relative
+}
 .greybox p:last-child {margin-bottom:0;}
 
 .custom-control-inline {
@@ -706,6 +725,48 @@ blockquote p:before {
   margin-right: 0.2em;
 }
 
+.radio-toolbar input[type="radio"] {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+.radio-toolbar .view-title {
+    font-size: 16px;
+    padding: 12px 12px 12px 42px;
+    width: 200px;
+    background: #ddd url(https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-title.png) no-repeat 10px;
+}
+
+.radio-toolbar .view-blurb {
+  font-size: 16px;
+  padding: 12px 12px 12px 42px;
+  width: 200px;
+  background: #ddd url(https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-blurb.png) no-repeat 10px;
+}
+
+.radio-toolbar .view-full {
+  font-size: 16px;
+  padding: 12px 12px 12px 42px;
+  width: 200px;
+  background: #ddd url(https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-full.png) no-repeat 10px;
+}
+
+.radio-toolbar label:hover {
+  background-color: #444;
+  color: white;
+}
+
+.radio-toolbar input[type="radio"]:focus + label {
+    border:#444;
+    color: white;
+}
+
+.radio-toolbar input[type="radio"]:checked + label {
+    background-color: #444;
+    color: white;
+}
+
 /* Bootstrap correction 
 -------------------------------------------------- */
 
@@ -802,6 +863,7 @@ blockquote p:before {
 .rule-content-title h1, .rule-content-title a {
   color: #cc4141 !important;
   font-weight: 100 !important;
+  text-decoration:underline !important;
 }
 
 /* Single Rule
@@ -825,9 +887,11 @@ blockquote p:before {
 .rule-content h3, .rule-content h4 {
   color: #777;
 }
-.rule-content-title a {
-  text-decoration:none !important;
+
+.rule-content-title a:hover {
+  color: #cc4141 !important;
 }
+
 .rule-content a,
 .rule-category a {
   text-decoration:underline;
@@ -1423,6 +1487,13 @@ border-radius: 0;
 width: 304px;
 height: 78px;
 margin-bottom: 1em;
+}
+
+
+.archive ul li{
+  padding-top: 0;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
 }
 
 /**

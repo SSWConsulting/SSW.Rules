@@ -31,14 +31,16 @@ export default function Category({ data }) {
             <h2 className="cat-title py-4 px-12 rounded-t">
               {category.frontmatter.title}
               <span className="rule-count">
-                {category.frontmatter.index.length}
+                {category.frontmatter.index.length}{' '}
+                {category.frontmatter.index.length > 1 ? 'Rules' : 'Rule'}
               </span>
             </h2>
             <div className="pt-5 py-4 px-12">
               <MD components={components} htmlAst={category.htmlAst} />
             </div>
-            <div className="how-to-view text-center p-4 d-print-none">
-              <div className="custom-control custom-radio custom-control-inline">
+            <div className="grid grid-cols-5 radio-toolbar how-to-view text-left p-4 d-print-none">
+              <div></div>
+              <div>
                 <input
                   type="radio"
                   id="customRadioInline1"
@@ -49,13 +51,13 @@ export default function Category({ data }) {
                   onChange={handleOptionChange}
                 />
                 <label
-                  className="custom-control-label ml-1"
+                  className="view-title custom-control-label ml-1"
                   htmlFor="customRadioInline1"
                 >
                   View titles only
                 </label>
               </div>
-              <div className="custom-control custom-radio custom-control-inline">
+              <div>
                 <input
                   type="radio"
                   id="customRadioInline3"
@@ -66,13 +68,13 @@ export default function Category({ data }) {
                   onChange={handleOptionChange}
                 />
                 <label
-                  className="custom-control-label ml-1"
+                  className="view-blurb custom-control-label ml-1"
                   htmlFor="customRadioInline3"
                 >
                   Show Blurb
                 </label>
               </div>
-              <div className="custom-control custom-radio custom-control-inline">
+              <div>
                 <input
                   type="radio"
                   id="customRadioInline2"
@@ -83,10 +85,10 @@ export default function Category({ data }) {
                   onChange={handleOptionChange}
                 />
                 <label
-                  className="custom-control-label ml-1"
+                  className="view-full custom-control-label ml-1"
                   htmlFor="customRadioInline2"
                 >
-                  Show everything
+                  Gimme everything!
                 </label>
               </div>
             </div>

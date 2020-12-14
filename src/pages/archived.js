@@ -1,24 +1,85 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import TopCategory from '../components/top-category/top-category';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import SideBar from '../components/side-bar/side-bar';
+import { Link } from 'gatsby';
+import TopCategoryHeader from '../components/topcategory-header/topcategory-header';
 
 config.autoAddCss = false;
 
-const Index = ({ data }) => {
+const Archived = ({ data }) => {
+  var archivedRules = data.rules.nodes.filter(
+    (r) => r.frontmatter.archivedreason
+  );
+
+  var categoriesWithArchive = data.categories.nodes.filter((c) =>
+    archivedRules.find((r) => c.frontmatter.index.includes(r.frontmatter.uri))
+  );
+  var topCategoriesWithArchive = data.topCategories.nodes.filter((t) =>
+    categoriesWithArchive.find((c) =>
+      t.frontmatter.index.includes(c.parent.name.toLowerCase())
+    )
+  );
+
+  const linkRef = useRef();
+
+  const findCategoryFromIndexValue = (categoryFromIndex) => {
+    return categoriesWithArchive.find(
+      (c) =>
+        c.parent.name.toLowerCase() === `${categoryFromIndex.toLowerCase()}`
+    );
+  };
+
+  const getNumberOfRulesForCat = (categories) => {
+    return categories.frontmatter.index.filter((c) =>
+      archivedRules.find((r) => c == r.frontmatter.uri)
+    ).length;
+  };
+
   const displayTopCategories = (topcategory) => {
     return (
       <>
         <section className="mb-5 relative">
-          <TopCategory
-            topcategory={topcategory}
-            categories={data.categories}
-          ></TopCategory>
+          <TopCategoryHeader
+            topCategory={topcategory}
+            categories={categoriesWithArchive}
+            archivedRules={archivedRules}
+          >
+            {topcategory.frontmatter.index.map((category, i) => {
+              const cat = findCategoryFromIndexValue(category);
+              if (cat) {
+                return (
+                  <li key={i}>
+                    {cat.frontmatter.title}
+                    <span className="d-none d-md-block">
+                      ({getNumberOfRulesForCat(cat)})
+                    </span>
+                    <ul className="pt-2 px-4 py-2">
+                      {archivedRules
+                        .filter((r) =>
+                          cat.frontmatter.index.includes(r.frontmatter.uri)
+                        )
+                        .map((r, i) => {
+                          return (
+                            <li key={i}>
+                              <Link
+                                ref={linkRef}
+                                to={`/${r.frontmatter.uri}`}
+                                state={{ category: cat.parent.name }}
+                              >
+                                {r.frontmatter.title}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                    </ul>
+                  </li>
+                );
+              }
+            })}
+          </TopCategoryHeader>
         </section>
       </>
     );
@@ -26,14 +87,17 @@ const Index = ({ data }) => {
 
   return (
     <div className="w-full">
-      <Breadcrumb isHomePage={true} />
+      <Breadcrumb isArchived={true} />
       <div className="container" id="rules">
         <div className="flex">
           <div className="w-3/4 px-4">
-            <div className="rule-index no-gutters rounded">
+            <div className="attentionIcon archived mt-2 mb-5">
+              The rules listed below are archived
+            </div>
+            <div className="rule-index archive no-gutters rounded">
               {data.main.nodes.map((element) => {
                 return element.frontmatter.index.map((category) => {
-                  const cat = data.topCategories.nodes.find(
+                  const cat = topCategoriesWithArchive.find(
                     (c) =>
                       c.parent.relativeDirectory.toLowerCase() ===
                       `categories/${category.toLowerCase()}`
@@ -44,19 +108,6 @@ const Index = ({ data }) => {
                 });
               })}
             </div>
-            <section className="pb-8">
-              <p>
-                <a href="/archived">
-                  <FontAwesomeIcon icon={faArchive} /> Show archived rules
-                </a>
-              </p>
-              <p>
-                <a href="/out-of-dates">
-                  <FontAwesomeIcon icon={faFlag} /> Show rules flagged as out of
-                  date
-                </a>
-              </p>
-            </section>
           </div>
 
           <div className="w-1/4 px-4" id="sidebar">
@@ -67,17 +118,17 @@ const Index = ({ data }) => {
     </div>
   );
 };
-Index.propTypes = {
+Archived.propTypes = {
   data: PropTypes.object.isRequired,
   search: PropTypes.object.isRequired,
   pageContext: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
 };
 
-const IndexWithQuery = (props) => (
+const ArchivedWithQuery = (props) => (
   <StaticQuery
     query={graphql`
-      query HomepageQuery {
+      query ArchiveQuery {
         main: allMarkdownRemark(
           filter: {
             fileAbsolutePath: { regex: "/(categories)/" }
@@ -145,14 +196,16 @@ const IndexWithQuery = (props) => (
         ) {
           nodes {
             frontmatter {
+              uri
+              archivedreason
               title
             }
           }
         }
       }
     `}
-    render={(data) => <Index data={data} {...props} />}
+    render={(data) => <Archived data={data} {...props} />}
   />
 );
 
-export default IndexWithQuery;
+export default ArchivedWithQuery;

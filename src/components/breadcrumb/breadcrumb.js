@@ -18,12 +18,14 @@ const Breadcrumbs = (props) => {
         </a>
 
         <div className="px-1">
-          {props.isCategory || props.isRule ? '>' : ''}
+          {props.isCategory || props.isRule || props.isArchived ? '>' : ''}
         </div>
 
         <div className="text-left underline">{props.category}</div>
 
-        {props.isCategory ? (
+        {props.isArchived ? (
+          'Archived'
+        ) : props.isCategory ? (
           <div className="px-1 underline text-gray-900">
             {props.categoryTitle}
           </div>
@@ -44,6 +46,7 @@ Breadcrumbs.propTypes = {
   isCategory: PropTypes.bool,
   isRule: PropTypes.bool,
   isHomePage: PropTypes.bool,
+  isArchived: PropTypes.bool,
 };
 
 export default Breadcrumbs;

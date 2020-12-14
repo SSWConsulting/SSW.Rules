@@ -1489,6 +1489,13 @@ height: 78px;
 margin-bottom: 1em;
 }
 
+
+.archive ul li{
+  padding-top: 0;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+}
+
 /**
 * This injects Tailwind's component classes and any component classes
 * registered by plugins.

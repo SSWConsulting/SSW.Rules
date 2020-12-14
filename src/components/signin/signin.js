@@ -12,15 +12,10 @@ const SignIn = () => {
     <div>
       {isLoggedIn ? (
         <div>
-          <div>
-            Welcome Username
-            <button
-              className="btn btn-red"
-              onClick={() => setIsLoggedIn(false)}
-            >
-              Log Out
-            </button>
-          </div>
+          Welcome Username
+          <button className="btn btn-red" onClick={() => setIsLoggedIn(false)}>
+            Log Out
+          </button>
         </div>
       ) : (
         <button className="btn btn-red" onClick={() => githubAuth()}>

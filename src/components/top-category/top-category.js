@@ -15,7 +15,10 @@ const TopCategory = ({ topcategory, categories }) => {
 
   return (
     <>
-      <TopCategoryHeader topCategory={topcategory} categories={categories.nodes}>
+      <TopCategoryHeader
+        topCategory={topcategory}
+        categories={categories.nodes}
+      >
         {topcategory.frontmatter.index.map((category, i) => {
           const cat = findCategoryFromIndexValue(category);
           if (cat) {

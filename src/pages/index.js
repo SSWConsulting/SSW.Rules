@@ -28,8 +28,8 @@ const Index = ({ data }) => {
     <div className="w-full">
       <Breadcrumb isHomePage={true} />
       <div className="container" id="rules">
-        <div className="flex">
-          <div className="w-3/4 px-4">
+        <div className="flex flex-wrap">
+          <div className="w-full lg:w-3/4 px-4">
             <div className="rule-index no-gutters rounded">
               {data.main.nodes.map((element) => {
                 return element.frontmatter.index.map((category) => {
@@ -59,7 +59,7 @@ const Index = ({ data }) => {
             </section>
           </div>
 
-          <div className="w-1/4 px-4" id="sidebar">
+          <div className="w-full lg:w-1/4 px-4" id="sidebar">
             <SideBar ruleTotalNumber={data.rules.nodes.length} />
           </div>
         </div>

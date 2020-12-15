@@ -60,20 +60,15 @@ h4 {
   @apply mb-2;
 }
 
-a {
-  text-decoration: none !important;
-}
-
 a, a:visited {
   &:not(.unstyled) {
     color: #222;
-    border-bottom: 1px solid rgb(175, 175, 175);
-    padding-bottom: 3px;
+    text-decoration: none;
     transition: color 0.25s ease;
     &:hover {
       @apply text-ssw-red;
-      border-bottom: 1px solid #cc4141;
-      padding-bottom: 3px
+      text-decoration:underline;
+      text-decoration: none;
     } 
   } 
 }
@@ -665,6 +660,22 @@ ol ol, ol li ol {
 .rule-content {
   color: black;
   font-size: 16px;
+}
+
+.rule-content a {
+  &:not(.unstyled) {
+    color: #222;
+    text-decoration: none;
+    border-bottom: 1px solid rgb(175, 175, 175);
+    padding-bottom: 3px;
+    transition: color 0.25s ease;
+    &:hover {
+      @apply text-ssw-red;
+      text-decoration: none;
+      border-bottom: 1px solid #cc4141;
+      padding-bottom: 3px
+    } 
+  } 
 }
 
 h6.top-category-header,

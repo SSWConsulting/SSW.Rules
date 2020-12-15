@@ -60,11 +60,6 @@ h4 {
   @apply mb-2;
 }
 
-p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
 a, a:visited {
   &:not(.unstyled) {
     color: #222;
@@ -870,6 +865,11 @@ blockquote p:before {
   color: #cc4141 !important;
   font-weight: 100 !important;
   text-decoration:underline !important;
+}
+
+.rule-category-top p {
+  margin-top: 0;
+  margin-bottom: 1rem;
 }
 
 /* Single Rule

@@ -180,17 +180,20 @@ const Rule = ({ data, location }) => {
                       key={`author_${index}`}
                     >
                       <a
-                        href={`https://ssw.com.au/people/${author.title.replace(
+                        href={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
+                          / /g,
+                          '-'
+                        )}/Images/${author.title.replace(
                           ' ',
                           '-'
-                        )}`}
+                        )}-Profile.jpg`}
                       >
                         <img
                           src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
-                            ' ',
+                            / /g,
                             '-'
                           )}/Images/${author.title.replace(
-                            ' ',
+                            / /g,
                             '-'
                           )}-Profile.jpg`}
                           alt={author.title}

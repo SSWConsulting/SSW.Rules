@@ -884,8 +884,12 @@ blockquote p:before {
   margin-top: 0;
 }
 
-.rule-content h3, .rule-content h4 {
-  color: #777;
+.rule-content h3 {
+  color: #cc4141;
+}
+
+.rule-content h4 {
+  color: #414141;
 }
 
 .rule-content-title a:hover {

@@ -63,7 +63,8 @@
     "react-pose": "^4.0.10",
     "rehype-react": "^6.1.0",
     "svg-react-loader": "^0.4.6",
-    "webpack-assets-manifest": "^3.1.1"
+    "webpack-assets-manifest": "^3.1.1",
+    "@auth0/auth0-react": "^1.2.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.31",

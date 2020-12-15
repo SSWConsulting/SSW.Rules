@@ -12,6 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import Reaction from '../components/reaction/reaction';
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
@@ -22,8 +23,6 @@ const Rule = ({ data, location }) => {
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
-  const [likesCount, setLikesCount] = useState(0);
-  const [dislikesCount, setDisikesCount] = useState(0);
   return (
     <div>
       <Breadcrumb
@@ -223,33 +222,7 @@ const Rule = ({ data, location }) => {
               ))}
             </div>
             <div className="likes w-1/3">
-              <h5>Feedback</h5>
-              <p>
-                <span>
-                  <div className="likes-counter-container">{likesCount}</div>
-                  <FontAwesomeIcon
-                    icon={faThumbsUp}
-                    className="good"
-                    onClick={() => setLikesCount(likesCount + 1)}
-                  />
-                </span>
-                <span>
-                  <FontAwesomeIcon
-                    icon={faThumbsDown}
-                    className="bad"
-                    onClick={() => setDisikesCount(dislikesCount + 1)}
-                  />
-                  <div className="likes-counter-container">{dislikesCount}</div>
-                </span>
-              </p>
-              <p>
-                <small className="suggestion">
-                  <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
-                    <FontAwesomeIcon icon={faLightbulb} className="lightbulb" />{' '}
-                    Make a suggestion
-                  </a>
-                </small>
-              </p>
+              <Reaction />
             </div>
           </section>
         </section>

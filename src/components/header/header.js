@@ -5,6 +5,7 @@ import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
 import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 import InfoIcon from '-!svg-react-loader!../../images/info.svg';
 import SignIn from '../signin/signin';
+import { useAuth0, Auth0Provider } from '@auth0/auth0-react';
 import { parentSiteUrl, rulesContentBranch } from '../../../site-config';
 
 // Example of a component-specific page transition
@@ -22,7 +23,6 @@ const AnimatedContainer = posed.div({
     },
   },
 });
-
 const Header = ({ displayActions, ruleUri }) => {
   return (
     <AnimatedContainer>
@@ -37,7 +37,13 @@ const Header = ({ displayActions, ruleUri }) => {
             </h1>
           </div>
           <div className="action-btn-container">
-            <SignIn />
+            <Auth0Provider
+              domain={process.env.DOMAIN}
+              clientId={process.env.CLIENT_ID}
+              redirectUri={process.env.CALLBACK}
+            >
+              <SignIn />
+            </Auth0Provider>
             {displayActions ? (
               <>
                 <a

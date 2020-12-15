@@ -1,29 +1,54 @@
-import React, { useState } from 'react';
+import { useAuth0, Auth0Provider } from '@auth0/auth0-react';
+import React from 'react';
 
 const SignIn = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  user && console.log(user);
 
-  function githubAuth() {
-    setIsLoggedIn(true);
-    throw 'GitHub Authentication has not yet been implemented';
+  function signin() {
+    loginWithRedirect();
+  }
+
+  function signout() {
+    logout({ returnTo: window.location.origin });
   }
 
   return (
-    <div>
-      {isLoggedIn ? (
-        <div>
-          Welcome Username
-          <button className="btn btn-red" onClick={() => setIsLoggedIn(false)}>
-            Log Out
-          </button>
-        </div>
+    <div className="action-btn-container">
+      {user && <Profile />}
+      {!isAuthenticated ? (
+        <button className="btn btn-red" onClick={loginWithRedirect}>
+          Log in
+        </button>
       ) : (
-        <button className="btn btn-red" onClick={() => githubAuth()}>
-          Login
+        <button
+          className="btn btn-red"
+          onClick={() => {
+            logout({ returnTo: 'http://localhost:3000' });
+          }}
+        >
+          Log out
         </button>
       )}
     </div>
   );
+};
+
+const Profile = () => {
+  const { user } = useAuth0();
+
+  return <div>Welcome, {user.name}</div>;
+};
+
+const Status = () => {
+  const { isLoading, error } = useAuth0();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else if (error) {
+    return <div>Oops... {error.message}</div>;
+  }
+  return <></>;
 };
 
 export default SignIn;

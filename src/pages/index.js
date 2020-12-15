@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TopCategory from '../components/top-category/top-category';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import SideBar from '../components/side-bar/side-bar';
+import { pathPrefix } from '../../site-config';
 
 config.autoAddCss = false;
 
@@ -46,7 +47,7 @@ const Index = ({ data }) => {
             </div>
             <section className="pb-8">
               <p>
-                <a href="/archived">
+                <a href={`${pathPrefix}/archived`}>
                   <FontAwesomeIcon icon={faArchive} /> Show archived rules
                 </a>
               </p>

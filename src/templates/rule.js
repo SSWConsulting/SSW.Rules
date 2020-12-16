@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
-  faLightbulb,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';

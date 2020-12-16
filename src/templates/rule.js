@@ -8,6 +8,7 @@ import {
   faThumbsDown,
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faLightbulb,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -233,6 +234,10 @@ const Rule = ({ data, location }) => {
               <p>
                 <small className="suggestion">
                   <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
+                    <FontAwesomeIcon
+                      icon={faLightbulb}
+                      className="text-ssw-red"
+                    />{' '}
                     Make a suggestion
                   </a>
                 </small>

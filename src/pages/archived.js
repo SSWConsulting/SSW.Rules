@@ -91,7 +91,7 @@ const Archived = ({ data }) => {
       <div className="container" id="rules">
         <div className="flex">
           <div className="w-3/4 px-4">
-            <div className="attentionIcon archived mt-2 mb-5">
+            <div className="category attentionIcon archived mt-2 mb-5">
               The rules listed below are archived
             </div>
             <div className="rule-index archive no-gutters rounded">

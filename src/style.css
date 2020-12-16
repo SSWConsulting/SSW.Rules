@@ -571,6 +571,10 @@ pre {
   border-radius: 3px 3px 0 0;
 }
 
+.category.attentionIcon.archived {
+  border-radius: 3px;
+}
+
 .RuleArchivedReasonContainer {
   background: rgba(0,49,79,.08);
   color: rgba(34,59,74,.5);

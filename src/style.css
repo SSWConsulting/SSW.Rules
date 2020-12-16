@@ -556,7 +556,9 @@ pre {
   margin-right: auto;
 }
 
-
+.lightbulb{
+  color: #777;
+}
 
 /**
 * Rules CSS
@@ -569,6 +571,10 @@ pre {
   padding: 10px;
   padding-left: 35px;
   border-radius: 3px 3px 0 0;
+}
+
+.category.attentionIcon.archived {
+  border-radius: 3px;
 }
 
 .RuleArchivedReasonContainer {

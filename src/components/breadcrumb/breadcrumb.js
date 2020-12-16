@@ -35,7 +35,7 @@ const Breadcrumbs = (props) => {
           {props.isCategory || props.isRule || props.isArchived ? '>' : ''}
         </div>
         {props.categories && (
-          <div className="text-left underline">{getCategories()}</div>
+          <div className="text-left ">{getCategories()}</div>
         )}
         {props.isArchived ? (
           <div className="px-1 text-gray-900">Archived</div>

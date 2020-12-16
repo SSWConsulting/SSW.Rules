@@ -181,16 +181,16 @@ const Rule = ({ data, location }) => {
                     >
                       <a
                         href={`https://ssw.com.au/people/${author.title.replace(
-                          ' ',
+                          / /g,
                           '-'
                         )}`}
                       >
                         <img
                           src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
-                            ' ',
+                            / /g,
                             '-'
                           )}/Images/${author.title.replace(
-                            ' ',
+                            / /g,
                             '-'
                           )}-Profile.jpg`}
                           alt={author.title}

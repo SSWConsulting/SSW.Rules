@@ -22,7 +22,7 @@ const Rule = ({ data, location }) => {
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
-  //const rules = data.rules.nodes;
+
   return (
     <div>
       <Breadcrumb
@@ -234,10 +234,7 @@ const Rule = ({ data, location }) => {
               <p>
                 <small className="suggestion">
                   <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
-                    <FontAwesomeIcon
-                      icon={faLightbulb}
-                      className="text-ssw-red"
-                    />{' '}
+                    <FontAwesomeIcon icon={faLightbulb} className="lightbulb" />{' '}
                     Make a suggestion
                   </a>
                 </small>
@@ -247,7 +244,6 @@ const Rule = ({ data, location }) => {
         </section>
       </div>
     </div>
-    //  </Layout>
   );
 };
 

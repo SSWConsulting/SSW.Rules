@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
+import formatDistance from 'date-fns/formatDistance';
 import PropTypes from 'prop-types';
 import {
   faThumbsUp,
@@ -52,16 +53,20 @@ const Rule = ({ data, location }) => {
               new Date(data.history.nodes[0].lastUpdated),
               'dd MMM yyyy hh:mm aaa'
             )}
+            {` (${formatDistance(
+              new Date(data.history.nodes[0].lastUpdated),
+              new Date()
+            )} ago)`}
           </small>
           {rule.frontmatter.archivedreason &&
             rule.frontmatter.archivedreason.length > 0 && (
               <div>
                 <br />
                 <div className="attentionIcon archived">
-                  This rule is currently archived
+                  This rule has been archived
                 </div>
                 <div className="RuleArchivedReasonContainer">
-                  <span className="ReasonTitle">Archived Reason:</span>
+                  <span className="ReasonTitle">Archived Reason: </span>
                   {rule.frontmatter.archivedreason}
                 </div>
               </div>

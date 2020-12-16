@@ -33,9 +33,9 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
       }}
     >
       <Auth0Provider
-        domain={process.env.DOMAIN}
-        clientId={process.env.CLIENT_ID}
-        redirectUri={window.location.origin}
+        domain={process.env.AUTH0_DOMAIN}
+        clientId={process.env.AUTH0_CLIENT_ID}
+        redirectUri={process.env.AUTH0_REDIRECT_URI}
       >
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div

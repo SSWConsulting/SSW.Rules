@@ -15,7 +15,7 @@ const SignIn = () => {
         <button
           className="btn btn-red"
           onClick={() => {
-            logout({ returnTo: window.location.origin });
+            logout({ returnTo: process.env.AUTH0_REDIRECT_URI });
           }}
         >
           Log out

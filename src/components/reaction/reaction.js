@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Reaction = () => {
   const [likesCount, setLikesCount] = useState(0);
   const [dislikesCount, setDisikesCount] = useState(0);
   const [currentReactionType, setCurrentReactionType] = useState(null);
-  var isLoggedIn = true;
+  const { isAuthenticated } = useAuth0();
 
   function addReaction(newReactionType) {
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       if (currentReactionType == null) {
         if (newReactionType) {
           setLikesCount(likesCount + 1);
@@ -34,14 +35,13 @@ const Reaction = () => {
 
   return (
     <>
-      <h5>Feedback</h5>
-      {/* <span>
+      <span>
         <div className="likes-counter-container">{likesCount}</div>
         <FontAwesomeIcon
           icon={faThumbsUp}
           color={currentReactionType ? 'green' : null}
           className="good"
-          onClick={isLoggedIn ? () => addReaction(true) : null}
+          onClick={isAuthenticated ? () => addReaction(true) : null}
         />
       </span>
       <span>
@@ -49,17 +49,10 @@ const Reaction = () => {
           icon={faThumbsDown}
           color={currentReactionType == false ? 'red' : null}
           className="bad"
-          onClick={isLoggedIn ? () => addReaction(false) : null}
+          onClick={isAuthenticated ? () => addReaction(false) : null}
         />
         <div className="likes-counter-container">{dislikesCount}</div>
-      </span> */}
-      <div>
-        <small className="suggestion">
-          <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
-            Make a suggestion
-          </a>
-        </small>
-      </div>
+      </span>
     </>
   );
 };

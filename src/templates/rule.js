@@ -1,11 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
 import formatDistance from 'date-fns/formatDistance';
 import PropTypes from 'prop-types';
 import {
-  faThumbsUp,
-  faThumbsDown,
   faAngleDoubleLeft,
   faAngleDoubleRight,
   faLightbulb,
@@ -222,7 +220,15 @@ const Rule = ({ data, location }) => {
               ))}
             </div>
             <div className="likes w-1/3">
+              <h5>Feedback</h5>
               <Reaction />
+              <div>
+                <small className="suggestion">
+                  <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
+                    Make a suggestion
+                  </a>
+                </small>
+              </div>
             </div>
           </section>
         </section>

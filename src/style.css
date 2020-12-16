@@ -122,8 +122,18 @@ footer {
   font-size: 0.75rem;
 }
 
-ul li {
-  background: url(./images/bullet_square.gif) 0 7px no-repeat;
+#rules ul {
+  list-style: none;
+}
+
+#rules ul li::before {
+  content: "\25A0";
+  color: #cc4141;
+  display: inline-block; 
+  width: 1em;
+  margin-left: -1em;
+}
+#rules ul li {
   padding: 0 0 10px 15px;
   line-height: 1.5em;
 }
@@ -563,17 +573,17 @@ pre {
 /**
 * Rules CSS
 */
-.attentionIcon.archived {
+.attention.archived {
   color: #fff;
   font-size: 1.2em;
   font-weight: bold;
-  background: #CC4141 url("https://rules.ssw.com.au/Style Library/SSW/RulesImages/zzunpulished.png") no-repeat 10px;
+  background: #CC4141;
   padding: 10px;
   padding-left: 35px;
   border-radius: 3px 3px 0 0;
 }
 
-.category.attentionIcon.archived {
+.category.attention.archived {
   border-radius: 3px;
 }
 
@@ -827,9 +837,7 @@ blockquote p:before {
   list-style-position: inside;
 }
 
-.rule-index ol :before {
-  opacity: .5;
-}
+
 
 .rule-index ol li {
   padding: .5rem 1rem .5rem 0;

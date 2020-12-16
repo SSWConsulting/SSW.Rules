@@ -9,6 +9,7 @@ import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
   faLightbulb,
+  faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -63,8 +64,8 @@ const Rule = ({ data, location }) => {
             rule.frontmatter.archivedreason.length > 0 && (
               <div>
                 <br />
-                <div className="attentionIcon archived">
-                  This rule has been archived
+                <div className="attention archived">
+                  <FontAwesomeIcon icon={faExclamationTriangle} className="attentionIcon" /> This rule has been archived
                 </div>
                 <div className="RuleArchivedReasonContainer">
                   <span className="ReasonTitle">Archived Reason: </span>

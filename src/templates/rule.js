@@ -4,8 +4,6 @@ import { format } from 'date-fns';
 import formatDistance from 'date-fns/formatDistance';
 import PropTypes from 'prop-types';
 import {
-  faThumbsUp,
-  faThumbsDown,
   faAngleDoubleLeft,
   faAngleDoubleRight,
   faLightbulb,
@@ -13,6 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import Reaction from '../components/reaction/reaction';
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
@@ -23,7 +22,6 @@ const Rule = ({ data, location }) => {
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
-
   return (
     <div>
       <Breadcrumb
@@ -188,16 +186,16 @@ const Rule = ({ data, location }) => {
                     >
                       <a
                         href={`https://ssw.com.au/people/${author.title.replace(
-                          ' ',
+                          / /g,
                           '-'
                         )}`}
                       >
                         <img
                           src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
-                            ' ',
+                            / /g,
                             '-'
                           )}/Images/${author.title.replace(
-                            ' ',
+                            / /g,
                             '-'
                           )}-Profile.jpg`}
                           alt={author.title}
@@ -224,22 +222,15 @@ const Rule = ({ data, location }) => {
             </div>
             <div className="likes w-1/3">
               <h5>Feedback</h5>
-              <p className="preview">
-                <span>
-                  8 <FontAwesomeIcon icon={faThumbsUp} className="good" />
-                </span>{' '}
-                <span>
-                  <FontAwesomeIcon icon={faThumbsDown} className="bad" /> 2
-                </span>
-              </p>
-              <p>
+              <Reaction />
+              <div>
                 <small className="suggestion">
                   <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
                     <FontAwesomeIcon icon={faLightbulb} className="lightbulb" />{' '}
                     Make a suggestion
                   </a>
                 </small>
-              </p>
+              </div>
             </div>
           </section>
         </section>

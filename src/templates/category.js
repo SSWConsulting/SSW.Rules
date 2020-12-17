@@ -35,7 +35,7 @@ export default function Category({ data }) {
                 {category.frontmatter.index.length > 1 ? 'Rules' : 'Rule'}
               </span>
             </h2>
-            <div className="pt-5 py-4 px-12">
+            <div className="rule-category-top pt-5 py-4 px-12">
               <MD components={components} htmlAst={category.htmlAst} />
             </div>
             <div className="grid grid-cols-5 radio-toolbar how-to-view text-left p-4 d-print-none">

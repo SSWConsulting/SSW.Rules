@@ -9,6 +9,7 @@ import Menu from '../../../lib/ssw.megamenu/menu/menu';
 import MobileMenu from '../../../lib/ssw.megamenu/mobile-menu/mobile-menu';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import { Auth0Provider } from '@auth0/auth0-react';
 
 config.autoAddCss = false;
 const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
@@ -31,23 +32,30 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
         overflow: isMenuOpened ? 'hidden' : 'auto',
       }}
     >
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-      <div
-        ref={node}
-        onMouseDown={isMenuOpened ? (event) => handleClick(event) : null}
-        style={{
-          transform: isMenuOpened ? 'translateX(84%)' : 'translateX(0px)',
-        }}
+      <Auth0Provider
+        domain={process.env.AUTH0_DOMAIN}
+        clientId={process.env.AUTH0_CLIENT_ID}
+        redirectUri={process.env.AUTH0_REDIRECT_URI}
       >
-        <div className="flex flex-col min-h-screen main-container">
-          <Head pageTitle={pageTitle} />
-          <Header displayActions={displayActions} ruleUri={ruleUri} />
-          <Menu onClickToggle={() => actionOnToggleClick()}></Menu>
-          <main className="flex-1">{children}</main>
+        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+        <div
+          ref={node}
+          onMouseDown={isMenuOpened ? (event) => handleClick(event) : null}
+          style={{
+            transform: isMenuOpened ? 'translateX(84%)' : 'translateX(0px)',
+          }}
+        >
+          <div className="flex flex-col min-h-screen main-container">
+            <Head pageTitle={pageTitle} />
+            <Header displayActions={displayActions} ruleUri={ruleUri} />
+            <Menu onClickToggle={() => actionOnToggleClick()}></Menu>
+            <main className="flex-1">{children}</main>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-      <MobileMenu isMenuOpened={isMenuOpened}></MobileMenu>
+
+        <MobileMenu isMenuOpened={isMenuOpened}></MobileMenu>
+      </Auth0Provider>
     </div>
   );
 };

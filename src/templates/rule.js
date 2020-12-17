@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faLightbulb,
+  faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -60,10 +62,14 @@ const Rule = ({ data, location }) => {
             rule.frontmatter.archivedreason.length > 0 && (
               <div>
                 <br />
-                <div className="attentionIcon archived">
+                <div className="attention archived px-4">
+                  <FontAwesomeIcon
+                    icon={faExclamationTriangle}
+                    className="attentionIcon"
+                  />{' '}
                   This rule has been archived
                 </div>
-                <div className="RuleArchivedReasonContainer">
+                <div className="RuleArchivedReasonContainer px-4">
                   <span className="ReasonTitle">Archived Reason: </span>
                   {rule.frontmatter.archivedreason}
                 </div>
@@ -224,6 +230,7 @@ const Rule = ({ data, location }) => {
               <div>
                 <small className="suggestion">
                   <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
+                    <FontAwesomeIcon icon={faLightbulb} className="lightbulb" />{' '}
                     Make a suggestion
                   </a>
                 </small>

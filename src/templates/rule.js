@@ -63,7 +63,11 @@ const Rule = ({ data, location }) => {
               <div>
                 <br />
                 <div className="attention archived px-4">
-                  <FontAwesomeIcon icon={faExclamationTriangle} className="attentionIcon" /> This rule has been archived
+                  <FontAwesomeIcon
+                    icon={faExclamationTriangle}
+                    className="attentionIcon"
+                  />{' '}
+                  This rule has been archived
                 </div>
                 <div className="RuleArchivedReasonContainer px-4">
                   <span className="ReasonTitle">Archived Reason: </span>

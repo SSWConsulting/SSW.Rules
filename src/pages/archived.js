@@ -94,7 +94,11 @@ const Archived = ({ data }) => {
         <div className="flex">
           <div className="w-3/4 px-4">
             <div className="category attention archived px-4 mt-2 mb-5">
-              <FontAwesomeIcon icon={faExclamationTriangle} className="attentionIcon" /> The rules listed below have been archived
+              <FontAwesomeIcon
+                icon={faExclamationTriangle}
+                className="attentionIcon"
+              />{' '}
+              The rules listed below have been archived
             </div>
             <div className="rule-index archive no-gutters rounded">
               {data.main.nodes.map((element) => {

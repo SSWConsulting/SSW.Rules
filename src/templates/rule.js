@@ -64,10 +64,10 @@ const Rule = ({ data, location }) => {
             rule.frontmatter.archivedreason.length > 0 && (
               <div>
                 <br />
-                <div className="attention archived">
+                <div className="attention archived px-4">
                   <FontAwesomeIcon icon={faExclamationTriangle} className="attentionIcon" /> This rule has been archived
                 </div>
-                <div className="RuleArchivedReasonContainer">
+                <div className="RuleArchivedReasonContainer px-4">
                   <span className="ReasonTitle">Archived Reason: </span>
                   {rule.frontmatter.archivedreason}
                 </div>

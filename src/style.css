@@ -578,8 +578,8 @@ pre {
   font-size: 1.2em;
   font-weight: bold;
   background: #CC4141;
-  padding: 10px;
-  padding-left: 35px;
+  padding-bottom: 10px;
+  padding-top: 10px;
   border-radius: 3px 3px 0 0;
 }
 
@@ -595,7 +595,7 @@ pre {
   outline: 0;
   font-weight: 700;
   font-size: 12px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   border: 1px #cc4141 solid;
 }
 

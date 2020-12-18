@@ -11,6 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Reaction from '../components/reaction/reaction';
 
 const Rule = ({ data, location }) => {
@@ -41,6 +42,8 @@ const Rule = ({ data, location }) => {
       <div className="rule-single rounded">
         <section className="rule-content p-12 mb-20">
           <h1>{rule.frontmatter.title}</h1>
+          {data.history &&
+            data.history.nodes[0] && (
           <small className="history">
             Created on{' '}
             {format(new Date(data.history.nodes[0].created), 'dd MMM yyyy')} |
@@ -57,7 +60,7 @@ const Rule = ({ data, location }) => {
               new Date(data.history.nodes[0].lastUpdated),
               new Date()
             )} ago)`}
-          </small>
+          </small>)}
           {rule.frontmatter.archivedreason &&
             rule.frontmatter.archivedreason.length > 0 && (
               <div>
@@ -174,41 +177,7 @@ const Rule = ({ data, location }) => {
           )}
           <section id="more" className="pt-4 mt-12 flex text-center">
             <div className="acknowledgements w-1/3">
-              <h5>Acknowledgements</h5>
-              <div className="flex flex-row flex-wrap justify-center">
-                {rule.frontmatter.authors &&
-                  rule.frontmatter.authors.map((author, index) => (
-                    <div
-                      style={{
-                        width: '75px',
-                        height: '75px',
-                        overflow: 'hidden',
-                        borderRadius: '50%',
-                        marginRight: '10px',
-                      }}
-                      key={`author_${index}`}
-                    >
-                      <a
-                        href={`https://ssw.com.au/people/${author.title.replace(
-                          / /g,
-                          '-'
-                        )}`}
-                      >
-                        <img
-                          src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
-                            / /g,
-                            '-'
-                          )}/Images/${author.title.replace(
-                            / /g,
-                            '-'
-                          )}-Profile.jpg`}
-                          alt={author.title}
-                        />
-                      </a>
-                      <span className="tooltiptext">{author.title}</span>
-                    </div>
-                  ))}
-              </div>
+              <Acknowledgements authors={rule.frontmatter.authors}/>
             </div>
             <div className="tags rounded w-1/3">
               <h5>Categories</h5>
@@ -262,6 +231,7 @@ export const query = graphql`
         title
         authors {
           title
+          url
         }
         created(formatString: "DD MMM YYYY")
         archivedreason

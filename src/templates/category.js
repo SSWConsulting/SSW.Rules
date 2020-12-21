@@ -103,7 +103,7 @@ export default function Category({ data }) {
               <ol className="rule-number">
                 {category.frontmatter.index.map((r) => {
                   var rule = rules.find((rr) => rr.frontmatter.uri == r);
-                  if (!rule){
+                  if (!rule) {
                     return;
                   }
                   return (

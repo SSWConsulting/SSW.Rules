@@ -23,7 +23,7 @@ const Index = ({ data }) => {
           <TopCategory
             topcategory={topcategory}
             categories={data.categories}
-            rules = {notArchivedRules}
+            rules={notArchivedRules}
           ></TopCategory>
         </section>
       </>

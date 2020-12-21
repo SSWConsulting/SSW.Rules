@@ -17,8 +17,7 @@ const TopCategory = ({ topcategory, categories, rules }) => {
     return category.frontmatter.index.filter((c) =>
       rules.find((r) => c == r.frontmatter.uri)
     ).length;
-
-  }
+  };
   return (
     <>
       <TopCategoryHeader

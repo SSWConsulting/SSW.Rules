@@ -12,6 +12,10 @@ import { pathPrefix } from '../../site-config';
 config.autoAddCss = false;
 
 const Index = ({ data }) => {
+  const notArchivedRules = data.rules.nodes.filter(
+    (r) => !r.frontmatter.archivedreason
+  );
+
   const displayTopCategories = (topcategory) => {
     return (
       <>
@@ -19,6 +23,7 @@ const Index = ({ data }) => {
           <TopCategory
             topcategory={topcategory}
             categories={data.categories}
+            rules = {notArchivedRules}
           ></TopCategory>
         </section>
       </>
@@ -147,6 +152,8 @@ const IndexWithQuery = (props) => (
           nodes {
             frontmatter {
               title
+              uri
+              archivedreason
             }
           }
         }

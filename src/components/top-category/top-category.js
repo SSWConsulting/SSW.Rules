@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'gatsby';
 import TopCategoryHeader from '../topcategory-header/topcategory-header';
 
-const TopCategory = ({ topcategory, categories }) => {
+const TopCategory = ({ topcategory, categories, rules }) => {
   const linkRef = useRef();
 
   const findCategoryFromIndexValue = (categoryFromIndex) => {
@@ -13,11 +13,17 @@ const TopCategory = ({ topcategory, categories }) => {
     );
   };
 
+  const getNumberOfRulesPerCat = (category) => {
+    return category.frontmatter.index.filter((c) =>
+      rules.find((r) => c == r.frontmatter.uri)
+    ).length;
+  };
   return (
     <>
       <TopCategoryHeader
         topCategory={topcategory}
         categories={categories.nodes}
+        rules={rules}
       >
         {topcategory.frontmatter.index.map((category, i) => {
           const cat = findCategoryFromIndexValue(category);
@@ -29,7 +35,7 @@ const TopCategory = ({ topcategory, categories }) => {
                   {cat.frontmatter.title}
                 </Link>
                 <span className="d-none d-md-block">
-                  ({cat.frontmatter.index.length})
+                  ({getNumberOfRulesPerCat(cat)})
                 </span>
               </li>
             );
@@ -43,6 +49,7 @@ const TopCategory = ({ topcategory, categories }) => {
 TopCategory.propTypes = {
   topcategory: PropTypes.object,
   categories: PropTypes.object,
+  rules: PropTypes.object,
 };
 
 export default TopCategory;

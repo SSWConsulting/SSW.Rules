@@ -19,6 +19,14 @@ export default function Category({ data }) {
     greyBox: GreyBox,
   };
 
+  var rules = data.rule.nodes
+    .filter((r) => {
+      return !r.frontmatter.archivedreason;
+    })
+    .filter((r) => {
+      return category.frontmatter.index.includes(r.frontmatter.uri);
+    });
+
   return (
     <div>
       <Breadcrumb
@@ -31,8 +39,7 @@ export default function Category({ data }) {
             <h2 className="cat-title py-4 px-12 rounded-t">
               {category.frontmatter.title}
               <span className="rule-count">
-                {category.frontmatter.index.length}{' '}
-                {category.frontmatter.index.length > 1 ? 'Rules' : 'Rule'}
+                {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
               </span>
             </h2>
             <div className="rule-category-top pt-5 py-4 px-12">
@@ -94,57 +101,53 @@ export default function Category({ data }) {
             </div>
             <div className="p-12">
               <ol className="rule-number">
-                {category.frontmatter.index.map((ruleUri) => {
-                  const rule = data.rule.nodes.find(
-                    (r) => r.frontmatter.uri === ruleUri
-                  );
-                  if (rule && rule.frontmatter.archivedreason == null) {
-                    return (
-                      <>
-                        <li className="pb-4">
-                          <section className="rule-content-title px-4">
-                            <h2>
-                              <Link
-                                ref={linkRef}
-                                to={`/${rule.frontmatter.uri}`}
-                                state={{ category: category.parent.name }}
-                              >
-                                {rule.frontmatter.title}
-                              </Link>
-                            </h2>
-                          </section>
-
-                          <section
-                            className={`rule-content px-4 mb-5
-                            ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
-                          >
-                            <MD
-                              components={components}
-                              htmlAst={rule.htmlAst}
-                            />
-                          </section>
-
-                          <section
-                            className={`rule-content px-4 mb-5
-                          ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
-                          >
-                            <div
-                              dangerouslySetInnerHTML={{ __html: rule.excerpt }}
-                            />
-                            <p className="pt-5 pb-0">
-                              Read more about{' '}
-                              <a
-                                href={rule.frontmatter.uri}
-                                className="underline"
-                              >
-                                {rule.frontmatter.title}
-                              </a>
-                            </p>
-                          </section>
-                        </li>
-                      </>
-                    );
+                {category.frontmatter.index.map((r) => {
+                  var rule = rules.find((rr) => rr.frontmatter.uri == r);
+                  if (!rule) {
+                    return;
                   }
+                  return (
+                    <>
+                      <li className="pb-4">
+                        <section className="rule-content-title px-4">
+                          <h2>
+                            <Link
+                              ref={linkRef}
+                              to={`/${rule.frontmatter.uri}`}
+                              state={{ category: category.parent.name }}
+                            >
+                              {rule.frontmatter.title}
+                            </Link>
+                          </h2>
+                        </section>
+
+                        <section
+                          className={`rule-content px-4 mb-5
+                            ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
+                        >
+                          <MD components={components} htmlAst={rule.htmlAst} />
+                        </section>
+
+                        <section
+                          className={`rule-content px-4 mb-5
+                          ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
+                        >
+                          <div
+                            dangerouslySetInnerHTML={{ __html: rule.excerpt }}
+                          />
+                          <p className="pt-5 pb-0">
+                            Read more about{' '}
+                            <a
+                              href={rule.frontmatter.uri}
+                              className="underline"
+                            >
+                              {rule.frontmatter.title}
+                            </a>
+                          </p>
+                        </section>
+                      </li>
+                    </>
+                  );
                 })}
               </ol>
             </div>

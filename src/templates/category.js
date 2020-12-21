@@ -101,7 +101,11 @@ export default function Category({ data }) {
             </div>
             <div className="p-12">
               <ol className="rule-number">
-                {rules.map((rule) => {
+                {category.frontmatter.index.map((r) => {
+                  var rule = rules.find((rr) => rr.frontmatter.uri == r);
+                  if (!rule){
+                    return;
+                  }
                   return (
                     <>
                       <li className="pb-4">

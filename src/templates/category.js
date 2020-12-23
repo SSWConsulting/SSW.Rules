@@ -45,7 +45,7 @@ export default function Category({ data }) {
             <div className="rule-category-top pt-5 py-4 px-12">
               <MD components={components} htmlAst={category.htmlAst} />
             </div>
-            <div className="grid grid-cols-5 radio-toolbar how-to-view text-left p-4 d-print-none">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none">
               <div></div>
               <div>
                 <input

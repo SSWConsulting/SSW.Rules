@@ -43,6 +43,7 @@ const Reaction = () => {
           className="good"
           onClick={isAuthenticated ? () => addReaction(true) : null}
         />
+        <div className="likes-counter-container">{likesCount}</div>
       </span>
       <span>
         <FontAwesomeIcon

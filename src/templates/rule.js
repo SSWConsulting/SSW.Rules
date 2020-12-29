@@ -12,6 +12,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Reaction from '../components/reaction/reaction';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
@@ -22,6 +23,8 @@ const Rule = ({ data, location }) => {
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
+  const { isAuthenticated } = useAuth0();
+
   return (
     <div>
       <Breadcrumb
@@ -226,7 +229,7 @@ const Rule = ({ data, location }) => {
             </div>
             <div className="likes w-1/3">
               <h5>Feedback</h5>
-              <Reaction />
+              <Reaction ruleId={rule.frontmatter.guid} />
               <div>
                 <small className="suggestion">
                   <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
@@ -260,6 +263,7 @@ export const query = graphql`
       frontmatter {
         uri
         title
+        guid
         authors {
           title
         }

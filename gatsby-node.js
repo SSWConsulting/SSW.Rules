@@ -43,6 +43,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       archivedreason: String   
       related: [String]
       redirects: [String]
+      guid: String
     }
   `;
   createTypes(typeDefs);

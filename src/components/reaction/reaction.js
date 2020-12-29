@@ -36,7 +36,6 @@ const Reaction = () => {
   return (
     <>
       <span>
-        <div className="likes-counter-container">{likesCount}</div>
         <FontAwesomeIcon
           icon={faThumbsUp}
           color={currentReactionType ? 'green' : null}

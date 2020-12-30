@@ -225,7 +225,7 @@ const Rule = ({ data, location }) => {
               ))}
             </div>
             <div className="likes w-3/3 lg:w-1/3">
-              <h5>Feedback</h5>
+              <h5 className="h5-margin-override">Feedback</h5>
               <Reaction />
               <div>
                 <small className="suggestion">

@@ -228,7 +228,7 @@ const Rule = ({ data, location }) => {
               ))}
             </div>
             <div className="likes w-1/3">
-              <h5>Feedback</h5>
+              <h5 className="h5-padding-override">Feedback</h5>
               <Reaction ruleId={rule.frontmatter.guid} />
               <div>
                 <small className="suggestion">

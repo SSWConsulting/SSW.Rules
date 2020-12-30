@@ -934,6 +934,9 @@ blockquote p:before {
   color: #414141;
 }
 
+.h5-padding-override {
+  margin-bottom: 0px;
+}
 .rule-content-title a:hover {
   color: #cc4141 !important;
 }

@@ -922,7 +922,7 @@ blockquote p:before {
 -------------------------------------------------- */
 
 .h5-margin-override {
-  margin-bottom: 0;
+  margin-bottom: 0px;
 }
 
 .rule-category h1 {

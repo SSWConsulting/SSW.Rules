@@ -173,7 +173,7 @@ const Rule = ({ data, location }) => {
             </>
           )}
           <section id="more" className="pt-4 mt-12 flex flex-wrap text-center">
-            <div className="acknowledgements w-3/3 lg:w-1/3">
+            <div className="acknowledgements w-full lg:w-1/3">
               <h5>Acknowledgements</h5>
               <div className="flex flex-row flex-wrap justify-center">
                 {rule.frontmatter.authors &&
@@ -210,7 +210,7 @@ const Rule = ({ data, location }) => {
                   ))}
               </div>
             </div>
-            <div className="tags rounded w-3/3 lg:w-1/3">
+            <div className="tags rounded w-full lg:w-1/3">
               <h5>Categories</h5>
               {categories.map((category, i) => (
                 <div className="px-1 inline" key={i}>
@@ -224,7 +224,7 @@ const Rule = ({ data, location }) => {
                 </div>
               ))}
             </div>
-            <div className="likes w-3/3 lg:w-1/3">
+            <div className="likes w-full lg:w-1/3">
               <h5>Feedback</h5>
               <Reaction />
               <div>

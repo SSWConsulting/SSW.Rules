@@ -203,6 +203,7 @@ const Rule = ({ data, location }) => {
                             '-'
                           )}-Profile.jpg`}
                           alt={author.title}
+                          title={author.title}
                         />
                       </a>
                       <span className="tooltiptext">{author.title}</span>

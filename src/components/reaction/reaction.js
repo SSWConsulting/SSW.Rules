@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAuth0 } from '@auth0/auth0-react';
+import PropTypes from 'prop-types';
 import {
   GetLikeDislikeForUser,
   PostReactionForUser,
@@ -116,7 +117,7 @@ const Reaction = (props) => {
 };
 
 Reaction.propTypes = {
-  ruleId: React.propTypes.number,
+  ruleId: PropTypes.number,
 };
 
 export default Reaction;

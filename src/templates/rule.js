@@ -10,6 +10,7 @@ import {
   faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import GitHubIcon from '-!svg-react-loader!../images/github.svg';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Reaction from '../components/reaction/reaction';
 
@@ -237,8 +238,8 @@ const Rule = ({ data, location }) => {
                     className="action-btn-link"
                   >
                     <div className="action-btn-label">Make a suggestion</div>
-                    <FontAwesomeIcon
-                      icon={faLightbulb}
+                    <GitHubIcon
+                      aria-label="logo"
                       className="action-btn-icon"
                     />{' '}
                   </a>

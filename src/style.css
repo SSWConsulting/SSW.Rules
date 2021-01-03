@@ -919,6 +919,10 @@ blockquote p:before {
 /* Single Rule
 -------------------------------------------------- */
 
+.h5-margin-override {
+  margin-bottom: 0px;
+}
+
 .rule-category h1 {
   color: #cc4141;
   font-weight: 100;

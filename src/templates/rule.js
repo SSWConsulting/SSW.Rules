@@ -228,13 +228,21 @@ const Rule = ({ data, location }) => {
             <div className="likes w-full lg:w-1/3">
               <h5 className="h5-margin-override">Feedback</h5>
               <Reaction />
-              <div>
-                <small className="suggestion">
-                  <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
-                    <FontAwesomeIcon icon={faLightbulb} className="lightbulb" />{' '}
-                    Make a suggestion
+              <div className="suggestion">
+                <span className="action-btn-container">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://github.com/SSWConsulting/SSW.Rules.Content/issues"
+                    className="action-btn-link"
+                  >
+                    <div className="action-btn-label">Make a suggestion</div>
+                    <FontAwesomeIcon
+                      icon={faLightbulb}
+                      className="action-btn-icon"
+                    />{' '}
                   </a>
-                </small>
+                </span>
               </div>
             </div>
           </section>

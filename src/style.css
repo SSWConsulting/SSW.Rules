@@ -198,14 +198,12 @@ footer {
   color: black;
   text-decoration: none;
   border-bottom: 1px solid black;
-  padding-bottom: 3px;
 }
 
 .breadcrumb-content:hover {
   color: black;
   text-decoration: none;
   border-bottom: 1px solid #cc4141;
-  padding-bottom: 3px;
 }
 
 /* .breadcrumb a,

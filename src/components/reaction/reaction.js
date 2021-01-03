@@ -36,13 +36,13 @@ const Reaction = () => {
   return (
     <>
       <span>
-        <div className="likes-counter-container">{likesCount}</div>
         <FontAwesomeIcon
           icon={faThumbsUp}
           color={currentReactionType ? 'green' : null}
           className="good"
           onClick={isAuthenticated ? () => addReaction(true) : null}
         />
+        <div className="likes-counter-container">{likesCount}</div>
       </span>
       <span>
         <FontAwesomeIcon

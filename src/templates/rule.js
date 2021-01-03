@@ -179,7 +179,7 @@ const Rule = ({ data, location }) => {
             <div className="acknowledgements w-1/3">
               <Acknowledgements authors={rule.frontmatter.authors}/>
             </div>
-            <div className="tags rounded w-1/3">
+            <div className="tags rounded w-full lg:w-1/3">
               <h5>Categories</h5>
               {categories.map((category, i) => (
                 <div className="px-1 inline" key={i}>
@@ -193,8 +193,8 @@ const Rule = ({ data, location }) => {
                 </div>
               ))}
             </div>
-            <div className="likes w-1/3">
-              <h5>Feedback</h5>
+            <div className="likes w-full lg:w-1/3">
+              <h5 className="h5-margin-override">Feedback</h5>
               <Reaction />
               <div>
                 <small className="suggestion">

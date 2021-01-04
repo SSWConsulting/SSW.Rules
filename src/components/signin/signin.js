@@ -8,7 +8,14 @@ const SignIn = () => {
     <div className="action-btn-container">
       {user && <Profile />}
       {!isAuthenticated ? (
-        <button className="btn btn-red" onClick={loginWithRedirect}>
+        <button
+          className="btn btn-red"
+          onClick={() => {
+            loginWithRedirect({
+              appState: { targetUrl: window.location.pathname },
+            });
+          }}
+        >
           Log in
         </button>
       ) : (

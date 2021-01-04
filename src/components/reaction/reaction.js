@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -42,8 +43,8 @@ const Reaction = (props) => {
       GetLikeDislikeForUser(ruleId)
         .then((success) => {
           console.log(success);
-          setLikesCount(success.likeCount);
-          setDisikesCount(success.dislikeCount);
+          setLikesCount(success.likeCount ?? 0);
+          setDisikesCount(success.dislikeCount ?? 0);
         })
         .catch((err) => {
           console.error('error', err);
@@ -117,7 +118,7 @@ const Reaction = (props) => {
 };
 
 Reaction.propTypes = {
-  ruleId: PropTypes.number,
+  ruleId: PropTypes.string,
 };
 
 export default Reaction;

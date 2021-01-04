@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { StaticQuery, graphql } from 'gatsby';
+import { StaticQuery, graphql, navigate } from 'gatsby';
 import Head from '../head/head';
 import Header from '../header/header';
 import Footer from '../footer/footer';
@@ -26,6 +26,10 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
     }
   };
 
+  const onRedirectCallback = (appState) => {
+    navigate(appState.targetUrl);
+  };
+
   return (
     <div
       style={{
@@ -36,6 +40,7 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
         domain={process.env.AUTH0_DOMAIN}
         clientId={process.env.AUTH0_CLIENT_ID}
         redirectUri={process.env.AUTH0_REDIRECT_URI}
+        onRedirectCallback={onRedirectCallback}
       >
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div
@@ -66,7 +71,7 @@ Layout.propTypes = {
   displayActions: PropTypes.bool.isRequired,
   ruleUri: PropTypes.string,
   pageTitle: PropTypes.string,
-  crumbLocation: PropTypes.array,
+  crumbLocation: PropTypes.object,
   crumbLabel: PropTypes.string,
 };
 

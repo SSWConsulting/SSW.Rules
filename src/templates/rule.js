@@ -23,7 +23,6 @@ const Rule = ({ data, location }) => {
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
-  const { isAuthenticated } = useAuth0();
 
   return (
     <div>

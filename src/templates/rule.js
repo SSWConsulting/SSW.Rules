@@ -12,7 +12,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Reaction from '../components/reaction/reaction';
-import { useAuth0 } from '@auth0/auth0-react';
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {

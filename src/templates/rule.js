@@ -6,10 +6,10 @@ import PropTypes from 'prop-types';
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
-  faLightbulb,
   faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import GitHubIcon from '-!svg-react-loader!../images/github.svg';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Reaction from '../components/reaction/reaction';
@@ -196,13 +196,21 @@ const Rule = ({ data, location }) => {
             <div className="likes w-full lg:w-1/3">
               <h5 className="h5-margin-override">Feedback</h5>
               <Reaction />
-              <div>
-                <small className="suggestion">
-                  <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
-                    <FontAwesomeIcon icon={faLightbulb} className="lightbulb" />{' '}
-                    Make a suggestion
+              <div className="suggestion">
+                <span className="action-btn-container">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://github.com/SSWConsulting/SSW.Rules.Content/issues"
+                    className="action-btn-link"
+                  >
+                    <div className="action-btn-label">Make a suggestion</div>
+                    <GitHubIcon
+                      aria-label="logo"
+                      className="action-btn-icon"
+                    />{' '}
                   </a>
-                </small>
+                </span>
               </div>
             </div>
           </section>

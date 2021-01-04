@@ -694,7 +694,7 @@ ol ol, ol li ol {
 }
 
 .rule-content a {
-  &:not(.unstyled) {
+  &:not(.unstyled):not(.action-btn-link) {
     color: #222;
     text-decoration: none;
     border-bottom: 1px solid rgb(175, 175, 175);
@@ -973,8 +973,14 @@ blockquote p:before {
   content: none !important;
 }
 
-.suggestion a:after {
+.suggestion a:after, a:link {
   content: none !important;
+  text-decoration: none;
+}
+
+.suggestion a:hover {
+  content: none !important;
+  text-decoration: none;
 }
 
 .history a:after {

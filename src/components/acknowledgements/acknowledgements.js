@@ -20,7 +20,12 @@ const Acknowledgements = ({ authors }) => {
 
   function ProfileImg(props) {
     const author = props.author;
-    if (author.url && author.url.includes('https://ssw.com.au/people/')) {
+    if (author.img && author.img.includes('http')) {
+      return <img src={author.img} alt={author.title} title={author.title} />;
+    } else if (
+      author.url &&
+      author.url.includes('https://ssw.com.au/people/')
+    ) {
       return (
         <img
           src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(

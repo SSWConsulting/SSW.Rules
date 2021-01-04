@@ -46,8 +46,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       redirects: [String]
     }
     type Author {
-      title: String 
+      title: String
       url: String
+      img: String
     }
   `;
   createTypes(typeDefs);

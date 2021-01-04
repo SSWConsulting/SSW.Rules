@@ -240,6 +240,7 @@ export const query = graphql`
         authors {
           title
           url
+          img
         }
         created(formatString: "DD MMM YYYY")
         archivedreason

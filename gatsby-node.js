@@ -41,8 +41,13 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
     type Frontmatter {
       archivedreason: String   
+      authors: [Author]
       related: [String]
       redirects: [String]
+    }
+    type Author {
+      title: String 
+      url: String
     }
   `;
   createTypes(typeDefs);

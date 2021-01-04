@@ -42,25 +42,25 @@ const Rule = ({ data, location }) => {
       <div className="rule-single rounded">
         <section className="rule-content p-12 mb-20">
           <h1>{rule.frontmatter.title}</h1>
-          {data.history &&
-            data.history.nodes[0] && (
-          <small className="history">
-            Created on{' '}
-            {format(new Date(data.history.nodes[0].created), 'dd MMM yyyy')} |
-            Last updated by{' '}
-            <strong>
-              {capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)}
-            </strong>
-            {' on '}
-            {format(
-              new Date(data.history.nodes[0].lastUpdated),
-              'dd MMM yyyy hh:mm aaa'
-            )}
-            {` (${formatDistance(
-              new Date(data.history.nodes[0].lastUpdated),
-              new Date()
-            )} ago)`}
-          </small>)}
+          {data.history && data.history.nodes[0] && (
+            <small className="history">
+              Created on{' '}
+              {format(new Date(data.history.nodes[0].created), 'dd MMM yyyy')} |
+              Last updated by{' '}
+              <strong>
+                {capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)}
+              </strong>
+              {' on '}
+              {format(
+                new Date(data.history.nodes[0].lastUpdated),
+                'dd MMM yyyy hh:mm aaa'
+              )}
+              {` (${formatDistance(
+                new Date(data.history.nodes[0].lastUpdated),
+                new Date()
+              )} ago)`}
+            </small>
+          )}
           {rule.frontmatter.archivedreason &&
             rule.frontmatter.archivedreason.length > 0 && (
               <div>
@@ -177,7 +177,7 @@ const Rule = ({ data, location }) => {
           )}
           <section id="more" className="pt-4 mt-12 flex text-center">
             <div className="acknowledgements w-1/3">
-              <Acknowledgements authors={rule.frontmatter.authors}/>
+              <Acknowledgements authors={rule.frontmatter.authors} />
             </div>
             <div className="tags rounded w-full lg:w-1/3">
               <h5>Categories</h5>

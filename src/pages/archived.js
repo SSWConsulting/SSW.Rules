@@ -47,7 +47,7 @@ const Archived = ({ data }) => {
           <TopCategoryHeader
             topCategory={topcategory}
             categories={categoriesWithArchive}
-            archivedRules={archivedRules}
+            rules={archivedRules}
           >
             {topcategory.frontmatter.index.map((category, i) => {
               const cat = findCategoryFromIndexValue(category);

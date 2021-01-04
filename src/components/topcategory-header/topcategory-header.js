@@ -3,12 +3,7 @@ import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-const TopCategoryHeader = ({
-  children,
-  topCategory,
-  categories,
-  archivedRules,
-}) => {
+const TopCategoryHeader = ({ children, topCategory, categories, rules }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const findCategoryFromIndexValue = (categoryFromIndex) => {
@@ -19,13 +14,9 @@ const TopCategoryHeader = ({
   };
 
   const getNumberOfRulesForCat = (category) => {
-    if (archivedRules) {
-      return category.frontmatter.index.filter((c) =>
-        archivedRules.find((r) => c == r.frontmatter.uri)
-      ).length;
-    } else {
-      return category.frontmatter.index.length;
-    }
+    return category.frontmatter.index.filter((c) =>
+      rules.find((r) => c == r.frontmatter.uri)
+    ).length;
   };
 
   return (
@@ -69,7 +60,7 @@ TopCategoryHeader.propTypes = {
   children: PropTypes.node.isRequired,
   topCategory: PropTypes.object.isRequired,
   categories: PropTypes.array.isRequired,
-  archivedRules: PropTypes.array,
+  rules: PropTypes.array,
 };
 
 export default TopCategoryHeader;

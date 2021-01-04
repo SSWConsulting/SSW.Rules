@@ -9,9 +9,11 @@ const Breadcrumbs = (props) => {
   const getCategories = () => {
     return props.categories.map((cat, i) => {
       return (
-        <div key={i} className="text-left underline">
+        <div key={i} className="text-left">
           <Link ref={linkRef} to={cat.link}>
-            <div className="px-1 hover:text-red-600">{cat.title}</div>
+            <div className="breadcrumb-content px-1 hover:text-red-600">
+              {cat.title}
+            </div>
           </Link>
         </div>
       );
@@ -27,7 +29,7 @@ const Breadcrumbs = (props) => {
 
         <span className="breadcrumb__separator">&gt;</span>
 
-        <a className="px-1" href={siteUrl}>
+        <a className="breadcrumb-content px-1" href={siteUrl}>
           SSW Rules
         </a>
 

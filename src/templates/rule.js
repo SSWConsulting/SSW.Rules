@@ -6,11 +6,12 @@ import PropTypes from 'prop-types';
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
-  faLightbulb,
   faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import GitHubIcon from '-!svg-react-loader!../images/github.svg';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Reaction from '../components/reaction/reaction';
 
 const Rule = ({ data, location }) => {
@@ -42,23 +43,25 @@ const Rule = ({ data, location }) => {
       <div className="rule-single rounded">
         <section className="rule-content p-12 mb-20">
           <h1>{rule.frontmatter.title}</h1>
-          <small className="history">
-            Created on{' '}
-            {format(new Date(data.history.nodes[0].created), 'dd MMM yyyy')} |
-            Last updated by{' '}
-            <strong>
-              {capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)}
-            </strong>
-            {' on '}
-            {format(
-              new Date(data.history.nodes[0].lastUpdated),
-              'dd MMM yyyy hh:mm aaa'
-            )}
-            {` (${formatDistance(
-              new Date(data.history.nodes[0].lastUpdated),
-              new Date()
-            )} ago)`}
-          </small>
+          {data.history && data.history.nodes[0] && (
+            <small className="history">
+              Created on{' '}
+              {format(new Date(data.history.nodes[0].created), 'dd MMM yyyy')} |
+              Last updated by{' '}
+              <strong>
+                {capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)}
+              </strong>
+              {' on '}
+              {format(
+                new Date(data.history.nodes[0].lastUpdated),
+                'dd MMM yyyy hh:mm aaa'
+              )}
+              {` (${formatDistance(
+                new Date(data.history.nodes[0].lastUpdated),
+                new Date()
+              )} ago)`}
+            </small>
+          )}
           {rule.frontmatter.archivedreason &&
             rule.frontmatter.archivedreason.length > 0 && (
               <div>
@@ -175,43 +178,9 @@ const Rule = ({ data, location }) => {
           )}
           <section id="more" className="pt-4 mt-12 flex text-center">
             <div className="acknowledgements w-1/3">
-              <h5>Acknowledgements</h5>
-              <div className="flex flex-row flex-wrap justify-center">
-                {rule.frontmatter.authors &&
-                  rule.frontmatter.authors.map((author, index) => (
-                    <div
-                      style={{
-                        width: '75px',
-                        height: '75px',
-                        overflow: 'hidden',
-                        borderRadius: '50%',
-                        marginRight: '10px',
-                      }}
-                      key={`author_${index}`}
-                    >
-                      <a
-                        href={`https://ssw.com.au/people/${author.title.replace(
-                          / /g,
-                          '-'
-                        )}`}
-                      >
-                        <img
-                          src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
-                            / /g,
-                            '-'
-                          )}/Images/${author.title.replace(
-                            / /g,
-                            '-'
-                          )}-Profile.jpg`}
-                          alt={author.title}
-                        />
-                      </a>
-                      <span className="tooltiptext">{author.title}</span>
-                    </div>
-                  ))}
-              </div>
+              <Acknowledgements authors={rule.frontmatter.authors} />
             </div>
-            <div className="tags rounded w-1/3">
+            <div className="tags rounded w-full lg:w-1/3">
               <h5>Categories</h5>
               {categories.map((category, i) => (
                 <div className="px-1 inline" key={i}>
@@ -225,16 +194,25 @@ const Rule = ({ data, location }) => {
                 </div>
               ))}
             </div>
-            <div className="likes w-1/3">
-              <h5>Feedback</h5>
-              <Reaction ruleId={rule.frontmatter.guid} />
-              <div>
-                <small className="suggestion">
-                  <a href="https://github.com/SSWConsulting/SSW.Rules.Content/issues">
-                    <FontAwesomeIcon icon={faLightbulb} className="lightbulb" />{' '}
-                    Make a suggestion
+
+            <div className="likes w-full lg:w-1/3">
+              <h5 className="h5-margin-override">Feedback</h5>
+              <Reaction ruleId={rule.frontmatter.guid}/>
+              <div className="suggestion">
+                <span className="action-btn-container">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://github.com/SSWConsulting/SSW.Rules.Content/issues"
+                    className="action-btn-link"
+                  >
+                    <div className="action-btn-label">Make a suggestion</div>
+                    <GitHubIcon
+                      aria-label="logo"
+                      className="action-btn-icon"
+                    />{' '}
                   </a>
-                </small>
+                </span>
               </div>
             </div>
           </section>
@@ -264,6 +242,8 @@ export const query = graphql`
         guid
         authors {
           title
+          url
+          img
         }
         created(formatString: "DD MMM YYYY")
         archivedreason

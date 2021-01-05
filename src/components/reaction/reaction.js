@@ -59,12 +59,12 @@ const Reaction = (props) => {
       if (currentReactionType == null || currentReactionType != type) {
         const jwt = await getIdTokenClaims();
         if (type == ReactionType.Like) {
-          if (currentReactionType != type) {
+          if (currentReactionType != type && currentReactionType != null) {
             setDisikesCount(dislikesCount - 1);
           }
           setLikesCount(likesCount + 1);
         } else {
-          if (currentReactionType != type) {
+          if (currentReactionType != type && currentReactionType != null) {
             setLikesCount(likesCount - 1);
           }
           setDisikesCount(dislikesCount + 1);

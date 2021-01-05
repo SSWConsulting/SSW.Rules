@@ -4,8 +4,6 @@ export async function GetLikeDislikeForUser(ruleId, userId) {
   var query = userId
     ? `${API_URL}/GetLikesDislikesFunction?rule_guid=${ruleId}&user_id=${userId}`
     : `${API_URL}/GetLikesDislikesFunction?rule_guid=${ruleId}`;
-
-  // 2do fetch
   const response = await fetch(query);
   return await response.json();
 }

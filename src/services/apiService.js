@@ -1,9 +1,6 @@
-const API_URL = process.env.API_BASE_URL + '/api'; // process.env.base_url
+const API_URL = process.env.API_BASE_URL + '/api';
 
 export async function GetLikeDislikeForUser(ruleId, userId) {
-  // validate input
-
-  // build query string
   var query = userId
     ? `${API_URL}/GetLikesDislikesFunction?rule_guid=${ruleId}&user_id=${userId}`
     : `${API_URL}/GetLikesDislikesFunction?rule_guid=${ruleId}`;
@@ -14,11 +11,6 @@ export async function GetLikeDislikeForUser(ruleId, userId) {
 }
 
 export async function PostReactionForUser(data, token) {
-  // validate input
-  // data.userId
-  // data.ruleGuid
-  // data.ReactionType
-  // any other members
   if (data == null) {
     return {
       error: true,
@@ -26,14 +18,13 @@ export async function PostReactionForUser(data, token) {
     };
   }
 
-  // do fetch (with method type post)
   const response = await fetch(`${API_URL}/LikeDislikeFunction`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${token}`, // <- need a better way to insert auth token than passing it through as a param
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data), // make sure this is using validated data
+    body: JSON.stringify(data),
   });
   return response.json();
 }

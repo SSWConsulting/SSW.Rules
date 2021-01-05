@@ -11,7 +11,7 @@ import {
 } from '../../services/apiService';
 
 const Reaction = (props) => {
-  const ruleId = props.ruleId; // <- extracts fields from props
+  const { ruleId } = props;
 
   const [likesCount, setLikesCount] = useState(0);
   const [dislikesCount, setDisikesCount] = useState(0);
@@ -26,23 +26,19 @@ const Reaction = (props) => {
   } = useAuth0();
 
   useEffect(() => {
-    //Runs on load, and when the stuff in the array changes
-    console.log('running get likes/dislikes');
     if (isAuthenticated) {
       GetLikeDislikeForUser(ruleId, user.sub)
         .then((success) => {
-          console.log(success);
           setLikesCount(success.likeCount ?? 0);
           setDisikesCount(success.dislikeCount ?? 0);
           setCurrentReactionType(success.userStatus);
         })
         .catch((err) => {
-          console.log('error', err);
+          console.error('error', err);
         });
     } else {
       GetLikeDislikeForUser(ruleId)
         .then((success) => {
-          console.log(success);
           setLikesCount(success.likeCount ?? 0);
           setDisikesCount(success.dislikeCount ?? 0);
         })
@@ -62,7 +58,6 @@ const Reaction = (props) => {
 
       if (currentReactionType == null || currentReactionType != type) {
         const jwt = await getIdTokenClaims();
-        console.log(jwt.__raw);
         if (type == ReactionType.Like) {
           if (currentReactionType != type) {
             setDisikesCount(dislikesCount - 1);
@@ -76,8 +71,7 @@ const Reaction = (props) => {
         }
         setCurrentReactionType(type);
         PostReactionForUser(data, jwt.__raw)
-          .then((success) => {
-            console.log(success);
+          .then(() => {
             setChange(change + 1);
           })
           .catch((err) => {
@@ -87,8 +81,6 @@ const Reaction = (props) => {
     } else {
       if (window.confirm('Sign in to react')) {
         await loginWithRedirect();
-        // 1. redirect uri
-        // 2. Add reaction
       }
     }
   }

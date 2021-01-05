@@ -23,6 +23,7 @@ const Rule = ({ data, location }) => {
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
+
   return (
     <div>
       <Breadcrumb
@@ -193,9 +194,10 @@ const Rule = ({ data, location }) => {
                 </div>
               ))}
             </div>
+
             <div className="likes w-full lg:w-1/3">
               <h5 className="h5-margin-override">Feedback</h5>
-              <Reaction />
+              <Reaction ruleId={rule.frontmatter.guid} />
               <div className="suggestion">
                 <span className="action-btn-container">
                   <a
@@ -237,6 +239,7 @@ export const query = graphql`
       frontmatter {
         uri
         title
+        guid
         authors {
           title
           url

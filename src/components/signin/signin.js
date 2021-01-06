@@ -3,6 +3,7 @@ import React from 'react';
 
 const SignIn = () => {
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const currentPage = window.location.pathname.split('/').pop();
 
   return (
     <div className="action-btn-container">
@@ -13,7 +14,7 @@ const SignIn = () => {
           onClick={() => {
             loginWithRedirect({
               appState: {
-                targetUrl: window.location.pathname.split('/').pop(),
+                targetUrl: currentPage,
               },
             });
           }}

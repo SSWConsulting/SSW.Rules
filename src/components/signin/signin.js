@@ -12,7 +12,9 @@ const SignIn = () => {
           className="btn btn-red"
           onClick={() => {
             loginWithRedirect({
-              appState: { targetUrl: window.location.pathname },
+              appState: {
+                targetUrl: window.location.pathname.split('/').pop(),
+              },
             });
           }}
         >

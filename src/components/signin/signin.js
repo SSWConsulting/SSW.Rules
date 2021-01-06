@@ -3,7 +3,10 @@ import React from 'react';
 
 const SignIn = () => {
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
-  const currentPage = window.location.pathname.split('/').pop();
+  const currentPage =
+    typeof window !== 'undefined'
+      ? window.location.pathname.split('/').pop()
+      : null;
 
   return (
     <div className="action-btn-container">

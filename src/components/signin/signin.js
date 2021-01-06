@@ -1,9 +1,12 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React from 'react';
-import { withPrefix } from 'gatsby';
 
 const SignIn = () => {
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const currentPage =
+    typeof window !== 'undefined'
+      ? window.location.pathname.split('/').pop()
+      : null;
 
   return (
     <div className="action-btn-container">
@@ -13,7 +16,9 @@ const SignIn = () => {
           className="btn btn-red"
           onClick={() => {
             loginWithRedirect({
-              appState: { targetUrl: withPrefix(window.location.pathname) },
+              appState: {
+                targetUrl: currentPage,
+              },
             });
           }}
         >

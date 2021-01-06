@@ -1,6 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React from 'react';
-import { withPrefix } from 'gatsby';
 
 const SignIn = () => {
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();

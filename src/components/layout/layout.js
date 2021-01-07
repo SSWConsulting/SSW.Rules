@@ -9,7 +9,8 @@ import Menu from '../../../lib/ssw.megamenu/menu/menu';
 import MobileMenu from '../../../lib/ssw.megamenu/mobile-menu/mobile-menu';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
-import { Auth0Provider } from '@auth0/auth0-react';
+import { AuthProvider } from 'oidc-react';
+import { UserManager, WebStorageStateStore } from 'oidc-client';
 
 config.autoAddCss = false;
 const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
@@ -26,9 +27,20 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
     }
   };
 
-  const onRedirectCallback = (appState) => {
-    navigate(appState.targetUrl);
+  const onRedirectCallback = () => {
+    const returnUrl = sessionStorage.getItem('returnUrl') ?? '/';
+    sessionStorage.removeItem('returnUrl');
+    navigate(returnUrl);
   };
+
+  const um = new UserManager({
+    authority: process.env.B2C_AUTHORITY,
+    client_id: process.env.B2C_CLIENT_ID,
+    redirect_uri: process.env.B2C_REDIRECT_URI,
+    response_type: 'code',
+    scope: 'openid',
+    userStore: new WebStorageStateStore({ store: window.localStorage }),
+  });
 
   return (
     <div
@@ -36,11 +48,10 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
         overflow: isMenuOpened ? 'hidden' : 'auto',
       }}
     >
-      <Auth0Provider
-        domain={process.env.AUTH0_DOMAIN}
-        clientId={process.env.AUTH0_CLIENT_ID}
-        redirectUri={process.env.AUTH0_REDIRECT_URI}
-        onRedirectCallback={onRedirectCallback}
+      <AuthProvider
+        userManager={um}
+        onSignIn={onRedirectCallback}
+        autoSignIn={false}
       >
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div
@@ -60,7 +71,7 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
         </div>
 
         <MobileMenu isMenuOpened={isMenuOpened}></MobileMenu>
-      </Auth0Provider>
+      </AuthProvider>
     </div>
   );
 };

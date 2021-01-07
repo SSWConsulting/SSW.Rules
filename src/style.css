@@ -683,8 +683,8 @@ ol ol, ol li ol {
 
 .rule-number {
   list-style: decimal;
-  color: #cc4141 !important;
-  font-size: 1.875rem;
+  color: #666 !important;
+  font-size: 1.5rem;
   font-weight: 100;
 }
 
@@ -906,9 +906,20 @@ blockquote p:before {
 }
 
 .rule-content-title h1, .rule-content-title a {
-  color: #cc4141 !important;
+  color: #666 !important;
+  font-size: 1.5rem;
   font-weight: 100 !important;
-  text-decoration:underline !important;
+  text-decoration:none !important;
+}
+
+.rule-content-title a:hover {
+  color: #cc4141 !important;
+}
+
+.rule-content-title h2 {
+  padding: .5rem .75rem;
+  background: #f5f5f5;
+  border-left: 2px solid #cc4141; 
 }
 
 .rule-category-top p {
@@ -944,10 +955,6 @@ blockquote p:before {
 
 .rule-content h4 {
   color: #414141;
-}
-
-.rule-content-title a:hover {
-  color: #cc4141 !important;
 }
 
 .rule-content a,

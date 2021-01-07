@@ -176,8 +176,8 @@ const Rule = ({ data, location }) => {
               </section>
             </>
           )}
-          <section id="more" className="pt-4 mt-12 flex text-center">
-            <div className="acknowledgements w-1/3">
+          <section id="more" className="pt-4 mt-12 flex flex-wrap text-center">
+            <div className="acknowledgements w-full lg:w-1/3">
               <Acknowledgements authors={rule.frontmatter.authors} />
             </div>
             <div className="tags rounded w-full lg:w-1/3">

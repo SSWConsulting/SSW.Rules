@@ -5,7 +5,9 @@ import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
 import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 import InfoIcon from '-!svg-react-loader!../../images/info.svg';
 import SignIn from '../signin/signin';
-import { parentSiteUrl, rulesContentBranch } from '../../../site-config';
+import { parentSiteUrl } from '../../../site-config';
+
+const rulesContentBranch = process.env.CONTENT_BRANCH;
 
 // Example of a component-specific page transition
 const AnimatedContainer = posed.div({

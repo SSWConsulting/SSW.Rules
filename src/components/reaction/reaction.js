@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useAuth0 } from '@auth0/auth0-react';
 import PropTypes from 'prop-types';
+import { useAuth } from 'oidc-react';
 import {
   GetLikeDislikeForUser,
   PostReactionForUser,
@@ -12,22 +12,15 @@ import {
 
 const Reaction = (props) => {
   const { ruleId } = props;
-
+  const { userData, signIn } = useAuth();
   const [likesCount, setLikesCount] = useState(0);
   const [dislikesCount, setDisikesCount] = useState(0);
   const [change, setChange] = useState(0);
   const [currentReactionType, setCurrentReactionType] = useState(null);
 
-  const {
-    isAuthenticated,
-    user,
-    getIdTokenClaims,
-    loginWithRedirect,
-  } = useAuth0();
-
   useEffect(() => {
-    if (isAuthenticated) {
-      GetLikeDislikeForUser(ruleId, user.sub)
+    if (userData) {
+      GetLikeDislikeForUser(ruleId, userData.profile.sub)
         .then((success) => {
           setLikesCount(success.likeCount ?? 0);
           setDisikesCount(success.dislikeCount ?? 0);
@@ -49,15 +42,16 @@ const Reaction = (props) => {
   }, [change]);
 
   async function onClick(type) {
-    if (isAuthenticated) {
+    if (userData) {
       const data = {
         type: type,
         ruleGuid: ruleId,
-        userId: user.sub,
+        userId: userData.profile.sub,
       };
 
       if (currentReactionType == null || currentReactionType != type) {
-        const jwt = await getIdTokenClaims();
+        const jwt = userData.access_token;
+        console.log(userData);
         if (type == ReactionType.Like) {
           if (currentReactionType != type && currentReactionType != null) {
             setDisikesCount(dislikesCount - 1);
@@ -70,7 +64,7 @@ const Reaction = (props) => {
           setDisikesCount(dislikesCount + 1);
         }
         setCurrentReactionType(type);
-        PostReactionForUser(data, jwt.__raw)
+        PostReactionForUser(data, jwt)
           .then(() => {
             setChange(change + 1);
           })
@@ -80,7 +74,9 @@ const Reaction = (props) => {
       }
     } else {
       if (window.confirm('Sign in to react')) {
-        await loginWithRedirect();
+        const url = { state: window.location.pathname };
+        console.log(url);
+        signIn(url);
       }
     }
   }

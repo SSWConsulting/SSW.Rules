@@ -27,9 +27,10 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
     }
   };
 
-  const onRedirectCallback = () => {
+  const onRedirectCallback = (user) => {
     const returnUrl = sessionStorage.getItem('returnUrl') ?? '/';
     sessionStorage.removeItem('returnUrl');
+    console.log(user.access_token);
     navigate(returnUrl);
   };
 
@@ -38,8 +39,9 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
     client_id: process.env.B2C_CLIENT_ID,
     redirect_uri: process.env.B2C_REDIRECT_URI,
     response_type: 'code',
-    scope: 'openid',
+    scope: 'openid https://sswrules.onmicrosoft.com/api/Read',
     userStore: new WebStorageStateStore({ store: window.localStorage }),
+    loadUserInfo: false,
   });
 
   return (

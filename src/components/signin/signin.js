@@ -1,8 +1,8 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth } from 'oidc-react';
 import React from 'react';
 
 const SignIn = () => {
-  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const { signIn, signOut, userData } = useAuth();
   const currentPage =
     typeof window !== 'undefined'
       ? window.location.pathname.split('/').pop()
@@ -10,16 +10,13 @@ const SignIn = () => {
 
   return (
     <div className="action-btn-container">
-      {user && <Profile />}
-      {!isAuthenticated ? (
+      {userData && <Profile />}
+      {!userData ? (
         <button
           className="btn btn-red"
           onClick={() => {
-            loginWithRedirect({
-              appState: {
-                targetUrl: currentPage,
-              },
-            });
+            sessionStorage.setItem('returnUrl', currentPage);
+            signIn();
           }}
         >
           Log in
@@ -28,7 +25,7 @@ const SignIn = () => {
         <button
           className="btn btn-red"
           onClick={() => {
-            logout({ returnTo: process.env.AUTH0_REDIRECT_URI });
+            signOut();
           }}
         >
           Log out
@@ -39,9 +36,11 @@ const SignIn = () => {
 };
 
 const Profile = () => {
-  const { user } = useAuth0();
+  const {
+    userData: { profile },
+  } = useAuth();
 
-  return <div>Welcome, {user.name}</div>;
+  return <div>Welcome, {profile.name}</div>;
 };
 
 export default SignIn;

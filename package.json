@@ -49,6 +49,9 @@
     "gatsby-source-local-git": "^1.0.0",
     "gatsby-transformer-json": "^2.7.0",
     "gatsby-transformer-remark": "^2.8.13",
+    "localstorage-memory": "^1.0.3",
+    "oidc-client": "^1.10.1",
+    "oidc-react": "^1.1.5",
     "postcss-import": "^12.0.1",
     "postcss-nested": "^4.2.1",
     "preval.macro": "^5.0.0",
@@ -63,8 +66,7 @@
     "react-pose": "^4.0.10",
     "rehype-react": "^6.1.0",
     "svg-react-loader": "^0.4.6",
-    "webpack-assets-manifest": "^3.1.1",
-    "@auth0/auth0-react": "^1.2.0"
+    "webpack-assets-manifest": "^3.1.1"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.31",

@@ -51,7 +51,6 @@ const Reaction = (props) => {
 
       if (currentReactionType == null || currentReactionType != type) {
         const jwt = userData.access_token;
-        console.log(userData);
         if (type == ReactionType.Like) {
           if (currentReactionType != type && currentReactionType != null) {
             setDisikesCount(dislikesCount - 1);

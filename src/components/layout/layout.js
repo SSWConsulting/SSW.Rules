@@ -27,7 +27,7 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
     }
   };
 
-  const onRedirectCallback = (user) => {
+  const onRedirectCallback = () => {
     const returnUrl = sessionStorage.getItem('returnUrl') ?? '/';
     sessionStorage.removeItem('returnUrl');
     navigate(returnUrl);

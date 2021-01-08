@@ -30,7 +30,6 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
   const onRedirectCallback = (user) => {
     const returnUrl = sessionStorage.getItem('returnUrl') ?? '/';
     sessionStorage.removeItem('returnUrl');
-    console.log(user.access_token);
     navigate(returnUrl);
   };
 

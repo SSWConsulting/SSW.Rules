@@ -9,16 +9,16 @@
 
 @font-face {
   font-family: 'FontAwesome';
-  src: url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.eot?v=4.4.0');
-  src: url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.eot?#iefix&v=4.4.0')
+  src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.eot?v=4.4.0');
+  src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.eot?#iefix&v=4.4.0')
       format('embedded-opentype'),
-    url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.woff2?v=4.4.0')
+    url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.woff2?v=4.4.0')
       format('woff2'),
-    url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.woff?v=4.4.0')
+    url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.woff?v=4.4.0')
       format('woff'),
-    url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.ttf?v=4.4.0')
+    url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf?v=4.4.0')
       format('truetype'),
-    url('https://ssw.com.au//ssw/include/pigeon/fonts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular')
+    url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular')
       format('svg');
   font-weight: normal;
   font-style: normal;
@@ -790,21 +790,21 @@ blockquote p:before {
     font-size: 16px;
     padding: 12px 12px 12px 42px;
     width: 200px;
-    background: #ddd url(https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-title.png) no-repeat 10px;
+    background: #ddd url(/assets/view-title.png) no-repeat 10px;
 }
 
 .radio-toolbar .view-blurb {
   font-size: 16px;
   padding: 12px 12px 12px 42px;
   width: 200px;
-  background: #ddd url(https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-blurb.png) no-repeat 10px;
+  background: #ddd url(/assets/view-blurb.png) no-repeat 10px;
 }
 
 .radio-toolbar .view-full {
   font-size: 16px;
   padding: 12px 12px 12px 42px;
   width: 200px;
-  background: #ddd url(https://rules.ssw.com.au/Style%20Library/SSW/RulesImages/view-full.png) no-repeat 10px;
+  background: #ddd url(/assets/view-full.png) no-repeat 10px;
 }
 
 .radio-toolbar label:hover {
@@ -1147,7 +1147,7 @@ blockquote p:before {
 }
 
 .rule-content .china:before {
-  content: url(https://rules.ssw.com.au/PublishingImages/china-flag-icon.png);
+  content: url(/assets/china-flag-icon.png);
   padding-right: 1rem;
   float: left;
 }

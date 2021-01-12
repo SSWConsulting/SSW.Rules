@@ -62,7 +62,7 @@ module.exports = {
         plugins: [
           {
             resolve: 'gatsby-remark-figure-caption',
-            options: {figureClassName: 'image'},
+            options: { figureClassName: 'image' },
           },
           // gatsby-remark-relative-images must
           // go before gatsby-remark-images

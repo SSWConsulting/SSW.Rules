@@ -376,7 +376,6 @@ figure figcaption {
   position: relative;
 }
 
-figure figcaption::before,
 .custom-block-heading::before {
   content: 'Figure: ';
 }
@@ -389,7 +388,8 @@ figure figcaption::before,
 }
 
 .good-example figure figcaption::after,
-.good::after, 
+.good figcaption::after,
+.good p:not(:empty)::after,
 div.good-example .custom-block-heading::after {
   content: "\f14a ";
   font-family: FontAwesome;
@@ -404,7 +404,8 @@ div.good-example .custom-block-heading::after {
 }
 
 .bad-example figure figcaption::after,
-.bad::after,
+.bad figcaption::after,
+.bad p:not(:empty)::after,
 div.bad-example .custom-block-heading::after {
   content: "\f2d3 ";
   font-family: FontAwesome;
@@ -419,7 +420,8 @@ div.bad-example .custom-block-heading::after {
 }
 
 .ok-example figure figcaption::after,
-.ok::after,
+.ok figcaption::after,
+.ok p:not(:empty)::after,
 div.ok-example .custom-block-heading::after {
   content: "\f11a ";
   font-family: FontAwesome;
@@ -436,6 +438,7 @@ div.ok-example .custom-block-heading::after {
 div.ok-example,
 div.good-example,
 div.bad-example,
+div.good, div.bad, div.ok,
 div.greybox{
   position: relative;
 }
@@ -622,7 +625,8 @@ pre {
   width: 100%;
 }
 
-.good, .bad, .ok {
+.good figcaption, .bad figcaption, .ok figcaption,
+.good p, .bad p, .ok p {
   font-weight: bold;  
   caption-side: bottom;
   padding-left: 1.2rem;
@@ -691,6 +695,10 @@ ol ol, ol li ol {
 .rule-content {
   color: black;
   font-size: 16px;
+}
+
+b, strong {
+  font-weight: bold;
 }
 
 .rule-content a {

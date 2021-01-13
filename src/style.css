@@ -391,12 +391,9 @@ figure figcaption {
 .good figcaption::after,
 .good p:not(:empty)::after,
 div.good-example .custom-block-heading::after {
-  content: "\f14a ";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-  color: #8dc63f;
+  background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Good.gif) no-repeat;
+  content: "\00a0 ";
+  padding-left: 20px;
   padding-right: 0.5rem;
   position: absolute;
   left: 0px;
@@ -407,12 +404,9 @@ div.good-example .custom-block-heading::after {
 .bad figcaption::after,
 .bad p:not(:empty)::after,
 div.bad-example .custom-block-heading::after {
-  content: "\f2d3 ";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-  color: #cc4141;
+  background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Bad.gif) no-repeat;
+  content: "\00a0 ";
+  padding-left: 20px;
   padding-right: 0.5rem;
   position: absolute;
   left: 0px;
@@ -790,21 +784,21 @@ blockquote p:before {
     font-size: 16px;
     padding: 12px 12px 12px 42px;
     width: 200px;
-    background: #ddd url(/assets/view-title.png) no-repeat 10px;
+    background: #ddd url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/view-title.png) no-repeat 10px;
 }
 
 .radio-toolbar .view-blurb {
   font-size: 16px;
   padding: 12px 12px 12px 42px;
   width: 200px;
-  background: #ddd url(/assets/view-blurb.png) no-repeat 10px;
+  background: #ddd url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/view-blurb.png) no-repeat 10px;
 }
 
 .radio-toolbar .view-full {
   font-size: 16px;
   padding: 12px 12px 12px 42px;
   width: 200px;
-  background: #ddd url(/assets/view-full.png) no-repeat 10px;
+  background: #ddd url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/view-full.png) no-repeat 10px;
 }
 
 .radio-toolbar label:hover {
@@ -1050,23 +1044,23 @@ blockquote p:before {
 }
 
 .rule-content figure figcaption.bad-example:before {
-  content: "\f2d3 ";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-  color: #cc4141;
+  background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Bad.gif) no-repeat;
+  content: "\00a0 ";
+  padding-left: 20px;
   padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+  top:0px;
 }
 
 .rule-content figure figcaption.good-example:before {
-  content: "\f14a ";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-  color: #8dc63f;
+  background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Good.gif) no-repeat;
+  content: "\00a0 ";
+  padding-left: 20px;
   padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+  top:0px;
 }
 
 .rule-content figure figcaption.ok-example:before {
@@ -1147,7 +1141,7 @@ blockquote p:before {
 }
 
 .rule-content .china:before {
-  content: url(/assets/china-flag-icon.png);
+  content: url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/china-flag-icon.png);
   padding-right: 1rem;
   float: left;
 }

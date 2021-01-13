@@ -47,7 +47,7 @@ const Header = ({ displayActions, ruleUri }) => {
                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${rulesContentBranch}/${ruleUri}`}
                   className="action-btn-link"
                 >
-                  <div className="action-btn-label">Edit</div>
+                  <div>Edit</div>
                   <GitHubIcon aria-label="logo" className="action-btn-icon" />
                 </a>
                 <a
@@ -56,7 +56,7 @@ const Header = ({ displayActions, ruleUri }) => {
                   href="https://rules.ssw.com.au/make-your-site-easy-to-maintain"
                   className="action-btn-link"
                 >
-                  <div className="action-btn-label">Info</div>
+                  <div>Info</div>
                   <InfoIcon aria-label="logo" className="action-btn-icon" />
                 </a>
               </>

@@ -67,6 +67,7 @@ a, a:visited {
     transition: color 0.25s ease;
     &:hover {
       @apply text-ssw-red;
+      border-bottom: 2px dotted #CC4141;
       text-decoration:underline;
       text-decoration: none;
     } 
@@ -170,6 +171,7 @@ footer {
   margin-right: auto;
   align-items: center;
   order: 2;
+  border-bottom: 2px dotted #9e9c9e;
   margin-left: 12px;
 }
 

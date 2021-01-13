@@ -934,10 +934,6 @@ blockquote p:before {
 /* Single Rule
 -------------------------------------------------- */
 
-.h5-margin-override {
-  margin-bottom: 0px;
-}
-
 .rule-category h1 {
   color: #cc4141;
   font-weight: 100;
@@ -1199,14 +1195,10 @@ blockquote p:before {
   background-color: #222;
 }
 
-#more .likes p {
-  color: #777;
-}
-
 #more .likes span {
-  margin: 0 0 4px;
+  margin:  0px 8px 5px 0px;
   display: inline-block;
-  padding: 0 10px;
+  padding: 0px 15px;
 }
 
 #more .likes span .bad, #more .likes span .good {
@@ -1226,7 +1218,9 @@ blockquote p:before {
 
 .likes-counter-container {
   position: relative;
-  bottom: .65rem;
+  bottom: .40rem;
+  left: .50rem;
+  right: .50rem;
   display: inline-block;
 }
 

@@ -30,6 +30,7 @@ const Reaction = (props) => {
           console.error('error', err);
         });
     } else {
+      setCurrentReactionType(null);
       GetLikeDislikeForUser(ruleId)
         .then((success) => {
           setLikesCount(success.likeCount ?? 0);
@@ -39,7 +40,7 @@ const Reaction = (props) => {
           console.error('error', err);
         });
     }
-  }, [change]);
+  }, [change, userData]);
 
   async function onClick(type) {
     if (userData) {
@@ -72,10 +73,19 @@ const Reaction = (props) => {
           });
       }
     } else {
-      if (window.confirm('Sign in to react')) {
-        const url = { state: window.location.pathname };
-        console.log(url);
-        signIn(url);
+      if (
+        window.confirm(
+          `Sign in to ${
+            type == ReactionType.Like ? 'like' : 'dislike'
+          } this rule`
+        )
+      ) {
+        const currentPage =
+          typeof window !== 'undefined'
+            ? window.location.pathname.split('/').pop()
+            : null;
+        sessionStorage.setItem('returnUrl', currentPage);
+        signIn();
       }
     }
   }

@@ -123,20 +123,21 @@ footer {
   font-size: 0.75rem;
 }
 
-#rules ul {
-  list-style: none;
-}
-
-#rules ul li::before {
+#rules ul li::before, .rule-content ul li::before {
   content: "\25A0";
   color: #cc4141;
   display: inline-block; 
   width: 1em;
   margin-left: -1em;
 }
-#rules ul li {
+
+#rules ul li, .rule-content ul li {
   padding: 0 0 10px 15px;
   line-height: 1.5em;
+}
+
+.rule-content ol {
+  list-style: decimal;
 }
 
 .clear-filter {
@@ -521,6 +522,7 @@ pre {
   border-radius: .5rem;
   padding: .5rem 1rem;
   word-break: break-all;
+  margin-bottom: 12px;
 }
 
 .footer-link {
@@ -678,7 +680,6 @@ hr {
 
 ol ol, ol li ol {
   list-style: lower-alpha;
-
 }
 
 .rule-number {
@@ -1034,6 +1035,9 @@ blockquote p:before {
 
 .rule-content figure img {
   max-width: 100%;
+  padding: 12px;
+  background: #eee;
+  border: 1px solid #ccc;
 }
 
 .rule-content figure figcaption {

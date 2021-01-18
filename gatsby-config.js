@@ -77,7 +77,7 @@ module.exports = {
               // base for generating different widths of each image.
               //linkImagesToOriginal: false,
               maxWidth: 590,
-              backgroundColor: `transparent`,
+              backgroundColor: 'transparent',
             },
           },
           'gatsby-remark-copy-linked-files',

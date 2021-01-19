@@ -136,8 +136,12 @@ footer {
   line-height: 1.5em;
 }
 
-.rule-content ol {
+.rule-content ol, .rule-content ul ol {
   list-style: decimal;
+}
+
+.rule-content ol ol {
+  list-style: lower-alpha;
 }
 
 .clear-filter {
@@ -264,6 +268,11 @@ a.twitter-hashtag-button, a.twitter-hashtag-button:visited,a.twitter-hashtag-but
   color: #fff;
   border-bottom: 0px !important;
 }
+
+.button.twitter-hashtag-button {
+  padding: 10px 10px 10px 10px;
+}
+
 .button{
   position: relative;
   height: 20px;
@@ -1024,7 +1033,15 @@ blockquote p:before {
 }
 
 .rule-content ul ul, .rule-content ul li ul {
-  list-style-type: circle;
+  list-style-type: none;
+}
+
+.rule-content ul li ul li::before {
+  content: "\26AC";
+  color: #000;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
 }
 
 /*.rule-content figure {

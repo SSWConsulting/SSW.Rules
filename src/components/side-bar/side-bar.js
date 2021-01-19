@@ -72,10 +72,11 @@ const SideBar = ({ ruleTotalNumber }) => {
         <h4>About SSW</h4>
         <p>
           SSW Consulting has over 25 years of experience developing awesome
-          Microsoft solutions that today build on top of AngularJS, Azure, TFS,
-          SharePoint, .NET, Dynamics CRM and SQL Server. With 40+ consultants in
-          5 countries, we have delivered the best in the business to more than
-          1,000 clients in 15 countries.
+          Microsoft solutions that today build on top of Angular, React, Azure,
+          Azure DevOps (was TFS), SharePoint, Office 365, .NET Core, WebAPI,
+          Dynamics 365 and SQL Server. With 40+ consultants in 5 countries, we
+          have delivered the best in the business to more than 1,000 clients in
+          15 countries.
         </p>
       </section>
       <section>

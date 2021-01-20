@@ -1,8 +1,9 @@
 import { useAuth } from 'oidc-react';
 import React from 'react';
+import DropdownIcon from '../dropdown-icon/dropdown-icon';
 
 const SignIn = () => {
-  const { signIn, signOut, userData } = useAuth();
+  const { signIn, userData } = useAuth();
   const currentPage =
     typeof window !== 'undefined'
       ? window.location.pathname.split('/').pop()
@@ -10,7 +11,6 @@ const SignIn = () => {
 
   return (
     <div className="action-btn-container">
-      {userData && <Profile />}
       {!userData ? (
         <button
           className="btn btn-red"
@@ -22,25 +22,12 @@ const SignIn = () => {
           Log in
         </button>
       ) : (
-        <button
-          className="btn btn-red"
-          onClick={() => {
-            signOut();
-          }}
-        >
-          Log out
-        </button>
+        <>
+          <DropdownIcon />
+        </>
       )}
     </div>
   );
-};
-
-const Profile = () => {
-  const {
-    userData: { profile },
-  } = useAuth();
-
-  return <div>Welcome, {profile.name}</div>;
 };
 
 export default SignIn;

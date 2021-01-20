@@ -45,7 +45,7 @@ const Header = ({ displayActions, ruleUri }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${rulesContentBranch}/${ruleUri}`}
-                  className="action-btn-link"
+                  className="action-btn-link-underlined"
                 >
                   <div>Edit</div>
                   <GitHubIcon aria-label="logo" className="action-btn-icon" />
@@ -54,7 +54,7 @@ const Header = ({ displayActions, ruleUri }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   href="https://rules.ssw.com.au/make-your-site-easy-to-maintain"
-                  className="action-btn-link"
+                  className="action-btn-link-underlined"
                 >
                   <div>Info</div>
                   <InfoIcon aria-label="logo" className="action-btn-icon" />

@@ -14,7 +14,7 @@ import { UserManager, WebStorageStateStore } from 'oidc-client';
 import localStorageMemory from 'localstorage-memory';
 
 config.autoAddCss = false;
-const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
+const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
   const node = useRef();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
 
@@ -43,7 +43,13 @@ const Layout = ({ children, displayActions, ruleUri, pageTitle }) => {
         }}
       >
         <div className="flex flex-col min-h-screen main-container">
-          <Head pageTitle={pageTitle} />
+          <Head
+            pageTitle={
+              crumbLabel == 'SSW Rules'
+                ? 'Secret ingredients to quality software'
+                : crumbLabel
+            }
+          />
           <Header displayActions={displayActions} ruleUri={ruleUri} />
           <Menu onClickToggle={() => actionOnToggleClick()}></Menu>
           <main className="flex-1">{children}</main>

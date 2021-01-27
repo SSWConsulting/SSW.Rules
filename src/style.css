@@ -295,6 +295,10 @@ a.twitter-hashtag-button, a.twitter-hashtag-button:visited,a.twitter-hashtag-but
   font-size: large;
 }
 
+.button-next.bg-ssw-grey {
+  cursor:default;
+}
+
 button:focus {
   outline: 0;
 }

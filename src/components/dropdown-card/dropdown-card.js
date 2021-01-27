@@ -11,11 +11,10 @@ const DropdownCard = ({ setOpen }) => {
     <>
       <div className="dropdown">
         <div className="dropdown-list">
-          <p>Signed in as</p>
           <div
             style={{
               textAlign: 'start',
-              margin: '1rem',
+              margin: '1rem 1rem',
             }}
           >
             <p
@@ -43,7 +42,7 @@ const DropdownCard = ({ setOpen }) => {
             }}
           >
             <FontAwesomeIcon
-              style={{ fontSize: '1.5rem', margin: '1rem' }}
+              style={{ fontSize: '1.5rem', margin: '0.7rem 1rem' }}
               icon={faUser}
             />{' '}
             Your Profile
@@ -55,7 +54,7 @@ const DropdownCard = ({ setOpen }) => {
             }}
           >
             <FontAwesomeIcon
-              style={{ fontSize: '1.5rem', margin: '1rem' }}
+              style={{ fontSize: '1.5rem', margin: '0.7rem 1rem' }}
               icon={faSignOutAlt}
             />{' '}
             Sign Out

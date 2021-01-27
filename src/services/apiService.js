@@ -16,6 +16,12 @@ export async function GetAllLikedDisliked(userId) {
   return await response.json();
 }
 
+export async function GetLikesDislikesCountForUser(userId) {
+  var query = `${API_URL}/GetLikesDislikesCountFunction?&user_id=${userId}`;
+  const response = await fetch(query);
+  return await response.json();
+}
+
 export async function PostReactionForUser(data, token) {
   if (data == null) {
     return {
@@ -64,6 +70,12 @@ export async function GetBookmarksForUser(userId, ruleId) {
   var query = ruleId
     ? `${API_URL}/GetBookmarkStatusFunction?rule_guid=${ruleId}&user_id=${userId}`
     : `${API_URL}/GetAllBookmarked?user_id=${userId}`;
+  const response = await fetch(query);
+  return await response.json();
+}
+
+export async function GetBookmarksCountForUser(userId) {
+  var query = `${API_URL}/GetBookmarksCountFunction?&user_id=${userId}`;
   const response = await fetch(query);
   return await response.json();
 }

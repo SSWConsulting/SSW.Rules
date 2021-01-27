@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { StaticQuery, graphql } from 'gatsby';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -9,8 +9,10 @@ import { useAuth } from 'oidc-react';
 
 const Profile = ({ data }) => {
   const [selectedFilter, setSelectedFilter] = useState(1);
+  const [listChange, setListChange] = useState(0);
   const { userData } = useAuth();
 
+  useEffect(() => {}, [listChange, userData]);
   if (userData) {
     return (
       <>
@@ -42,10 +44,16 @@ const Profile = ({ data }) => {
               <ProfileFilterMenu
                 selectedFilter={selectedFilter}
                 setSelectedFilter={setSelectedFilter}
+                change={listChange}
               />
             </div>
-            <div style={{}}>
-              <ProfileContent data={data} filter={selectedFilter} />
+            <div>
+              <ProfileContent
+                data={data}
+                filter={selectedFilter}
+                setListChangeCallback={setListChange}
+                listChange={listChange}
+              />
             </div>
           </section>
         </div>

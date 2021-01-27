@@ -973,8 +973,9 @@ blockquote p:before {
 .rule-content h1 {
   color: #cc4141;
   font-weight: 100;
-  margin-top: 3rem;
-  margin-right: auto;
+  margin-right: 0;
+  right: 0;
+  padding-right: 0;
 }
 
 .rule-content h3 {
@@ -1265,12 +1266,30 @@ blockquote p:before {
 
 .rule-header-container {
   display: flex;
-  align-items: flex-start;
+}
+
+.bookmark-icon {
+  height: 2rem;
+  margin-top: 2.5rem;
+  color: #ccc;
+}
+
+.bookmark-icon-pressed {
+  height: 2rem;
+  margin-top: 2.5rem;
+  color: #cc4141;
+}
+
+.bookmark-icon-pressed:hover {
+  height: 2.2rem;
+  cursor: pointer;
 }
 
 .bookmark-icon:hover {
+  height: 2.2rem;
   color: #cc4141;
-  opacity: 60%;
+  opacity: 50%;
+  cursor: pointer;
 }
 
 /* Dropdown
@@ -1284,15 +1303,15 @@ blockquote p:before {
 
 .dropdown-list {
   margin: 1rem;
-  padding: 0.8rem;
+  padding: 0 0.8rem;
   position: absolute;
   background-color: white;
   color: grey;
   font-size: 12px;
   box-shadow: 0px 5px 11px 0px rgba(130,130,130,0.8);
   border-radius: 5%;
-  width: 13rem;
-  height: 16rem;
+  width: 12rem;
+  height: 12rem;
   right: -1rem;
 }
 
@@ -1301,7 +1320,7 @@ blockquote p:before {
   display: flex;
   align-items: center;
   margin-left: 0;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .dropdown-btn-container:hover {
@@ -1324,8 +1343,8 @@ blockquote p:before {
 
 .profile-header {
   background-color: #f5f5f5;
-  height: 17rem;
   padding: 3.5rem;
+  height: 13.1rem;
 }
 
 .grid-container {
@@ -1388,22 +1407,27 @@ blockquote p:before {
 }
 
 .filter-menu {
-  top: 5.39rem;
+  top: 1.5rem;
+  left: 7.1rem;
   position: relative;
   display: grid;
-  grid-template-columns: 8rem 5rem 7rem;
+  grid-template-columns: 8rem 4rem 6rem;
   font-weight: bold;
-  column-gap: 2rem;
+  column-gap: 1.5rem;
 }
 
 .menu-item {
- padding: 0 1rem 0.3rem;
+ padding: 0 0.5rem 0.5rem;
  text-align: center;
  font-weight: normal;
  color: #333333;
+ position: relative;
+ display: flex;
+ margin: auto;
 }
 
 .menu-item:hover {
+  padding: 0 0.5rem 0.25rem;
   border-bottom: 0.25rem solid rgba(0, 0, 0, 0.60);
   opacity: 70%;
   cursor: pointer;
@@ -1411,11 +1435,12 @@ blockquote p:before {
 
 .remove-item {
   margin-left: auto;
+  margin: auto 0 auto auto;
 }
 
 .remove-item:hover {
   cursor: pointer;
-  opacity: 80%;
+  color: #cc4141;
 }
 
 /* Responsiveness

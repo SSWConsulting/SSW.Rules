@@ -8,11 +8,16 @@ import {
   RemoveBookmark,
   RemoveLikeDislike,
 } from '../../services/apiService';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from 'oidc-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const ProfileContent = ({ data, filter }) => {
+const ProfileContent = ({
+  data,
+  filter,
+  setListChangeCallback,
+  listChange,
+}) => {
   const [bookmarkedRules, setBookmarkedRules] = useState();
   const [likedRules, setLikedRules] = useState();
   const [dislikedRules, setDislikedRules] = useState();
@@ -25,7 +30,14 @@ const ProfileContent = ({ data, filter }) => {
   };
 
   function onRemoveClick(ruleGuid) {
-    if (userData) {
+    if (
+      userData &&
+      window.confirm(
+        `Are you sure you want to remove this ${
+          filter == 1 ? 'bookmark' : 'reaction'
+        }?`
+      )
+    ) {
       filter == 1
         ? RemoveBookmark(
             { ruleGuid: ruleGuid, UserId: userData.profile.sub },
@@ -33,6 +45,7 @@ const ProfileContent = ({ data, filter }) => {
           )
             .then(() => {
               setChange(change + 1);
+              setListChangeCallback(listChange + 1);
             })
             .catch((err) => {
               console.error('error: ' + err);
@@ -174,10 +187,13 @@ const ProfileContent = ({ data, filter }) => {
 ProfileContent.propTypes = {
   data: PropTypes.object.isRequired,
   filter: PropTypes.number.isRequired,
+  setListChangeCallback: PropTypes.func.isRequired,
+  listChange: PropTypes.number.isRequired,
 };
 
 const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
   const linkRef = useRef();
+
   return (
     <div className="p-12">
       {rules.toString() == '' || rules == undefined || !rules ? (
@@ -196,8 +212,8 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
                       {rule.title}
                     </Link>
                     <FontAwesomeIcon
-                      icon={faTrash}
-                      color="black"
+                      icon={faTimesCircle}
+                      color="#ddd"
                       onClick={() => onRemoveClick(rule.guid)}
                       className="remove-item"
                     />

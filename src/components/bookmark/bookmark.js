@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import BookmarkIcon from '-!svg-react-loader!../../images/BookmarkIcon.svg';
@@ -33,28 +35,35 @@ const Bookmark = (props) => {
         ? BookmarkRule(
             { ruleGuid: ruleId, UserId: userData.profile.sub },
             userData.access_token
-          ).then(() => {
-            setChange(change + 1);
-            setBookmarked(true);
-          })
+          )
+            .then(() => {
+              setChange(change + 1);
+              setBookmarked(true);
+            })
+            .catch((err) => {
+              console.error(err);
+            })
         : RemoveBookmark(
             { ruleGuid: ruleId, UserId: userData.profile.sub },
             userData.access_token
-          ).then(() => {
-            setBookmarked(false);
-            setChange(change + 1);
-          });
-    }
+          )
+            .then(() => {
+              setBookmarked(false);
+              setChange(change + 1);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+    } 
   }
 
   return (
     <>
-      <button onClick={onClick}>
+      <div onClick={onClick}>
         <BookmarkIcon
-          style={bookmarked ? { color: 'cc4141' } : { color: 'ccc' }}
-          className="bookmark-icon"
+          className={!bookmarked ? 'bookmark-icon' : 'bookmark-icon-pressed'}
         />
-      </button>
+      </div>
     </>
   );
 };

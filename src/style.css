@@ -19,6 +19,7 @@
     url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf?v=4.4.0')
       format('truetype'),
     url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular')
+    url('https://ssw.com.au//ssw/include/pigeon/foxnts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular')
       format('svg');
   font-weight: normal;
   font-style: normal;
@@ -991,6 +992,7 @@ blockquote p:before {
 .rule-content h1 {
   color: #cc4141;
   font-weight: 100;
+  margin-top: 0;
   margin-right: 0;
   right: 0;
   padding-right: 0;
@@ -1208,6 +1210,26 @@ blockquote p:before {
   padding: 10px;
   margin: 0 0 20px;
   border: 1px solid #ccc;
+}
+
+.rule-content .secret-content:before {
+  content: "\f21b ";
+  font-family: FontAwesome;
+  font-size: 38px;
+  font-weight: normal;
+  text-decoration: inherit;
+  color: #CC4141;
+  padding-right: 1rem;
+  float: left;
+  line-height: normal;
+}
+
+.rule-content .secret-content {
+  display: flex;
+  padding: 10px;
+  margin: 0 0 20px;
+  border: 1px dashed #999999;
+  background-color: #EEEEEE;
 }
 
 .rule-single {

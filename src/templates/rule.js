@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
 import formatDistance from 'date-fns/formatDistance';
@@ -15,6 +16,11 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Reaction from '../components/reaction/reaction';
 import Comments from '../components/comments/comments';
+import {
+  GetOrganisations,
+  GetSecretContent,
+  GetGithubOrganisationName,
+} from '../services/apiService';
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
@@ -25,6 +31,67 @@ const Rule = ({ data, location }) => {
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
+  const { userData } = useAuth();
+
+  const loadSecretContent = async (userOrgId) => {
+    const hidden = document.getElementsByClassName('hidden');
+    if (hidden.length != 0) {
+      const contentID = hidden[0].textContent || hidden[0].innerText;
+      const guid = contentID.substring(0, 36);
+      const orgID = contentID.substring(37);
+      if (orgID == userOrgId) {
+        userData && guid
+          ? await GetSecretContent(guid, userData.access_token)
+              .then((success) => {
+                GetGithubOrganisationName(orgID)
+                  .then((nameSuccess) => {
+                    console.log(nameSuccess[0]);
+                    hidden[0].innerHTML = ReactDOMServer.renderToStaticMarkup(
+                      <SecretContent
+                        content={success.content.content}
+                        orgName={nameSuccess[0]?.login ?? 'Your Org'}
+                      />
+                    );
+                    hidden[0].className = 'secret-content';
+                  })
+                  .catch((err) => {
+                    console.error('error' + err);
+                  });
+              })
+              .catch((err) => {
+                console.error('error: ' + err);
+              })
+          : null;
+      }
+    }
+  };
+
+  const SecretContent = (props) => {
+    return (
+      <>
+        <b>{props.orgName + ' Only: '}</b>
+        <div style={{ marginLeft: '0.3rem' }}>{props.content}</div>
+      </>
+    );
+  };
+  SecretContent.propTypes = {
+    content: PropTypes.string,
+    orgName: PropTypes.string,
+  };
+
+  useEffect(() => {
+    userData
+      ? GetOrganisations(userData.profile.sub)
+          .then((success) => {
+            success.organisations.forEach((org) =>
+              loadSecretContent(org.organisationId)
+            );
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      : null;
+  }, [userData]);
 
   return (
     <div>

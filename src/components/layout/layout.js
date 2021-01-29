@@ -83,7 +83,7 @@ const LayoutWithQuery = (props) => (
         }
       }
     `}
-    render={(data) => <Layout data={data} {...props} />}
+    render={(data) => <LayoutWithAuth data={data} {...props} />}
   />
 );
 
@@ -128,11 +128,11 @@ const LayoutWithAuth = (props) => {
           onSignIn={onRedirectCallback}
           autoSignIn={false}
         >
-          <LayoutWithQuery {...props} />
+          <Layout {...props} />
         </AuthProvider>
       )}
     </>
   );
 };
 
-export default LayoutWithAuth;
+export default LayoutWithQuery;

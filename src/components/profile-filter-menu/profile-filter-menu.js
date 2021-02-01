@@ -1,42 +1,16 @@
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  GetLikesDislikesCountForUser,
-  GetBookmarksCountForUser,
-} from '../../services/apiService';
-import { useAuth } from 'oidc-react';
 
-const ProfileFilterMenu = ({ selectedFilter, setSelectedFilter, change }) => {
-  const { userData } = useAuth();
-  const [likesCount, setLikesCount] = useState(0);
-  const [dislikesCount, setDisikesCount] = useState(0);
-  const [bookmarksCount, setBookmarksCount] = useState(0);
-
-  useEffect(() => {
-    if (userData) {
-      GetLikesDislikesCountForUser(userData.profile.sub)
-        .then((success) => {
-          console.log(success);
-          setLikesCount(success.likeCount ?? 0);
-          setDisikesCount(success.dislikeCount ?? 0);
-        })
-        .catch((err) => {
-          console.error('error', err);
-        });
-      GetBookmarksCountForUser(userData.profile.sub)
-        .then((success) => {
-          console.log(success);
-          setBookmarksCount(success.bookmarksCount ?? 0);
-        })
-        .catch((err) => {
-          console.error('error', err);
-        });
-    }
-  }, [userData, selectedFilter, change]);
-
+const ProfileFilterMenu = ({
+  selectedFilter,
+  setSelectedFilter,
+  likedRulesCount,
+  dislikedRulesCount,
+  bookmarkedRulesCount,
+}) => {
   return (
     <>
       <div className="filter-menu">
@@ -57,7 +31,7 @@ const ProfileFilterMenu = ({ selectedFilter, setSelectedFilter, change }) => {
         >
           Bookmarks
           <div style={{ opacity: '70%', paddingLeft: '0.5rem' }}>
-            {bookmarksCount}
+            {bookmarkedRulesCount ?? 0}
           </div>
         </div>
         <div
@@ -76,10 +50,8 @@ const ProfileFilterMenu = ({ selectedFilter, setSelectedFilter, change }) => {
           }}
         >
           Likes
-          <div
-            style={{ opacity: '70%', color: 'green', paddingLeft: '0.5rem' }}
-          >
-            {likesCount}
+          <div style={{ opacity: '70%', paddingLeft: '0.5rem' }}>
+            {likedRulesCount ?? 0}
           </div>
         </div>
         <div
@@ -105,7 +77,7 @@ const ProfileFilterMenu = ({ selectedFilter, setSelectedFilter, change }) => {
               paddingLeft: '0.5rem',
             }}
           >
-            {dislikesCount}
+            {dislikedRulesCount ?? 0}
           </div>
         </div>
       </div>
@@ -116,7 +88,9 @@ const ProfileFilterMenu = ({ selectedFilter, setSelectedFilter, change }) => {
 ProfileFilterMenu.propTypes = {
   selectedFilter: PropTypes.number.isRequired,
   setSelectedFilter: PropTypes.func.isRequired,
-  change: PropTypes.number.isRequired,
+  likedRulesCount: PropTypes.number.isRequired,
+  dislikedRulesCount: PropTypes.number.isRequired,
+  bookmarkedRulesCount: PropTypes.number.isRequired,
 };
 
 export const Filter = {

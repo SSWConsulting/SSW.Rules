@@ -5,12 +5,16 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import ProfileBadge from '../components/profile-badge/profile-badge';
 import ProfileContent from '../components/profile-content/profile-content';
 import ProfileFilterMenu from '../components/profile-filter-menu/profile-filter-menu';
+import GitHubIcon from '-!svg-react-loader!../images/github.svg';
 import { useAuth } from 'oidc-react';
 
 const Profile = ({ data }) => {
   const [selectedFilter, setSelectedFilter] = useState(1);
   const [listChange, setListChange] = useState(0);
   const { userData } = useAuth();
+  const [bookmarkedRulesCount, setBookmarkedRulesCount] = useState();
+  const [likedRulesCount, setLikedRulesCount] = useState();
+  const [dislikedRulesCount, setDislikedRulesCount] = useState();
 
   useEffect(() => {}, [listChange, userData]);
   if (userData) {
@@ -18,7 +22,7 @@ const Profile = ({ data }) => {
       <>
         <Breadcrumb title="Profile" />
         <div className="rule-category rounded">
-          <section className="mb-20">
+          <section className="mb-20 pb-2 rounded">
             <div className="profile-header rounded-t">
               <div className="grid-container">
                 <div
@@ -38,12 +42,16 @@ const Profile = ({ data }) => {
                   className="github-link"
                   href={`https://www.github.com/${userData.profile.name}`}
                 >
+                  <GitHubIcon style={{ margin: '0.15rem 0.2rem 0rem 0rem' }} />
                   Manage GitHub account
                 </a>
               </div>
               <ProfileFilterMenu
                 selectedFilter={selectedFilter}
                 setSelectedFilter={setSelectedFilter}
+                bookmarkedRulesCount={bookmarkedRulesCount}
+                likedRulesCount={likedRulesCount}
+                dislikedRulesCount={dislikedRulesCount}
                 change={listChange}
               />
             </div>
@@ -53,6 +61,9 @@ const Profile = ({ data }) => {
                 filter={selectedFilter}
                 setListChangeCallback={setListChange}
                 listChange={listChange}
+                setBookmarkedRulesCount={setBookmarkedRulesCount}
+                setLikedRulesCount={setLikedRulesCount}
+                setDislikedRulesCount={setDislikedRulesCount}
               />
             </div>
           </section>
@@ -86,6 +97,7 @@ const ProfileWithQuery = (props) => (
                 title
               }
             }
+            htmlAst
           }
         }
       }

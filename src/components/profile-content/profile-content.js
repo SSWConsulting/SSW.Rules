@@ -8,16 +8,19 @@ import {
   RemoveBookmark,
   RemoveLikeDislike,
 } from '../../services/apiService';
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTimesCircle,
+  faThumbsUp,
+  faThumbsDown,
+} from '@fortawesome/free-solid-svg-icons';
+import BookmarkIcon from '-!svg-react-loader!../../images/BookmarkIcon.svg';
+import MD from 'gatsby-custom-md';
+import GreyBox from '../greybox/greybox';
 import { useAuth } from 'oidc-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Filter } from '../profile-filter-menu/profile-filter-menu';
 
-const ProfileContent = ({
-  data,
-  filter,
-  setListChangeCallback,
-  listChange,
-}) => {
+const ProfileContent = (props) => {
   const [bookmarkedRules, setBookmarkedRules] = useState();
   const [likedRules, setLikedRules] = useState();
   const [dislikedRules, setDislikedRules] = useState();
@@ -34,18 +37,18 @@ const ProfileContent = ({
       userData &&
       window.confirm(
         `Are you sure you want to remove this ${
-          filter == 1 ? 'bookmark' : 'reaction'
+          props.filter == Filter.Bookmarks ? 'bookmark' : 'reaction'
         }?`
       )
     ) {
-      filter == 1
+      props.filter == Filter.Bookmarks
         ? RemoveBookmark(
             { ruleGuid: ruleGuid, UserId: userData.profile.sub },
             userData.access_token
           )
             .then(() => {
               setChange(change + 1);
-              setListChangeCallback(listChange + 1);
+              props.setListChangeCallback(props.listChange + 1);
             })
             .catch((err) => {
               console.error('error: ' + err);
@@ -66,7 +69,7 @@ const ProfileContent = ({
   function getBookmarkList() {
     GetBookmarksForUser(userData.profile.sub)
       .then((success) => {
-        const allRules = data.allMarkdownRemark.nodes;
+        const allRules = props.data.allMarkdownRemark.nodes;
         const bookmarkedGuids =
           success.bookmarkedRules.size != 0
             ? success.bookmarkedRules.map((r) => r.ruleGuid)
@@ -77,8 +80,10 @@ const ProfileContent = ({
         const bookmarkedRulesSpread = bookmarkedRulesMap.map((r) => ({
           ...r.frontmatter,
           excerpt: r.excerpt,
+          htmlAst: r.htmlAst,
         }));
         setBookmarkedRules(bookmarkedRulesSpread);
+        props.setBookmarkedRulesCount(bookmarkedRulesSpread.length);
       })
       .catch((err) => {
         console.error('error: ', err);
@@ -88,7 +93,7 @@ const ProfileContent = ({
   function getLikesDislikesLists() {
     GetAllLikedDisliked(userData.profile.sub)
       .then((success) => {
-        const allRules = data.allMarkdownRemark.nodes;
+        const allRules = props.data.allMarkdownRemark.nodes;
         const likedGuids = success.likesDislikedRules.map((r) => r.ruleGuid);
         const reactedRules = allRules.filter((value) =>
           likedGuids.includes(value.frontmatter.guid)
@@ -97,23 +102,26 @@ const ProfileContent = ({
           .map((r) => ({
             ...r.frontmatter,
             excerpt: r.excerpt,
+            htmlAst: r.htmlAst,
             type: success.likesDislikedRules
               .filter((v) => v.ruleGuid == r.frontmatter.guid)
               .map((r) => r.type),
           }))
           .filter((rr) => rr.type[0] == 0);
         setLikedRules(likedRules);
-
+        props.setLikedRulesCount(likedRules.length);
         const dislikedRules = reactedRules
           .map((r) => ({
             ...r.frontmatter,
             excerpt: r.excerpt,
+            htmlAst: r.htmlAst,
             type: success.likesDislikedRules
               .filter((v) => v.ruleGuid == r.frontmatter.guid)
               .map((r) => r.type),
           }))
           .filter((rr) => rr.type[0] == 1);
         setDislikedRules(dislikedRules);
+        props.setDislikedRulesCount(dislikedRules.length);
       })
       .catch((err) => {
         console.error('error: ', err);
@@ -125,11 +133,11 @@ const ProfileContent = ({
       getBookmarkList();
       getLikesDislikesLists();
     }
-  }, [userData, filter, change]);
+  }, [userData, props.filter, change]);
   return (
     <>
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 pl-10 d-print-none">
-        <div>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none">
+        <div className="radio-button-1">
           <input
             type="radio"
             id="customRadioInline1"
@@ -146,7 +154,7 @@ const ProfileContent = ({
             View titles only
           </label>
         </div>
-        <div>
+        <div className="radio-button-2">
           <input
             type="radio"
             id="customRadioInline3"
@@ -163,19 +171,42 @@ const ProfileContent = ({
             Show Blurb
           </label>
         </div>
+        <div className="radio-button-3">
+          <input
+            type="radio"
+            id="customRadioInline2"
+            name="customRadioInline1"
+            className="custom-control-input"
+            value="all"
+            checked={viewStyle === 'all'}
+            onChange={handleOptionChange}
+          />
+          <label
+            className="view-full custom-control-label ml-1"
+            htmlFor="customRadioInline2"
+          >
+            Gimme everything!
+          </label>
+        </div>
       </div>
 
       {bookmarkedRules && likedRules && dislikedRules ? (
         <RuleList
           rules={
-            filter == 1
+            props.filter == Filter.Bookmarks
               ? bookmarkedRules
-              : filter == 2
+              : props.filter == Filter.Likes
               ? likedRules
               : dislikedRules
           }
           viewStyle={viewStyle}
-          type={filter == 1 ? 'bookmark' : filter == 2 ? 'like' : 'dislike'}
+          type={
+            props.filter == Filter.Bookmarks
+              ? 'bookmark'
+              : props.filter == Filter.Likes
+              ? 'like'
+              : 'dislike'
+          }
           onRemoveClick={onRemoveClick}
         />
       ) : (
@@ -189,11 +220,17 @@ ProfileContent.propTypes = {
   filter: PropTypes.number.isRequired,
   setListChangeCallback: PropTypes.func.isRequired,
   listChange: PropTypes.number.isRequired,
+  setBookmarkedRulesCount: PropTypes.func.isRequired,
+  setLikedRulesCount: PropTypes.func.isRequired,
+  setDislikedRulesCount: PropTypes.func.isRequired,
 };
 
 const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
   const linkRef = useRef();
 
+  const components = {
+    greyBox: GreyBox,
+  };
   return (
     <div className="p-12">
       {rules.toString() == '' || rules == undefined || !rules ? (
@@ -206,18 +243,64 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
           return (
             <>
               <li className="pb-4">
-                <section className="rule-content-title px-4">
-                  <h2 style={{ display: 'flex' }}>
-                    <Link ref={linkRef} to={`/${rule.uri}`}>
-                      {rule.title}
-                    </Link>
+                <section className="rule-content-title px-4 pb-4">
+                  <div className="heading-container ">
+                    <h2
+                      style={{
+                        padding: '0 0 0 0.7rem',
+                        background: 'none',
+                        borderLeft: 'none',
+                        margin: '0.5rem 0.8rem',
+                      }}
+                    >
+                      <Link ref={linkRef} to={`/${rule.uri}`}>
+                        {rule.title}
+                      </Link>
+                    </h2>
+
+                    {type == 'bookmark' ? (
+                      <BookmarkIcon
+                        className="heading-icon"
+                        style={{
+                          height: '2rem',
+                          margin: 'auto auto auto 0',
+                          color: '#cc4141',
+                        }}
+                      />
+                    ) : type == 'like' ? (
+                      <FontAwesomeIcon
+                        icon={faThumbsUp}
+                        className="heading-icon"
+                        color="green"
+                        style={{
+                          margin: 'auto 1rem auto 1rem',
+                          fontSize: '1.8rem',
+                        }}
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faThumbsDown}
+                        color="red"
+                        className="heading-icon"
+                        style={{
+                          margin: 'auto 1rem auto 1rem',
+                          fontSize: '1.8rem',
+                        }}
+                      />
+                    )}
                     <FontAwesomeIcon
                       icon={faTimesCircle}
                       color="#ddd"
                       onClick={() => onRemoveClick(rule.guid)}
                       className="remove-item"
                     />
-                  </h2>
+                  </div>
+                </section>
+                <section
+                  className={`rule-content px-4 mb-5
+                            ${viewStyle === 'all' ? 'visible' : 'hidden'}`}
+                >
+                  <MD components={components} htmlAst={rule.htmlAst} />
                 </section>
                 <section
                   className={`rule-content px-4 mb-5

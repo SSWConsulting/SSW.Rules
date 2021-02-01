@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAuth } from 'oidc-react';
+import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 
 const DropdownCard = ({ setOpen }) => {
   const { userData, signOut } = useAuth();
@@ -30,6 +31,7 @@ const DropdownCard = ({ setOpen }) => {
               className="github-link"
               href={`https://www.github.com/${userData.profile.name}`}
             >
+              <GitHubIcon style={{ margin: '0.15rem 0.2rem 0rem 0rem' }} />
               Manage GitHub Account
             </a>
           </div>

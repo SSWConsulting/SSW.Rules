@@ -54,15 +54,16 @@ const Bookmark = (props) => {
             .catch((err) => {
               console.error(err);
             });
-    } 
+    }
   }
 
   return (
     <>
-      <div onClick={onClick}>
+      <div onClick={onClick} className={bookmarked ? 'tooltip' : ''}>
         <BookmarkIcon
           className={!bookmarked ? 'bookmark-icon' : 'bookmark-icon-pressed'}
         />
+        {bookmarked ? <span className="tooltiptext">Remove bookmark</span> : ''}
       </div>
     </>
   );

@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
-import BookmarkIcon from '-!svg-react-loader!../../images/BookmarkIcon.svg';
+import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import { useAuth } from 'oidc-react';
 import {
   GetBookmarksForUser,

@@ -13,7 +13,7 @@ import {
   faThumbsUp,
   faThumbsDown,
 } from '@fortawesome/free-solid-svg-icons';
-import BookmarkIcon from '-!svg-react-loader!../../images/BookmarkIcon.svg';
+import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
 import { useAuth } from 'oidc-react';

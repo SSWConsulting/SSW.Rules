@@ -17,6 +17,25 @@ config.autoAddCss = false;
 const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
   const node = useRef();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
+  const [userManager, setUserManager] = useState();
+
+  useEffect(() => {
+    const um = new UserManager({
+      authority: process.env.B2C_AUTHORITY,
+      client_id: process.env.B2C_CLIENT_ID,
+      redirect_uri: process.env.B2C_REDIRECT_URI,
+      response_type: 'code',
+      scope: 'openid https://sswrules.onmicrosoft.com/api/Read',
+      userStore: new WebStorageStateStore({
+        store:
+          typeof window !== 'undefined'
+            ? window.localStorage
+            : localStorageMemory,
+      }),
+      loadUserInfo: false,
+    });
+    setUserManager(um);
+  }, []);
 
   const actionOnToggleClick = () => {
     setIsMenuOpened(!isMenuOpened);
@@ -26,6 +45,15 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
     if (node.current.contains(e.target)) {
       setIsMenuOpened(false);
     }
+  };
+
+  const onRedirectCallback = () => {
+    const returnUrl =
+      typeof window !== 'undefined'
+        ? sessionStorage.getItem('returnUrl') ?? '/'
+        : null;
+    sessionStorage.removeItem('returnUrl');
+    navigate(returnUrl);
   };
 
   return (
@@ -50,13 +78,20 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
                 : crumbLabel
             }
           />
-          <Header displayActions={displayActions} ruleUri={ruleUri} />
+          {userManager && (
+            <AuthProvider
+              userManager={userManager}
+              onSignIn={onRedirectCallback}
+              autoSignIn={false}
+            >
+              <Header displayActions={displayActions} ruleUri={ruleUri} />
+            </AuthProvider>
+          )}
           <Menu onClickToggle={() => actionOnToggleClick()}></Menu>
           <main className="flex-1">{children}</main>
         </div>
         <Footer />
       </div>
-
       <MobileMenu isMenuOpened={isMenuOpened}></MobileMenu>
     </div>
   );
@@ -83,56 +118,12 @@ const LayoutWithQuery = (props) => (
         }
       }
     `}
-    render={(data) => <LayoutWithAuth data={data} {...props} />}
+    render={(data) => <Layout data={data} {...props} />}
   />
 );
 
 LayoutWithQuery.propTypes = {
   children: PropTypes.node.isRequired,
-};
-
-const LayoutWithAuth = (props) => {
-  const [userManager, setUserManager] = useState();
-  useEffect(() => {
-    const um = new UserManager({
-      authority: process.env.B2C_AUTHORITY,
-      client_id: process.env.B2C_CLIENT_ID,
-      redirect_uri: process.env.B2C_REDIRECT_URI,
-      response_type: 'code',
-      scope: 'openid https://sswrules.onmicrosoft.com/api/Read',
-      userStore: new WebStorageStateStore({
-        store:
-          typeof window !== 'undefined'
-            ? window.localStorage
-            : localStorageMemory,
-      }),
-      loadUserInfo: false,
-    });
-    setUserManager(um);
-  }, []);
-
-  const onRedirectCallback = () => {
-    const returnUrl =
-      typeof window !== 'undefined'
-        ? sessionStorage.getItem('returnUrl') ?? '/'
-        : null;
-    sessionStorage.removeItem('returnUrl');
-    navigate(returnUrl);
-  };
-
-  return (
-    <>
-      {userManager && (
-        <AuthProvider
-          userManager={userManager}
-          onSignIn={onRedirectCallback}
-          autoSignIn={false}
-        >
-          <Layout {...props} />
-        </AuthProvider>
-      )}
-    </>
-  );
 };
 
 export default LayoutWithQuery;

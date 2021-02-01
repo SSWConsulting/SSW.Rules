@@ -1,5 +1,8 @@
-import React, { useRef } from 'react';
-import { graphql, Link } from 'gatsby';
+import React, { useRef, useState, useEffect } from 'react';
+import { AuthProvider } from 'oidc-react';
+import { UserManager, WebStorageStateStore } from 'oidc-client';
+import localStorageMemory from 'localstorage-memory';
+import { graphql, Link, navigate } from 'gatsby';
 import { format } from 'date-fns';
 import formatDistance from 'date-fns/formatDistance';
 import PropTypes from 'prop-types';
@@ -21,8 +24,36 @@ const Rule = ({ data, location }) => {
 
   const cat = location.state ? location.state.category : null;
   const linkRef = useRef();
+  const [userManager, setUserManager] = useState();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
+
+  useEffect(() => {
+    const um = new UserManager({
+      authority: process.env.B2C_AUTHORITY,
+      client_id: process.env.B2C_CLIENT_ID,
+      redirect_uri: process.env.B2C_REDIRECT_URI,
+      response_type: 'code',
+      scope: 'openid https://sswrules.onmicrosoft.com/api/Read',
+      userStore: new WebStorageStateStore({
+        store:
+          typeof window !== 'undefined'
+            ? window.localStorage
+            : localStorageMemory,
+      }),
+      loadUserInfo: false,
+    });
+    setUserManager(um);
+  }, []);
+
+  const onRedirectCallback = () => {
+    const returnUrl =
+      typeof window !== 'undefined'
+        ? sessionStorage.getItem('returnUrl') ?? '/'
+        : null;
+    sessionStorage.removeItem('returnUrl');
+    navigate(returnUrl);
+  };
 
   return (
     <div>
@@ -197,7 +228,15 @@ const Rule = ({ data, location }) => {
 
             <div className="likes w-full lg:w-1/3">
               <h5>Feedback</h5>
-              <Reaction ruleId={rule.frontmatter.guid} />
+              {userManager && (
+                <AuthProvider
+                  userManager={userManager}
+                  onSignIn={onRedirectCallback}
+                  autoSignIn={false}
+                >
+                  <Reaction ruleId={rule.frontmatter.guid} />
+                </AuthProvider>
+              )}
               <div className="suggestion">
                 <span className="action-btn-container">
                   <a

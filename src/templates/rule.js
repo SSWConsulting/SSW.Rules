@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GitHubIcon from '-!svg-react-loader!../images/github.svg';
+import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Reaction from '../components/reaction/reaction';
@@ -41,8 +42,11 @@ const Rule = ({ data, location }) => {
         }
       />
       <div className="rule-single rounded">
-        <section className="rule-content p-12 mb-20">
-          <h1>{rule.frontmatter.title}</h1>
+        <section className="rule-content mb-20 p-12 pt-0">
+          <div className="rule-header-container">
+            <h1>{rule.frontmatter.title}</h1>
+            <Bookmark ruleId={rule.frontmatter.guid} />
+          </div>
           {data.history && data.history.nodes[0] && (
             <small className="history">
               Created on{' '}
@@ -204,7 +208,7 @@ const Rule = ({ data, location }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     href="https://github.com/SSWConsulting/SSW.Rules.Content/issues"
-                    className="action-btn-link"
+                    className="action-btn-link-underlined"
                   >
                     <div className="action-btn-label">Make a suggestion</div>
                     <GitHubIcon

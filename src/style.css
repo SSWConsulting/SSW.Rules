@@ -23,7 +23,7 @@
   font-weight: normal;
   font-style: normal;
 }
-
+ 
 html {
   font-family: "Helvetica", "SegoeUILight", "sans-serif"
 }
@@ -178,6 +178,19 @@ footer {
   order: 2;
   border-bottom: 2px dotted #9e9c9e;
   margin-left: 12px;
+}
+
+.action-btn-link-underlined {
+  display: flex;
+  margin-right: auto;
+  align-items: center;
+  order: 2;
+  border-bottom: 2px dotted #9e9c9e;
+  margin-left: 12px;
+}
+
+.action-btn-link-underlined:hover {
+  border-bottom: 2px dotted #cc4141;
 }
 
 .action-btn-icon {
@@ -712,7 +725,7 @@ b, strong {
 }
 
 .rule-content a {
-  &:not(.unstyled):not(.action-btn-link) {
+  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined) {
     color: #222;
     text-decoration: none;
     border-bottom: 1px solid rgb(175, 175, 175);
@@ -960,7 +973,9 @@ blockquote p:before {
 .rule-content h1 {
   color: #cc4141;
   font-weight: 100;
-  margin-top: 0;
+  margin-right: 0;
+  right: 0;
+  padding-right: 0;
 }
 
 .rule-content h3 {
@@ -978,7 +993,7 @@ blockquote p:before {
 }
 
 .rule-content a:hover,
-.rule-category a:hover {
+.rule-category a:hover:not(.github-link) {
   text-decoration:underline;;
   color: #cc4141;
 }
@@ -1241,12 +1256,410 @@ blockquote p:before {
   color: #cc4141;
 }
 
+.likes-btn-container:after, .likes-btn-container-pressed:after  {
+  content: '\f164';
+  font-family: FontAwesome;
+  font-size: 1.7rem;
+  padding-right: 0.5rem;
+}
+
+.likes-btn-container-pressed:after {
+  color: green;
+}
+
+.likes-btn-container:hover:after, .likes-btn-container-pressed:hover:after {
+  color: rgb(104, 175, 104);
+}
+
+.dislikes-btn-container:after, .dislikes-btn-container-pressed:after {
+  content: '\f165';
+  font-family: FontAwesome;
+  font-size: 1.7rem;
+  padding-right: 0.5rem;
+}
+
+.dislikes-btn-container-pressed:after {
+  color: red;
+}
+
+.dislikes-btn-container:hover:after, .dislikes-btn-container-pressed:hover:after {
+  color: #cc4141;
+}
+
 .likes-counter-container {
   position: relative;
-  bottom: .40rem;
-  left: .50rem;
-  right: .50rem;
+  bottom: .2rem;
   display: inline-block;
+}
+
+.rule-header-container {
+  display: flex;
+}
+
+.bookmark-icon {
+  height: 2rem;
+  margin-top: 2.5rem;
+  color: #ccc;
+}
+
+.bookmark-icon-pressed {
+  height: 2rem;
+  margin-top: 2.5rem;
+  color: #cc4141;
+}
+
+.bookmark-icon-pressed:hover {
+  height: 2.2rem;
+  cursor: pointer;
+}
+
+.bookmark-icon:hover {
+  height: 2.2rem;
+  color: #cc4141;
+  opacity: 50%;
+  cursor: pointer;
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 100px;
+  background-color: #9e9e9e;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  font-size: small;
+  /* Position the tooltip text */
+  position: absolute;
+  bottom: 70%;
+  left: 65%;
+  margin-left: -60px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #9e9e9e transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Dropdown
+-------------------------------------------------- */
+
+.dropdown {
+  position: relative;
+  border-radius: 30%;
+  z-index: 21;
+}
+
+.dropdown-list {
+  margin: 1rem;
+  padding: 0 0.8rem;
+  position: absolute;
+  background-color: white;
+  color: grey;
+  font-size: 12px;
+  box-shadow: 0px 5px 11px 0px rgba(130,130,130,0.8);
+  border-radius: 5%;
+  width: 13rem;
+  height: 13rem;
+  right: -1rem;
+}
+
+.dropdown-userinfo-container {
+  margin: 1rem 1rem !important;
+}
+
+.dropdown-username {
+  font-weight: bold;
+  color: black;
+  font-size: 1.18rem !important;
+}
+
+.dropdown-github-icon {
+  margin: 0.15rem 0.2rem 0 0;
+}
+
+.dropdown-user-btn-container:before {
+  content: "\f007";
+  font-family: FontAwesome;
+  font-size: 1.5rem !important;
+  margin: 0.7rem 1rem;
+}
+
+.dropdown-user-btn-container {
+  color: #666666;
+  display: flex;
+  align-items: center;
+  margin-left: 0;
+  font-size: 0.9rem;
+}
+
+.dropdown-user-btn-container:hover {
+  color: #CC4141 !important;
+}
+
+.dropdown-signout-btn-container:before {
+  content: "\f08b";
+  font-family: FontAwesome;
+  font-size: 1.5rem !important;
+  margin: 0 1rem;
+}
+
+.dropdown-signout-btn-container {
+  color: #666666;
+  display: flex;
+  align-items: center;
+  margin-left: 0;
+  font-size: 0.9rem;
+}
+
+.dropdown-signout-btn-container:hover {
+  color: #CC4141 !important;
+}
+
+.dropdown-badge {
+  overflow: hidden;
+  border-radius: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.bubble-arrow {
+  position: absolute;
+  color: white;
+  text-shadow: 0 -5px 5px rgba(130,130,130,0.3);
+  font-size: 1.45rem;
+  text-align: center;
+  left: 1.1rem;
+  bottom: -27px;
+  z-index: 21;
+}
+
+/* Profile Page
+-------------------------------------------------- */
+
+.profile-header {
+  background-color: #f5f5f5;
+  padding: 3.5rem;
+  height: 13.1rem;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 8rem 14rem;
+  grid-template-rows: 3rem 1.6rem auto;
+  color: #333333;
+}
+
+.profile-container-img:hover {
+  opacity: 80%;
+  cursor: pointer;
+}
+
+.profile-badge {
+  overflow: hidden;
+  border-radius: 50%;
+  width: 6.25rem;
+  height: 6.25rem;
+}
+
+
+
+.username {
+  grid-row: 2;
+  grid-column: 2;
+  opacity: 80%;
+}
+
+.profile-github-icon {
+  margin: 0.15rem 0.2rem 0 0;
+}
+
+.profile-image {
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.error-text {
+  text-align: center;
+}
+
+@media screen and (max-width: 490px) {
+  .profile-header {
+    height: 19rem;
+  }
+  .profile-image {
+    visibility: hidden;
+  }
+  .profile-bookmark-icon, .profile-like-icon, .profile-dislike-icon{
+    display: none !important;
+  }
+  .profile-large-name {
+    grid-column: 1;
+  }
+  .github-link {
+    grid-column: 1 !important;
+  }
+  .grid-container {
+    grid-template-columns: 14rem auto;
+  }
+  .username {
+    grid-column: 1;
+  }
+  .filter-menu {
+    grid-template-columns: 6rem !important;
+    left: 0 !important;
+    right: auto !important;
+  }
+  .menu-item {
+    grid-column: 1 !important;
+  }
+  .rule-content-title {
+    padding: 0 !important;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .radio-button-1 {
+    grid-column: unset !important;
+  }
+  .radio-button-2 {
+    grid-column: unset !important;
+  }
+  .radio-button-3 {
+    grid-column: unset !important;
+  }
+}
+
+.profile-large-name {
+  font-size: 2rem;
+  grid-row: 1;
+}
+
+.github-link {
+  grid-row: 3;
+  grid-column: 2;
+  font-size: 14;
+  color: #CC4141 !important;
+  display: flex;
+}
+
+.github-link:hover {
+  opacity: 80%;
+}
+
+.filter-menu {
+  top: 1.5rem;
+  left: 7.1rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: 8rem 4rem 6rem;
+  font-weight: bold;
+  column-gap: 1.5rem;
+}
+
+.radio-button-1 {
+  grid-column: 2;
+}
+.radio-button-2 {
+  grid-column: 3;
+}
+.radio-button-3 {
+  grid-column: 4;
+}
+
+.menu-item {
+ padding: 0 0.5rem 0.5rem;
+ text-align: center;
+ font-weight: normal;
+ color: #333333;
+ position: relative;
+ display: flex;
+ margin: auto;
+}
+
+.menu-item:hover {
+  padding: 0 0.5rem 0.25rem;
+  border-bottom: 0.25rem solid rgba(0, 0, 0, 0.60);
+  opacity: 70%;
+  cursor: pointer;
+}
+
+.heading-container {
+  display: inline-flex;
+  background: #f5f5f5;
+  border-left: 2px solid #cc4141; 
+  width: 100%;
+}
+
+.heading-container h2 {
+  padding: 0 0 0 0.7rem;
+  background: none;
+  border-left: none;
+  margin: 0.5rem 0.8rem;
+}
+
+.profile-bookmark-icon, .profile-like-icon, .profile-dislike-icon  {
+  height: 2rem;
+  font-size: 1.8rem !important;
+  margin: auto auto auto 0;
+}
+
+.rule-heading-dislike:after {
+  content: '\f165';
+  font-family: FontAwesome;
+  color: red;
+  margin-left: 1rem;
+}
+
+.rule-heading-like:after {
+  content: '\f164';
+  font-family: FontAwesome;
+  color: green;
+  margin-left: 1rem;
+}
+
+.remove-item {
+  margin-left: auto;
+}
+
+.remove-item:after {
+  content: '\f057';
+  font-family: FontAwesome;
+  margin: auto 1rem auto auto;
+  font-size: 1.8rem !important;
+  color: #ddd;
+}
+
+.remove-item:hover:after {
+  color: #cc4141 !important;
+}
+
+.rules-counter {
+  opacity: 70%;
+  padding-left: 0.5rem;
 }
 
 /* Responsiveness

@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
-import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import { useAuth } from 'oidc-react';
 import {

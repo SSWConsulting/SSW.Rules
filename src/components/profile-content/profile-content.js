@@ -8,16 +8,10 @@ import {
   RemoveBookmark,
   RemoveLikeDislike,
 } from '../../services/apiService';
-import {
-  faTimesCircle,
-  faThumbsUp,
-  faThumbsDown,
-} from '@fortawesome/free-solid-svg-icons';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
 import { useAuth } from 'oidc-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Filter } from '../profile-filter-menu/profile-filter-menu';
 
 const ProfileContent = (props) => {

@@ -123,6 +123,10 @@ footer {
   font-size: 0.75rem;
 }
 
+.rule-content ul li > p {
+  margin-top: -20px;
+}
+
 #rules ul li::before, .rule-content ul li::before {
   content: "\25A0";
   color: #cc4141;
@@ -131,9 +135,24 @@ footer {
   margin-left: -1em;
 }
 
-#rules ul li, .rule-content ul li {
-  padding: 0 0 10px 15px;
-  line-height: 1.5em;
+#rules ol ul ol li::before, .rule-content ol ul ol li::before {
+  content: "";
+  display: inline-block; 
+  width: 1em;
+  margin-left: -1em;
+}
+
+#rules ul ul ol li::before, .rule-content ul ul ol li::before,
+#rules ul ul li ol li::before, .rule-content ul ul li ol li::before  {
+  content: "";
+  display: inline-block; 
+  width: 1em;
+  margin-left: -1em;
+}
+
+#rules ul li, .rule-content ul li, .rule-content ol li {
+  padding: 0 0 .5rem 0;
+  line-height: 1.25rem;
 }
 
 .rule-content ol, .rule-content ul ol {
@@ -1030,6 +1049,7 @@ blockquote p:before {
 
 .rule-content ul, .rule-content ol {
   margin-bottom: 1rem;
+  padding-inline-start: 2rem;
 }
 
 .rule-content ul li, .rule-content ol li {

@@ -59,12 +59,16 @@ const Bookmark = (props) => {
 
   return (
     <>
-      <div onClick={onClick} className={bookmarked ? 'tooltip' : ''}>
-        <BookmarkIcon
-          className={!bookmarked ? 'bookmark-icon' : 'bookmark-icon-pressed'}
-        />
-        {bookmarked ? <span className="tooltiptext">Remove bookmark</span> : ''}
-      </div>
+      {bookmarked ? (
+        <div onClick={onClick} className="tooltip">
+          <BookmarkIcon className="bookmark-icon-pressed" />
+          <span className="tooltiptext">Remove bookmark</span>
+        </div>
+      ) : (
+        <div onClick={onClick}>
+          <BookmarkIcon className="bookmark-icon" />
+        </div>
+      )}
     </>
   );
 };

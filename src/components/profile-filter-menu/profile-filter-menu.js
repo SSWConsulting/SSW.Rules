@@ -30,9 +30,7 @@ const ProfileFilterMenu = ({
           }}
         >
           Bookmarks
-          <div style={{ opacity: '70%', paddingLeft: '0.5rem' }}>
-            {bookmarkedRulesCount ?? 0}
-          </div>
+          <div className="rules-counter">{bookmarkedRulesCount ?? 0}</div>
         </div>
         <div
           className="menu-item"
@@ -50,9 +48,7 @@ const ProfileFilterMenu = ({
           }}
         >
           Likes
-          <div style={{ opacity: '70%', paddingLeft: '0.5rem' }}>
-            {likedRulesCount ?? 0}
-          </div>
+          <div className="rules-counter">{likedRulesCount ?? 0}</div>
         </div>
         <div
           className="menu-item"
@@ -71,10 +67,9 @@ const ProfileFilterMenu = ({
         >
           Dislikes
           <div
+            className="rules-counter"
             style={{
-              opacity: '70%',
               color: '#cc4141',
-              paddingLeft: '0.5rem',
             }}
           >
             {dislikedRulesCount ?? 0}

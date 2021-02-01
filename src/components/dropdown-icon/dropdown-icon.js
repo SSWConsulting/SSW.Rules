@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import DropdownBadge from '../dropdown-badge/dropdown-badge';
 import DropdownCard from '../dropdown-card/dropdown-card';
-import ProfileBadge from '../profile-badge/profile-badge';
 
 const DropdownIcon = () => {
   const [open, setOpen] = useState(false);
@@ -19,7 +19,7 @@ const DropdownIcon = () => {
   });
   return (
     <div className="dropdown" ref={drop}>
-      <ProfileBadge onClick={() => setOpen((open) => !open)} />
+      <DropdownBadge onClick={() => setOpen((open) => !open)} />
       {open && <DropdownCard setOpen={setOpen} />}
     </div>
   );

@@ -1256,11 +1256,39 @@ blockquote p:before {
   color: #cc4141;
 }
 
+.likes-btn-container:after, .likes-btn-container-pressed:after  {
+  content: '\f164';
+  font-family: FontAwesome;
+  font-size: 1.7rem;
+  padding-right: 0.5rem;
+}
+
+.likes-btn-container-pressed:after {
+  color: green;
+}
+
+.likes-btn-container:hover:after, .likes-btn-container-pressed:hover:after {
+  color: rgb(104, 175, 104);
+}
+
+.dislikes-btn-container:after, .dislikes-btn-container-pressed:after {
+  content: '\f165';
+  font-family: FontAwesome;
+  font-size: 1.7rem;
+  padding-right: 0.5rem;
+}
+
+.dislikes-btn-container-pressed:after {
+  color: red;
+}
+
+.dislikes-btn-container:hover:after, .dislikes-btn-container-pressed:hover:after {
+  color: #cc4141;
+}
+
 .likes-counter-container {
   position: relative;
-  bottom: .40rem;
-  left: .50rem;
-  right: .50rem;
+  bottom: .2rem;
   display: inline-block;
 }
 
@@ -1360,7 +1388,28 @@ blockquote p:before {
   right: -1rem;
 }
 
-.dropdown-btn-container {
+.dropdown-userinfo-container {
+  margin: 1rem 1rem !important;
+}
+
+.dropdown-username {
+  font-weight: bold;
+  color: black;
+  font-size: 1.18rem !important;
+}
+
+.dropdown-github-icon {
+  margin: 0.15rem 0.2rem 0 0;
+}
+
+.dropdown-user-btn-container:before {
+  content: "\f007";
+  font-family: FontAwesome;
+  font-size: 1.5rem !important;
+  margin: 0.7rem 1rem;
+}
+
+.dropdown-user-btn-container {
   color: #666666;
   display: flex;
   align-items: center;
@@ -1368,8 +1417,34 @@ blockquote p:before {
   font-size: 0.9rem;
 }
 
-.dropdown-btn-container:hover {
+.dropdown-user-btn-container:hover {
   color: #CC4141 !important;
+}
+
+.dropdown-signout-btn-container:before {
+  content: "\f08b";
+  font-family: FontAwesome;
+  font-size: 1.5rem !important;
+  margin: 0 1rem;
+}
+
+.dropdown-signout-btn-container {
+  color: #666666;
+  display: flex;
+  align-items: center;
+  margin-left: 0;
+  font-size: 0.9rem;
+}
+
+.dropdown-signout-btn-container:hover {
+  color: #CC4141 !important;
+}
+
+.dropdown-badge {
+  overflow: hidden;
+  border-radius: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
 }
 
 .bubble-arrow {
@@ -1404,10 +1479,32 @@ blockquote p:before {
   cursor: pointer;
 }
 
+.profile-badge {
+  overflow: hidden;
+  border-radius: 50%;
+  width: 6.25rem;
+  height: 6.25rem;
+}
+
+
+
 .username {
   grid-row: 2;
   grid-column: 2;
   opacity: 80%;
+}
+
+.profile-github-icon {
+  margin: 0.15rem 0.2rem 0 0;
+}
+
+.profile-image {
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.error-text {
+  text-align: center;
 }
 
 @media screen and (max-width: 490px) {
@@ -1417,7 +1514,7 @@ blockquote p:before {
   .profile-image {
     visibility: hidden;
   }
-  .heading-icon {
+  .profile-bookmark-icon, .profile-like-icon, .profile-dislike-icon{
     display: none !important;
   }
   .profile-large-name {
@@ -1510,21 +1607,59 @@ blockquote p:before {
   cursor: pointer;
 }
 
-.rule-content-title .heading-container {
+.heading-container {
   display: inline-flex;
   background: #f5f5f5;
   border-left: 2px solid #cc4141; 
   width: 100%;
 }
 
-.remove-item {
-  margin: auto 1rem auto auto;
-  font-size: 1.8rem !important;
+.heading-container h2 {
+  padding: 0 0 0 0.7rem;
+  background: none;
+  border-left: none;
+  margin: 0.5rem 0.8rem;
 }
 
-.remove-item:hover {
-  cursor: pointer;
-  color: #cc4141;
+.profile-bookmark-icon, .profile-like-icon, .profile-dislike-icon  {
+  height: 2rem;
+  font-size: 1.8rem !important;
+  margin: auto auto auto 0;
+}
+
+.rule-heading-dislike:after {
+  content: '\f165';
+  font-family: FontAwesome;
+  color: red;
+  margin-left: 1rem;
+}
+
+.rule-heading-like:after {
+  content: '\f164';
+  font-family: FontAwesome;
+  color: green;
+  margin-left: 1rem;
+}
+
+.remove-item {
+  margin-left: auto;
+}
+
+.remove-item:after {
+  content: '\f057';
+  font-family: FontAwesome;
+  margin: auto 1rem auto auto;
+  font-size: 1.8rem !important;
+  color: #ddd;
+}
+
+.remove-item:hover:after {
+  color: #cc4141 !important;
+}
+
+.rules-counter {
+  opacity: 70%;
+  padding-left: 0.5rem;
 }
 
 /* Responsiveness

@@ -210,7 +210,7 @@ const ProfileContent = (props) => {
           onRemoveClick={onRemoveClick}
         />
       ) : (
-        <p style={{ textAlign: 'center' }}>Loading...</p>
+        <p className="loading-text">Loading...</p>
       )}
     </>
   );
@@ -234,7 +234,7 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
   return (
     <div className="p-12">
       {rules.toString() == '' || rules == undefined || !rules ? (
-        <p style={{ textAlign: 'center' }}>No rules have been {type}d yet</p>
+        <p className="error">No rules have been {type}d yet</p>
       ) : (
         <></>
       )}
@@ -244,15 +244,8 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
             <>
               <li className="pb-4">
                 <section className="rule-content-title px-4 pb-4">
-                  <div className="heading-container ">
-                    <h2
-                      style={{
-                        padding: '0 0 0 0.7rem',
-                        background: 'none',
-                        borderLeft: 'none',
-                        margin: '0.5rem 0.8rem',
-                      }}
-                    >
+                  <div className="heading-container">
+                    <h2 className={`rule-heading-${type}`}>
                       <Link ref={linkRef} to={`/${rule.uri}`}>
                         {rule.title}
                       </Link>
@@ -260,40 +253,16 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
 
                     {type == 'bookmark' ? (
                       <BookmarkIcon
-                        className="heading-icon"
-                        style={{
-                          height: '2rem',
-                          margin: 'auto auto auto 0',
-                          color: '#cc4141',
-                        }}
-                      />
-                    ) : type == 'like' ? (
-                      <FontAwesomeIcon
-                        icon={faThumbsUp}
-                        className="heading-icon"
-                        color="green"
-                        style={{
-                          margin: 'auto 1rem auto 1rem',
-                          fontSize: '1.8rem',
-                        }}
+                        className="profile-bookmark-icon"
+                        color="#cc4141"
                       />
                     ) : (
-                      <FontAwesomeIcon
-                        icon={faThumbsDown}
-                        color="red"
-                        className="heading-icon"
-                        style={{
-                          margin: 'auto 1rem auto 1rem',
-                          fontSize: '1.8rem',
-                        }}
-                      />
+                      ''
                     )}
-                    <FontAwesomeIcon
-                      icon={faTimesCircle}
-                      color="#ddd"
-                      onClick={() => onRemoveClick(rule.guid)}
+                    <button
                       className="remove-item"
-                    />
+                      onClick={() => onRemoveClick(rule.guid)}
+                    ></button>
                   </div>
                 </section>
                 <section

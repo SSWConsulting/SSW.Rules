@@ -25,10 +25,7 @@ const Profile = ({ data }) => {
           <section className="mb-20 pb-2 rounded">
             <div className="profile-header rounded-t">
               <div className="grid-container">
-                <div
-                  style={{ gridRowStart: 1, gridRowEnd: 3 }}
-                  className="profile-image"
-                >
+                <div className="profile-image">
                   <ProfileBadge size="6.25rem" />
                 </div>
                 <div className="profile-large-name">
@@ -42,7 +39,7 @@ const Profile = ({ data }) => {
                   className="github-link"
                   href={`https://www.github.com/${userData.profile.name}`}
                 >
-                  <GitHubIcon style={{ margin: '0.15rem 0.2rem 0rem 0rem' }} />
+                  <GitHubIcon className="profile-github-icon" />
                   Manage GitHub account
                 </a>
               </div>

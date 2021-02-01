@@ -93,21 +93,26 @@ const Reaction = (props) => {
   return (
     <>
       <span>
-        <FontAwesomeIcon
-          icon={faThumbsUp}
-          color={currentReactionType == ReactionType.Like ? 'green' : null}
-          className="good"
+        <button
           onClick={() => onClick(ReactionType.Like)}
-        />
+          className={
+            currentReactionType == ReactionType.Like
+              ? 'likes-btn-container-pressed'
+              : 'likes-btn-container'
+          }
+        ></button>
         <div className="likes-counter-container">{likesCount}</div>
       </span>
+
       <span>
-        <FontAwesomeIcon
-          icon={faThumbsDown}
-          color={currentReactionType == ReactionType.DisLike ? 'red' : null}
-          className="bad"
+        <button
+          className={
+            currentReactionType == ReactionType.DisLike
+              ? 'dislikes-btn-container-pressed'
+              : 'dislikes-btn-container'
+          }
           onClick={() => onClick(ReactionType.DisLike)}
-        />
+        ></button>
         <div className="likes-counter-container">{dislikesCount}</div>
       </span>
     </>

@@ -38,7 +38,7 @@ const Header = ({ displayActions, ruleUri }) => {
             </h1>
           </div>
           <div className="action-btn-container">
-            <SignIn />
+            <SignIn displayActions={displayActions} />
             {displayActions ? (
               <>
                 <a

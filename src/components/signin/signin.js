@@ -1,8 +1,8 @@
 import { useAuth } from 'oidc-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DropdownIcon from '../dropdown-icon/dropdown-icon';
 
-const SignIn = () => {
+const SignIn = ({ displayActions }) => {
   const { signIn, userData } = useAuth();
   const currentPage =
     typeof window !== 'undefined'
@@ -23,7 +23,7 @@ const SignIn = () => {
         </button>
       ) : (
         <>
-          <DropdownIcon />
+          <DropdownIcon displayActions={displayActions} />
         </>
       )}
     </div>

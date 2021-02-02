@@ -67,7 +67,6 @@ a, a:visited {
     transition: color 0.25s ease;
     &:hover {
       @apply text-ssw-red;
-      border-bottom: 2px dotted #CC4141;
       text-decoration:underline;
       text-decoration: none;
     } 
@@ -1336,7 +1335,7 @@ blockquote p:before {
 .bookmark-icon:hover {
   height: 2.2rem;
   color: #cc4141;
-  opacity: 50%;
+  opacity: 0.5;
   cursor: pointer;
 }
 
@@ -1495,7 +1494,7 @@ blockquote p:before {
 }
 
 .profile-container-img:hover {
-  opacity: 80%;
+  opacity: 0.8;
   cursor: pointer;
 }
 
@@ -1506,12 +1505,10 @@ blockquote p:before {
   height: 6.25rem;
 }
 
-
-
 .username {
   grid-row: 2;
   grid-column: 2;
-  opacity: 80%;
+  opacity: 0.8;
 }
 
 .profile-github-icon {
@@ -1587,7 +1584,7 @@ blockquote p:before {
 }
 
 .github-link:hover {
-  opacity: 80%;
+  opacity: 0.8;
 }
 
 .filter-menu {
@@ -1623,7 +1620,7 @@ blockquote p:before {
 .menu-item:hover {
   padding: 0 0.5rem 0.25rem;
   border-bottom: 0.25rem solid rgba(0, 0, 0, 0.60);
-  opacity: 70%;
+  opacity: 0.7;
   cursor: pointer;
 }
 
@@ -1669,6 +1666,7 @@ blockquote p:before {
   content: '\f057';
   font-family: FontAwesome;
   margin: auto 1rem auto auto;
+  padding-left: 1rem;
   font-size: 1.8rem !important;
   color: #ddd;
 }
@@ -1678,7 +1676,7 @@ blockquote p:before {
 }
 
 .rules-counter {
-  opacity: 70%;
+  opacity: 0.7;
   padding-left: 0.5rem;
 }
 

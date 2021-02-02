@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import DropdownBadge from '../dropdown-badge/dropdown-badge';
 import DropdownCard from '../dropdown-card/dropdown-card';
 
@@ -25,6 +26,10 @@ const DropdownIcon = ({ displayActions }) => {
       )}
     </div>
   );
+};
+
+DropdownIcon.propTypes = {
+  displayActions: PropTypes.bool,
 };
 
 export default DropdownIcon;

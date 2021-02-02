@@ -47,6 +47,7 @@ const DropdownCard = ({ setOpen, displayActions }) => {
 
 DropdownCard.propTypes = {
   setOpen: PropTypes.func,
+  displayActions: PropTypes.bool,
 };
 
 export default DropdownCard;

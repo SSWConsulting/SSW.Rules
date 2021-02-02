@@ -1,5 +1,6 @@
 import { useAuth } from 'oidc-react';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import DropdownIcon from '../dropdown-icon/dropdown-icon';
 
 const SignIn = ({ displayActions }) => {
@@ -28,6 +29,10 @@ const SignIn = ({ displayActions }) => {
       )}
     </div>
   );
+};
+
+SignIn.propTypes = {
+  displayActions: PropTypes.bool,
 };
 
 export default SignIn;

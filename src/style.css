@@ -67,7 +67,6 @@ a, a:visited {
     transition: color 0.25s ease;
     &:hover {
       @apply text-ssw-red;
-      border-bottom: 2px dotted #CC4141;
       text-decoration:underline;
       text-decoration: none;
     } 
@@ -1336,7 +1335,7 @@ blockquote p:before {
 .bookmark-icon:hover {
   height: 2.2rem;
   color: #cc4141;
-  opacity: 50%;
+  opacity: 0.5;
   cursor: pointer;
 }
 
@@ -1404,7 +1403,7 @@ blockquote p:before {
   box-shadow: 0px 5px 11px 0px rgba(130,130,130,0.8);
   border-radius: 5%;
   width: 13rem;
-  height: 13rem;
+  height: auto;
   right: -1rem;
 }
 
@@ -1415,7 +1414,9 @@ blockquote p:before {
 .dropdown-username {
   font-weight: bold;
   color: black;
+  word-wrap: break-word;
   font-size: 1.18rem !important;
+  padding-bottom: 0.7rem;
 }
 
 .dropdown-github-icon {
@@ -1426,7 +1427,7 @@ blockquote p:before {
   content: "\f007";
   font-family: FontAwesome;
   font-size: 1.5rem !important;
-  margin: 0.7rem 1rem;
+  margin: 0rem 1rem;
 }
 
 .dropdown-user-btn-container {
@@ -1434,6 +1435,7 @@ blockquote p:before {
   display: flex;
   align-items: center;
   margin-left: 0;
+  margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
@@ -1453,6 +1455,7 @@ blockquote p:before {
   display: flex;
   align-items: center;
   margin-left: 0;
+  margin-bottom: 1rem;
   font-size: 0.9rem;
 }
 
@@ -1489,13 +1492,13 @@ blockquote p:before {
 
 .grid-container {
   display: grid;
-  grid-template-columns: 8rem 14rem;
+  grid-template-columns: 8rem auto;
   grid-template-rows: 3rem 1.6rem auto;
   color: #333333;
 }
 
 .profile-container-img:hover {
-  opacity: 80%;
+  opacity: 0.8;
   cursor: pointer;
 }
 
@@ -1506,12 +1509,10 @@ blockquote p:before {
   height: 6.25rem;
 }
 
-
-
 .username {
   grid-row: 2;
   grid-column: 2;
-  opacity: 80%;
+  opacity: 0.8;
 }
 
 .profile-github-icon {
@@ -1587,7 +1588,7 @@ blockquote p:before {
 }
 
 .github-link:hover {
-  opacity: 80%;
+  opacity: 0.8;
 }
 
 .filter-menu {
@@ -1623,7 +1624,7 @@ blockquote p:before {
 .menu-item:hover {
   padding: 0 0.5rem 0.25rem;
   border-bottom: 0.25rem solid rgba(0, 0, 0, 0.60);
-  opacity: 70%;
+  opacity: 0.7;
   cursor: pointer;
 }
 
@@ -1669,6 +1670,7 @@ blockquote p:before {
   content: '\f057';
   font-family: FontAwesome;
   margin: auto 1rem auto auto;
+  padding-left: 1rem;
   font-size: 1.8rem !important;
   color: #ddd;
 }
@@ -1678,7 +1680,7 @@ blockquote p:before {
 }
 
 .rules-counter {
-  opacity: 70%;
+  opacity: 0.7;
   padding-left: 0.5rem;
 }
 

@@ -11,7 +11,7 @@ import {
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
-import { useAuth } from 'oidc-react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Filter } from '../profile-filter-menu/profile-filter-menu';
 
 const ProfileContent = (props) => {
@@ -20,15 +20,16 @@ const ProfileContent = (props) => {
   const [dislikedRules, setDislikedRules] = useState();
   const [change, setChange] = useState(0);
   const [viewStyle, setViewStyle] = useState('titleOnly');
-  const { userData } = useAuth();
+  const { user, getIdTokenClaims } = useAuth0();
 
   const handleOptionChange = (e) => {
     setViewStyle(e.target.value);
   };
 
-  function onRemoveClick(ruleGuid) {
+  async function onRemoveClick(ruleGuid) {
+    const jwt = await getIdTokenClaims();
     if (
-      userData &&
+      user &&
       window.confirm(
         `Are you sure you want to remove this ${
           props.filter == Filter.Bookmarks ? 'bookmark' : 'reaction'
@@ -36,10 +37,7 @@ const ProfileContent = (props) => {
       )
     ) {
       props.filter == Filter.Bookmarks
-        ? RemoveBookmark(
-            { ruleGuid: ruleGuid, UserId: userData.profile.sub },
-            userData.access_token
-          )
+        ? RemoveBookmark({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setChange(change + 1);
               props.setListChangeCallback(props.listChange + 1);
@@ -47,10 +45,7 @@ const ProfileContent = (props) => {
             .catch((err) => {
               console.error('error: ' + err);
             })
-        : RemoveLikeDislike(
-            { ruleGuid: ruleGuid, UserId: userData.profile.sub },
-            userData.access_token
-          )
+        : RemoveLikeDislike({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setChange(change + 1);
             })
@@ -61,7 +56,7 @@ const ProfileContent = (props) => {
   }
 
   function getBookmarkList() {
-    GetBookmarksForUser(userData.profile.sub)
+    GetBookmarksForUser(user.sub)
       .then((success) => {
         const allRules = props.data.allMarkdownRemark.nodes;
         const bookmarkedGuids =
@@ -85,7 +80,7 @@ const ProfileContent = (props) => {
   }
 
   function getLikesDislikesLists() {
-    GetAllLikedDisliked(userData.profile.sub)
+    GetAllLikedDisliked(user.sub)
       .then((success) => {
         const allRules = props.data.allMarkdownRemark.nodes;
         const likedGuids = success.likesDislikedRules.map((r) => r.ruleGuid);
@@ -123,11 +118,11 @@ const ProfileContent = (props) => {
   }
 
   useEffect(() => {
-    if (userData) {
+    if (user) {
       getBookmarkList();
       getLikesDislikesLists();
     }
-  }, [userData, props.filter, change]);
+  }, [user, props.filter, change]);
   return (
     <>
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none">

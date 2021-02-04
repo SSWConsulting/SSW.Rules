@@ -1,21 +1,21 @@
 import React from 'react';
 import { navigate } from 'gatsby';
 import PropTypes from 'prop-types';
-import { useAuth } from 'oidc-react';
+import { useAuth0 } from '@auth0/auth0-react';
 import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 
 const DropdownCard = ({ setOpen, displayActions }) => {
-  const { userData, signOut } = useAuth();
+  const { logout, user } = useAuth0();
   return (
     <>
       <div
         className={displayActions ? 'dropdown-list-center ' : 'dropdown-list'}
       >
         <div className="dropdown-userinfo-container">
-          <p className="dropdown-username">@{userData.profile.name}</p>
+          <p className="dropdown-username">@{user.name}</p>
           <a
             className="github-link"
-            href={`https://www.github.com/${userData.profile.name}`}
+            href={`https://www.github.com/${user.name}`}
           >
             <GitHubIcon className="dropdown-github-icon" />
             Manage GitHub Account
@@ -34,7 +34,7 @@ const DropdownCard = ({ setOpen, displayActions }) => {
         <button
           className="dropdown-signout-btn-container"
           onClick={() => {
-            signOut();
+            logout({ returnTo: process.env.AUTH0_REDIRECT_URI });
           }}
         >
           Sign Out

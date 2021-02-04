@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
-import { useAuth } from 'oidc-react';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   GetBookmarksForUser,
   BookmarkRule,
@@ -14,12 +14,13 @@ import PropTypes from 'prop-types';
 const Bookmark = (props) => {
   const { ruleId } = props;
   const [change, setChange] = useState(0);
-  const { userData } = useAuth();
   const [bookmarked, setBookmarked] = useState(false);
 
+  const { isAuthenticated, user, getIdTokenClaims } = useAuth0();
+
   useEffect(() => {
-    if (userData) {
-      GetBookmarksForUser(userData.profile.sub, ruleId)
+    if (isAuthenticated) {
+      GetBookmarksForUser(user.sub, ruleId)
         .then((success) => {
           setBookmarked(success.bookmarkStatus);
         })
@@ -27,15 +28,13 @@ const Bookmark = (props) => {
           console.error(err);
         });
     }
-  }, [userData, change]);
+  }, [user, change]);
 
-  function onClick() {
-    if (userData) {
+  async function onClick() {
+    if (isAuthenticated) {
+      const jwt = await getIdTokenClaims();
       !bookmarked
-        ? BookmarkRule(
-            { ruleGuid: ruleId, UserId: userData.profile.sub },
-            userData.access_token
-          )
+        ? BookmarkRule({ ruleGuid: ruleId, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setChange(change + 1);
               setBookmarked(true);
@@ -43,10 +42,7 @@ const Bookmark = (props) => {
             .catch((err) => {
               console.error(err);
             })
-        : RemoveBookmark(
-            { ruleGuid: ruleId, UserId: userData.profile.sub },
-            userData.access_token
-          )
+        : RemoveBookmark({ ruleGuid: ruleId, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setBookmarked(false);
               setChange(change + 1);

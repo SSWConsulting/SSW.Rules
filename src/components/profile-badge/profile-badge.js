@@ -1,12 +1,11 @@
-import { useAuth } from 'oidc-react';
+import { useAuth0 } from '@auth0/auth0-react';
 import React from 'react';
 import PropTypes from 'prop-types';
 import PlaceHolderImage from '../../images/ssw-employee-profile-placeholder-sketch.jpg';
 
 const ProfileBadge = () => {
-  const { userData } = useAuth();
-
-  const { profile } = userData ? userData : null;
+  const { user } = useAuth0();
+  const { profile } = user ? user : null;
 
   return (
     <button className="flex flex-row flex-wrap justify-center profile-container-img">

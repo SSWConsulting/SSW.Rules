@@ -6,18 +6,19 @@ import ProfileBadge from '../components/profile-badge/profile-badge';
 import ProfileContent from '../components/profile-content/profile-content';
 import ProfileFilterMenu from '../components/profile-filter-menu/profile-filter-menu';
 import GitHubIcon from '-!svg-react-loader!../images/github.svg';
-import { useAuth } from 'oidc-react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Profile = ({ data }) => {
   const [selectedFilter, setSelectedFilter] = useState(1);
   const [listChange, setListChange] = useState(0);
-  const { userData } = useAuth();
+  const { user } = useAuth0();
+
   const [bookmarkedRulesCount, setBookmarkedRulesCount] = useState();
   const [likedRulesCount, setLikedRulesCount] = useState();
   const [dislikedRulesCount, setDislikedRulesCount] = useState();
 
-  useEffect(() => {}, [listChange, userData]);
-  if (userData) {
+  useEffect(() => {}, [listChange, user]);
+  if (user) {
     return (
       <>
         <Breadcrumb title="Profile" />
@@ -29,15 +30,12 @@ const Profile = ({ data }) => {
                   <ProfileBadge size="6.25rem" />
                 </div>
                 <div className="profile-large-name">
-                  {userData ? userData.profile.given_name : ''}{' '}
-                  {userData ? userData.profile.family_name : ''}
+                  {user ? user.given_name : ''}` `{user ? user.family_name : ''}
                 </div>
-                <div className="username">
-                  @{userData ? userData.profile.name : ''}
-                </div>
+                <div className="username">@{user ? user.name : ''}</div>
                 <a
                   className="github-link"
-                  href={`https://www.github.com/${userData.profile.name}`}
+                  href={`https://www.github.com/${user.name}`}
                 >
                   <GitHubIcon className="profile-github-icon" />
                   Manage GitHub account

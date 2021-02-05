@@ -1,4 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
+/* eslint-disable no-console */
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import DropdownIcon from '../dropdown-icon/dropdown-icon';
@@ -12,7 +13,7 @@ const SignIn = ({ displayActions }) => {
     isAuthenticated,
     loginWithRedirect,
     user,
-    getAccessTokenSilently,
+    getIdTokenClaims,
   } = useAuth0();
 
   useEffect(() => {
@@ -21,15 +22,15 @@ const SignIn = ({ displayActions }) => {
 
   const setUserOrg = async () => {
     isAuthenticated
-      ? await GetGithubOrganisations(user.name)
+      ? await GetGithubOrganisations(user.nickname)
           .then(async (success) => {
-            const token = await getAccessTokenSilently();
+            const jwt = await getIdTokenClaims();
             success.forEach(async (org) => {
               const data = {
                 OrganisationId: org.id.toString(),
                 UserId: user.sub,
               };
-              await setUserOrganisation(data, token).catch((err) => {
+              await setUserOrganisation(data, jwt.__raw).catch((err) => {
                 console.error('error: ' + err);
               });
             });

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
@@ -16,6 +16,7 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Reaction from '../components/reaction/reaction';
 import Comments from '../components/comments/comments';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   GetOrganisations,
   GetSecretContent,
@@ -31,7 +32,7 @@ const Rule = ({ data, location }) => {
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
-  const { userData } = useAuth();
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const loadSecretContent = async (userOrgId) => {
     const hidden = document.getElementsByClassName('hidden');
@@ -39,13 +40,13 @@ const Rule = ({ data, location }) => {
       const contentID = hidden[0].textContent || hidden[0].innerText;
       const guid = contentID.substring(0, 36);
       const orgID = contentID.substring(37);
+      const token = await getAccessTokenSilently();
       if (orgID == userOrgId) {
-        userData && guid
-          ? await GetSecretContent(guid, userData.access_token)
+        isAuthenticated && guid
+          ? await GetSecretContent(guid, token)
               .then((success) => {
                 GetGithubOrganisationName(orgID)
                   .then((nameSuccess) => {
-                    console.log(nameSuccess[0]);
                     hidden[0].innerHTML = ReactDOMServer.renderToStaticMarkup(
                       <SecretContent
                         content={success.content.content}
@@ -69,8 +70,16 @@ const Rule = ({ data, location }) => {
   const SecretContent = (props) => {
     return (
       <>
-        <b>{props.orgName + ' Only: '}</b>
-        <div style={{ marginLeft: '0.3rem' }}>{props.content}</div>
+        <div className="secret-content-heading">
+          <h4>{props.orgName + ' Only: \n'}</h4>
+        </div>
+        <div
+          style={{
+            wordWrap: 'break-word',
+            width: 'auto',
+          }}
+          dangerouslySetInnerHTML={{ __html: props.content }} //Is this a good idea? JS injection ect
+        />
       </>
     );
   };
@@ -80,8 +89,8 @@ const Rule = ({ data, location }) => {
   };
 
   useEffect(() => {
-    userData
-      ? GetOrganisations(userData.profile.sub)
+    isAuthenticated
+      ? GetOrganisations(user.sub)
           .then((success) => {
             success.organisations.forEach((org) =>
               loadSecretContent(org.organisationId)
@@ -91,7 +100,7 @@ const Rule = ({ data, location }) => {
             console.log(err);
           })
       : null;
-  }, [userData]);
+  }, [isAuthenticated]);
 
   return (
     <div>

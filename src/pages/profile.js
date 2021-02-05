@@ -11,7 +11,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 const Profile = ({ data }) => {
   const [selectedFilter, setSelectedFilter] = useState(1);
   const [listChange, setListChange] = useState(0);
-  const { user } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
 
   const [bookmarkedRulesCount, setBookmarkedRulesCount] = useState();
   const [likedRulesCount, setLikedRulesCount] = useState();
@@ -30,12 +30,12 @@ const Profile = ({ data }) => {
                   <ProfileBadge size="6.25rem" />
                 </div>
                 <div className="profile-large-name">
-                  {user ? user.given_name : ''}` `{user ? user.family_name : ''}
+                  {isAuthenticated ? user.name : ''}
                 </div>
-                <div className="username">@{user ? user.name : ''}</div>
+                <div className="username">@{user ? user.nickname : ''}</div>
                 <a
                   className="github-link"
-                  href={`https://www.github.com/${user.name}`}
+                  href={`https://www.github.com/${user.nickname}`}
                 >
                   <GitHubIcon className="profile-github-icon" />
                   Manage GitHub account

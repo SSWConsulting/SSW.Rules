@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
@@ -16,7 +14,12 @@ const Bookmark = (props) => {
   const [change, setChange] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
 
-  const { isAuthenticated, user, getIdTokenClaims } = useAuth0();
+  const {
+    isAuthenticated,
+    user,
+    getIdTokenClaims,
+    loginWithRedirect,
+  } = useAuth0();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -32,38 +35,50 @@ const Bookmark = (props) => {
 
   async function onClick() {
     if (isAuthenticated) {
+      setBookmarked(!bookmarked);
       const jwt = await getIdTokenClaims();
+      const data = { ruleGuid: ruleId, UserId: user.sub };
       !bookmarked
-        ? BookmarkRule({ ruleGuid: ruleId, UserId: user.sub }, jwt.__raw)
+        ? BookmarkRule(data, jwt.__raw)
             .then(() => {
               setChange(change + 1);
-              setBookmarked(true);
             })
             .catch((err) => {
               console.error(err);
             })
         : RemoveBookmark({ ruleGuid: ruleId, UserId: user.sub }, jwt.__raw)
             .then(() => {
-              setBookmarked(false);
               setChange(change + 1);
             })
             .catch((err) => {
               console.error(err);
             });
+    } else {
+      if (window.confirm('Sign in to bookmark this rule')) {
+        const currentPage =
+          typeof window !== 'undefined'
+            ? window.location.pathname.split('/').pop()
+            : null;
+        await loginWithRedirect({
+          appState: {
+            targetUrl: currentPage,
+          },
+        });
+      }
     }
   }
 
   return (
     <>
       {bookmarked ? (
-        <div onClick={onClick} className="tooltip">
+        <button onClick={onClick} className="tooltip">
           <BookmarkIcon className="bookmark-icon-pressed" />
           <span className="tooltiptext">Remove bookmark</span>
-        </div>
+        </button>
       ) : (
-        <div onClick={onClick}>
+        <button onClick={onClick}>
           <BookmarkIcon className="bookmark-icon" />
-        </div>
+        </button>
       )}
     </>
   );

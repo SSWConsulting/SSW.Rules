@@ -12,10 +12,10 @@ const DropdownCard = ({ setOpen, displayActions }) => {
         className={displayActions ? 'dropdown-list-center ' : 'dropdown-list'}
       >
         <div className="dropdown-userinfo-container">
-          <p className="dropdown-username">@{user.name}</p>
+          <p className="dropdown-username">@{user.nickname}</p>
           <a
             className="github-link"
-            href={`https://www.github.com/${user.name}`}
+            href={`https://www.github.com/${user.nickname}`}
           >
             <GitHubIcon className="dropdown-github-icon" />
             Manage GitHub Account

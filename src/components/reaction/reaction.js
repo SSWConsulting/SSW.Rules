@@ -88,8 +88,11 @@ const Reaction = (props) => {
           typeof window !== 'undefined'
             ? window.location.pathname.split('/').pop()
             : null;
-        sessionStorage.setItem('returnUrl', currentPage);
-        await loginWithRedirect();
+        await loginWithRedirect({
+          appState: {
+            targetUrl: currentPage,
+          },
+        });
       }
     }
   }

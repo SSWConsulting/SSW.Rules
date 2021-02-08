@@ -6,7 +6,7 @@ import {
   GetBookmarksForUser,
   GetAllLikedDisliked,
   RemoveBookmark,
-  RemoveLikeDislike,
+  RemoveReaction,
 } from '../../services/apiService';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import MD from 'gatsby-custom-md';
@@ -16,8 +16,10 @@ import { Filter } from '../profile-filter-menu/profile-filter-menu';
 
 const ProfileContent = (props) => {
   const [bookmarkedRules, setBookmarkedRules] = useState();
-  const [likedRules, setLikedRules] = useState();
-  const [dislikedRules, setDislikedRules] = useState();
+  const [superLikedRulesList, setSuperLikedRules] = useState();
+  const [likedRulesList, setLikedRules] = useState();
+  const [dislikedRulesList, setDislikedRules] = useState();
+  const [superDislikedRulesList, setSuperDislikedRules] = useState();
   const [change, setChange] = useState(0);
   const [viewStyle, setViewStyle] = useState('titleOnly');
   const { user, getIdTokenClaims } = useAuth0();
@@ -45,7 +47,7 @@ const ProfileContent = (props) => {
             .catch((err) => {
               console.error('error: ' + err);
             })
-        : RemoveLikeDislike({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
+        : RemoveReaction({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setChange(change + 1);
             })
@@ -83,10 +85,26 @@ const ProfileContent = (props) => {
     GetAllLikedDisliked(user.sub)
       .then((success) => {
         const allRules = props.data.allMarkdownRemark.nodes;
-        const likedGuids = success.likesDislikedRules.map((r) => r.ruleGuid);
+        const reactedGuids = success.likesDislikedRules.map((r) => r.ruleGuid);
         const reactedRules = allRules.filter((value) =>
-          likedGuids.includes(value.frontmatter.guid)
+          reactedGuids.includes(value.frontmatter.guid)
         );
+        const superLikedRules = reactedRules
+          .map((r) => ({
+            ...r.frontmatter,
+            excerpt: r.excerpt,
+            htmlAst: r.htmlAst,
+            type: success.likesDislikedRules
+              .filter((v) => v.ruleGuid == r.frontmatter.guid)
+              .map((r) => r.type),
+          }))
+          .filter((rr) => rr.type[0] == 3);
+        setSuperLikedRules(superLikedRules);
+        props.setSuperLikedRulesCount(superLikedRules.length);
+
+        console.log(superLikedRules);
+        console.log(superLikedRules.length);
+
         const likedRules = reactedRules
           .map((r) => ({
             ...r.frontmatter,
@@ -96,9 +114,10 @@ const ProfileContent = (props) => {
               .filter((v) => v.ruleGuid == r.frontmatter.guid)
               .map((r) => r.type),
           }))
-          .filter((rr) => rr.type[0] == 0);
+          .filter((rr) => rr.type[0] == 2);
         setLikedRules(likedRules);
         props.setLikedRulesCount(likedRules.length);
+
         const dislikedRules = reactedRules
           .map((r) => ({
             ...r.frontmatter,
@@ -111,6 +130,19 @@ const ProfileContent = (props) => {
           .filter((rr) => rr.type[0] == 1);
         setDislikedRules(dislikedRules);
         props.setDislikedRulesCount(dislikedRules.length);
+
+        const superDislikedRules = reactedRules
+          .map((r) => ({
+            ...r.frontmatter,
+            excerpt: r.excerpt,
+            htmlAst: r.htmlAst,
+            type: success.likesDislikedRules
+              .filter((v) => v.ruleGuid == r.frontmatter.guid)
+              .map((r) => r.type),
+          }))
+          .filter((rr) => rr.type[0] == 0);
+        setSuperDislikedRules(superDislikedRules);
+        props.setSuperDislikedRulesCount(superDislikedRules.length);
       })
       .catch((err) => {
         console.error('error: ', err);
@@ -179,14 +211,18 @@ const ProfileContent = (props) => {
         </div>
       </div>
 
-      {bookmarkedRules && likedRules && dislikedRules ? (
+      {bookmarkedRules && likedRulesList && dislikedRulesList ? (
         <RuleList
           rules={
             props.filter == Filter.Bookmarks
               ? bookmarkedRules
+              : props.filter == Filter.SuperLikes
+              ? superLikedRulesList
               : props.filter == Filter.Likes
-              ? likedRules
-              : dislikedRules
+              ? likedRulesList
+              : props.filter == Filter.Dislikes
+              ? dislikedRulesList
+              : superDislikedRulesList
           }
           viewStyle={viewStyle}
           type={
@@ -194,7 +230,11 @@ const ProfileContent = (props) => {
               ? 'bookmark'
               : props.filter == Filter.Likes
               ? 'like'
-              : 'dislike'
+              : props.filter == Filter.Dislikes
+              ? 'dislike'
+              : props.filter == Filter.SuperDislikes
+              ? 'super dislike'
+              : 'super like'
           }
           onRemoveClick={onRemoveClick}
         />
@@ -210,13 +250,15 @@ ProfileContent.propTypes = {
   setListChangeCallback: PropTypes.func.isRequired,
   listChange: PropTypes.number.isRequired,
   setBookmarkedRulesCount: PropTypes.func.isRequired,
+  setSuperLikedRulesCount: PropTypes.func.isRequired,
   setLikedRulesCount: PropTypes.func.isRequired,
   setDislikedRulesCount: PropTypes.func.isRequired,
+  setSuperDislikedRulesCount: PropTypes.func.isRequired,
 };
 
 const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
   const linkRef = useRef();
-
+  const iconClass = type.replace(/\s+/g, '-');
   const components = {
     greyBox: GreyBox,
   };
@@ -236,7 +278,7 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
               <li className="pb-4">
                 <section className="rule-content-title px-4 pb-4">
                   <div className="heading-container">
-                    <h2 className={`rule-heading-${type}`}>
+                    <h2 className={`rule-heading-${iconClass}`}>
                       <Link ref={linkRef} to={`/${rule.uri}`}>
                         {rule.title}
                       </Link>

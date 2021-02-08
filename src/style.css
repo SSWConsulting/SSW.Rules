@@ -1275,8 +1275,25 @@ blockquote p:before {
   color: #cc4141;
 }
 
+.super-like-btn-container:after, .super-like-btn-container-pressed:after  {
+  content: '\f118';
+  font-family: FontAwesome;
+  font-size: 1.7rem;
+  padding-right: 0.5rem;
+}
+
+
+.super-like-btn-container-pressed:after {
+  color: green;
+}
+
+.super-like-btn-container:hover:after, .super-like-btn-container-pressed:hover:after {
+  color: green;
+  opacity: 80%;
+}
+
 .likes-btn-container:after, .likes-btn-container-pressed:after  {
-  content: '\f164';
+  content: '\f087';
   font-family: FontAwesome;
   font-size: 1.7rem;
   padding-right: 0.5rem;
@@ -1287,11 +1304,12 @@ blockquote p:before {
 }
 
 .likes-btn-container:hover:after, .likes-btn-container-pressed:hover:after {
-  color: rgb(104, 175, 104);
+  color: green;
+  opacity: 80%;
 }
 
 .dislikes-btn-container:after, .dislikes-btn-container-pressed:after {
-  content: '\f165';
+  content: '\f088';
   font-family: FontAwesome;
   font-size: 1.7rem;
   padding-right: 0.5rem;
@@ -1302,7 +1320,22 @@ blockquote p:before {
 }
 
 .dislikes-btn-container:hover:after, .dislikes-btn-container-pressed:hover:after {
+  color:  #e25822;
+}
+
+.super-dislike-btn-container:after, .super-dislike-btn-container-pressed:after {
+  content: '\f119';
+  font-family: FontAwesome;
+  font-size: 1.7rem;
+  padding-right: 0.5rem;
+}
+
+.super-dislike-btn-container-pressed:after {
   color: #cc4141;
+}
+
+.super-dislike-btn-container:hover:after, .super-dislike-btn-container-pressed:hover:after {
+  color: red;
 }
 
 .likes-counter-container {
@@ -1611,7 +1644,7 @@ blockquote p:before {
   left: 7.1rem;
   position: relative;
   display: grid;
-  grid-template-columns: 8rem 4rem 6rem;
+  grid-template-columns: 8rem 8rem 4rem 6rem 9rem;
   font-weight: bold;
   column-gap: 1.5rem;
 }
@@ -1663,19 +1696,34 @@ blockquote p:before {
   margin: auto auto auto 0;
 }
 
+.rule-heading-super-like:after {
+  content: '\f118';
+  font-family: FontAwesome;
+  color: green;
+  margin-left: 1rem;
+}
+
+.rule-heading-like:after {
+  content: '\f087';
+  font-family: FontAwesome;
+  color: green;
+  margin-left: 1rem;
+}
+
 .rule-heading-dislike:after {
-  content: '\f165';
+  content: '\f088';
   font-family: FontAwesome;
   color: red;
   margin-left: 1rem;
 }
 
-.rule-heading-like:after {
-  content: '\f164';
+.rule-heading-super-dislike:after {
+  content: '\f119';
   font-family: FontAwesome;
-  color: green;
+  color: red;
   margin-left: 1rem;
 }
+
 
 .remove-item {
   margin-left: auto;

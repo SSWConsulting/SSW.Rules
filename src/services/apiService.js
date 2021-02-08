@@ -2,16 +2,16 @@
 
 const API_URL = process.env.API_BASE_URL + '/api';
 
-export async function GetLikeDislikeForUser(ruleId, userId) {
+export async function GetReactionForUser(ruleId, userId) {
   var query = userId
-    ? `${API_URL}/GetLikesDislikesFunction?rule_guid=${ruleId}&user_id=${userId}`
-    : `${API_URL}/GetLikesDislikesFunction?rule_guid=${ruleId}`;
+    ? `${API_URL}/GetReactionsFunction?rule_guid=${ruleId}&user_id=${userId}`
+    : `${API_URL}/GetReactionsFunction?rule_guid=${ruleId}`;
   const response = await fetch(query);
   return await response.json();
 }
 
 export async function GetAllLikedDisliked(userId) {
-  var query = `${API_URL}/GetAllLikedDisliked?&user_id=${userId}`;
+  var query = `${API_URL}/GetAllReationsFunction?&user_id=${userId}`;
   const response = await fetch(query);
   return await response.json();
 }
@@ -24,7 +24,7 @@ export async function PostReactionForUser(data, token) {
     };
   }
 
-  const response = await fetch(`${API_URL}/LikeDislikeFunction`, {
+  const response = await fetch(`${API_URL}/ReactFunction`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -36,18 +36,20 @@ export async function PostReactionForUser(data, token) {
 }
 
 export const ReactionType = {
-  Like: 0,
+  SuperLike: 3,
+  Like: 2,
   DisLike: 1,
+  SuperDisLike: 0,
 };
 
-export async function RemoveLikeDislike(data, token) {
+export async function RemoveReaction(data, token) {
   if (data == null) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
     };
   }
-  const response = await fetch(`${API_URL}/RemoveLikeDislikeFunction`, {
+  const response = await fetch(`${API_URL}/RemoveReactionFunction`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,

@@ -12,10 +12,11 @@ const Profile = ({ data }) => {
   const [selectedFilter, setSelectedFilter] = useState(1);
   const [listChange, setListChange] = useState(0);
   const { user, isAuthenticated, loginWithRedirect } = useAuth0();
-
   const [bookmarkedRulesCount, setBookmarkedRulesCount] = useState();
+  const [superLikedRulesCount, setSuperLikedRulesCount] = useState();
   const [likedRulesCount, setLikedRulesCount] = useState();
   const [dislikedRulesCount, setDislikedRulesCount] = useState();
+  const [superDislikedRulesCount, setSuperDislikedRulesCount] = useState();
 
   useEffect(() => {}, [listChange, user]);
   if (isAuthenticated) {
@@ -45,8 +46,10 @@ const Profile = ({ data }) => {
                 selectedFilter={selectedFilter}
                 setSelectedFilter={setSelectedFilter}
                 bookmarkedRulesCount={bookmarkedRulesCount}
+                superLikedRulesCount={superLikedRulesCount}
                 likedRulesCount={likedRulesCount}
                 dislikedRulesCount={dislikedRulesCount}
+                superDislikedRulesCount={superDislikedRulesCount}
                 change={listChange}
               />
             </div>
@@ -57,8 +60,10 @@ const Profile = ({ data }) => {
                 setListChangeCallback={setListChange}
                 listChange={listChange}
                 setBookmarkedRulesCount={setBookmarkedRulesCount}
+                setSuperLikedRulesCount={setSuperLikedRulesCount}
                 setLikedRulesCount={setLikedRulesCount}
                 setDislikedRulesCount={setDislikedRulesCount}
+                setSuperDislikedRulesCount={setSuperDislikedRulesCount}
               />
             </div>
           </section>

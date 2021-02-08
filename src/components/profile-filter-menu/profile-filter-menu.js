@@ -122,11 +122,10 @@ ProfileFilterMenu.propTypes = {
 };
 
 export const Filter = {
-  Bookmarks: 1,
-  SuperLikes: 2,
-  Likes: 3,
-  Dislikes: 4,
-  SuperDislikes: 5,
+  Bookmarks: 4,
+  SuperLikes: 3,
+  Likes: 2,
+  Dislikes: 1,
+  SuperDislikes: 0,
 };
-
 export default ProfileFilterMenu;

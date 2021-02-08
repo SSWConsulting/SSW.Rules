@@ -98,12 +98,9 @@ const ProfileContent = (props) => {
               .filter((v) => v.ruleGuid == r.frontmatter.guid)
               .map((r) => r.type),
           }))
-          .filter((rr) => rr.type[0] == 3);
+          .filter((rr) => rr.type[0] == Filter.SuperLikes);
         setSuperLikedRules(superLikedRules);
         props.setSuperLikedRulesCount(superLikedRules.length);
-
-        console.log(superLikedRules);
-        console.log(superLikedRules.length);
 
         const likedRules = reactedRules
           .map((r) => ({
@@ -114,7 +111,7 @@ const ProfileContent = (props) => {
               .filter((v) => v.ruleGuid == r.frontmatter.guid)
               .map((r) => r.type),
           }))
-          .filter((rr) => rr.type[0] == 2);
+          .filter((rr) => rr.type[0] == Filter.Likes);
         setLikedRules(likedRules);
         props.setLikedRulesCount(likedRules.length);
 
@@ -127,8 +124,10 @@ const ProfileContent = (props) => {
               .filter((v) => v.ruleGuid == r.frontmatter.guid)
               .map((r) => r.type),
           }))
-          .filter((rr) => rr.type[0] == 1);
+          .filter((rr) => rr.type[0] == Filter.Dislikes);
         setDislikedRules(dislikedRules);
+        console.log(dislikedRulesList);
+        console.log(dislikedRules);
         props.setDislikedRulesCount(dislikedRules.length);
 
         const superDislikedRules = reactedRules
@@ -140,7 +139,7 @@ const ProfileContent = (props) => {
               .filter((v) => v.ruleGuid == r.frontmatter.guid)
               .map((r) => r.type),
           }))
-          .filter((rr) => rr.type[0] == 0);
+          .filter((rr) => rr.type[0] == Filter.SuperDislikes);
         setSuperDislikedRules(superDislikedRules);
         props.setSuperDislikedRulesCount(superDislikedRules.length);
       })
@@ -210,7 +209,6 @@ const ProfileContent = (props) => {
           </label>
         </div>
       </div>
-
       {bookmarkedRules && likedRulesList && dislikedRulesList ? (
         <RuleList
           rules={
@@ -239,7 +237,7 @@ const ProfileContent = (props) => {
           onRemoveClick={onRemoveClick}
         />
       ) : (
-        <p className="loading-text">Loading...</p>
+        <p className="logged-out-message">Loading...</p>
       )}
     </>
   );

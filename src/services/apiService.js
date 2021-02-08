@@ -11,7 +11,7 @@ export async function GetReactionForUser(ruleId, userId) {
 }
 
 export async function GetAllLikedDisliked(userId) {
-  var query = `${API_URL}/GetAllReationsFunction?&user_id=${userId}`;
+  var query = `${API_URL}/GetAllReactionsFunction?&user_id=${userId}`;
   const response = await fetch(query);
   return await response.json();
 }

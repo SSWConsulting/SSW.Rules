@@ -16,4 +16,6 @@ module.exports = {
   },
   parentSiteUrl: `https://ssw.com.au`,
   breadcrumbDefault: `SSW Rules`,
+  commentsRepositry: `SSWConsulting/SSW.Rules.Content`,
+  commentsTheme: `github-light`,
 };

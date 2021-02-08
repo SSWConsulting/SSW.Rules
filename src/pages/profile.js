@@ -11,14 +11,14 @@ import { useAuth0 } from '@auth0/auth0-react';
 const Profile = ({ data }) => {
   const [selectedFilter, setSelectedFilter] = useState(1);
   const [listChange, setListChange] = useState(0);
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
 
   const [bookmarkedRulesCount, setBookmarkedRulesCount] = useState();
   const [likedRulesCount, setLikedRulesCount] = useState();
   const [dislikedRulesCount, setDislikedRulesCount] = useState();
 
   useEffect(() => {}, [listChange, user]);
-  if (user) {
+  if (isAuthenticated) {
     return (
       <>
         <Breadcrumb title="Profile" />
@@ -67,9 +67,23 @@ const Profile = ({ data }) => {
     );
   } else {
     return (
-      <>
-        <p>Loading</p>
-      </>
+      <div className="logged-out-message">
+        <button
+          onClick={async () => {
+            const currentPage =
+              typeof window !== 'undefined'
+                ? window.location.pathname.split('/').pop()
+                : null;
+            await loginWithRedirect({
+              appState: {
+                targetUrl: currentPage,
+              },
+            });
+          }}
+        >
+          Login to view profile
+        </button>
+      </div>
     );
   }
 };

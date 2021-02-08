@@ -14,6 +14,7 @@ import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Reaction from '../components/reaction/reaction';
+import Comments from '../components/comments/comments';
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
@@ -220,6 +221,7 @@ const Rule = ({ data, location }) => {
               </div>
             </div>
           </section>
+          <Comments guid={rule.frontmatter.guid} />
         </section>
       </div>
     </div>

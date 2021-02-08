@@ -99,7 +99,13 @@ const Reaction = (props) => {
       if (
         window.confirm(
           `Sign in to ${
-            type == ReactionType.Like ? 'like' : 'dislike'
+            type == ReactionType.SuperLike
+              ? 'super like'
+              : type == ReactionType.Like
+              ? 'like'
+              : type == ReactionType.DisLike
+              ? 'dislike'
+              : 'super dislike'
           } this rule`
         )
       ) {

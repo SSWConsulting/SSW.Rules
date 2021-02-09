@@ -1289,7 +1289,7 @@ blockquote p:before {
 
 .super-like-btn-container:hover:after, .super-like-btn-container-pressed:hover:after {
   color: green;
-  opacity: 80%;
+  opacity: 0.8;
 }
 
 .likes-btn-container:after, .likes-btn-container-pressed:after  {
@@ -1305,7 +1305,7 @@ blockquote p:before {
 
 .likes-btn-container:hover:after, .likes-btn-container-pressed:hover:after {
   color: green;
-  opacity: 80%;
+  opacity: 0.8;
 }
 
 .dislikes-btn-container:after, .dislikes-btn-container-pressed:after {

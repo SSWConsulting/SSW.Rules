@@ -1755,6 +1755,9 @@ blockquote p:before {
   border-top: 1px solid #f5f5f5
 }
 
+.utterances {
+  max-width: 60rem;
+}
 /* Responsiveness
 -------------------------------------------------- */
 

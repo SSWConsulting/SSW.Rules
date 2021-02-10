@@ -19,6 +19,7 @@
     url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf?v=4.4.0')
       format('truetype'),
     url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular')
+    url('https://ssw.com.au//ssw/include/pigeon/foxnts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular')
       format('svg');
   font-weight: normal;
   font-style: normal;
@@ -1284,7 +1285,7 @@ blockquote p:before {
 }
 
 .super-like-btn-container:after, .super-like-btn-container-pressed:after  {
-  content: '\f118';
+  content: '\f005';
   font-family: FontAwesome;
   font-size: 1.7rem;
   padding-right: 0.5rem;
@@ -1292,16 +1293,16 @@ blockquote p:before {
 
 
 .super-like-btn-container-pressed:after {
-  color: green;
+  color: gold;
 }
 
 .super-like-btn-container:hover:after, .super-like-btn-container-pressed:hover:after {
-  color: green;
   opacity: 0.8;
+  color: gold;
 }
 
 .likes-btn-container:after, .likes-btn-container-pressed:after  {
-  content: '\f087';
+  content: '\f164';
   font-family: FontAwesome;
   font-size: 1.7rem;
   padding-right: 0.5rem;
@@ -1317,14 +1318,14 @@ blockquote p:before {
 }
 
 .dislikes-btn-container:after, .dislikes-btn-container-pressed:after {
-  content: '\f088';
+  content: '\f165';
   font-family: FontAwesome;
   font-size: 1.7rem;
   padding-right: 0.5rem;
 }
 
 .dislikes-btn-container-pressed:after {
-  color: red;
+  color: #CC4141;
 }
 
 .dislikes-btn-container:hover:after, .dislikes-btn-container-pressed:hover:after {
@@ -1332,7 +1333,7 @@ blockquote p:before {
 }
 
 .super-dislike-btn-container:after, .super-dislike-btn-container-pressed:after {
-  content: '\f119';
+  content: '\f00d';
   font-family: FontAwesome;
   font-size: 1.7rem;
   padding-right: 0.5rem;
@@ -1377,7 +1378,7 @@ blockquote p:before {
 }
 
 /* Tooltip container */
-.tooltip {
+.tooltip, .react-tooltip {
   position: relative;
   display: inline-block;
 }
@@ -1399,12 +1400,8 @@ blockquote p:before {
   padding: 5px 0;
   border-radius: 6px;
   font-size: small;
-  /* Position the tooltip text */
-  position: absolute;
   bottom: 70%;
-  left: 65%;
-  margin-left: -60px;
-
+  position: absolute;
   /* Fade in tooltip */
   opacity: 0;
   transition: opacity 0.3s;
@@ -1752,19 +1749,19 @@ blockquote p:before {
 .rule-heading-really-agree:after {
   content: '\f005';
   font-family: FontAwesome;
-  color: green;
+  color: gold;
   margin-left: 1rem;
 }
 
 .rule-heading-like:after {
-  content: '\f087';
+  content: '\f164';
   font-family: FontAwesome;
   color: green;
   margin-left: 1rem;
 }
 
 .rule-heading-dislike:after {
-  content: '\f088';
+  content: '\f165';
   font-family: FontAwesome;
   color: red;
   margin-left: 1rem;
@@ -1788,7 +1785,6 @@ blockquote p:before {
   content: '\f057';
   font-family: FontAwesome;
   margin: auto 1rem auto auto;
-  padding-left: 1rem;
   font-size: 1.8rem !important;
   color: #ddd;
 }

@@ -1653,7 +1653,7 @@ blockquote p:before {
   left: 7.1rem;
   position: relative;
   display: grid;
-  grid-template-columns: 8rem 8rem 4rem 6rem 9rem;
+  grid-template-columns: 8rem 8rem 10rem 11rem 9rem;
   font-weight: bold;
   column-gap: 1.5rem;
 }
@@ -1736,13 +1736,13 @@ blockquote p:before {
 
 .remove-item {
   margin-left: auto;
+  right: 3rem;
 }
 
 .remove-item:after {
   content: '\f057';
   font-family: FontAwesome;
   margin: auto 1rem auto auto;
-  padding-left: 1rem;
   font-size: 1.8rem !important;
   color: #ddd;
 }

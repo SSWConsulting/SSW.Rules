@@ -1317,7 +1317,7 @@ blockquote p:before {
 }
 
 .dislikes-btn-container-pressed:after {
-  color: red;
+  color: #CC4141;
 }
 
 .dislikes-btn-container:hover:after, .dislikes-btn-container-pressed:hover:after {

@@ -134,7 +134,7 @@ const Reaction = (props) => {
             }
             onClick={() => onClick(ReactionType.SuperDisLike)}
           />
-          <span className="tooltiptext">Super Disike</span>
+          <span className="tooltiptext">Disagree</span>
         </div>
         <div className="likes-counter-container">{superDislikesCount}</div>
       </span>
@@ -148,7 +148,7 @@ const Reaction = (props) => {
             }
             onClick={() => onClick(ReactionType.DisLike)}
           />
-          <span className="tooltiptext">Disike</span>
+          <span className="tooltiptext">Somewhat Disagree</span>
         </div>
         <div className="likes-counter-container">{dislikesCount}</div>
       </span>
@@ -162,7 +162,7 @@ const Reaction = (props) => {
                 : 'likes-btn-container'
             }
           />
-          <span className="tooltiptext">Like</span>
+          <span className="tooltiptext">Somewhat Agree</span>
         </div>
         <div className="likes-counter-container">{likesCount}</div>
       </span>
@@ -176,7 +176,7 @@ const Reaction = (props) => {
             }
             onClick={() => onClick(ReactionType.SuperLike)}
           />
-          <span className="tooltiptext">Super Like</span>
+          <span className="tooltiptext">Agree</span>
         </div>
         <div className="likes-counter-container">{superLikesCount}</div>
       </span>

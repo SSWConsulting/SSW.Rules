@@ -201,7 +201,7 @@ const Rule = ({ data, location }) => {
             </div>
 
             <div className="likes w-full lg:w-1/3">
-              <h5>Feedback</h5>
+              <h5>Rate</h5>
               <Reaction ruleId={rule.frontmatter.guid} />
               <div className="suggestion">
                 <span className="action-btn-container">

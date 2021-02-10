@@ -126,8 +126,6 @@ const ProfileContent = (props) => {
           }))
           .filter((rr) => rr.type[0] == Filter.Dislikes);
         setDislikedRules(dislikedRules);
-        console.log(dislikedRulesList);
-        console.log(dislikedRules);
         props.setDislikedRulesCount(dislikedRules.length);
 
         const superDislikedRules = reactedRules

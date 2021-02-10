@@ -73,11 +73,12 @@ const Bookmark = (props) => {
       {bookmarked ? (
         <button onClick={onClick} className="tooltip">
           <BookmarkIcon className="bookmark-icon-pressed" />
-          <span className="tooltiptext">Remove bookmark</span>
+          <span className="tooltiptext">Remove Bookmark</span>
         </button>
       ) : (
-        <button onClick={onClick}>
+        <button onClick={onClick} className="tooltip">
           <BookmarkIcon className="bookmark-icon" />
+          <span className="tooltiptext">Add Bookmark</span>
         </button>
       )}
     </>

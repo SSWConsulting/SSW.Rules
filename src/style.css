@@ -1275,73 +1275,105 @@ blockquote p:before {
   color: #cc4141;
 }
 
-.super-like-btn-container:after, .super-like-btn-container-pressed:after  {
+.rate-heading {
+  margin-bottom: 0;
+}
+
+.reaction-grid {
+  grid-template-columns: auto 2rem 1rem 2rem 2.2rem 1rem 2rem 2.2rem 1rem 2rem 2.2rem 1rem auto;
+  display: grid;
+  grid-template-rows: 2rem;
+  padding-bottom: 1rem;
+}
+
+.agree-btn-container:after, .agree-btn-container-pressed:after  {
   content: '\f005';
   font-family: FontAwesome;
   font-size: 1.7rem;
-  padding-right: 0.5rem;
 }
 
-
-.super-like-btn-container-pressed:after {
+.agree-btn-container-pressed:after {
   color: gold;
 }
 
-.super-like-btn-container:hover:after, .super-like-btn-container-pressed:hover:after {
+.agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after {
   opacity: 0.8;
   color: gold;
+  font-size: 1.8rem;
+  transition: font-size 0.2s;
 }
 
-.likes-btn-container:after, .likes-btn-container-pressed:after  {
+.somewhat-agree-btn-container:after, .somewhat-agree-btn-container-pressed:after  {
   content: '\f164';
   font-family: FontAwesome;
   font-size: 1.7rem;
-  padding-right: 0.5rem;
 }
 
-.likes-btn-container-pressed:after {
+.somewhat-agree-btn-container-pressed:after {
   color: green;
 }
 
-.likes-btn-container:hover:after, .likes-btn-container-pressed:hover:after {
+.somewhat-agree-btn-container:hover:after, .somewhat-agree-btn-container-pressed:hover:after {
   color: green;
   opacity: 0.8;
+  font-size: 1.8rem;
+  transition: font-size 0.2s;
 }
 
-.dislikes-btn-container:after, .dislikes-btn-container-pressed:after {
+.somewhat-disagree-btn-container:after, .somewhat-disagree-btn-container-pressed:after {
   content: '\f165';
   font-family: FontAwesome;
   font-size: 1.7rem;
-  padding-right: 0.5rem;
+  align-self: center;
 }
 
-.dislikes-btn-container-pressed:after {
+.somewhat-disagree-btn-container-pressed:after {
   color: #CC4141;
 }
 
-.dislikes-btn-container:hover:after, .dislikes-btn-container-pressed:hover:after {
+.somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after {
   color:  #e25822;
+  font-size: 1.8rem;
+  transition: font-size 0.2s;
 }
 
-.super-dislike-btn-container:after, .super-dislike-btn-container-pressed:after {
+.disagree-btn-container:after, .disagree-btn-container-pressed:after {
   content: '\f00d';
   font-family: FontAwesome;
   font-size: 1.7rem;
-  padding-right: 0.5rem;
 }
 
-.super-dislike-btn-container-pressed:after {
+.disagree-btn-container-pressed:after {
   color: #cc4141;
 }
 
-.super-dislike-btn-container:hover:after, .super-dislike-btn-container-pressed:hover:after {
+.disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after {
   color: red;
+  font-size: 1.8rem;
+  transition: font-size 0.2s;
 }
 
-.likes-counter-container {
+.reaction-counter-container {
   position: relative;
-  bottom: .2rem;
+  top: .3rem;
   display: inline-block;
+  align-self: center;
+}
+
+.agree-grid-item {
+  grid-column: 11;
+}
+
+.somewhat-agree-grid-item {
+  grid-column: 8;
+}
+
+.somewhat-disagree-grid-item {
+  grid-column: 5;
+}
+
+.disagree-grid-item {
+  grid-column: 2;
 }
 
 .rule-header-container {
@@ -1361,6 +1393,7 @@ blockquote p:before {
 .bookmark-icon-pressed:hover, .bookmark-icon:hover {
   height: 2.2rem;
   cursor: pointer;
+  transition: height 0.25s;
 }
 
 .bookmark-icon:hover {
@@ -1385,25 +1418,21 @@ blockquote p:before {
   font-size: small;
   bottom: 70%;
   position: absolute;
-  /* Fade in tooltip */
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.2s;
 }
 
-/* Tooltip text */
 .tooltip .tooltiptext {
   left: 65%;
   margin-left: -60px;
 }
 
 .react-tooltip .tooltiptext {
-  margin-left: -75px !important;
+  margin-left: -60px !important;
   bottom: 90%;
-  width: 110px;
+  width: 90px;
 }
 
-
-/* Tooltip arrow */
 .tooltip .tooltiptext::after, .react-tooltip .tooltiptext::after {
   content: "";
   position: absolute;
@@ -1575,6 +1604,9 @@ blockquote p:before {
 }
 
 @media screen and (max-width: 600px) {
+  .reaction-grid {
+    grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 1rem auto;
+  }
   .profile-header {
     height: auto;
   }
@@ -1704,31 +1736,31 @@ blockquote p:before {
   margin: auto auto auto 0;
 }
 
-.rule-heading-super-like:after {
+.rule-heading-agree:after {
   content: '\f005';
   font-family: FontAwesome;
   color: gold;
   margin-left: 1rem;
 }
 
-.rule-heading-like:after {
+.rule-heading-somewhat-agree:after {
   content: '\f164';
   font-family: FontAwesome;
   color: green;
   margin-left: 1rem;
 }
 
-.rule-heading-dislike:after {
+.rule-heading-somewhat-disagree:after {
   content: '\f165';
   font-family: FontAwesome;
-  color: red;
+  color: #CC4141;
   margin-left: 1rem;
 }
 
-.rule-heading-super-dislike:after {
+.rule-heading-disagree:after {
   content: '\f00d';
   font-family: FontAwesome;
-  color: red;
+  color: #CC4141;
   margin-left: 1rem;
 }
 

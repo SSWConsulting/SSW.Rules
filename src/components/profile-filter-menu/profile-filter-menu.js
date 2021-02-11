@@ -49,7 +49,7 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.SuperLikes);
           }}
         >
-          Agree
+          Really Agree
           <div className="rules-counter">{superLikedRulesCount ?? 0}</div>
         </div>
         <div
@@ -103,7 +103,7 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.SuperDislikes);
           }}
         >
-          Disagree
+          Really Disagree
           <div className="rules-counter">{superDislikedRulesCount ?? 0}</div>
         </div>
       </div>

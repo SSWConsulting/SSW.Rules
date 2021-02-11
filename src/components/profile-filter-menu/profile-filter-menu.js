@@ -85,7 +85,7 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Dislikes);
           }}
         >
-          Somewhat Disgree
+          Somewhat Disagree
           <div className="rules-counter">{dislikedRulesCount ?? 0}</div>
         </div>
         <div

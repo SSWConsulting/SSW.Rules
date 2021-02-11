@@ -19,7 +19,6 @@
     url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf?v=4.4.0')
       format('truetype'),
     url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/fonts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular')
-    url('https://ssw.com.au//ssw/include/pigeon/foxnts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular')
       format('svg');
   font-weight: normal;
   font-style: normal;
@@ -1653,7 +1652,7 @@ blockquote p:before {
   left: 7.1rem;
   position: relative;
   display: grid;
-  grid-template-columns: 8rem 8rem 10rem 11rem 9rem;
+  grid-template-columns: 8rem 8rem 10rem 12rem 9rem;
   font-weight: bold;
   column-gap: 1.5rem;
 }

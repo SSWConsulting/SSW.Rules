@@ -134,7 +134,7 @@ const Reaction = (props) => {
             }
             onClick={() => onClick(ReactionType.SuperDisLike)}
           />
-          <span className="tooltiptext">Disagree</span>
+          <span className="tooltiptext">Really Disagree</span>
         </div>
       </div>
       <div className="reaction-counter-container">{superDislikesCount}</div>
@@ -176,7 +176,7 @@ const Reaction = (props) => {
             }
             onClick={() => onClick(ReactionType.SuperLike)}
           />
-          <span className="tooltiptext">Agree</span>
+          <span className="tooltiptext">Really Agree</span>
         </div>
       </div>
       <div className="reaction-counter-container">{superLikesCount}</div>

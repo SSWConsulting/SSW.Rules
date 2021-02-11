@@ -1401,7 +1401,6 @@ blockquote p:before {
   opacity: 0.5;
 }
 
-/* Tooltip container */
 .tooltip, .react-tooltip {
   position: relative;
   display: inline-block;
@@ -1430,7 +1429,7 @@ blockquote p:before {
 .react-tooltip .tooltiptext {
   margin-left: -60px !important;
   bottom: 90%;
-  width: 90px;
+  width: 80px; 
 }
 
 .tooltip .tooltiptext::after, .react-tooltip .tooltiptext::after {
@@ -1448,6 +1447,7 @@ blockquote p:before {
 .tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
+  padding: 0.2rem !important;
 }
 
 /* Dropdown
@@ -1684,7 +1684,7 @@ blockquote p:before {
   left: 7.1rem;
   position: relative;
   display: grid;
-  grid-template-columns: 8rem 8rem 10rem 12rem 9rem;
+  grid-template-columns: 8rem 8rem 10rem 11rem 10rem;
   font-weight: bold;
   column-gap: 1.5rem;
 }
@@ -1763,7 +1763,6 @@ blockquote p:before {
   color: #CC4141;
   margin-left: 1rem;
 }
-
 
 .remove-item {
   margin-left: auto;

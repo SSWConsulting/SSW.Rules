@@ -1684,7 +1684,7 @@ blockquote p:before {
   left: 7.1rem;
   position: relative;
   display: grid;
-  grid-template-columns: 8rem 8rem 10rem 11rem 10rem;
+  grid-template-columns: 8rem 8rem 10rem 12rem 10rem;
   font-weight: bold;
   column-gap: 1.5rem;
 }

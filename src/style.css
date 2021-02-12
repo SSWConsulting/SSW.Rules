@@ -1558,11 +1558,11 @@ blockquote p:before {
 /* Profile Page
 -------------------------------------------------- */
 
-.logged-out-message {
+.no-content-message {
   text-align: center;
 }
 
-.logged-out-message button {
+.no-content-message button {
   margin-top: 1rem;
 }
 
@@ -1605,10 +1605,6 @@ blockquote p:before {
 .profile-image {
   grid-row-start: 1;
   grid-row-end: 3;
-}
-
-.error-text {
-  text-align: center;
 }
 
 @media screen and (max-width: 600px) {

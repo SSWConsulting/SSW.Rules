@@ -235,7 +235,7 @@ const ProfileContent = (props) => {
           onRemoveClick={onRemoveClick}
         />
       ) : (
-        <p className="logged-out-message">Loading...</p>
+        <p className="no-content-message">Loading...</p>
       )}
     </>
   );
@@ -260,9 +260,9 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
   };
   return (
     <div className="p-12">
-      {rules == undefined || rules.toString() == '' || !rules ? (
-        <p className="logged-out-message">
-          No rules have been {type == 'bookmark' ? 'bookmarke' : type}d yet
+      {rules.toString() == '' || rules == undefined || !rules ? (
+        <p className="no-content-message">
+          ❌ No tagged rules yet.
         </p>
       ) : (
         <></>

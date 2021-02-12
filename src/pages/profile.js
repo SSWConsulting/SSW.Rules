@@ -72,7 +72,7 @@ const Profile = ({ data, gitHubUsername }) => {
     );
   } else {
     return (
-      <div className="logged-out-message">
+      <div className="no-content-message">
         <button
           onClick={async () => {
             const currentPage =

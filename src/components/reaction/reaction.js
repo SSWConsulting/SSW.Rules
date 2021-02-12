@@ -106,7 +106,7 @@ const Reaction = (props) => {
               : type == ReactionType.DisLike
               ? 'somewhat disagree'
               : 'really disagree'
-          } with this rule.`
+          } with this rule`
         )
       ) {
         const currentPage =

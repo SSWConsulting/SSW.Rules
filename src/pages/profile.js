@@ -8,7 +8,7 @@ import ProfileFilterMenu from '../components/profile-filter-menu/profile-filter-
 import GitHubIcon from '-!svg-react-loader!../images/github.svg';
 import { useAuth0 } from '@auth0/auth0-react';
 
-const Profile = ({ data }) => {
+const Profile = ({ data, gitHubUsername }) => {
   const [selectedFilter, setSelectedFilter] = useState(1);
   const [listChange, setListChange] = useState(0);
   const { user, isAuthenticated, loginWithRedirect } = useAuth0();
@@ -88,12 +88,14 @@ const Profile = ({ data }) => {
         >
           Login to view profile
         </button>
+        <div>{gitHubUsername}</div>
       </div>
     );
   }
 };
 Profile.propTypes = {
   data: PropTypes.object.isRequired,
+  gitHubUsername: PropTypes.string,
 };
 
 const ProfileWithQuery = (props) => (
@@ -120,4 +122,15 @@ const ProfileWithQuery = (props) => (
   />
 );
 
-export default ProfileWithQuery;
+ProfilePage.propTypes = {
+  gitHubUsername: PropTypes.string,
+  props: PropTypes.any,
+};
+
+export default function ProfilePage({ gitHubUsername, props }) {
+  return (
+    <>
+      <ProfileWithQuery gitHubUsername={gitHubUsername} {...props} />
+    </>
+  );
+}

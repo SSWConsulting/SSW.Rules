@@ -144,6 +144,13 @@ exports.createPages = async ({ graphql, actions }) => {
       },
     });
   });
+
+  const profilePage = require.resolve('./src/pages/profile.js');
+  createPage({
+    path: '/people/',
+    matchPath: '/people/:gitHubUsername',
+    component: profilePage,
+  });
 };
 
 exports.onPostBuild = async ({ store, pathPrefix }) => {

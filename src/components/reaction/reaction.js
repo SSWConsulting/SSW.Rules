@@ -100,13 +100,13 @@ const Reaction = (props) => {
         window.confirm(
           `Sign in to ${
             type == ReactionType.SuperLike
-              ? 'super like'
+              ? 'really agree'
               : type == ReactionType.Like
-              ? 'like'
+              ? 'somewhat agree'
               : type == ReactionType.DisLike
-              ? 'dislike'
-              : 'super dislike'
-          } this rule`
+              ? 'somewhat disagree'
+              : 'really disagree'
+          } with this rule`
         )
       ) {
         const currentPage =

@@ -1736,7 +1736,7 @@ blockquote p:before {
   margin: auto auto auto 0;
 }
 
-.rule-heading-agree:after {
+.rule-heading-really-agree:after {
   content: '\f005';
   font-family: FontAwesome;
   color: gold;
@@ -1757,7 +1757,7 @@ blockquote p:before {
   margin-left: 1rem;
 }
 
-.rule-heading-disagree:after {
+.rule-heading-really-disagree:after {
   content: '\f00d';
   font-family: FontAwesome;
   color: #CC4141;

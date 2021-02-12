@@ -1,3 +1,4 @@
+const siteConfig = require('./site-config');
 const { createFilePath } = require('gatsby-source-filesystem');
 const appInsights = require('applicationinsights');
 const makePluginData = require('./src/helpers/plugin-data');
@@ -147,8 +148,8 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const profilePage = require.resolve('./src/pages/profile.js');
   createPage({
-    path: '/people/',
-    matchPath: '/people/:gitHubUsername',
+    path: `${siteConfig.pathPrefix}/people/`,
+    matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
     component: profilePage,
   });
 };

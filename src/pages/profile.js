@@ -9,7 +9,7 @@ import GitHubIcon from '-!svg-react-loader!../images/github.svg';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const Profile = ({ data }) => {
-  const [selectedFilter, setSelectedFilter] = useState(1);
+  const [selectedFilter, setSelectedFilter] = useState(4);
   const [listChange, setListChange] = useState(0);
   const { user, isAuthenticated, loginWithRedirect } = useAuth0();
   const [bookmarkedRulesCount, setBookmarkedRulesCount] = useState();

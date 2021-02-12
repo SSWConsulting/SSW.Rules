@@ -229,8 +229,8 @@ const ProfileContent = (props) => {
               : props.filter == Filter.Dislikes
               ? 'somewhat disagree'
               : props.filter == Filter.SuperDislikes
-              ? 'disagree'
-              : 'agree'
+              ? 'really disagree'
+              : 'really agree'
           }
           onRemoveClick={onRemoveClick}
         />
@@ -260,7 +260,7 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
   };
   return (
     <div className="p-12">
-      {rules.toString() == '' || rules == undefined || !rules ? (
+      {rules == undefined || rules.toString() == '' || !rules ? (
         <p className="logged-out-message">
           No rules have been {type == 'bookmark' ? 'bookmarke' : type}d yet
         </p>

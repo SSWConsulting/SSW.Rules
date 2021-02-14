@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
@@ -27,42 +27,44 @@ const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
-
   const cat = location.state ? location.state.category : null;
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
 
   const loadSecretContent = async (userOrgId) => {
     const hidden = document.getElementsByClassName('hidden');
     if (hidden.length != 0) {
-      const contentID = hidden[0].textContent || hidden[0].innerText;
-      const guid = contentID.substring(0, 36);
-      const orgID = contentID.substring(37);
-      const token = await getAccessTokenSilently();
-      if (orgID == userOrgId) {
-        isAuthenticated && guid
-          ? await GetSecretContent(guid, token)
-              .then((success) => {
-                GetGithubOrganisationName(orgID)
-                  .then((nameSuccess) => {
-                    hidden[0].innerHTML = ReactDOMServer.renderToStaticMarkup(
-                      <SecretContent
-                        content={success.content.content}
-                        orgName={nameSuccess[0]?.login ?? 'Your Org'}
-                      />
-                    );
-                    hidden[0].className = 'secret-content';
-                  })
-                  .catch((err) => {
-                    console.error('error' + err);
-                  });
-              })
-              .catch((err) => {
-                console.error('error: ' + err);
-              })
-          : null;
+      const token = await getIdTokenClaims();
+      for (var hiddenBlock of hidden) {
+        const contentID = hiddenBlock.textContent || hiddenBlock.innerText;
+        const guid = contentID.substring(0, 36);
+        const orgID = contentID.substring(37);
+        if (parseInt(orgID) == parseInt(userOrgId)) {
+          isAuthenticated && guid
+            ? await GetSecretContent(guid, token.__raw)
+                .then((success) => {
+                  GetGithubOrganisationName(orgID)
+                    .then((nameSuccess) => {
+                      hiddenBlock.innerHTML = ReactDOMServer.renderToStaticMarkup(
+                        <SecretContent
+                          content={success.content.content}
+                          orgName={nameSuccess[0]?.login ?? 'Your Organisation'}
+                        />
+                      );
+                      hiddenBlock.className = 'secret-content';
+                      console.log(hiddenBlock);
+                    })
+                    .catch((err) => {
+                      console.error('error' + err);
+                    });
+                })
+                .catch((err) => {
+                  console.error('error: ' + err);
+                })
+            : null;
+        }
       }
     }
   };
@@ -97,7 +99,7 @@ const Rule = ({ data, location }) => {
             );
           })
           .catch((err) => {
-            console.log(err);
+            console.error(err);
           })
       : null;
   }, [isAuthenticated]);
@@ -277,7 +279,7 @@ const Rule = ({ data, location }) => {
             </div>
 
             <div className="likes w-full lg:w-1/3">
-              <h5>Feedback</h5>
+              <h5>Rate</h5>
               <Reaction ruleId={rule.frontmatter.guid} />
               <div className="suggestion">
                 <span className="action-btn-container">

@@ -130,6 +130,7 @@ export async function setUserOrganisation(data, token) {
     },
     body: JSON.stringify(data),
   });
+  return response.json();
 }
 export async function GetOrganisations(userId) {
   const response = await fetch(

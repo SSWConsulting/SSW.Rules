@@ -677,7 +677,10 @@ pre {
   line-height: initial;
   position: relative
 }
-.greybox p:last-child {margin-bottom:0;}
+
+.greybox p:last-child, .highlight p:last-child, .info p:last-child, .china p:last-child, .todo p:last:child{
+  margin-bottom:0;
+}
 
 .custom-control-inline {
   display: -ms-inline-flexbox;
@@ -1004,6 +1007,10 @@ blockquote p:before {
   color: #414141;
 }
 
+.rule-content h4 {
+  word-break: break-word;
+}
+
 .rule-content a,
 .rule-category a {
   text-decoration:underline;
@@ -1098,6 +1105,7 @@ blockquote p:before {
 .rule-content figure figcaption {
   margin: 0.5rem 0.5rem 6px;
   font-weight: bold;
+  word-break: break-word;
 }
 
 .rule-content figure figcaption.bad-example:before {

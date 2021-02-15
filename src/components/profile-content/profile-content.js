@@ -88,7 +88,6 @@ const ProfileContent = (props) => {
   function getUserComments() {
     GetUserComments(user.nickname, commentsRepository)
       .then((success) => {
-        console.log(success);
         const allRules = props.data.allMarkdownRemark.nodes;
         const commentGuids =
           success.items.size != 0 ? success.items.map((r) => r.title) : null;
@@ -103,7 +102,6 @@ const ProfileContent = (props) => {
             .filter((v) => v.title == r.frontmatter.guid)
             .map((r) => r.html_url)[0],
         }));
-        console.log(commentedRulesSpread);
         setCommentedRulesList(commentedRulesSpread);
         props.setCommentedRulesCount(commentedRulesSpread.length);
       })

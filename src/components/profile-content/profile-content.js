@@ -338,7 +338,7 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
                             <a className="github-comment-link" href={rule.url}>
                               <GitHubIcon />
                             </a>
-                            <span className="tooltiptext">Edit in github</span>
+                            <span className="tooltiptext">Edit in github</span>{' '}
                           </div>
                         ) : (
                           <button

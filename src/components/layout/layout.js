@@ -41,6 +41,8 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
         clientId={process.env.AUTH0_CLIENT_ID}
         redirectUri={process.env.AUTH0_REDIRECT_URI}
         onRedirectCallback={onRedirectCallback}
+        useRefreshTokens={true}
+        cacheLocation="localstorage"
       >
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div

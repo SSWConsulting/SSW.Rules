@@ -100,13 +100,13 @@ const Reaction = (props) => {
         window.confirm(
           `Sign in to ${
             type == ReactionType.SuperLike
-              ? 'super like'
+              ? 'really agree'
               : type == ReactionType.Like
-              ? 'like'
+              ? 'somewhat agree'
               : type == ReactionType.DisLike
-              ? 'dislike'
-              : 'super dislike'
-          } this rule`
+              ? 'somewhat disagree'
+              : 'really disagree'
+          } with this rule`
         )
       ) {
         const currentPage =
@@ -123,52 +123,64 @@ const Reaction = (props) => {
   }
 
   return (
-    <>
-      <span>
-        <button
-          className={
-            currentReactionType == ReactionType.SuperLike
-              ? 'super-like-btn-container-pressed'
-              : 'super-like-btn-container'
-          }
-          onClick={() => onClick(ReactionType.SuperLike)}
-        ></button>
-        <div className="likes-counter-container">{superLikesCount}</div>
-      </span>
-      <span>
-        <button
-          onClick={() => onClick(ReactionType.Like)}
-          className={
-            currentReactionType == ReactionType.Like
-              ? 'likes-btn-container-pressed'
-              : 'likes-btn-container'
-          }
-        ></button>
-        <div className="likes-counter-container">{likesCount}</div>
-      </span>
-      <span>
-        <button
-          className={
-            currentReactionType == ReactionType.DisLike
-              ? 'dislikes-btn-container-pressed'
-              : 'dislikes-btn-container'
-          }
-          onClick={() => onClick(ReactionType.DisLike)}
-        ></button>
-        <div className="likes-counter-container">{dislikesCount}</div>
-      </span>
-      <span>
-        <button
-          className={
-            currentReactionType == ReactionType.SuperDisLike
-              ? 'super-dislike-btn-container-pressed'
-              : 'super-dislike-btn-container'
-          }
-          onClick={() => onClick(ReactionType.SuperDisLike)}
-        ></button>
-        <div className="likes-counter-container">{superDislikesCount}</div>
-      </span>
-    </>
+    <div className="reaction-grid">
+      <div className="disagree-grid-item">
+        <div className="react-tooltip">
+          <button
+            className={
+              currentReactionType == ReactionType.SuperDisLike
+                ? 'disagree-btn-container-pressed'
+                : 'disagree-btn-container'
+            }
+            onClick={() => onClick(ReactionType.SuperDisLike)}
+          />
+          <span className="tooltiptext">Really Disagree</span>
+        </div>
+      </div>
+      <div className="reaction-counter-container">{superDislikesCount}</div>
+      <div className="somewhat-disagree-grid-item">
+        <div className="react-tooltip">
+          <button
+            className={
+              currentReactionType == ReactionType.DisLike
+                ? 'somewhat-disagree-btn-container-pressed'
+                : 'somewhat-disagree-btn-container'
+            }
+            onClick={() => onClick(ReactionType.DisLike)}
+          />
+          <span className="tooltiptext">Somewhat Disagree</span>
+        </div>
+      </div>
+      <div className="reaction-counter-container">{dislikesCount}</div>
+      <div className="somewhat-agree-grid-item">
+        <div className="react-tooltip">
+          <button
+            onClick={() => onClick(ReactionType.Like)}
+            className={
+              currentReactionType == ReactionType.Like
+                ? 'somewhat-agree-btn-container-pressed'
+                : 'somewhat-agree-btn-container'
+            }
+          />
+          <span className="tooltiptext">Somewhat Agree</span>
+        </div>
+      </div>
+      <div className="reaction-counter-container">{likesCount}</div>
+      <div className="agree-grid-item">
+        <div className="react-tooltip">
+          <button
+            className={
+              currentReactionType == ReactionType.SuperLike
+                ? 'agree-btn-container-pressed'
+                : 'agree-btn-container'
+            }
+            onClick={() => onClick(ReactionType.SuperLike)}
+          />
+          <span className="tooltiptext">Really Agree</span>
+        </div>
+      </div>
+      <div className="reaction-counter-container">{superLikesCount}</div>
+    </div>
   );
 };
 

@@ -1414,6 +1414,14 @@ blockquote p:before {
   display: inline-block;
 }
 
+.github-tooltip {
+  height: 1.7rem;
+  margin: auto 1rem auto auto;
+  font-size: 1.8rem !important;
+  position: relative;
+  display: inline-block;
+}
+
 .tooltiptext {
   visibility: hidden;
   width: 100px;
@@ -1440,7 +1448,14 @@ blockquote p:before {
   width: 80px; 
 }
 
-.tooltip .tooltiptext::after, .react-tooltip .tooltiptext::after {
+.github-tooltip .tooltiptext {
+  margin-left: 0 !important;
+  bottom: 2.5rem;
+  left: -1.6rem;
+  width: 5rem; 
+}
+
+.tooltiptext::after {
   content: "";
   position: absolute;
   top: 100%;
@@ -1452,7 +1467,7 @@ blockquote p:before {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext {
+.tooltip:hover .tooltiptext, .github-tooltip:hover .tooltiptext, .github-tooltip:hover .tooltip {
   visibility: visible;
   opacity: 1;
   padding: 0.2rem !important;
@@ -1558,12 +1573,9 @@ blockquote p:before {
 /* Profile Page
 -------------------------------------------------- */
 
-.logged-out-message {
+.no-content-message {
   text-align: center;
-}
-
-.logged-out-message button {
-  margin-top: 1rem;
+  margin: 2rem auto;
 }
 
 .profile-header {
@@ -1607,16 +1619,9 @@ blockquote p:before {
   grid-row-end: 3;
 }
 
-.error-text {
-  text-align: center;
-}
-
 @media screen and (max-width: 600px) {
   .reaction-grid {
     grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 1rem auto;
-  }
-  .profile-header {
-    height: auto;
   }
   .profile-image {
     visibility: hidden;
@@ -1637,19 +1642,12 @@ blockquote p:before {
   .username {
     grid-column: 1;
   }
-  .filter-menu {
-    grid-template-columns: auto !important;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0 !important;
-  }
-  .menu-item {
-    grid-column: 1 !important;
-  }
   .rule-content-title {
     padding: 0 !important;
   }
-
+  .remove-item {
+    padding: 0 !important;
+  }
   .dropdown-list-center { 
     margin: 1rem;
     right: -8rem;
@@ -1667,6 +1665,20 @@ blockquote p:before {
   }
   .profile-large-name {
     font-size: 1.7rem !important;
+  }
+}
+@media screen and (max-width: 1150px) {
+  .filter-menu {
+    grid-template-columns: auto !important;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0 !important;
+  }
+  .menu-item {
+    grid-column: 1 !important;
+  }
+  .profile-header {
+    height: auto;
   }
 }
 
@@ -1692,7 +1704,7 @@ blockquote p:before {
   left: 7.1rem;
   position: relative;
   display: grid;
-  grid-template-columns: 8rem 8rem 10rem 12rem 10rem;
+  grid-template-columns: 8rem 8rem 10rem 12rem 10rem 6rem;
   font-weight: bold;
   column-gap: 1.5rem;
 }
@@ -1772,16 +1784,16 @@ blockquote p:before {
   margin-left: 1rem;
 }
 
-.remove-item {
+.remove-item, .github-comment-link {
   margin-left: auto;
   right: 3rem;
+  margin: auto 1rem auto auto;
+  font-size: 1.8rem !important;
 }
 
 .remove-item:after {
   content: '\f057';
   font-family: FontAwesome;
-  margin: auto 1rem auto auto;
-  font-size: 1.8rem !important;
   color: #ddd;
 }
 

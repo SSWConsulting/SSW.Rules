@@ -1,4 +1,4 @@
-/* Likes/Dislikes */
+/* Reactions */
 
 const API_URL = process.env.API_BASE_URL + '/api';
 
@@ -104,4 +104,12 @@ export async function RemoveBookmark(data, token) {
     body: JSON.stringify(data),
   });
   return response.json();
+}
+
+/* Profile Page */
+
+export async function GetUserComments(username, commentsRepository) {
+  var query = `https://api.github.com/search/issues?q=is:issue+is:open+repo:${commentsRepository}+commenter:${username}`;
+  const response = await fetch(query);
+  return await response.json();
 }

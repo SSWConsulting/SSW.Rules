@@ -1612,9 +1612,6 @@ blockquote p:before {
   .reaction-grid {
     grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 1rem auto;
   }
-  .profile-header {
-    height: auto;
-  }
   .profile-image {
     visibility: hidden;
   }
@@ -1815,8 +1812,6 @@ blockquote p:before {
 .remove-item:after {
   content: '\f057';
   font-family: FontAwesome;
-  margin: auto 1rem auto auto;
-  font-size: 1.8rem !important;
   color: #ddd;
 }
 

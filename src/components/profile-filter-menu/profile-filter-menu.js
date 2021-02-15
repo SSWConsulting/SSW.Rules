@@ -12,6 +12,7 @@ const ProfileFilterMenu = ({
   dislikedRulesCount,
   superDislikedRulesCount,
   bookmarkedRulesCount,
+  commentedRulesCount,
 }) => {
   return (
     <>
@@ -106,6 +107,24 @@ const ProfileFilterMenu = ({
           Really Disagree
           <div className="rules-counter">{superDislikedRulesCount ?? 0}</div>
         </div>
+        <div
+          className="menu-item"
+          style={
+            selectedFilter == Filter.Comments
+              ? {
+                  gridColumn: 6,
+                  borderBottom: '0.25rem solid #333333',
+                  paddingBottom: '0.25rem',
+                }
+              : { gridColumn: 6 }
+          }
+          onClick={() => {
+            setSelectedFilter(Filter.Comments);
+          }}
+        >
+          Comments
+          <div className="rules-counter">{commentedRulesCount ?? 0}</div>
+        </div>
       </div>
     </>
   );
@@ -119,9 +138,11 @@ ProfileFilterMenu.propTypes = {
   dislikedRulesCount: PropTypes.number.isRequired,
   superDislikedRulesCount: PropTypes.number.isRequired,
   bookmarkedRulesCount: PropTypes.number.isRequired,
+  commentedRulesCount: PropTypes.number.isRequired,
 };
 
 export const Filter = {
+  Comments: 5,
   Bookmarks: 4,
   SuperLikes: 3,
   Likes: 2,

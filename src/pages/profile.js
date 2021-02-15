@@ -17,6 +17,7 @@ const Profile = ({ data, gitHubUsername }) => {
   const [likedRulesCount, setLikedRulesCount] = useState();
   const [dislikedRulesCount, setDislikedRulesCount] = useState();
   const [superDislikedRulesCount, setSuperDislikedRulesCount] = useState();
+  const [commentedRulesCount, setCommentedRulesCount] = useState();
 
   useEffect(() => {}, [listChange, user]);
   if (isAuthenticated) {
@@ -50,6 +51,7 @@ const Profile = ({ data, gitHubUsername }) => {
                 likedRulesCount={likedRulesCount}
                 dislikedRulesCount={dislikedRulesCount}
                 superDislikedRulesCount={superDislikedRulesCount}
+                commentedRulesCount={commentedRulesCount}
                 change={listChange}
               />
             </div>
@@ -64,6 +66,7 @@ const Profile = ({ data, gitHubUsername }) => {
                 setLikedRulesCount={setLikedRulesCount}
                 setDislikedRulesCount={setDislikedRulesCount}
                 setSuperDislikedRulesCount={setSuperDislikedRulesCount}
+                setCommentedRulesCount={setCommentedRulesCount}
               />
             </div>
           </section>

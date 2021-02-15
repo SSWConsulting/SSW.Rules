@@ -7,12 +7,15 @@ import {
   GetAllLikedDisliked,
   RemoveBookmark,
   RemoveReaction,
+  GetUserComments,
 } from '../../services/apiService';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
+import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Filter } from '../profile-filter-menu/profile-filter-menu';
+import { commentsRepository } from '../../../site-config';
 
 const ProfileContent = (props) => {
   const [bookmarkedRules, setBookmarkedRules] = useState();
@@ -20,9 +23,10 @@ const ProfileContent = (props) => {
   const [likedRulesList, setLikedRules] = useState();
   const [dislikedRulesList, setDislikedRules] = useState();
   const [superDislikedRulesList, setSuperDislikedRules] = useState();
+  const [commentedRulesList, setCommentedRulesList] = useState();
   const [change, setChange] = useState(0);
   const [viewStyle, setViewStyle] = useState('titleOnly');
-  const { user, getIdTokenClaims } = useAuth0();
+  const { user, getIdTokenClaims, isAuthenticated } = useAuth0();
 
   const handleOptionChange = (e) => {
     setViewStyle(e.target.value);
@@ -31,7 +35,7 @@ const ProfileContent = (props) => {
   async function onRemoveClick(ruleGuid) {
     const jwt = await getIdTokenClaims();
     if (
-      user &&
+      isAuthenticated &&
       window.confirm(
         `Are you sure you want to remove this ${
           props.filter == Filter.Bookmarks ? 'bookmark' : 'reaction'
@@ -75,6 +79,33 @@ const ProfileContent = (props) => {
         }));
         setBookmarkedRules(bookmarkedRulesSpread);
         props.setBookmarkedRulesCount(bookmarkedRulesSpread.length);
+      })
+      .catch((err) => {
+        console.error('error: ', err);
+      });
+  }
+
+  function getUserComments() {
+    GetUserComments(user.nickname, commentsRepository)
+      .then((success) => {
+        console.log(success);
+        const allRules = props.data.allMarkdownRemark.nodes;
+        const commentGuids =
+          success.items.size != 0 ? success.items.map((r) => r.title) : null;
+        const commentedRulesMap = allRules.filter((value) =>
+          commentGuids.includes(value.frontmatter.guid)
+        );
+        const commentedRulesSpread = commentedRulesMap.map((r) => ({
+          ...r.frontmatter,
+          excerpt: r.excerpt,
+          htmlAst: r.htmlAst,
+          url: success.items
+            .filter((v) => v.title == r.frontmatter.guid)
+            .map((r) => r.html_url)[0],
+        }));
+        console.log(commentedRulesSpread);
+        setCommentedRulesList(commentedRulesSpread);
+        props.setCommentedRulesCount(commentedRulesSpread.length);
       })
       .catch((err) => {
         console.error('error: ', err);
@@ -147,11 +178,12 @@ const ProfileContent = (props) => {
   }
 
   useEffect(() => {
-    if (user) {
+    if (isAuthenticated) {
       getBookmarkList();
       getLikesDislikesLists();
+      getUserComments();
     }
-  }, [user, props.filter, change]);
+  }, [isAuthenticated, props.filter, change]);
   return (
     <>
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none">
@@ -218,7 +250,9 @@ const ProfileContent = (props) => {
               ? likedRulesList
               : props.filter == Filter.Dislikes
               ? dislikedRulesList
-              : superDislikedRulesList
+              : props.filter == Filter.SuperDislikes
+              ? superDislikedRulesList
+              : commentedRulesList
           }
           viewStyle={viewStyle}
           type={
@@ -230,7 +264,9 @@ const ProfileContent = (props) => {
               ? 'somewhat disagree'
               : props.filter == Filter.SuperDislikes
               ? 'really disagree'
-              : 'really agree'
+              : props.filter == Filter.SuperLikes
+              ? 'really agree'
+              : 'comment'
           }
           onRemoveClick={onRemoveClick}
         />
@@ -250,6 +286,7 @@ ProfileContent.propTypes = {
   setLikedRulesCount: PropTypes.func.isRequired,
   setDislikedRulesCount: PropTypes.func.isRequired,
   setSuperDislikedRulesCount: PropTypes.func.isRequired,
+  setCommentedRulesCount: PropTypes.func.isRequired,
 };
 
 const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
@@ -259,65 +296,84 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
     greyBox: GreyBox,
   };
   return (
-    <div className="p-12">
-      {rules.toString() == '' || rules == undefined || !rules ? (
-        <p className="no-content-message">
-          ❌ No tagged rules yet.
-        </p>
+    <>
+      {rules == undefined || rules.toString() == '' || !rules ? (
+        <div className="no-content-message">
+          <p>
+            <span
+              className="no-content-message"
+              role="img"
+              aria-label="cross emoji"
+            >
+              ❌
+            </span>{' '}
+            No tagged rules yet.
+          </p>
+        </div>
       ) : (
-        <></>
-      )}
-      <ol className="rule-number">
-        {rules.map((rule) => {
-          return (
-            <>
-              <li className="pb-4">
-                <section className="rule-content-title px-4 pb-4">
-                  <div className="heading-container">
-                    <h2 className={`rule-heading-${iconClass}`}>
-                      <Link ref={linkRef} to={`/${rule.uri}`}>
-                        {rule.title}
-                      </Link>
-                    </h2>
+        <div className="p-12">
+          <ol className="rule-number">
+            {rules.map((rule) => {
+              return (
+                <>
+                  <li className="pb-4">
+                    <section className="rule-content-title px-4 pb-4">
+                      <div className="heading-container">
+                        <h2 className={`rule-heading-${iconClass}`}>
+                          <Link ref={linkRef} to={`/${rule.uri}`}>
+                            {rule.title}
+                          </Link>
+                        </h2>
 
-                    {type == 'bookmark' ? (
-                      <BookmarkIcon
-                        className="profile-bookmark-icon"
-                        color="#cc4141"
-                      />
-                    ) : (
-                      ''
-                    )}
-                    <button
-                      className="remove-item"
-                      onClick={() => onRemoveClick(rule.guid)}
-                    ></button>
-                  </div>
-                </section>
-                <section
-                  className={`rule-content px-4 mb-5
+                        {type == 'bookmark' ? (
+                          <BookmarkIcon
+                            className="profile-bookmark-icon"
+                            color="#cc4141"
+                          />
+                        ) : (
+                          ''
+                        )}
+                        {type == 'comment' ? (
+                          <div className="github-tooltip">
+                            <a className="github-comment-link" href={rule.url}>
+                              <GitHubIcon />
+                            </a>
+                            <span className="tooltiptext">Edit in github</span>
+                          </div>
+                        ) : (
+                          <button
+                            className="remove-item"
+                            onClick={() => onRemoveClick(rule.guid)}
+                          ></button>
+                        )}
+                      </div>
+                    </section>
+                    <section
+                      className={`rule-content px-4 mb-5
                             ${viewStyle === 'all' ? 'visible' : 'hidden'}`}
-                >
-                  <MD components={components} htmlAst={rule.htmlAst} />
-                </section>
-                <section
-                  className={`rule-content px-4 mb-5
+                    >
+                      <MD components={components} htmlAst={rule.htmlAst} />
+                    </section>
+                    <section
+                      className={`rule-content px-4 mb-5
                             ${viewStyle === 'blurb' ? 'visible' : 'hidden'}`}
-                >
-                  <div dangerouslySetInnerHTML={{ __html: rule.excerpt }} />
-                  <p className="pt-5 pb-0">
-                    Read more about{' '}
-                    <a href={rule.uri} className="underline">
-                      {rule.title}
-                    </a>
-                  </p>
-                </section>
-              </li>
-            </>
-          );
-        })}
-      </ol>
-    </div>
+                    >
+                      <div dangerouslySetInnerHTML={{ __html: rule.excerpt }} />
+                      <p className="pt-5 pb-0">
+                        Read more about{' '}
+                        <a href={rule.uri} className="underline">
+                          {rule.title}
+                        </a>
+                      </p>
+                    </section>
+                  </li>
+                </>
+              );
+            })}
+          </ol>
+        </div>
+      )}
+    </>
   );
 };
 

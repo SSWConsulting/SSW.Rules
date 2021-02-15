@@ -107,11 +107,7 @@ export async function GetGithubOrganisations(username) {
 }
 
 export async function GetGithubOrganisationName(orgID) {
-  const response = await fetch(
-    `https://api.github.com/organizations?since=${
-      parseInt(orgID) - 1
-    }&per_page=1`
-  );
+  const response = await fetch(`https://api.github.com/organizations/${orgID}`);
   return response.json();
 }
 

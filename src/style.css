@@ -1495,9 +1495,10 @@ blockquote p:before {
   position: relative;
   border-radius: 30%;
   z-index: 21;
+  padding-left: 1.5rem;
 }
 
-.dropdown-list, .dropdown-list-center  {
+.dropdown-list {
   margin: 1rem;
   padding: 0 0.8rem;
   position: absolute;
@@ -1506,9 +1507,9 @@ blockquote p:before {
   font-size: 12px;
   box-shadow: 0px 5px 11px 0px rgba(130,130,130,0.8);
   border-radius: 5%;
-  width: 13rem;
+  width: 13.7rem;
   height: auto;
-  right: -1rem;
+  right: -2rem;
 }
 
 .dropdown-userinfo-container {
@@ -1580,7 +1581,7 @@ blockquote p:before {
   text-shadow: 0 -5px 5px rgba(130,130,130,0.3);
   font-size: 1.45rem;
   text-align: center;
-  left: 1.1rem;
+  left: 2.5rem;
   bottom: -27px;
   z-index: 21;
 }
@@ -1662,10 +1663,6 @@ blockquote p:before {
   }
   .remove-item {
     padding: 0 !important;
-  }
-  .dropdown-list-center { 
-    margin: 1rem;
-    right: -8rem;
   }
 }
 @media screen and (max-width: 1024px) {

@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
 import formatDistance from 'date-fns/formatDistance';
@@ -15,16 +16,110 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Reaction from '../components/reaction/reaction';
 import Comments from '../components/comments/comments';
+import { useAuth0 } from '@auth0/auth0-react';
+import {
+  GetOrganisations,
+  GetSecretContent,
+  GetGithubOrganisationName,
+} from '../services/apiService';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
-
   const cat = location.state ? location.state.category : null;
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
+  const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
+  const [hiddenCount, setHiddenCount] = useState(0);
+
+  const loadSecretContent = async (userOrgId) => {
+    const hidden = document.getElementsByClassName('hidden');
+    if (hidden.length != 0) {
+      const token = await getIdTokenClaims();
+      for (var hiddenBlock of hidden) {
+        const contentID = hiddenBlock.textContent || hiddenBlock.innerText;
+        const guid = contentID.substring(0, 36);
+        const orgID = contentID.substring(37);
+        if (parseInt(orgID) == parseInt(userOrgId)) {
+          isAuthenticated && guid
+            ? await GetSecretContent(guid, token.__raw)
+                .then((success) => {
+                  GetGithubOrganisationName(orgID)
+                    .then((nameSuccess) => {
+                      hiddenBlock.innerHTML = ReactDOMServer.renderToStaticMarkup(
+                        <SecretContent
+                          content={success.content.content}
+                          orgName={nameSuccess?.login ?? 'Your Organisation'}
+                        />
+                      );
+                      hiddenBlock.className = 'secret-content';
+                    })
+                    .catch((err) => {
+                      appInsights.trackException({
+                        error: new Error(err),
+                        severityLevel: 3,
+                      });
+                    });
+                })
+                .catch((err) => {
+                  appInsights.trackException({
+                    error: new Error(err),
+                    severityLevel: 3,
+                  });
+                })
+            : null;
+        }
+        setHiddenCount(document.getElementsByClassName('hidden').length);
+      }
+    }
+  };
+
+  const SecretContent = (props) => {
+    return (
+      <>
+        <div className="secret-content-heading">
+          <h4>{props.orgName + ' Only: \n'}</h4>
+        </div>
+        <div
+          style={{
+            wordWrap: 'break-word',
+            width: 'auto',
+          }}
+          dangerouslySetInnerHTML={{ __html: props.content }} //Is this a good idea? JS injection ect
+        />
+      </>
+    );
+  };
+  SecretContent.propTypes = {
+    content: PropTypes.string,
+    orgName: PropTypes.string,
+  };
+
+  useLayoutEffect(() => {
+    isAuthenticated
+      ? GetOrganisations(user.sub)
+          .then((success) => {
+            success.organisations.forEach((org) =>
+              loadSecretContent(org.organisationId)
+            );
+          })
+          .catch((err) => {
+            appInsights.trackException({
+              error: new Error(err),
+              severityLevel: 3,
+            });
+          })
+      : null;
+  }, [user, isAuthenticated, hiddenCount]);
 
   return (
     <div>

@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react';
 import PropTypes from 'prop-types';
+import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 
 const ProfileFilterMenu = ({
   selectedFilter,
@@ -32,6 +33,10 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Bookmarks);
           }}
         >
+          <BookmarkIcon
+            className="filter-menu-bookmark-icon"
+            color="#cc4141"
+          />
           Bookmarks
           <div className="rules-counter">{bookmarkedRulesCount ?? 0}</div>
         </div>
@@ -108,7 +113,7 @@ const ProfileFilterMenu = ({
           <div className="rules-counter">{superDislikedRulesCount ?? 0}</div>
         </div>
         <div
-          className="menu-item"
+          className="comments-item"
           style={
             selectedFilter == Filter.Comments
               ? {

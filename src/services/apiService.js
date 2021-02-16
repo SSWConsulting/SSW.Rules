@@ -1,6 +1,7 @@
 /* Likes/Dislikes */
 
 const API_URL = process.env.API_BASE_URL + '/api';
+const GITHUB_API_PAT = process.env.GITHUB_API_PAT;
 
 export async function GetReactionForUser(ruleId, userId) {
   var query = userId
@@ -102,12 +103,28 @@ export async function RemoveBookmark(data, token) {
 /* Secret Content */
 
 export async function GetGithubOrganisations(username) {
-  const response = await fetch(`https://api.github.com/users/${username}/orgs`);
+  const response = await fetch(
+    `https://api.github.com/users/${username}/orgs`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `token ${GITHUB_API_PAT}`,
+      },
+    }
+  );
   return response.json();
 }
 
 export async function GetGithubOrganisationName(orgID) {
-  const response = await fetch(`https://api.github.com/organizations/${orgID}`);
+  const response = await fetch(
+    `https://api.github.com/organizations/${orgID}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `token ${GITHUB_API_PAT}`,
+      },
+    }
+  );
   return response.json();
 }
 

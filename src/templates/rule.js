@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
@@ -22,6 +22,13 @@ import {
   GetSecretContent,
   GetGithubOrganisationName,
 } from '../services/apiService';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
@@ -32,6 +39,7 @@ const Rule = ({ data, location }) => {
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
   const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
+  const [hiddenCount, setHiddenCount] = useState(0);
 
   const loadSecretContent = async (userOrgId) => {
     const hidden = document.getElementsByClassName('hidden');
@@ -50,21 +58,27 @@ const Rule = ({ data, location }) => {
                       hiddenBlock.innerHTML = ReactDOMServer.renderToStaticMarkup(
                         <SecretContent
                           content={success.content.content}
-                          orgName={nameSuccess[0]?.login ?? 'Your Organisation'}
+                          orgName={nameSuccess?.login ?? 'Your Organisation'}
                         />
                       );
                       hiddenBlock.className = 'secret-content';
-                      console.log(hiddenBlock);
                     })
                     .catch((err) => {
-                      console.error('error' + err);
+                      appInsights.trackException({
+                        error: new Error(err),
+                        severityLevel: 3,
+                      });
                     });
                 })
                 .catch((err) => {
-                  console.error('error: ' + err);
+                  appInsights.trackException({
+                    error: new Error(err),
+                    severityLevel: 3,
+                  });
                 })
             : null;
         }
+        setHiddenCount(document.getElementsByClassName('hidden').length);
       }
     }
   };
@@ -90,7 +104,7 @@ const Rule = ({ data, location }) => {
     orgName: PropTypes.string,
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     isAuthenticated
       ? GetOrganisations(user.sub)
           .then((success) => {
@@ -99,10 +113,13 @@ const Rule = ({ data, location }) => {
             );
           })
           .catch((err) => {
-            console.error(err);
+            appInsights.trackException({
+              error: new Error(err),
+              severityLevel: 3,
+            });
           })
       : null;
-  }, [isAuthenticated]);
+  }, [user, isAuthenticated, hiddenCount]);
 
   return (
     <div>

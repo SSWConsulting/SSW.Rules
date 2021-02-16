@@ -1440,6 +1440,11 @@ blockquote p:before {
   display: inline-block;
 }
 
+.tooltip .tooltiptext {
+  left: 65%;
+  margin-left: -60px;
+}
+
 .github-tooltip {
   height: 1.7rem;
   margin: auto 1rem auto auto;
@@ -1448,7 +1453,13 @@ blockquote p:before {
   display: inline-block;
 }
 
-.tooltip .tooltiptext {
+.react-tooltip .tooltiptext {
+  margin-left: -53px !important;
+  bottom: 90%;
+  width: 80px; 
+}
+
+.tooltiptext {
   visibility: hidden;
   width: 100px;
   background-color: #9e9e9e;
@@ -1470,7 +1481,7 @@ blockquote p:before {
   width: 5rem; 
 }
 
-.tooltip .tooltiptext::after {
+.tooltiptext::after {
   content: "";
   position: absolute;
   top: 100%;
@@ -1482,7 +1493,7 @@ blockquote p:before {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .github-tooltip:hover .tooltiptext, .github-tooltip:hover .tooltip {
+.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .github-tooltip:hover .tooltip {
   visibility: visible;
   opacity: 1;
   padding: 0.2rem !important;

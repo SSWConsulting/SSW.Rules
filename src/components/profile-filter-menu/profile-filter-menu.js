@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react';
 import PropTypes from 'prop-types';
+import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 
 const ProfileFilterMenu = ({
   selectedFilter,
@@ -18,7 +19,7 @@ const ProfileFilterMenu = ({
     <>
       <div className="filter-menu">
         <div
-          className="menu-item"
+          className="bookmarks-item"
           style={
             selectedFilter == Filter.Bookmarks
               ? {
@@ -32,11 +33,12 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Bookmarks);
           }}
         >
+          <BookmarkIcon className="filter-menu-bookmark-icon" color="#cc4141" />
           Bookmarks
           <div className="rules-counter">{bookmarkedRulesCount ?? 0}</div>
         </div>
         <div
-          className="menu-item"
+          className="really-agree-item"
           style={
             selectedFilter == Filter.SuperLikes
               ? {
@@ -54,7 +56,7 @@ const ProfileFilterMenu = ({
           <div className="rules-counter">{superLikedRulesCount ?? 0}</div>
         </div>
         <div
-          className="menu-item"
+          className="somewhat-agree-item"
           style={
             selectedFilter == Filter.Likes
               ? {
@@ -72,7 +74,7 @@ const ProfileFilterMenu = ({
           <div className="rules-counter">{likedRulesCount ?? 0}</div>
         </div>
         <div
-          className="menu-item"
+          className="somewhat-disagree-item"
           style={
             selectedFilter == Filter.Dislikes
               ? {
@@ -90,7 +92,7 @@ const ProfileFilterMenu = ({
           <div className="rules-counter">{dislikedRulesCount ?? 0}</div>
         </div>
         <div
-          className="menu-item"
+          className="really-disagree-item"
           style={
             selectedFilter == Filter.SuperDislikes
               ? {
@@ -108,7 +110,7 @@ const ProfileFilterMenu = ({
           <div className="rules-counter">{superDislikedRulesCount ?? 0}</div>
         </div>
         <div
-          className="menu-item"
+          className="comments-item"
           style={
             selectedFilter == Filter.Comments
               ? {

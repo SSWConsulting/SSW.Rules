@@ -38,7 +38,6 @@ const Header = ({ displayActions, ruleUri }) => {
             </h1>
           </div>
           <div className="action-btn-container">
-            <SignIn displayActions={displayActions} />
             {displayActions ? (
               <>
                 <a
@@ -63,6 +62,7 @@ const Header = ({ displayActions, ruleUri }) => {
             ) : (
               <div></div>
             )}
+            <SignIn />
           </div>
         </div>
       </header>

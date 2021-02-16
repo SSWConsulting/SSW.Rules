@@ -4,13 +4,11 @@ import PropTypes from 'prop-types';
 import { useAuth0 } from '@auth0/auth0-react';
 import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 
-const DropdownCard = ({ setOpen, displayActions }) => {
+const DropdownCard = ({ setOpen }) => {
   const { logout, user } = useAuth0();
   return (
     <>
-      <div
-        className={displayActions ? 'dropdown-list-center ' : 'dropdown-list'}
-      >
+      <div className="dropdown-list">
         <div className="dropdown-userinfo-container">
           <p className="dropdown-username">@{user.nickname}</p>
           <a
@@ -47,7 +45,6 @@ const DropdownCard = ({ setOpen, displayActions }) => {
 
 DropdownCard.propTypes = {
   setOpen: PropTypes.func,
-  displayActions: PropTypes.bool,
 };
 
 export default DropdownCard;

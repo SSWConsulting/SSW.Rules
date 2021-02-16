@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { commentsRepositry, commentsTheme } from '../../../site-config';
+import { commentsRepository, commentsTheme } from '../../../site-config';
 
 export default class Comments extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ export default class Comments extends Component {
     scriptEl.setAttribute('src', 'https://utteranc.es/client.js');
     scriptEl.setAttribute('crossorigin', 'anonymous');
     scriptEl.setAttribute('async', true);
-    scriptEl.setAttribute('repo', commentsRepositry);
+    scriptEl.setAttribute('repo', commentsRepository);
     scriptEl.setAttribute('issue-term', this.props.guid);
     scriptEl.setAttribute('theme', commentsTheme);
     this.commentBox.current.appendChild(scriptEl);

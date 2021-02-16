@@ -745,7 +745,7 @@ b, strong {
   font-weight: bold;
 }
 
-.rule-content a {
+.rule-content a, .rule-category-top a {
   &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined) {
     color: #222;
     text-decoration: none;

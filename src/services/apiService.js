@@ -114,7 +114,8 @@ export async function GetUserComments(username, commentsRepository) {
   const response = await fetch(query, {
     headers: {
       Authorization: `token ${GITHUB_API_PAT}`,
-    }},);
+    },
+  });
 
   return await response.json();
 }

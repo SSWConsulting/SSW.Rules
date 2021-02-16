@@ -33,10 +33,7 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Bookmarks);
           }}
         >
-          <BookmarkIcon
-            className="filter-menu-bookmark-icon"
-            color="#cc4141"
-          />
+          <BookmarkIcon className="filter-menu-bookmark-icon" color="#cc4141" />
           Bookmarks
           <div className="rules-counter">{bookmarkedRulesCount ?? 0}</div>
         </div>

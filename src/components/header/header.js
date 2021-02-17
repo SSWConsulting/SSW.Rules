@@ -28,14 +28,27 @@ const Header = ({ displayActions, ruleUri }) => {
   return (
     <AnimatedContainer>
       <header>
-        <div className="flex mx-6 mt-4 mb-6">
-          <div className="flex items-center">
-            <a href={parentSiteUrl} className="unstyled cursor-pointer">
-              <SSWLogo aria-label="logo" />
-            </a>
-            <h1 className="title ml-2">
-              Rules <sup className="text-ssw-red">beta</sup>
-            </h1>
+        <div className="flex mx-6 mt-4 mb-3">
+          <div className="column">
+            <div className="flex items-center row-sm">
+              <a href={parentSiteUrl} className="unstyled cursor-pointer">
+                <SSWLogo aria-label="logo" />
+              </a>
+              <h1 className="title ml-2">
+                Rules <sup className="text-ssw-red">beta</sup>
+              </h1>
+            </div>
+            <p
+              className="row-sm"
+              style={{
+                position: 'relative',
+                top: '0',
+                opacity: '.7',
+                color: '#333',
+              }}
+            >
+              Secret ingredients to quality software
+            </p>
           </div>
           <div className="action-btn-container">
             {displayActions ? (

@@ -739,6 +739,7 @@ ol ol, ol li ol {
 .rule-content {
   color: black;
   font-size: 16px;
+  word-break: break-word;
 }
 
 b, strong {
@@ -752,6 +753,7 @@ b, strong {
     border-bottom: 1px solid rgb(175, 175, 175);
     padding-bottom: 3px;
     transition: color 0.25s ease;
+    line-height: 1.5rem;
     &:hover {
       @apply text-ssw-red;
       text-decoration: none;

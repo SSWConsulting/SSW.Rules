@@ -35,7 +35,7 @@ const TopCategory = ({ topcategory, categories, rules }) => {
                   {cat.frontmatter.title}
                 </Link>
                 <span className="d-none d-md-block">
-                  ({getNumberOfRulesPerCat(cat)})
+                  {getNumberOfRulesPerCat(cat)}
                 </span>
               </li>
             );

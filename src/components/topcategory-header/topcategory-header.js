@@ -32,7 +32,6 @@ const TopCategoryHeader = ({ children, topCategory, categories, rules }) => {
         >
           {topCategory.frontmatter.title}{' '}
           <span className="number">
-            (
             {topCategory.frontmatter.index
               .map((category) => {
                 const cat = findCategoryFromIndexValue(category);
@@ -42,8 +41,15 @@ const TopCategoryHeader = ({ children, topCategory, categories, rules }) => {
                   return 0;
                 }
               })
-              .reduce((total, currentValue) => total + currentValue, 0)}
-            )
+              .reduce((total, currentValue) => total + currentValue, 0)}{' '}
+            <p
+              style={{
+                textTransform: 'none',
+                display: 'inline-block',
+              }}
+            >
+              Rules
+            </p>
           </span>
           <span className="collapse-icon">
             <FontAwesomeIcon icon={isCollapsed ? faPlus : faMinus} />

@@ -72,12 +72,19 @@ export async function GetBookmarksForUser(userId, ruleId) {
 }
 
 export async function BookmarkRule(data, token) {
+  if (data == null) {
+    return {
+      error: true,
+      message: 'Data is empty or in the wrong format',
+    };
+  }
   const response = await fetch(`${API_URL}/BookmarkRuleFunction`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify(data),
   });
   return response.json();
 }

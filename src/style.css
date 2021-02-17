@@ -402,12 +402,12 @@ button:focus {
 }
 
 
-.img-medium {
+.img-medium, .img-medium figure img {
   height: auto;
   max-width: 400px;
 }
 
-.img-small {
+.img-small, .img-small figure img {
   height: auto;
   max-width: 200px;
 }
@@ -1102,7 +1102,7 @@ blockquote p:before {
   margin-bottom: 1rem;
 }*/
 
-.rule-content figure img {
+.rule-content img {
   max-width: 100%;
   padding: 12px;
   background: #eee;

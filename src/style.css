@@ -2259,3 +2259,50 @@ margin-bottom: 1em;
 */
 
 @tailwind screens;
+
+/* Email Templates
+-------------------------------------------------- */
+
+.email-template table {
+  border-collapse: initial;
+  background-color: #eee;
+  border: 5px solid #eee;
+  border-spacing: 10px;
+  max-width: 100%;
+  width: 100%;
+}
+
+.email-template {
+  margin: 10px 0 5px;
+}
+
+.email-template + p,
+.email-template + strong {
+  line-height: initial;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.email-template table tr td {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  padding: 10px 15px;
+}
+
+.email-template table tr td:first-child {
+  background-color: #eee;
+  text-align: right;
+  padding: 10px 0;
+  border: none;
+  width: 10%;
+}
+
+.email-template table tr td:last-child {
+  word-break: break-word;
+}
+
+.email-content {
+  border: 20px solid #eee;
+  border-spacing: 20px;
+  padding: 10px 15px;
+}

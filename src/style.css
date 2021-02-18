@@ -745,6 +745,9 @@ ol ol, ol li ol {
   color: black;
   font-size: 16px;
   word-break: break-word;
+  margin-bottom: 5rem;
+  padding: 3rem;
+  padding-top: 0;
 }
 
 b, strong {
@@ -1661,6 +1664,9 @@ blockquote p:before {
 }
 
 @media screen and (max-width: 600px) {
+  .rule-content {
+    padding: 1rem;
+  }
   .reaction-grid {
     grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 1rem auto;
   }

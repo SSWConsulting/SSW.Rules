@@ -138,7 +138,7 @@ const Rule = ({ data, location }) => {
         }
       />
       <div className="rule-single rounded">
-        <section className="rule-content mb-20 p-5 pt-0">
+        <section className="rule-content">
           <div className="rule-header-container">
             <h1>{rule.frontmatter.title}</h1>
             <Bookmark ruleId={rule.frontmatter.guid} />

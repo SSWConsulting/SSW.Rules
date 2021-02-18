@@ -32,6 +32,17 @@ body {
   color:#333;
 }
 
+.tagline {
+  position: relative;
+  top: 0;
+  opacity: .7;
+  color: #333;
+}
+
+.tagline-hidden {
+  display: none
+}
+
 h1 {
   @apply text-4xl;
   @apply mb-2;
@@ -555,18 +566,12 @@ div.youtube-playlist li {
 }
 
 pre {
-  white-space: pre-wrap;       /* css-3 */
-  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-  white-space: -pre-wrap;      /* Opera 4-6 */
-  white-space: -o-pre-wrap;    /* Opera 7 */
-  word-wrap: break-word;       /* Internet Explorer 5.5+ */
-  overflow-wrap: break-word;
   background-color: #1b262c;
   color: #fff;
   border-radius: .5rem;
   padding: .5rem 1rem;
-  word-break: break-all;
   margin-bottom: 12px;
+  overflow-y: scroll;
 }
 
 .footer-link {
@@ -754,6 +759,7 @@ b, strong {
     padding-bottom: 3px;
     transition: color 0.25s ease;
     line-height: 1.5rem;
+    word-break: break-word;
     &:hover {
       @apply text-ssw-red;
       text-decoration: none;
@@ -769,7 +775,7 @@ h6.top-category-header button {
   color: #ccc;
   margin: 0;
   font-size: 1rem;
-  line-height: 1rem;
+  line-height: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -779,6 +785,7 @@ h6.top-category-header .number {
   opacity: .5;
   position: absolute;
   right: 1rem;
+  letter-spacing: initial;
 }
 
 .number p {
@@ -969,6 +976,7 @@ blockquote p:before {
   font-size: 1.5rem;
   font-weight: 100 !important;
   text-decoration:none !important;
+  word-break: break-word;
 }
 
 .rule-content-title a:hover {

@@ -683,7 +683,7 @@ pre {
   position: relative
 }
 
-.greybox p:last-child, .highlight p:last-child, .info p:last-child, .china p:last-child, .todo p:last:child{
+.greybox p:last-child, .highlight p:last-child, .info p:last-child, .china p:last-child, .todo p:last-child, blockquote p:last-child{
   margin-bottom:0;
 }
 

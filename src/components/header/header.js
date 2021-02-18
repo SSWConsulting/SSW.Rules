@@ -28,7 +28,7 @@ const Header = ({ displayActions, ruleUri }) => {
   return (
     <AnimatedContainer>
       <header>
-        <div className="flex mx-6 mt-4 mb-3">
+        <div className="flex mx-4 mt-4 mb-3">
           <div className="column">
             <div className="flex items-center">
               <a href={parentSiteUrl} className="unstyled cursor-pointer">

@@ -850,21 +850,21 @@ blockquote p:before {
 .radio-toolbar .view-title {
     font-size: 16px;
     padding: 12px 12px 12px 42px;
-    width: 200px;
+    width: 210px;
     background: #ddd url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/view-title.png) no-repeat 10px;
 }
 
 .radio-toolbar .view-blurb {
   font-size: 16px;
   padding: 12px 12px 12px 42px;
-  width: 200px;
+  width: 210px;
   background: #ddd url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/view-blurb.png) no-repeat 10px;
 }
 
 .radio-toolbar .view-full {
   font-size: 16px;
   padding: 12px 12px 12px 42px;
-  width: 200px;
+  width: 210px;
   background: #ddd url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/view-full.png) no-repeat 10px;
 }
 

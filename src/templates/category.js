@@ -99,7 +99,7 @@ export default function Category({ data }) {
                 </label>
               </div>
             </div>
-            <div className="p-5">
+            <div className="p-12">
               <ol className="rule-number">
                 {category.frontmatter.index.map((r) => {
                   var rule = rules.find((rr) => rr.frontmatter.uri == r);

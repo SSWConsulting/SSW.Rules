@@ -769,7 +769,7 @@ h6.top-category-header button {
   color: #ccc;
   margin: 0;
   font-size: 1rem;
-  line-height: 1rem;
+  line-height: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -779,6 +779,7 @@ h6.top-category-header .number {
   opacity: .5;
   position: absolute;
   right: 1rem;
+  letter-spacing: initial;
 }
 
 .number p {

@@ -141,23 +141,23 @@ footer {
   content: "\25A0";
   color: #cc4141;
   display: inline-block; 
-  width: 1em;
-  margin-left: -1em;
+  width: 1rem;
+  margin-left: -1rem;
 }
 
 #rules ol ul ol li::before, .rule-content ol ul ol li::before {
   content: "";
   display: inline-block; 
-  width: 1em;
-  margin-left: -1em;
+  width: 1rem;
+  margin-left: -1rem;
 }
 
 #rules ul ul ol li::before, .rule-content ul ul ol li::before,
 #rules ul ul li ol li::before, .rule-content ul ul li ol li::before  {
   content: "";
   display: inline-block; 
-  width: 1em;
-  margin-left: -1em;
+  width: 1rem;
+  margin-left: -1rem;
 }
 
 #rules ul li, .rule-content ul li, .rule-content ol li {

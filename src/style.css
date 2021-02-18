@@ -1628,8 +1628,8 @@ blockquote p:before {
 
 .profile-header {
   background-color: #f5f5f5;
-  padding: 3.5rem;
-  height: 13.1rem;
+  padding: 3rem;
+  height: auto;
 }
 
 .grid-container {
@@ -1654,7 +1654,6 @@ blockquote p:before {
 .username {
   grid-row: 2;
   grid-column: 2;
-  opacity: 0.8;
   word-wrap: break-word;
 }
 
@@ -1711,7 +1710,7 @@ blockquote p:before {
     grid-column: unset !important;
   }
   .profile-large-name {
-    font-size: 1.7rem !important;
+    font-size: 1.75rem !important;
   }
 }
 @media screen and (max-width: 1150px) {
@@ -1730,7 +1729,7 @@ blockquote p:before {
 }
 
 .profile-large-name {
-  font-size: 2rem;
+  font-size: 1.75rem;
   grid-row: 1;
 }
 
@@ -1747,11 +1746,10 @@ blockquote p:before {
 }
 
 .filter-menu {
-  top: 1.5rem;
+  top: 3rem;
   position: relative;
   display: grid;
   grid-template-columns: auto auto auto auto auto auto; 
-  font-weight: bold;
   column-gap: 1rem;
 }
 
@@ -1768,8 +1766,6 @@ blockquote p:before {
 .bookmarks-item, .somewhat-agree-item, .somewhat-disagree-item, .really-agree-item, .really-disagree-item, .comments-item {
  padding: 0 0.5rem 0.5rem;
  text-align: center;
- font-weight: normal;
- color: #333333;
  position: relative;
  display: flex;
  margin: auto;
@@ -1778,7 +1774,6 @@ blockquote p:before {
 .bookmarks-item:hover, .really-agree-item:hover, .somewhat-agree-item:hover, .really-disagree-item:hover, .somewhat-disagree-item:hover, .comments-item:hover {
   padding: 0 0.5rem 0.25rem;
   border-bottom: 0.25rem solid rgba(0, 0, 0, 0.60);
-  opacity: 0.7;
   cursor: pointer;
 }
 
@@ -2188,10 +2183,12 @@ display: block!important;
 }
 
 label {
-color: #666;
 display: inline-block;
 max-width: 100%;
-font-weight: bold;
+}
+
+label.view-blurb {
+ cursor:pointer; 
 }
 
 .form-group .field-wrapper {

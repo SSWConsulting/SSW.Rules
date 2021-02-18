@@ -1119,6 +1119,10 @@ blockquote p:before {
   border: 1px solid #ccc;
 }
 
+.rule-content .acknowledgements img {
+  padding: 0px;
+}
+
 .rule-content figure figcaption {
   margin: 0.5rem 0.5rem 6px;
   font-weight: bold;

@@ -25,7 +25,7 @@
 }
  
 html {
-  font-family: "Helvetica Neue", "SegoeUILight", "sans-serif"
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
 }
 
 body {
@@ -53,7 +53,6 @@ h1.title {
   font-size: 2.5em;
   color: #414141;
   margin-bottom: 0.1em;
-  font-family: "HelveticaNeue-Light";
 }
 
 h2 {
@@ -952,7 +951,6 @@ blockquote p:before {
 
 .rule-category h2.cat-title {
   background-color: #f5f5f5;
-  font-family: "HelveticaNeue-Light";
   margin: 0;
   color: #222; 
 }
@@ -978,7 +976,6 @@ blockquote p:before {
   font-size: 1.5rem;
   text-decoration:none !important;
   word-break: break-word;
-  font-family: "HelveticaNeue-Light";
 }
 
 .rule-content-title a:hover {
@@ -1429,7 +1426,6 @@ blockquote p:before {
 
 .rule-header-container {
   display: flex;
-  font-family: "HelveticaNeue-Light";
 }
 
 .bookmark-icon, .bookmark-icon-pressed {
@@ -2118,7 +2114,6 @@ box-shadow: none;
 padding: 6px 12px 6px 0;
 color: #333;
 font-size: 1em;
-font-family: sans-serif;
 }
 
 .form-group input.form-control:focus, .form-group select.form-control:focus, .form-group textarea.form-control:focus {

@@ -527,7 +527,7 @@ div.good-example,
 div.bad-example,
 div.greybox {
   max-width: 95%;
-  display: table;
+  display: block;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
@@ -1071,7 +1071,6 @@ blockquote p:before {
 
 .rule-content figure.greybox {
   display: block;
-  
 }
 
 .rule-content figure.greybox div {

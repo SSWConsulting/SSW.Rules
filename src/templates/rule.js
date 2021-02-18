@@ -281,7 +281,10 @@ const Rule = ({ data, location }) => {
               <Acknowledgements authors={rule.frontmatter.authors} />
             </div>
             <div className="tags rounded w-full lg:w-1/3">
+            <div className="cat-link-container">
               <h5>Categories</h5>
+              <a className="cat-info-btn-container" href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories"/>
+            </div>
               {categories.map((category, i) => (
                 <div className="px-1 inline" key={i}>
                   <span>
@@ -293,6 +296,7 @@ const Rule = ({ data, location }) => {
                   </span>
                 </div>
               ))}
+              
             </div>
 
             <div className="likes w-full  lg:w-1/3">

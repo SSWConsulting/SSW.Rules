@@ -752,7 +752,7 @@ b, strong {
 }
 
 .rule-content a, .rule-category-top a {
-  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined) {
+  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(cat-info-btn-container:after):not(.cat-info-btn-container:hover::after) {
     color: #222;
     text-decoration: none;
     border-bottom: 1px solid rgb(175, 175, 175);
@@ -1038,10 +1038,12 @@ blockquote p:before {
 }
 
 .rule-content a[href*="//"]:not([href*="rules.ssw.com.au"]):after {
-  content: "\f08b ";
-  font-family: FontAwesome;
-  opacity: .5;
-  padding-left: 4px;
+  &:not(.cat-info-btn-container) {
+    content: "\f08b ";
+    font-family: FontAwesome;
+    opacity: .5;
+    padding-left: 4px;
+  }
 }
 
 .avatar a:after {
@@ -1276,12 +1278,38 @@ blockquote p:before {
   border-bottom: none;
 }
 
+.cat-info-btn-container {
+  margin-top: 1.65rem;
+  margin-right: auto;
+  text-decoration: none !important;
+}
+
+.cat-info-btn-container:after {
+  content: '\f05a';
+  font-family: FontAwesome;
+  padding-left: 0.5rem;
+}
+
+.cat-info-btn-container:hover::after {
+  color: #cc4141;
+  text-decoration: none !important;
+}
+
+.cat-link-container {
+  display: flex;
+  align-items: center;
+}
+
+.cat-link-container h5 {
+  margin-left: auto;
+}
+
 #more .tags span {
   background-color: #777;
   color: #fff;
   transition: color 0.25s ease;
   padding: 3px 6px;
-  margin: 0 0 4px;
+  margin: 0 auto 4px;
   font-size: 12px;
   border-radius: 0.2rem;
   display: inline-block;

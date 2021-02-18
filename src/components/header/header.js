@@ -30,7 +30,7 @@ const Header = ({ displayActions, ruleUri }) => {
       <header>
         <div className="flex mx-6 mt-4 mb-3">
           <div className="column">
-            <div className="flex items-center row-sm">
+            <div className="flex items-center">
               <a href={parentSiteUrl} className="unstyled cursor-pointer">
                 <SSWLogo aria-label="logo" />
               </a>
@@ -38,15 +38,7 @@ const Header = ({ displayActions, ruleUri }) => {
                 Rules <sup className="text-ssw-red">beta</sup>
               </h1>
             </div>
-            <p
-              className="row-sm"
-              style={{
-                position: 'relative',
-                top: '0',
-                opacity: '.7',
-                color: '#333',
-              }}
-            >
+            <p className={displayActions ? 'tagline-hidden' : 'tagline'}>
               Secret ingredients to quality software
             </p>
           </div>

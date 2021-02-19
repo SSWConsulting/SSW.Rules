@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-target-blank */
 /* eslint-disable jsx-a11y/anchor-has-content */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -58,11 +57,12 @@ const Acknowledgements = ({ authors }) => {
     <>
       <div className="info-link-container">
         <h5>Acknowledgements</h5>
-        <div className="ack-info-tooltip">
+        <div className="info-tooltip">
           <a
             className="info-btn-container"
-            href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories"
+            href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Editing-rules"
             target="_blank"
+            rel="noopener noreferrer"
           />
           <span className="tooltiptext">How to add an Acknowledgement</span>
         </div>

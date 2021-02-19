@@ -1476,7 +1476,7 @@ blockquote p:before {
   opacity: 0.5;
 }
 
-.tooltip, .react-tooltip, .github-tooltip, .ack-info-tooltip, .cat-info-tooltip {
+.tooltip, .react-tooltip, .github-tooltip, .info-tooltip {
   position: relative;
   display: inline-block;
 }
@@ -1487,7 +1487,7 @@ blockquote p:before {
   font-size: 1.8rem !important;
 }
 
-.ack-info-tooltip, .cat-info-tooltip {
+.info-tooltip {
   margin: 1.6rem auto 0 0;
 }
 
@@ -1524,14 +1524,7 @@ blockquote p:before {
   width: 5rem;
 }
 
-.ack-info-tooltip .tooltiptext {
-  left: 65%;
-  margin-left: -79px;
-  margin-bottom: 0.7rem;
-  width: 10rem;
-}
-
-.cat-info-tooltip .tooltiptext {
+.info-tooltip .tooltiptext {
   left: 65%;
   margin-left: -79px;
   margin-bottom: 0.7rem;
@@ -1550,7 +1543,7 @@ blockquote p:before {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .github-tooltip:hover .tooltip, .ack-info-tooltip:hover .tooltiptext, .cat-info-tooltip:hover .tooltiptext {
+.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .github-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
   padding: 0.2rem !important;

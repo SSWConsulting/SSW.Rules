@@ -755,7 +755,7 @@ b, strong {
 }
 
 .rule-content a, .rule-category-top a {
-  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined) {
+  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(info-btn-container:after):not(.info-btn-container:hover::after) {
     color: #222;
     text-decoration: none;
     border-bottom: 1px solid rgb(175, 175, 175);
@@ -1040,10 +1040,12 @@ blockquote p:before {
 }
 
 .rule-content a[href*="//"]:not([href*="rules.ssw.com.au"]):after {
-  content: "\f08b ";
-  font-family: FontAwesome;
-  opacity: .5;
-  padding-left: 4px;
+  &:not(.info-btn-container) {
+    content: "\f08b ";
+    font-family: FontAwesome;
+    opacity: .5;
+    padding-left: 4px;
+  }
 }
 
 .avatar a:after {
@@ -1273,7 +1275,7 @@ blockquote p:before {
 }
 
 #more {
-  overflow: auto;
+  /* overflow: auto; */
   text-align: center;
   border-top: 1px solid #f5f5f5;
 }
@@ -1286,12 +1288,37 @@ blockquote p:before {
   border-bottom: none;
 }
 
-#more .tags span {
+.info-btn-container {
+  margin-top: 1.65rem;
+  text-decoration: none !important;
+}
+
+.info-btn-container:after {
+  content: '\f05a';
+  font-family: FontAwesome;
+  padding-left: 0.5rem;
+}
+
+.info-btn-container:hover::after {
+  color: #cc4141;
+  text-decoration: none !important;
+}
+
+.info-link-container {
+  display: flex;
+  align-items: center;
+}
+
+.info-link-container h5 {
+  margin-left: auto;
+}
+
+#more .tags .category-tag {
   background-color: #777;
   color: #fff;
   transition: color 0.25s ease;
   padding: 3px 6px;
-  margin: 0 0 4px;
+  margin: 0 auto 4px;
   font-size: 12px;
   border-radius: 0.2rem;
   display: inline-block;
@@ -1308,7 +1335,7 @@ blockquote p:before {
 }
 
 
-#more .tags span:hover {
+#more .tags category-tag:hover {
   background-color: #222;
 }
 
@@ -1459,28 +1486,19 @@ blockquote p:before {
   opacity: 0.5;
 }
 
-.tooltip, .react-tooltip {
+.tooltip, .react-tooltip, .github-tooltip, .info-tooltip {
   position: relative;
   display: inline-block;
-}
-
-.tooltip .tooltiptext {
-  left: 65%;
-  margin-left: -60px;
 }
 
 .github-tooltip {
   height: 1.7rem;
   margin: auto 1rem auto auto;
   font-size: 1.8rem !important;
-  position: relative;
-  display: inline-block;
 }
 
-.react-tooltip .tooltiptext {
-  margin-left: -53px !important;
-  bottom: 90%;
-  width: 80px; 
+.info-tooltip {
+  margin: 1.6rem auto 0 0;
 }
 
 .tooltiptext {
@@ -1498,11 +1516,29 @@ blockquote p:before {
   transition: opacity 0.2s;
 }
 
+.tooltip .tooltiptext {
+  left: 65%;
+  margin-left: -60px;
+}
+
+.react-tooltip .tooltiptext {
+  margin-left: -53px !important;
+  bottom: 90%;
+  width: 80px;
+}
+
 .github-tooltip .tooltiptext {
   margin-left: 0 !important;
   bottom: 2.5rem;
   left: -1.6rem;
-  width: 5rem; 
+  width: 5rem;
+}
+
+.info-tooltip .tooltiptext {
+  left: 65%;
+  margin-left: -79px;
+  margin-bottom: 0.7rem;
+  width: 10rem;
 }
 
 .tooltiptext::after {
@@ -1517,7 +1553,7 @@ blockquote p:before {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .github-tooltip:hover .tooltip {
+.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .github-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
   padding: 0.2rem !important;

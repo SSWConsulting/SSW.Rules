@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-has-content */
 import React, { useRef, useState, useLayoutEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { graphql, Link } from 'gatsby';
@@ -281,10 +282,21 @@ const Rule = ({ data, location }) => {
               <Acknowledgements authors={rule.frontmatter.authors} />
             </div>
             <div className="tags rounded w-full lg:w-1/3">
-              <h5>Categories</h5>
+              <div className="info-link-container">
+                <h5>Categories</h5>
+                <div className="info-tooltip">
+                  <a
+                    className="info-btn-container"
+                    href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
+                  <span className="tooltiptext">How to add a Category</span>
+                </div>
+              </div>
               {categories.map((category, i) => (
                 <div className="px-1 inline" key={i}>
-                  <span>
+                  <span className="category-tag">
                     <Link ref={linkRef} to={`/${category.parent.name}`}>
                       {category.frontmatter.title
                         .replace('Rules to Better ', '')

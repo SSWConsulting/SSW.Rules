@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-has-content */
 import React from 'react';
 import PropTypes from 'prop-types';
 import PlaceHolderImage from '../../images/ssw-employee-profile-placeholder-sketch.jpg';
@@ -54,7 +55,18 @@ const Acknowledgements = ({ authors }) => {
 
   return (
     <>
-      <h5>Acknowledgements</h5>
+      <div className="info-link-container">
+        <h5>Acknowledgements</h5>
+        <div className="info-tooltip">
+          <a
+            className="info-btn-container"
+            href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Editing-rules"
+            target="_blank"
+            rel="noopener noreferrer"
+          />
+          <span className="tooltiptext">How to add an Acknowledgement</span>
+        </div>
+      </div>
       <div className="flex flex-row flex-wrap justify-center">
         {authors &&
           authors.map((author, index) => (

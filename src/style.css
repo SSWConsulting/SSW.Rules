@@ -743,6 +743,7 @@ ol ol, ol li ol {
 
 .rule-content {
   color: black;
+  font-weight: normal;
   font-size: 16px;
   word-break: break-word;
   margin-bottom: 5rem;
@@ -915,8 +916,6 @@ blockquote p:before {
   list-style-type: decimal;
   list-style-position: inside;
 }
-
-
 
 .rule-index ol li {
   padding: .5rem 1rem .5rem 0;

@@ -278,16 +278,19 @@ const Rule = ({ data, location }) => {
           )}
           <section id="more" className="pt-4 mt-12 flex flex-wrap text-center">
             <div className="acknowledgements w-full lg:w-1/3">
-              <Acknowledgements authors={rule.frontmatter.authors} />
+                <Acknowledgements authors={rule.frontmatter.authors} />
             </div>
             <div className="tags rounded w-full lg:w-1/3">
-            <div className="cat-link-container">
-              <h5>Categories</h5>
-              <a className="cat-info-btn-container" href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories"/>
-            </div>
+              <div className="info-link-container">
+                <h5>Categories</h5>
+                <div className="cat-info-tooltip">
+                  <a className="info-btn-container" href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories" target="_blank"/>
+                  <span className="tooltiptext">How to add a Category</span>
+                </div>
+              </div>
               {categories.map((category, i) => (
                 <div className="px-1 inline" key={i}>
-                  <span>
+                  <span className="category-tag">
                     <Link ref={linkRef} to={`/${category.parent.name}`}>
                       {category.frontmatter.title
                         .replace('Rules to Better ', '')

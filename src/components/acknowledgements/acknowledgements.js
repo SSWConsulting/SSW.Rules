@@ -54,7 +54,13 @@ const Acknowledgements = ({ authors }) => {
 
   return (
     <>
-      <h5>Acknowledgements</h5>
+      <div className="info-link-container">
+        <h5>Acknowledgements</h5>
+        <div className="ack-info-tooltip">
+          <a className="info-btn-container" href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories" target="_blank"/>
+          <span className="tooltiptext">How to add an Acknowledgement</span>
+        </div>
+      </div>
       <div className="flex flex-row flex-wrap justify-center">
         {authors &&
           authors.map((author, index) => (

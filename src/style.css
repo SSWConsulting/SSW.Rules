@@ -734,6 +734,10 @@ ol ol, ol li ol {
   list-style: lower-alpha;
 }
 
+.category-rule {
+  padding: 3rem
+}
+
 .rule-number {
   list-style: decimal;
   color: #666 !important;
@@ -746,7 +750,7 @@ ol ol, ol li ol {
   font-size: 16px;
   word-break: break-word;
   margin-bottom: 5rem;
-  padding: 3rem;
+  padding: 2rem;
   padding-top: 0;
 }
 
@@ -1671,7 +1675,7 @@ blockquote p:before {
 
 @media screen and (max-width: 600px) {
   .rule-content {
-    padding: 1rem;
+    padding: 0.5rem;
   }
   .reaction-grid {
     grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 1rem auto;
@@ -1903,6 +1907,9 @@ blockquote p:before {
 @media (max-width: 768px) {
   .rule-content figure, .rule-content figure img {
       width: 100%;
+  }
+  .category-rule {
+    padding: 2.2rem;
   }
 }
 

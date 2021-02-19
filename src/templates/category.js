@@ -99,7 +99,7 @@ export default function Category({ data }) {
                 </label>
               </div>
             </div>
-            <div className="p-12">
+            <div className="category-rule">
               <ol className="rule-number">
                 {category.frontmatter.index.map((r) => {
                   var rule = rules.find((rr) => rr.frontmatter.uri == r);
@@ -122,14 +122,14 @@ export default function Category({ data }) {
                         </section>
 
                         <section
-                          className={`rule-content px-4 mb-5
+                          className={`rule-content mb-5
                             ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                         >
                           <MD components={components} htmlAst={rule.htmlAst} />
                         </section>
 
                         <section
-                          className={`rule-content px-4 mb-5
+                          className={`rule-content mb-5
                           ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
                         >
                           <div

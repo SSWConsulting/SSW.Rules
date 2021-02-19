@@ -1161,7 +1161,12 @@ blockquote p:before {
   display: table;
 }
 
-.rule-content video, .rule-content iframe:not(.utterances-frame):not(.twitter-tweet) {
+.twitter-tweet-rendered iframe {
+  background-color: transparent !important;
+  box-sizing: unset;
+}
+
+.rule-content video, .rule-content iframe:not(.utterances-frame) {
   background-color: #f5f5f5;
   padding: 4px;
   margin-bottom: 20px;

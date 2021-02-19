@@ -934,7 +934,6 @@ blockquote p:before {
 .rule-content p{
   margin-top: 0;
   margin-bottom: 1rem;
-  font-weight: normal !important;
 }
 
 /* Category List
@@ -1160,6 +1159,11 @@ blockquote p:before {
 
 .rule-content figure.image {
   display: table;
+}
+
+.twitter-tweet-rendered iframe {
+  background-color: transparent !important;
+  box-sizing: unset;
 }
 
 .rule-content video, .rule-content iframe:not(.utterances-frame) {

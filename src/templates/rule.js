@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-target-blank */
+/* eslint-disable jsx-a11y/anchor-has-content */
 import React, { useRef, useState, useLayoutEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { graphql, Link } from 'gatsby';
@@ -278,13 +280,17 @@ const Rule = ({ data, location }) => {
           )}
           <section id="more" className="pt-4 mt-12 flex flex-wrap text-center">
             <div className="acknowledgements w-full lg:w-1/3">
-                <Acknowledgements authors={rule.frontmatter.authors} />
+              <Acknowledgements authors={rule.frontmatter.authors} />
             </div>
             <div className="tags rounded w-full lg:w-1/3">
               <div className="info-link-container">
                 <h5>Categories</h5>
                 <div className="cat-info-tooltip">
-                  <a className="info-btn-container" href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories" target="_blank"/>
+                  <a
+                    className="info-btn-container"
+                    href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories"
+                    target="_blank"
+                  />
                   <span className="tooltiptext">How to add a Category</span>
                 </div>
               </div>
@@ -299,7 +305,6 @@ const Rule = ({ data, location }) => {
                   </span>
                 </div>
               ))}
-              
             </div>
 
             <div className="likes w-full  lg:w-1/3">

@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-target-blank */
+/* eslint-disable jsx-a11y/anchor-has-content */
 import React from 'react';
 import PropTypes from 'prop-types';
 import PlaceHolderImage from '../../images/ssw-employee-profile-placeholder-sketch.jpg';
@@ -57,7 +59,11 @@ const Acknowledgements = ({ authors }) => {
       <div className="info-link-container">
         <h5>Acknowledgements</h5>
         <div className="ack-info-tooltip">
-          <a className="info-btn-container" href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories" target="_blank"/>
+          <a
+            className="info-btn-container"
+            href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories"
+            target="_blank"
+          />
           <span className="tooltiptext">How to add an Acknowledgement</span>
         </div>
       </div>

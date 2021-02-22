@@ -559,7 +559,7 @@ pre {
   color: #fff;
   border-radius: .5rem;
   padding: .5rem 1rem;
-  margin-bottom: 12px;
+  margin-bottom: 1rem;
   overflow-y: scroll;
 }
 
@@ -667,7 +667,7 @@ pre {
   caption-side: bottom;
   padding-left: 1.2rem;
   font-weight: 700;
-  margin: 0.5rem 0.5rem 6px;
+  margin: 0.5rem 0 6px;
   line-height: initial;
   position: relative
 }
@@ -1061,7 +1061,7 @@ blockquote p:before {
 
 
 .rule-content figure{display:table}
-.rule-content figcaption{display:table-caption;caption-side:bottom}
+.rule-content figcaption{caption-side:bottom}
 
 .rule-content figure.greybox {
   display: block;
@@ -1117,7 +1117,7 @@ blockquote p:before {
 }
 
 .rule-content figure figcaption {
-  margin: 0.5rem 0.5rem 6px;
+  margin: 1rem 0 6px;
   font-weight: bold;
   word-break: break-word;
 }
@@ -1164,7 +1164,7 @@ blockquote p:before {
 .rule-content video, .rule-content iframe:not(.utterances-frame) {
   background-color: #f5f5f5;
   padding: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
 .rule-content video pre, .rule-content iframe pre {
@@ -1188,7 +1188,7 @@ blockquote p:before {
 .rule-content p.highlight, .rule-content div.highlight {
   display: table;
   padding: 10px;
-  margin: 0 0 20px;
+  margin: 0 0 1rem;
   background-color: yellow;
   border: 1px solid #ccc;
 }
@@ -1201,7 +1201,7 @@ blockquote p:before {
 .rule-content p.todo, .rule-content div.todo {
   display: table;
   padding: 10px;
-  margin: 0 0 20px;
+  margin: 0 0 1rem;
   border: 1px solid red;
 }
 
@@ -1217,10 +1217,10 @@ blockquote p:before {
   line-height: normal;
 }
 
-.rule-content .info {
+.rule-content .info, .rule-content .china {
   display: table;
   padding: 10px;
-  margin: 0 0 20px;
+  margin: 0 0 1rem;
   border: 1px solid #ccc;
 }
 
@@ -1228,13 +1228,6 @@ blockquote p:before {
   content: url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/china-flag-icon.png);
   padding-right: 1rem;
   float: left;
-}
-
-.rule-content .china {
-  display: table;
-  padding: 10px;
-  margin: 0 0 20px;
-  border: 1px solid #ccc;
 }
 
 .secret-content-heading h4 {
@@ -2313,7 +2306,7 @@ margin-bottom: 1em;
 }
 
 .email-template {
-  margin: 10px 0 5px;
+  margin: 10px 0 1rem;
 }
 
 .email-template + p,

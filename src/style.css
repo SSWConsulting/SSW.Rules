@@ -1219,7 +1219,7 @@ blockquote p:before {
   line-height: normal;
 }
 
-.rule-content .info {
+.rule-content .info, .rule-content .china {
   display: table;
   padding: 10px;
   margin: 0 0 1rem;
@@ -1230,13 +1230,6 @@ blockquote p:before {
   content: url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/china-flag-icon.png);
   padding-right: 1rem;
   float: left;
-}
-
-.rule-content .china {
-  display: table;
-  padding: 10px;
-  margin: 0 0 1rem;
-  border: 1px solid #ccc;
 }
 
 .secret-content-heading h4 {
@@ -2315,7 +2308,7 @@ margin-bottom: 1em;
 }
 
 .email-template {
-  margin: 10px 0 16px;
+  margin: 10px 0 1rem;
 }
 
 .email-template + p,

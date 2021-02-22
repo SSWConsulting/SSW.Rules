@@ -314,7 +314,7 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
             {rules.map((rule) => {
               return (
                 <>
-                  <li className="pb-4">
+                  <li>
                     <section className="rule-content-title px-4 pb-4">
                       <div className="heading-container">
                         <h2 className={`rule-heading-${iconClass}`}>

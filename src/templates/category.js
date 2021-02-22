@@ -108,7 +108,7 @@ export default function Category({ data }) {
                   }
                   return (
                     <>
-                      <li className="pb-4">
+                      <li className="">
                         <section className="rule-content-title px-4">
                           <h2>
                             <Link

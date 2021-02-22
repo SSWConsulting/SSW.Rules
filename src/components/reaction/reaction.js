@@ -96,19 +96,7 @@ const Reaction = (props) => {
           });
       }
     } else {
-      if (
-        window.confirm(
-          `Sign in to ${
-            type == ReactionType.SuperLike
-              ? 'really agree'
-              : type == ReactionType.Like
-              ? 'somewhat agree'
-              : type == ReactionType.DisLike
-              ? 'somewhat disagree'
-              : 'really disagree'
-          } with this rule`
-        )
-      ) {
+      if (window.confirm('Sign in to rate this rule')) {
         const currentPage =
           typeof window !== 'undefined'
             ? window.location.pathname.split('/').pop()
@@ -124,48 +112,6 @@ const Reaction = (props) => {
 
   return (
     <div className="reaction-grid">
-      <div className="disagree-grid-item">
-        <div className="react-tooltip">
-          <button
-            className={
-              currentReactionType == ReactionType.SuperDisLike
-                ? 'disagree-btn-container-pressed'
-                : 'disagree-btn-container'
-            }
-            onClick={() => onClick(ReactionType.SuperDisLike)}
-          />
-          <span className="tooltiptext">Really Disagree</span>
-        </div>
-      </div>
-      <div className="reaction-counter-container">{superDislikesCount}</div>
-      <div className="somewhat-disagree-grid-item">
-        <div className="react-tooltip">
-          <button
-            className={
-              currentReactionType == ReactionType.DisLike
-                ? 'somewhat-disagree-btn-container-pressed'
-                : 'somewhat-disagree-btn-container'
-            }
-            onClick={() => onClick(ReactionType.DisLike)}
-          />
-          <span className="tooltiptext">Somewhat Disagree</span>
-        </div>
-      </div>
-      <div className="reaction-counter-container">{dislikesCount}</div>
-      <div className="somewhat-agree-grid-item">
-        <div className="react-tooltip">
-          <button
-            onClick={() => onClick(ReactionType.Like)}
-            className={
-              currentReactionType == ReactionType.Like
-                ? 'somewhat-agree-btn-container-pressed'
-                : 'somewhat-agree-btn-container'
-            }
-          />
-          <span className="tooltiptext">Somewhat Agree</span>
-        </div>
-      </div>
-      <div className="reaction-counter-container">{likesCount}</div>
       <div className="agree-grid-item">
         <div className="react-tooltip">
           <button
@@ -176,10 +122,52 @@ const Reaction = (props) => {
             }
             onClick={() => onClick(ReactionType.SuperLike)}
           />
-          <span className="tooltiptext">Really Agree</span>
+          <span className="tooltiptext">Love </span>
         </div>
       </div>
       <div className="reaction-counter-container">{superLikesCount}</div>
+      <div className="somewhat-agree-grid-item">
+        <div className="react-tooltip">
+          <button
+            onClick={() => onClick(ReactionType.Like)}
+            className={
+              currentReactionType == ReactionType.Like
+                ? 'somewhat-agree-btn-container-pressed'
+                : 'somewhat-agree-btn-container'
+            }
+          />
+          <span className="tooltiptext">Agree</span>
+        </div>
+      </div>
+      <div className="reaction-counter-container">{likesCount}</div>
+      <div className="somewhat-disagree-grid-item">
+        <div className="react-tooltip">
+          <button
+            className={
+              currentReactionType == ReactionType.DisLike
+                ? 'somewhat-disagree-btn-container-pressed'
+                : 'somewhat-disagree-btn-container'
+            }
+            onClick={() => onClick(ReactionType.DisLike)}
+          />
+          <span className="tooltiptext">Disagree</span>
+        </div>
+      </div>
+      <div className="reaction-counter-container">{dislikesCount}</div>
+      <div className="disagree-grid-item">
+        <div className="react-tooltip">
+          <button
+            className={
+              currentReactionType == ReactionType.SuperDisLike
+                ? 'disagree-btn-container-pressed'
+                : 'disagree-btn-container'
+            }
+            onClick={() => onClick(ReactionType.SuperDisLike)}
+          />
+          <span className="tooltiptext">No way!</span>
+        </div>
+      </div>
+      <div className="reaction-counter-container">{superDislikesCount}</div>
     </div>
   );
 };

@@ -70,7 +70,7 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.SuperLikes);
           }}
         >
-          Love
+          Love it!
           <div className="rules-counter">{superLikedRulesCount ?? 0}</div>
         </div>
         <div

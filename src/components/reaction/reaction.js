@@ -122,7 +122,7 @@ const Reaction = (props) => {
             }
             onClick={() => onClick(ReactionType.SuperLike)}
           />
-          <span className="tooltiptext">Love </span>
+          <span className="tooltiptext">Love it!</span>
         </div>
       </div>
       <div className="reaction-counter-container">{superLikesCount}</div>

@@ -353,7 +353,7 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
                       <MD components={components} htmlAst={rule.htmlAst} />
                     </section>
                     <section
-                      className={`rule-content px-4 mb-5
+                      className={`rule-content px-4 mb-5 pb-4
                             ${viewStyle === 'blurb' ? 'visible' : 'hidden'}`}
                     >
                       <div dangerouslySetInnerHTML={{ __html: rule.excerpt }} />

@@ -749,7 +749,7 @@ b, strong {
 }
 
 .rule-content a, .rule-category-top a {
-  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(info-btn-container:after):not(.info-btn-container:hover::after) {
+  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(.info-btn-container) {
     transition: color 0.25s ease;
     line-height: 1.5rem;
     -webkit-text-decoration: underline;
@@ -1034,13 +1034,11 @@ blockquote p:before {
   color: #cc4141;
 }
 
-.rule-content a[href*="//"]:not([href*="rules.ssw.com.au"]):after {
-  &:not(.info-btn-container) {
+.rule-content a[href*="//"]:not([href*="rules.ssw.com.au"], .info-btn-container):after {
     content: "\f08b ";
     font-family: FontAwesome;
     opacity: .5;
     padding-left: 4px;
-  }
 }
 
 .avatar a:after {

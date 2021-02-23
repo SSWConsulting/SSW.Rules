@@ -34,13 +34,12 @@ const Profile = ({ data, gitHubUsername }) => {
                 <div className="profile-large-name">
                   {isAuthenticated ? user.name : ''}
                 </div>
-                <div className="username">@{user ? user.nickname : ''}</div>
                 <a
                   className="github-link"
                   href={`https://www.github.com/${user.nickname}`}
                 >
                   <GitHubIcon className="profile-github-icon" />
-                  Manage GitHub account
+                  GitHub account | @{user ? user.nickname : ''}
                 </a>
               </div>
               <ProfileFilterMenu

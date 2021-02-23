@@ -137,12 +137,13 @@ export default function Category({ data }) {
                           />
                           <p className="pt-5 pb-0">
                             Read more about{' '}
-                            <a
-                              href={rule.frontmatter.uri}
-                              className="underline"
+                            <Link
+                              ref={linkRef}
+                              to={`/${rule.frontmatter.uri}`}
+                              state={{ category: category.parent.name }}
                             >
                               {rule.frontmatter.title}
-                            </a>
+                            </Link>
                           </p>
                         </section>
                       </li>

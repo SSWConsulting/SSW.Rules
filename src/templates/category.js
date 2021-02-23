@@ -138,7 +138,7 @@ export default function Category({ data }) {
                           <p className="pt-5 pb-0">
                             Read more about{' '}
                             <a
-                              href={rule.frontmatter.uri}
+                              href={`/${rule.frontmatter.uri}`}
                               className="underline"
                             >
                               {rule.frontmatter.title}

@@ -355,7 +355,7 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
                       <div dangerouslySetInnerHTML={{ __html: rule.excerpt }} />
                       <p className="pt-5 pb-0">
                         Read more about{' '}
-                        <a href={rule.uri} className="underline">
+                        <a href={`/${rule.uri}`} className="underline">
                           {rule.title}
                         </a>
                       </p>

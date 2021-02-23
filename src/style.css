@@ -1683,14 +1683,8 @@ blockquote p:before {
   height: 6.25rem;
 }
 
-.username {
-  grid-row: 2;
-  grid-column: 2;
-  word-wrap: break-word;
-}
-
 .profile-github-icon {
-  margin: 0.15rem 0.2rem 0 0;
+  margin: 0.2rem 0.25rem 0 0;
 }
 
 .profile-image {
@@ -1707,6 +1701,8 @@ blockquote p:before {
   }
   .profile-image {
     visibility: hidden;
+    grid-column: 1;
+    height: 0
   }
   .profile-bookmark-icon, .profile-like-icon, .profile-dislike-icon{
     display: none !important;
@@ -1714,15 +1710,20 @@ blockquote p:before {
   .profile-large-name {
     grid-column: 1;
   }
+  .profile-github-icon {
+    margin: 0.2rem 0 0 0;
+    height: 1rem;
+    width: 1.8rem;
+  }
   .github-link {
     grid-column: 1 !important;
+    padding-top: 0.75rem;
   }
   .grid-container {
-    grid-template-columns: 14rem auto;
-    grid-template-rows: auto auto auto;
-  }
-  .username {
-    grid-column: 1;
+    grid-template-columns: 20rem !important;
+    grid-template-rows: auto auto;
+    justify-items: center;
+    justify-content: center;
   }
   .rule-content-title {
     padding: 0 !important;
@@ -1751,6 +1752,7 @@ blockquote p:before {
     margin-left: auto;
     margin-right: auto;
     left: 0 !important;
+    top: 2rem !important;
   }
   .bookmarks-item, .somewhat-agree-item, .somewhat-disagree-item, .really-agree-item, .really-disagree-item, .comments-item {
     grid-column: 1 !important;
@@ -1766,8 +1768,7 @@ blockquote p:before {
 }
 
 .github-link {
-  grid-row: 3;
-  grid-column: 2;
+  width: fit-content;
   font-size: 14;
   color: #CC4141 !important;
   display: flex;

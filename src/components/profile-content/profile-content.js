@@ -36,11 +36,7 @@ const ProfileContent = (props) => {
     const jwt = await getIdTokenClaims();
     if (
       isAuthenticated &&
-      window.confirm(
-        `Are you sure you want to remove this ${
-          props.filter == Filter.Bookmarks ? 'bookmark' : 'reaction'
-        }?`
-      )
+      window.confirm('Are you sure you want to remove this tag?')
     ) {
       props.filter == Filter.Bookmarks
         ? RemoveBookmark({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
@@ -257,13 +253,13 @@ const ProfileContent = (props) => {
             props.filter == Filter.Bookmarks
               ? 'bookmark'
               : props.filter == Filter.Likes
-              ? 'somewhat agree'
+              ? 'agree'
               : props.filter == Filter.Dislikes
-              ? 'somewhat disagree'
+              ? 'disagree'
               : props.filter == Filter.SuperDislikes
-              ? 'really disagree'
+              ? 'no way'
               : props.filter == Filter.SuperLikes
-              ? 'really agree'
+              ? 'love'
               : 'comment'
           }
           onRemoveClick={onRemoveClick}

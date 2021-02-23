@@ -1351,25 +1351,27 @@ blockquote p:before {
 }
 
 .reaction-grid {
-  grid-template-columns: auto 2rem 1rem 2rem 2.2rem 1rem 2rem 2.2rem 1rem 2rem 2.2rem 1rem auto;
+  grid-template-columns: auto 2.5rem 1rem 2rem 2.2rem 1rem 2rem 2.2rem 1rem 2rem 2.2rem 1rem auto;
   display: grid;
   grid-template-rows: 2rem;
   padding-bottom: 1rem;
 }
 
 .agree-btn-container:after, .agree-btn-container-pressed:after  {
-  content: '\f005';
+  content: '\f004';
   font-family: FontAwesome;
   font-size: 1.7rem;
+  padding-left: 0.5rem;
 }
 
 .agree-btn-container-pressed:after {
-  color: gold;
+  color: #ff33cc;
+  opacity: 0.6;
 }
 
 .agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after {
   opacity: 0.8;
-  color: gold;
+  color: #ff33cc;
   font-size: 1.8rem;
   transition: font-size 0.2s;
 }
@@ -1403,7 +1405,7 @@ blockquote p:before {
 }
 
 .somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after {
-  color:  #e25822;
+  color:  red;
   font-size: 1.8rem;
   transition: font-size 0.2s;
 }
@@ -1432,19 +1434,19 @@ blockquote p:before {
 }
 
 .agree-grid-item {
-  grid-column: 11;
+  grid-column: 2;
 }
 
 .somewhat-agree-grid-item {
-  grid-column: 8;
-}
-
-.somewhat-disagree-grid-item {
   grid-column: 5;
 }
 
-.disagree-grid-item {
-  grid-column: 2;
+.somewhat-disagree-grid-item {
+  grid-column: 8;
+}
+
+.disagree-grid-item { 
+  grid-column: 11;
 }
 
 .rule-header-container {
@@ -1738,7 +1740,7 @@ blockquote p:before {
     font-size: 1.75rem !important;
   }
 }
-@media screen and (max-width: 1150px) {
+@media screen and (max-width: 800px) {
   .filter-menu {
     grid-template-columns: auto !important;
     margin-left: auto;
@@ -1774,7 +1776,7 @@ blockquote p:before {
   top: 3rem;
   position: relative;
   display: grid;
-  grid-template-columns: auto auto auto auto auto auto; 
+  grid-template-columns: auto auto auto auto auto auto auto; 
   column-gap: 1rem;
 }
 
@@ -1794,6 +1796,7 @@ blockquote p:before {
  position: relative;
  display: flex;
  margin: auto;
+ white-space: nowrap;
 }
 
 .bookmarks-item:hover, .really-agree-item:hover, .somewhat-agree-item:hover, .really-disagree-item:hover, .somewhat-disagree-item:hover, .comments-item:hover {
@@ -1808,8 +1811,9 @@ blockquote p:before {
 }
 
 .really-agree-item:before {
-  content: '\f005';
-  color: gold;
+  content: '\f004';
+  color: #ff33cc;
+  opacity: 0.6;
 }
 
 .somewhat-agree-item:before {
@@ -1858,28 +1862,30 @@ blockquote p:before {
   width: 1.8rem
 }
 
-.rule-heading-really-agree:after {
-  content: '\f005';
+.rule-heading-love:after {
+  content: '\f004';
   font-family: FontAwesome;
-  color: gold;
+  color: #ff33cc;
   margin-left: 1rem;
+  padding-left: 0.5rem;
+  opacity: 0.6;
 }
 
-.rule-heading-somewhat-agree:after {
+.rule-heading-agree:after {
   content: '\f164';
   font-family: FontAwesome;
   color: green;
   margin-left: 1rem;
 }
 
-.rule-heading-somewhat-disagree:after {
+.rule-heading-disagree:after {
   content: '\f165';
   font-family: FontAwesome;
   color: #CC4141;
   margin-left: 1rem;
 }
 
-.rule-heading-really-disagree:after {
+.rule-heading-no-way:after {
   content: '\f00d';
   font-family: FontAwesome;
   color: #CC4141;

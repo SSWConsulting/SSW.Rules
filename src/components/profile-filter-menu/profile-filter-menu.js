@@ -38,9 +38,9 @@ const ProfileFilterMenu = ({
           <div className="rules-counter">{bookmarkedRulesCount ?? 0}</div>
         </div>
         <div
-          className="really-agree-item"
+          className="comments-item"
           style={
-            selectedFilter == Filter.SuperLikes
+            selectedFilter == Filter.Comments
               ? {
                   gridColumn: 2,
                   borderBottom: '0.25rem solid #333333',
@@ -49,16 +49,16 @@ const ProfileFilterMenu = ({
               : { gridColumn: 2 }
           }
           onClick={() => {
-            setSelectedFilter(Filter.SuperLikes);
+            setSelectedFilter(Filter.Comments);
           }}
         >
-          Really Agree
-          <div className="rules-counter">{superLikedRulesCount ?? 0}</div>
+          Comments
+          <div className="rules-counter">{commentedRulesCount ?? 0}</div>
         </div>
         <div
-          className="somewhat-agree-item"
+          className="really-agree-item"
           style={
-            selectedFilter == Filter.Likes
+            selectedFilter == Filter.SuperLikes
               ? {
                   gridColumn: 3,
                   borderBottom: '0.25rem solid #333333',
@@ -67,16 +67,16 @@ const ProfileFilterMenu = ({
               : { gridColumn: 3 }
           }
           onClick={() => {
-            setSelectedFilter(Filter.Likes);
+            setSelectedFilter(Filter.SuperLikes);
           }}
         >
-          Somewhat Agree
-          <div className="rules-counter">{likedRulesCount ?? 0}</div>
+          Love it!
+          <div className="rules-counter">{superLikedRulesCount ?? 0}</div>
         </div>
         <div
-          className="somewhat-disagree-item"
+          className="somewhat-agree-item"
           style={
-            selectedFilter == Filter.Dislikes
+            selectedFilter == Filter.Likes
               ? {
                   gridColumn: 4,
                   borderBottom: '0.25rem solid #333333',
@@ -85,16 +85,16 @@ const ProfileFilterMenu = ({
               : { gridColumn: 4 }
           }
           onClick={() => {
-            setSelectedFilter(Filter.Dislikes);
+            setSelectedFilter(Filter.Likes);
           }}
         >
-          Somewhat Disagree
-          <div className="rules-counter">{dislikedRulesCount ?? 0}</div>
+          Agree
+          <div className="rules-counter">{likedRulesCount ?? 0}</div>
         </div>
         <div
-          className="really-disagree-item"
+          className="somewhat-disagree-item"
           style={
-            selectedFilter == Filter.SuperDislikes
+            selectedFilter == Filter.Dislikes
               ? {
                   gridColumn: 5,
                   borderBottom: '0.25rem solid #333333',
@@ -103,16 +103,16 @@ const ProfileFilterMenu = ({
               : { gridColumn: 5 }
           }
           onClick={() => {
-            setSelectedFilter(Filter.SuperDislikes);
+            setSelectedFilter(Filter.Dislikes);
           }}
         >
-          Really Disagree
-          <div className="rules-counter">{superDislikedRulesCount ?? 0}</div>
+          Disagree
+          <div className="rules-counter">{dislikedRulesCount ?? 0}</div>
         </div>
         <div
-          className="comments-item"
+          className="really-disagree-item"
           style={
-            selectedFilter == Filter.Comments
+            selectedFilter == Filter.SuperDislikes
               ? {
                   gridColumn: 6,
                   borderBottom: '0.25rem solid #333333',
@@ -121,11 +121,11 @@ const ProfileFilterMenu = ({
               : { gridColumn: 6 }
           }
           onClick={() => {
-            setSelectedFilter(Filter.Comments);
+            setSelectedFilter(Filter.SuperDislikes);
           }}
         >
-          Comments
-          <div className="rules-counter">{commentedRulesCount ?? 0}</div>
+          No way!
+          <div className="rules-counter">{superDislikedRulesCount ?? 0}</div>
         </div>
       </div>
     </>

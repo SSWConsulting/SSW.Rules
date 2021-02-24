@@ -412,115 +412,6 @@ button:focus {
   max-width: 200px;
 }
 
-figure{
-  margin-bottom: 1rem;
-  padding: 4px;
-}
-figure figcaption {
-  font-weight: 700;
-  margin: 0.5rem 0.5rem 6px;
-  line-height: initial;
-  position: relative;
-}
-
-.custom-block-heading::before {
-  content: 'Figure: ';
-}
-
-.good::before, .bad::before, .ok::before,
-.good-example figure figcaption::before,
-.bad-example figure figcaption::before,
-.ok-example figure figcaption::before {
-  padding-left: 1.5rem;
-}
-
-.good-example figure figcaption::after,
-.good figcaption::after,
-.good p:not(:empty)::after,
-div.good-example .custom-block-heading::after {
-  background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Good.gif) no-repeat;
-  content: "\00a0 ";
-  padding-left: 20px;
-  padding-right: 0.5rem;
-  position: absolute;
-  left: 0px;
-  top:0px;
-}
-
-.bad-example figure figcaption::after,
-.bad figcaption::after,
-.bad p:not(:empty)::after,
-div.bad-example .custom-block-heading::after {
-  background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Bad.gif) no-repeat;
-  content: "\00a0 ";
-  padding-left: 20px;
-  padding-right: 0.5rem;
-  position: absolute;
-  left: 0px;
-  top:0px;
-}
-
-.ok-example figure figcaption::after,
-.ok figcaption::after,
-.ok p:not(:empty)::after,
-div.ok-example .custom-block-heading::after {
-  content: "\f11a ";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-  color: #777;
-  padding-right: 0.5rem;
-  position: absolute;
-  left: 0px;
-  top:0px;
-}
-
-div.ok-example,
-div.good-example,
-div.bad-example,
-div.good, div.bad, div.ok,
-div.greybox{
-  position: relative;
-}
-
-div.ok-example .custom-block-heading,
-div.good-example .custom-block-heading,
-div.bad-example .custom-block-heading,
-div.greybox .custom-block-heading{
-  caption-side: bottom;
-  display: table-caption;
-  font-weight: 700;
-  margin: 0.5rem 0.5rem 6px;
-  line-height: initial;
-  position: relative
-}
-
-div.ok-example .custom-block-body,
-div.good-example .custom-block-body,
-div.bad-example .custom-block-body,
-div.greybox .custom-block-body{
-  padding: 1rem;
-  background-color: #f5f5f5;
-}
-
-div.ok-example .custom-block-body:has(img),
-div.good-example .custom-block-body:has(img),
-div.bad-example .custom-block-body:has(img){
-  padding: 1rem;
-  background-color: #fff !important;
-}
-
-div.ok-example,
-div.good-example,
-div.bad-example,
-div.greybox {
-  max-width: 95%;
-  display: block;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
 div.youtube-playlist li {
   background: none;
 }
@@ -1117,9 +1008,10 @@ blockquote p:before {
 }
 
 .rule-content figure figcaption {
-  margin: 1rem 0 6px;
+  margin: .5rem 0;
   font-weight: bold;
   word-break: break-word;
+  display: table-caption;
 }
 
 .rule-content figure figcaption.bad-example:before {
@@ -1154,6 +1046,96 @@ blockquote p:before {
 
 .rule-content figure.image {
   display: table;
+}
+
+.custom-block-heading::before {
+  content: 'Figure: ';
+}
+
+.good::before, .bad::before, .ok::before,
+.good-example figure figcaption::before,
+.bad-example figure figcaption::before,
+.ok-example figure figcaption::before {
+  padding-left: 1.5rem;
+}
+
+.good-example figure figcaption::after,
+.good figcaption::after,
+.good p:not(:empty)::after,
+div.good-example .custom-block-heading::after {
+  background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Good.gif) no-repeat;
+  content: "\00a0 ";
+  padding-left: 20px;
+  padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+  top:0px;
+}
+
+.bad-example figure figcaption::after,
+.bad figcaption::after,
+.bad p:not(:empty)::after,
+div.bad-example .custom-block-heading::after {
+  background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Bad.gif) no-repeat;
+  content: "\00a0 ";
+  padding-left: 20px;
+  padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+  top:0px;
+}
+
+.ok-example figure figcaption::after,
+.ok figcaption::after,
+.ok p:not(:empty)::after,
+div.ok-example .custom-block-heading::after {
+  content: "\f11a ";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  color: #777;
+  padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+  top:0px;
+}
+
+div.ok-example .custom-block-heading,
+div.good-example .custom-block-heading,
+div.bad-example .custom-block-heading,
+div.greybox .custom-block-heading{
+  caption-side: bottom;
+  display: table-caption;
+  font-weight: 700;
+  margin: 0.5rem 0.5rem 6px;
+  line-height: initial;
+  position: relative;
+}
+
+div.ok-example .custom-block-body,
+div.good-example .custom-block-body,
+div.bad-example .custom-block-body,
+div.greybox .custom-block-body{
+  padding: 1rem;
+  background-color: #f5f5f5;
+}
+
+div.ok-example .custom-block-body:has(img),
+div.good-example .custom-block-body:has(img),
+div.bad-example .custom-block-body:has(img){
+  padding: 1rem;
+  background-color: #fff !important;
+}
+
+div.ok-example,
+div.good-example,
+div.bad-example,
+div.greybox {
+  max-width: 95%;
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .twitter-tweet-rendered iframe {

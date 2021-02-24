@@ -2285,17 +2285,23 @@ margin-bottom: 1em;
 /* Email Templates
 -------------------------------------------------- */
 
-.email-template table {
-  border-collapse: initial;
+.email-template {
+  margin: 10px 0 1rem;
   background-color: #eee;
-  border: 5px solid #eee;
-  border-spacing: 10px;
-  max-width: 100%;
+  display: inline-block;
   width: 100%;
 }
 
-.email-template {
-  margin: 10px 0 1rem;
+.email-template table {
+  padding:5px;
+  max-width: 100%;
+  width: 100%;
+  border-collapse: initial;
+  border-spacing: 10px;
+}
+
+.email-template table thead {
+  display:none;
 }
 
 .email-template + p,
@@ -2314,9 +2320,9 @@ margin-bottom: 1em;
 .email-template table tr td:first-child {
   background-color: #eee;
   text-align: right;
-  padding: 10px 0;
+  padding: 10px 10px 10px 0;
   border: none;
-  width: 10%;
+  width: 100px;
 }
 
 .email-template table tr td:last-child {
@@ -2324,7 +2330,12 @@ margin-bottom: 1em;
 }
 
 .email-content {
-  border: 20px solid #eee;
-  border-spacing: 20px;
-  padding: 10px 15px;
+    padding: 10px 15px;
+    margin: 0px 15px 15px 125px;
+    background: #fff;
+    border: 1px solid #ccc;
+}
+
+.email-content h3 {
+    margin-top: 1rem;
 }

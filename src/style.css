@@ -1348,13 +1348,13 @@ div.greybox {
 }
 
 .agree-btn-container-pressed:after {
-  color: #ff33cc;
+  color: #CC4141;
   opacity: 0.6;
 }
 
 .agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after {
   opacity: 0.8;
-  color: #ff33cc;
+  color: #CC4141;
   font-size: 1.8rem;
   transition: font-size 0.2s;
 }
@@ -1796,7 +1796,7 @@ div.greybox {
 
 .really-agree-item:before {
   content: '\f004';
-  color: #ff33cc;
+  color: #CC4141;
   opacity: 0.6;
 }
 
@@ -1849,7 +1849,7 @@ div.greybox {
 .rule-heading-love:after {
   content: '\f004';
   font-family: FontAwesome;
-  color: #ff33cc;
+  color: #CC4141;
   margin-left: 1rem;
   padding-left: 0.5rem;
   opacity: 0.6;

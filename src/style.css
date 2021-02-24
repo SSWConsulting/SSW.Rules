@@ -250,7 +250,7 @@ footer {
   }
 }
 
-.breadcrumb-content {
+.breadcrumb-content, a.breadcrumb-content {
   -webkit-text-decoration: underline;
   text-decoration: underline;
   -webkit-text-decoration-style: solid;
@@ -261,7 +261,7 @@ footer {
   text-decoration-color: #AAA;
 }
 
-.breadcrumb-content:hover {
+.breadcrumb-content:hover, a.breadcrumb-content:hover {
   -webkit-text-decoration-color: #cc4141;
   text-decoration-color: #cc4141;
 }

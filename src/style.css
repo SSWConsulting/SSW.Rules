@@ -930,6 +930,7 @@ blockquote p:before {
     font-family: FontAwesome;
     opacity: .5;
     padding-left: 4px;
+    display: inline-block;
 }
 
 .avatar a:after {

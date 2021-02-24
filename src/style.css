@@ -925,7 +925,7 @@ blockquote p:before {
   color: #cc4141;
 }
 
-.rule-content a[href*="//"]:not([href*="rules.ssw.com.au"], .info-btn-container):after {
+.rule-content a[href*="//"]:not([href*="ssw.com.au"], .info-btn-container):after {
     content: "\f08b ";
     font-family: FontAwesome;
     opacity: .5;

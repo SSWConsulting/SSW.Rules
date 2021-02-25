@@ -180,7 +180,7 @@ const ProfileContent = (props) => {
   }, [isAuthenticated, props.filter, change]);
   return (
     <>
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none pt-12">
         <div className="radio-button-1">
           <input
             type="radio"

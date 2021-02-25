@@ -6,6 +6,7 @@ import {
   GetReactionForUser,
   PostReactionForUser,
   ReactionType,
+  RemoveReaction,
 } from '../../services/apiService';
 
 const Reaction = (props) => {
@@ -71,9 +72,18 @@ const Reaction = (props) => {
         ruleGuid: ruleId,
         userId: user.sub,
       };
-
-      if (currentReactionType == null || currentReactionType != type) {
-        const jwt = await getIdTokenClaims();
+      const jwt = await getIdTokenClaims();
+      if (currentReactionType == type) {
+        removePreviousReaction();
+        setCurrentReactionType(null);
+        RemoveReaction(data, jwt.__raw)
+          .then(() => {
+            setChange(change + 1);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
         if (type == ReactionType.SuperLike) {
           setSuperLikesCount(superLikesCount + 1);
         } else if (type == ReactionType.Like) {
@@ -83,7 +93,7 @@ const Reaction = (props) => {
         } else if (type == ReactionType.SuperDisLike) {
           setSuperDisikesCount(superDislikesCount + 1);
         }
-        if (currentReactionType != type && currentReactionType != null) {
+        if (currentReactionType != null && currentReactionType != type) {
           removePreviousReaction();
         }
         setCurrentReactionType(type);
@@ -122,7 +132,11 @@ const Reaction = (props) => {
             }
             onClick={() => onClick(ReactionType.SuperLike)}
           />
-          <span className="tooltiptext">Love it!</span>
+          <span className="tooltiptext">
+            {currentReactionType == ReactionType.SuperLike
+              ? 'Remove rating'
+              : 'Love it!'}
+          </span>
         </div>
       </div>
       <div className="reaction-counter-container">{superLikesCount}</div>
@@ -136,7 +150,11 @@ const Reaction = (props) => {
                 : 'somewhat-agree-btn-container'
             }
           />
-          <span className="tooltiptext">Agree</span>
+          <span className="tooltiptext">
+            {currentReactionType == ReactionType.Like
+              ? 'Remove rating'
+              : 'Agree'}
+          </span>
         </div>
       </div>
       <div className="reaction-counter-container">{likesCount}</div>
@@ -150,7 +168,11 @@ const Reaction = (props) => {
             }
             onClick={() => onClick(ReactionType.DisLike)}
           />
-          <span className="tooltiptext">Disagree</span>
+          <span className="tooltiptext">
+            {currentReactionType == ReactionType.DisLike
+              ? 'Remove rating'
+              : 'Disagree'}
+          </span>
         </div>
       </div>
       <div className="reaction-counter-container">{dislikesCount}</div>
@@ -164,7 +186,11 @@ const Reaction = (props) => {
             }
             onClick={() => onClick(ReactionType.SuperDisLike)}
           />
-          <span className="tooltiptext">No way!</span>
+          <span className="tooltiptext">
+            {currentReactionType == ReactionType.SuperDisLike
+              ? 'Remove rating'
+              : 'No way!'}
+          </span>
         </div>
       </div>
       <div className="reaction-counter-container">{superDislikesCount}</div>

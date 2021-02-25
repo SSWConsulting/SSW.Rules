@@ -1898,6 +1898,13 @@ div.greybox {
   padding-left: 0.5rem;
 }
 
+.no-tagged-message:before {
+  font-family: FontAwesome;
+  content: '\f119';
+  color: #cc4141;
+  margin-right: 0.5rem;
+}
+
 /* Comments
 -------------------------------------------------- */
 

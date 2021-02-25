@@ -91,8 +91,8 @@ const Archived = ({ data }) => {
     <div className="w-full">
       <Breadcrumb isArchived={true} />
       <div className="container" id="rules">
-        <div className="flex">
-          <div className="w-3/4 px-4">
+        <div className="flex flex-wrap">
+          <div className="w-full lg:w-3/4 px-4">
             <div className="category attention archived px-4 mt-2 mb-5">
               <FontAwesomeIcon
                 icon={faExclamationTriangle}
@@ -116,7 +116,7 @@ const Archived = ({ data }) => {
             </div>
           </div>
 
-          <div className="w-1/4 px-4" id="sidebar">
+          <div className="w-full lg:w-1/4 px-4" id="sidebar">
             <SideBar ruleTotalNumber={data.rules.nodes.length} />
           </div>
         </div>

@@ -293,16 +293,7 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
     <>
       {rules == undefined || rules.toString() == '' || !rules ? (
         <div className="no-content-message">
-          <p>
-            <span
-              className="no-content-message"
-              role="img"
-              aria-label="cross emoji"
-            >
-              ❌
-            </span>{' '}
-            No tagged rules yet.
-          </p>
+          <p className="no-tagged-message">No tagged rules yet.</p>
         </div>
       ) : (
         <div className="p-12">

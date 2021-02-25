@@ -29,15 +29,17 @@ const TopCategory = ({ topcategory, categories, rules }) => {
           const cat = findCategoryFromIndexValue(category);
           if (cat) {
             return (
-              <li key={i}>
-                {' '}
-                <Link ref={linkRef} to={`/${cat.parent.name}`}>
-                  {cat.frontmatter.title}
-                </Link>
-                <span className="d-none d-md-block">
+              <div className="cat-grid-container">
+                <div className="cat-rule-num">{i + 1}.</div>
+                <div classnName="cat-rule-link">
+                  <Link ref={linkRef} to={`/${cat.parent.name}`}>
+                    {cat.frontmatter.title}
+                  </Link>
+                </div>
+                <span className="cat-rule-count d-none d-md-block">
                   {getNumberOfRulesPerCat(cat)}
                 </span>
-              </li>
+              </div>
             );
           }
         })}

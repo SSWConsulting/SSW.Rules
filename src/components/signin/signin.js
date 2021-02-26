@@ -48,7 +48,7 @@ const SignIn = () => {
     <div className="action-btn-container">
       {!isAuthenticated ? (
         <button
-          className="btn btn-red"
+          className="btn btn-red mr-0"
           onClick={() => {
             loginWithRedirect({
               appState: {

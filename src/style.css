@@ -338,6 +338,10 @@ button:focus {
   color: #cc4141;
 }
 
+.ssw-logo {
+  margin-top: 0.85rem;
+}
+
 .bg-ssw-red {
   background-color: #cc4141;
 }

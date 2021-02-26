@@ -1377,14 +1377,12 @@ div.greybox {
   padding-left: 0.5rem;
 }
 
-.agree-btn-container-pressed:after {
+.agree-btn-container-pressed:after, .somewhat-disagree-btn-container-pressed:after, .disagree-btn-container-pressed:after  {
   color: #CC4141;
-  opacity: 0.6;
 }
 
-.agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after {
-  opacity: 0.8;
-  color: #CC4141;
+.agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after, .somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after, .disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after {
+  color: red;
   font-size: 1.8rem;
   transition: font-size 0.2s;
 }
@@ -1413,30 +1411,10 @@ div.greybox {
   align-self: center;
 }
 
-.somewhat-disagree-btn-container-pressed:after {
-  color: #CC4141;
-}
-
-.somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after {
-  color:  red;
-  font-size: 1.8rem;
-  transition: font-size 0.2s;
-}
-
 .disagree-btn-container:after, .disagree-btn-container-pressed:after {
   content: '\f00d';
   font-family: FontAwesome;
   font-size: 1.7rem;
-}
-
-.disagree-btn-container-pressed:after {
-  color: #cc4141;
-}
-
-.disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after {
-  color: red;
-  font-size: 1.8rem;
-  transition: font-size 0.2s;
 }
 
 .reaction-counter-container {

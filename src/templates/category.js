@@ -36,12 +36,13 @@ export default function Category({ data }) {
       <div className="w-full">
         <div className="rule-category rounded">
           <section className="mb-20 pb-2 rounded">
-            <h2 className="cat-title py-4 px-12 rounded-t">
-              {category.frontmatter.title}
-              <span className="rule-count">
+            <div className="cat-title-grid-container">
+              <h2 className="cat-title">{category.frontmatter.title}</h2>
+              <h2 className="rule-count">
                 {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
-              </span>
-            </h2>
+              </h2>
+            </div>
+
             <div className="rule-category-top pt-5 py-4 px-6">
               <MD components={components} htmlAst={category.htmlAst} />
             </div>

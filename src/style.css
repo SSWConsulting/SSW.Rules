@@ -852,19 +852,23 @@ blockquote p:before {
   padding-inline-start: 20px;
 }
 
-.rule-category h2.cat-title {
+.cat-title-grid-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  padding: 1rem 3rem;
   background-color: #f5f5f5;
-  margin: 0;
-  color: #222; 
 }
 
-.rule-category h2.cat-title span {
+.cat-title-grid-container h2.cat-title {
+  margin: 0;
+  color: #222;
+}
+
+.cat-title-grid-container .rule-count {
   letter-spacing: normal;
   color: #ccc;
-}
-
-.rule-category h2.cat-title span.rule-count {
-  float: right;
+  margin: 0;
+  justify-self: end;
 }
 
 .rule-category .description {

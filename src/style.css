@@ -1696,7 +1696,7 @@ div.greybox {
 
 @media screen and (max-width: 600px) {
   .rule-content {
-    padding: 0.5rem;
+    padding: 1rem;
   }
   .reaction-grid {
     grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 1rem auto;

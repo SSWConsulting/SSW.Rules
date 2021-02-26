@@ -1398,8 +1398,7 @@ div.greybox {
 }
 
 .somewhat-agree-btn-container:hover:after, .somewhat-agree-btn-container-pressed:hover:after {
-  color: green;
-  opacity: 0.8;
+  color: #00b300;
   font-size: 1.8rem;
   transition: font-size 0.2s;
 }
@@ -1451,7 +1450,7 @@ div.greybox {
 }
 
 .bookmark-icon-pressed {
-  color: #cc4141;
+  color: #333;
 }
 
 .bookmark-icon-pressed:hover, .bookmark-icon:hover {
@@ -1461,7 +1460,7 @@ div.greybox {
 }
 
 .bookmark-icon:hover {
-  color: #cc4141;
+  color: #333;
   opacity: 0.5;
 }
 
@@ -1805,7 +1804,6 @@ div.greybox {
 .really-agree-item:before {
   content: '\f004';
   color: #CC4141;
-  opacity: 0.6;
 }
 
 .somewhat-agree-item:before {
@@ -1825,7 +1823,7 @@ div.greybox {
 
 .comments-item:before {
   content: '\f075';
-  /* color: #CC4141; */
+  color: #333;
 }
 
 .heading-container {

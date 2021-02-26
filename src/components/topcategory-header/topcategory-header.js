@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
@@ -52,7 +52,7 @@ const TopCategoryHeader = ({ children, topCategory, categories, rules }) => {
             </p>
           </span>
           <span className="collapse-icon">
-            <FontAwesomeIcon icon={isCollapsed ? faPlus : faMinus} />
+            <FontAwesomeIcon icon={isCollapsed ? faAngleDown : faAngleUp} />
           </span>
         </button>
       </h6>

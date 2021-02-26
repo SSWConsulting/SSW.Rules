@@ -672,7 +672,7 @@ h6.top-category-header button {
 }
 
 h6.top-category-header .number {
-  padding: 0 0.7rem;
+  padding: 0 1.1rem;
   opacity: .5;
   position: absolute;
   right: 1rem;
@@ -685,10 +685,11 @@ h6.top-category-header .number {
 }
 
 h6.top-category-header .collapse-icon {
-  padding: 0 0rem;
+  padding: 0 0.3rem;
   opacity: .5;
   position: absolute;
   right: 0.5rem;
+  font-size: 1.2em;
 }
 
 h6.top-category-header i {

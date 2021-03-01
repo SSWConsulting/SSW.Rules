@@ -34,7 +34,6 @@ const appInsights = new ApplicationInsights({
 });
 
 const Rule = ({ data, location }) => {
-  Prism.highlightAll();
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
@@ -109,6 +108,7 @@ const Rule = ({ data, location }) => {
   };
 
   useLayoutEffect(() => {
+    Prism.highlightAll();
     isAuthenticated
       ? GetOrganisations(user.sub)
           .then((success) => {

@@ -635,8 +635,7 @@ ol ol, ol li ol {
   font-size: 16px;
   word-break: break-word;
   margin-bottom: 5rem;
-  padding: 2rem;
-  padding-top: 0;
+  padding: 1rem 1.5rem;
 }
 
 b, strong {

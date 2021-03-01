@@ -110,7 +110,7 @@ export default function Category({ data }) {
                   return (
                     <>
                       <li className="">
-                        <section className="rule-content-title px-4">
+                        <section className="rule-content-title pl-2">
                           <h2>
                             <Link
                               ref={linkRef}
@@ -123,14 +123,14 @@ export default function Category({ data }) {
                         </section>
 
                         <section
-                          className={`rule-content mb-5
+                          className={`rule-content mb-4
                             ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                         >
                           <MD components={components} htmlAst={rule.htmlAst} />
                         </section>
 
                         <section
-                          className={`rule-content mb-5
+                          className={`rule-content mb-4
                           ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
                         >
                           <div

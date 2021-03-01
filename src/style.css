@@ -860,13 +860,13 @@ blockquote p:before {
 .cat-title-grid-container {
   display: grid;
   grid-template-columns: auto auto;
-  padding: 1rem 3rem;
+  padding: 1rem 1.5rem;
   background-color: #f5f5f5;
 }
 
 .cat-title-grid-container h2.cat-title {
   margin: 0;
-  color: #222;
+  color: #333;
 }
 
 .cat-title-grid-container .rule-count {

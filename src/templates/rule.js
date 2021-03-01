@@ -24,6 +24,8 @@ import {
   GetGithubOrganisationName,
 } from '../services/apiService';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-okaidia.css';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -32,6 +34,7 @@ const appInsights = new ApplicationInsights({
 });
 
 const Rule = ({ data, location }) => {
+  Prism.highlightAll();
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };

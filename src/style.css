@@ -560,6 +560,7 @@ pre {
 .good p, .bad p, .ok p {
   font-weight: bold;  
   caption-side: bottom;
+  padding-left: 1.2rem;
   font-weight: 700;
   margin: 0.5rem 0 6px;
   line-height: initial;
@@ -1083,50 +1084,46 @@ blockquote p:before {
   padding-left: 1.5rem;
 }
 
-.good-example figure figcaption::before,
-.good figcaption::before,
-.good p:not(:empty)::before,
-div.good-example .custom-block-heading::before {
-  content: "\f14a";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 1.1em;
-  text-decoration: inherit;
-  color: #8bc832;
-  padding-right: 0.3rem;
+.good-example figure figcaption::after,
+.good figcaption::after,
+.good p:not(:empty)::after,
+div.good-example .custom-block-heading::after {
+  background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Good.gif) no-repeat;
+  content: "\00a0 ";
+  padding-left: 20px;
+  padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+  top:0px;
 }
 
-.bad-example figure figcaption::before,
-.bad figcaption::before,
-.bad p:not(:empty)::before,
-div.bad-example .custom-block-heading::before {
-  content: "\f2d3";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 1.1em;
-  text-decoration: inherit;
-  color: #cc4141;
-  padding-right: 0.3rem;
-  display: inline-block;
-  /* Scale to make the icon square. */
-  transform: scale(0.9, 1);
-  -webkit-transform: scale(0.9, 1);
+.bad-example figure figcaption::after,
+.bad figcaption::after,
+.bad p:not(:empty)::after,
+div.bad-example .custom-block-heading::after {
+  background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Bad.gif) no-repeat;
+  content: "\00a0 ";
+  padding-left: 20px;
+  padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+  top:0px;
 }
 
-.ok-example figure figcaption::before,
-.ok figcaption::before,
-.ok p:not(:empty)::before,
-div.ok-example .custom-block-heading::before {
-  content: "\f11a";
+.ok-example figure figcaption::after,
+.ok figcaption::after,
+.ok p:not(:empty)::after,
+div.ok-example .custom-block-heading::after {
+  content: "\f11a ";
   font-family: FontAwesome;
   font-style: normal;
   font-weight: normal;
-  font-size: 1.1em;
   text-decoration: inherit;
   color: #777;
-  padding-right: 0.3rem;
+  padding-right: 0.5rem;
+  position: absolute;
+  left: 0px;
+  top:0px;
 }
 
 div.ok-example .custom-block-heading,

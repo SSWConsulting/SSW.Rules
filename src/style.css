@@ -239,6 +239,7 @@ footer {
   text-align: center;
   flex-wrap: wrap;
   align-items: center;
+  font-size: 1rem;
 
   span {
     opacity: .5; 
@@ -632,7 +633,7 @@ ol ol, ol li ol {
 .rule-content {
   color: black;
   font-weight: normal;
-  font-size: 16px;
+  font-size: 1rem;
   word-break: break-word;
   margin-bottom: 5rem;
   padding: 1rem 1.5rem;

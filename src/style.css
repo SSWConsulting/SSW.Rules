@@ -1295,11 +1295,17 @@ div.greybox {
 .info-btn-container:hover::after {
   color: #cc4141;
   text-decoration: none !important;
+  font-size: 1.1em;
+  transition: font-size 0.2s ease;
 }
 
-.info-link-container {
-  display: flex;
-  align-items: center;
+.info-link-grid-container {
+  display: grid;
+  grid-template-columns: auto 20px auto;
+}
+
+.info-link-grid-container h5{
+  justify-self: right;
 }
 
 .info-link-container h5 {
@@ -1493,7 +1499,7 @@ div.greybox {
 }
 
 .info-tooltip {
-  margin: 1.6rem auto 0 0;
+  margin: 1.85rem auto 0 0;
 }
 
 .tooltiptext {

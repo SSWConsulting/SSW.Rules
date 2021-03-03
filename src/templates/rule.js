@@ -285,7 +285,7 @@ const Rule = ({ data, location }) => {
               <Acknowledgements authors={rule.frontmatter.authors} />
             </div>
             <div className="tags rounded w-full lg:w-1/3">
-              <div className="info-link-container">
+              <div className="info-link-grid-container">
                 <h5>Categories</h5>
                 <div className="info-tooltip">
                   <a

@@ -33,6 +33,10 @@ const Acknowledgements = ({ authors }) => {
             / /g,
             '-'
           )}/Images/${author.title.replace(/ /g, '-')}-Profile.jpg`}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = PlaceHolderImage;
+          }}
           alt={author.title}
           title={author.title}
         />
@@ -55,7 +59,7 @@ const Acknowledgements = ({ authors }) => {
 
   return (
     <>
-      <div className="info-link-container">
+      <div className="info-link-grid-container">
         <h5>Acknowledgements</h5>
         <div className="info-tooltip">
           <a

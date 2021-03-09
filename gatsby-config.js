@@ -1,4 +1,5 @@
 const siteConfig = require('./site-config');
+const path = require('path');
 
 require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`,
@@ -74,6 +75,18 @@ module.exports = {
               },
             },
           },
+
+          {
+            resolve: 'gatsby-remark-vscode',
+            options: {
+              colorTheme: 'Dark+ (default dark)',
+              injectStyles: true,
+              extensions: [],
+              extensionDataDirectory: path.resolve('extensions'),
+              logLevel: 'error',
+            },
+          },
+
           {
             resolve: 'gatsby-remark-figure-caption',
             options: { figureClassName: 'image' },

@@ -1,8 +1,9 @@
 import wrapPageElementWithTransition from './src/helpers/wrapPageElement.js';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
-require('prismjs/themes/prism-okaidia.css');
-require('prismjs/plugins/line-numbers/prism-line-numbers.css');
+// require('prismjs/themes/prism-okaidia.css');
+// require('prismjs/plugins/line-numbers/prism-line-numbers.css');
+require('gatsby-remark-vscode/styles.css');
 
 const appInsights = new ApplicationInsights({
   config: {

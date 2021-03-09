@@ -170,37 +170,6 @@ module.exports = {
     },
     'gatsby-source-local-git',
     {
-      resolve: 'gatsby-remark-prismjs',
-      options: {
-        classPrefix: 'language-',
-        inlineCodeMarker: null,
-
-        aliases: {},
-        showLineNumbers: false,
-        noInlineHighlight: false,
-        languageExtensions: [
-          {
-            language: 'superscript',
-            extend: 'javascript',
-            definition: {
-              superscript_types: /(SuperType)/,
-            },
-            insertBefore: {
-              function: {
-                superscript_keywords: /(superif|superelse)/,
-              },
-            },
-          },
-        ],
-        prompt: {
-          user: 'root',
-          host: 'localhost',
-          global: false,
-        },
-        escapeEntities: {},
-      },
-    },
-    {
       resolve: 'gatsby-plugin-google-analytics',
       options: {
         // replace "UA-XXXXXXXXX-X" with your own Tracking ID

@@ -1377,11 +1377,11 @@ div.greybox {
   padding-left: 0.5rem;
 }
 
-.agree-btn-container-pressed:after, .somewhat-disagree-btn-container-pressed:after, .disagree-btn-container-pressed:after  {
+.agree-btn-container-pressed:after, .somewhat-disagree-btn-container-pressed:after, .disagree-btn-container-pressed:after, .somewhat-agree-btn-container-pressed:after  {
   color: #CC4141;
 }
 
-.agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after, .somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after, .disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after {
+.agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after, .somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after, .disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after, .somewhat-agree-btn-container:hover:after, .somewhat-agree-btn-container-pressed:hover:after {
   color: red;
   font-size: 1.8rem;
   transition: font-size 0.2s;
@@ -1391,16 +1391,6 @@ div.greybox {
   content: '\f164';
   font-family: FontAwesome;
   font-size: 1.7rem;
-}
-
-.somewhat-agree-btn-container-pressed:after {
-  color: green;
-}
-
-.somewhat-agree-btn-container:hover:after, .somewhat-agree-btn-container-pressed:hover:after {
-  color: #00b300;
-  font-size: 1.8rem;
-  transition: font-size 0.2s;
 }
 
 .somewhat-disagree-btn-container:after, .somewhat-disagree-btn-container-pressed:after {
@@ -1450,7 +1440,7 @@ div.greybox {
 }
 
 .bookmark-icon-pressed {
-  color: #333;
+  color: #cc4141;
 }
 
 .bookmark-icon-pressed:hover, .bookmark-icon:hover {
@@ -1803,27 +1793,22 @@ div.greybox {
 
 .really-agree-item:before {
   content: '\f004';
-  color: #CC4141;
 }
 
 .somewhat-agree-item:before {
   content: '\f164';
-  color: green;
 } 
 
 .somewhat-disagree-item:before {
   content: '\f165';
-  color: #CC4141;
 }
 
 .really-disagree-item:before {
   content: '\f00D';
-  color: #CC4141;
 }
 
 .comments-item:before {
   content: '\f075';
-  color: #333;
 }
 
 .heading-container {
@@ -1858,13 +1843,12 @@ div.greybox {
   color: #CC4141;
   margin-left: 1rem;
   padding-left: 0.5rem;
-  opacity: 0.6;
 }
 
 .rule-heading-agree:after {
   content: '\f164';
   font-family: FontAwesome;
-  color: green;
+  color: #CC4141;
   margin-left: 1rem;
 }
 
@@ -1906,8 +1890,7 @@ div.greybox {
 
 .no-tagged-message:before {
   font-family: FontAwesome;
-  content: '\f119';
-  color: #cc4141;
+  content: '\f00d';
   margin-right: 0.5rem;
 }
 

@@ -24,8 +24,6 @@ import {
   GetGithubOrganisationName,
 } from '../services/apiService';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-// import Prism from 'prismjs';
-// import 'prismjs/themes/prism-okaidia.css';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -108,7 +106,6 @@ const Rule = ({ data, location }) => {
   };
 
   useLayoutEffect(() => {
-    // Prism.highlightAll();
     isAuthenticated
       ? GetOrganisations(user.sub)
           .then((success) => {

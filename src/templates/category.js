@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { graphql, Link } from 'gatsby';
 import PropTypes from 'prop-types';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../components/greybox/greybox';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
-// import Prism from 'prismjs';
-// import 'prismjs/themes/prism-okaidia.css';
 
 export default function Category({ data }) {
   const linkRef = useRef();
@@ -28,9 +26,6 @@ export default function Category({ data }) {
     .filter((r) => {
       return category.frontmatter.index.includes(r.frontmatter.uri);
     });
-  useEffect(() => {
-    // Prism.highlightAll();
-  });
   return (
     <div>
       <Breadcrumb

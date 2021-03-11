@@ -1,4 +1,5 @@
 const siteConfig = require('./site-config');
+const path = require('path');
 
 require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`,
@@ -74,6 +75,18 @@ module.exports = {
               },
             },
           },
+
+          {
+            resolve: 'gatsby-remark-vscode',
+            options: {
+              colorTheme: 'Dark+ (default dark)',
+              injectStyles: true,
+              extensions: [],
+              extensionDataDirectory: path.resolve('extensions'),
+              logLevel: 'error',
+            },
+          },
+
           {
             resolve: 'gatsby-remark-figure-caption',
             options: { figureClassName: 'image' },
@@ -156,37 +169,6 @@ module.exports = {
       },
     },
     'gatsby-source-local-git',
-    {
-      resolve: 'gatsby-remark-prismjs',
-      options: {
-        classPrefix: 'language-',
-        inlineCodeMarker: null,
-
-        aliases: {},
-        showLineNumbers: false,
-        noInlineHighlight: false,
-        languageExtensions: [
-          {
-            language: 'superscript',
-            extend: 'javascript',
-            definition: {
-              superscript_types: /(SuperType)/,
-            },
-            insertBefore: {
-              function: {
-                superscript_keywords: /(superif|superelse)/,
-              },
-            },
-          },
-        ],
-        prompt: {
-          user: 'root',
-          host: 'localhost',
-          global: false,
-        },
-        escapeEntities: {},
-      },
-    },
     {
       resolve: 'gatsby-plugin-google-analytics',
       options: {

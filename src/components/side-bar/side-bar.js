@@ -52,7 +52,7 @@ const SideBar = ({ ruleTotalNumber }) => {
             However it’s hard to keep rules current and correct. If you spot a
             rule that is out of date, please <a href="/email">email us</a>, or
             if you are cool{' '}
-            <a href="/twitter">
+            <a href="https://twitter.com/adamcogan">
               <FontAwesomeIcon icon={faTwitter} /> tweet me
             </a>
             .

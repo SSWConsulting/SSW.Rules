@@ -8,8 +8,8 @@ const NotFound = () => {
         <h1>404</h1>
         <div className="not-found-message">
           <h2>
-            Sorry, the page you're looking for has been found...{' '}
-            <b>NOT FOUND!</b>
+            Sorry, the page you&#39;re looking for has been found...{' '}
+            <span>NOT FOUND!</span>
           </h2>
           <p>
             Visit our <Link to="/">Rules Index</Link> to find out more secret

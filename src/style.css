@@ -1873,6 +1873,10 @@ div.greybox {
   font-size: 1.8rem !important;
 }
 
+.remove-item {
+  width: 1.6rem;
+}
+
 .remove-item:after {
   content: '\f057';
   font-family: FontAwesome;
@@ -1908,13 +1912,12 @@ div.greybox {
 
 /* 404 page
 -------------------------------------------------- */
+
 .not-found-page {
   background-image: url("../static/assets/404-bg.png");
-  height: 50rem;
-  background-size: cover;
+  height: 55rem;
   background-repeat: no-repeat;
-  background-position: center;
-  background-position-y: 1rem;
+  background-position: bottom;
 }
 
 .not-found-grid {
@@ -1925,20 +1928,24 @@ div.greybox {
 .not-found-page h1 {
   grid-column: 1;
   color: #cc4141;
-  font-size: 10rem; 
+  font-size: 14rem; 
   font-weight: bold;
-  padding-right: 2rem;
+  padding-right: 4rem;
 }
 
 .not-found-message {
-  padding-top: 2rem;
+  padding-top: 3rem;
   grid-column: 2;
 }
 
 .not-found-message h2 {
   color: #666;
-  font-size: 3rem;
-  font-weight: 300;
+  font-size: 3.5rem;
+  font-weight: 200;
+}
+
+.not-found-message h2 span {
+  font-weight: normal;
 }
 
 .not-found-message a, .not-found-message button  {
@@ -1950,8 +1957,7 @@ div.greybox {
   cursor: pointer;
 }
 
-
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .not-found-grid {
     grid-template-columns: auto;
   }

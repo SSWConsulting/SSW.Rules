@@ -1034,6 +1034,7 @@ blockquote p:before {
 
 .rule-content .acknowledgements img {
   padding: 0px;
+  border: 0;
 }
 
 .rule-content figure figcaption {

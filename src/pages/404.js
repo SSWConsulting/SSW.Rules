@@ -1,4 +1,4 @@
-import { Link } from 'gatsby';
+import { Link, navigate } from 'gatsby';
 import React from 'react';
 
 const NotFound = () => {
@@ -13,8 +13,9 @@ const NotFound = () => {
           </h2>
           <p>
             Visit our <Link to="/">Rules Index</Link> to find out more secret
-            ingredients to quality software or <Link to="/">go back</Link> to
-            the previous page.
+            ingredients to quality software or{' '}
+            <button onClick={() => navigate(-1)}>go back</button> to the
+            previous page.
           </p>
         </div>
       </div>

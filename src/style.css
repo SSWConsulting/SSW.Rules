@@ -1487,6 +1487,7 @@ div.greybox {
 .tooltip .tooltiptext {
   left: 65%;
   margin-left: -60px;
+  margin-bottom: 0;
 }
 
 .react-tooltip .tooltiptext {

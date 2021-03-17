@@ -1492,6 +1492,7 @@ div.greybox {
 .tooltip .tooltiptext {
   left: 65%;
   margin-left: -60px;
+  margin-bottom: 0;
 }
 
 .react-tooltip .tooltiptext {
@@ -1878,6 +1879,10 @@ div.greybox {
   font-size: 1.8rem !important;
 }
 
+.remove-item {
+  width: 1.6rem;
+}
+
 .remove-item:after {
   content: '\f057';
   font-family: FontAwesome;
@@ -1910,6 +1915,73 @@ div.greybox {
 .utterances {
   max-width: 60rem;
 }
+
+/* 404 page
+-------------------------------------------------- */
+
+.not-found-page {
+  background-image: url("../static/assets/404-bg.png");
+  height: 55rem;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+.not-found-grid {
+  grid-template-columns: min-content auto;
+  display: grid;
+}
+
+.not-found-page h1 {
+  grid-column: 1;
+  color: #cc4141;
+  font-size: 14rem; 
+  font-weight: bold;
+  padding-right: 4rem;
+}
+
+.not-found-message {
+  padding-top: 3rem;
+  grid-column: 2;
+}
+
+.not-found-message h2 {
+  color: #666;
+  font-size: 3.5rem;
+  font-weight: 200;
+}
+
+.not-found-message h2 span {
+  font-weight: normal;
+}
+
+.not-found-message a, .not-found-message button  {
+  color: #CC4141 !important;
+}
+
+.not-found-message a:hover, .not-found-message button:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .not-found-grid {
+    grid-template-columns: auto;
+  }
+  .not-found-page h1 {
+    font-size: 5rem; 
+    padding-right: 0;
+    margin: auto;
+  }
+  .not-found-message {
+    grid-column: 1;
+    padding-top: 0;
+    margin: 0 0.5rem;
+  }
+  .not-found-message h2 {
+    font-size: 2rem;
+  }
+}
+
 /* Responsiveness
 -------------------------------------------------- */
 

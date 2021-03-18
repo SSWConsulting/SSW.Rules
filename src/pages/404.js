@@ -8,15 +8,22 @@ const NotFound = () => {
         <h1>404</h1>
         <div className="not-found-message">
           <h2>
-            Sorry, the page you&#39;re looking for has been found...{' '}
-            <span>NOT FOUND!</span>
+            The verdict is in... <p />
+            SSW Rules has concluded that this page is <span>NOT FOUND!</span>
           </h2>
+          <p></p>
           <p>
-            Visit our <Link to="/">Rules Index</Link> to find out more secret
-            ingredients to quality software or{' '}
+            Visit our <Link to="/">Rules home page</Link> to find out more
+            secret ingredients to quality software or{' '}
             <button onClick={() => navigate(-1)}>go back</button> to the
             previous page.
           </p>
+        </div>
+        <div className="not-found-greybox greybox">
+          See the Rule{' '}
+          <a href="/404-useful-error-page">
+            Do you replace the 404 error with a useful error page?
+          </a>
         </div>
       </div>
     </div>

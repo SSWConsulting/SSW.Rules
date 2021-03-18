@@ -11,13 +11,12 @@ const NotFound = () => {
             The verdict is in... <p />
             SSW Rules has concluded that this page is <span>NOT FOUND!</span>
           </h2>
-          <p></p>
-          <p>
-            Visit our <Link to="/">Rules home page</Link> to find out more
-            secret ingredients to quality software or{' '}
-            <button onClick={() => navigate(-1)}>go back</button> to the
-            previous page.
-          </p>
+        </div>
+        <div className="not-found-greybox greybox">
+          Visit our <Link to="/">Rules home page</Link> to find out more secret
+          ingredients to quality software or{' '}
+          <button onClick={() => navigate(-1)}>go back</button> to the previous
+          page.
         </div>
         <div className="not-found-greybox greybox">
           See the Rule{' '}

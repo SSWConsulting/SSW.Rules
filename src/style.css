@@ -1921,14 +1921,14 @@ div.greybox {
 
 .not-found-page {
   background-image: url("../static/assets/404-bg.png");
-  height: 55rem;
+  height: 49.45rem;
   background-repeat: no-repeat;
   background-position: bottom;
 }
 
 .not-found-grid {
   grid-template-columns: min-content auto;
-  grid-template-rows: 268px auto;
+  grid-template-rows: 268px auto auto;
   column-gap: 3rem;
   display: grid;
 }
@@ -1945,12 +1945,12 @@ div.greybox {
   padding-top: 1.8rem;
   grid-column: 2;
   grid-row-start: 1;
-  grid-row-end: 2;
+  grid-row-end: 3;
 }
 
 .not-found-message h2 {
   color: #666;
-  font-size: 3.5rem;
+  font-size: 3.1rem;
   font-weight: 200;
 }
 
@@ -1958,7 +1958,7 @@ div.greybox {
   font-weight: normal;
 }
 
-.not-found-grid a, .not-found-message button  {
+.not-found-grid a, .not-found-page button  {
   color: #CC4141 !important;
 }
 
@@ -1995,7 +1995,7 @@ div.greybox {
     font-size: 2rem;
   }
   .not-found-greybox {
-    grid-row: 3;
+    grid-row: unset;
     text-align: center;
   }
 }

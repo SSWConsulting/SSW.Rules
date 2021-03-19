@@ -18,7 +18,8 @@ export async function GetAllLikedDisliked(userId) {
 }
 
 export async function PostReactionForUser(data, token) {
-  if (data == null) {
+  const isEmpty = Object.values(data).some((x) => !x);
+  if (!data || isEmpty) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -44,7 +45,8 @@ export const ReactionType = {
 };
 
 export async function RemoveReaction(data, token) {
-  if (data == null) {
+  const isEmpty = Object.values(data).some((x) => !x);
+  if (!data || isEmpty) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -72,7 +74,8 @@ export async function GetBookmarksForUser(userId, ruleId) {
 }
 
 export async function BookmarkRule(data, token) {
-  if (data == null) {
+  const isEmpty = Object.values(data).some((x) => !x);
+  if (!data || isEmpty) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -90,7 +93,8 @@ export async function BookmarkRule(data, token) {
 }
 
 export async function RemoveBookmark(data, token) {
-  if (data == null) {
+  const isEmpty = Object.values(data).some((x) => !x);
+  if (!data || isEmpty) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -136,7 +140,8 @@ export async function GetGithubOrganisationName(orgID) {
 }
 
 export async function setUserOrganisation(data, token) {
-  if (data == null) {
+  const isEmpty = Object.values(data).some((x) => !x);
+  if (!data || isEmpty) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',

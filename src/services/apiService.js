@@ -18,7 +18,7 @@ export async function GetAllLikedDisliked(userId) {
 }
 
 export async function PostReactionForUser(data, token) {
-  const isEmpty = Object.values(data).some((x) => x == null || x == '');
+  const isEmpty = Object.values(data).some((x) => !x || x == '');
   if (!data || isEmpty) {
     return {
       error: true,
@@ -45,7 +45,7 @@ export const ReactionType = {
 };
 
 export async function RemoveReaction(data, token) {
-  const isEmpty = Object.values(data).some((x) => x == null || x == '');
+  const isEmpty = Object.values(data).some((x) => !x || x == '');
   if (!data || isEmpty) {
     return {
       error: true,
@@ -74,7 +74,7 @@ export async function GetBookmarksForUser(userId, ruleId) {
 }
 
 export async function BookmarkRule(data, token) {
-  const isEmpty = Object.values(data).some((x) => x == null || x == '');
+  const isEmpty = Object.values(data).some((x) => !x || x == '');
   if (!data || isEmpty) {
     return {
       error: true,
@@ -93,7 +93,7 @@ export async function BookmarkRule(data, token) {
 }
 
 export async function RemoveBookmark(data, token) {
-  const isEmpty = Object.values(data).some((x) => x == null || x == '');
+  const isEmpty = Object.values(data).some((x) => !x || x == '');
   if (!data || isEmpty) {
     return {
       error: true,
@@ -140,7 +140,7 @@ export async function GetGithubOrganisationName(orgID) {
 }
 
 export async function setUserOrganisation(data, token) {
-  const isEmpty = Object.values(data).some((x) => x == null || x == '');
+  const isEmpty = Object.values(data).some((x) => !x || x == '');
   if (!data || isEmpty) {
     return {
       error: true,

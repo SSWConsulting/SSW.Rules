@@ -19,7 +19,7 @@ const ProfileFilterMenu = ({
     <>
       <div className="filter-menu">
         <div
-          className="bookmarks-item"
+          className="menu-item"
           style={
             selectedFilter == Filter.Bookmarks
               ? {
@@ -33,12 +33,12 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Bookmarks);
           }}
         >
-          <BookmarkIcon className="filter-menu-bookmark-icon" />
           Bookmarks
+          <BookmarkIcon className="filter-menu-bookmark-icon" />
           <div className="rules-counter">{bookmarkedRulesCount ?? 0}</div>
         </div>
         <div
-          className="comments-item"
+          className="menu-item"
           style={
             selectedFilter == Filter.Comments
               ? {
@@ -52,11 +52,11 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Comments);
           }}
         >
-          Comments
+          <div className="comments-title">Comments</div>
           <div className="rules-counter">{commentedRulesCount ?? 0}</div>
         </div>
         <div
-          className="really-agree-item"
+          className="menu-item"
           style={
             selectedFilter == Filter.SuperLikes
               ? {
@@ -70,11 +70,11 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.SuperLikes);
           }}
         >
-          Love it!
+          <div className="love-title">Love it!</div>
           <div className="rules-counter">{superLikedRulesCount ?? 0}</div>
         </div>
         <div
-          className="somewhat-agree-item"
+          className="menu-item"
           style={
             selectedFilter == Filter.Likes
               ? {
@@ -88,11 +88,11 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Likes);
           }}
         >
-          Agree
+          <div className="agree-title">Agree</div>
           <div className="rules-counter">{likedRulesCount ?? 0}</div>
         </div>
         <div
-          className="somewhat-disagree-item"
+          className="menu-item"
           style={
             selectedFilter == Filter.Dislikes
               ? {
@@ -106,11 +106,11 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Dislikes);
           }}
         >
-          Disagree
+          <div className="disagree-title">Disagree</div>
           <div className="rules-counter">{dislikedRulesCount ?? 0}</div>
         </div>
         <div
-          className="really-disagree-item"
+          className="menu-item"
           style={
             selectedFilter == Filter.SuperDislikes
               ? {
@@ -124,7 +124,7 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.SuperDislikes);
           }}
         >
-          No way!
+          <div className="super-disagree-title">No way!</div>
           <div className="rules-counter">{superDislikedRulesCount ?? 0}</div>
         </div>
       </div>

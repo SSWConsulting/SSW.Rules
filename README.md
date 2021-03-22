@@ -69,5 +69,5 @@ API_BASE_URL=#{API_BASE_URL}
 > Rules repository lives here: https://github.com/SSWConsulting/SSW.Rules.Content
 
 Merging changes to **main** on this repo will trigger:
-- a build/release of the **main** branch in Staging (https://sydiisp01.sydney.ssw.com.au/rules/).
+- a build/release of the **main** branch in Staging (https://sydiis2016q01.sydney.ssw.com.au/rules/).
 - a build/release of the **release** branch Production (https://www.ssw.com.au/rules)

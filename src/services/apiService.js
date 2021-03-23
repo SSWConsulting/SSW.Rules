@@ -18,7 +18,7 @@ export async function GetAllLikedDisliked(userId) {
 }
 
 export async function PostReactionForUser(data, token) {
-  const isEmpty = Object.values(data).some((x) => !x);
+  const isEmpty = Object.values(data).some((x) => x == null);
   if (!data || isEmpty) {
     return {
       error: true,
@@ -45,7 +45,7 @@ export const ReactionType = {
 };
 
 export async function RemoveReaction(data, token) {
-  const isEmpty = Object.values(data).some((x) => !x);
+  const isEmpty = Object.values(data).some((x) => x == null);
   if (!data || isEmpty) {
     return {
       error: true,

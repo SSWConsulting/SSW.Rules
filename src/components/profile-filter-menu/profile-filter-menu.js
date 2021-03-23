@@ -24,7 +24,7 @@ const ProfileFilterMenu = ({
             selectedFilter == Filter.Bookmarks
               ? {
                   gridColumn: 1,
-                  borderBottom: '0.25rem solid #333333',
+                  borderBottom: '0.25rem solid #cc4141',
                   paddingBottom: '0.25rem',
                 }
               : { gridColumn: 1 }
@@ -34,7 +34,13 @@ const ProfileFilterMenu = ({
           }}
         >
           Bookmarks
-          <BookmarkIcon className="filter-menu-bookmark-icon" />
+          <BookmarkIcon
+            className={
+              selectedFilter != Filter.Bookmarks
+                ? 'filter-menu-bookmark-icon'
+                : 'filter-menu-bookmark-icon-pressed'
+            }
+          />
           <div className="rules-counter">{bookmarkedRulesCount ?? 0}</div>
         </div>
         <div
@@ -43,7 +49,7 @@ const ProfileFilterMenu = ({
             selectedFilter == Filter.Comments
               ? {
                   gridColumn: 2,
-                  borderBottom: '0.25rem solid #333333',
+                  borderBottom: '0.25rem solid #cc4141',
                   paddingBottom: '0.25rem',
                 }
               : { gridColumn: 2 }
@@ -52,7 +58,15 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Comments);
           }}
         >
-          <div className="comments-title">Comments</div>
+          <div
+            className={
+              selectedFilter != Filter.Comments
+                ? 'comments-title'
+                : 'comments-title-pressed'
+            }
+          >
+            Comments
+          </div>
           <div className="rules-counter">{commentedRulesCount ?? 0}</div>
         </div>
         <div
@@ -61,7 +75,7 @@ const ProfileFilterMenu = ({
             selectedFilter == Filter.SuperLikes
               ? {
                   gridColumn: 3,
-                  borderBottom: '0.25rem solid #333333',
+                  borderBottom: '0.25rem solid #cc4141',
                   paddingBottom: '0.25rem',
                 }
               : { gridColumn: 3 }
@@ -70,7 +84,15 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.SuperLikes);
           }}
         >
-          <div className="love-title">Love it!</div>
+          <div
+            className={
+              selectedFilter != Filter.SuperLikes
+                ? 'love-title'
+                : 'love-title-pressed'
+            }
+          >
+            Love it
+          </div>
           <div className="rules-counter">{superLikedRulesCount ?? 0}</div>
         </div>
         <div
@@ -79,7 +101,7 @@ const ProfileFilterMenu = ({
             selectedFilter == Filter.Likes
               ? {
                   gridColumn: 4,
-                  borderBottom: '0.25rem solid #333333',
+                  borderBottom: '0.25rem solid #cc4141',
                   paddingBottom: '0.25rem',
                 }
               : { gridColumn: 4 }
@@ -88,7 +110,15 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Likes);
           }}
         >
-          <div className="agree-title">Agree</div>
+          <div
+            className={
+              selectedFilter != Filter.Likes
+                ? 'agree-title'
+                : 'agree-title-pressed'
+            }
+          >
+            Agree
+          </div>
           <div className="rules-counter">{likedRulesCount ?? 0}</div>
         </div>
         <div
@@ -97,7 +127,7 @@ const ProfileFilterMenu = ({
             selectedFilter == Filter.Dislikes
               ? {
                   gridColumn: 5,
-                  borderBottom: '0.25rem solid #333333',
+                  borderBottom: '0.25rem solid #cc4141',
                   paddingBottom: '0.25rem',
                 }
               : { gridColumn: 5 }
@@ -106,7 +136,15 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Dislikes);
           }}
         >
-          <div className="disagree-title">Disagree</div>
+          <div
+            className={
+              selectedFilter != Filter.Dislikes
+                ? 'disagree-title'
+                : 'disagree-title-pressed'
+            }
+          >
+            Disagree
+          </div>
           <div className="rules-counter">{dislikedRulesCount ?? 0}</div>
         </div>
         <div
@@ -115,7 +153,7 @@ const ProfileFilterMenu = ({
             selectedFilter == Filter.SuperDislikes
               ? {
                   gridColumn: 6,
-                  borderBottom: '0.25rem solid #333333',
+                  borderBottom: '0.25rem solid #cc4141',
                   paddingBottom: '0.25rem',
                 }
               : { gridColumn: 6 }
@@ -124,7 +162,15 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.SuperDislikes);
           }}
         >
-          <div className="super-disagree-title">No way!</div>
+          <div
+            className={
+              selectedFilter != Filter.SuperDislikes
+                ? 'super-disagree-title'
+                : 'super-disagree-title-pressed'
+            }
+          >
+            No way
+          </div>
           <div className="rules-counter">{superDislikedRulesCount ?? 0}</div>
         </div>
       </div>

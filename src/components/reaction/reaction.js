@@ -135,7 +135,7 @@ const Reaction = (props) => {
           <span className="tooltiptext">
             {currentReactionType == ReactionType.SuperLike
               ? 'Remove rating'
-              : 'Love it!'}
+              : 'Love it'}
           </span>
         </div>
       </div>
@@ -189,7 +189,7 @@ const Reaction = (props) => {
           <span className="tooltiptext">
             {currentReactionType == ReactionType.SuperDisLike
               ? 'Remove rating'
-              : 'No way!'}
+              : 'No way'}
           </span>
         </div>
       </div>

@@ -56,12 +56,14 @@ const Index = ({ data }) => {
                   <FontAwesomeIcon icon={faArchive} /> Show archived rules
                 </a>
               </p>
-              <p>
+              {/* This like has been commented out as this page doesn't exisit.*/}
+              {/* TODO: Create /out-of-dates page */}
+              {/* <p>
                 <a href="/out-of-dates">
                   <FontAwesomeIcon icon={faFlag} /> Show rules flagged as out of
                   date
                 </a>
-              </p>
+              </p> */}
             </section>
           </div>
 

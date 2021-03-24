@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
-import React, { useRef, useState, useLayoutEffect } from 'react';
+import React, { useRef, useState, useLayoutEffect, useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
@@ -16,7 +16,7 @@ import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Reaction from '../components/reaction/reaction';
-import Comments from '../components/comments/comments';
+import PostTemplate from '../components/comments/comments';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
   GetOrganisations,
@@ -121,6 +121,12 @@ const Rule = ({ data, location }) => {
           })
       : null;
   }, [user, isAuthenticated, hiddenCount]);
+
+  useEffect(() => {
+    var cookieArr = document.cookie;
+
+    console.log(cookieArr);
+  });
 
   return (
     <div>
@@ -328,8 +334,13 @@ const Rule = ({ data, location }) => {
               </div>
             </div>
           </section>
-          <Comments guid={rule.frontmatter.guid} />
         </section>
+
+        <PostTemplate
+          ruleGuid={rule.frontmatter.guid}
+          title={rule.frontmatter.title}
+          uri={rule.frontmatter.uri}
+        />
       </div>
     </div>
   );

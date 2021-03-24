@@ -1,34 +1,31 @@
-import React, { Component } from 'react';
+import { Disqus, CommentCount } from 'gatsby-plugin-disqus';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { commentsRepository, commentsTheme } from '../../../site-config';
 
-export default class Comments extends Component {
-  constructor(props) {
-    super(props);
-    this.commentBox = React.createRef();
-  }
+const PostTemplate = (props) => {
+  let disqusConfig = {
+    // url: `${'localhost:9000' + location.pathname}`,
+    identifier: props.ruleGuid,
+    title: props.title,
+  };
+  return (
+    <div
+      style={{
+        marginBottom: '5rem',
+        padding: '1rem 1.5rem',
+      }}
+    >
+      <hr className="pb-4" />
+      {/* <CommentCount config={disqusConfig} placeholder={'No comments yet'} /> */}
+      <Disqus config={disqusConfig} />
+    </div>
+  );
+};
 
-  componentDidMount() {
-    let scriptEl = document.createElement('script');
-    scriptEl.setAttribute('src', 'https://utteranc.es/client.js');
-    scriptEl.setAttribute('crossorigin', 'anonymous');
-    scriptEl.setAttribute('async', true);
-    scriptEl.setAttribute('repo', commentsRepository);
-    scriptEl.setAttribute('issue-term', this.props.guid);
-    scriptEl.setAttribute('theme', commentsTheme);
-    this.commentBox.current.appendChild(scriptEl);
-  }
+export default PostTemplate;
 
-  render() {
-    return (
-      <div className="comment-box-wrapper container pt-70">
-        <hr className="comment-seperator" />
-        <div ref={this.commentBox} className="comment-box" />
-      </div>
-    );
-  }
-}
-
-Comments.propTypes = {
-  guid: PropTypes.string,
+PostTemplate.propTypes = {
+  uri: PropTypes.string.isRequired,
+  ruleGuid: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
 };

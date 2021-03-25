@@ -2314,7 +2314,7 @@ display: inline-block;
 max-width: 100%;
 }
 
-label.view-blurb {
+label.view-blurb, label.view-full, label.view-title {
  cursor:pointer; 
 }
 

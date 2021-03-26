@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-console */
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
@@ -293,7 +295,19 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
     <>
       {rules == undefined || rules.toString() == '' || !rules ? (
         <div className="no-content-message">
-          <p className="no-tagged-message">No tagged rules yet.</p>
+          <p className="no-tagged-message">
+            {type == 'comment'
+              ? "No comment? Don't be shy!"
+              : type == 'bookmark'
+              ? "No bookmarks here, try saving some for later!"
+              : type == 'love'
+              ? "Nothing here yet, go share the love!"
+              : type == 'agree'
+              ? "There should be more here, don't you agree?"
+              : type == 'disagree'
+              ? "What a happy chap you are, no disagreements here!"
+              : "There's nothing here yet, no way!"}
+          </p>
         </div>
       ) : (
         <div className="p-12">

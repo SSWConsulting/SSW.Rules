@@ -2,7 +2,8 @@ import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
+// import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
+import { faArchive } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TopCategory from '../components/top-category/top-category';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -56,12 +57,14 @@ const Index = ({ data }) => {
                   <FontAwesomeIcon icon={faArchive} /> Show archived rules
                 </a>
               </p>
-              <p>
+              {/* This like has been commented out as this page doesn't exisit.*/}
+              {/* TODO: Create /out-of-dates page */}
+              {/* <p>
                 <a href="/out-of-dates">
                   <FontAwesomeIcon icon={faFlag} /> Show rules flagged as out of
                   date
                 </a>
-              </p>
+              </p> */}
             </section>
           </div>
 

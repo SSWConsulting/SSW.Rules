@@ -16,7 +16,7 @@ import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Reaction from '../components/reaction/reaction';
-import PostTemplate from '../components/comments/comments';
+import Comments from '../components/comments/comments';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
   GetOrganisations,
@@ -121,12 +121,6 @@ const Rule = ({ data, location }) => {
           })
       : null;
   }, [user, isAuthenticated, hiddenCount]);
-
-  useEffect(() => {
-    var cookieArr = document.cookie;
-
-    console.log(cookieArr);
-  });
 
   return (
     <div>
@@ -336,7 +330,7 @@ const Rule = ({ data, location }) => {
           </section>
         </section>
 
-        <PostTemplate
+        <Comments
           ruleGuid={rule.frontmatter.guid}
           title={rule.frontmatter.title}
           uri={rule.frontmatter.uri}

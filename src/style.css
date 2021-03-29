@@ -944,7 +944,7 @@ blockquote p:before {
 }
 
 .rule-content a:hover,
-.rule-category a:hover:not(.github-link) {
+.rule-category a:hover:not(.github-link, .disqus-link) {
   text-decoration:underline;;
   color: #cc4141;
 }
@@ -1410,6 +1410,7 @@ div.greybox {
   content: '\f05e';
   font-family: FontAwesome;
   font-size: 1.7rem;
+  padding-left: 0.1rem;
 }
 
 .reaction-counter-container {
@@ -1468,15 +1469,14 @@ div.greybox {
   opacity: 0.5;
 }
 
-.tooltip, .react-tooltip, .github-tooltip, .info-tooltip {
+.tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip {
   position: relative;
   display: inline-block;
 }
 
-.github-tooltip {
-  height: 1.7rem;
+.disqus-tooltip {
   margin: auto 1rem auto auto;
-  font-size: 1.8rem !important;
+  height: 3rem;
 }
 
 .info-tooltip {
@@ -1510,7 +1510,7 @@ div.greybox {
   width: 80px;
 }
 
-.github-tooltip .tooltiptext {
+.disqus-tooltip .tooltiptext {
   margin-left: 0 !important;
   bottom: 2.5rem;
   left: -1.6rem;
@@ -1536,10 +1536,10 @@ div.greybox {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .github-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext {
+.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .disqus-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
-  padding: 0.2rem !important;
+  padding: 0.3rem !important;
 }
 
 /* Dropdown
@@ -1656,7 +1656,7 @@ div.greybox {
 
 .grid-container {
   display: grid;
-  grid-template-columns: 8rem auto;
+  grid-template-columns: 8rem auto auto;
   grid-template-rows: 3rem 1.6rem auto;
   color: #333333;
 }
@@ -1675,6 +1675,13 @@ div.greybox {
 
 .profile-github-icon {
   margin: 0.2rem 0.25rem 0 0;
+}
+
+.profile-disqus-icon {
+  margin: 0.1rem 0.1rem 0 -0.15rem;
+  height: 1.3rem;
+  width: 1.3rem;
+  fill: #CC4141;
 }
 
 .profile-image {
@@ -1705,7 +1712,7 @@ div.greybox {
     height: 1rem;
     width: 1.8rem;
   }
-  .github-link {
+  .github-link, .disqus-link {
     grid-column: 1 !important;
     padding-top: 0.75rem;
   }
@@ -1757,14 +1764,24 @@ div.greybox {
   grid-row: 1;
 }
 
-.github-link {
+.github-link, .disqus-link {
   width: fit-content;
   font-size: 14;
   color: #CC4141 !important;
   display: flex;
 }
 
-.github-link:hover {
+.github-link {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+.disqus-link {
+  grid-row: 3;
+  grid-column: 2;
+}
+
+.github-link:hover, .disqus-link:hover {
   opacity: 0.8;
 }
 
@@ -1899,11 +1916,19 @@ div.greybox {
   margin-left: 1rem;
 }
 
-.remove-item, .github-comment-link {
+.remove-item, .disqus-comment-link {
   margin-left: auto;
   right: 3rem;
   margin: auto 1rem auto auto;
   font-size: 1.8rem !important;
+}
+
+.disqus-comment-link {
+  cursor: pointer;
+}
+
+.disqus-comment-link svg {
+  height: 50px;
 }
 
 .remove-item {
@@ -1929,6 +1954,74 @@ div.greybox {
   font-family: FontAwesome;
   content: '\f05e';
   margin-right: 0.5rem;
+}
+
+.username-input-box, .username-input-box-error {
+  border: 0.1rem solid rgb(136, 136, 136);
+  border-radius: 5px;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.username-input-box-error {
+  border-color: #CC4141;
+}
+
+.connect-acc-button, .disconnect-acc-button {
+  background-color: #CC4141;
+  color: white;
+  position: relative;
+  /* height: 20px; */
+  box-sizing: border-box;
+  padding: 2px 10px 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-size: 1rem !important;
+}
+
+.disconnect-acc-button {
+  margin: 1rem auto;
+  display: block;
+}
+
+.connect-acc-container {
+  text-align: center;
+  margin: 2rem auto;
+  display: grid;
+  grid-template-columns: 6rem auto;
+}
+
+.disqus-large-icon {
+  height: 6rem;
+  width: 6rem;
+  margin: auto;
+  margin-left: 12rem;
+  color: #575B5D;
+}
+
+.disqus-profile-link {
+  color: #cc4141 !important;
+}
+
+.error-text {
+  color: #CC4141;
+}
+
+@media screen and (max-width: 1000px) {
+  .connect-acc-container {
+    text-align: center;
+    grid-template-rows: auto auto;
+    grid-template-columns: unset;
+  }
+  .disqus-icon {
+    grid-row: 1;
+    margin: auto;
+  }
+  .form {
+    text-align: center;
+    grid-row: 2;
+  }
 }
 
 /* Comments

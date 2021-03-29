@@ -6,12 +6,20 @@ import ProfileBadge from '../components/profile-badge/profile-badge';
 import ProfileContent from '../components/profile-content/profile-content';
 import ProfileFilterMenu from '../components/profile-filter-menu/profile-filter-menu';
 import GitHubIcon from '-!svg-react-loader!../images/github.svg';
+import DisqusIcon from '-!svg-react-loader!../images/disqusIcon.svg';
 import { useAuth0 } from '@auth0/auth0-react';
+import { GetUser } from '../services/apiService';
 
 const Profile = ({ data, gitHubUsername }) => {
   const [selectedFilter, setSelectedFilter] = useState(4);
   const [listChange, setListChange] = useState(0);
-  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
+  const {
+    user,
+    isAuthenticated,
+    loginWithRedirect,
+    getIdTokenClaims,
+  } = useAuth0();
+  const [commentsConnected, setCommentsConnected] = useState(false);
   const [bookmarkedRulesCount, setBookmarkedRulesCount] = useState();
   const [superLikedRulesCount, setSuperLikedRulesCount] = useState();
   const [likedRulesCount, setLikedRulesCount] = useState();
@@ -19,7 +27,22 @@ const Profile = ({ data, gitHubUsername }) => {
   const [superDislikedRulesCount, setSuperDislikedRulesCount] = useState();
   const [commentedRulesCount, setCommentedRulesCount] = useState();
 
-  useEffect(() => {}, [listChange, user]);
+  async function CheckUser() {
+    const jwt = await getIdTokenClaims();
+    GetUser(user.sub, jwt.__raw)
+      .then((success) => {
+        setCommentsConnected(success.commentsConnected);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      CheckUser();
+    }
+  }, [listChange, user]);
   if (isAuthenticated) {
     return (
       <>
@@ -37,10 +60,25 @@ const Profile = ({ data, gitHubUsername }) => {
                 <a
                   className="github-link"
                   href={`https://www.github.com/${user.nickname}`}
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   <GitHubIcon className="profile-github-icon" />
-                  GitHub account | @{user ? user.nickname : ''}
+                  GitHub account
                 </a>
+                {commentsConnected ? (
+                  <a
+                    className="disqus-link"
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://disqus.com/home"
+                  >
+                    <DisqusIcon className="profile-disqus-icon" />
+                    Disqus account
+                  </a>
+                ) : (
+                  <></>
+                )}
               </div>
               <ProfileFilterMenu
                 selectedFilter={selectedFilter}

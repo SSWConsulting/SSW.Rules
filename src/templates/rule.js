@@ -150,12 +150,6 @@ const Rule = ({ data, location }) => {
       : null;
   }, [user, isAuthenticated, hiddenCount]);
 
-  useEffect(() => {
-    var cookieArr = document.cookie;
-
-    console.log(cookieArr);
-  });
-
   return (
     <div>
       <Breadcrumb
@@ -381,7 +375,7 @@ const Rule = ({ data, location }) => {
           </section>
         </section>
 
-        <PostTemplate
+        <Comments
           ruleGuid={rule.frontmatter.guid}
           title={rule.frontmatter.title}
           uri={rule.frontmatter.uri}

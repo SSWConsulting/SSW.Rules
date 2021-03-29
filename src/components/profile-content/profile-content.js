@@ -9,15 +9,19 @@ import {
   GetAllLikedDisliked,
   RemoveBookmark,
   RemoveReaction,
-  GetUserComments,
+  GetCommentSlug,
+  GetDisqusUserCommentsList,
+  GetDisqusUser,
+  ConnectUserCommentsAccount,
+  RemoveUserCommentsAccount,
+  GetUser,
 } from '../../services/apiService';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
-import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
+import DisqusIcon from '-!svg-react-loader!../../images/disqusIcon.svg';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Filter } from '../profile-filter-menu/profile-filter-menu';
-import { commentsRepository } from '../../../site-config';
 
 const ProfileContent = (props) => {
   const [bookmarkedRules, setBookmarkedRules] = useState();
@@ -26,6 +30,8 @@ const ProfileContent = (props) => {
   const [dislikedRulesList, setDislikedRules] = useState();
   const [superDislikedRulesList, setSuperDislikedRules] = useState();
   const [commentedRulesList, setCommentedRulesList] = useState();
+  const [userCommentsConnected, setUserCommentsConnected] = useState(true);
+  const [disqusPrivacyEnabled, setDisqusPrivacyEnabled] = useState(false);
   const [change, setChange] = useState(0);
   const [viewStyle, setViewStyle] = useState('titleOnly');
   const { user, getIdTokenClaims, isAuthenticated } = useAuth0();
@@ -83,33 +89,42 @@ const ProfileContent = (props) => {
       });
   }
 
-  function getUserComments() {
-    var cookieArr = document.cookie;
-
-    console.log(cookieArr);
-
-    // GetUserComments(user.nickname, commentsRepository)
-    //   .then((success) => {
-    //     const allRules = props.data.allMarkdownRemark.nodes;
-    //     const commentGuids =
-    //       success.items.size != 0 ? success.items.map((r) => r.title) : null;
-    //     const commentedRulesMap = allRules.filter((value) =>
-    //       commentGuids.includes(value.frontmatter.guid)
-    //     );
-    //     const commentedRulesSpread = commentedRulesMap.map((r) => ({
-    //       ...r.frontmatter,
-    //       excerpt: r.excerpt,
-    //       htmlAst: r.htmlAst,
-    //       url: success.items
-    //         .filter((v) => v.title == r.frontmatter.guid)
-    //         .map((r) => r.html_url)[0],
-    //     }));
-    //     setCommentedRulesList(commentedRulesSpread);
-    //     props.setCommentedRulesCount(commentedRulesSpread.length);
-    //   })
-    //   .catch((err) => {
-    //     console.error('error: ', err);
-    //   });
+  async function getUserComments() {
+    const jwt = await getIdTokenClaims();
+    const commentedRuleGuids = [];
+    GetUser(user.sub, jwt.__raw).then((success) => {
+      setUserCommentsConnected(success.commentsConnected);
+      if (!success.commentsConnected) {
+        setCommentedRulesList([]);
+      } else {
+        GetDisqusUserCommentsList(success.user.commentsUserId)
+          .then((success) => {
+            if (success.code == 12) {
+              setDisqusPrivacyEnabled(true);
+            } else {
+              const allRules = props.data.allMarkdownRemark.nodes;
+              success.response.forEach((comment) => {
+                GetCommentSlug(comment.thread)
+                  .then((success) => {
+                    commentedRuleGuids.push(success.response.identifiers[0]);
+                    const commentedRulesMap = allRules.filter((value) =>
+                      commentedRuleGuids.includes(value.frontmatter.guid)
+                    );
+                    const commentedRulesSpread = commentedRulesMap.map((r) => ({
+                      ...r.frontmatter,
+                      excerpt: r.excerpt,
+                      htmlAst: r.htmlAst,
+                    }));
+                    setCommentedRulesList(commentedRulesSpread);
+                    props.setCommentedRulesCount(commentedRulesSpread.length);
+                  })
+                  .catch((error) => console.error(error));
+              });
+            }
+          })
+          .catch((error) => console.error(error));
+      }
+    });
   }
 
   function getLikesDislikesLists() {
@@ -143,7 +158,7 @@ const ProfileContent = (props) => {
               .map((r) => r.type),
           }))
           .filter((rr) => rr.type[0] == Filter.Likes);
-        setLikedRules(likedRules);
+        setLikedRules(likedRules ? likedRules : []);
         props.setLikedRulesCount(likedRules.length);
 
         const dislikedRules = reactedRules
@@ -156,7 +171,7 @@ const ProfileContent = (props) => {
               .map((r) => r.type),
           }))
           .filter((rr) => rr.type[0] == Filter.Dislikes);
-        setDislikedRules(dislikedRules);
+        setDislikedRules(dislikedRules ? dislikedRules : []);
         props.setDislikedRulesCount(dislikedRules.length);
 
         const superDislikedRules = reactedRules
@@ -183,7 +198,7 @@ const ProfileContent = (props) => {
       getLikesDislikesLists();
       getUserComments();
     }
-  }, [isAuthenticated, props.filter, change]);
+  }, [isAuthenticated, props.filter, change, props.listChange]);
   return (
     <>
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none pt-12">
@@ -241,6 +256,7 @@ const ProfileContent = (props) => {
       </div>
       {bookmarkedRules && likedRulesList && dislikedRulesList ? (
         <RuleList
+          userCommentsConnected={userCommentsConnected}
           rules={
             props.filter == Filter.Bookmarks
               ? bookmarkedRules
@@ -255,6 +271,8 @@ const ProfileContent = (props) => {
               : commentedRulesList
           }
           viewStyle={viewStyle}
+          setListChange={props.setListChangeCallback}
+          listChange={props.listChange}
           type={
             props.filter == Filter.Bookmarks
               ? 'bookmark'
@@ -289,37 +307,182 @@ ProfileContent.propTypes = {
   setCommentedRulesCount: PropTypes.func.isRequired,
 };
 
-const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
+const RuleList = ({
+  rules,
+  viewStyle,
+  type,
+  onRemoveClick,
+  userCommentsConnected,
+  setListChange,
+  listChange,
+}) => {
   const linkRef = useRef();
   const iconClass = type.replace(/\s+/g, '-');
+  const [disqusUsername, setDisqusUsername] = useState();
+  const [usernameIsValid, setUsernameIsValid] = useState(true);
+
   const components = {
     greyBox: GreyBox,
   };
+  const { user, getIdTokenClaims } = useAuth0();
+
+  useEffect(() => {}, [userCommentsConnected, listChange]);
+
   return (
     <>
       {rules == undefined || rules.toString() == '' || !rules ? (
-        <div className="no-content-message">
-          <p className="no-tagged-message">
-            {type == 'comment'
-              ? "No comment? Don't be shy!"
-              : type == 'bookmark'
-              ? "No bookmarks? Use them to save rules for later!"
-              : type == 'love'
-              ? "Nothing here yet, show us the rules you love!"
-              : type == 'agree'
-              ? "There should be more here, don't you agree?"
-              : type == 'disagree'
-              ? "What a happy chap you are, no disagreements here!"
-              : "Let us know what you don't like, we are here to improve!"}
-          </p>
-        </div>
+        type == 'comment' ? (
+          !userCommentsConnected ? (
+            <div className="connect-acc-container">
+              <DisqusIcon className="disqus-large-icon" />
+              <div className="form">
+                Enter your{' '}
+                <a href="https://disqus.com/profile/signup/">Disqus</a> username
+                to connect accounts
+                <form>
+                  <input
+                    className={
+                      usernameIsValid
+                        ? 'username-input-box'
+                        : 'username-input-box-error'
+                    }
+                    type="text"
+                    name="disqusId"
+                    value={disqusUsername}
+                    onChange={(e) => setDisqusUsername(e.target.value)}
+                  />
+                </form>
+                {!usernameIsValid ? (
+                  <p className="error-text">Username does not exist</p>
+                ) : (
+                  <></>
+                )}
+                <button
+                  className="connect-acc-button"
+                  onClick={() => {
+                    if (disqusUsername) {
+                      GetDisqusUser(disqusUsername)
+                        .then(async (success) => {
+                          if (success.code == 2) {
+                            setUsernameIsValid(false);
+                          }
+                          const jwt = await getIdTokenClaims();
+                          ConnectUserCommentsAccount(
+                            {
+                              UserId: user.sub,
+                              CommentsUserId: success.response.id,
+                            },
+                            jwt.__raw
+                          )
+                            .then(() => {
+                              setListChange(listChange + 1);
+                            })
+                            .catch((error) => {
+                              console.error(error);
+                            });
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                        });
+                    }
+                  }}
+                >
+                  Connect Accounts
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <button
+                className="disconnect-acc-button"
+                onClick={async () => {
+                  const jwt = await getIdTokenClaims();
+                  RemoveUserCommentsAccount({ UserId: user.sub }, jwt.__raw)
+                    .then(() => {
+                      setListChange(listChange + 1);
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                    });
+                }}
+              >
+                Disconnect Disqus account
+              </button>
+              <div className="no-content-message">
+                Please go to{' '}
+                <a
+                  href="https://disqus.com/home/settings/profile/"
+                  className="disqus-profile-link"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  your disqus profile
+                </a>{' '}
+                and turn off <b>Keep your profile activity private</b> to use
+                Disqus with SSW Rules
+              </div>
+            </>
+          )
+        ) : (
+          <>
+            <button
+              className="disconnect-acc-button"
+              onClick={async () => {
+                const jwt = await getIdTokenClaims();
+                RemoveUserCommentsAccount({ UserId: user.sub }, jwt.__raw)
+                  .then(() => {
+                    setListChange(listChange + 1);
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+              }}
+            >
+              Disconnect Disqus account
+            </button>
+            <div className="no-content-message">
+              <p className="no-tagged-message">
+                {type == 'comment'
+                  ? "No comment? Don't be shy!"
+                  : type == 'bookmark'
+                  ? 'No bookmarks? Use them to save rules for later!'
+                  : type == 'love'
+                  ? 'Nothing here yet, show us the rules you love!'
+                  : type == 'agree'
+                  ? "There should be more here, don't you agree?"
+                  : type == 'disagree'
+                  ? 'What a happy chap you are, no disagreements here!'
+                  : "Let us know what you don't like, we are here to improve!"}
+              </p>
+            </div>
+          </>
+        )
       ) : (
-        <div className="p-12">
+        <div className={type == 'comment' ? 'p-12 pt-0' : 'p-12'}>
           <ol className="rule-number">
+            {type == 'comment' ? (
+              <button
+                className="disconnect-acc-button"
+                onClick={async () => {
+                  const jwt = await getIdTokenClaims();
+                  RemoveUserCommentsAccount({ UserId: user.sub }, jwt.__raw)
+                    .then(() => {
+                      setListChange(listChange + 1);
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                    });
+                }}
+              >
+                Disconnect Disqus account
+              </button>
+            ) : (
+              <></>
+            )}
             {rules.map((rule) => {
               return (
                 <>
-                  <li>
+                  <li key={rule.guid}>
                     <section className="rule-content-title pl-2 pb-4">
                       <div className="heading-container">
                         <h2 className={`rule-heading-${iconClass}`}>
@@ -337,11 +500,12 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
                           ''
                         )}
                         {type == 'comment' ? (
-                          <div className="github-tooltip">
-                            <a className="github-comment-link" href={rule.url}>
-                              <GitHubIcon />
+                          <div className="disqus-tooltip">
+                            <a className="disqus-comment-link" href={rule.url}>
+                              {/* TODO: go to comment on rule */}
+                              <DisqusIcon />
                             </a>
-                            <span className="tooltiptext">Edit in GitHub</span>{' '}
+                            <span className="tooltiptext">See on rule</span>{' '}
                           </div>
                         ) : (
                           <button
@@ -385,6 +549,9 @@ RuleList.propTypes = {
   viewStyle: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   onRemoveClick: PropTypes.func.isRequired,
+  userCommentsConnected: PropTypes.bool,
+  setListChange: PropTypes.func,
+  listChange: PropTypes.number,
 };
 
 export default ProfileContent;

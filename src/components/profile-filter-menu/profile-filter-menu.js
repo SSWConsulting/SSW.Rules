@@ -181,12 +181,12 @@ const ProfileFilterMenu = ({
 ProfileFilterMenu.propTypes = {
   selectedFilter: PropTypes.number.isRequired,
   setSelectedFilter: PropTypes.func.isRequired,
-  superLikedRulesCount: PropTypes.number.isRequired,
-  likedRulesCount: PropTypes.number.isRequired,
-  dislikedRulesCount: PropTypes.number.isRequired,
-  superDislikedRulesCount: PropTypes.number.isRequired,
-  bookmarkedRulesCount: PropTypes.number.isRequired,
-  commentedRulesCount: PropTypes.number.isRequired,
+  superLikedRulesCount: PropTypes.number,
+  likedRulesCount: PropTypes.number,
+  dislikedRulesCount: PropTypes.number,
+  superDislikedRulesCount: PropTypes.number,
+  bookmarkedRulesCount: PropTypes.number,
+  commentedRulesCount: PropTypes.number,
 };
 
 export const Filter = {

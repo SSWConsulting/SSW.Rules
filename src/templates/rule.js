@@ -22,6 +22,7 @@ import {
   GetOrganisations,
   GetSecretContent,
   GetGithubOrganisationName,
+  GetGithubUserFromEmail,
 } from '../services/apiService';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
@@ -41,6 +42,7 @@ const Rule = ({ data, location }) => {
   const categories = data.categories.nodes;
   const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
   const [hiddenCount, setHiddenCount] = useState(0);
+  const [lastUpdatedLink, setLastUpdatedLink] = useState();
 
   const loadSecretContent = async (userOrgId) => {
     const hidden = document.getElementsByClassName('hidden');
@@ -106,6 +108,21 @@ const Rule = ({ data, location }) => {
   };
 
   useLayoutEffect(() => {
+    if (data.history.nodes[0].lastUpdatedByEmail.endsWith('@ssw.com.au')) {
+      var name = data.history.nodes[0].lastUpdatedBy;
+      setLastUpdatedLink(
+        `https://ssw.com.au/people/${name.replace(/\s/g, '-')}`
+      );
+    } else {
+      GetGithubUserFromEmail(data.history.nodes[0].lastUpdatedByEmail).then(
+        (success) => {
+          console.log(success);
+          if (success.total_count == 1) {
+            setLastUpdatedLink(success.items[0].html_url);
+          }
+        }
+      );
+    }
     isAuthenticated
       ? GetOrganisations(user.sub)
           .then((success) => {
@@ -121,7 +138,6 @@ const Rule = ({ data, location }) => {
           })
       : null;
   }, [user, isAuthenticated, hiddenCount]);
-
   return (
     <div>
       <Breadcrumb
@@ -150,7 +166,18 @@ const Rule = ({ data, location }) => {
               {format(new Date(data.history.nodes[0].created), 'dd MMM yyyy')} |
               Last updated by{' '}
               <strong>
-                {capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)}
+                {lastUpdatedLink ? (
+                  <a
+                    href={lastUpdatedLink}
+                    className="name-link"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)}
+                  </a>
+                ) : (
+                  capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)
+                )}
               </strong>
               {' on '}
               {format(

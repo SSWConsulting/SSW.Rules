@@ -116,7 +116,6 @@ const Rule = ({ data, location }) => {
     } else {
       GetGithubUserFromEmail(data.history.nodes[0].lastUpdatedByEmail).then(
         (success) => {
-          console.log(success);
           if (success.total_count == 1) {
             setLastUpdatedLink(success.items[0].html_url);
           }

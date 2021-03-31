@@ -593,7 +593,7 @@ pre {
   font-weight: 700;
   margin: 0.5rem 0 6px;
   line-height: initial;
-  position: relative
+  position: relative;
 }
 
 .greybox p:last-child, .highlight p:last-child, .info p:last-child, .china p:last-child, .todo p:last-child, blockquote p:last-child{
@@ -967,7 +967,7 @@ blockquote p:before {
 }
 
 .rule-content a:hover,
-.rule-category a:hover:not(.github-link, .disqus-link) {
+.rule-category a:hover:not(.github-link, .disqus-link, .get-username-btn::after) {
   text-decoration:underline;;
   color: #cc4141;
 }
@@ -1508,7 +1508,7 @@ div.greybox {
   opacity: 0.5;
 }
 
-.tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip {
+.tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
   position: relative;
   display: inline-block;
 }
@@ -1519,6 +1519,10 @@ div.greybox {
 }
 
 .info-tooltip {
+  margin: 1.85rem auto 0 0;
+}
+
+.forgot-username-tooltip {
   margin: 1.85rem auto 0 0;
 }
 
@@ -1563,6 +1567,12 @@ div.greybox {
   width: 10rem;
 }
 
+.forgot-username-tooltip .tooltiptext{
+  right: -4.4rem;
+  margin-bottom: 1rem;
+  width: 10rem;
+}
+
 .tooltiptext::after {
   content: "";
   position: absolute;
@@ -1575,7 +1585,7 @@ div.greybox {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .disqus-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext {
+.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .disqus-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext, .forgot-username-tooltip:hover .tooltiptext{
   visibility: visible;
   opacity: 1;
   padding: 0.3rem !important;
@@ -1853,12 +1863,12 @@ div.greybox {
 
 .menu-item:hover {
   padding: 0 0.5rem 0.25rem;
-  border-bottom: 0.25rem solid rgba(204, 65, 65, 0.60);
+  border-bottom: 0.25rem solid #CC4141;
   cursor: pointer;
 }
 
 .menu-item:hover .agree-title:after, .menu-item:hover .love-title:after, .menu-item:hover .disagree-title:after, .menu-item:hover .comments-title:after, .menu-item:hover .super-disagree-title:after, .menu-item:hover .filter-menu-bookmark-icon {
-  color: rgba(204, 65, 65, 0.60);
+  color: #CC4141;
 }
 
 .bookmarks-item:after, .love-title:after, .love-title-pressed:after, .agree-title:after, .agree-title-pressed:after, .super-disagree-title:after, .super-disagree-title-pressed:after, .disagree-title:after, .disagree-title-pressed:after, .comments-title:after, .comments-title-pressed:after  {
@@ -1882,11 +1892,7 @@ div.greybox {
   content: '\f05e';
 }
 
-.comments-title:after, .comments-title-pressed:after {
-  content: '\f075';
-}
-
-.love-title-pressed:after, .agree-title-pressed:after, .disagree-title-pressed:after, .super-disagree-title-pressed:after, .comments-title-pressed:after {
+.love-title-pressed:after, .agree-title-pressed:after, .disagree-title-pressed:after, .super-disagree-title-pressed:after {
   color: #cc4141;
 }
 
@@ -1923,6 +1929,17 @@ div.greybox {
 }
 
 .filter-menu-bookmark-icon-pressed {
+  color: #CC4141;
+}
+
+.filter-menu-disqus-icon, .filter-menu-disqus-icon-pressed {
+  margin: auto;
+  margin-right: -0.5rem;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.filter-menu-disqus-icon-pressed {
   color: #CC4141;
 }
 
@@ -1998,30 +2015,51 @@ div.greybox {
 .username-input-box, .username-input-box-error {
   border: 0.1rem solid rgb(136, 136, 136);
   border-radius: 5px;
-  margin-top: 1rem;
-  text-align: center;
+  margin-top: 3rem;
+  width: 15rem;
+  height: 28px;
+  padding-left: .7rem;
+  margin-right: .3rem;
+  /* text-align: center; */
 }
 
 .username-input-box-error {
   border-color: #CC4141;
 }
 
-.connect-acc-button, .disconnect-acc-button {
+.connect-acc-button {
+  margin-left: 1.5rem;
   background-color: #CC4141;
   color: white;
   position: relative;
   /* height: 20px; */
   box-sizing: border-box;
   padding: 2px 10px 2px 8px;
-  border-radius: 3px;
+  border-radius: 5px;
   cursor: pointer;
-  margin-top: 1rem;
+  margin-top: 3rem;
+  height: 28px;
   font-size: 1rem !important;
 }
 
 .disconnect-acc-button {
-  margin: 1rem auto;
-  display: block;
+  margin: 0 4.2rem 1rem auto;
+  cursor: pointer;
+  display: flex;
+  vertical-align: middle;
+  text-decoration: underline !important;
+  font-size: 1rem !important;
+  color: #666;
+}
+
+.disconnect-acc-button svg {
+  height: 1.7rem;
+  width: 1.7rem;
+  margin-left: .3rem;
+}
+
+.disconnect-acc-button:hover {
+  color: #CC4141;
 }
 
 .connect-acc-container {
@@ -2035,6 +2073,7 @@ div.greybox {
   height: 6rem;
   width: 6rem;
   margin: auto;
+  margin-top: 1rem;
   margin-left: 12rem;
   color: #575B5D;
 }
@@ -2047,19 +2086,80 @@ div.greybox {
   color: #CC4141;
 }
 
+.privacy-toggle-figure {
+  margin: auto;
+  display: table;
+}
+
+.privacy-toggle-image {
+  width: 66.9%;
+  margin: auto;
+  border: 1px solid #ccc;
+}
+
+.privacy-toggle-caption {
+  font-weight: bold;
+  margin: auto 10.51rem 3rem;
+}
+
+.get-username-btn::after {
+  font-family: FontAwesome;
+  content: '\f059';
+  font-size: 1.4rem;
+}
+
+.get-username-btn:hover:after {
+  color: #CC4141;
+}
+
+.form {
+  display: inline-flex;
+  margin: auto;
+}
+
+.warning-box{
+  display: table;
+  padding: 10px;
+  border: 1px solid #ccc;
+  /* text-align: center; */
+  margin: 3rem auto 2rem;
+  width: 42rem;
+}
+
+.warning-box:before {
+  content: "\f071 ";
+  font-family: FontAwesome;
+  font-size: 38px;
+  font-weight: normal;
+  text-decoration: inherit;
+  color: #cc4141;
+  padding-right: 1rem;
+  float: left;
+  line-height: normal;
+}
+
 @media screen and (max-width: 1000px) {
+  .warning-box {
+    width: unset;
+  }
   .connect-acc-container {
     text-align: center;
     grid-template-rows: auto auto;
     grid-template-columns: unset;
   }
-  .disqus-icon {
+  .disqus-large-icon {
     grid-row: 1;
     margin: auto;
   }
   .form {
     text-align: center;
     grid-row: 2;
+  }
+  .privacy-toggle-figure {
+    text-align: center;
+  }
+  .privacy-toggle-caption {
+    margin: 0 0 3rem;
   }
 }
 

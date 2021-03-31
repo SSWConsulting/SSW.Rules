@@ -18,6 +18,7 @@ import {
 } from '../../services/apiService';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import DisqusIcon from '-!svg-react-loader!../../images/disqusIcon.svg';
+import PrivacyToggle from '../../images/privacyToggle.png';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -326,6 +327,17 @@ const RuleList = ({
   };
   const { user, getIdTokenClaims } = useAuth0();
 
+  async function RemoveDisqusUser() {
+    const jwt = await getIdTokenClaims();
+    RemoveUserCommentsAccount({ UserId: user.sub }, jwt.__raw)
+      .then(() => {
+        setListChange(listChange + 1);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   useEffect(() => {}, [userCommentsConnected, listChange]);
 
   return (
@@ -336,10 +348,7 @@ const RuleList = ({
             <div className="connect-acc-container">
               <DisqusIcon className="disqus-large-icon" />
               <div className="form">
-                Enter your{' '}
-                <a href="https://disqus.com/profile/signup/">Disqus</a> username
-                to connect accounts
-                <form>
+                <div>
                   <input
                     className={
                       usernameIsValid
@@ -348,15 +357,28 @@ const RuleList = ({
                     }
                     type="text"
                     name="disqusId"
+                    onSubmit={console.log('Yep ')}
                     value={disqusUsername}
+                    placeholder="Enter Disqus Username"
                     onChange={(e) => setDisqusUsername(e.target.value)}
                   />
-                </form>
-                {!usernameIsValid ? (
-                  <p className="error-text">Username does not exist</p>
-                ) : (
-                  <></>
-                )}
+                  <div className="forgot-username-tooltip">
+                    {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
+                    <a
+                      href="https://disqus.com/home/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="get-username-btn unstyled"
+                    />
+                    <span className="tooltiptext">Forgot username? </span>
+                  </div>
+                  {!usernameIsValid ? (
+                    <p className="error-text">Username does not exist</p>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+
                 <button
                   className="connect-acc-button"
                   onClick={() => {
@@ -387,59 +409,41 @@ const RuleList = ({
                     }
                   }}
                 >
-                  Connect Accounts
+                  Connect Account
                 </button>
               </div>
             </div>
           ) : (
             <>
-              <button
-                className="disconnect-acc-button"
-                onClick={async () => {
-                  const jwt = await getIdTokenClaims();
-                  RemoveUserCommentsAccount({ UserId: user.sub }, jwt.__raw)
-                    .then(() => {
-                      setListChange(listChange + 1);
-                    })
-                    .catch((error) => {
-                      console.error(error);
-                    });
-                }}
-              >
-                Disconnect Disqus account
-              </button>
-              <div className="no-content-message">
-                Please go to{' '}
+              <div className="warning-box">
+                SSW Rules cant see your comments!
+                <p />
+                Please go to your{' '}
                 <a
                   href="https://disqus.com/home/settings/profile/"
                   className="disqus-profile-link"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  your disqus profile
-                </a>{' '}
-                and turn off <b>Keep your profile activity private</b> to use
-                Disqus with SSW Rules
+                  Disqus Profile{' '}
+                </a>
+                and disable <b>&#34;Keep your profile activity private&#34;</b>
               </div>
+              <figure className="privacy-toggle-figure">
+                <img
+                  src={PrivacyToggle}
+                  alt="Screenshot of privacy toggle"
+                  className="privacy-toggle-image"
+                />
+                <figcaption className="privacy-toggle-caption">
+                  Figure: Location of the privacy toggle (This is usually
+                  disabled by default)
+                </figcaption>
+              </figure>
             </>
           )
         ) : (
           <>
-            <button
-              className="disconnect-acc-button"
-              onClick={async () => {
-                const jwt = await getIdTokenClaims();
-                RemoveUserCommentsAccount({ UserId: user.sub }, jwt.__raw)
-                  .then(() => {
-                    setListChange(listChange + 1);
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                  });
-              }}
-            >
-              Disconnect Disqus account
-            </button>
             <div className="no-content-message">
               <p className="no-tagged-message">
                 {type == 'comment'
@@ -458,27 +462,8 @@ const RuleList = ({
           </>
         )
       ) : (
-        <div className={type == 'comment' ? 'p-12 pt-0' : 'p-12'}>
+        <div className="p-12">
           <ol className="rule-number">
-            {type == 'comment' ? (
-              <button
-                className="disconnect-acc-button"
-                onClick={async () => {
-                  const jwt = await getIdTokenClaims();
-                  RemoveUserCommentsAccount({ UserId: user.sub }, jwt.__raw)
-                    .then(() => {
-                      setListChange(listChange + 1);
-                    })
-                    .catch((error) => {
-                      console.error(error);
-                    });
-                }}
-              >
-                Disconnect Disqus account
-              </button>
-            ) : (
-              <></>
-            )}
             {rules.map((rule) => {
               return (
                 <>
@@ -539,6 +524,13 @@ const RuleList = ({
             })}
           </ol>
         </div>
+      )}
+      {type == 'comment' ? (
+        <button className="disconnect-acc-button" onClick={RemoveDisqusUser}>
+          Disconnect Disqus account <DisqusIcon />
+        </button>
+      ) : (
+        <></>
       )}
     </>
   );

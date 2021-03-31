@@ -1369,7 +1369,7 @@ div.greybox {
 }
 
 .reaction-grid {
-  grid-template-columns: auto 2.5rem 1rem 2rem 2.2rem 1rem 2rem 2.2rem 1rem 2rem 2.2rem 1rem auto;
+  grid-template-columns: auto 2.5rem 2.2rem 0.7rem 2.2rem 2.2rem 0.7rem 2.2rem 2.2rem 0.7rem 2.2rem 2.7rem auto;
   display: grid;
   grid-template-rows: 2rem;
   padding-bottom: 1rem;
@@ -1414,6 +1414,8 @@ div.greybox {
 .reaction-counter-container {
   position: relative;
   top: .3rem;
+  padding-left: 0.2rem;
+  text-align: start;
   display: inline-block;
   align-self: center;
 }
@@ -1678,7 +1680,7 @@ div.greybox {
     padding: 1rem;
   }
   .reaction-grid {
-    grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 1rem auto;
+    grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.3rem 1rem auto;
   }
   .profile-image {
     visibility: hidden;
@@ -1884,7 +1886,7 @@ div.greybox {
 }
 
 .rule-heading-no-way:after {
-  content: '\f00d';
+  content: '\f05e';
   font-family: FontAwesome;
   color: #CC4141;
   margin-left: 1rem;

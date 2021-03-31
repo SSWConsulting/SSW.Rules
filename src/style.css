@@ -2371,6 +2371,10 @@ margin-bottom: 1em;
   padding-left: 0.5rem;
 }
 
+.name-link {
+  text-decoration: none !important;
+}
+
 /**
 * This injects Tailwind's component classes and any component classes
 * registered by plugins.

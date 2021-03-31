@@ -4,6 +4,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
+import DisqusIcon from '-!svg-react-loader!../../images/disqusIcon.svg';
 
 const ProfileFilterMenu = ({
   selectedFilter,
@@ -58,15 +59,14 @@ const ProfileFilterMenu = ({
             setSelectedFilter(Filter.Comments);
           }}
         >
-          <div
+          Comments
+          <DisqusIcon
             className={
               selectedFilter != Filter.Comments
-                ? 'comments-title'
-                : 'comments-title-pressed'
+                ? 'filter-menu-disqus-icon'
+                : 'filter-menu-disqus-icon-pressed'
             }
-          >
-            Comments
-          </div>
+          />
           <div className="rules-counter">{commentedRulesCount ?? 0}</div>
         </div>
         <div

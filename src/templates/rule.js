@@ -105,6 +105,8 @@ const Rule = ({ data, location }) => {
     orgName: PropTypes.string,
   };
 
+
+
   useLayoutEffect(() => {
     isAuthenticated
       ? GetOrganisations(user.sub)

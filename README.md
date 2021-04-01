@@ -15,7 +15,7 @@ This is a Gatsby generated site pulling data from:
 ### Getting ready for development
 - Clone the repo from https://github.com/SSWConsulting/SSW.Rules
 - Run *yarn install* to install packages
-- Create environment files (.env.development and .env.production) and fill out the values for the following keys:
+- Create environment files (.env.development and .env.production) and ask a member of the rules team for the values of the following keys:
 ```
 GOOGLE_ANALYTICS=#{GOOGLE_ANALYTICS}
 RECAPTCHA_KEY=#{RECAPTCHA_KEY}

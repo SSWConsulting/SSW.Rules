@@ -525,7 +525,7 @@ const RuleList = ({
           </ol>
         </div>
       )}
-      {type == 'comment' ? (
+      {type == 'comment' && userCommentsConnected ? (
         <button className="disconnect-acc-button" onClick={RemoveDisqusUser}>
           Disconnect Disqus account <DisqusIcon />
         </button>

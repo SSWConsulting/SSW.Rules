@@ -187,15 +187,3 @@ export async function GetUserComments(username, commentsRepository) {
 
   return await response.json();
 }
-
-/* Editor Link */
-export async function GetGithubUserFromEmail(email) {
-  var query = `https://api.github.com/search/users?q=${email}`;
-  const response = await fetch(query, {
-    headers: {
-      Authorization: `token ${GITHUB_API_PAT}`,
-    },
-  });
-
-  return await response.json();
-}

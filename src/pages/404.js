@@ -20,7 +20,7 @@ const NotFound = () => {
         </div>
         <div className="not-found-greybox greybox">
           See the Rule{' '}
-          <a href="/404-useful-error-page">
+          <a href="https://ssw.com.au/rules/404-useful-error-page">
             Do you replace the 404 error with a useful error page?
           </a>
         </div>

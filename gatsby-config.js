@@ -19,7 +19,8 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-disqus',
       options: {
-        shortname: 'sswrulesdev',
+        // shortname: 'sswrulesdev',
+        shortname: process.env.DISQUS_FORUM,
       },
     },
     {

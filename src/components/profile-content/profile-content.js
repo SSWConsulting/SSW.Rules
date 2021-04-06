@@ -53,16 +53,12 @@ const ProfileContent = (props) => {
               setChange(change + 1);
               props.setListChangeCallback(props.listChange + 1);
             })
-            .catch((err) => {
-              console.error('error: ' + err);
-            })
+            .catch((error) => console.error(error))
         : RemoveReaction({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setChange(change + 1);
             })
-            .catch((err) => {
-              console.error('error: ' + err);
-            });
+            .catch((error) => console.error(error));
     }
   }
 
@@ -85,9 +81,7 @@ const ProfileContent = (props) => {
         setBookmarkedRules(bookmarkedRulesSpread);
         props.setBookmarkedRulesCount(bookmarkedRulesSpread.length);
       })
-      .catch((err) => {
-        console.error('error: ', err);
-      });
+      .catch((error) => console.error(error));
   }
 
   async function getUserComments() {
@@ -100,26 +94,35 @@ const ProfileContent = (props) => {
       } else {
         GetDisqusUserCommentsList(success.user.commentsUserId)
           .then((success) => {
+            console.log(success);
             if (success.code == 12) {
               setDisqusPrivacyEnabled(true);
             } else {
               const allRules = props.data.allMarkdownRemark.nodes;
               success.response.forEach((comment) => {
-                GetCommentSlug(comment.thread)
-                  .then((success) => {
-                    commentedRuleGuids.push(success.response.identifiers[0]);
-                    const commentedRulesMap = allRules.filter((value) =>
-                      commentedRuleGuids.includes(value.frontmatter.guid)
-                    );
-                    const commentedRulesSpread = commentedRulesMap.map((r) => ({
-                      ...r.frontmatter,
-                      excerpt: r.excerpt,
-                      htmlAst: r.htmlAst,
-                    }));
-                    setCommentedRulesList(commentedRulesSpread);
-                    props.setCommentedRulesCount(commentedRulesSpread.length);
-                  })
-                  .catch((error) => console.error(error));
+                if (comment.forum == process.env.DISQUS_FORUM) {
+                  GetCommentSlug(comment.thread)
+                    .then((success) => {
+                      commentedRuleGuids.push(success.response.identifiers[0]);
+                      const commentedRulesMap = allRules.filter((value) =>
+                        commentedRuleGuids.includes(value.frontmatter.guid)
+                      );
+                      const commentedRulesSpread = commentedRulesMap.map(
+                        (r) => ({
+                          ...r.frontmatter,
+                          excerpt: r.excerpt,
+                          htmlAst: r.htmlAst,
+                        })
+                      );
+                      setCommentedRulesList(
+                        commentedRulesSpread == undefined
+                          ? []
+                          : commentedRulesSpread
+                      );
+                      props.setCommentedRulesCount(commentedRulesSpread.length);
+                    })
+                    .catch((error) => console.error(error));
+                }
               });
             }
           })
@@ -188,9 +191,7 @@ const ProfileContent = (props) => {
         setSuperDislikedRules(superDislikedRules);
         props.setSuperDislikedRulesCount(superDislikedRules.length);
       })
-      .catch((err) => {
-        console.error('error: ', err);
-      });
+      .catch((error) => console.error(error));
   }
 
   useEffect(() => {
@@ -258,6 +259,7 @@ const ProfileContent = (props) => {
       {bookmarkedRules && likedRulesList && dislikedRulesList ? (
         <RuleList
           userCommentsConnected={userCommentsConnected}
+          disqusPrivacyEnabled={disqusPrivacyEnabled}
           rules={
             props.filter == Filter.Bookmarks
               ? bookmarkedRules
@@ -316,6 +318,7 @@ const RuleList = ({
   userCommentsConnected,
   setListChange,
   listChange,
+  disqusPrivacyEnabled,
 }) => {
   const linkRef = useRef();
   const iconClass = type.replace(/\s+/g, '-');
@@ -333,9 +336,7 @@ const RuleList = ({
       .then(() => {
         setListChange(listChange + 1);
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => console.error(error));
   }
 
   useEffect(() => {}, [userCommentsConnected, listChange]);
@@ -357,7 +358,6 @@ const RuleList = ({
                     }
                     type="text"
                     name="disqusId"
-                    onSubmit={console.log('Yep ')}
                     value={disqusUsername}
                     placeholder="Enter Disqus Username"
                     onChange={(e) => setDisqusUsername(e.target.value)}
@@ -399,13 +399,9 @@ const RuleList = ({
                             .then(() => {
                               setListChange(listChange + 1);
                             })
-                            .catch((error) => {
-                              console.error(error);
-                            });
+                            .catch((error) => console.error(error));
                         })
-                        .catch((error) => {
-                          console.error(error);
-                        });
+                        .catch((error) => console.error(error));
                     }
                   }}
                 >
@@ -413,7 +409,7 @@ const RuleList = ({
                 </button>
               </div>
             </div>
-          ) : (
+          ) : disqusPrivacyEnabled ? (
             <>
               <div className="warning-box">
                 SSW Rules cant see your comments!
@@ -440,6 +436,12 @@ const RuleList = ({
                   disabled by default)
                 </figcaption>
               </figure>
+            </>
+          ) : (
+            <>
+              <div className="no-content-message">
+                <p className="no-tagged-message">No tagged rules yet.</p>
+              </div>
             </>
           )
         ) : (
@@ -486,8 +488,10 @@ const RuleList = ({
                         )}
                         {type == 'comment' ? (
                           <div className="disqus-tooltip">
-                            <a className="disqus-comment-link" href={rule.url}>
-                              {/* TODO: go to comment on rule */}
+                            <a
+                              className="disqus-comment-link"
+                              href={rule.uri + '#disqus_thread'}
+                            >
                               <DisqusIcon />
                             </a>
                             <span className="tooltiptext">See on rule</span>{' '}
@@ -544,6 +548,7 @@ RuleList.propTypes = {
   userCommentsConnected: PropTypes.bool,
   setListChange: PropTypes.func,
   listChange: PropTypes.number,
+  disqusPrivacyEnabled: PropTypes.bool,
 };
 
 export default ProfileContent;

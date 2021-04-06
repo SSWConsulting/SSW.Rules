@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 const Comments = (props) => {
   let disqusConfig = {
-    // url: `${'localhost:9000' + location.pathname}`,
     identifier: props.ruleGuid,
     title: props.title,
   };

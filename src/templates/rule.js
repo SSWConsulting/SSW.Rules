@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
-import React, { useRef, useState, useLayoutEffect, useEffect } from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
@@ -132,8 +132,6 @@ const Rule = ({ data, location }) => {
     content: PropTypes.string,
     orgName: PropTypes.string,
   };
-
-
 
   useLayoutEffect(() => {
     isAuthenticated

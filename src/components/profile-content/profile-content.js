@@ -299,14 +299,14 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
             {type == 'comment'
               ? "No comment? Don't be shy!"
               : type == 'bookmark'
-              ? "No bookmarks here, try saving some for later!"
+              ? "No bookmarks? Use them to save rules for later!"
               : type == 'love'
-              ? "Nothing here yet, go share the love!"
+              ? "Nothing here yet, show us the rules you love!"
               : type == 'agree'
               ? "There should be more here, don't you agree?"
               : type == 'disagree'
               ? "What a happy chap you are, no disagreements here!"
-              : "There's nothing here yet, no way!"}
+              : "Let us know what you don't like, we are here to improve!"}
           </p>
         </div>
       ) : (

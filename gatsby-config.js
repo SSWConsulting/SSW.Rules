@@ -27,7 +27,7 @@ module.exports = {
         // Optionally supply a branch. If none supplied, you'll get the default branch.
         branch: process.env.CONTENT_BRANCH,
         // Tailor which files get imported eg. import the docs folder from a codebase.
-        patterns: ['categories/**/*.md', 'rules/**/*'],
+        patterns: ['categories/**/*', 'rules/**/*'],
       },
     },
     {

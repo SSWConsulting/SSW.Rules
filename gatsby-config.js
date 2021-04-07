@@ -6,10 +6,14 @@ require('dotenv').config({
 });
 
 module.exports = {
+  flags: {
+    DEV_SSR: true,
+  },
   pathPrefix: `${siteConfig.pathPrefix}`,
   siteMetadata: {
     ...siteConfig,
   },
+
   plugins: [
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-sitemap',

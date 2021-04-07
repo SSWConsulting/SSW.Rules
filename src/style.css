@@ -2451,3 +2451,24 @@ margin-bottom: 1em;
 .email-content h3 {
     margin-top: 1rem;
 }
+
+    /* Email Templates on MOBILES
+    -------------------------------------------------- */
+
+    @media all and (max-width:768px) {
+      .email-template table {
+        border-spacing: 5px;
+      }
+      .email-template table tr td {
+        display: table;
+        padding: 5px 9px;
+        width: 100%;
+      }
+      .email-template table tr td:first-child {
+        text-align: left;
+        padding: 5px 0;
+      }    
+      .email-content {
+        margin: 20px 10px;
+      }
+    }

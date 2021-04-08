@@ -12,7 +12,14 @@ module.exports = {
   },
 
   plugins: [
-    'gatsby-plugin-netlify-cms',
+    {
+      resolve: 'gatsby-plugin-netlify-cms',
+      options: {
+        stylesPath: `${__dirname}/src/styles.css`,
+        modulePath: `${__dirname}/src/cms/cms.js`,
+        publicPath: 'edit',
+      },
+    },
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-sitemap',
     'gatsby-transformer-json',

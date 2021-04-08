@@ -1,0 +1,20 @@
+backend:
+  name: test-repo
+
+media_folder: static/assets
+public_folder: /assets
+
+collections:
+  - name: blog
+    label: Rule
+    folder: rules
+    # create: true
+    fields:
+      - { name: type, label: Type (e.g. rule/category) } //
+      - { name: archivedreason, label: Archived Reason (leave blank if none)}
+      - { name: title, label: Title }
+      - { name: authors, label: Authors }
+      - { name: created, label: Date created, widget: datetime}
+      - { name: related, label: Related }
+      - { name: uri, label: uri }
+      - { name: body, label: Body, widget: markdown }

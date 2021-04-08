@@ -1920,7 +1920,7 @@ div.greybox {
 
 .no-tagged-message:before {
   font-family: FontAwesome;
-  content: '\f00d';
+  content: '\f05e';
   margin-right: 0.5rem;
 }
 

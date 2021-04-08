@@ -172,7 +172,7 @@ exports.onPostBuild = async ({ store, pathPrefix }) => {
       );
       return acc;
     }, []);
-    
+
   const allRewritesUnique = [
     ...new Map(rewrites.map((item) => [item.fromPath, item])).values(),
   ];

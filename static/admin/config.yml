@@ -18,11 +18,56 @@ collections:
     public_folder: ''
     path: '{{uri}}/rule'
     fields:
-      - { name: type, label: Type (e.g. rule/category) }
-      - { name: archivedreason, label: Archived Reason (leave blank if none)}
-      - { name: title, label: Title }
-      - { name: authors, label: Authors }
-      - { name: created, label: Date created, widget: datetime}
-      - { name: related, label: Related }
-      - { name: uri, label: uri }
-      - { name: body, label: Body, widget: markdown }
+      - name: guid
+        label: guid
+        widget: hidden
+      - name: type
+        label: type
+        widget: hidden
+      - name: archivedreason
+        label: Archived Reason (leave blank if none)
+      - name: title
+        label: Title
+      - name: uri 
+        label: uri
+      - name: created 
+        label: Date created 
+        widget: datetime
+      - name: body 
+        label: Body 
+        widget: markdown
+      - name: authors 
+        label: Authors 
+        widget: list
+        fields:
+          - name: title
+            label: Title
+          - name: url
+            label: url
+      - name: related
+        label: Related
+        widget: list
+        field: { name: url, label: url, widget: string }
+  - name: categories
+    label: Categories
+    folder: categories
+    create: true
+    slug: '{{slug}}'
+    media_folder: ''
+    public_folder: ''
+    path: '{{uri}}/rule'
+    fields:
+      - name: archivedreason
+        label: Archived Reason (leave blank if none)}
+      - name: title
+        label: Title 
+      - name: created
+        label: Date created
+        widget: datetime
+      - name: related
+        label: Related 
+      - name: uri
+        label: uri 
+      - name: body
+        label: Body
+        widget: markdown 

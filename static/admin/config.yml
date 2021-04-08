@@ -18,7 +18,7 @@ collections:
     public_folder: ''
     path: '{{uri}}/rule'
     fields:
-      - { name: type, label: Type (e.g. rule/category) } //
+      - { name: type, label: Type (e.g. rule/category) }
       - { name: archivedreason, label: Archived Reason (leave blank if none)}
       - { name: title, label: Title }
       - { name: authors, label: Authors }

@@ -89,6 +89,7 @@ exports.createPages = async ({ graphql, actions }) => {
           }
           frontmatter {
             index
+            redirects
           }
           parent {
             ... on File {
@@ -128,6 +129,7 @@ exports.createPages = async ({ graphql, actions }) => {
       context: {
         slug: node.fields.slug,
         index: node.frontmatter.index,
+        redirects: node.frontmatter.redirects,
       },
     });
   });
@@ -170,7 +172,7 @@ exports.onPostBuild = async ({ store, pathPrefix }) => {
       );
       return acc;
     }, []);
-
+    
   const allRewritesUnique = [
     ...new Map(rewrites.map((item) => [item.fromPath, item])).values(),
   ];

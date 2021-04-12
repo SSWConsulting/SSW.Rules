@@ -26,7 +26,7 @@
     "autoprefixer": "^10.2.5",
     "classnames": "^2.2.6",
     "core-js": "^3.10.1",
-    "date-fns": "^2.20.1",
+    "date-fns": "^2.20.2",
     "directory-named-webpack-plugin": "^4.0.1",
     "favicons": "^6.0.0",
     "gatsby": "^2.32.3",

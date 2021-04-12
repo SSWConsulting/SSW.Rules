@@ -27,6 +27,7 @@
     "classnames": "^2.3.1",
     "core-js": "^3.10.2",
     "date-fns": "^2.21.1",
+    "axios": "0.21.1",
     "directory-named-webpack-plugin": "^4.0.1",
     "favicons": "^6.2.1",
     "gatsby": "2.28",

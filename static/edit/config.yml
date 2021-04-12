@@ -16,24 +16,38 @@ collections:
     public_folder: ''
     slug: 'rule'
     path: '{{uri}}/rule'
+    create: true
     fields:
-      - { name: type, label: Type (e.g. rule/category) }
+      - { name: type, label: Type (e.g. rule/category), widget: hidden }
+      - { name: guid, label: guid, widget: hidden }
       - { name: archivedreason, label: Archived Reason (leave blank if none), required: false }
       - { name: title, label: Title }
-      - { name: authors, label: Authors, widget: string }
+      - { name: uri, label: uri }
       - { name: created, label: Date created, widget: datetime}
       - { name: related, label: Related, required: false }
-      - { name: uri, label: uri }
       - { name: body, label: Body, widget: markdown }
+      - { name: authors, 
+          label: Authors,
+          widget: list,
+          fields: { name: title, label: Title }
+                  { name: url, label: url }
+        }
+      - { name: related,
+          label: Related,
+          widget: list,
+          field: { name: url, label: url, widget: string }
+        }
   - name: categories
     label: Categories
     folder: categories
     media_folder: ''
     public_folder: ''
-    slug: 'index'
+    slug: '{{slug}}'
     path: '{{uri}}/index'
+    create: true
     fields:
-      - { name: type, label: Type (e.g. rule/category) }
+      - { name: type, label: Type (e.g. rule/category), widget: hidden  }
+      - { name: guid, label: guid, widget: hidden }
       - { name: title, label: Title }
       - { name: uri, label: uri }
       - { name: index, label: index }

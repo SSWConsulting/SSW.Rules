@@ -20,7 +20,6 @@ module.exports = {
         publicPath: 'edit',
       },
     },
-    'gatsby-remark-containers',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-sitemap',
     'gatsby-transformer-json',

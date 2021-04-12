@@ -18,25 +18,24 @@ collections:
     path: '{{uri}}/rule'
     create: true
     fields:
-      - { name: type, label: Type (e.g. rule/category), widget: hidden }
       - { name: guid, label: guid, widget: hidden }
+      - { name: type, label: Type (e.g. rule/category), widget: hidden }
       - { name: archivedreason, label: Archived Reason (leave blank if none), required: false }
       - { name: title, label: Title }
       - { name: uri, label: uri }
-      - { name: created, label: Date created, widget: datetime}
-      - { name: related, label: Related, required: false }
+      - { name: created, label: Date created, widget: datetime }
       - { name: body, label: Body, widget: markdown }
-      - { name: authors, 
-          label: Authors,
-          widget: list,
-          fields: { name: title, label: Title }
-                  { name: url, label: url }
-        }
-      - { name: related,
-          label: Related,
-          widget: list,
-          field: { name: url, label: url, widget: string }
-        }
+      - name: authors 
+        label: Authors 
+        widget: list
+        fields:
+          - { name: title, label: Title }
+          - { name: url, label: url }
+      - name: related
+        label: Related
+        required: false
+        widget: list
+        field: { name: url, label: url, widget: string }
   - name: categories
     label: Categories
     folder: categories

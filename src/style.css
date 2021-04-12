@@ -1737,7 +1737,7 @@ div.greybox {
     grid-column: unset !important;
   }
   .radio-button-2 {
-    grid-column: unset !important;
+    grid-column: unset !important; 
   }
   .radio-button-3 {
     grid-column: unset !important;
@@ -1962,7 +1962,7 @@ div.greybox {
 
 .no-tagged-message:before {
   font-family: FontAwesome;
-  content: '\f05e';
+  content: '\f00d';
   margin-right: 0.5rem;
 }
 

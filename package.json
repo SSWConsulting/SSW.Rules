@@ -49,6 +49,7 @@
     "gatsby-source-filesystem": "^3.2.0",
     "gatsby-source-git": "^1.0.2",
     "gatsby-source-local-git": "^1.2.2",
+    "gatsby-telemetry": "^2.2.0",
     "gatsby-transformer-json": "^3.2.0",
     "gatsby-transformer-remark": "^3.2.0",
     "postcss": "^8.2.10",

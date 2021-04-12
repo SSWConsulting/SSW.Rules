@@ -1,0 +1,39 @@
+backend:
+  name: github
+  repo: bradystroud/SSW.Rules.Content
+  branch: main
+  open_authoring: true
+
+media_folder: static/assets
+public_folder: /assets
+publish_mode: editorial_workflow
+
+collections:
+  - name: rules
+    label: Rules
+    folder: rules
+    media_folder: ''
+    public_folder: ''
+    slug: 'rule'
+    path: '{{uri}}/rule'
+    fields:
+      - { name: type, label: Type (e.g. rule/category) }
+      - { name: archivedreason, label: Archived Reason (leave blank if none), required: false }
+      - { name: title, label: Title }
+      - { name: authors, label: Authors, widget: string }
+      - { name: created, label: Date created, widget: datetime}
+      - { name: related, label: Related, required: false }
+      - { name: uri, label: uri }
+      - { name: body, label: Body, widget: markdown }
+  - name: categories
+    label: Categories
+    folder: categories
+    media_folder: ''
+    public_folder: ''
+    slug: 'index'
+    path: '{{uri}}/index'
+    fields:
+      - { name: type, label: Type (e.g. rule/category) }
+      - { name: title, label: Title }
+      - { name: uri, label: uri }
+      - { name: index, label: index }

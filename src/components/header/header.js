@@ -49,7 +49,7 @@ const Header = ({ displayActions, ruleUri }) => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${rulesContentBranch}/${ruleUri}`}
+                  href={`/edit/#/collections/rules/entries/${ruleUri}/rule`}
                   className="action-btn-link-underlined"
                 >
                   <div>Edit</div>

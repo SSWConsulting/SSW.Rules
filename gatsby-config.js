@@ -6,16 +6,21 @@ require('dotenv').config({
 });
 
 module.exports = {
-  flags: {
-    DEV_SSR: true,
-  },
   pathPrefix: `${siteConfig.pathPrefix}`,
   siteMetadata: {
     ...siteConfig,
   },
 
   plugins: [
-    'gatsby-plugin-netlify-cms',
+    {
+      resolve: 'gatsby-plugin-netlify-cms',
+      options: {
+        stylesPath: `${__dirname}/src/styles.css`,
+        modulePath: `${__dirname}/src/cms/cms.js`,
+        publicPath: 'edit',
+      },
+    },
+    'gatsby-remark-containers',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-sitemap',
     'gatsby-transformer-json',
@@ -24,7 +29,7 @@ module.exports = {
       resolve: 'gatsby-source-git',
       options: {
         name: 'categories',
-        remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
+        remote: 'https://github.com/bradystroud/SSW.Rules.Content.git',
         // Optionally supply a branch. If none supplied, you'll get the default branch.
         branch: process.env.CONTENT_BRANCH,
         // Tailor which files get imported eg. import the docs folder from a codebase.
@@ -35,7 +40,7 @@ module.exports = {
       resolve: 'gatsby-source-git',
       options: {
         name: 'categories',
-        remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
+        remote: 'https://github.com/bradystroud/SSW.Rules.Content.git',
         // Optionally supply a branch. If none supplied, you'll get the default branch.
         branch: process.env.CONTENT_BRANCH,
         // Tailor which files get imported eg. import the docs folder from a codebase.
@@ -46,7 +51,7 @@ module.exports = {
       resolve: 'gatsby-source-git',
       options: {
         name: 'history',
-        remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
+        remote: 'https://github.com/bradystroud/SSW.Rules.Content.git',
         // Optionally supply a branch. If none supplied, you'll get the default branch.
         branch: process.env.CONTENT_BRANCH,
         // Tailor which files get imported eg. import the docs folder from a codebase.

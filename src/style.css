@@ -2048,14 +2048,24 @@ div.greybox {
   cursor: pointer;
   display: flex;
   vertical-align: middle;
-  text-decoration: underline !important;
-  font-size: 1rem !important;
+  font-size: 1rem;
   color: #666;
 }
 
+.disconnect-acc-button:before {
+  display: inline-block;
+  font-family: FontAwesome;
+  content: '\f00d';
+  text-decoration: none !important;
+  margin: auto;
+  font-size: 1.1rem;
+  margin-top: -0.02rem;
+  padding-right: 0.4rem;
+}
+
 .disconnect-acc-button svg {
-  height: 1.7rem;
-  width: 1.7rem;
+  height: 1.6rem;
+  width: 1.6rem;
   margin-left: .3rem;
 }
 

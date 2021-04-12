@@ -20,10 +20,9 @@ collections:
     fields:
       - { name: guid, label: guid, widget: hidden }
       - { name: type, label: Type (e.g. rule/category), widget: hidden }
-      - { name: archivedreason, label: Archived Reason (leave blank if none), required: false }
+      - { name: created, label: Date created, widget: hidden }
       - { name: title, label: Title }
       - { name: uri, label: uri }
-      - { name: created, label: Date created, widget: datetime }
       - { name: body, label: Body, widget: markdown }
       - name: authors 
         label: Authors 
@@ -35,7 +34,9 @@ collections:
         label: Related
         required: false
         widget: list
-        field: { name: url, label: url, widget: string }
+        field: { name: relatedRule, label: Rule uri, widget: string }
+        # field: { name: relatedRule, label: Rule, widget: relation, collection: rules, search_fields: [title], value_field: uri, display_fields: [title], options_length: 5 }
+      - { name: archivedreason, label: Archived Reason (leave blank if none), required: false }
   - name: categories
     label: Categories
     folder: categories

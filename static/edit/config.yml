@@ -9,8 +9,8 @@ public_folder: /assets
 publish_mode: editorial_workflow
 
 collections:
-  - name: rules
-    label: Rules
+  - name: rule
+    label: Rule
     folder: rules
     media_folder: ''
     public_folder: ''
@@ -18,36 +18,46 @@ collections:
     path: '{{uri}}/rule'
     create: true
     fields:
-      - { name: guid, label: guid, widget: hidden }
-      - { name: type, label: Type (e.g. rule/category), widget: hidden }
-      - { name: created, label: Date created, widget: hidden }
+      - { name: type, label: Type (e.g. rule/category), widget: hidden, default: rule }
       - { name: title, label: Title }
-      - { name: uri, label: uri }
-      - { name: body, label: Body, widget: markdown }
+      - { name: uri, label: uri (a unique identifier for the url), pattern: [ '^[a-zA-Z0-9_-]*$', "Must only contain alphanumeric or the \"-\" and \"_\" characters" ] }
+      - { name: guid, label: "GUID (Generate one here if this is a new rule: guidgen.com)", pattern: [ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$', "Must be a valid GUID" ] }
+      - name: body
+        label: Body
+        widget: markdown
+        default: "Markdown shown in the blurb.
+
+                  <!--endintro-->
+
+                  Markdown not shown in the blurb"
       - name: authors 
         label: Authors 
         widget: list
         fields:
           - { name: title, label: Title }
-          - { name: url, label: url }
+          - { name: url, label: Profile url, required: false }
+          - { name: img, label: Profile image, required: false }
+        default:
+          - { title: "", url: "", img: "" }
       - name: related
         label: Related
         required: false
         widget: list
         field: { name: relatedRule, label: Rule uri, widget: string }
+      - { name: created, label: Date created, widget: datetime }
         # field: { name: relatedRule, label: Rule, widget: relation, collection: rules, search_fields: [title], value_field: uri, display_fields: [title], options_length: 5 }
       - { name: archivedreason, label: Archived Reason (leave blank if none), required: false }
-  - name: categories
-    label: Categories
-    folder: categories
-    media_folder: ''
-    public_folder: ''
-    slug: '{{slug}}'
-    path: '{{uri}}/index'
-    create: true
-    fields:
-      - { name: type, label: Type (e.g. rule/category), widget: hidden  }
-      - { name: guid, label: guid, widget: hidden }
-      - { name: title, label: Title }
-      - { name: uri, label: uri }
-      - { name: index, label: index }
+#  - name: categories
+#    label: Categories
+#    folder: categories
+#    media_folder: ''
+#    public_folder: ''
+#    slug: '{{slug}}'
+#    path: '{{uri}}/index'
+#    create: true
+#    fields:
+#      - { name: type, label: Type (e.g. rule/category), widget: hidden  }
+#      - { name: guid, label: guid, widget: hidden }
+#      - { name: title, label: Title }
+#      - { name: uri, label: uri }
+#      - { name: index, label: index }

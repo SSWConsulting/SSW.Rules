@@ -7693,7 +7693,7 @@ gatsby-source-filesystem@^3.2.0:
     valid-url "^1.0.9"
     xstate "^4.14.0"
 
-gatsby-source-git@^1.0.2:
+gatsby-source-git@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/gatsby-source-git/-/gatsby-source-git-1.1.0.tgz#99faab2b8053a78afec6f7a67c2e74b68b1575d3"
   integrity sha512-f5HllxwS+ivVn6SitSJPEQe8tf/apjwq5TOZRiEIRJtlrm9eSBqM2hO6ZIOK5na6UuvI+BH8xxbgj0qrwNTznA==
@@ -7766,7 +7766,7 @@ gatsby-transformer-remark@^3.2.0:
     unist-util-select "^1.5.0"
     unist-util-visit "^1.4.1"
 
-gatsby@^2.32.3:
+gatsby@2.x.x:
   version "2.32.12"
   resolved "https://registry.yarnpkg.com/gatsby/-/gatsby-2.32.12.tgz#53198b9b76618f9ac071fcc9f136f34204ac45f6"
   integrity sha512-CfaNIIoKbBVD+4Sao+PDnxc3nN02M//Jh8cK2rLqRtzFZ09dboUOmjsRW79gf4/zc4CV1gMV59TVrYfKolU5bA==

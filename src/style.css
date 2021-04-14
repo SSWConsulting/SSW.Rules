@@ -1440,6 +1440,12 @@ div.greybox {
   display: flex;
 }
 
+.edit-button-container::after {
+  font-family: FontAwesome;
+  content: '\f040';
+  margin-left: 5px;
+}
+
 .bookmark-icon, .bookmark-icon-pressed {
   height: 2rem;
   margin-top: 1.5rem;

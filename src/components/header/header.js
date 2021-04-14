@@ -52,8 +52,7 @@ const Header = ({ displayActions, ruleUri }) => {
                   }/rule`}
                   className="action-btn-link-underlined"
                 >
-                  <div>Edit</div>
-                  <GitHubIcon aria-label="logo" className="action-btn-icon" />
+                  <div className="edit-button-container">Edit</div>
                 </a>
                 <a
                   target="_blank"

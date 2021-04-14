@@ -1,7 +1,7 @@
 backend:
   name: github
-  repo: bradystroud/SSW.Rules.Content
-  branch: main
+  repo: SSWConsulting/SSW.Rules.Content
+  branch: sample-content-with-guid
   open_authoring: true
 
 media_folder: static/assets
@@ -38,12 +38,17 @@ collections:
           - { name: url, label: Profile url, required: false }
           - { name: img, label: Profile image, required: false }
         default:
-          - { title: "", url: "", img: "" }
+          - { title: "" }
       - name: related
         label: Related
         required: false
         widget: list
-        field: { name: relatedRule, label: Rule uri, widget: string }
+        field: { name: relatedRule, label: Rule uri, pattern: [ '^[a-zA-Z0-9_-]*$', "Must only contain alphanumeric or the \"-\" and \"_\" characters" ] }
+      - name: redirects
+        label: Redirects
+        required: false
+        widget: list
+        field: { name: redirectUri, label: Redirect uri, pattern: [ '^[a-zA-Z0-9_-]*$', "Must only contain alphanumeric or the \"-\" and \"_\" characters" ] }
       - { name: created, label: Date created, widget: datetime }
         # field: { name: relatedRule, label: Rule, widget: relation, collection: rules, search_fields: [title], value_field: uri, display_fields: [title], options_length: 5 }
       - { name: archivedreason, label: Archived Reason (leave blank if none), required: false }

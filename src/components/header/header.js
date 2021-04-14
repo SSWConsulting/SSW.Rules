@@ -49,7 +49,9 @@ const Header = ({ displayActions, ruleUri }) => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`/edit/#/collections/rules/entries/${ruleUri}/rule`}
+                  href={`/edit/#/collections/rule/entries/${
+                    ruleUri.split('/')[1]
+                  }/rule`}
                   className="action-btn-link-underlined"
                 >
                   <div>Edit</div>

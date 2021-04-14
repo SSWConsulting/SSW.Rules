@@ -34,7 +34,7 @@ collections:
         label: Authors 
         widget: list
         fields:
-          - { name: title, label: Title }
+          - { name: title, label: Name }
           - { name: url, label: Profile url, required: false }
           - { name: img, label: Profile image, required: false }
         default:

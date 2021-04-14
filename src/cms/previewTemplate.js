@@ -58,4 +58,8 @@ var PreviewTemplate = ({ entry }) => {
   );
 };
 
+PreviewTemplate.propTypes = {
+  entry: PropTypes.any.isRequired,
+};
+
 export default PreviewTemplate;

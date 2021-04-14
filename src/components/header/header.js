@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
 import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
-import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 import InfoIcon from '-!svg-react-loader!../../images/info.svg';
 import SignIn from '../signin/signin';
 import { parentSiteUrl } from '../../../site-config';

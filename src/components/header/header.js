@@ -2,12 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
 import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
-import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 import InfoIcon from '-!svg-react-loader!../../images/info.svg';
 import SignIn from '../signin/signin';
 import { parentSiteUrl } from '../../../site-config';
-
-const rulesContentBranch = process.env.CONTENT_BRANCH;
 
 // Example of a component-specific page transition
 const AnimatedContainer = posed.div({
@@ -49,11 +46,16 @@ const Header = ({ displayActions, ruleUri }) => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${rulesContentBranch}/${ruleUri}`}
+                  href={
+                    ruleUri.split('/')[2] == 'rule.md'
+                      ? `/edit/#/collections/rule/entries/${
+                          ruleUri.split('/')[1]
+                        }/rule`
+                      : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/main/${ruleUri}`
+                  }
                   className="action-btn-link-underlined"
                 >
-                  <div>Edit</div>
-                  <GitHubIcon aria-label="logo" className="action-btn-icon" />
+                  <div className="edit-button-container">Edit</div>
                 </a>
                 <a
                   target="_blank"

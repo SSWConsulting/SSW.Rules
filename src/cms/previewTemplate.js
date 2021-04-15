@@ -38,7 +38,7 @@ var PreviewTemplate = ({ entry }) => {
   return (
     <body>
       <main>
-        <article className="rule-content">
+        <article className="rule-content editor-preview">
           <h1 style={{ fontSize: '2.25rem' }}>{title}</h1>
           <small className="history">
             Created on {format(new Date(created), 'dd MMM yyyy')} | Last updated

@@ -19,7 +19,6 @@ var customMarkdownIt = new markdownIt(options);
 customMarkdownIt.use(require('markdown-it-container'), 'classname', {
   validate: (name) => name.trim().length,
   render: (tokens, idx) => {
-    console.log(tokens[idx].nesting);
     if (tokens[idx].nesting === 1) {
       return `<div class="${tokens[idx].info.trim()}">\n`;
     } else {

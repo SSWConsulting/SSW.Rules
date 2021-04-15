@@ -61,7 +61,7 @@ var PreviewTemplate = ({ entry }) => {
           )}
           <hr />
           <div dangerouslySetInnerHTML={{ __html: bodyRendered }} />
-          <div>{bodyRendered}</div>
+          {/* <div>{bodyRendered}</div> */}
         </article>
       </main>
     </body>

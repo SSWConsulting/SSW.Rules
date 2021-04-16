@@ -17,7 +17,6 @@ module.exports = {
       options: {
         stylesPath: `${__dirname}/src/styles.css`,
         modulePath: `${__dirname}/src/cms/cms.js`,
-        publicPath: 'edit',
       },
     },
     'gatsby-plugin-react-helmet',

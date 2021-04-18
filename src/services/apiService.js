@@ -69,7 +69,7 @@ export async function RemoveReaction(data, token) {
 export async function GetBookmarksForUser(userId, ruleId) {
   var query = ruleId
     ? `${API_URL}/GetBookmarkStatusFunction?rule_guid=${ruleId}&user_id=${userId}`
-    : `${API_URL}/GetAllBookmarked?user_id=${userId}`;
+    : `${API_URL}/GetAllBookmarkedFunction?user_id=${userId}`;
   const response = await fetch(query);
   return await response.json();
 }
@@ -196,7 +196,7 @@ export async function ConnectUserCommentsAccount(data, token) {
       message: 'Data is empty or in the wrong format',
     };
   }
-  await fetch(`${API_URL}/ConnectUserCommentsFunction`, {
+  await fetch(`${API_URL}/ConnectUserToCommentsFunction`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -214,7 +214,7 @@ export async function RemoveUserCommentsAccount(data, token) {
       message: 'Data is empty or in the wrong format',
     };
   }
-  await fetch(`${API_URL}/RemoveUserCommentsAccount`, {
+  await fetch(`${API_URL}/RemoveUserCommentsAccountFunction`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -46,8 +46,7 @@ export const ReactionType = {
 };
 
 export async function RemoveReaction(data, token) {
-  const isEmpty = Object.values(data).some((x) => x == null);
-  if (!data || isEmpty) {
+  if (!data || Object.values(data).some((x) => !x)) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -75,8 +74,7 @@ export async function GetBookmarksForUser(userId, ruleId) {
 }
 
 export async function BookmarkRule(data, token) {
-  const isEmpty = Object.values(data).some((x) => !x);
-  if (!data || isEmpty) {
+  if (!data || Object.values(data).some((x) => !x)) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -94,8 +92,7 @@ export async function BookmarkRule(data, token) {
 }
 
 export async function RemoveBookmark(data, token) {
-  const isEmpty = Object.values(data).some((x) => !x);
-  if (!data || isEmpty) {
+  if (!data || Object.values(data).some((x) => !x)) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -141,8 +138,7 @@ export async function GetGithubOrganisationName(orgID) {
 }
 
 export async function setUserOrganisation(data, token) {
-  const isEmpty = Object.values(data).some((x) => !x);
-  if (!data || isEmpty) {
+  if (!data || Object.values(data).some((x) => !x)) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -189,8 +185,7 @@ export async function GetUser(userId, token) {
 }
 
 export async function ConnectUserCommentsAccount(data, token) {
-  const isEmpty = Object.values(data).some((x) => !x);
-  if (!data || isEmpty) {
+  if (!data || Object.values(data).some((x) => !x)) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -207,8 +202,7 @@ export async function ConnectUserCommentsAccount(data, token) {
 }
 
 export async function RemoveUserCommentsAccount(data, token) {
-  const isEmpty = Object.values(data).some((x) => !x);
-  if (!data || isEmpty) {
+  if (!data || Object.values(data).some((x) => !x)) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',

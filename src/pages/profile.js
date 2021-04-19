@@ -77,9 +77,7 @@ const Profile = ({ data, gitHubUsername }) => {
                     <DisqusIcon className="profile-disqus-icon" />
                     Disqus account
                   </a>
-                ) : (
-                  <></>
-                )}
+                ) : null}
               </div>
               <ProfileFilterMenu
                 selectedFilter={selectedFilter}

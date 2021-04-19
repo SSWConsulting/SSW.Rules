@@ -6,6 +6,13 @@ import {
   GetGithubOrganisations,
   setUserOrganisation,
 } from '../../services/apiService';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
 
 const SignIn = () => {
   const {
@@ -35,7 +42,10 @@ const SignIn = () => {
             });
           })
           .catch((err) => {
-            console.error('error: ' + err);
+            appInsights.trackException({
+              error: new Error(err),
+              severityLevel: 3,
+            });
           })
       : null;
   };

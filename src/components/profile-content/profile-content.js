@@ -23,6 +23,13 @@ import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Filter } from '../profile-filter-menu/profile-filter-menu';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
 
 const ProfileContent = (props) => {
   const [bookmarkedRules, setBookmarkedRules] = useState();
@@ -53,12 +60,22 @@ const ProfileContent = (props) => {
               setChange(change + 1);
               props.setListChangeCallback(props.listChange + 1);
             })
-            .catch((error) => console.error(error))
+            .catch((err) => {
+              appInsights.trackException({
+                error: new Error(err),
+                severityLevel: 3,
+              });
+            })
         : RemoveReaction({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setChange(change + 1);
             })
-            .catch((error) => console.error(error));
+            .catch((err) => {
+              appInsights.trackException({
+                error: new Error(err),
+                severityLevel: 3,
+              });
+            });
     }
   }
 
@@ -81,7 +98,12 @@ const ProfileContent = (props) => {
         setBookmarkedRules(bookmarkedRulesSpread);
         props.setBookmarkedRulesCount(bookmarkedRulesSpread.length);
       })
-      .catch((error) => console.error(error));
+      .catch((err) => {
+        appInsights.trackException({
+          error: new Error(err),
+          severityLevel: 3,
+        });
+      });
   }
 
   async function getUserComments() {
@@ -94,7 +116,6 @@ const ProfileContent = (props) => {
       } else {
         GetDisqusUserCommentsList(success.user.commentsUserId)
           .then((success) => {
-            console.log(success);
             if (success.code == 12) {
               setDisqusPrivacyEnabled(true);
             } else {
@@ -121,12 +142,22 @@ const ProfileContent = (props) => {
                       );
                       props.setCommentedRulesCount(commentedRulesSpread.length);
                     })
-                    .catch((error) => console.error(error));
+                    .catch((err) => {
+                      appInsights.trackException({
+                        error: new Error(err),
+                        severityLevel: 3,
+                      });
+                    });
                 }
               });
             }
           })
-          .catch((error) => console.error(error));
+          .catch((err) => {
+            appInsights.trackException({
+              error: new Error(err),
+              severityLevel: 3,
+            });
+          });
       }
     });
   }
@@ -191,7 +222,12 @@ const ProfileContent = (props) => {
         setSuperDislikedRules(superDislikedRules);
         props.setSuperDislikedRulesCount(superDislikedRules.length);
       })
-      .catch((error) => console.error(error));
+      .catch((err) => {
+        appInsights.trackException({
+          error: new Error(err),
+          severityLevel: 3,
+        });
+      });
   }
 
   useEffect(() => {
@@ -323,7 +359,7 @@ const RuleList = ({
   const linkRef = useRef();
   const iconClass = type.replace(/\s+/g, '-');
   const [disqusUsername, setDisqusUsername] = useState();
-  const [usernameIsValid, setUsernameIsValid] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const components = {
     greyBox: GreyBox,
@@ -336,7 +372,12 @@ const RuleList = ({
       .then(() => {
         setListChange(listChange + 1);
       })
-      .catch((error) => console.error(error));
+      .catch((err) => {
+        appInsights.trackException({
+          error: new Error(err),
+          severityLevel: 3,
+        });
+      });
   }
 
   useEffect(() => {}, [userCommentsConnected, listChange]);
@@ -352,7 +393,7 @@ const RuleList = ({
                 <div>
                   <input
                     className={
-                      usernameIsValid
+                      !errorMessage
                         ? 'username-input-box'
                         : 'username-input-box-error'
                     }
@@ -372,11 +413,7 @@ const RuleList = ({
                     />
                     <span className="tooltiptext">Forgot username? </span>
                   </div>
-                  {!usernameIsValid ? (
-                    <p className="error-text">Username does not exist</p>
-                  ) : (
-                    <></>
-                  )}
+                  <p className="error-text">{errorMessage}</p>
                 </div>
 
                 <button
@@ -386,7 +423,7 @@ const RuleList = ({
                       GetDisqusUser(disqusUsername)
                         .then(async (success) => {
                           if (success.code == 2) {
-                            setUsernameIsValid(false);
+                            setErrorMessage('Username does not exist');
                           }
                           const jwt = await getIdTokenClaims();
                           ConnectUserCommentsAccount(
@@ -396,12 +433,25 @@ const RuleList = ({
                             },
                             jwt.__raw
                           )
-                            .then(() => {
-                              setListChange(listChange + 1);
+                            .then((response) => {
+                              setListChange(response + 1);
+                              if (response.code == 409) {
+                                setErrorMessage('Another user is already using this comments account');
+                              }
                             })
-                            .catch((error) => console.error(error));
+                            .catch((err) => {
+                              appInsights.trackException({
+                                error: new Error(err),
+                                severityLevel: 3,
+                              });
+                            });
                         })
-                        .catch((error) => console.error(error));
+                        .catch((err) => {
+                          appInsights.trackException({
+                            error: new Error(err),
+                            severityLevel: 3,
+                          });
+                        });
                     }
                   }}
                 >

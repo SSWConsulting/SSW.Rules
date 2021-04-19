@@ -2143,8 +2143,9 @@ div.greybox {
   border-top: 1px solid #f5f5f5
 }
 
-.utterances {
-  max-width: 60rem;
+.disqus-box {
+  margin-bottom: 5rem;
+  padding: 1rem 1.5rem;
 }
 
 /* 404 page

@@ -8,12 +8,7 @@ const Comments = (props) => {
     title: props.title,
   };
   return (
-    <div
-      style={{
-        marginBottom: '5rem',
-        padding: '1rem 1.5rem',
-      }}
-    >
+    <div className="disqus-box">
       <hr className="pb-4" />
       <Disqus config={disqusConfig} />
     </div>

@@ -2481,6 +2481,10 @@ margin-bottom: 1em;
 
 /* Netlify CMS editor preview */
 
+.rule-heading {
+  font-size: 2.25rem;
+}
+
 .editor-preview a {
   text-decoration: underline;
   color: black;

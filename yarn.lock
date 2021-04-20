@@ -9,17 +9,17 @@
   dependencies:
     tslib "~2.0.1"
 
-"@auth0/auth0-react@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@auth0/auth0-react/-/auth0-react-1.2.0.tgz#6d63a3aa618f610ba3a5c0f51d513907f62d1802"
-  integrity sha512-Gq6N4s3I/+B90Xz2JeUQUkulHef5m0FgfvMO2gew60tQYjkvWUtuwK9IOMs5xjp9PISQmdsMkpZoXmLESRb+9w==
+"@auth0/auth0-react@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-react/-/auth0-react-1.4.0.tgz#5c7d4aa653f07263fe8dd8852643b632a4086a70"
+  integrity sha512-ksnNFDdmFu5fyu40v8UWff1kpFobXOtybPn9cnDwznmNmOZbDemfI0y7Rk69l0ZeeOUoKnffXIOjaZlD+6RCAg==
   dependencies:
-    "@auth0/auth0-spa-js" "^1.13.1"
+    "@auth0/auth0-spa-js" "^1.14.0"
 
-"@auth0/auth0-spa-js@^1.13.1":
-  version "1.13.6"
-  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-1.13.6.tgz#3ad50e1a60467cd35ff3887edef67399bff98dfc"
-  integrity sha512-o+Mb0YXrasP364j+WB5hoALoL9sn8SZC0rDFLcyks6HUnQH/vzupdoWWFAIl1+EocAFB3CGMgSc425wpHNB4pw==
+"@auth0/auth0-spa-js@^1.14.0":
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-1.14.0.tgz#20e72dd8e6a3f5b2a6d8f2c7c0ee316f3833537d"
+  integrity sha512-mMsqgLZlrDdFiq9/9YX693yUPKLTFKsNDTaVPHpXk/I1aCxfiRp1h0pSSFyoGOXmLy8ZEow6lhAcH9+h7IxgNQ==
   dependencies:
     abortcontroller-polyfill "^1.5.0"
     browser-tabs-lock "1.2.9"
@@ -2038,10 +2038,10 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.35"
 
-"@fortawesome/react-fontawesome@^0.1.9":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@fortawesome/react-fontawesome/-/react-fontawesome-0.1.12.tgz#fbdea86e8b73032895e6ded1ee1dbb1874902d1a"
-  integrity sha512-kV6HtqotM3K4YIXlTVvomuIi6QgGCvYm++ImyEx2wwgmSppZ6kbbA29ASwjAUBD63j2OFU0yoxeXpZkjrrX0qQ==
+"@fortawesome/react-fontawesome@^0.1.14":
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@fortawesome/react-fontawesome/-/react-fontawesome-0.1.14.tgz#bf28875c3935b69ce2dc620e1060b217a47f64ca"
+  integrity sha512-4wqNb0gRLVaBm/h+lGe8UfPPivcbuJ6ecI4hIgW0LjI7kzpYB9FkN0L9apbVzg+lsBdcTf0AlBtODjcSX5mmKA==
   dependencies:
     prop-types "^15.7.2"
 
@@ -2897,84 +2897,90 @@
   resolved "https://registry.yarnpkg.com/@mdx-js/util/-/util-2.0.0-next.8.tgz#66ecc27b78e07a3ea2eb1a8fc5a99dfa0ba96690"
   integrity sha512-T0BcXmNzEunFkuxrO8BFw44htvTPuAoKbLvTG41otyZBDV1Rs+JMddcUuaP5vXpTWtgD3grhcrPEwyx88RUumQ==
 
-"@microsoft/applicationinsights-analytics-js@2.5.9":
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-analytics-js/-/applicationinsights-analytics-js-2.5.9.tgz#85b4bece7d4221542110c02616575b5df3a13d16"
-  integrity sha512-9L3fb1H1as+J3J2j2EDx1HEMdrucjgR4INqahy+ZAxDPFvR3HCOedYzx645zObBIPu7QkH2LAjPk4fuNGHR1rg==
+"@microsoft/applicationinsights-analytics-js@2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-analytics-js/-/applicationinsights-analytics-js-2.6.1.tgz#0d12500e8dcdb831880204e1c9643ab9ab1a63bc"
+  integrity sha512-wRH67jZTPy6SP54ygAQsFXu5ZnfzGOoMkA6ll1pkhSC4hij7Cvzumr4PYkr2gIPBPxD354sLOjBL/lmOgBTc5g==
   dependencies:
-    "@microsoft/applicationinsights-common" "2.5.9"
-    "@microsoft/applicationinsights-core-js" "2.5.9"
+    "@microsoft/applicationinsights-common" "2.6.1"
+    "@microsoft/applicationinsights-core-js" "2.6.1"
     "@microsoft/applicationinsights-shims" "1.0.3"
-    "@microsoft/dynamicproto-js" "^1.0.0"
+    "@microsoft/dynamicproto-js" "^1.1.1"
 
-"@microsoft/applicationinsights-channel-js@2.5.9":
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-channel-js/-/applicationinsights-channel-js-2.5.9.tgz#942bf316f625e43b375d906529505ff1ba6c3779"
-  integrity sha512-NAQ/2wWmD+gaIZDCMzzwxm8RcbswDvUO5BYeuW9UHJaFuEZ9o9xpztKVz32u4CMv7OI/mLOqnmR4rb0d+kUMwQ==
+"@microsoft/applicationinsights-channel-js@2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-channel-js/-/applicationinsights-channel-js-2.6.1.tgz#a987bef1aaa11dd7d3cc9825fb260b186abd6d0f"
+  integrity sha512-oatERKW3eAjVNm5ej2NpRvBCCtPtiINIKxLiWVHv2SC2rzGrUnxNWFlUJojRT+u5ZXXsB51Ktw9gx8iHexnDVw==
   dependencies:
-    "@microsoft/applicationinsights-common" "2.5.9"
-    "@microsoft/applicationinsights-core-js" "2.5.9"
+    "@microsoft/applicationinsights-common" "2.6.1"
+    "@microsoft/applicationinsights-core-js" "2.6.1"
     "@microsoft/applicationinsights-shims" "1.0.3"
-    "@microsoft/dynamicproto-js" "^1.0.0"
+    "@microsoft/dynamicproto-js" "^1.1.1"
 
-"@microsoft/applicationinsights-common@2.5.9":
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-common/-/applicationinsights-common-2.5.9.tgz#484a131bfb17c92af59c5ffd9577d134e3ebc219"
-  integrity sha512-dKmXO9m55uRDhpoa0P7l+BApf+lsrqjgoLeKv+ABM8ygIyd9JH6CDcdaT3af+kUFtt9Oj3ChyfueKr1EVOdGkQ==
+"@microsoft/applicationinsights-common@2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-common/-/applicationinsights-common-2.6.1.tgz#211ee9c7b501ce6a82624f4f51c9237d7d7b3503"
+  integrity sha512-kV/dI9UwTew3mq+3F3Tkl2dBn2C4+FOOG3S5cS7/SssVsUlvLrWXBrOOxfIJ7+EjQQ6ijcqlDus4Nz7Ms2Kk2Q==
   dependencies:
-    "@microsoft/applicationinsights-core-js" "2.5.9"
+    "@microsoft/applicationinsights-core-js" "2.6.1"
     "@microsoft/applicationinsights-shims" "1.0.3"
+    "@microsoft/dynamicproto-js" "^1.1.1"
 
-"@microsoft/applicationinsights-core-js@2.5.9":
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-core-js/-/applicationinsights-core-js-2.5.9.tgz#55dcfa64bb28607c5b442f4c27a7d8115bc4b657"
-  integrity sha512-KE9h1wmC/Ckm7jYjsMF1SEWQnk0v0CRzZq1upSARgPH7BgmyClXz1kdnLtuTWz8Aha8IIH9dW2hUOfPCdR+BpQ==
+"@microsoft/applicationinsights-core-js@2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-core-js/-/applicationinsights-core-js-2.6.1.tgz#2277d58a132be75a7c8191153881ce7beb536c2f"
+  integrity sha512-SFnTx48BGkmz6P9GvXFeIZ641vnfrKo0hB74Hp9GR7UE3hqIDuomIBQS17unnh05T5w3PWKlDCGNpiCbJV6kzQ==
   dependencies:
     "@microsoft/applicationinsights-shims" "1.0.3"
-    "@microsoft/dynamicproto-js" "^1.0.0"
+    "@microsoft/dynamicproto-js" "^1.1.1"
 
-"@microsoft/applicationinsights-dependencies-js@2.5.9":
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-dependencies-js/-/applicationinsights-dependencies-js-2.5.9.tgz#685b5ae675e180028f3e7d3ce089d717d158212e"
-  integrity sha512-pNM/dkUOscV0ul/YJe928+77EBtRkRXO/le/VWzlunoUFaEEo4pirc7NycvPx9w/KxA62JMEogbQsWE6nAmqPg==
+"@microsoft/applicationinsights-dependencies-js@2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-dependencies-js/-/applicationinsights-dependencies-js-2.6.1.tgz#b619e08fccb85372d212dda898063865e775d879"
+  integrity sha512-Y7R6BjzyB6NrkIBTT6FJrr2jKr8MiLxy264b1xUQHjry3Bwu+fsPJ7EETV61dkOEHs6IlWxAtikNCv8f3zQydw==
   dependencies:
-    "@microsoft/applicationinsights-common" "2.5.9"
-    "@microsoft/applicationinsights-core-js" "2.5.9"
+    "@microsoft/applicationinsights-common" "2.6.1"
+    "@microsoft/applicationinsights-core-js" "2.6.1"
     "@microsoft/applicationinsights-shims" "1.0.3"
-    "@microsoft/dynamicproto-js" "^1.0.0"
+    "@microsoft/dynamicproto-js" "^1.1.1"
 
-"@microsoft/applicationinsights-properties-js@2.5.9":
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-properties-js/-/applicationinsights-properties-js-2.5.9.tgz#a71d74e669c472395ec24eb8a62f960a8a8f1554"
-  integrity sha512-mZxaC8CZsURn38IwsPaUx+o9QXQU2vm81THZL+1Lc+7scPo55ATDTFgZ2awIj7CdTp69oGzUkpB7maOn6+OVOw==
+"@microsoft/applicationinsights-properties-js@2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-properties-js/-/applicationinsights-properties-js-2.6.1.tgz#e19bff3492d06570cd4d519e8f6a536aa1de49d0"
+  integrity sha512-TQmKp9/j0yMGjUHBatRQ41E4S/1yTkJImh8csZxc4waMQmV9ITkNrDaC3bIPcrw+ASepI3QfP7sry+n7nvYLFw==
   dependencies:
-    "@microsoft/applicationinsights-common" "2.5.9"
-    "@microsoft/applicationinsights-core-js" "2.5.9"
+    "@microsoft/applicationinsights-common" "2.6.1"
+    "@microsoft/applicationinsights-core-js" "2.6.1"
     "@microsoft/applicationinsights-shims" "1.0.3"
+    "@microsoft/dynamicproto-js" "^1.1.1"
 
 "@microsoft/applicationinsights-shims@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-shims/-/applicationinsights-shims-1.0.3.tgz#9f1d16bab0430f25cc17611c537756cf4dfd3833"
   integrity sha512-+S17aqEkOYpyBpmclhgwcEplwnxSo5AxYBdRg38GBobI1GKPSpZfnLssLzcjJ6XZCS5tqB5xjyTZs6gHj7ZJWQ==
 
-"@microsoft/applicationinsights-web@^2.5.9":
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-web/-/applicationinsights-web-2.5.9.tgz#3122b8a4f9d76f8c0fa521246673681e70b0a338"
-  integrity sha512-dxg5XXbQqjWw9QmGdgbd7knb1qFA58FFYj9ObqRmlqiihk25kper7H15HH8LaV0lV6goClmBWc9KsNGA2veyeA==
+"@microsoft/applicationinsights-web@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-web/-/applicationinsights-web-2.6.1.tgz#5b61d987d6fe14a99504234deb70c644a28e2ec1"
+  integrity sha512-jKF6hpPq3pzLqLSVxTMh7HU9tr/SPOFJN12pFYpNMU/rAMs/fgZsmFG/oBAzYTZxNilDTFljoblB66J9X+K6RQ==
   dependencies:
-    "@microsoft/applicationinsights-analytics-js" "2.5.9"
-    "@microsoft/applicationinsights-channel-js" "2.5.9"
-    "@microsoft/applicationinsights-common" "2.5.9"
-    "@microsoft/applicationinsights-core-js" "2.5.9"
-    "@microsoft/applicationinsights-dependencies-js" "2.5.9"
-    "@microsoft/applicationinsights-properties-js" "2.5.9"
+    "@microsoft/applicationinsights-analytics-js" "2.6.1"
+    "@microsoft/applicationinsights-channel-js" "2.6.1"
+    "@microsoft/applicationinsights-common" "2.6.1"
+    "@microsoft/applicationinsights-core-js" "2.6.1"
+    "@microsoft/applicationinsights-dependencies-js" "2.6.1"
+    "@microsoft/applicationinsights-properties-js" "2.6.1"
     "@microsoft/applicationinsights-shims" "1.0.3"
-    "@microsoft/dynamicproto-js" "^1.0.0"
+    "@microsoft/dynamicproto-js" "^1.1.1"
 
-"@microsoft/dynamicproto-js@^1.0.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@microsoft/dynamicproto-js/-/dynamicproto-js-1.1.0.tgz#b6a81f4acc655ffd8f37feeb92e73a07e2b39622"
-  integrity sha512-pjcr+A6wTQHl/S4b5zQzeDMC6+9ekojCFHQAEYI4a8u9ZjWwbg4jmtO22CWEuRWWN/lBMjay9FKanlODWk5wqQ==
+"@microsoft/dynamicproto-js@^1.1.1":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@microsoft/dynamicproto-js/-/dynamicproto-js-1.1.2.tgz#a6c8f27c01d53e613c6f02d0d20dacca7eb3a3b7"
+  integrity sha512-lKhE+Jc8l4shvYF4C++WAMXpufxpQzBA/OoAAUq7kEPu5e+X+Cj2H8gGRobgz5eyrw3fGfpwUf2+4mfgmYMSLA==
+  dependencies:
+    findup-sync "^4.0.0"
+    nopt "^5.0.0"
+    pify "^2.3.0"
 
 "@mikaelkristiansson/domready@^1.0.10":
   version "1.0.10"
@@ -5515,15 +5521,10 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.5:
+classnames@^2.2.5, classnames@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
   integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
-
-classnames@^2.2.6:
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
-  integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
 
 clean-css@4.2.x:
   version "4.2.3"
@@ -5999,6 +6000,11 @@ core-js-pure@^3.0.0:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.7.0.tgz#28a57c861d5698e053f0ff36905f7a3301b4191e"
   integrity sha512-EZD2ckZysv8MMt4J6HSvS9K2GdtlZtdBncKAmF9lr2n0c9dJUaUN88PSTjvgwCgQPWKTkERXITgS6JJRAnljtg==
 
+core-js@^3.10.2:
+  version "3.10.2"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.10.2.tgz#17cb038ce084522a717d873b63f2b3ee532e2cd5"
+  integrity sha512-W+2oVYeNghuBr3yTzZFQ5rfmjZtYB/Ubg87R5YOmlGrIb+Uw9f7qjUbhsj+/EkXhcV7eOD3jiM4+sgraX3FZUw==
+
 core-js@^3.6.5:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.7.0.tgz#b0a761a02488577afbf97179e4681bf49568520f"
@@ -6415,10 +6421,15 @@ dataloader@2.0.0:
   resolved "https://registry.yarnpkg.com/dataloader/-/dataloader-2.0.0.tgz#41eaf123db115987e21ca93c005cd7753c55fe6f"
   integrity sha512-YzhyDAwA4TaQIhM5go+vCLmU0UikghC/t9DTQYZR2M/UvZ1MdOhPezSDZcjj9uqQJOMqjLcpWtyW2iNINdlatQ==
 
-date-fns@^2.14.0, date-fns@^2.16.1:
+date-fns@^2.14.0:
   version "2.16.1"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.16.1.tgz#05775792c3f3331da812af253e1a935851d3834b"
   integrity sha512-sAJVKx/FqrLYHAQeN7VpJrPhagZc9R4ImZIWYRFZaaohR3KzmuK88touwsSwSVT8Qcbd4zoDsnGfX4GFB4imyQ==
+
+date-fns@^2.21.1:
+  version "2.21.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.21.1.tgz#679a4ccaa584c0706ea70b3fa92262ac3009d2b0"
+  integrity sha512-m1WR0xGiC6j6jNFAyW4Nvh4WxAi4JF4w9jRJwSI8nBmNcyZXPcP9VUQG+6gHQXAmqaGEKDKhOqAtENDC941UkA==
 
 debug@2, debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.6, debug@^2.6.9:
   version "2.6.9"
@@ -6693,6 +6704,11 @@ detab@^2.0.0:
   integrity sha512-8zdsQA5bIkoRECvCrNKPla84lyoR7DSAyf7p0YgXzBO9PDJx8KntPUay7NS6yp+KdxdVtiE5SpHKtbp2ZQyA9g==
   dependencies:
     repeat-string "^1.5.4"
+
+detect-file@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/detect-file/-/detect-file-1.0.0.tgz#f0d66d03672a825cb1b73bdb3fe62310c8e552b7"
+  integrity sha1-8NZtA2cqglyxtzvbP+YjEMjlUrc=
 
 detect-libc@^1.0.3:
   version "1.0.3"
@@ -7453,10 +7469,10 @@ eslint-plugin-jsx-a11y@^6.3.1:
     jsx-ast-utils "^3.1.0"
     language-tags "^1.0.5"
 
-eslint-plugin-prettier@^3.1.3:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.1.4.tgz#168ab43154e2ea57db992a2cd097c828171f75c2"
-  integrity sha512-jZDa8z76klRqo+TdGDTFJSavwbnWK2ZpqGKNZ+VvweMW516pDUMmQ2koXvxEE4JhzNvTv+radye/bWGBmA6jmg==
+eslint-plugin-prettier@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.4.0.tgz#cdbad3bf1dbd2b177e9825737fe63b476a08f0c7"
+  integrity sha512-UDK6rJT6INSfcOo545jiaOwB701uAIt2/dR7WnFQoGCVl1/EMqdANBmwUaqqQ45aXprsTGzSa39LI1PyuRBxxw==
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
@@ -8217,6 +8233,16 @@ find-versions@^3.0.0:
   dependencies:
     semver-regex "^2.0.0"
 
+findup-sync@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/findup-sync/-/findup-sync-4.0.0.tgz#956c9cdde804052b881b428512905c4a5f2cdef0"
+  integrity sha512-6jvvn/12IC4quLBL1KNokxC7wWTvYncaVUYSoxWw7YykPLuRrnv4qdHcSOywOI5RpkOVGeQRtWM8/q+G6W6qfQ==
+  dependencies:
+    detect-file "^1.0.0"
+    is-glob "^4.0.0"
+    micromatch "^4.0.2"
+    resolve-dir "^1.0.1"
+
 flat-cache@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-2.0.1.tgz#5d296d6f04bda44a4630a301413bdbc2ec085ec0"
@@ -8747,14 +8773,14 @@ gatsby-remark-custom-blocks@^2.3.9:
     "@babel/runtime" "^7.11.2"
     remark-custom-blocks "^2.5.0"
 
-gatsby-remark-embed-video@^3.0.10:
-  version "3.0.10"
-  resolved "https://registry.yarnpkg.com/gatsby-remark-embed-video/-/gatsby-remark-embed-video-3.0.10.tgz#2813199338d27e731783a6f8663477f877e72b73"
-  integrity sha512-3dQgw0g3nndspiXkz7pKOXZs67I1Cz/sefyjXQ2bq6gtdX3qBdBurMuAeIlk0TgueMJCbR8SyFjMyVdI0LAJDg==
+gatsby-remark-embed-video@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/gatsby-remark-embed-video/-/gatsby-remark-embed-video-3.1.1.tgz#a457c9ad1c97436734245e90541f7d0dc21678e2"
+  integrity sha512-icqxETtK/WzP6yAwqxlide4UuBY5V6Q6uOYNSdN7d4iLyMxncScmAZFHh0n+NeYWM+lK2nUD9zU0r3v0q5WOhA==
   dependencies:
-    get-video-id "^3.1.4"
+    get-video-id "^3.1.9"
     remark-burger "^1.0.1"
-    unist-util-visit "^2.0.2"
+    unist-util-visit "^2.0.3"
 
 gatsby-remark-fenced-divs@^1.0.3:
   version "1.0.3"
@@ -8856,12 +8882,12 @@ gatsby-source-git@^1.0.2:
     rimraf "^2.6.2"
     simple-git "^1.105.0"
 
-gatsby-source-local-git@^1.0.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/gatsby-source-local-git/-/gatsby-source-local-git-1.1.1.tgz#81a36e77b2b0cf353e76c9ef01846a43d4af6155"
-  integrity sha512-i4bzfR2d1i/xyveU3J3i8lL0C8hC0PKv9oBbonEEeEypo8QCQpOjVIX1qKWUQkOjs5tto/IIvFV3ITOUKLNwvQ==
+gatsby-source-local-git@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/gatsby-source-local-git/-/gatsby-source-local-git-1.2.2.tgz#11b61afbf36bf3f57e8ee6364bc9e7d153488a5d"
+  integrity sha512-VVUtBOaSPRYsgj1Fm0fmebadDhWFu9q2Anxa/+LNwYYToRRm5qNblrnQJfzwq1cbchVZ+SxjDz1eDaqk03UJTA==
   dependencies:
-    simple-git "^2.15.0"
+    simple-git "^2.36.0"
 
 gatsby-telemetry@^1.10.1, gatsby-telemetry@^1.6.0:
   version "1.10.1"
@@ -9183,10 +9209,10 @@ get-value@^2.0.3, get-value@^2.0.6:
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
   integrity sha1-3BXKHGcjh8p2vTesCjlbogQqLCg=
 
-get-video-id@^3.1.4:
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/get-video-id/-/get-video-id-3.1.5.tgz#69f25ecb77d8021d25476f578e0ede2df5bc61a3"
-  integrity sha512-jAc0aZiMava8lFJB/t/VyVKaYtcB9dVAKH/T7rjkYhnzHQ58WDlG9eKJgbzLJ+x0gPHrT87IvXkTP8tByB3ADg==
+get-video-id@^3.1.9:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/get-video-id/-/get-video-id-3.2.0.tgz#852e153c7e651ac222b3887843ef7b1566c2894a"
+  integrity sha512-58JnnJD9uRh1pviNaP3lOMjGawYacnjUSpUqQorRB/GiMl+h4vnNye45mGVvSZhKNyq59I8OfyqwrGmvScb9fQ==
   dependencies:
     get-src "^1.0.1"
 
@@ -13056,6 +13082,13 @@ noop-logger@^0.1.1:
   resolved "https://registry.yarnpkg.com/noop-logger/-/noop-logger-0.1.1.tgz#94a2b1633c4f1317553007d8966fd0e841b6a4c2"
   integrity sha1-lKKxYzxPExdVMAfYlm/Q6EG2pMI=
 
+nopt@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/nopt/-/nopt-5.0.0.tgz#530942bb58a512fccafe53fe210f13a25355dc88"
+  integrity sha512-Tbj67rffqceeLpcRXrT7vKAN8CwfPeIBgM7E6iBkmKLV7bEMwpGgYLGv0jACUsECaa/vuxP0IjEont6umdMgtQ==
+  dependencies:
+    abbrev "1"
+
 nopt@~1.0.10:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-1.0.10.tgz#6ddd21bd2a31417b92727dd585f8a6f37608ebee"
@@ -14623,6 +14656,11 @@ prettier@^2.0.5:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.1.2.tgz#3050700dae2e4c8b67c4c3f666cdb8af405e1ce5"
   integrity sha512-16c7K+x4qVlJg9rEbXl7HEGmQyZlG4R9AgP+oHKRMsMsuk8s+ATStlf1NpDqyBI1HpVyfjLOeMhH2LvuNvV5Vg==
 
+prettier@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.2.1.tgz#795a1a78dd52f073da0cd42b21f9c91381923ff5"
+  integrity sha512-PqyhM2yCjg/oKkFPtTGUojv7gnZAoG80ttl45O6x2Ug/rMJw4wcc9k6aaf2hibP7BGVCCM33gZoGjyvt9mm16Q==
+
 pretty-bytes@^5.4.1:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/pretty-bytes/-/pretty-bytes-5.4.1.tgz#cd89f79bbcef21e3d21eb0da68ffe93f803e884b"
@@ -15170,10 +15208,10 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-modal@^3.11.2:
-  version "3.11.2"
-  resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.11.2.tgz#bad911976d4add31aa30dba8a41d11e21c4ac8a4"
-  integrity sha512-o8gvvCOFaG1T7W6JUvsYjRjMVToLZgLIsi5kdhFIQCtHxDkA47LznX62j+l6YQkpXDbvQegsDyxe/+JJsFQN7w==
+react-modal@^3.13.1:
+  version "3.13.1"
+  resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.13.1.tgz#a02dce63bbfee7582936f1e9835d518ef8f56453"
+  integrity sha512-m6yXK7I4YKssQnsjHK7xITSXy2O81BSOHOsg0/uWAsdKtuT9HF2tdoYhRuxNNQg2V+LgepsoHUPJKS8m6no+eg==
   dependencies:
     exenv "^1.2.0"
     prop-types "^15.5.10"
@@ -15190,10 +15228,10 @@ react-modal@^3.8.1:
     react-lifecycles-compat "^3.0.0"
     warning "^4.0.3"
 
-react-number-format@^4.4.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-4.4.1.tgz#d5614dd25edfc21ed48b97356213440081437a94"
-  integrity sha512-ZGFMXZ0U7DcmQ3bSZY3FULOA1mfqreT9NIMYZNoa/ouiSgiTQiYA95Uj2KN8ge6BRr+ghA5vraozqWqsHZQw3Q==
+react-number-format@^4.5.5:
+  version "4.5.5"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-4.5.5.tgz#563807ee142a03857111115806d39767bc698797"
+  integrity sha512-3NGqgSbMUwRwgJ4852RH24UFkW89yx/e0P78Hwmf3TajLMKCOJ7DPJCcl/6z+2+HpJ8AG7je/J8na3ykWx8acg==
   dependencies:
     prop-types "^15.7.2"
 
@@ -15687,10 +15725,10 @@ rehype-react@^3.1.0:
     has "^1.0.1"
     hast-to-hyperscript "^5.0.0"
 
-rehype-react@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/rehype-react/-/rehype-react-6.1.0.tgz#95f8c936eea2159f92adfbf58e5e90be86a97cbf"
-  integrity sha512-hQ4DSGOJKA1a87Ei4fJtSHzopbfgoHkwjWMCFpLrcVR5+AIyCOtHy4oQcpGF11kTZOU6oKmJ9UKzO/JpI/XZWA==
+rehype-react@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/rehype-react/-/rehype-react-6.2.0.tgz#705a5b3055548848ff8a7778c978fd368b0d4425"
+  integrity sha512-XpR3p8ejdJ5CSEKqAfASIrkD+KaHLy0JOqXu9zM32tvkr1cUeM7AeidF6Q8eQ/wtMvcJb+h/L4QRwg1eFwBggQ==
   dependencies:
     "@mapbox/hast-util-table-cell-style" "^0.1.3"
     hast-to-hyperscript "^9.0.0"
@@ -15958,7 +15996,7 @@ resolve-cwd@^3.0.0:
   dependencies:
     resolve-from "^5.0.0"
 
-resolve-dir@^1.0.0:
+resolve-dir@^1.0.0, resolve-dir@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/resolve-dir/-/resolve-dir-1.0.1.tgz#79a40644c362be82f26effe739c9bb5382046f43"
   integrity sha1-eaQGRMNivoLybv/nOcm7U4IEb0M=
@@ -16583,14 +16621,14 @@ simple-git@^1.105.0:
   dependencies:
     debug "^4.0.1"
 
-simple-git@^2.15.0:
-  version "2.21.0"
-  resolved "https://registry.yarnpkg.com/simple-git/-/simple-git-2.21.0.tgz#d25d3fdc6a139cd7f80f197541a6f9f6e9d4cbc8"
-  integrity sha512-rohCHmEjD/ESXFLxF4bVeqgdb4Awc65ZyyuCKl3f7BvgMbZOBa/Ye3HN/GFnvruiUOAWWNupxhz3Rz5/3vJLTg==
+simple-git@^2.36.0:
+  version "2.38.0"
+  resolved "https://registry.yarnpkg.com/simple-git/-/simple-git-2.38.0.tgz#5bc66bec40bce4f8ef950f4966f427799b4dd758"
+  integrity sha512-CORjrfirWMEGbJAxaXDH/PjZVOeATeG2bkafM9DsLVcFkbF9sXQGIIpEI6FeyXpvUsFK69T/pa4+4FKY9TUJMQ==
   dependencies:
     "@kwsites/file-exists" "^1.1.1"
     "@kwsites/promise-deferred" "^1.1.1"
-    debug "^4.1.1"
+    debug "^4.3.1"
 
 simple-swizzle@^0.2.2:
   version "0.2.2"
@@ -18362,7 +18400,7 @@ unist-util-visit@^1.0.0, unist-util-visit@^1.1.0, unist-util-visit@^1.3.0, unist
   dependencies:
     unist-util-visit-parents "^2.0.0"
 
-unist-util-visit@^2.0.0, unist-util-visit@^2.0.2:
+unist-util-visit@^2.0.0, unist-util-visit@^2.0.2, unist-util-visit@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/unist-util-visit/-/unist-util-visit-2.0.3.tgz#c3703893146df47203bb8a9795af47d7b971208c"
   integrity sha512-iJ4/RczbJMkD0712mGktuGpm/U4By4FfDonL7N/9tATGIF4imikjOuagyMY53tnZq3NP6BcmlrHhEKAfGWjh7Q==

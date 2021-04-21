@@ -16,6 +16,16 @@ let options = {
 };
 
 var customMarkdownIt = new markdownIt(options);
+customMarkdownIt.use(require('markdown-it-container'), 'classname', {
+  validate: (name) => name.trim().length,
+  render: (tokens, idx) => {
+    if (tokens[idx].nesting === 1) {
+      return `<div class="${tokens[idx].info.trim()}">\n`;
+    } else {
+      return '</div>\n';
+    }
+  },
+});
 
 var PreviewTemplate = ({ entry }) => {
   const title = entry.getIn(['data', 'title'], null);
@@ -27,8 +37,8 @@ var PreviewTemplate = ({ entry }) => {
   return (
     <body>
       <main>
-        <article className="rule-content">
-          <h1>{title}</h1>
+        <article className="rule-content editor-preview">
+          <h1 className="rule-heading">{title}</h1>
           <small className="history">
             Created on {format(new Date(created), 'dd MMM yyyy')} | Last updated
             by <strong>USER NAME </strong> now

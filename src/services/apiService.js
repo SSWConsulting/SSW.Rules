@@ -191,7 +191,7 @@ export async function ConnectUserCommentsAccount(data, token) {
       message: 'Data is empty or in the wrong format',
     };
   }
-  const response = await fetch(`${API_URL}/ConnectUserToCommentsFunction`, {
+  const response = await fetch(`${API_URL}/ConnectUserCommentsFunction`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -243,3 +243,9 @@ export async function GetCommentSlug(threadId) {
   );
   return response.json();
 }
+
+export const DisqusError = {
+  Success: 0,
+  AccessToLow: 12,
+  InvalidArg: 2,
+};

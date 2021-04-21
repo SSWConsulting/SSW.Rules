@@ -1,6 +1,5 @@
+/* eslint-disable no-undef */
 /* eslint-disable quotes */
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-console */
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'gatsby';
@@ -11,19 +10,21 @@ import {
   RemoveReaction,
   GetCommentSlug,
   GetDisqusUserCommentsList,
-  GetDisqusUser,
-  ConnectUserCommentsAccount,
   RemoveUserCommentsAccount,
   GetUser,
+  DisqusError,
 } from '../../services/apiService';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import DisqusIcon from '-!svg-react-loader!../../images/disqusIcon.svg';
-import PrivacyToggle from '../../images/privacyToggle.png';
+
 import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Filter } from '../profile-filter-menu/profile-filter-menu';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
+import CommentsNotConnected from '../comments-not-connected/comments-not-connected';
+import DisableDisqusPrivacy from '../disable-disqus-privacy/disable-disqus-privacy';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -32,12 +33,12 @@ const appInsights = new ApplicationInsights({
 });
 
 const ProfileContent = (props) => {
-  const [bookmarkedRules, setBookmarkedRules] = useState();
-  const [superLikedRulesList, setSuperLikedRules] = useState();
-  const [likedRulesList, setLikedRules] = useState();
-  const [dislikedRulesList, setDislikedRules] = useState();
-  const [superDislikedRulesList, setSuperDislikedRules] = useState();
-  const [commentedRulesList, setCommentedRulesList] = useState();
+  const [bookmarkedRules, setBookmarkedRules] = useState([]);
+  const [superLikedRulesList, setSuperLikedRules] = useState([]);
+  const [likedRulesList, setLikedRules] = useState([]);
+  const [dislikedRulesList, setDislikedRules] = useState([]);
+  const [superDislikedRulesList, setSuperDislikedRules] = useState([]);
+  const [commentedRulesList, setCommentedRulesList] = useState([]);
   const [userCommentsConnected, setUserCommentsConnected] = useState(true);
   const [disqusPrivacyEnabled, setDisqusPrivacyEnabled] = useState(false);
   const [change, setChange] = useState(0);
@@ -106,9 +107,53 @@ const ProfileContent = (props) => {
       });
   }
 
+  async function getGuidFromDisqus(comment) {
+    if (comment.forum == process.env.DISQUS_FORUM) {
+      const guid = await GetCommentSlug(comment.thread)
+        .then((success) => {
+          return success.response.identifiers[0];
+        })
+        .catch((err) => {
+          appInsights.trackException({
+            error: new Error(err),
+            severityLevel: 3,
+          });
+        });
+
+      return guid;
+    }
+  }
+
+  async function createGuidList(response) {
+    var guids = response.map((comment) => {
+      return getGuidFromDisqus(comment);
+    });
+
+    return await Promise.all(guids);
+  }
+
+  async function setCommentedRulesFromGuids(reponse) {
+    const commentedRuleGuids = await createGuidList(reponse);
+
+    const allRules = props.data.allMarkdownRemark.nodes;
+
+    const commentedRulesMap = allRules.filter((value) =>
+      commentedRuleGuids.includes(value.frontmatter.guid)
+    );
+
+    const commentedRulesSpread = commentedRulesMap.map((r) => ({
+      ...r.frontmatter,
+      excerpt: r.excerpt,
+      htmlAst: r.htmlAst,
+    }));
+    if (commentedRulesSpread) {
+      setCommentedRulesList(commentedRulesSpread);
+      props.setCommentedRulesCount(commentedRulesSpread.length);
+    }
+  }
+
   async function getUserComments() {
     const jwt = await getIdTokenClaims();
-    const commentedRuleGuids = [];
     GetUser(user.sub, jwt.__raw).then((success) => {
       setUserCommentsConnected(success.commentsConnected);
       if (!success.commentsConnected) {
@@ -116,40 +161,10 @@ const ProfileContent = (props) => {
       } else {
         GetDisqusUserCommentsList(success.user.commentsUserId)
           .then((success) => {
-            if (success.code == 12) {
+            if (success.code == DisqusError.AccessToLow) {
               setDisqusPrivacyEnabled(true);
             } else {
-              const allRules = props.data.allMarkdownRemark.nodes;
-              success.response.forEach((comment) => {
-                if (comment.forum == process.env.DISQUS_FORUM) {
-                  GetCommentSlug(comment.thread)
-                    .then((success) => {
-                      commentedRuleGuids.push(success.response.identifiers[0]);
-                      const commentedRulesMap = allRules.filter((value) =>
-                        commentedRuleGuids.includes(value.frontmatter.guid)
-                      );
-                      const commentedRulesSpread = commentedRulesMap.map(
-                        (r) => ({
-                          ...r.frontmatter,
-                          excerpt: r.excerpt,
-                          htmlAst: r.htmlAst,
-                        })
-                      );
-                      setCommentedRulesList(
-                        commentedRulesSpread == undefined
-                          ? []
-                          : commentedRulesSpread
-                      );
-                      props.setCommentedRulesCount(commentedRulesSpread.length);
-                    })
-                    .catch((err) => {
-                      appInsights.trackException({
-                        error: new Error(err),
-                        severityLevel: 3,
-                      });
-                    });
-                }
-              });
+              setCommentedRulesFromGuids(success.response);
             }
           })
           .catch((err) => {
@@ -358,8 +373,6 @@ const RuleList = ({
 }) => {
   const linkRef = useRef();
   const iconClass = type.replace(/\s+/g, '-');
-  const [disqusUsername, setDisqusUsername] = useState();
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const components = {
     greyBox: GreyBox,
@@ -384,113 +397,23 @@ const RuleList = ({
 
   return (
     <>
-      {rules == undefined || rules.toString() == '' || !rules ? (
+      {rules.length == 0 ? (
         type == 'comment' ? (
           !userCommentsConnected ? (
-            <div className="connect-acc-container">
-              <DisqusIcon className="disqus-large-icon" />
-              <div className="form">
-                <div>
-                  <input
-                    className={
-                      !errorMessage
-                        ? 'username-input-box'
-                        : 'username-input-box-error'
-                    }
-                    type="text"
-                    name="disqusId"
-                    value={disqusUsername}
-                    placeholder="Enter Disqus Username"
-                    onChange={(e) => setDisqusUsername(e.target.value)}
-                  />
-                  <div className="forgot-username-tooltip">
-                    {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
-                    <a
-                      href="https://disqus.com/home/"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="get-username-btn unstyled"
-                    />
-                    <span className="tooltiptext">Forgot username? </span>
-                  </div>
-                  <p className="error-text">{errorMessage}</p>
-                </div>
-
-                <button
-                  className="connect-acc-button"
-                  onClick={() => {
-                    if (disqusUsername) {
-                      GetDisqusUser(disqusUsername)
-                        .then(async (success) => {
-                          if (success.code == 2) {
-                            setErrorMessage('Username does not exist');
-                          }
-                          const jwt = await getIdTokenClaims();
-                          ConnectUserCommentsAccount(
-                            {
-                              UserId: user.sub,
-                              CommentsUserId: success.response.id,
-                            },
-                            jwt.__raw
-                          )
-                            .then((response) => {
-                              setListChange(response + 1);
-                              if (response.code == 409) {
-                                setErrorMessage('Another user is already using this comments account');
-                              }
-                            })
-                            .catch((err) => {
-                              appInsights.trackException({
-                                error: new Error(err),
-                                severityLevel: 3,
-                              });
-                            });
-                        })
-                        .catch((err) => {
-                          appInsights.trackException({
-                            error: new Error(err),
-                            severityLevel: 3,
-                          });
-                        });
-                    }
-                  }}
-                >
-                  Connect Account
-                </button>
-              </div>
-            </div>
+            <CommentsNotConnected
+              userCommentsConnected={userCommentsConnected}
+              listChange={listChange}
+              setListChange={setListChange}
+              key={type}
+            />
           ) : disqusPrivacyEnabled ? (
-            <>
-              <div className="warning-box">
-                SSW Rules cant see your comments!
-                <p />
-                Please go to your{' '}
-                <a
-                  href="https://disqus.com/home/settings/profile/"
-                  className="disqus-profile-link"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Disqus Profile{' '}
-                </a>
-                and disable <b>&#34;Keep your profile activity private&#34;</b>
-              </div>
-              <figure className="privacy-toggle-figure">
-                <img
-                  src={PrivacyToggle}
-                  alt="Screenshot of privacy toggle"
-                  className="privacy-toggle-image"
-                />
-                <figcaption className="privacy-toggle-caption">
-                  Figure: Location of the privacy toggle (This is usually
-                  disabled by default)
-                </figcaption>
-              </figure>
-            </>
+            <DisableDisqusPrivacy />
           ) : (
             <>
               <div className="no-content-message">
-                <p className="no-tagged-message">No tagged rules yet.</p>
+                <p className="no-tagged-message">
+                  No comment? Don{"'"}t be shy!
+                </p>
               </div>
             </>
           )
@@ -498,17 +421,15 @@ const RuleList = ({
           <>
             <div className="no-content-message">
               <p className="no-tagged-message">
-                {type == 'comment'
-                  ? "No comment? Don't be shy!"
-                  : type == 'bookmark'
+                {type == 'bookmark'
                   ? 'No bookmarks? Use them to save rules for later!'
                   : type == 'love'
                   ? 'Nothing here yet, show us the rules you love!'
                   : type == 'agree'
-                  ? "There should be more here, don't you agree?"
+                  ? `There should be more here, don${"'"}t you agree?`
                   : type == 'disagree'
                   ? 'What a happy chap you are, no disagreements here!'
-                  : "Let us know what you don't like, we are here to improve!"}
+                  : `Let us know what you don${"'"}t like, we are here to improve!`}
               </p>
             </div>
           </>

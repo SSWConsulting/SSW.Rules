@@ -26,6 +26,45 @@ const CommentsNotConnected = ({
 
   const { user, getIdTokenClaims } = useAuth0();
 
+  function connectAccounts() {
+    if (disqusUsername) {
+      GetDisqusUser(disqusUsername)
+        .then(async (success) => {
+          if (success.code == DisqusError.InvalidArg) {
+            setErrorMessage('Username does not exist');
+          }
+          const jwt = await getIdTokenClaims();
+          ConnectUserCommentsAccount(
+            {
+              UserId: user.sub,
+              CommentsUserId: success.response.id,
+            },
+            jwt.__raw
+          )
+            .then((response) => {
+              setListChange(response + 1);
+              if (response.code == 409) {
+                setErrorMessage(
+                  'Another user is already using this comments account'
+                );
+              }
+            })
+            .catch((err) => {
+              appInsights.trackException({
+                error: new Error(err),
+                severityLevel: 3,
+              });
+            });
+        })
+        .catch((err) => {
+          appInsights.trackException({
+            error: new Error(err),
+            severityLevel: 3,
+          });
+        });
+    }
+  }
+
   useEffect(() => {}, [userCommentsConnected, listChange]);
   return (
     <div className="connect-acc-container">
@@ -55,47 +94,7 @@ const CommentsNotConnected = ({
           <p className="error-text">{errorMessage}</p>
         </div>
 
-        <button
-          className="connect-acc-button"
-          onClick={() => {
-            if (disqusUsername) {
-              GetDisqusUser(disqusUsername)
-                .then(async (success) => {
-                  if (success.code == DisqusError.InvalidArg) {
-                    setErrorMessage('Username does not exist');
-                  }
-                  const jwt = await getIdTokenClaims();
-                  ConnectUserCommentsAccount(
-                    {
-                      UserId: user.sub,
-                      CommentsUserId: success.response.id,
-                    },
-                    jwt.__raw
-                  )
-                    .then((response) => {
-                      setListChange(response + 1);
-                      if (response.code == 409) {
-                        setErrorMessage(
-                          'Another user is already using this comments account'
-                        );
-                      }
-                    })
-                    .catch((err) => {
-                      appInsights.trackException({
-                        error: new Error(err),
-                        severityLevel: 3,
-                      });
-                    });
-                })
-                .catch((err) => {
-                  appInsights.trackException({
-                    error: new Error(err),
-                    severityLevel: 3,
-                  });
-                });
-            }
-          }}
-        >
+        <button className="connect-acc-button" onClick={connectAccounts}>
           Connect Account
         </button>
       </div>

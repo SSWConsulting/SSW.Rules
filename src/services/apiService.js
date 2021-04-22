@@ -239,6 +239,6 @@ export async function GetDisqusUserCommentsList(commentsUserId) {
 
 export const DisqusError = {
   Success: 0,
-  AccessToLow: 12,
+  AccessTooLow: 12,
   InvalidArg: 2,
 };

@@ -1230,9 +1230,10 @@ div.greybox {
 }
 
 .rule-content .info, .rule-content .china {
-  display: table;
+  display: block;
   padding: 10px;
   margin: 0 0 1rem;
+  max-width: 100%;
   border: 1px solid #ccc;
 }
 

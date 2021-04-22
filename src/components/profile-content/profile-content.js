@@ -58,7 +58,7 @@ const ProfileContent = (props) => {
         ? RemoveBookmark({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setChange(change + 1);
-              props.setListChangeCallback(props.listChange + 1);
+              props.setState(props.state + 1);
             })
             .catch((err) => {
               appInsights.trackException({
@@ -229,7 +229,7 @@ const ProfileContent = (props) => {
       getLikesDislikesLists();
       getUserComments();
     }
-  }, [isAuthenticated, props.filter, change, props.listChange]);
+  }, [isAuthenticated, props.filter, change, props.state]);
   return (
     <>
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none pt-12">
@@ -303,8 +303,8 @@ const ProfileContent = (props) => {
               : commentedRulesList
           }
           viewStyle={viewStyle}
-          setListChange={props.setListChangeCallback}
-          listChange={props.listChange}
+          setState={props.setState}
+          state={props.state}
           type={
             props.filter == Filter.Bookmarks
               ? 'bookmark'
@@ -329,8 +329,8 @@ const ProfileContent = (props) => {
 ProfileContent.propTypes = {
   data: PropTypes.object.isRequired,
   filter: PropTypes.number.isRequired,
-  setListChangeCallback: PropTypes.func.isRequired,
-  listChange: PropTypes.number.isRequired,
+  setState: PropTypes.func.isRequired,
+  state: PropTypes.number.isRequired,
   setBookmarkedRulesCount: PropTypes.func.isRequired,
   setSuperLikedRulesCount: PropTypes.func.isRequired,
   setLikedRulesCount: PropTypes.func.isRequired,
@@ -345,8 +345,8 @@ const RuleList = ({
   type,
   onRemoveClick,
   userCommentsConnected,
-  setListChange,
-  listChange,
+  setState,
+  state,
   disqusPrivacyEnabled,
 }) => {
   const linkRef = useRef();
@@ -361,7 +361,7 @@ const RuleList = ({
     const jwt = await getIdTokenClaims();
     RemoveUserCommentsAccount({ UserId: user.sub }, jwt.__raw)
       .then(() => {
-        setListChange(listChange + 1);
+        setState(state + 1);
       })
       .catch((err) => {
         appInsights.trackException({
@@ -371,7 +371,7 @@ const RuleList = ({
       });
   }
 
-  useEffect(() => {}, [userCommentsConnected, listChange]);
+  useEffect(() => {}, [userCommentsConnected, state]);
 
   return (
     <>
@@ -380,8 +380,8 @@ const RuleList = ({
           !userCommentsConnected ? (
             <CommentsNotConnected
               userCommentsConnected={userCommentsConnected}
-              listChange={listChange}
-              setListChange={setListChange}
+              state={state}
+              setState={setState}
               key={type}
             />
           ) : disqusPrivacyEnabled ? (
@@ -495,8 +495,8 @@ RuleList.propTypes = {
   type: PropTypes.string.isRequired,
   onRemoveClick: PropTypes.func.isRequired,
   userCommentsConnected: PropTypes.bool,
-  setListChange: PropTypes.func,
-  listChange: PropTypes.number,
+  setState: PropTypes.func,
+  state: PropTypes.number,
   disqusPrivacyEnabled: PropTypes.bool,
 };
 

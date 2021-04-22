@@ -20,7 +20,7 @@ const appInsights = new ApplicationInsights({
 
 const Profile = ({ data, gitHubUsername }) => {
   const [selectedFilter, setSelectedFilter] = useState(4);
-  const [listChange, setListChange] = useState(0);
+  const [state, setState] = useState(0);
   const {
     user,
     isAuthenticated,
@@ -53,7 +53,7 @@ const Profile = ({ data, gitHubUsername }) => {
     if (isAuthenticated) {
       CheckUser();
     }
-  }, [listChange, user]);
+  }, [state, user]);
   if (isAuthenticated) {
     return (
       <>
@@ -98,15 +98,15 @@ const Profile = ({ data, gitHubUsername }) => {
                 dislikedRulesCount={dislikedRulesCount}
                 superDislikedRulesCount={superDislikedRulesCount}
                 commentedRulesCount={commentedRulesCount}
-                change={listChange}
+                change={state}
               />
             </div>
             <div>
               <ProfileContent
                 data={data}
                 filter={selectedFilter}
-                setListChangeCallback={setListChange}
-                listChange={listChange}
+                setState={setState}
+                state={state}
                 setBookmarkedRulesCount={setBookmarkedRulesCount}
                 setSuperLikedRulesCount={setSuperLikedRulesCount}
                 setLikedRulesCount={setLikedRulesCount}

@@ -139,7 +139,7 @@ const ProfileContent = (props) => {
       } else {
         GetDisqusUserCommentsList(success.user.commentsUserId)
           .then((success) => {
-            if (success.code == DisqusError.AccessToLow) {
+            if (success.code == DisqusError.AccessTooLow) {
               setDisqusPrivacyEnabled(true);
             } else {
               setCommentedRulesFromGuids(success.response);

@@ -8,7 +8,6 @@ import {
   GetAllLikedDisliked,
   RemoveBookmark,
   RemoveReaction,
-  GetCommentSlug,
   GetDisqusUserCommentsList,
   RemoveUserCommentsAccount,
   GetUser,
@@ -107,33 +106,12 @@ const ProfileContent = (props) => {
       });
   }
 
-  async function getGuidFromDisqus(comment) {
-    if (comment.forum == process.env.DISQUS_FORUM) {
-      const guid = await GetCommentSlug(comment.thread)
-        .then((success) => {
-          return success.response.identifiers[0];
-        })
-        .catch((err) => {
-          appInsights.trackException({
-            error: new Error(err),
-            severityLevel: 3,
-          });
-        });
-
-      return guid;
-    }
-  }
-
-  async function createGuidList(response) {
-    var guids = response.map((comment) => {
-      return getGuidFromDisqus(comment);
+  async function setCommentedRulesFromGuids(response) {
+    const commentedRuleGuids = response.map((post) => {
+      if (post.forum == process.env.DISQUS_FORUM) {
+        return post.thread.identifiers[0];
+      }
     });
-
-    return await Promise.all(guids);
-  }
-
-  async function setCommentedRulesFromGuids(reponse) {
-    const commentedRuleGuids = await createGuidList(reponse);
 
     const allRules = props.data.allMarkdownRemark.nodes;
 

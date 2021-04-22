@@ -232,14 +232,7 @@ export async function GetDisqusUser(commentsUsername) {
 /* Comments */
 export async function GetDisqusUserCommentsList(commentsUserId) {
   const response = await fetch(
-    `https://disqus.com/api/3.0/users/listPosts.json?user=${commentsUserId}&api_key=${DISQUS_API_KEY}`
-  );
-  return response.json();
-}
-
-export async function GetCommentSlug(threadId) {
-  const response = await fetch(
-    `https://disqus.com/api/3.0/threads/details.json?thread=${threadId}&api_key=${DISQUS_API_KEY}`
+    `https://disqus.com/api/3.0/users/listPosts.json?user=${commentsUserId}&api_key=${DISQUS_API_KEY}&related=thread`
   );
   return response.json();
 }

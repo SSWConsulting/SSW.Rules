@@ -16,11 +16,7 @@ const appInsights = new ApplicationInsights({
   },
 });
 
-const CommentsNotConnected = ({
-  userCommentsConnected,
-  setListChange,
-  listChange,
-}) => {
+const CommentsNotConnected = ({ userCommentsConnected, setState, state }) => {
   const [disqusUsername, setDisqusUsername] = useState();
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -42,7 +38,7 @@ const CommentsNotConnected = ({
             jwt.__raw
           )
             .then((response) => {
-              setListChange(response + 1);
+              setState(state + 1);
               if (response.code == 409) {
                 setErrorMessage(
                   'Another user is already using this comments account'
@@ -65,7 +61,7 @@ const CommentsNotConnected = ({
     }
   }
 
-  useEffect(() => {}, [userCommentsConnected, listChange]);
+  useEffect(() => {}, [userCommentsConnected, state]);
   return (
     <div className="connect-acc-container">
       <DisqusIcon className="disqus-large-icon" />
@@ -104,8 +100,8 @@ const CommentsNotConnected = ({
 
 CommentsNotConnected.propTypes = {
   userCommentsConnected: PropTypes.bool,
-  setListChange: PropTypes.func,
-  listChange: PropTypes.number,
+  setState: PropTypes.func,
+  state: PropTypes.number,
 };
 
 export default CommentsNotConnected;

@@ -1,7 +1,7 @@
 backend:
   name: github
-  repo: SSWConsulting/SSW.Rules.Content
-  branch: sample-content-with-guid
+  repo: bradystroud/SSW.Rules.Content
+  branch: main
   open_authoring: true
 
 media_folder: static/assets

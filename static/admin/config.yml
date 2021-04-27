@@ -1,7 +1,8 @@
 backend:
   name: github
-  repo: bradystroud/SSW.Rules.Content
-  branch: main
+  repo: SSWConsulting/SSW.Rules.Content
+  branch: sample-content-with-guid
+  base_url: https://sswrules.au.auth0.com
   open_authoring: true
 
 media_folder: static/assets

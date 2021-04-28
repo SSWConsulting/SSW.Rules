@@ -972,7 +972,8 @@ blockquote p:before {
 }
 
 .history a:after {
-  content: none !important;
+  font-family: FontAwesome;
+  content: '\f1da' !important;
 }
 
 

@@ -162,7 +162,7 @@ const Rule = ({ data, location }) => {
               <a
                 href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
               >
-                See Hstory
+                See History
               </a>
             </small>
           )}

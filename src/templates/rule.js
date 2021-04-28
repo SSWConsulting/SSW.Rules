@@ -146,8 +146,6 @@ const Rule = ({ data, location }) => {
           </div>
           {data.history && data.history.nodes[0] && (
             <small className="history">
-              Created on{' '}
-              {format(new Date(data.history.nodes[0].created), 'dd MMM yyyy')} |
               Last updated by{' '}
               <strong>
                 {capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)}

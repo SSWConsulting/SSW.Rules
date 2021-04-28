@@ -19027,7 +19027,7 @@ web-namespaces@^1.0.0, web-namespaces@^1.1.2:
   resolved "https://registry.yarnpkg.com/web-namespaces/-/web-namespaces-1.1.4.tgz#bc98a3de60dadd7faefc403d1076d529f5e030ec"
   integrity sha512-wYxSGajtmoP4WxfejAPIr4l0fVh+jeMXZb08wNc0tMg6xsfZXj3cECqIK0G7ZAqUq0PP8WlMDtaOGVBTAWztNw==
 
-webpack-assets-manifest@4.x.x:
+webpack-assets-manifest@4.0.6:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/webpack-assets-manifest/-/webpack-assets-manifest-4.0.6.tgz#cb8cfd2d2d8d129228cea645c832448380c21ae0"
   integrity sha512-9MsBOINUoGcj3D7XHQOOuQri7VEDArkhn5gqnpCqPungLj8Vy3utlVZ6vddAVU5feYroj+DEncktbaZhnBxdeQ==

@@ -45,7 +45,7 @@
     "gatsby-remark-figure-caption": "^2.0.0",
     "gatsby-remark-images": "^3.3.13",
     "gatsby-remark-relative-images": "^2.0.2",
-    "gatsby-remark-responsive-iframe": "^2.4.10",
+    "gatsby-remark-responsive-iframe": "^4.1.0",
     "gatsby-remark-vscode": "^3.2.1",
     "gatsby-source-filesystem": "^3.4.0",
     "gatsby-source-git": "^1.0.2",

@@ -51,7 +51,7 @@
     "gatsby-source-git": "^1.0.2",
     "gatsby-source-local-git": "^1.2.2",
     "gatsby-transformer-json": "^3.4.0",
-    "gatsby-transformer-remark": "^2.8.13",
+    "gatsby-transformer-remark": "3.2.0",
     "markdown-it": "^12.0.6",
     "markdown-it-container": "^3.0.0",
     "netlify-cms-app": "^2.14.46",

@@ -69,7 +69,7 @@
     "rehype-react": "^6.2.0",
     "sharp": "^0.28.1",
     "svg-react-loader": "^0.4.6",
-    "webpack-assets-manifest": "^3.1.1"
+    "webpack-assets-manifest": "4.0.6"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",

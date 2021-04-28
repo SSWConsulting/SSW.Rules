@@ -34,7 +34,7 @@
     "gatsby-plugin-breadcrumb": "^10.0.0",
     "gatsby-plugin-google-analytics": "^2.6.0",
     "gatsby-plugin-netlify-cms": "^3.0.0",
-    "gatsby-plugin-postcss": "^2.3.0",
+    "gatsby-plugin-postcss": "3.x.x",
     "gatsby-plugin-react-helmet": "^3.3.0",
     "gatsby-plugin-sharp": "^3.4.0",
     "gatsby-plugin-sitemap": "^2.4.0",

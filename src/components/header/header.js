@@ -46,13 +46,15 @@ const Header = ({ displayActions, ruleUri }) => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={
-                    ruleUri.split('/')[2] == 'rule.md'
-                      ? `/admin/#/collections/rule/entries/${
-                          ruleUri.split('/')[1]
-                        }/rule`
-                      : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/main/${ruleUri}`
-                  }
+                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/main/${ruleUri}`}
+                  // While Netlify CMS is in development, the code below should be left commented
+                  // href={
+                  //   ruleUri.split('/')[2] == 'rule.md'
+                  //     ? `/admin/#/collections/rule/entries/${
+                  //         ruleUri.split('/')[1]
+                  //       }/rule`
+                  //     : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/main/${ruleUri}`
+                  // }
                   className="action-btn-link-underlined"
                 >
                   <div className="edit-button-container">Edit</div>

@@ -134,11 +134,11 @@ footer {
   font-size: 0.75rem;
 }
 
-.rule-content ul li > p {
+.rule-content ul li > p, .rule-category-top ul li > p {
   margin-top: -20px;
 }
 
-#rules ul li::before, .rule-content ul li::before {
+#rules ul li::before, .rule-content ul li::before, .rule-category-top ul li::before {
   content: "\25A0";
   color: #cc4141;
   display: inline-block; 
@@ -146,7 +146,7 @@ footer {
   margin-left: -1rem;
 }
 
-#rules ol ul ol li::before, .rule-content ol ul ol li::before {
+#rules ol ul ol li::before, .rule-content ol ul ol li::before, .rule-category-top ol ul ol li::before {
   content: "";
   display: inline-block; 
   width: 1rem;
@@ -154,23 +154,23 @@ footer {
 }
 
 #rules ul ul ol li::before, .rule-content ul ul ol li::before,
-#rules ul ul li ol li::before, .rule-content ul ul li ol li::before  {
+#rules ul ul li ol li::before, .rule-content ul ul li ol li::before, .rule-category-top ol ul ol li::before  {
   content: "";
   display: inline-block; 
   width: 1rem;
   margin-left: -1rem;
 }
 
-#rules ul li, .rule-content ul li, .rule-content ol li {
+#rules ul li, .rule-content ul li, .rule-content ol li, .rule-category-top ul li, .rule-category-top ol li {
   padding: 0 0 .5rem 0;
   line-height: 1.25rem;
 }
 
-.rule-content ol, .rule-content ul ol {
+.rule-content ol, .rule-content ul ol, .rule-category-top ol, .rule-category-top ul ol {
   list-style: decimal;
 }
 
-.rule-content ol ol {
+.rule-content ol ol, .rule-category-top ol ol {
   list-style: lower-alpha;
 }
 
@@ -994,20 +994,20 @@ blockquote p:before {
   margin-bottom: 0;
 }
 
-.rule-content ul, .rule-content ol {
+.rule-content ul, .rule-content ol, .rule-category-top ul, .rule-category-top ol {
   margin-bottom: 1rem;
   padding-inline-start: 2rem;
 }
 
-.rule-content ul li, .rule-content ol li {
+.rule-content ul li, .rule-content ol li, .rule-category-top ul li, .rule-category-top ol li {
   margin-bottom: .25rem;
 }
 
-.rule-content ul ul, .rule-content ul li ul {
+.rule-content ul ul, .rule-content ul li ul, .rule-category-top ul ul, .rule-category-top ul li ul  {
   list-style-type: none;
 }
 
-.rule-content ul li ul li::before {
+.rule-content ul li ul li::before, .rule-category-top ul li ul li::before {
   content: "\26AC";
   color: #000;
   display: inline-block;

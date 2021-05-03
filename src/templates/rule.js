@@ -146,8 +146,6 @@ const Rule = ({ data, location }) => {
           </div>
           {data.history && data.history.nodes[0] && (
             <small className="history">
-              Created on{' '}
-              {format(new Date(data.history.nodes[0].created), 'dd MMM yyyy')} |
               Last updated by{' '}
               <strong>
                 {capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)}
@@ -160,7 +158,12 @@ const Rule = ({ data, location }) => {
               {` (${formatDistance(
                 new Date(data.history.nodes[0].lastUpdated),
                 new Date()
-              )} ago)`}
+              )} ago)`}{' '}
+              <a
+                href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
+              >
+                See History
+              </a>
             </small>
           )}
           {rule.frontmatter.archivedreason &&

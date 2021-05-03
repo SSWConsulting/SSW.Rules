@@ -971,8 +971,13 @@ blockquote p:before {
   text-decoration: none;
 }
 
+.history a {
+  padding-left: 0.4rem;
+}
+
 .history a:after {
-  content: none !important;
+  font-family: FontAwesome;
+  content: '\f1da' !important;
 }
 
 

@@ -33,7 +33,7 @@
     "gatsby-custom-md": "^1.3.0",
     "gatsby-plugin-breadcrumb": "^12.1.1",
     "gatsby-plugin-google-analytics": "^3.4.0",
-    "gatsby-plugin-netlify-cms": "4.10.0",
+    "gatsby-plugin-netlify-cms": "4.10.1",
     "gatsby-plugin-postcss": "3.x.x",
     "gatsby-plugin-react-helmet": "^4.4.0",
     "gatsby-plugin-sharp": "^3.4.0",

@@ -39,9 +39,12 @@ const Rule = ({ data, location }) => {
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
+  console.log(categories.lengt);
   const cat = location.state
     ? location.state.category
-    : categories[0].parent.name ?? null;
+    : categories.length !== 0
+    ? categories[0].parent.name
+    : null;
   const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
   const [hiddenCount, setHiddenCount] = useState(0);
 

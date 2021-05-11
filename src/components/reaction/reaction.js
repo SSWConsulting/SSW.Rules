@@ -18,12 +18,8 @@ const Reaction = (props) => {
   const [change, setChange] = useState(0);
   const [currentReactionType, setCurrentReactionType] = useState(null);
 
-  const {
-    isAuthenticated,
-    user,
-    getIdTokenClaims,
-    loginWithRedirect,
-  } = useAuth0();
+  const { isAuthenticated, user, getIdTokenClaims, loginWithRedirect } =
+    useAuth0();
 
   useEffect(() => {
     if (isAuthenticated) {

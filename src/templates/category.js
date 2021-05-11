@@ -165,7 +165,7 @@ Category.propTypes = {
 };
 
 export const query = graphql`
-  query($slug: String!, $index: [String]!) {
+  query ($slug: String!, $index: [String]!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
       htmlAst
       frontmatter {

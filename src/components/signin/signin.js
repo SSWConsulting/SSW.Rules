@@ -8,12 +8,8 @@ import {
 } from '../../services/apiService';
 
 const SignIn = () => {
-  const {
-    isAuthenticated,
-    loginWithRedirect,
-    user,
-    getIdTokenClaims,
-  } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, user, getIdTokenClaims } =
+    useAuth0();
 
   useEffect(() => {
     isAuthenticated ? setUserOrg() : null;

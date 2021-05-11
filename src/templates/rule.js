@@ -35,10 +35,15 @@ const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
-  const cat = location.state ? location.state.category : null;
+
   const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
+  const cat = location.state
+    ? location.state.category
+    : categories.length !== 0
+    ? categories[0].parent.name
+    : null;
   const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
   const [hiddenCount, setHiddenCount] = useState(0);
 
@@ -198,7 +203,7 @@ const Rule = ({ data, location }) => {
                       if (relatedRule) {
                         return (
                           <>
-                            <li>
+                            <li key={relatedRule.frontmatter.uri}>
                               <section>
                                 <p>
                                   <Link

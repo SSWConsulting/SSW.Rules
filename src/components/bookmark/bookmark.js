@@ -14,12 +14,8 @@ const Bookmark = (props) => {
   const [change, setChange] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
 
-  const {
-    isAuthenticated,
-    user,
-    getIdTokenClaims,
-    loginWithRedirect,
-  } = useAuth0();
+  const { isAuthenticated, user, getIdTokenClaims, loginWithRedirect } =
+    useAuth0();
 
   useEffect(() => {
     if (isAuthenticated) {

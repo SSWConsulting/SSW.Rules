@@ -41,7 +41,7 @@ const Rule = ({ data, location }) => {
   const categories = data.categories.nodes;
   const cat = location.state
     ? location.state.category
-    : categories[0].parent.name;
+    : categories[0].parent.name ?? null;
   const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
   const [hiddenCount, setHiddenCount] = useState(0);
 

@@ -493,6 +493,7 @@ pre {
   .ok-example {
     height: auto;
     min-width: 590px;
+    width: max-content;
   }
   
 }

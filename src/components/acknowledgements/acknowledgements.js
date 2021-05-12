@@ -23,10 +23,7 @@ const Acknowledgements = ({ authors }) => {
     const author = props.author;
     if (author.img && author.img.includes('http')) {
       return <img src={author.img} alt={author.title} title={author.title} />;
-    } else if (
-      author.url &&
-      author.url.includes('https://ssw.com.au/people/')
-    ) {
+    } else if (author.url && author.url.includes('ssw.com.au/people')) {
       return (
         <img
           src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
@@ -41,8 +38,9 @@ const Acknowledgements = ({ authors }) => {
           title={author.title}
         />
       );
-    } else if (author.url && author.url.includes('https://github.com/')) {
-      const gitHubUsername = author.url.split('https://github.com/')[1];
+    } else if (author.url && author.url.includes('github.com/')) {
+      const urlList = author.url.split('github.com/');
+      const gitHubUsername = urlList[urlList.length - 1];
       return (
         <img
           src={`https://avatars.githubusercontent.com/${gitHubUsername}`}

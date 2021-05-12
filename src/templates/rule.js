@@ -58,12 +58,13 @@ const Rule = ({ data, location }) => {
                 .then((success) => {
                   GetGithubOrganisationName(orgID)
                     .then((nameSuccess) => {
-                      hiddenBlock.innerHTML = ReactDOMServer.renderToStaticMarkup(
-                        <SecretContent
-                          content={success.content.content}
-                          orgName={nameSuccess?.login ?? 'Your Organisation'}
-                        />
-                      );
+                      hiddenBlock.innerHTML =
+                        ReactDOMServer.renderToStaticMarkup(
+                          <SecretContent
+                            content={success.content.content}
+                            orgName={nameSuccess?.login ?? 'Your Organisation'}
+                          />
+                        );
                       hiddenBlock.className = 'secret-content';
                     })
                     .catch((err) => {
@@ -360,7 +361,7 @@ Rule.propTypes = {
 export default Rule;
 
 export const query = graphql`
-  query($slug: String!, $uri: String!, $related: [String]!, $file: String!) {
+  query ($slug: String!, $uri: String!, $related: [String]!, $file: String!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
       fields {
         slug

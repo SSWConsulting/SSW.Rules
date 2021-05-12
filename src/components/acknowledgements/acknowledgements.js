@@ -23,10 +23,7 @@ const Acknowledgements = ({ authors }) => {
     const author = props.author;
     if (author.img && author.img.includes('http')) {
       return <img src={author.img} alt={author.title} title={author.title} />;
-    } else if (
-      (author.url && author.url.includes('https://ssw.com.au/people/')) ||
-      author.url.includes('https://www.ssw.com.au/people/')
-    ) {
+    } else if (author.url && author.url.includes('ssw.com.au/people')) {
       return (
         <img
           src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(

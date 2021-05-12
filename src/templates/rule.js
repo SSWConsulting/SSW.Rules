@@ -31,6 +31,8 @@ const appInsights = new ApplicationInsights({
   },
 });
 
+appInsights.loadAppInsights();
+
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -56,13 +58,12 @@ const Rule = ({ data, location }) => {
                 .then((success) => {
                   GetGithubOrganisationName(orgID)
                     .then((nameSuccess) => {
-                      hiddenBlock.innerHTML =
-                        ReactDOMServer.renderToStaticMarkup(
-                          <SecretContent
-                            content={success.content.content}
-                            orgName={nameSuccess?.login ?? 'Your Organisation'}
-                          />
-                        );
+                      hiddenBlock.innerHTML = ReactDOMServer.renderToStaticMarkup(
+                        <SecretContent
+                          content={success.content.content}
+                          orgName={nameSuccess?.login ?? 'Your Organisation'}
+                        />
+                      );
                       hiddenBlock.className = 'secret-content';
                     })
                     .catch((err) => {
@@ -241,7 +242,14 @@ const Rule = ({ data, location }) => {
                                 state={{ category: cat }}
                                 className={'unstyled'}
                               >
-                                <button className="button-next bg-ssw-red text-white">
+                                <button
+                                  className="button-next bg-ssw-red text-white"
+                                  onClick={() => {
+                                    appInsights.trackEvent({
+                                      name: 'PreviousButtonPressed',
+                                    });
+                                  }}
+                                >
                                   <FontAwesomeIcon icon={faAngleDoubleLeft} />
                                 </button>
                               </Link>
@@ -256,6 +264,11 @@ const Rule = ({ data, location }) => {
                             {indexCat <
                               category.frontmatter.index.length - 1 && (
                               <Link
+                                onClick={() => {
+                                  appInsights.trackEvent({
+                                    name: 'NextButtonPressed',
+                                  });
+                                }}
                                 ref={linkRef}
                                 to={`/${
                                   category.frontmatter.index[indexCat + 1]
@@ -347,7 +360,7 @@ Rule.propTypes = {
 export default Rule;
 
 export const query = graphql`
-  query ($slug: String!, $uri: String!, $related: [String]!, $file: String!) {
+  query($slug: String!, $uri: String!, $related: [String]!, $file: String!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
       fields {
         slug

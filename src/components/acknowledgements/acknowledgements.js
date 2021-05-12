@@ -24,8 +24,8 @@ const Acknowledgements = ({ authors }) => {
     if (author.img && author.img.includes('http')) {
       return <img src={author.img} alt={author.title} title={author.title} />;
     } else if (
-      author.url &&
-      author.url.includes('https://ssw.com.au/people/')
+      (author.url && author.url.includes('https://ssw.com.au/people/')) ||
+      author.url.includes('https://www.ssw.com.au/people/')
     ) {
       return (
         <img

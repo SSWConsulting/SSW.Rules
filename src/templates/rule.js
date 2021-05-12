@@ -31,6 +31,8 @@ const appInsights = new ApplicationInsights({
   },
 });
 
+appInsights.loadAppInsights();
+
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -246,7 +248,14 @@ const Rule = ({ data, location }) => {
                                 state={{ category: cat }}
                                 className={'unstyled'}
                               >
-                                <button className="button-next bg-ssw-red text-white">
+                                <button
+                                  className="button-next bg-ssw-red text-white"
+                                  onClick={() => {
+                                    appInsights.trackEvent({
+                                      name: 'PreviousButtonPressed',
+                                    });
+                                  }}
+                                >
                                   <FontAwesomeIcon icon={faAngleDoubleLeft} />
                                 </button>
                               </Link>
@@ -261,6 +270,11 @@ const Rule = ({ data, location }) => {
                             {indexCat <
                               category.frontmatter.index.length - 1 && (
                               <Link
+                                onClick={() => {
+                                  appInsights.trackEvent({
+                                    name: 'NextButtonPressed',
+                                  });
+                                }}
                                 ref={linkRef}
                                 to={`/${
                                   category.frontmatter.index[indexCat + 1]

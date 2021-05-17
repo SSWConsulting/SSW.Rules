@@ -1,5 +1,5 @@
 /*eslint quotes: ["warn", "backtick"]*/
-const path = require(`path`);
+// const path = require(`path`);
 
 module.exports = {
   siteTitle: `SSW.Rules`,
@@ -9,7 +9,7 @@ module.exports = {
   themeColor: `#cc4141`,
   backgroundColor: `#fff`,
   pathPrefix: `/rules`,
-  logo: path.resolve(__dirname, `src/images/icon.png`),
+  // logo: path.resolve(__dirname, `src/images/icon.png`),
   social: {
     twitter: `SSW_TV`,
     fbAppId: `120920301257947`,

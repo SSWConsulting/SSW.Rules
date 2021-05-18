@@ -23,7 +23,7 @@
     "@microsoft/applicationinsights-web": "^2.6.1",
     "@raae/gatsby-remark-oembed": "^0.1.1",
     "applicationinsights": "^2.0.0",
-    "autoprefixer": "^9.7.6",
+    "autoprefixer": "^10.2.5",
     "classnames": "^2.3.1",
     "core-js": "^3.10.2",
     "date-fns": "^2.21.1",
@@ -55,8 +55,8 @@
     "markdown-it": "^12.0.4",
     "markdown-it-container": "^3.0.0",
     "netlify-cms-app": "^2.14.46",
-    "postcss-import": "^12.0.1",
-    "postcss-nested": "^4.2.1",
+    "postcss-import": "^14.0.2",
+    "postcss-nested": "^5.0.5",
     "preval.macro": "^5.0.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
@@ -78,6 +78,6 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "eslint-plugin-prettier": "^3.4.0",
     "prettier": "^2.2.1",
-    "tailwindcss": "^1.4.0"
+    "tailwindcss": "^2.1.2"
   }
 }

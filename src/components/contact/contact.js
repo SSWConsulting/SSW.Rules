@@ -25,8 +25,8 @@ const Contact = () => {
 };
 
 Contact.propTypes = {
-  firstNameOrNickname: PropTypes.string.isRequired,
-  fullName: PropTypes.string.isRequired,
+  firstNameOrNickname: PropTypes.string,
+  fullName: PropTypes.string,
 };
 
 export default Contact;

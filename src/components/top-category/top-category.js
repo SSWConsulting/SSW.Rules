@@ -31,7 +31,7 @@ const TopCategory = ({ topcategory, categories, rules }) => {
             return (
               <div className="cat-grid-container">
                 <div className="cat-rule-num">{i + 1}.</div>
-                <div classnName="cat-rule-link">
+                <div className="cat-rule-link">
                   <Link ref={linkRef} to={`/${cat.parent.name}`}>
                     {cat.frontmatter.title}
                   </Link>
@@ -51,7 +51,7 @@ const TopCategory = ({ topcategory, categories, rules }) => {
 TopCategory.propTypes = {
   topcategory: PropTypes.object,
   categories: PropTypes.object,
-  rules: PropTypes.object,
+  rules: PropTypes.array,
 };
 
 export default TopCategory;

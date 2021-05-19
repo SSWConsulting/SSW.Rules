@@ -78,7 +78,7 @@ const Index = ({ data }) => {
 };
 Index.propTypes = {
   data: PropTypes.object.isRequired,
-  search: PropTypes.object.isRequired,
+  search: PropTypes.object,
   pageContext: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
 };

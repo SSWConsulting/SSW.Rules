@@ -67,7 +67,7 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
           <Footer />
         </div>
 
-        {/* <MobileMenu isMenuOpened={isMenuOpened}></MobileMenu> */}
+        <MobileMenu isMenuOpened={isMenuOpened}></MobileMenu>
       </Auth0Provider>
     </div>
   );

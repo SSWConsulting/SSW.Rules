@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import ContactInfo from '../contact-info/contact-info';
 import ContactForm from '../contact-form/contact-form';
 import Modal from 'react-modal';
@@ -22,11 +21,6 @@ const Contact = () => {
       </Modal>
     </>
   );
-};
-
-Contact.propTypes = {
-  firstNameOrNickname: PropTypes.string.isRequired,
-  fullName: PropTypes.string.isRequired,
 };
 
 export default Contact;

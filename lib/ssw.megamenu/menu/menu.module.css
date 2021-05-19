@@ -14,7 +14,10 @@
   font-weight: normal;
   font-style: normal;
 }
-
+.MegaMenu {
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+}
 .MegaMenu {
   clear: both;
   height: 36px;
@@ -24,7 +27,6 @@
   background: none repeat scroll 0 0 #414141;
   position: relative;
   z-index: 20;
-  border-radius: .25rem;
 }
 .menuContent {
   display: inline-block;

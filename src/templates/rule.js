@@ -198,18 +198,17 @@ const Rule = ({ data, location }) => {
                         data.relatedRulesFromRedirects.nodes
                       );
                       const relatedRule = allRelatedRules.find((r) => {
-                        if (r.frontmatter.uri == relatedRuleUri) {
+                        if (r.frontmatter.uri === relatedRuleUri) {
                           return r;
                         } else {
                           var relatedRuleFromRedirect;
-                          if (r.frontmatter.redirects) {
+                          r.frontmatter.redirects &&
                             r.frontmatter.redirects.find((redirect) => {
                               if (redirect === relatedRuleUri) {
                                 relatedRuleFromRedirect = r;
                               }
                             });
-                            return relatedRuleFromRedirect;
-                          }
+                          return relatedRuleFromRedirect;
                         }
                       });
                       if (relatedRule) {

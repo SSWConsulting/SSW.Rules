@@ -194,9 +194,24 @@ const Rule = ({ data, location }) => {
               <ol>
                 {rule.frontmatter.related
                   ? rule.frontmatter.related.map((relatedRuleUri) => {
-                      const relatedRule = data.relatedRules.nodes.find(
-                        (r) => r.frontmatter.uri === relatedRuleUri
+                      const allRelatedRules = data.relatedRules.nodes.concat(
+                        data.relatedRulesFromRedirects.nodes
                       );
+                      const relatedRule = allRelatedRules.find((r) => {
+                        if (r.frontmatter.uri == relatedRuleUri) {
+                          return r;
+                        } else {
+                          var relatedRuleFromRedirect;
+                          if (r.frontmatter.redirects) {
+                            r.frontmatter.redirects.find((redirect) => {
+                              if (redirect === relatedRuleUri) {
+                                relatedRuleFromRedirect = r;
+                              }
+                            });
+                            return relatedRuleFromRedirect;
+                          }
+                        }
+                      });
                       if (relatedRule) {
                         return (
                           <>
@@ -408,6 +423,17 @@ export const query = graphql`
         frontmatter {
           title
           uri
+        }
+      }
+    }
+    relatedRulesFromRedirects: allMarkdownRemark(
+      filter: { frontmatter: { redirects: { in: $related } } }
+    ) {
+      nodes {
+        frontmatter {
+          title
+          uri
+          redirects
         }
       }
     }

@@ -91,15 +91,17 @@ const Rule = ({ data, location }) => {
     var relatedRule = data.relatedRules.nodes.find(
       (r) => r.frontmatter.uri === relatedRuleUri
     );
-    !relatedRule &&
+    if (!relatedRule) {
       data.relatedRulesFromRedirects.nodes.forEach((r) => {
-        r.frontmatter.redirects &&
+        if (r.frontmatter.redirects) {
           r.frontmatter.redirects.forEach((redirect) => {
             if (redirect === relatedRuleUri) {
               relatedRule = r;
             }
           });
+        }
       });
+    }
     return relatedRule;
   };
 

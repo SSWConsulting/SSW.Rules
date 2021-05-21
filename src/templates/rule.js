@@ -201,14 +201,12 @@ const Rule = ({ data, location }) => {
                         if (r.frontmatter.uri === relatedRuleUri) {
                           return r;
                         } else {
-                          var relatedRuleFromRedirect;
-                          r.frontmatter.redirects &&
-                            r.frontmatter.redirects.find((redirect) => {
-                              if (redirect === relatedRuleUri) {
-                                relatedRuleFromRedirect = r;
-                              }
-                            });
-                          return relatedRuleFromRedirect;
+                          return (
+                            r.frontmatter.redirects &&
+                            r.frontmatter.redirects.find(
+                              (redirect) => redirect === relatedRuleUri
+                            )
+                          );
                         }
                       });
                       if (relatedRule) {

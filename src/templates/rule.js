@@ -87,6 +87,22 @@ const Rule = ({ data, location }) => {
     }
   };
 
+  const getRelatedRule = (relatedRuleUri) => {
+    var relatedRule = data.relatedRules.nodes.find(
+      (r) => r.frontmatter.uri === relatedRuleUri
+    );
+    !relatedRule &&
+      data.relatedRulesFromRedirects.nodes.forEach((r) => {
+        r.frontmatter.redirects &&
+          r.frontmatter.redirects.forEach((redirect) => {
+            if (redirect === relatedRuleUri) {
+              relatedRule = r;
+            }
+          });
+      });
+    return relatedRule;
+  };
+
   const SecretContent = (props) => {
     return (
       <>
@@ -194,21 +210,7 @@ const Rule = ({ data, location }) => {
               <ol>
                 {rule.frontmatter.related
                   ? rule.frontmatter.related.map((relatedRuleUri) => {
-                      const allRelatedRules = data.relatedRules.nodes.concat(
-                        data.relatedRulesFromRedirects.nodes
-                      );
-                      const relatedRule = allRelatedRules.find((r) => {
-                        if (r.frontmatter.uri === relatedRuleUri) {
-                          return r;
-                        } else {
-                          return (
-                            r.frontmatter.redirects &&
-                            r.frontmatter.redirects.find(
-                              (redirect) => redirect === relatedRuleUri
-                            )
-                          );
-                        }
-                      });
+                      const relatedRule = getRelatedRule(relatedRuleUri);
                       if (relatedRule) {
                         return (
                           <>

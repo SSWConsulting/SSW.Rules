@@ -1082,6 +1082,10 @@ blockquote p:before {
   display: table;
 }
 
+.rule-content ol li figure.image, .rule-content ul li figure.image{
+  margin-top:1rem;
+}
+
 .custom-block-heading::before {
   content: 'Figure: ';
 }

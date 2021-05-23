@@ -87,6 +87,24 @@ const Rule = ({ data, location }) => {
     }
   };
 
+  const getRelatedRule = (relatedRuleUri) => {
+    var relatedRule = data.relatedRules.nodes.find(
+      (r) => r.frontmatter.uri === relatedRuleUri
+    );
+    if (!relatedRule) {
+      for (const r of data.relatedRulesFromRedirects.nodes) {
+        if (r.frontmatter.redirects) {
+          for (const redirect of r.frontmatter.redirects) {
+            if (redirect === relatedRuleUri) {
+              return r;
+            }
+          }
+        }
+      }
+    }
+    return relatedRule;
+  };
+
   const SecretContent = (props) => {
     return (
       <>
@@ -194,9 +212,7 @@ const Rule = ({ data, location }) => {
               <ol>
                 {rule.frontmatter.related
                   ? rule.frontmatter.related.map((relatedRuleUri) => {
-                      const relatedRule = data.relatedRules.nodes.find(
-                        (r) => r.frontmatter.uri === relatedRuleUri
-                      );
+                      const relatedRule = getRelatedRule(relatedRuleUri);
                       if (relatedRule) {
                         return (
                           <>
@@ -408,6 +424,17 @@ export const query = graphql`
         frontmatter {
           title
           uri
+        }
+      }
+    }
+    relatedRulesFromRedirects: allMarkdownRemark(
+      filter: { frontmatter: { redirects: { in: $related } } }
+    ) {
+      nodes {
+        frontmatter {
+          title
+          uri
+          redirects
         }
       }
     }

@@ -1029,11 +1029,6 @@ blockquote p:before {
   max-width: 100%;
   border: 12px solid #eee;
   outline: 1px solid #ccc;
-  height: auto !important;
-}
-
-.rule-content span {
-  margin-bottom: 1.5rem;
 }
 
 .rule-content .acknowledgements img {

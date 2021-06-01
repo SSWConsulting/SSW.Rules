@@ -960,14 +960,8 @@ blockquote p:before {
   content: none !important;
 }
 
-.suggestion a:after, a:link {
+.suggestion a:after {
   content: none !important;
-  text-decoration: none;
-}
-
-.suggestion a:hover {
-  content: none !important;
-  text-decoration: none;
 }
 
 .history a {

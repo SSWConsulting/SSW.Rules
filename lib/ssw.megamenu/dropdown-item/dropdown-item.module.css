@@ -46,7 +46,7 @@
 
 .level1 a:visited, .level1 a:link:visited,
 .level2 a:visited, .level2 a:link:visited {
-  color: #333 !important;
+  color: #333;
 }
 
 .level1 a:hover {

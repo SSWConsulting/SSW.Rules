@@ -1,11 +1,8 @@
 backend:
   name: github
   repo: SSWConsulting/SSW.Rules.Content
-  branch: sample-content-with-guid
   open_authoring: true
-  base_url: https://sswrules-staging-functions.azurewebsites.net
   auth_endpoint: /api/auth
-  # 
 
 media_folder: static/assets
 public_folder: /assets

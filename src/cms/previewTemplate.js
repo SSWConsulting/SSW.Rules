@@ -36,7 +36,9 @@ var PreviewTemplate = ({ entry, getAsset }) => {
 
   customMarkdownIt.renderer.rules.image = function (tokens, idx) {
     var token = tokens[idx];
-    return `<img src=${getAsset(token.attrs[0][1]).url}></img>`;
+    return `<img src=${getAsset(token.attrs[0][1]).url} alt="${
+      token.attrs[1][1]
+    }"/>`;
   };
 
   return (

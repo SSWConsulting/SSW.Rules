@@ -5,7 +5,6 @@ import styles from '!css-loader!../style.css';
 CMS.init({
   config: {
     backend: {
-      branch: process.env.CONTENT_BRANCH,
       base_url: process.env.API_BASE_URL,
     },
   },

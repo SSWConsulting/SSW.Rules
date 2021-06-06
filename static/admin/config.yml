@@ -1,6 +1,7 @@
 backend:
   name: github
   repo: SSWConsulting/SSW.Rules.Content
+  branch: main
   open_authoring: true
   auth_endpoint: /api/auth
 

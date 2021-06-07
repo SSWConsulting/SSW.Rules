@@ -1,8 +1,9 @@
 backend:
   name: github
   repo: SSWConsulting/SSW.Rules.Content
-  branch: sample-content-with-guid
+  branch: main
   open_authoring: true
+  auth_endpoint: /api/auth
 
 media_folder: static/assets
 public_folder: /assets

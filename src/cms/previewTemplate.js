@@ -27,12 +27,19 @@ customMarkdownIt.use(require('markdown-it-container'), 'classname', {
   },
 });
 
-var PreviewTemplate = ({ entry }) => {
+var PreviewTemplate = ({ entry, getAsset }) => {
   const title = entry.getIn(['data', 'title'], null);
   const body = entry.getIn(['data', 'body'], null);
   const created = entry.getIn(['data', 'created'], null);
   const archivedReason = entry.getIn(['data', 'archivedreason'], null);
   const bodyRendered = customMarkdownIt.render(body || '');
+
+  customMarkdownIt.renderer.rules.image = function (tokens, idx) {
+    var token = tokens[idx];
+    return `<img src=${getAsset(token.attrs[0][1]).url} alt="${
+      token.attrs[1][1]
+    }"/>`;
+  };
 
   return (
     <body>
@@ -70,6 +77,7 @@ var PreviewTemplate = ({ entry }) => {
 
 PreviewTemplate.propTypes = {
   entry: PropTypes.any.isRequired,
+  getAsset: PropTypes.func.isRequired,
 };
 
 export default PreviewTemplate;

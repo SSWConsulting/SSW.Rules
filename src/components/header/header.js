@@ -51,7 +51,7 @@ const Header = ({ displayActions, ruleUri }) => {
                       ? `/admin/#/collections/rule/entries/${
                           ruleUri.split('/')[1]
                         }/rule`
-                      : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/main/${ruleUri}`
+                      : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`
                   }
                   className="action-btn-link-underlined"
                 >

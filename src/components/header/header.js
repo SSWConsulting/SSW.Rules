@@ -48,7 +48,7 @@ const Header = ({ displayActions, ruleUri }) => {
                   rel="noopener noreferrer"
                   href={
                     ruleUri.split('/')[2] == 'rule.md'
-                      ? `/admin/#/collections/rule/entries/${
+                      ? `/rules/admin/#/collections/rule/entries/${
                           ruleUri.split('/')[1]
                         }/rule`
                       : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`

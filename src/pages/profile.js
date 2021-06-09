@@ -21,12 +21,8 @@ const appInsights = new ApplicationInsights({
 const Profile = ({ data, gitHubUsername }) => {
   const [selectedFilter, setSelectedFilter] = useState(4);
   const [state, setState] = useState(0);
-  const {
-    user,
-    isAuthenticated,
-    loginWithRedirect,
-    getIdTokenClaims,
-  } = useAuth0();
+  const { user, isAuthenticated, loginWithRedirect, getIdTokenClaims } =
+    useAuth0();
   const [commentsConnected, setCommentsConnected] = useState(false);
   const [bookmarkedRulesCount, setBookmarkedRulesCount] = useState();
   const [superLikedRulesCount, setSuperLikedRulesCount] = useState();

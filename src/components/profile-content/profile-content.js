@@ -140,6 +140,8 @@ const ProfileContent = (props) => {
         GetDisqusUserCommentsList(success.user.commentsUserId)
           .then((success) => {
             if (success.code == DisqusError.AccessTooLow) {
+              // eslint-disable-next-line no-console
+              console.log('This error was expected and handled');
               setDisqusPrivacyEnabled(true);
             } else {
               setCommentedRulesFromGuids(success.response);

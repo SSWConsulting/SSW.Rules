@@ -492,7 +492,7 @@ pre {
   .bad-example,
   .ok-example {
     height: auto;
-    min-width: 590px;
+    min-width: 100%;
   }
   
 }

@@ -2513,6 +2513,15 @@ margin-bottom: 1em;
   list-style-type: none;
 }
 
+.editor-preview iframe {
+  border-width: 0;
+}
+
+.editor-preview .attention.archived svg {
+  height: 1rem;
+  padding-left: 0.5rem;
+}
+
 /* Rule content tables
 -------------------------------------------------- */
 .rule-content td {

@@ -2,7 +2,6 @@
 import React from 'react';
 import markdownIt from 'markdown-it';
 
-import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
@@ -30,33 +29,45 @@ customMarkdownIt.use(require('markdown-it-container'), 'classname', {
 var PreviewTemplate = ({ entry, getAsset }) => {
   const title = entry.getIn(['data', 'title'], null);
   const body = entry.getIn(['data', 'body'], null);
-  const created = entry.getIn(['data', 'created'], null);
   const archivedReason = entry.getIn(['data', 'archivedreason'], null);
-  const bodyRendered = customMarkdownIt.render(body || '');
-
   customMarkdownIt.renderer.rules.image = function (tokens, idx) {
     var token = tokens[idx];
-    return `<img src=${getAsset(token.attrs[0][1]).url} alt="${
-      token.attrs[1][1]
-    }"/>`;
+    return `
+      <img src=${getAsset(token.attrs[0][1]).url} alt=${token.attrs[1][1]}/>
+      <figcaption><strong>${token.attrs[1][1]}</strong></figcaption>`;
   };
 
+  customMarkdownIt.renderer.rules.code_inline = function (tokens, idx) {
+    var token = tokens[idx];
+    if (token.content.startsWith('youtube: ')) {
+      const url = token.content.replace('youtube: ', '');
+      const videoId = url.substring(url.lastIndexOf('/') + 1);
+
+      return `<iframe
+          scrolling="no"
+          width="788.54"
+          height="443"
+          type="text/html"
+          src="https://www.youtube-nocookie.com/embed/${videoId}"
+        ></iframe>`;
+    } else {
+      return token.content;
+    }
+  };
+
+  const bodyRendered = customMarkdownIt.render(body || '');
   return (
     <body>
       <main>
         <article className="rule-content editor-preview">
           <h1 className="rule-heading">{title}</h1>
-          <small className="history">
-            Created on {format(new Date(created), 'dd MMM yyyy')} | Last updated
-            by <strong>USER NAME </strong> now
-          </small>
           {archivedReason && archivedReason.length > 0 && (
             <div>
               <br />
               <div className="attention archived px-4">
                 <FontAwesomeIcon
                   icon={faExclamationTriangle}
-                  className="attentionIcon"
+                  className="attention.archived"
                 />{' '}
                 This rule has been archived
               </div>

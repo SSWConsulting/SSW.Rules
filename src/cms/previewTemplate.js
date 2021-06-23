@@ -32,11 +32,13 @@ var PreviewTemplate = ({ entry, getAsset }) => {
   const archivedReason = entry.getIn(['data', 'archivedreason'], null);
   customMarkdownIt.renderer.rules.image = function (tokens, idx) {
     var token = tokens[idx];
+    const imageLocation = getAsset(token.attrs[0][1]).url;
+    const altText = token.content;
     return `
       <figure class="image">
-        <img src=${getAsset(token.attrs[0][1]).url} alt=${token.attrs[1][1]}/>
+        <img src=${imageLocation} alt=${altText}/>
         <figcaption>
-          <strong>${token.attrs[1][1]}Figure: My image
+          <strong>${altText}
           </strong>
         </figcaption>
       </figure>`;
@@ -50,8 +52,6 @@ var PreviewTemplate = ({ entry, getAsset }) => {
 
       return `<iframe
           scrolling="no"
-          width="788.54"
-          height="443"
           type="text/html"
           src="https://www.youtube-nocookie.com/embed/${videoId}"
         ></iframe>`;
@@ -59,7 +59,6 @@ var PreviewTemplate = ({ entry, getAsset }) => {
       return token.content;
     }
   };
-
   const bodyRendered = customMarkdownIt.render(body || '');
   return (
     <body>

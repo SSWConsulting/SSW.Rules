@@ -5,9 +5,7 @@ backend:
   open_authoring: true
   auth_endpoint: /api/auth
 
-site_url: https://www.ssw.com.au/rules
 publish_mode: editorial_workflow
-logo_url: https://www.ssw.com.au/ssw/logo/SSWRules/Downloads/SSW%20Rules.png
 show_preview_links: false
 
 media_folder: static/assets

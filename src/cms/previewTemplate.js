@@ -33,8 +33,13 @@ var PreviewTemplate = ({ entry, getAsset }) => {
   customMarkdownIt.renderer.rules.image = function (tokens, idx) {
     var token = tokens[idx];
     return `
-      <img src=${getAsset(token.attrs[0][1]).url} alt=${token.attrs[1][1]}/>
-      <figcaption><strong>${token.attrs[1][1]}</strong></figcaption>`;
+      <figure class="image">
+        <img src=${getAsset(token.attrs[0][1]).url} alt=${token.attrs[1][1]}/>
+        <figcaption>
+          <strong>${token.attrs[1][1]}Figure: My image
+          </strong>
+        </figcaption>
+      </figure>`;
   };
 
   customMarkdownIt.renderer.rules.code_inline = function (tokens, idx) {
@@ -79,7 +84,6 @@ var PreviewTemplate = ({ entry, getAsset }) => {
           )}
           <hr />
           <div dangerouslySetInnerHTML={{ __html: bodyRendered }} />
-          {/* <div>{bodyRendered}</div> */}
         </article>
       </main>
     </body>

@@ -2522,6 +2522,41 @@ margin-bottom: 1em;
   padding-left: 0.5rem;
 }
 
+.editor-preview .good p::after {
+  background: unset;
+  content: "";
+  padding-left: unset;
+  padding-right: unset;
+  position: unset;
+  left: unset;
+  top: unset;
+}
+
+.editor-preview .bad p::after {
+  background: unset;
+  content: "";
+  padding-left: unset;
+  padding-right: unset;
+  position: unset;
+  left: unset;
+  top: unset;
+}
+
+.editor-preview .ok p::after {
+  background: unset;
+  content: "";
+  padding-left: unset;
+  padding-right: unset;
+  position: unset;
+  left: unset;
+  top: unset;
+}
+
+.editor-preview figure {
+  margin-left: unset;
+}
+
+
 /* Rule content tables
 -------------------------------------------------- */
 .rule-content td {

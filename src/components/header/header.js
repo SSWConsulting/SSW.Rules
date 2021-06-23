@@ -53,6 +53,7 @@ const Header = ({ displayActions, ruleUri }) => {
                   //       }/rule`
                   //     : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`
                   // }
+                  // The above should be uncommented once Netlify is ready to deploy
                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`}
                   className="action-btn-link-underlined"
                 >

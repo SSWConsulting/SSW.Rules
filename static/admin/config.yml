@@ -6,7 +6,6 @@ backend:
   auth_endpoint: /api/auth
 
 publish_mode: editorial_workflow
-show_preview_links: false
 
 media_folder: static/assets
 public_folder: /assets

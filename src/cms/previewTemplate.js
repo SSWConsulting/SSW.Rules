@@ -50,11 +50,14 @@ var PreviewTemplate = ({ entry, getAsset }) => {
       const url = token.content.replace('youtube: ', '');
       const videoId = url.substring(url.lastIndexOf('/') + 1);
 
-      return `<iframe
-          scrolling="no"
-          type="text/html"
-          src="https://www.youtube-nocookie.com/embed/${videoId}"
-        ></iframe>`;
+      return `<div class="video-container">
+          <iframe
+            scrolling="no"
+            type="text/html"
+            class="video"
+            src="https://www.youtube-nocookie.com/embed/${videoId}"
+          ></iframe>
+        </div>`;
     } else {
       return token.content;
     }

@@ -865,6 +865,15 @@ blockquote p:before {
   color: #ccc;
 }
 
+.rule-content p{
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.old-rules-link {
+  padding-left: 1rem;
+}
+
 /* Category List
 -------------------------------------------------- */
 

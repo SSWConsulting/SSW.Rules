@@ -53,7 +53,6 @@ const Header = ({ displayActions, ruleUri }) => {
                         }/rule`
                       : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`
                   }
-                  // href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`}
                   className="action-btn-link-underlined"
                 >
                   <div className="edit-button-container">Edit</div>

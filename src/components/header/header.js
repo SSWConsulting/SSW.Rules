@@ -46,15 +46,13 @@ const Header = ({ displayActions, ruleUri }) => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  // href={
-                  //   ruleUri.split('/')[2] == 'rule.md'
-                  //     ? `/rules/admin/#/collections/rule/entries/${
-                  //         ruleUri.split('/')[1]
-                  //       }/rule`
-                  //     : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`
-                  // }
-                  // The above should be uncommented once Netlify is ready to deploy
-                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`}
+                  href={
+                    ruleUri.split('/')[2] == 'rule.md'
+                      ? `/rules/admin/#/collections/rule/entries/${
+                          ruleUri.split('/')[1]
+                        }/rule`
+                      : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`
+                  }
                   className="action-btn-link-underlined"
                 >
                   <div className="edit-button-container">Edit</div>

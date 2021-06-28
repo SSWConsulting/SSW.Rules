@@ -4,6 +4,7 @@ backend:
   branch: staging
   open_authoring: true
   auth_endpoint: /api/auth
+  always_fork: true
 
 site_url: https://www.ssw.com.au/rules
 publish_mode: editorial_workflow

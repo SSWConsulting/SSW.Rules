@@ -33,7 +33,7 @@ API_BASE_URL=#{API_BASE_URL}
 1. Branch off main for your PBI
 2. Run *yarn build* (.env.production is required for this step)
 3. Do your work
-4. Run the site in development mode by *npm run-script develop* (.env.development is required for this step)
+4. Run the site in development mode by *yarn develop* (.env.development is required for this step)
 5. Commit code and push
 6. Raise a PR
 7. Get it merged!

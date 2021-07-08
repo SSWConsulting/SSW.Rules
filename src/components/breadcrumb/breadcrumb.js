@@ -27,15 +27,17 @@ const Breadcrumbs = (props) => {
           <img alt={'SSW Consulting'} src={Icon} className="w-4" />
         </a>
 
-        <span className="breadcrumb__separator">&gt;</span>
+        <span className="pl-1 breadcrumb__separator">&gt;</span>
 
-        <a className="breadcrumb-content px-1" href={siteUrl}>
-          SSW Rules
-        </a>
+        <Link ref={linkRef} to={siteUrl}>
+          <div className="breadcrumb-content px-1 hover:text-red-600">
+            SSW Rules
+          </div>
+        </Link>
 
-        <div className="px-1">
+        <span className="px-1">
           {props.isCategory || props.isRule || props.isArchived ? '>' : ''}
-        </div>
+        </span>
         {props.categories && (
           <div className="text-left ">{getCategories()}</div>
         )}
@@ -44,8 +46,9 @@ const Breadcrumbs = (props) => {
         ) : props.isCategory ? (
           <div className="px-1 text-gray-900">{props.categoryTitle}</div>
         ) : (
-          <div className="px-1 text-gray-900">
-            {props.isHomePage ? '' : '>'} {props.title}
+          <div className="text-gray-900">
+            <span className="px-1">{props.isHomePage ? '' : '>'}</span>
+            {props.title}
           </div>
         )}
       </div>

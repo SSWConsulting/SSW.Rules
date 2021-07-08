@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { detectLinks } from '../helpers/convertUrlFromString';
 
 // customize markdown-it
 let options = {
@@ -80,7 +81,11 @@ var PreviewTemplate = ({ entry, getAsset }) => {
               </div>
               <div className="RuleArchivedReasonContainer px-4">
                 <span className="ReasonTitle">Archived Reason: </span>
-                {archivedReason}
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: detectLinks(archivedReason),
+                  }}
+                ></span>
               </div>
             </div>
           )}

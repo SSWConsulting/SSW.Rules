@@ -5,25 +5,31 @@ import { graphql, Link } from 'gatsby';
 import { format } from 'date-fns';
 import formatDistance from 'date-fns/formatDistance';
 import PropTypes from 'prop-types';
+
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
   faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import GitHubIcon from '-!svg-react-loader!../images/github.svg';
-import Bookmark from '../components/bookmark/bookmark';
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import Acknowledgements from '../components/acknowledgements/acknowledgements';
-import Reaction from '../components/reaction/reaction';
-import Comments from '../components/comments/comments';
 import { useAuth0 } from '@auth0/auth0-react';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
 import {
   GetOrganisations,
   GetSecretContent,
   GetGithubOrganisationName,
 } from '../services/apiService';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
+import { detectLinks } from '../helpers/convertUrlFromString';
+
+import Bookmark from '../components/bookmark/bookmark';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import Acknowledgements from '../components/acknowledgements/acknowledgements';
+import Reaction from '../components/reaction/reaction';
+import Comments from '../components/comments/comments';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -200,7 +206,11 @@ const Rule = ({ data, location }) => {
                 </div>
                 <div className="RuleArchivedReasonContainer px-4">
                   <span className="ReasonTitle">Archived Reason: </span>
-                  {rule.frontmatter.archivedreason}
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: detectLinks(rule.frontmatter.archivedreason),
+                    }}
+                  ></span>
                 </div>
               </div>
             )}

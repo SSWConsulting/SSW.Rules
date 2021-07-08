@@ -39,17 +39,17 @@ const Breadcrumbs = (props) => {
           {props.isCategory || props.isRule || props.isArchived ? '>' : ''}
         </span>
         {props.categories && (
-          <div className="text-left ">{getCategories()}</div>
+            <div className="text-left ">{getCategories()}</div>
         )}
         {props.isArchived ? (
-          <div className="px-1 text-gray-900">Archived</div>
+            <div className="px-1 text-gray-900">Archived</div>
         ) : props.isCategory ? (
-          <div className="px-1 text-gray-900">{props.categoryTitle}</div>
+            <div className="px-1 text-gray-900">{props.categoryTitle}</div>
         ) : (
-          <div className="text-gray-900">
-            <span className="px-1">{props.isHomePage ? '' : '>'}</span>
-            {props.title}
-          </div>
+            <div className="text-gray-900">
+              <span className="px-1">{props.isHomePage ? '' : '>'}</span>
+              {props.title}
+            </div>
         )}
       </div>
     </div>

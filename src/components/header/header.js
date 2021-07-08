@@ -25,7 +25,7 @@ const Header = ({ displayActions, ruleUri }) => {
   return (
     <AnimatedContainer>
       <header>
-        <div className="flex mt-4 mb-3">
+        <div className="flex mt-4 mb-3 mx-4 me-xl-0">
           <div className="column">
             <div className="flex items-center">
               <a

@@ -42,11 +42,11 @@ const Breadcrumbs = (props) => {
           <div className="text-left ">{getCategories()}</div>
         )}
         {props.isArchived ? (
-          <div className="px-1 text-gray-900">Archived</div>
+          <div className="px-1">Archived</div>
         ) : props.isCategory ? (
-          <div className="px-1 text-gray-900">{props.categoryTitle}</div>
+          <div className="px-1">{props.categoryTitle}</div>
         ) : (
-          <div className="text-gray-900">
+          <div>
             <span className="px-1">{props.isHomePage ? '' : '>'}</span>
             {props.title}
           </div>

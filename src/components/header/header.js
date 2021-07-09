@@ -46,13 +46,15 @@ const Header = ({ displayActions, ruleUri }) => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={
-                    ruleUri.split('/')[2] == 'rule.md'
-                      ? `/rules/admin/#/collections/rule/entries/${
-                          ruleUri.split('/')[1]
-                        }/rule`
-                      : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`
-                  }
+                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`}
+                  // href={
+                  //   ruleUri.split('/')[2] == 'rule.md'
+                  //     ? `/rules/admin/#/collections/rule/entries/${
+                  //         ruleUri.split('/')[1]
+                  //       }/rule`
+                  //     : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`
+                  // }
+                  // Commented out because Netlify CMS is not ready for production
                   className="action-btn-link-underlined"
                 >
                   <div className="edit-button-container">Edit</div>

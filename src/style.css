@@ -32,6 +32,30 @@ body {
   color:#333;
 }
 
+header {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 600px) and (max-width: 1279px) {
+  header {
+    width: 95%;
+  }
+  .breadcrumb-container {
+    width: 95%;
+  }
+}
+
+@media (min-width: 1280px) {
+  header {
+    width: 100%;
+  }
+  .breadcrumb-container {
+    width: 100%;
+  }
+}
+
 .tagline {
   position: relative;
   top: 0;
@@ -191,6 +215,8 @@ footer {
 .breadcrumb-container{
   font-size: 0.8rem;
   margin-top: 1rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .action-btn-container {

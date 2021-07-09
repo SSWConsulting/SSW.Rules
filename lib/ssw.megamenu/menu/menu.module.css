@@ -17,24 +17,34 @@
 .MegaMenu {
   font-family: Arial, sans-serif;
   font-weight: 400;
-}
-.MegaMenu {
   clear: both;
   height: 36px;
   line-height: 24px;
-  padding-left: 0;
+  width: 90%;
   z-index: 0;
   background: none repeat scroll 0 0 #414141;
   position: relative;
   z-index: 20;
+  margin: auto;
 }
+
+@media (min-width: 600px) and (max-width: 1279px) {
+  .MegaMenu {
+    width: 95%
+  }
+}
+
+@media (min-width: 1280px) {
+  .MegaMenu {
+    width: 100%
+  }
+}
+
 .menuContent {
   display: inline-block;
   float: left;
-  width: 100%;
 }
 .menuMobile {
-  width: 100%;
   float: left;
   position: relative;
 }

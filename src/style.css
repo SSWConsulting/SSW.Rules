@@ -1255,12 +1255,28 @@ div.greybox {
   line-height: normal;
 }
 
-.rule-content .info, .rule-content .china {
+.rule-content .codeauditor:before {
+  content: "\f121 ";
+  font-family: FontAwesome;
+  font-size: 38px;
+  color: #cc4141;
+  float: left;
+  line-height: 38px;
+  margin-right: 1rem;
+  margin-top: 0.1rem;
+}
+
+.rule-content .info, .rule-content .china, .rule-content .codeauditor {
   display: block;
   padding: 10px;
   margin: 0 0 1rem;
   max-width: 100%;
+  min-height: 3.5rem;
   border: 1px solid #ccc;
+}
+
+.rule-content .codeauditor p {
+  padding-top: 0.6rem;
 }
 
 .rule-content .china:before {

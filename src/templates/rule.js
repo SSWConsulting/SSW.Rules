@@ -19,7 +19,6 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Comments from '../components/comments/comments';
 import Reaction from '../components/reaction/reaction';
-import PostTemplate from '../components/comments/comments';
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';

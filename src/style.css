@@ -865,11 +865,6 @@ blockquote p:before {
   color: #ccc;
 }
 
-.rule-content p{
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
 /* Category List
 -------------------------------------------------- */
 
@@ -1247,25 +1242,43 @@ div.greybox {
   content: "\f05a ";
   font-family: FontAwesome;
   font-size: 38px;
-  font-weight: normal;
-  text-decoration: inherit;
   color: #cc4141;
-  padding-right: 1rem;
   float: left;
   line-height: normal;
+  margin-right: 1rem;
 }
 
-.rule-content .info, .rule-content .china {
+.rule-content .codeauditor:before {
+  content: "\f121 ";
+  font-family: FontAwesome;
+  font-size: 38px;
+  color: #cc4141;
+  float: left;
+  line-height: normal;
+  margin-right: 1rem;
+}
+
+.rule-content .info, .rule-content .china, .rule-content .codeauditor {
   display: block;
   padding: 10px;
   margin: 0 0 1rem;
   max-width: 100%;
+  min-height: 3.6rem;
   border: 1px solid #ccc;
+}
+
+.rule-content .info p, .rule-content .china p {
+  padding-top: 0.35rem;
+}
+
+.rule-content .codeauditor p {
+  padding-top: 0.45rem;
 }
 
 .rule-content .china:before {
   content: url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/china-flag-icon.png);
-  padding-right: 1rem;
+  margin-right: 1rem;
+  padding-top: 0.15rem;
   float: left;
 }
 

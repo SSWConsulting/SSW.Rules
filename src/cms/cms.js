@@ -1,14 +1,11 @@
-import CMS from 'netlify-cms-app';
+window.CMS_MANUAL_INIT = true;
+
+import CMS, { init } from 'netlify-cms-app';
 import PostPreview from './previewTemplate';
 import styles from '!css-loader!../style.css';
+import configJson from './config.js';
 
-CMS.init({
-  config: {
-    backend: {
-      base_url: process.env.API_BASE_URL,
-    },
-  },
-});
+init(configJson);
 
 CMS.registerPreviewStyle(styles.toString(), { raw: true });
 CMS.registerPreviewTemplate('rule', PostPreview);

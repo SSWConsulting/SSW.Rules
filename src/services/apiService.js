@@ -199,10 +199,7 @@ export async function ConnectUserCommentsAccount(data, token) {
     },
     body: JSON.stringify(data),
   });
-  return {
-    code: response.status,
-    response: response.json(),
-  };
+  return response.status;
 }
 
 export async function RemoveUserCommentsAccount(data, token) {

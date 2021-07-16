@@ -39,7 +39,7 @@ const CommentsNotConnected = ({ userCommentsConnected, setState, state }) => {
           )
             .then((response) => {
               setState(state + 1);
-              if (response.code == 409) {
+              if (response == 409) {
                 setErrorMessage(
                   'Another user is already using this comments account'
                 );

@@ -1524,6 +1524,11 @@ div.greybox {
 
 .forgot-username-tooltip {
   margin: 1.85rem auto 0 0;
+  text-decoration: none;
+}
+
+.forgot-username-tooltip a {
+  text-decoration: none;
 }
 
 .tooltiptext {

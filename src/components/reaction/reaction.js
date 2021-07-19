@@ -8,6 +8,13 @@ import {
   ReactionType,
   RemoveReaction,
 } from '../../services/apiService';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
 
 const Reaction = (props) => {
   const { ruleId } = props;
@@ -32,7 +39,10 @@ const Reaction = (props) => {
           setCurrentReactionType(success.userStatus);
         })
         .catch((err) => {
-          console.error('error', err);
+          appInsights.trackException({
+            error: new Error(err),
+            severityLevel: 3,
+          });
         });
     } else {
       setCurrentReactionType(null);
@@ -44,7 +54,10 @@ const Reaction = (props) => {
           setSuperDisikesCount(success.superDislikeCount ?? 0);
         })
         .catch((err) => {
-          console.error('error', err);
+          appInsights.trackException({
+            error: new Error(err),
+            severityLevel: 3,
+          });
         });
     }
   }, [change, user]);
@@ -76,8 +89,11 @@ const Reaction = (props) => {
           .then(() => {
             setChange(change + 1);
           })
-          .catch((error) => {
-            console.error(error);
+          .catch((err) => {
+            appInsights.trackException({
+              error: new Error(err),
+              severityLevel: 3,
+            });
           });
       } else {
         if (type == ReactionType.SuperLike) {
@@ -98,7 +114,10 @@ const Reaction = (props) => {
             setChange(change + 1);
           })
           .catch((err) => {
-            console.error('error', err);
+            appInsights.trackException({
+              error: new Error(err),
+              severityLevel: 3,
+            });
           });
       }
     } else {

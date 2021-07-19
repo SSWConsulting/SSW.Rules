@@ -1,6 +1,5 @@
+/* eslint-disable no-undef */
 /* eslint-disable quotes */
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-console */
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'gatsby';
@@ -9,23 +8,38 @@ import {
   GetAllLikedDisliked,
   RemoveBookmark,
   RemoveReaction,
-  GetUserComments,
+  GetDisqusUserCommentsList,
+  RemoveUserCommentsAccount,
+  GetUser,
+  DisqusError,
 } from '../../services/apiService';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
-import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
+import DisqusIcon from '-!svg-react-loader!../../images/disqusIcon.svg';
+
 import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Filter } from '../profile-filter-menu/profile-filter-menu';
-import { commentsRepository } from '../../../site-config';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
+import CommentsNotConnected from '../comments-not-connected/comments-not-connected';
+import DisableDisqusPrivacy from '../disable-disqus-privacy/disable-disqus-privacy';
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
 
 const ProfileContent = (props) => {
-  const [bookmarkedRules, setBookmarkedRules] = useState();
-  const [superLikedRulesList, setSuperLikedRules] = useState();
-  const [likedRulesList, setLikedRules] = useState();
-  const [dislikedRulesList, setDislikedRules] = useState();
-  const [superDislikedRulesList, setSuperDislikedRules] = useState();
-  const [commentedRulesList, setCommentedRulesList] = useState();
+  const [bookmarkedRules, setBookmarkedRules] = useState([]);
+  const [superLikedRulesList, setSuperLikedRules] = useState([]);
+  const [likedRulesList, setLikedRules] = useState([]);
+  const [dislikedRulesList, setDislikedRules] = useState([]);
+  const [superDislikedRulesList, setSuperDislikedRules] = useState([]);
+  const [commentedRulesList, setCommentedRulesList] = useState([]);
+  const [userCommentsConnected, setUserCommentsConnected] = useState(true);
+  const [disqusPrivacyEnabled, setDisqusPrivacyEnabled] = useState(false);
   const [change, setChange] = useState(0);
   const [viewStyle, setViewStyle] = useState('titleOnly');
   const { user, getIdTokenClaims, isAuthenticated } = useAuth0();
@@ -44,17 +58,23 @@ const ProfileContent = (props) => {
         ? RemoveBookmark({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setChange(change + 1);
-              props.setListChangeCallback(props.listChange + 1);
+              props.setState(props.state + 1);
             })
             .catch((err) => {
-              console.error('error: ' + err);
+              appInsights.trackException({
+                error: new Error(err),
+                severityLevel: 3,
+              });
             })
         : RemoveReaction({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setChange(change + 1);
             })
             .catch((err) => {
-              console.error('error: ' + err);
+              appInsights.trackException({
+                error: new Error(err),
+                severityLevel: 3,
+              });
             });
     }
   }
@@ -79,33 +99,62 @@ const ProfileContent = (props) => {
         props.setBookmarkedRulesCount(bookmarkedRulesSpread.length);
       })
       .catch((err) => {
-        console.error('error: ', err);
+        appInsights.trackException({
+          error: new Error(err),
+          severityLevel: 3,
+        });
       });
   }
 
-  function getUserComments() {
-    GetUserComments(user.nickname, commentsRepository)
-      .then((success) => {
-        const allRules = props.data.allMarkdownRemark.nodes;
-        const commentGuids =
-          success.items.size != 0 ? success.items.map((r) => r.title) : null;
-        const commentedRulesMap = allRules.filter((value) =>
-          commentGuids.includes(value.frontmatter.guid)
-        );
-        const commentedRulesSpread = commentedRulesMap.map((r) => ({
-          ...r.frontmatter,
-          excerpt: r.excerpt,
-          htmlAst: r.htmlAst,
-          url: success.items
-            .filter((v) => v.title == r.frontmatter.guid)
-            .map((r) => r.html_url)[0],
-        }));
-        setCommentedRulesList(commentedRulesSpread);
-        props.setCommentedRulesCount(commentedRulesSpread.length);
-      })
-      .catch((err) => {
-        console.error('error: ', err);
-      });
+  async function setCommentedRulesFromGuids(response) {
+    const commentedRuleGuids = response.map((post) => {
+      if (post.forum == process.env.DISQUS_FORUM) {
+        return post.thread.identifiers[0];
+      }
+    });
+
+    const allRules = props.data.allMarkdownRemark.nodes;
+
+    const commentedRulesMap = allRules.filter((value) =>
+      commentedRuleGuids.includes(value.frontmatter.guid)
+    );
+
+    const commentedRulesSpread = commentedRulesMap.map((r) => ({
+      ...r.frontmatter,
+      excerpt: r.excerpt,
+      htmlAst: r.htmlAst,
+    }));
+    if (commentedRulesSpread) {
+      setCommentedRulesList(commentedRulesSpread);
+      props.setCommentedRulesCount(commentedRulesSpread.length);
+    }
+  }
+
+  async function getUserComments() {
+    const jwt = await getIdTokenClaims();
+    GetUser(user.sub, jwt.__raw).then((success) => {
+      setUserCommentsConnected(success.commentsConnected);
+      if (!success.commentsConnected) {
+        setCommentedRulesList([]);
+      } else {
+        GetDisqusUserCommentsList(success.user.commentsUserId)
+          .then((success) => {
+            if (success.code == DisqusError.AccessTooLow) {
+              // eslint-disable-next-line no-console
+              console.log('This error was expected and handled');
+              setDisqusPrivacyEnabled(true);
+            } else {
+              setCommentedRulesFromGuids(success.response);
+            }
+          })
+          .catch((err) => {
+            appInsights.trackException({
+              error: new Error(err),
+              severityLevel: 3,
+            });
+          });
+      }
+    });
   }
 
   function getLikesDislikesLists() {
@@ -139,7 +188,7 @@ const ProfileContent = (props) => {
               .map((r) => r.type),
           }))
           .filter((rr) => rr.type[0] == Filter.Likes);
-        setLikedRules(likedRules);
+        setLikedRules(likedRules ? likedRules : []);
         props.setLikedRulesCount(likedRules.length);
 
         const dislikedRules = reactedRules
@@ -152,7 +201,7 @@ const ProfileContent = (props) => {
               .map((r) => r.type),
           }))
           .filter((rr) => rr.type[0] == Filter.Dislikes);
-        setDislikedRules(dislikedRules);
+        setDislikedRules(dislikedRules ? dislikedRules : []);
         props.setDislikedRulesCount(dislikedRules.length);
 
         const superDislikedRules = reactedRules
@@ -169,7 +218,10 @@ const ProfileContent = (props) => {
         props.setSuperDislikedRulesCount(superDislikedRules.length);
       })
       .catch((err) => {
-        console.error('error: ', err);
+        appInsights.trackException({
+          error: new Error(err),
+          severityLevel: 3,
+        });
       });
   }
 
@@ -179,7 +231,7 @@ const ProfileContent = (props) => {
       getLikesDislikesLists();
       getUserComments();
     }
-  }, [isAuthenticated, props.filter, change]);
+  }, [isAuthenticated, props.filter, change, props.state]);
   return (
     <>
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none pt-12">
@@ -237,6 +289,8 @@ const ProfileContent = (props) => {
       </div>
       {bookmarkedRules && likedRulesList && dislikedRulesList ? (
         <RuleList
+          userCommentsConnected={userCommentsConnected}
+          disqusPrivacyEnabled={disqusPrivacyEnabled}
           rules={
             props.filter == Filter.Bookmarks
               ? bookmarkedRules
@@ -251,6 +305,8 @@ const ProfileContent = (props) => {
               : commentedRulesList
           }
           viewStyle={viewStyle}
+          setState={props.setState}
+          state={props.state}
           type={
             props.filter == Filter.Bookmarks
               ? 'bookmark'
@@ -275,8 +331,8 @@ const ProfileContent = (props) => {
 ProfileContent.propTypes = {
   data: PropTypes.object.isRequired,
   filter: PropTypes.number.isRequired,
-  setListChangeCallback: PropTypes.func.isRequired,
-  listChange: PropTypes.number.isRequired,
+  setState: PropTypes.func.isRequired,
+  state: PropTypes.number.isRequired,
   setBookmarkedRulesCount: PropTypes.func.isRequired,
   setSuperLikedRulesCount: PropTypes.func.isRequired,
   setLikedRulesCount: PropTypes.func.isRequired,
@@ -285,37 +341,86 @@ ProfileContent.propTypes = {
   setCommentedRulesCount: PropTypes.func.isRequired,
 };
 
-const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
+const RuleList = ({
+  rules,
+  viewStyle,
+  type,
+  onRemoveClick,
+  userCommentsConnected,
+  setState,
+  state,
+  disqusPrivacyEnabled,
+}) => {
   const linkRef = useRef();
   const iconClass = type.replace(/\s+/g, '-');
+
   const components = {
     greyBox: GreyBox,
   };
+  const { user, getIdTokenClaims } = useAuth0();
+
+  async function RemoveDisqusUser() {
+    const jwt = await getIdTokenClaims();
+    RemoveUserCommentsAccount({ UserId: user.sub }, jwt.__raw)
+      .then(() => {
+        setState(state + 1);
+      })
+      .catch((err) => {
+        appInsights.trackException({
+          error: new Error(err),
+          severityLevel: 3,
+        });
+      });
+  }
+
+  useEffect(() => {}, [userCommentsConnected, state]);
+
   return (
     <>
-      {rules == undefined || rules.toString() == '' || !rules ? (
-        <div className="no-content-message">
-          <p className="no-tagged-message">
-            {type == 'comment'
-              ? "No comment? Don't be shy!"
-              : type == 'bookmark'
-              ? "No bookmarks? Use them to save rules for later!"
-              : type == 'love'
-              ? "Nothing here yet, show us the rules you love!"
-              : type == 'agree'
-              ? "There should be more here, don't you agree?"
-              : type == 'disagree'
-              ? "What a happy chap you are, no disagreements here!"
-              : "Let us know what you don't like, we are here to improve!"}
-          </p>
-        </div>
+      {rules.length == 0 ? (
+        type == 'comment' ? (
+          !userCommentsConnected ? (
+            <CommentsNotConnected
+              userCommentsConnected={userCommentsConnected}
+              state={state}
+              setState={setState}
+              key={type}
+            />
+          ) : disqusPrivacyEnabled ? (
+            <DisableDisqusPrivacy />
+          ) : (
+            <>
+              <div className="no-content-message">
+                <p className="no-tagged-message">
+                  No comment? Don{"'"}t be shy!
+                </p>
+              </div>
+            </>
+          )
+        ) : (
+          <>
+            <div className="no-content-message">
+              <p className="no-tagged-message">
+                {type == 'bookmark'
+                  ? 'No bookmarks? Use them to save rules for later!'
+                  : type == 'love'
+                  ? 'Nothing here yet, show us the rules you love!'
+                  : type == 'agree'
+                  ? `There should be more here, don${"'"}t you agree?`
+                  : type == 'disagree'
+                  ? 'What a happy chap you are, no disagreements here!'
+                  : `Let us know what you don${"'"}t like, we are here to improve!`}
+              </p>
+            </div>
+          </>
+        )
       ) : (
         <div className="p-12">
           <ol className="rule-number">
             {rules.map((rule) => {
               return (
                 <>
-                  <li>
+                  <li key={rule.guid}>
                     <section className="rule-content-title pl-2 pb-4">
                       <div className="heading-container">
                         <h2 className={`rule-heading-${iconClass}`}>
@@ -333,11 +438,14 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
                           ''
                         )}
                         {type == 'comment' ? (
-                          <div className="github-tooltip">
-                            <a className="github-comment-link" href={rule.url}>
-                              <GitHubIcon />
+                          <div className="disqus-tooltip">
+                            <a
+                              className="disqus-comment-link"
+                              href={rule.uri + '#disqus_thread'}
+                            >
+                              <DisqusIcon />
                             </a>
-                            <span className="tooltiptext">Edit in GitHub</span>{' '}
+                            <span className="tooltiptext">See on rule</span>{' '}
                           </div>
                         ) : (
                           <button
@@ -372,6 +480,13 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick }) => {
           </ol>
         </div>
       )}
+      {type == 'comment' && userCommentsConnected ? (
+        <button className="disconnect-acc-button" onClick={RemoveDisqusUser}>
+          Disconnect Disqus account <DisqusIcon />
+        </button>
+      ) : (
+        <></>
+      )}
     </>
   );
 };
@@ -381,6 +496,10 @@ RuleList.propTypes = {
   viewStyle: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   onRemoveClick: PropTypes.func.isRequired,
+  userCommentsConnected: PropTypes.bool,
+  setState: PropTypes.func,
+  state: PropTypes.number,
+  disqusPrivacyEnabled: PropTypes.bool,
 };
 
 export default ProfileContent;

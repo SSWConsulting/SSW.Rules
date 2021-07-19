@@ -14,6 +14,12 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GitHubIcon from '-!svg-react-loader!../images/github.svg';
+import Bookmark from '../components/bookmark/bookmark';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import Acknowledgements from '../components/acknowledgements/acknowledgements';
+import Comments from '../components/comments/comments';
+import Reaction from '../components/reaction/reaction';
+
 import { useAuth0 } from '@auth0/auth0-react';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
@@ -24,12 +30,6 @@ import {
 } from '../services/apiService';
 
 import { detectLinks } from '../helpers/convertUrlFromString';
-
-import Bookmark from '../components/bookmark/bookmark';
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import Acknowledgements from '../components/acknowledgements/acknowledgements';
-import Reaction from '../components/reaction/reaction';
-import Comments from '../components/comments/comments';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -372,8 +372,13 @@ const Rule = ({ data, location }) => {
               </div>
             </div>
           </section>
-          <Comments guid={rule.frontmatter.guid} />
         </section>
+
+        <Comments
+          ruleGuid={rule.frontmatter.guid}
+          title={rule.frontmatter.title}
+          uri={rule.frontmatter.uri}
+        />
       </div>
     </div>
   );

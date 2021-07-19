@@ -25,6 +25,13 @@ module.exports = {
     'gatsby-transformer-json',
     'gatsby-plugin-postcss',
     {
+      resolve: 'gatsby-plugin-disqus',
+      options: {
+        // shortname: 'sswrulesdev',
+        shortname: process.env.DISQUS_FORUM,
+      },
+    },
+    {
       resolve: 'gatsby-source-git',
       options: {
         name: 'categories',

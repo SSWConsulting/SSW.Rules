@@ -593,7 +593,7 @@ pre {
   font-weight: 700;
   margin: 0.5rem 0 6px;
   line-height: initial;
-  position: relative
+  position: relative;
 }
 
 .greybox p:last-child, .highlight p:last-child, .info p:last-child, .china p:last-child, .todo p:last-child, blockquote p:last-child{
@@ -663,7 +663,7 @@ ol ol, ol li ol {
   font-weight: normal;
   font-size: 1rem;
   word-break: break-word;
-  margin-bottom: 5rem;
+  margin-bottom: 2rem;
   padding: 1rem 1.5rem;
 }
 
@@ -967,7 +967,7 @@ blockquote p:before {
 }
 
 .rule-content a:hover,
-.rule-category a:hover:not(.github-link) {
+.rule-category a:hover:not(.github-link, .disqus-link, .get-username-btn::after) {
   text-decoration:underline;;
   color: #cc4141;
 }
@@ -1449,6 +1449,7 @@ div.greybox {
   content: '\f05e';
   font-family: FontAwesome;
   font-size: 1.7rem;
+  padding-left: 0.1rem;
 }
 
 .reaction-counter-container {
@@ -1507,19 +1508,27 @@ div.greybox {
   opacity: 0.5;
 }
 
-.tooltip, .react-tooltip, .github-tooltip, .info-tooltip {
+.tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
   position: relative;
   display: inline-block;
 }
 
-.github-tooltip {
-  height: 1.7rem;
+.disqus-tooltip {
   margin: auto 1rem auto auto;
-  font-size: 1.8rem !important;
+  height: 3rem;
 }
 
 .info-tooltip {
   margin: 1.85rem auto 0 0;
+}
+
+.forgot-username-tooltip {
+  margin: 1.85rem auto 0 0;
+  text-decoration: none;
+}
+
+.forgot-username-tooltip a {
+  text-decoration: none;
 }
 
 .tooltiptext {
@@ -1549,7 +1558,7 @@ div.greybox {
   width: 80px;
 }
 
-.github-tooltip .tooltiptext {
+.disqus-tooltip .tooltiptext {
   margin-left: 0 !important;
   bottom: 2.5rem;
   left: -1.6rem;
@@ -1560,6 +1569,12 @@ div.greybox {
   left: 65%;
   margin-left: -79px;
   margin-bottom: 0.7rem;
+  width: 10rem;
+}
+
+.forgot-username-tooltip .tooltiptext{
+  right: -4.4rem;
+  margin-bottom: 1rem;
   width: 10rem;
 }
 
@@ -1575,10 +1590,10 @@ div.greybox {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .github-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext {
+.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .disqus-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext, .forgot-username-tooltip:hover .tooltiptext{
   visibility: visible;
   opacity: 1;
-  padding: 0.2rem !important;
+  padding: 0.3rem !important;
 }
 
 /* Dropdown
@@ -1695,7 +1710,7 @@ div.greybox {
 
 .grid-container {
   display: grid;
-  grid-template-columns: 8rem auto;
+  grid-template-columns: 8rem auto auto;
   grid-template-rows: 3rem 1.6rem auto;
   color: #333333;
 }
@@ -1714,6 +1729,13 @@ div.greybox {
 
 .profile-github-icon {
   margin: 0.2rem 0.25rem 0 0;
+}
+
+.profile-disqus-icon {
+  margin: 0.1rem 0.1rem 0 -0.15rem;
+  height: 1.3rem;
+  width: 1.3rem;
+  fill: #CC4141;
 }
 
 .profile-image {
@@ -1744,7 +1766,7 @@ div.greybox {
     height: 1rem;
     width: 1.8rem;
   }
-  .github-link {
+  .github-link, .disqus-link {
     grid-column: 1 !important;
     padding-top: 0.75rem;
   }
@@ -1766,7 +1788,7 @@ div.greybox {
     grid-column: unset !important;
   }
   .radio-button-2 {
-    grid-column: unset !important;
+    grid-column: unset !important; 
   }
   .radio-button-3 {
     grid-column: unset !important;
@@ -1796,14 +1818,24 @@ div.greybox {
   grid-row: 1;
 }
 
-.github-link {
+.github-link, .disqus-link {
   width: fit-content;
   font-size: 14;
   color: #CC4141 !important;
   display: flex;
 }
 
-.github-link:hover {
+.github-link {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+.disqus-link {
+  grid-row: 3;
+  grid-column: 2;
+}
+
+.github-link:hover, .disqus-link:hover {
   opacity: 0.8;
 }
 
@@ -1836,12 +1868,12 @@ div.greybox {
 
 .menu-item:hover {
   padding: 0 0.5rem 0.25rem;
-  border-bottom: 0.25rem solid rgba(204, 65, 65, 0.60);
+  border-bottom: 0.25rem solid #CC4141;
   cursor: pointer;
 }
 
 .menu-item:hover .agree-title:after, .menu-item:hover .love-title:after, .menu-item:hover .disagree-title:after, .menu-item:hover .comments-title:after, .menu-item:hover .super-disagree-title:after, .menu-item:hover .filter-menu-bookmark-icon {
-  color: rgba(204, 65, 65, 0.60);
+  color: #CC4141;
 }
 
 .bookmarks-item:after, .love-title:after, .love-title-pressed:after, .agree-title:after, .agree-title-pressed:after, .super-disagree-title:after, .super-disagree-title-pressed:after, .disagree-title:after, .disagree-title-pressed:after, .comments-title:after, .comments-title-pressed:after  {
@@ -1865,11 +1897,7 @@ div.greybox {
   content: '\f05e';
 }
 
-.comments-title:after, .comments-title-pressed:after {
-  content: '\f075';
-}
-
-.love-title-pressed:after, .agree-title-pressed:after, .disagree-title-pressed:after, .super-disagree-title-pressed:after, .comments-title-pressed:after {
+.love-title-pressed:after, .agree-title-pressed:after, .disagree-title-pressed:after, .super-disagree-title-pressed:after {
   color: #cc4141;
 }
 
@@ -1909,6 +1937,17 @@ div.greybox {
   color: #CC4141;
 }
 
+.filter-menu-disqus-icon, .filter-menu-disqus-icon-pressed {
+  margin: auto;
+  margin-right: -0.5rem;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.filter-menu-disqus-icon-pressed {
+  color: #CC4141;
+}
+
 .rule-heading-love:after {
   content: '\f004';
   font-family: FontAwesome;
@@ -1938,11 +1977,19 @@ div.greybox {
   margin-left: 1rem;
 }
 
-.remove-item, .github-comment-link {
+.remove-item, .disqus-comment-link {
   margin-left: auto;
   right: 3rem;
   margin: auto 1rem auto auto;
   font-size: 1.8rem !important;
+}
+
+.disqus-comment-link {
+  cursor: pointer;
+}
+
+.disqus-comment-link svg {
+  height: 50px;
 }
 
 .remove-item {
@@ -1966,8 +2013,170 @@ div.greybox {
 
 .no-tagged-message:before {
   font-family: FontAwesome;
-  content: '\f05e';
+  content: '\f00d';
   margin-right: 0.5rem;
+}
+
+.username-input-box, .username-input-box-error {
+  border: 0.1rem solid rgb(136, 136, 136);
+  border-radius: 5px;
+  margin-top: 2rem;
+  width: 15rem;
+  height: 28px;
+  padding-left: .7rem;
+  margin-right: .3rem;
+  /* text-align: center; */
+}
+
+.username-input-box-error {
+  border-color: #CC4141;
+}
+
+.connect-acc-button {
+  margin-left: 1.5rem;
+  background-color: #CC4141;
+  color: white;
+  position: relative;
+  /* height: 20px; */
+  box-sizing: border-box;
+  padding: 2px 10px 2px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 2rem;
+  margin-bottom: 1.8rem;
+  height: 28px;
+  font-size: 1rem !important;
+}
+
+.disconnect-acc-button {
+  margin: 0 4.2rem 1rem auto;
+  cursor: pointer;
+  display: flex;
+  vertical-align: middle;
+  font-size: 1rem;
+  color: #666;
+}
+
+.disconnect-acc-button:before {
+  display: inline-block;
+  font-family: FontAwesome;
+  content: '\f00d';
+  text-decoration: none !important;
+  margin: auto;
+  font-size: 1.1rem;
+  margin-top: -0.02rem;
+  padding-right: 0.4rem;
+}
+
+.disconnect-acc-button svg {
+  height: 1.6rem;
+  width: 1.6rem;
+  margin-left: .3rem;
+}
+
+.disconnect-acc-button:hover {
+  color: #CC4141;
+}
+
+.connect-acc-container {
+  text-align: center;
+  margin: 2rem auto;
+  display: grid;
+  grid-template-columns: 6rem auto;
+}
+
+.disqus-large-icon {
+  height: 6rem;
+  width: 6rem;
+  margin: 1rem 0 1.8rem 12rem;
+  color: #575B5D;
+}
+
+.disqus-profile-link {
+  color: #cc4141 !important;
+}
+
+.error-text {
+  color: #CC4141;
+}
+
+.privacy-toggle-figure {
+  margin: auto;
+  display: table;
+}
+
+.privacy-toggle-image {
+  width: 66.9%;
+  margin: auto;
+  border: 1px solid #ccc;
+}
+
+.privacy-toggle-caption {
+  font-weight: bold;
+  margin: auto 10.51rem 3rem;
+}
+
+.get-username-btn::after {
+  font-family: FontAwesome;
+  content: '\f059';
+  font-size: 1.4rem;
+  margin: 0.5rem auto;
+  vertical-align: middle;
+}
+
+.get-username-btn:hover:after {
+  color: #CC4141;
+}
+
+.form {
+  display: inline-flex;
+  margin: auto;
+}
+
+.warning-box{
+  display: table;
+  padding: 10px;
+  border: 1px solid #ccc;
+  /* text-align: center; */
+  margin: 3rem auto 2rem;
+  width: 42rem;
+}
+
+.warning-box:before {
+  content: "\f071 ";
+  font-family: FontAwesome;
+  font-size: 38px;
+  font-weight: normal;
+  text-decoration: inherit;
+  color: #cc4141;
+  padding-right: 1rem;
+  float: left;
+  line-height: normal;
+}
+
+@media screen and (max-width: 1000px) {
+  .warning-box {
+    width: unset;
+  }
+  .connect-acc-container {
+    text-align: center;
+    grid-template-rows: auto auto;
+    grid-template-columns: unset;
+  }
+  .disqus-large-icon {
+    grid-row: 1;
+    margin: auto;
+  }
+  .form {
+    text-align: center;
+    grid-row: 2;
+  }
+  .privacy-toggle-figure {
+    text-align: center;
+  }
+  .privacy-toggle-caption {
+    margin: 0 0 3rem;
+  }
 }
 
 /* Comments
@@ -1978,8 +2187,9 @@ div.greybox {
   border-top: 1px solid #f5f5f5
 }
 
-.utterances {
-  max-width: 60rem;
+.disqus-box {
+  margin-bottom: 5rem;
+  padding: 1rem 1.5rem;
 }
 
 /* 404 page

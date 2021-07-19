@@ -2,6 +2,7 @@
 
 const API_URL = process.env.API_BASE_URL + '/api';
 const GITHUB_API_PAT = process.env.GITHUB_API_PAT;
+const DISQUS_API_KEY = process.env.DISQUS_API_KEY;
 
 export async function GetReactionForUser(ruleId, userId) {
   var query = userId
@@ -45,8 +46,7 @@ export const ReactionType = {
 };
 
 export async function RemoveReaction(data, token) {
-  const isEmpty = Object.values(data).some((x) => x == null);
-  if (!data || isEmpty) {
+  if (!data || Object.values(data).some((x) => !x)) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -68,14 +68,13 @@ export async function RemoveReaction(data, token) {
 export async function GetBookmarksForUser(userId, ruleId) {
   var query = ruleId
     ? `${API_URL}/GetBookmarkStatusFunction?rule_guid=${ruleId}&user_id=${userId}`
-    : `${API_URL}/GetAllBookmarked?user_id=${userId}`;
+    : `${API_URL}/GetAllBookmarkedFunction?user_id=${userId}`;
   const response = await fetch(query);
   return await response.json();
 }
 
 export async function BookmarkRule(data, token) {
-  const isEmpty = Object.values(data).some((x) => !x);
-  if (!data || isEmpty) {
+  if (!data || Object.values(data).some((x) => !x)) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -93,8 +92,7 @@ export async function BookmarkRule(data, token) {
 }
 
 export async function RemoveBookmark(data, token) {
-  const isEmpty = Object.values(data).some((x) => !x);
-  if (!data || isEmpty) {
+  if (!data || Object.values(data).some((x) => !x)) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -140,8 +138,7 @@ export async function GetGithubOrganisationName(orgID) {
 }
 
 export async function setUserOrganisation(data, token) {
-  const isEmpty = Object.values(data).some((x) => !x);
-  if (!data || isEmpty) {
+  if (!data || Object.values(data).some((x) => !x)) {
     return {
       error: true,
       message: 'Data is empty or in the wrong format',
@@ -175,15 +172,70 @@ export async function GetSecretContent(Id, token) {
   return response.json();
 }
 
-/* Profile Page */
+/* User */
 
-export async function GetUserComments(username, commentsRepository) {
-  var query = `https://api.github.com/search/issues?q=is:issue+is:open+repo:${commentsRepository}+commenter:${username}`;
-  const response = await fetch(query, {
+export async function GetUser(userId, token) {
+  const response = await fetch(`${API_URL}/GetUserFunction?user_id=${userId}`, {
+    method: 'GET',
     headers: {
-      Authorization: `token ${GITHUB_API_PAT}`,
+      Authorization: `Bearer ${token}`,
     },
   });
-
-  return await response.json();
+  return response.json();
 }
+
+export async function ConnectUserCommentsAccount(data, token) {
+  if (!data || Object.values(data).some((x) => !x)) {
+    return {
+      error: true,
+      message: 'Data is empty or in the wrong format',
+    };
+  }
+  const response = await fetch(`${API_URL}/ConnectUserCommentsFunction`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  return response.status;
+}
+
+export async function RemoveUserCommentsAccount(data, token) {
+  if (!data || Object.values(data).some((x) => !x)) {
+    return {
+      error: true,
+      message: 'Data is empty or in the wrong format',
+    };
+  }
+  await fetch(`${API_URL}/RemoveUserCommentsAccountFunction`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+}
+
+export async function GetDisqusUser(commentsUsername) {
+  const response = await fetch(
+    `https://disqus.com/api/3.0/users/details.json?user=username:${commentsUsername}&api_key=${DISQUS_API_KEY}`
+  );
+  return response.json();
+}
+
+/* Comments */
+export async function GetDisqusUserCommentsList(commentsUserId) {
+  const response = await fetch(
+    `https://disqus.com/api/3.0/users/listPosts.json?user=${commentsUserId}&api_key=${DISQUS_API_KEY}&related=thread`
+  );
+  return response.json();
+}
+
+export const DisqusError = {
+  Success: 0,
+  AccessTooLow: 12,
+  InvalidArg: 2,
+};

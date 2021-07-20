@@ -178,11 +178,11 @@ footer {
   background-color: #62b900;
 }
 
-#wechat-icon:hover #ORCode {
+#wechat-icon:hover #qr-code {
   display: block;
 }
 
-#ORCode {
+#qr-code {
   width: 100px;
   position: relative;
   z-index: 999;
@@ -192,7 +192,7 @@ footer {
   display: none;
 }
 
-#ORCode:after {
+#qr-code:after {
   content: "";
   width: 0;
   height: 0;

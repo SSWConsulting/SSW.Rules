@@ -113,7 +113,7 @@ const Footer = () => {
                     rel="noreferrer"
                   >
                     <FontAwesomeIcon icon={faWeixin} size="lg" />
-                    <span id="ORCode">
+                    <span id="qr-code">
                       <img
                         src="http://www.ssw.com.au/ssw/Images/QRcode.jpg"
                         alt="SSW QR Code"

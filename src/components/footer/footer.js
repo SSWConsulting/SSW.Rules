@@ -16,14 +16,6 @@ import {
 const buildTimestamp = preval`module.exports = new Date().getTime();`;
 
 const Footer = () => {
-  function showORCode() {
-    document.getElementById('ORCode').style.display = 'block';
-  }
-
-  function hideORCode() {
-    document.getElementById('ORCode').style.display = 'none';
-  }
-
   return (
     <>
       <div className="py-2 text-center bg-grey-translucent text-sm">
@@ -119,10 +111,6 @@ const Footer = () => {
                     href="https://mp.weixin.qq.com/s/jL4zEmzWM5VSTRu9DUW6-Q"
                     target="_blank"
                     rel="noreferrer"
-                    onMouseOver={showORCode}
-                    onMouseOut={hideORCode}
-                    onFocus={showORCode}
-                    onBlur={hideORCode}
                   >
                     <FontAwesomeIcon icon={faWeixin} size="lg" />
                     <span id="ORCode">

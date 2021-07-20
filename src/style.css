@@ -178,6 +178,10 @@ footer {
   background-color: #62b900;
 }
 
+#wechat-icon:hover #ORCode {
+  display: block;
+}
+
 #ORCode {
   width: 100px;
   position: relative;

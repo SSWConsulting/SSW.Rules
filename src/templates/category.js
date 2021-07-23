@@ -45,22 +45,20 @@ export default function Category({ data }) {
                   {'   '} {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
                 </span>
               </h2>
-              <button className="tooltip tooltip-button justify-self-end">
+              <button className="tooltip justify-self-end">
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${category.parent.relativePath}`}
-                  className="category-tooltip tooltip tooltip-button"
+                  className="tooltip tooltip-button"
                 >
                   <FontAwesomeIcon
                     icon={faGithub}
                     size="2x"
                     className="category-icon bookmark-icon"
                   />
-                  <span className="category-icon tooltiptext">
-                    Edit in GitHub
-                  </span>
                 </a>
+                <span className="tooltiptext">Edit in GitHub</span>
               </button>
             </div>
 

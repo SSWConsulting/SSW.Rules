@@ -42,6 +42,7 @@ const appInsights = new ApplicationInsights({
 appInsights.loadAppInsights();
 
 const Rule = ({ data, location }) => {
+  console.log(data);
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
@@ -173,7 +174,7 @@ const Rule = ({ data, location }) => {
             <h1>{rule.frontmatter.title}</h1>
             <div className="rule-buttons flex flex-col sm:flex-row">
               <Bookmark ruleId={rule.frontmatter.guid} />
-              <button className="tooltip tooltip-button">
+              <button className="tooltip">
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
@@ -191,14 +192,14 @@ const Rule = ({ data, location }) => {
                     size="2x"
                     className="bookmark-icon"
                   />
-                  <span className="tooltiptext">Edit</span>
                 </a>
+                <span className="tooltiptext">Edit</span>
               </button>
-              <button className="tooltip tooltip-button">
+              <button className="tooltip">
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.frontmatter.uri}`}
+                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.parent.relativePath}`}
                   className="tooltip tooltip-button"
                 >
                   <FontAwesomeIcon
@@ -206,8 +207,8 @@ const Rule = ({ data, location }) => {
                     size="2x"
                     className="bookmark-icon"
                   />
-                  <span className="tooltiptext">Edit in GitHub</span>
                 </a>
+                <span className="tooltiptext">Edit in GitHub</span>
               </button>
             </div>
           </div>

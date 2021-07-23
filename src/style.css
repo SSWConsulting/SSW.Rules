@@ -1512,12 +1512,12 @@ div.greybox {
   margin-left: 0.5rem;
 }
 
-.category-tooltip .tooltiptext {
-  left: 65%;
+.category-tooltip {
+
 }
 
-.category-tooltip .category-icon {
-  margin-bottom: 24px;
+.category-tooltip .tooltiptext {
+  left: 65%;
 }
 
 .tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
@@ -1607,10 +1607,14 @@ div.greybox {
   transition: opacity 0.2s;
 }
 
-.tooltip .tooltiptext :not(.category-icon) {
+.tooltip .tooltiptext {
   left: 65%;
   margin-left: -60px;
   margin-bottom: 0;
+}
+
+.category-tooltip {
+  bottom: 125%;
 }
 
 .react-tooltip .tooltiptext {

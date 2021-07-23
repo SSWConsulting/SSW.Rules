@@ -896,7 +896,6 @@ blockquote p:before {
   letter-spacing: normal;
   color: #ccc;
   margin: 0;
-  justify-self: end;
 }
 
 .rule-category .description {
@@ -972,7 +971,7 @@ blockquote p:before {
   color: #cc4141;
 }
 
-.rule-content a[href*="//"]:not([href*="ssw.com.au"], .info-btn-container):after {
+.rule-content a[href*="//"]:not([href*="ssw.com.au"], .info-btn-container, .tooltip-button):after {
     content: "\f08b ";
     font-family: FontAwesome;
     opacity: .5;
@@ -1508,9 +1507,71 @@ div.greybox {
   opacity: 0.5;
 }
 
+.category-icon {
+  margin-top: 0;
+  margin-left: 0.5rem;
+}
+
+.category-tooltip .tooltiptext {
+  left: 65%;
+}
+
+.category-tooltip .category-icon {
+  margin-bottom: 24px;
+}
+
 .tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
   position: relative;
   display: inline-block;
+}
+
+.tooltip-button {
+  width: 60px;
+}
+
+.tooltip-button a:after {
+  display:none;
+}
+
+.bookmark-icon .tooltip-button {
+  margin-top: 1.6rem;
+}
+
+.tooltip-button svg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tooltip-button svg:hover {
+  font-size: 2.2em;
+}
+
+.tooltip-icon {
+  color:rgb(204, 204, 204);
+  height: 2rem;
+  margin-top: 38px;
+  margin-right: 18px;
+}
+
+.tooltip-icon:hover {
+  height: 2.2rem;
+  transition: height 0.25s ;
+}
+
+.tooltip-button .tooltiptext {
+  margin-left: -58px;
+}
+
+@media screen and (max-width: 640px) {
+  .rule-buttons button:first-child 
+  {
+    margin-top: 1rem;
+  }
+
+  .tooltip-button svg {
+    margin-top: 0.75rem;
+  }
 }
 
 .disqus-tooltip {
@@ -1546,7 +1607,7 @@ div.greybox {
   transition: opacity 0.2s;
 }
 
-.tooltip .tooltiptext {
+.tooltip .tooltiptext :not(.category-icon) {
   left: 65%;
   margin-left: -60px;
   margin-bottom: 0;

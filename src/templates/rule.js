@@ -19,6 +19,8 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Comments from '../components/comments/comments';
 import Reaction from '../components/reaction/reaction';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
@@ -93,15 +95,15 @@ const Rule = ({ data, location }) => {
     }
   };
 
-  const getRelatedRule = (relatedRuleUri) => {
+  const getRelatedRule = (relateduri) => {
     var relatedRule = data.relatedRules.nodes.find(
-      (r) => r.frontmatter.uri === relatedRuleUri
+      (r) => r.frontmatter.uri === relateduri
     );
     if (!relatedRule) {
       for (const r of data.relatedRulesFromRedirects.nodes) {
         if (r.frontmatter.redirects) {
           for (const redirect of r.frontmatter.redirects) {
-            if (redirect === relatedRuleUri) {
+            if (redirect === relateduri) {
               return r;
             }
           }
@@ -167,9 +169,47 @@ const Rule = ({ data, location }) => {
       />
       <div className="rule-single rounded">
         <section className="rule-content">
-          <div className="rule-header-container">
+          <div className="rule-header-container justify-between">
             <h1>{rule.frontmatter.title}</h1>
-            <Bookmark ruleId={rule.frontmatter.guid} />
+            <div className="rule-buttons flex flex-col sm:flex-row">
+              <Bookmark ruleId={rule.frontmatter.guid} />
+              <button className="tooltip tooltip-button">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={
+                    rule.frontmatter.uri.split('/')[2] == 'rule.md'
+                      ? `/rules/admin/#/collections/rule/entries/${
+                          rule.frontmatter.uri.split('/')[1]
+                        }/rule`
+                      : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.frontmatter.uri}`
+                  }
+                  className="tooltip tooltip-button"
+                >
+                  <FontAwesomeIcon
+                    icon={faPencilAlt}
+                    size="2x"
+                    className="bookmark-icon"
+                  />
+                  <span className="tooltiptext">Edit</span>
+                </a>
+              </button>
+              <button className="tooltip tooltip-button">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.frontmatter.uri}`}
+                  className="tooltip tooltip-button"
+                >
+                  <FontAwesomeIcon
+                    icon={faGithub}
+                    size="2x"
+                    className="bookmark-icon"
+                  />
+                  <span className="tooltiptext">Edit in GitHub</span>
+                </a>
+              </button>
+            </div>
           </div>
           {data.history && data.history.nodes[0] && (
             <small className="history">
@@ -221,8 +261,8 @@ const Rule = ({ data, location }) => {
               <h2>Related Rules</h2>
               <ol>
                 {rule.frontmatter.related
-                  ? rule.frontmatter.related.map((relatedRuleUri) => {
-                      const relatedRule = getRelatedRule(relatedRuleUri);
+                  ? rule.frontmatter.related.map((relateduri) => {
+                      const relatedRule = getRelatedRule(relateduri);
                       if (relatedRule) {
                         return (
                           <>

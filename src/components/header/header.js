@@ -21,7 +21,7 @@ const AnimatedContainer = posed.div({
     },
   },
 });
-const Header = ({ displayActions, ruleUri }) => {
+const Header = ({ displayActions }) => {
   return (
     <AnimatedContainer>
       <header>
@@ -41,36 +41,6 @@ const Header = ({ displayActions, ruleUri }) => {
             </p>
           </div>
           <div className="action-btn-container">
-            {displayActions ? (
-              <>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  // href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`}
-                  href={
-                    ruleUri.split('/')[2] == 'rule.md'
-                      ? `/rules/admin/#/collections/rule/entries/${
-                          ruleUri.split('/')[1]
-                        }/rule`
-                      : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`
-                  }
-                  className="action-btn-link-underlined"
-                >
-                  <div className="edit-button-container">Edit</div>
-                </a>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://rules.ssw.com.au/make-your-site-easy-to-maintain"
-                  className="action-btn-link-underlined"
-                >
-                  <div>Info</div>
-                  <InfoIcon aria-label="logo" className="action-btn-icon" />
-                </a>
-              </>
-            ) : (
-              <div></div>
-            )}
             <SignIn />
           </div>
         </div>

@@ -261,8 +261,8 @@ const Rule = ({ data, location }) => {
               <h2>Related Rules</h2>
               <ol>
                 {rule.frontmatter.related
-                  ? rule.frontmatter.related.map((relateduri) => {
-                      const relatedRule = getRelatedRule(relateduri);
+                  ? rule.frontmatter.related.map((relatedUri) => {
+                      const relatedRule = getRelatedRule(relatedUri);
                       if (relatedRule) {
                         return (
                           <>

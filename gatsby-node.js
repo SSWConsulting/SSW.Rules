@@ -135,7 +135,7 @@ exports.createPages = async ({ graphql, actions }) => {
   });
 
   const { execSync } = require('child_process');
-  var rule = 1;
+  // var rule = 1;
   result.data.rules.nodes.forEach((node) => {
     // eslint-disable-next-line quotes
     const prettyThing = `--pretty=format:'{ "date": "%aD",  "author": "%aN",  "email": "%aE" }'`;
@@ -145,7 +145,7 @@ exports.createPages = async ({ graphql, actions }) => {
         `git -C ../SSW.Rules.Content/rules/${node.frontmatter.uri} log -1 ${prettyThing} --perl-regexp --author='^((?!SSW.Rules.SharePointExtractor).*)$' rule.md`
       ).toString();
 
-      console.log(gitCommitInfo);
+      // console.log(gitCommitInfo);
       gitCommitInfoObject = JSON.parse(gitCommitInfo);
 
       const nameFromEmail = gitCommitInfoObject.email.match(/^([^@]*)@/)[1];
@@ -155,7 +155,7 @@ exports.createPages = async ({ graphql, actions }) => {
           /([a-z])([A-Z])/g,
           '$1 $2'
         );
-        console.log(gitCommitInfoObject.author);
+        // console.log(gitCommitInfoObject.author);
       }
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -177,8 +177,8 @@ exports.createPages = async ({ graphql, actions }) => {
         gitCommitInfo: gitCommitInfoObject,
       },
     });
-    console.log('done ' + rule);
-    rule++;
+    // console.log('done ' + rule);
+    // rule++;
   });
 
   const profilePage = require.resolve('./src/pages/profile.js');

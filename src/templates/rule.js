@@ -95,7 +95,7 @@ const Rule = ({ data, location }) => {
     }
   };
 
-  const getRelatedRule = (relateduri) => {
+  const getRelatedRule = (relatedUri) => {
     var relatedRule = data.relatedRules.nodes.find(
       (r) => r.frontmatter.uri === relateduri
     );

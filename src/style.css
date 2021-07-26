@@ -897,7 +897,6 @@ blockquote p:before {
   letter-spacing: normal;
   color: #ccc;
   margin: 0;
-  /* padding-left: 2rem; */
 }
 
 .rule-category .description {

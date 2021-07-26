@@ -42,9 +42,13 @@ appInsights.loadAppInsights();
 
 const Rule = ({ data, location, pageContext }) => {
   console.log(data.markdownRemark.frontmatter.uri);
-  console.log(
-    formatDistance(new Date(pageContext.gitCommitInfo.date), new Date())
-  );
+  try {
+    console.log(
+      formatDistance(new Date(pageContext.gitCommitInfo.date), new Date())
+    );
+  } catch (e) {
+    console.warn('COULD NOT FORMAT DATE', e);
+  }
   const cat = location.state ? location.state.category : null;
   const linkRef = useRef();
   const rule = data.markdownRemark;

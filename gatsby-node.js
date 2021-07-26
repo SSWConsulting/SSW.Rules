@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const siteConfig = require('./site-config');
 const { createFilePath } = require('gatsby-source-filesystem');
 const appInsightsConfig = require('applicationinsights');

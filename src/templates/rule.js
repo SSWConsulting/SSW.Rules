@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable jsx-a11y/anchor-has-content */
 import React, { useRef, useState, useLayoutEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';

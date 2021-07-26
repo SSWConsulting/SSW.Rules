@@ -140,6 +140,70 @@ footer {
   font-size: 0.75rem;
 }
 
+.social-media-icon {
+  color: #fff;
+  display: block;
+  float: right;
+  height: 25px;
+  text-decoration: none;
+  text-align: center;
+  width: 25px;
+  margin-left: 8px;
+  line-height: 25px;
+}
+
+#youtube-icon {
+  background-color: #b31217;
+}
+
+#linkedin-icon {
+  background-color: #0077b5;
+}
+
+#twitter-icon {
+  background-color: #55acee;
+}
+
+#instagram-icon {
+  background: linear-gradient(
+    45deg
+    ,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);;
+}
+
+#facebook-icon {
+  background-color: #3b5998;
+}
+
+#wechat-icon {
+  background-color: #62b900;
+}
+
+#wechat-icon:hover #qr-code {
+  display: block;
+}
+
+#qr-code {
+  width: 100px;
+  position: relative;
+  z-index: 999;
+  top: -126px;
+  left: -36px;
+  padding: 4px;
+  display: none;
+}
+
+#qr-code:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  right: 46px;
+  position: absolute;
+  bottom: -2px;
+  border-top: 6px solid rgb(255, 255, 255);
+}
+
 .rule-content ul li > p, .rule-category-top ul li > p {
   margin-top: -20px;
 }

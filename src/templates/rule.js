@@ -103,7 +103,7 @@ const Rule = ({ data, location }) => {
       for (const r of data.relatedRulesFromRedirects.nodes) {
         if (r.frontmatter.redirects) {
           for (const redirect of r.frontmatter.redirects) {
-            if (redirect === relateduri) {
+            if (redirect === relatedUri) {
               return r;
             }
           }

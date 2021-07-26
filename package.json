@@ -7,8 +7,8 @@
   "scripts": {
     "build:dir": "mkdirp ./public/icons/",
     "build:favicons": "node scripts/favicons",
-    "build": "yarn run build:dir && yarn run build:favicons && gatsby build --prefix-paths --log-pages",
-    "build:incremental": "gatsby build --prefix-paths --log-pages",
+    "build": "yarn content && yarn run build:dir && yarn run build:favicons && gatsby build --prefix-paths --log-pages",
+    "build:incremental": "yarn content && gatsby build --prefix-paths --log-pages",
     "devbuild": "gatsby clean && yarn run build:dir && yarn run build:favicons && gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
@@ -16,7 +16,8 @@
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
-    "lint": "eslint --max-warnings=0 . --ext ts --ext tsx --ext js --ext jsx"
+    "lint": "eslint --max-warnings=0 . --ext ts --ext tsx --ext js --ext jsx",
+    "content": "pwsh ./scripts/getContent.ps1"
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.4.0",

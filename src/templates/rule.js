@@ -39,10 +39,11 @@ const appInsights = new ApplicationInsights({
 
 appInsights.loadAppInsights();
 
-const Rule = ({ data, location }) => {
-  const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
+const Rule = ({ data, location, pageContext }) => {
+  console.log(data.markdownRemark.frontmatter.uri);
+  console.log(
+    formatDistance(new Date(pageContext.gitCommitInfo.date), new Date())
+  );
   const cat = location.state ? location.state.category : null;
   const linkRef = useRef();
   const rule = data.markdownRemark;
@@ -171,21 +172,22 @@ const Rule = ({ data, location }) => {
             <h1>{rule.frontmatter.title}</h1>
             <Bookmark ruleId={rule.frontmatter.guid} />
           </div>
-          {data.history && data.history.nodes[0] && (
+          {pageContext.gitCommitInfo != {} && (
             <small className="history">
               Last updated by{' '}
-              <strong>
-                {capitalizeFirstLetter(data.history.nodes[0].lastUpdatedBy)}
-              </strong>
+              <strong>{pageContext.gitCommitInfo.author}</strong>
               {' on '}
               {format(
-                new Date(data.history.nodes[0].lastUpdated),
+                new Date(pageContext.gitCommitInfo.date),
                 'dd MMM yyyy hh:mm aaa'
               )}
-              {` (${formatDistance(
-                new Date(data.history.nodes[0].lastUpdated),
-                new Date()
-              )} ago)`}{' '}
+              {` (${
+                pageContext.gitCommitInfo.date &&
+                formatDistance(
+                  new Date(pageContext.gitCommitInfo.date),
+                  new Date()
+                )
+              } ago)`}{' '}
               <a
                 href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
               >
@@ -387,12 +389,13 @@ const Rule = ({ data, location }) => {
 Rule.propTypes = {
   data: PropTypes.object.isRequired,
   location: PropTypes.object,
+  pageContext: PropTypes.object,
 };
 
 export default Rule;
 
 export const query = graphql`
-  query ($slug: String!, $uri: String!, $related: [String]!, $file: String!) {
+  query ($slug: String!, $uri: String!, $related: [String]!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
       fields {
         slug
@@ -451,16 +454,6 @@ export const query = graphql`
           uri
           redirects
         }
-      }
-    }
-    history: allHistoryJson(filter: { file: { eq: $file } }) {
-      nodes {
-        file
-        lastUpdatedBy
-        lastUpdatedByEmail
-        lastUpdated
-        createdBy
-        created
       }
     }
   }

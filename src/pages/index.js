@@ -43,7 +43,9 @@ const Index = ({ data }) => {
                   const cat = data.topCategories.nodes.find(
                     (c) =>
                       c.parent.relativeDirectory.toLowerCase() ===
-                      `categories/${category.toLowerCase()}`
+                        category.toLowerCase() ||
+                      c.parent.relativeDirectory.toLowerCase() ===
+                        `categories/${category.toLowerCase()}`
                   );
                   if (cat) {
                     return displayTopCategories(cat);

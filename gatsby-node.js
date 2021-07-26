@@ -1,6 +1,6 @@
 const siteConfig = require('./site-config');
 const { createFilePath } = require('gatsby-source-filesystem');
-const appInsights = require('applicationinsights');
+const appInsightsConfig = require('applicationinsights');
 const makePluginData = require('./src/helpers/plugin-data');
 const createRewriteMap = require('./src/helpers/createRewriteMap');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
@@ -10,7 +10,7 @@ const Map = require('core-js/features/map');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
-  appInsights
+  appInsightsConfig
     .setup()
     .setAutoCollectConsole(true, true) // Enable logging of console.xxx
     .start();
@@ -121,7 +121,6 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const categoryTemplate = require.resolve('./src/templates/category.js');
   const ruleTemplate = require.resolve('./src/templates/rule.js');
-
   result.data.categories.nodes.forEach((node) => {
     createPage({
       path: node.parent.name,
@@ -134,7 +133,37 @@ exports.createPages = async ({ graphql, actions }) => {
     });
   });
 
+  const { execSync } = require('child_process');
+  var rule = 1;
   result.data.rules.nodes.forEach((node) => {
+    // eslint-disable-next-line quotes
+    const prettyThing = `--pretty=format:'{ "date": "%aD",  "author": "%aN",  "email": "%aE" }'`;
+    var gitCommitInfoObject = {};
+    try {
+      const gitCommitInfo = execSync(
+        `git -C SSW.Rules.Content/rules/${node.frontmatter.uri} log -1 ${prettyThing} --perl-regexp --author='^((?!SSW.Rules.SharePointExtractor).*)$' rule.md`
+      ).toString();
+
+      console.log(gitCommitInfo);
+      gitCommitInfoObject = JSON.parse(gitCommitInfo);
+
+      const nameFromEmail = gitCommitInfoObject.email.match(/^([^@]*)@/)[1];
+
+      if (gitCommitInfoObject.author == nameFromEmail) {
+        gitCommitInfoObject.author = gitCommitInfoObject.author.replace(
+          /([a-z])([A-Z])/g,
+          '$1 $2'
+        );
+        console.log(gitCommitInfoObject.author);
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `Unable to get git history data for rule ${node.frontmatter.uri}`,
+        e
+      );
+    }
+
     createPage({
       path: node.frontmatter.uri,
       component: ruleTemplate,
@@ -144,8 +173,11 @@ exports.createPages = async ({ graphql, actions }) => {
         uri: node.frontmatter.uri,
         redirects: node.frontmatter.redirects,
         file: `rules/${node.frontmatter.uri}/rule.md`,
+        gitCommitInfo: gitCommitInfoObject,
       },
     });
+    console.log('done ' + rule);
+    rule++;
   });
 
   const profilePage = require.resolve('./src/pages/profile.js');

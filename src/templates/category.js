@@ -42,10 +42,10 @@ export default function Category({ data }) {
               <h2 className="cat-title">
                 {category.frontmatter.title}
                 <span className="rule-count">
-                  {'   '} {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
+                  {' - '} {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
                 </span>
               </h2>
-              <button className="tooltip justify-self-end">
+              <button className="tooltip justify-self-end mt-1">
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
@@ -58,7 +58,9 @@ export default function Category({ data }) {
                     className="category-icon bookmark-icon"
                   />
                 </a>
-                <span className="tooltiptext">Edit in GitHub</span>
+                <span className="category-tooltip tooltiptext">
+                  Edit in GitHub
+                </span>
               </button>
             </div>
 

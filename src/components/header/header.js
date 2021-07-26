@@ -41,6 +41,19 @@ const Header = ({ displayActions }) => {
             </p>
           </div>
           <div className="action-btn-container">
+            {displayActions ? (
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://rules.ssw.com.au/make-your-site-easy-to-maintain"
+                className="action-btn-link-underlined"
+              >
+                <div>Info</div>
+                <InfoIcon aria-label="logo" className="action-btn-icon" />
+              </a>
+            ) : (
+              <div></div>
+            )}
             <SignIn />
           </div>
         </div>

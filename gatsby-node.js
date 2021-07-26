@@ -142,7 +142,7 @@ exports.createPages = async ({ graphql, actions }) => {
     var gitCommitInfoObject = {};
     try {
       const gitCommitInfo = execSync(
-        `git -C SSW.Rules.Content/rules/${node.frontmatter.uri} log -1 ${prettyThing} --perl-regexp --author='^((?!SSW.Rules.SharePointExtractor).*)$' rule.md`
+        `git -C ../SSW.Rules.Content/rules/${node.frontmatter.uri} log -1 ${prettyThing} --perl-regexp --author='^((?!SSW.Rules.SharePointExtractor).*)$' rule.md`
       ).toString();
 
       console.log(gitCommitInfo);

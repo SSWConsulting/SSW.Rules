@@ -177,13 +177,7 @@ const Rule = ({ data, location }) => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={
-                    rule.frontmatter.uri.split('/')[2] == 'rule.md'
-                      ? `/rules/admin/#/collections/rule/entries/${
-                          rule.frontmatter.uri.split('/')[1]
-                        }/rule`
-                      : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.frontmatter.uri}`
-                  }
+                  href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
                   className="tooltip tooltip-button"
                 >
                   <FontAwesomeIcon

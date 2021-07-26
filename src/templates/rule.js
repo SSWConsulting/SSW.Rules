@@ -97,7 +97,7 @@ const Rule = ({ data, location }) => {
 
   const getRelatedRule = (relatedUri) => {
     var relatedRule = data.relatedRules.nodes.find(
-      (r) => r.frontmatter.uri === relateduri
+      (r) => r.frontmatter.uri === relatedUri
     );
     if (!relatedRule) {
       for (const r of data.relatedRulesFromRedirects.nodes) {

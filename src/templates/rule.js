@@ -42,7 +42,6 @@ const appInsights = new ApplicationInsights({
 appInsights.loadAppInsights();
 
 const Rule = ({ data, location }) => {
-  console.log(data);
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };

@@ -36,14 +36,14 @@ module.exports = {
             resolve: 'gatsby-source-filesystem',
             options: {
               name: 'rules',
-              path: `${__dirname}/SSW.Rules.Content/rules`,
+              path: `${__dirname}/../SSW.Rules.Content/rules`,
             },
           },
           {
             resolve: 'gatsby-source-filesystem',
             options: {
               name: 'categories',
-              path: `${__dirname}/SSW.Rules.Content/categories`,
+              path: `${__dirname}/../SSW.Rules.Content/categories`,
             },
           },
           'gatsby-plugin-sharp',

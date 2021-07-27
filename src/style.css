@@ -946,7 +946,6 @@ blockquote p:before {
 
 .cat-title-grid-container {
   display: flex;
-  /* grid-template-columns: auto auto; */
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 1.5rem;
@@ -956,7 +955,6 @@ blockquote p:before {
 
 .cat-title-grid-container h2.cat-title {
   margin: 0;
-  /* display: flex; */
   color: #333;
 }
 

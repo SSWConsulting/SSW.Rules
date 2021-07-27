@@ -5,7 +5,7 @@ var configJson = {
     backend: {
       name: 'github',
       repo: 'SSWConsulting/SSW.Rules.Content',
-      branch: 'staging',
+      branch: process.env.CONTENT_BRANCH,
       open_authoring: true,
       auth_endpoint: '/api/auth',
       always_fork: true,

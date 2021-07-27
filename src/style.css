@@ -2777,7 +2777,7 @@ margin-bottom: 1em;
 -------------------------------------------------- */
 
 .email-template {
-  margin: 10px 0 1rem;
+  margin: 1rem 0 .25rem;
   background-color: #eee;
   display: inline-block;
   width: 100%;

@@ -5,6 +5,8 @@ import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
 import InfoIcon from '-!svg-react-loader!../../images/info.svg';
 import SignIn from '../signin/signin';
 import { parentSiteUrl } from '../../../site-config';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
 // Example of a component-specific page transition
 const AnimatedContainer = posed.div({
@@ -41,19 +43,27 @@ const Header = ({ displayActions }) => {
             </p>
           </div>
           <div className="action-btn-container">
-            {displayActions ? (
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://rules.ssw.com.au/make-your-site-easy-to-maintain"
-                className="action-btn-link-underlined"
-              >
-                <div>Info</div>
-                <InfoIcon aria-label="logo" className="action-btn-icon" />
-              </a>
-            ) : (
-              <div></div>
-            )}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.ssw.com.au/rules/admin/#/collections/rule/new"
+              className="action-btn-link-underlined"
+            >
+              <div>New Rule</div>
+              <FontAwesomeIcon
+                icon={faPlusCircle}
+                className="ml-1"
+              ></FontAwesomeIcon>
+            </a>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://rules.ssw.com.au/make-your-site-easy-to-maintain"
+              className="action-btn-link-underlined"
+            >
+              <div>Info</div>
+              <InfoIcon aria-label="logo" className="action-btn-icon" />
+            </a>
             <SignIn />
           </div>
         </div>

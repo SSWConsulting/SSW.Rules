@@ -1497,7 +1497,7 @@ div.greybox {
 }
 
 .agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after, .somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after, .disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after, .somewhat-agree-btn-container:hover:after, .somewhat-agree-btn-container-pressed:hover:after {
-  color: red;
+  color: #cc4141;
   font-size: 1.8rem;
   transition: font-size 0.2s;
 }

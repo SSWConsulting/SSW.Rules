@@ -1436,7 +1436,7 @@ div.greybox {
 }
 
 #more .tags .category-tag {
-  background-color: #777;
+  background-color: #cc4141;
   color: #fff;
   transition: color 0.25s ease;
   padding: 3px 6px;
@@ -1457,8 +1457,8 @@ div.greybox {
 }
 
 
-#more .tags category-tag:hover {
-  background-color: #222;
+#more .tags .category-tag:hover {
+  opacity: 0.8;
 }
 
 #more .likes span {

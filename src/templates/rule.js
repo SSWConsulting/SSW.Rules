@@ -304,7 +304,7 @@ const Rule = ({ data, location }) => {
                                 className={'unstyled'}
                               >
                                 <button
-                                  className="button-next bg-ssw-red text-white"
+                                  className="button-next text-white"
                                   onClick={() => {
                                     appInsights.trackEvent({
                                       name: 'PreviousButtonPressed',
@@ -336,7 +336,7 @@ const Rule = ({ data, location }) => {
                                 }`}
                                 state={{ category: cat }}
                               >
-                                <button className="button-next bg-ssw-red text-white">
+                                <button className="button-next text-white">
                                   <FontAwesomeIcon icon={faAngleDoubleRight} />
                                 </button>
                               </Link>

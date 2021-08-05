@@ -1560,7 +1560,7 @@ div.greybox {
 .bookmark-icon, .bookmark-icon-pressed {
   height: 2rem;
   margin-top: 1.5rem;
-  color: #ccc;
+  color: #222;
 }
 
 .bookmark-icon-pressed {

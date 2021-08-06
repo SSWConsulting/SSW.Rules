@@ -21,13 +21,21 @@ const Footer = () => {
       <div className="py-2 text-center bg-grey-translucent text-sm">
         <section className="main-container">
           We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
-          source. This page is on{' '}
+          source. Powered by{' '}
           <a
-            className="action-button-label"
+            className="action-button-label footer-greybar-link"
             href="https://github.com/SSWConsulting/SSW.Rules"
           >
             GitHub <FontAwesomeIcon icon={faGithub} />
+          </a>{' '}
+          and made{' '}
+          <a
+            className="action-button-label footer-greybar-link"
+            href="https://www.ssw.com.au/rules/make-your-site-easy-to-maintain"
+          >
+            easy to maintain
           </a>
+          .
         </section>
       </div>
       <footer className="bg-black py-6 md:py-4 lg:py-2">

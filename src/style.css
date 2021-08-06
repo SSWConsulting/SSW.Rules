@@ -102,6 +102,10 @@ a.footer-link,a.footer-link:visited  {
   }
 }
 
+a.footer-greybar-link, a.footer-greybar-link:hover {
+  text-decoration: underline;
+}
+
 
 .navigation-category a{
   @apply text-ssw-red !important;

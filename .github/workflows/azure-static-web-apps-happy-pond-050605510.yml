@@ -43,6 +43,8 @@ jobs:
           DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
           DISQUS_FORUM: ${{ secrets.DISQUS_FORUM }}
           RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }}
+          GATSBY_CACHE: false
+          
           
           
           

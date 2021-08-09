@@ -20,19 +20,6 @@ jobs:
         with:
           node-version: 12.x
           registry-url: https://registry.npmjs.org/
-        env:
-          GOOGLE_ANALYTICS: ${{ secrets.GOOGLE_ANALYTICS }}
-          API_BASE_URL: ${{ secrets.API_BASE_URL }}
-          APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
-          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-          AUTH0_REDIRECT_URI: ${{ secrets.AUTH0_REDIRECT_URI }}
-          CONTACT_API: ${{ secrets.CONTACT_API }}
-          CONTENT_BRANCH: ${{ secrets.CONTENT_BRANCH }}
-          DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
-          DISQUS_FORUM: ${{ secrets.DISQUS_FORUM }}
-          RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }}
-          GATSBY_CACHE: false
       - run: yarn install
       - run: yarn build
       - name: Build And Deploy
@@ -48,6 +35,19 @@ jobs:
           api_location: "" # Api source code path - optional
           output_location: "public" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+    env:
+      GOOGLE_ANALYTICS: ${{ secrets.GOOGLE_ANALYTICS }}
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+      AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+      AUTH0_REDIRECT_URI: ${{ secrets.AUTH0_REDIRECT_URI }}
+      CONTACT_API: ${{ secrets.CONTACT_API }}
+      CONTENT_BRANCH: ${{ secrets.CONTENT_BRANCH }}
+      DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
+      DISQUS_FORUM: ${{ secrets.DISQUS_FORUM }}
+      RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }}
+      GATSBY_CACHE: false
           
           
           

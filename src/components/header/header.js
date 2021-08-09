@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
 import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
-import InfoIcon from '-!svg-react-loader!../../images/info.svg';
 import SignIn from '../signin/signin';
 import { parentSiteUrl } from '../../../site-config';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPlusCircle,
+  faQuestionCircle,
+} from '@fortawesome/free-solid-svg-icons';
 
 // Example of a component-specific page transition
 const AnimatedContainer = posed.div({
@@ -58,11 +60,11 @@ const Header = ({ displayActions }) => {
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href="https://rules.ssw.com.au/make-your-site-easy-to-maintain"
+              href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki"
               className="action-btn-link-underlined"
             >
-              <div>Info</div>
-              <InfoIcon aria-label="logo" className="action-btn-icon" />
+              <div>Help</div>
+              <FontAwesomeIcon icon={faQuestionCircle} className="ml-1" />
             </a>
             <SignIn />
           </div>

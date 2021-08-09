@@ -413,7 +413,7 @@ a.twitter-hashtag-button, a.twitter-hashtag-button:visited,a.twitter-hashtag-but
   cursor: pointer;
 }
 
-.button-next{
+.button-next {
   position: relative;
   height: 40px;
   width: 40px;
@@ -422,6 +422,14 @@ a.twitter-hashtag-button, a.twitter-hashtag-button:visited,a.twitter-hashtag-but
   font-weight: 500;
   cursor: pointer;
   font-size: large;
+}
+
+.button-next:not(.bg-ssw-grey) {
+  background-color: #222;
+}
+
+.button-next:not(.bg-ssw-grey):hover {
+  background-color: #cc4141;
 }
 
 .button-next.bg-ssw-grey {
@@ -594,7 +602,7 @@ pre {
   
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 480px) {
   header>div.flex {
     flex-direction: column;
   }
@@ -1432,7 +1440,7 @@ div.greybox {
 }
 
 #more .tags .category-tag {
-  background-color: #777;
+  background-color: #cc4141;
   color: #fff;
   transition: color 0.25s ease;
   padding: 3px 6px;
@@ -1453,8 +1461,8 @@ div.greybox {
 }
 
 
-#more .tags category-tag:hover {
-  background-color: #222;
+#more .tags .category-tag:hover {
+  opacity: 0.8;
 }
 
 #more .likes span {
@@ -1501,7 +1509,7 @@ div.greybox {
 }
 
 .agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after, .somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after, .disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after, .somewhat-agree-btn-container:hover:after, .somewhat-agree-btn-container-pressed:hover:after {
-  color: red;
+  color: #cc4141;
   font-size: 1.8rem;
   transition: font-size 0.2s;
 }
@@ -1564,7 +1572,7 @@ div.greybox {
 .bookmark-icon, .bookmark-icon-pressed {
   height: 2rem;
   margin-top: 1.5rem;
-  color: #ccc;
+  color: #414141;
 }
 
 .bookmark-icon-pressed {
@@ -1578,8 +1586,15 @@ div.greybox {
 }
 
 .bookmark-icon:hover {
-  color: #333;
-  opacity: 0.5;
+  color: #cc4141;
+}
+
+.header-icon {
+  color: #414141;
+}
+
+.header-icon:hover {
+  color: #cc4141;
 }
 
 .category-icon {

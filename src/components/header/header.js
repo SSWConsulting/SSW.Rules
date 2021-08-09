@@ -44,18 +44,18 @@ const Header = ({ displayActions }) => {
               Secret ingredients to quality software
             </p>
           </div>
-          <div className="action-btn-container">
+          <div className="action-btn-container flex justify-items-end align-middle">
             <a
               target="_blank"
               rel="noopener noreferrer"
               href="https://www.ssw.com.au/rules/admin/#/collections/rule/new"
               className="action-btn-link-underlined"
             >
-              <div>New Rule</div>
               <FontAwesomeIcon
                 icon={faPlusCircle}
-                className="ml-1"
-              ></FontAwesomeIcon>
+                className="mr-4 header-icon"
+                size="2x"
+              />
             </a>
             <a
               target="_blank"
@@ -63,8 +63,11 @@ const Header = ({ displayActions }) => {
               href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki"
               className="action-btn-link-underlined"
             >
-              <div>Help</div>
-              <FontAwesomeIcon icon={faQuestionCircle} className="ml-1" />
+              <FontAwesomeIcon
+                icon={faQuestionCircle}
+                className="mr-4 header-icon"
+                size="2x"
+              />
             </a>
             <SignIn />
           </div>

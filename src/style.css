@@ -602,7 +602,7 @@ pre {
   
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 480px) {
   header>div.flex {
     flex-direction: column;
   }
@@ -1572,7 +1572,7 @@ div.greybox {
 .bookmark-icon, .bookmark-icon-pressed {
   height: 2rem;
   margin-top: 1.5rem;
-  color: #222;
+  color: #414141;
 }
 
 .bookmark-icon-pressed {
@@ -1586,7 +1586,15 @@ div.greybox {
 }
 
 .bookmark-icon:hover {
-  color: #cc4141
+  color: #cc4141;
+}
+
+.header-icon {
+  color: #414141;
+}
+
+.header-icon:hover {
+  color: #cc4141;
 }
 
 .category-icon {

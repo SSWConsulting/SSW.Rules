@@ -183,7 +183,7 @@ const Rule = ({ data, location }) => {
                   <FontAwesomeIcon
                     icon={faPencilAlt}
                     size="2x"
-                    className="bookmark-icon"
+                    className="text-ssw-red bookmark-icon"
                   />
                 </a>
                 <span className="tooltiptext">Edit</span>
@@ -198,7 +198,7 @@ const Rule = ({ data, location }) => {
                   <FontAwesomeIcon
                     icon={faGithub}
                     size="2x"
-                    className="bookmark-icon"
+                    className="text-ssw-red bookmark-icon"
                   />
                 </a>
                 <span className="tooltiptext">Edit in GitHub</span>

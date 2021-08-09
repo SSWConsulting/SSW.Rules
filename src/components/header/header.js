@@ -51,7 +51,11 @@ const Header = ({ displayActions }) => {
               href="https://www.ssw.com.au/rules/admin/#/collections/rule/new"
               className="action-btn-link-underlined"
             >
-              <FontAwesomeIcon icon={faPlusCircle} className="mr-4 header-icon" size="2x" />
+              <FontAwesomeIcon
+                icon={faPlusCircle}
+                className="mr-4 header-icon"
+                size="2x"
+              />
             </a>
             <a
               target="_blank"
@@ -59,7 +63,11 @@ const Header = ({ displayActions }) => {
               href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki"
               className="action-btn-link-underlined"
             >
-              <FontAwesomeIcon icon={faQuestionCircle} className="mr-4 header-icon" size="2x" />
+              <FontAwesomeIcon
+                icon={faQuestionCircle}
+                className="mr-4 header-icon"
+                size="2x"
+              />
             </a>
             <SignIn />
           </div>

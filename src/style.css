@@ -78,7 +78,7 @@ h4 {
 }
 
 a, a:visited {
-  &:not(.unstyled) {
+  &:not(.unstyled):not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a) {
     color: #222;
     text-decoration: none;
     transition: color 0.25s ease;
@@ -88,6 +88,10 @@ a, a:visited {
       text-decoration: none;
     } 
   } 
+}
+
+h4 a, h5 a, h6 a {
+  @apply text-ssw-red;
 }
 
 a.footer-link,a.footer-link:visited  {

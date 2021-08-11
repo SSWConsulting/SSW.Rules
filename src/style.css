@@ -77,6 +77,18 @@ h4 {
   @apply mb-2;
 }
 
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: #cc4141;
+  text-decoration-color: #cc4141;
+  -webkit-text-decoration-thickness: 1px;
+  text-decoration-thickness: 1px;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+  color: #aaa;
+  text-decoration-color: #aaa;
+}
+
 a, a:visited {
   &:not(.unstyled):not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a) {
     color: #222;
@@ -88,10 +100,6 @@ a, a:visited {
       text-decoration: none;
     } 
   } 
-}
-
-h4 a, h5 a, h6 a {
-  @apply text-ssw-red;
 }
 
 a.footer-link,a.footer-link:visited  {
@@ -752,7 +760,7 @@ b, strong {
 }
 
 .rule-content a, .rule-category-top a {
-  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(.info-btn-container) {
+  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(.info-btn-container):not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a) {
     transition: color 0.25s ease;
     line-height: 1.5rem;
     -webkit-text-decoration: underline;
@@ -1048,7 +1056,7 @@ blockquote p:before {
 
 .rule-content a,
 .rule-category a {
-  text-decoration:underline;
+  text-decoration-line: underline;
   transition: color 0.25s ease;
 }
 

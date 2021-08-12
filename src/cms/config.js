@@ -86,10 +86,6 @@ var configJson = {
             field: {
               name: 'redirectUri',
               label: 'Redirect uri',
-              pattern: [
-                '^[a-zA-Z0-9_-]*$',
-                'Must only contain alphanumeric or the "-" and "_" characters',
-              ],
             },
           },
           {

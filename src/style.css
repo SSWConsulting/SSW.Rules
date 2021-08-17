@@ -2856,6 +2856,10 @@ margin-bottom: 1em;
   word-break: break-word;
 }
 
+.email-template th, .email-template tr:nth-child(2n) {
+    background-color: initial;
+}
+
 .email-content {
     padding: 10px 15px;
     margin: 0px 15px 15px 125px;

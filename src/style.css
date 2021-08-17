@@ -2857,7 +2857,7 @@ margin-bottom: 1em;
 }
 
 .email-template th, .email-template tr:nth-child(2n) {
-    background-color: initial;
+    background-color: initial !important;
 }
 
 .email-content {

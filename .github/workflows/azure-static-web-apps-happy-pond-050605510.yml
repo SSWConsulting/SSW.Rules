@@ -22,7 +22,26 @@ jobs:
           node-version: 12.x
           registry-url: https://registry.npmjs.org/
       - run: yarn install
-      - run: yarn build
+      - name: build
+        run: yarn build
+        env:
+          GOOGLE_ANALYTICS: ${{ secrets.GOOGLE_ANALYTICS }}
+          RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }}
+          CONTACT_API: ${{ secrets.CONTACT_API }}
+          VERSION_DEPLOYED: "1.22"
+          APPINSIGHTS_INSTRUMENTATIONKEY: "test"
+          CONTENT_BRANCH: ${{ secrets.CONTENT_BRANCH }}
+          B2C_AUTHORITY: ""
+          B2C_CLIENT_ID: ""
+          B2C_REDIRECT_URI: ""
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          AUTH0_REDIRECT_URI: ${{ secrets.AUTH0_REDIRECT_URI }}
+          GITHUB_API_PAT: ""
+          DISQUS_FORUM: ${{ secrets.DISQUS_FORUM }}
+          DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
+          GATSBY_CACHE: false
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -36,24 +55,6 @@ jobs:
           api_location: "" # Api source code path - optional
           output_location: "public" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
-    env:
-      GOOGLE_ANALYTICS: ${{ secrets.GOOGLE_ANALYTICS }}
-      RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }}
-      CONTACT_API: ${{ secrets.CONTACT_API }}
-      VERSION_DEPLOYED: "1.22"
-      APPINSIGHTS_INSTRUMENTATIONKEY: "test"
-      CONTENT_BRANCH: ${{ secrets.CONTENT_BRANCH }}
-      B2C_AUTHORITY: ""
-      B2C_CLIENT_ID: ""
-      B2C_REDIRECT_URI: ""
-      API_BASE_URL: ${{ secrets.API_BASE_URL }}
-      AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-      AUTH0_REDIRECT_URI: ${{ secrets.AUTH0_REDIRECT_URI }}
-      GITHUB_API_PAT: ""
-      DISQUS_FORUM: ${{ secrets.DISQUS_FORUM }}
-      DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
-      GATSBY_CACHE: false
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

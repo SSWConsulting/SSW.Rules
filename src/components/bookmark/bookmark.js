@@ -83,12 +83,12 @@ const Bookmark = (props) => {
   return (
     <>
       {bookmarked ? (
-        <button onClick={onClick} className="tooltip">
+        <button onClick={onClick} className="tooltip category-bookmark">
           <BookmarkIcon className="bookmark-icon-pressed" />
           <span className="tooltiptext">Remove Bookmark</span>
         </button>
       ) : (
-        <button onClick={onClick} className="tooltip">
+        <button onClick={onClick} className="tooltip category-bookmark">
           <BookmarkIcon className="text-ssw-red bookmark-icon" />
           <span className="tooltiptext">Add Bookmark</span>
         </button>

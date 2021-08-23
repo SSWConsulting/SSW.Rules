@@ -1013,7 +1013,6 @@ blockquote p:before {
 
 .rule-content-title h2 {
   padding: .5rem .75rem;
-  background: #f5f5f5;
   border-left: 2px solid #cc4141; 
 }
 
@@ -1575,6 +1574,10 @@ div.greybox {
   display: flex;
 }
 
+.rule-content-title .rule-header-container {
+  background-color: #f5f5f5
+}
+
 .edit-button-container::after {
   font-family: FontAwesome;
   content: '\f040';
@@ -1601,6 +1604,10 @@ div.greybox {
   color: #cc4141;
 }
 
+.category .tooltip .bookmark-icon, .category .tooltip .bookmark-icon-pressed {
+  margin-bottom: 0.5rem;
+}
+
 .header-icon {
   color: #414141;
 }
@@ -1612,6 +1619,10 @@ div.greybox {
 .category-icon {
   margin-top: 0;
   margin-left: 0.5rem;
+}
+
+.category-bookmark {
+  padding-bottom: 0.5rem;
 }
 
 .tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {

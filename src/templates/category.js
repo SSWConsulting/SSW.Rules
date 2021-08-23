@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../components/greybox/greybox';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 export default function Category({ data }) {
   const linkRef = useRef();
@@ -36,10 +38,29 @@ export default function Category({ data }) {
         <div className="rule-category rounded">
           <section className="mb-20 pb-2 rounded">
             <div className="cat-title-grid-container">
-              <h2 className="cat-title">{category.frontmatter.title}</h2>
-              <h2 className="rule-count">
-                {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
+              <h2 className="cat-title">
+                {category.frontmatter.title}
+                <span className="rule-count">
+                  {' - '} {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
+                </span>
               </h2>
+              <button className="tooltip justify-self-end mt-1">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${category.parent.relativePath}`}
+                  className="tooltip tooltip-button"
+                >
+                  <FontAwesomeIcon
+                    icon={faGithub}
+                    size="2x"
+                    className="category-icon bookmark-icon"
+                  />
+                </a>
+                <span className="category-tooltip tooltiptext">
+                  Edit in GitHub
+                </span>
+              </button>
             </div>
 
             <div className="rule-category-top pt-5 py-4 px-6">
@@ -171,6 +192,7 @@ export const query = graphql`
       frontmatter {
         title
         index
+        uri
       }
       parent {
         ... on File {

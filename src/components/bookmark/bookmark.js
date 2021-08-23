@@ -89,7 +89,7 @@ const Bookmark = (props) => {
         </button>
       ) : (
         <button onClick={onClick} className="tooltip">
-          <BookmarkIcon className="bookmark-icon" />
+          <BookmarkIcon className="text-ssw-red bookmark-icon" />
           <span className="tooltiptext">Add Bookmark</span>
         </button>
       )}

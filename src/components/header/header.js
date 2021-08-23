@@ -2,9 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
 import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
-import InfoIcon from '-!svg-react-loader!../../images/info.svg';
 import SignIn from '../signin/signin';
 import { parentSiteUrl } from '../../../site-config';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faPlusCircle,
+  faQuestionCircle,
+} from '@fortawesome/free-solid-svg-icons';
 
 // Example of a component-specific page transition
 const AnimatedContainer = posed.div({
@@ -21,7 +25,7 @@ const AnimatedContainer = posed.div({
     },
   },
 });
-const Header = ({ displayActions, ruleUri }) => {
+const Header = ({ displayActions }) => {
   return (
     <AnimatedContainer>
       <header>
@@ -40,38 +44,31 @@ const Header = ({ displayActions, ruleUri }) => {
               Secret ingredients to quality software
             </p>
           </div>
-          <div className="action-btn-container">
-            {displayActions ? (
-              <>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`}
-                  // href={
-                  //   ruleUri.split('/')[2] == 'rule.md'
-                  //     ? `/rules/admin/#/collections/rule/entries/${
-                  //         ruleUri.split('/')[1]
-                  //       }/rule`
-                  //     : `https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${ruleUri}`
-                  // }
-                  // Commented out because Netlify CMS is not ready for production
-                  className="action-btn-link-underlined"
-                >
-                  <div className="edit-button-container">Edit</div>
-                </a>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://rules.ssw.com.au/make-your-site-easy-to-maintain"
-                  className="action-btn-link-underlined"
-                >
-                  <div>Info</div>
-                  <InfoIcon aria-label="logo" className="action-btn-icon" />
-                </a>
-              </>
-            ) : (
-              <div></div>
-            )}
+          <div className="action-btn-container flex justify-items-end align-middle">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.ssw.com.au/rules/admin/#/collections/rule/new"
+              className="action-btn-link-underlined"
+            >
+              <FontAwesomeIcon
+                icon={faPlusCircle}
+                className="mr-4 header-icon"
+                size="2x"
+              />
+            </a>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki"
+              className="action-btn-link-underlined"
+            >
+              <FontAwesomeIcon
+                icon={faQuestionCircle}
+                className="mr-4 header-icon"
+                size="2x"
+              />
+            </a>
             <SignIn />
           </div>
         </div>

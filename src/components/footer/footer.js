@@ -3,7 +3,15 @@ import preval from 'preval.macro';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import {
+  faFacebook,
+  faGithub,
+  faInstagram,
+  faLinkedin,
+  faTwitter,
+  faWeixin,
+  faYoutube,
+} from '@fortawesome/free-brands-svg-icons';
 
 const buildTimestamp = preval`module.exports = new Date().getTime();`;
 
@@ -13,9 +21,9 @@ const Footer = () => {
       <div className="py-2 text-center bg-grey-translucent text-sm">
         <section className="main-container">
           We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
-          source. This page is on{' '}
+          source. Powered by{' '}
           <a
-            className="action-button-label"
+            className="action-button-label footer-greybar-link"
             href="https://github.com/SSWConsulting/SSW.Rules"
           >
             GitHub <FontAwesomeIcon icon={faGithub} />
@@ -25,7 +33,7 @@ const Footer = () => {
       <footer className="bg-black py-6 md:py-4 lg:py-2">
         <section className="main-container">
           <div className="xl:mx-6">
-            <div className="mx-6 flex flex-col-reverse md:flex-row justify-between">
+            <div className="mx-6 flex flex-col-reverse md:flex-row justify-between align-middle leading-6">
               <div className="py-2">
                 Copyright © SSW 1990 - {new Date().getFullYear()}. All Rights
                 Reserved.
@@ -45,19 +53,77 @@ const Footer = () => {
                   TERMS AND CONDITIONS
                 </a>
                 <span className="px-2">|</span>
-                <a
-                  className="footer-link footer-facebook"
-                  href="https://www.facebook.com/SSW.page"
-                >
-                  FIND US ON
-                </a>
-                <span className="px-2">|</span>
-                <a
-                  className="footer-link footer-html"
-                  href="https://www.w3.org/html/logo/faq.html"
-                >
-                  HTML
-                </a>
+                <div className="inline-flex flex-row-reverse justify-end flex-nowrap">
+                  <a
+                    className="unstyled social-media-icon"
+                    id="youtube-icon"
+                    title="SSW on YouTube"
+                    href="https://www.youtube.com/user/sswtechtalks/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faYoutube} size="lg" />
+                  </a>
+                  <a
+                    className="unstyled social-media-icon"
+                    id="linkedin-icon"
+                    title="SSW on LinkedIn"
+                    href="https://www.linkedin.com/company/ssw/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faLinkedin} size="lg" />
+                  </a>
+                  <a
+                    className="unstyled social-media-icon"
+                    id="twitter-icon"
+                    title="SSW on Twitter"
+                    href="https://twitter.com/SSW_TV"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faTwitter} size="lg" />
+                  </a>
+                  <a
+                    className="unstyled social-media-icon"
+                    id="instagram-icon"
+                    title="SSW on Instagram"
+                    href="https://www.instagram.com/ssw_tv"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faInstagram} size="lg" />
+                  </a>
+                  <a
+                    className="unstyled social-media-icon"
+                    id="facebook-icon"
+                    title="SSW on Facebook"
+                    href="https://www.facebook.com/SSW.page"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faFacebook} size="lg" />
+                  </a>
+                  <a
+                    className="unstyled social-media-icon"
+                    id="wechat-icon"
+                    title="SSW on WeChat"
+                    href="https://mp.weixin.qq.com/s/jL4zEmzWM5VSTRu9DUW6-Q"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon icon={faWeixin} size="lg" />
+                    <span id="qr-code">
+                      <img
+                        src="http://www.ssw.com.au/ssw/Images/QRcode.jpg"
+                        alt="SSW QR Code"
+                        width="100"
+                        title="SSW WeChat QR Code"
+                        height="100"
+                      />
+                    </span>
+                  </a>
+                </div>
               </div>
               {/* Copyright © SSW 1990 - {new Date().getFullYear()}. All Rights Reserved. */}
             </div>

@@ -77,8 +77,20 @@ h4 {
   @apply mb-2;
 }
 
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: #cc4141;
+  text-decoration-color: #cc4141;
+  -webkit-text-decoration-thickness: 1px;
+  text-decoration-thickness: 1px;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+  color: #222;
+  text-decoration-color: #222;
+}
+
 a, a:visited {
-  &:not(.unstyled) {
+  &:not(.unstyled):not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a) {
     color: #222;
     text-decoration: none;
     transition: color 0.25s ease;
@@ -100,6 +112,10 @@ a.footer-link,a.footer-link:visited  {
     @apply text-ssw-red;
     text-decoration:underline;
   }
+}
+
+a.footer-greybar-link, a.footer-greybar-link:hover {
+  text-decoration: underline;
 }
 
 
@@ -138,6 +154,70 @@ a.footer-html:hover {
 footer {
   color: #9e9e9e;
   font-size: 0.75rem;
+}
+
+.social-media-icon {
+  color: #fff;
+  display: block;
+  float: right;
+  height: 25px;
+  text-decoration: none;
+  text-align: center;
+  width: 25px;
+  margin-left: 8px;
+  line-height: 25px;
+}
+
+#youtube-icon {
+  background-color: #b31217;
+}
+
+#linkedin-icon {
+  background-color: #0077b5;
+}
+
+#twitter-icon {
+  background-color: #55acee;
+}
+
+#instagram-icon {
+  background: linear-gradient(
+    45deg
+    ,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);;
+}
+
+#facebook-icon {
+  background-color: #3b5998;
+}
+
+#wechat-icon {
+  background-color: #62b900;
+}
+
+#wechat-icon:hover #qr-code {
+  display: block;
+}
+
+#qr-code {
+  width: 100px;
+  position: relative;
+  z-index: 999;
+  top: -126px;
+  left: -36px;
+  padding: 4px;
+  display: none;
+}
+
+#qr-code:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  right: 46px;
+  position: absolute;
+  bottom: -2px;
+  border-top: 6px solid rgb(255, 255, 255);
 }
 
 .rule-content ul li > p, .rule-category-top ul li > p {
@@ -345,7 +425,7 @@ a.twitter-hashtag-button, a.twitter-hashtag-button:visited,a.twitter-hashtag-but
   cursor: pointer;
 }
 
-.button-next{
+.button-next {
   position: relative;
   height: 40px;
   width: 40px;
@@ -354,6 +434,14 @@ a.twitter-hashtag-button, a.twitter-hashtag-button:visited,a.twitter-hashtag-but
   font-weight: 500;
   cursor: pointer;
   font-size: large;
+}
+
+.button-next:not(.bg-ssw-grey) {
+  background-color: #222;
+}
+
+.button-next:not(.bg-ssw-grey):hover {
+  background-color: #cc4141;
 }
 
 .button-next.bg-ssw-grey {
@@ -526,7 +614,7 @@ pre {
   
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 480px) {
   header>div.flex {
     flex-direction: column;
   }
@@ -596,7 +684,7 @@ pre {
   position: relative;
 }
 
-.greybox p:last-child, .highlight p:last-child, .info p:last-child, .china p:last-child, .todo p:last-child, blockquote p:last-child{
+.greybox p:last-child, .greybox ul:last-child, .highlight p:last-child, .info p:last-child, .china p:last-child, .todo p:last-child, blockquote p:last-child{
   margin-bottom:0;
 }
 
@@ -672,7 +760,7 @@ b, strong {
 }
 
 .rule-content a, .rule-category-top a {
-  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(.info-btn-container) {
+  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(.info-btn-container):not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a) {
     transition: color 0.25s ease;
     line-height: 1.5rem;
     -webkit-text-decoration: underline;
@@ -890,10 +978,12 @@ blockquote p:before {
 }
 
 .cat-title-grid-container {
-  display: grid;
-  grid-template-columns: auto auto;
-  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
   background-color: #f5f5f5;
+  min-height: 4.25rem;
 }
 
 .cat-title-grid-container h2.cat-title {
@@ -905,7 +995,6 @@ blockquote p:before {
   letter-spacing: normal;
   color: #ccc;
   margin: 0;
-  justify-self: end;
 }
 
 .rule-category .description {
@@ -971,7 +1060,7 @@ blockquote p:before {
 
 .rule-content a,
 .rule-category a {
-  text-decoration:underline;
+  text-decoration-line: underline;
   transition: color 0.25s ease;
 }
 
@@ -981,7 +1070,7 @@ blockquote p:before {
   color: #cc4141;
 }
 
-.rule-content a[href*="//"]:not([href*="ssw.com.au"], .info-btn-container):after {
+.rule-content a[href*="//"]:not([href*="ssw.com.au"], .info-btn-container, .tooltip-button):after {
     content: "\f08b ";
     font-family: FontAwesome;
     opacity: .5;
@@ -1367,7 +1456,7 @@ div.greybox {
 }
 
 #more .tags .category-tag {
-  background-color: #777;
+  background-color: #cc4141;
   color: #fff;
   transition: color 0.25s ease;
   padding: 3px 6px;
@@ -1388,8 +1477,8 @@ div.greybox {
 }
 
 
-#more .tags category-tag:hover {
-  background-color: #222;
+#more .tags .category-tag:hover {
+  opacity: 0.8;
 }
 
 #more .likes span {
@@ -1436,7 +1525,7 @@ div.greybox {
 }
 
 .agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after, .somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after, .disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after, .somewhat-agree-btn-container:hover:after, .somewhat-agree-btn-container-pressed:hover:after {
-  color: red;
+  color: #cc4141;
   font-size: 1.8rem;
   transition: font-size 0.2s;
 }
@@ -1499,7 +1588,7 @@ div.greybox {
 .bookmark-icon, .bookmark-icon-pressed {
   height: 2rem;
   margin-top: 1.5rem;
-  color: #ccc;
+  color: #414141;
 }
 
 .bookmark-icon-pressed {
@@ -1513,13 +1602,74 @@ div.greybox {
 }
 
 .bookmark-icon:hover {
-  color: #333;
-  opacity: 0.5;
+  color: #cc4141;
+}
+
+.header-icon {
+  color: #414141;
+}
+
+.header-icon:hover {
+  color: #cc4141;
+}
+
+.category-icon {
+  margin-top: 0;
+  margin-left: 0.5rem;
 }
 
 .tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
   position: relative;
   display: inline-block;
+}
+
+.tooltip-button {
+  width: 60px;
+}
+
+.tooltip-button a:after {
+  display:none;
+}
+
+.bookmark-icon .tooltip-button {
+  margin-top: 1.6rem;
+}
+
+.tooltip-button svg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tooltip-button svg:hover {
+  font-size: 2.2em;
+}
+
+.tooltip-icon {
+  color:rgb(204, 204, 204);
+  height: 2rem;
+  margin-top: 38px;
+  margin-right: 18px;
+}
+
+.tooltip-icon:hover {
+  height: 2.2rem;
+  transition: height 0.25s ;
+}
+
+.tooltip-button .tooltiptext {
+  margin-left: -58px;
+}
+
+@media screen and (max-width: 640px) {
+  .rule-buttons button:first-child 
+  {
+    margin-top: 1rem;
+  }
+
+  .tooltip-button svg {
+    margin-top: 0.75rem;
+  }
 }
 
 .disqus-tooltip {
@@ -1559,6 +1709,10 @@ div.greybox {
   left: 65%;
   margin-left: -60px;
   margin-bottom: 0;
+}
+
+.category-tooltip {
+  bottom: 105%;
 }
 
 .react-tooltip .tooltiptext {
@@ -2663,7 +2817,7 @@ margin-bottom: 1em;
 -------------------------------------------------- */
 
 .email-template {
-  margin: 10px 0 1rem;
+  margin: 1rem 0 .25rem;
   background-color: #eee;
   display: inline-block;
   width: 100%;
@@ -2704,6 +2858,10 @@ margin-bottom: 1em;
 
 .email-template table tr td:last-child {
   word-break: break-word;
+}
+
+.email-template th, .email-template tr:nth-child(2n) {
+    background-color: initial !important;
 }
 
 .email-content {

@@ -19,6 +19,8 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Comments from '../components/comments/comments';
 import Reaction from '../components/reaction/reaction';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
@@ -93,15 +95,15 @@ const Rule = ({ data, location }) => {
     }
   };
 
-  const getRelatedRule = (relatedRuleUri) => {
+  const getRelatedRule = (relatedUri) => {
     var relatedRule = data.relatedRules.nodes.find(
-      (r) => r.frontmatter.uri === relatedRuleUri
+      (r) => r.frontmatter.uri === relatedUri
     );
     if (!relatedRule) {
       for (const r of data.relatedRulesFromRedirects.nodes) {
         if (r.frontmatter.redirects) {
           for (const redirect of r.frontmatter.redirects) {
-            if (redirect === relatedRuleUri) {
+            if (redirect === relatedUri) {
               return r;
             }
           }
@@ -167,9 +169,41 @@ const Rule = ({ data, location }) => {
       />
       <div className="rule-single rounded">
         <section className="rule-content">
-          <div className="rule-header-container">
+          <div className="rule-header-container justify-between">
             <h1>{rule.frontmatter.title}</h1>
-            <Bookmark ruleId={rule.frontmatter.guid} />
+            <div className="rule-buttons flex flex-col sm:flex-row">
+              <Bookmark ruleId={rule.frontmatter.guid} />
+              <button className="tooltip">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
+                  className="tooltip tooltip-button"
+                >
+                  <FontAwesomeIcon
+                    icon={faPencilAlt}
+                    size="2x"
+                    className="text-ssw-red bookmark-icon"
+                  />
+                </a>
+                <span className="tooltiptext">Edit</span>
+              </button>
+              <button className="tooltip">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.parent.relativePath}`}
+                  className="tooltip tooltip-button"
+                >
+                  <FontAwesomeIcon
+                    icon={faGithub}
+                    size="2x"
+                    className="text-ssw-red bookmark-icon"
+                  />
+                </a>
+                <span className="tooltiptext">Edit in GitHub</span>
+              </button>
+            </div>
           </div>
           {data.history && data.history.nodes[0] && (
             <small className="history">
@@ -221,8 +255,8 @@ const Rule = ({ data, location }) => {
               <h2>Related Rules</h2>
               <ol>
                 {rule.frontmatter.related
-                  ? rule.frontmatter.related.map((relatedRuleUri) => {
-                      const relatedRule = getRelatedRule(relatedRuleUri);
+                  ? rule.frontmatter.related.map((relatedUri) => {
+                      const relatedRule = getRelatedRule(relatedUri);
                       if (relatedRule) {
                         return (
                           <>
@@ -270,7 +304,7 @@ const Rule = ({ data, location }) => {
                                 className={'unstyled'}
                               >
                                 <button
-                                  className="button-next bg-ssw-red text-white"
+                                  className="button-next text-white"
                                   onClick={() => {
                                     appInsights.trackEvent({
                                       name: 'PreviousButtonPressed',
@@ -302,7 +336,7 @@ const Rule = ({ data, location }) => {
                                 }`}
                                 state={{ category: cat }}
                               >
-                                <button className="button-next bg-ssw-red text-white">
+                                <button className="button-next text-white">
                                   <FontAwesomeIcon icon={faAngleDoubleRight} />
                                 </button>
                               </Link>

@@ -3,7 +3,7 @@ import { StaticQuery, graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 // import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
-import { faArchive } from '@fortawesome/free-solid-svg-icons';
+import { faArchive, faPause } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TopCategory from '../components/top-category/top-category';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -55,6 +55,12 @@ const Index = ({ data }) => {
               <p>
                 <a href={`${pathPrefix}/archived`}>
                   <FontAwesomeIcon icon={faArchive} /> Show archived rules
+                </a>
+                <a
+                  href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
+                  className="old-rules-link"
+                >
+                  <FontAwesomeIcon icon={faPause} /> Show unmigrated rules
                 </a>
               </p>
               {/* This like has been commented out as this page doesn't exisit.*/}

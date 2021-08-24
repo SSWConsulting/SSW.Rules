@@ -133,7 +133,7 @@ export default function Category({ data }) {
                     <>
                       <li>
                         <section className="rule-content-title pl-2">
-                          <div className="rule-header-container justify-between">
+                          <div className="rule-header-container align-middle justify-between">
                             <h2>
                               <Link
                                 ref={linkRef}

@@ -1017,8 +1017,12 @@ blockquote p:before {
 
 .rule-content-title h2 {
   padding: .5rem .75rem;
-  background-color: #f5f5f5;
+  margin: 0;
   border-left: 2px solid #cc4141; 
+}
+
+.rule-header-container .bookmark-icon, .rule-header-container .bookmark-icon-pressed {
+  margin-top: 1rem;
 }
 
 .rule-category-top p {
@@ -1580,7 +1584,7 @@ div.greybox {
 }
 
 .rule-content-title .rule-header-container {
-  background-color: #f5f5f5
+  background-color: #f5f5f5;
 }
 
 .edit-button-container::after {

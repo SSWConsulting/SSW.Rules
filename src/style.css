@@ -89,7 +89,7 @@ h4 {
   text-decoration-color: #222;
 }
 
-a, a:visited {
+.rule-content a, .rule-content a:visited, .rule-header-container a, .rule-header-container a:visited {
   &:not(.unstyled):not(.rule-content h1 a):not(.rule-content h2 a):not(.rule-content h3 a):not(.rule-content h4 a):not(.rule-content h5 a):not(.rule-content h6 a) {
     color: #222;
     text-decoration: none;

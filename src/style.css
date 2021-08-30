@@ -103,14 +103,11 @@ a, a:visited {
 }
 
 a.footer-link,a.footer-link:visited  {
-  @apply text-gray-300;
-  font-weight: bolder;
+  @apply text-white;
   line-height: .75rem;
   transition: all 0.3s ease-in-out;
-  text-decoration:underline;  
   &:hover {
     @apply text-ssw-red;
-    text-decoration:underline;
   }
 }
 

@@ -43,7 +43,7 @@ const Footer = () => {
                   className="footer-link"
                   href="https://github.com/SSWConsulting/SSW.Rules/issues"
                 >
-                  FEEDBACK TO SSW
+                  FEEDBACK / SUGGEST A FEATURE
                 </a>
                 <span className="px-2">|</span>
                 <a

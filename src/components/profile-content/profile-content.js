@@ -472,6 +472,7 @@ const RuleList = ({
                           ref={linkRef}
                           to={`/${rule.frontmatter.uri}`}
                           state={{ category: category.parent.name }}
+                          title={`Read more about ${rule.frontmatter.title}`}
                         >
                           <FontAwesomeIcon icon={faArrowCircleRight} /> Read
                           more

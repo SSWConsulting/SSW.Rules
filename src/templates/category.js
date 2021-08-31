@@ -134,7 +134,7 @@ export default function Category({ data }) {
                       <li>
                         <section className="rule-content-title pl-2">
                           <div className="rule-header-container align-middle justify-between">
-                            <h2>
+                            <h2 className="flex flex-col justify-center">
                               <Link
                                 ref={linkRef}
                                 to={`/${rule.frontmatter.uri}`}

@@ -77,20 +77,8 @@ h4 {
   @apply mb-2;
 }
 
-.rule-content h1 a, .rule-content h2 a, .rule-content h3 a, .rule-content h4 a, .rule-content h5 a, .rule-content h6 a {
-  color: #cc4141;
-  text-decoration-color: #cc4141;
-  -webkit-text-decoration-thickness: 1px;
-  text-decoration-thickness: 1px;
-}
-
-.rule-content h1 a:hover, .rule-content h2 a:hover, .rule-content h3 a:hover, .rule-content h4 a:hover, .rule-content h5 a:hover, .rule-content h6 a:hover {
-  color: #222;
-  text-decoration-color: #222;
-}
-
 a, a:visited {
-  &:not(.unstyled):not(.rule-content h1 a):not(.rule-content h2 a):not(.rule-content h3 a):not(.rule-content h4 a):not(.rule-content h5 a):not(.rule-content h6 a) {
+  &:not(.unstyled) {
     color: #222;
     text-decoration: none;
     transition: color 0.25s ease;
@@ -757,7 +745,7 @@ b, strong {
 }
 
 .rule-content a, .rule-category-top a {
-  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(.info-btn-container):not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a) {
+  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(.info-btn-container) {
     transition: color 0.25s ease;
     line-height: 1.5rem;
     -webkit-text-decoration: underline;
@@ -775,6 +763,12 @@ b, strong {
       text-decoration-color: #cc4141;
     } 
   } 
+}
+
+.rule-content h1 a, .rule-content h1 a:visited, .rule-content h2 a, .rule-content h2 a:visited, .rule-content h3 a, .rule-content h3 a:visited, .rule-content h4 a, .rule-content h4 a:visited, .rule-content h5 a, .rule-content h5 a:visited, .rule-content h6 a, .rule-content h6 a:visited {
+  color: #cc4141;
+  text-decoration-color: #cc4141 !important;
+  -webkit-text-decoration-color: #cc4141;
 }
 
 h6.top-category-header,
@@ -1061,13 +1055,13 @@ blockquote p:before {
 
 .rule-content a,
 .rule-category a {
-  text-decoration-line: underline;
+  text-decoration: underline;
   transition: color 0.25s ease;
 }
 
 .rule-content a:hover,
 .rule-category a:hover:not(.github-link, .disqus-link, .get-username-btn::after) {
-  text-decoration:underline;;
+  text-decoration:underline;
   color: #cc4141;
 }
 

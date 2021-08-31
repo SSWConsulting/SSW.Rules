@@ -24,6 +24,7 @@ import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 import CommentsNotConnected from '../comments-not-connected/comments-not-connected';
 import DisableDisqusPrivacy from '../disable-disqus-privacy/disable-disqus-privacy';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -467,9 +468,14 @@ const RuleList = ({
                     >
                       <div dangerouslySetInnerHTML={{ __html: rule.excerpt }} />
                       <p className="pt-5 pb-0">
-                        Read more about{' '}
-                        <Link ref={linkRef} to={`/${rule.uri}`}>
-                          {rule.title}
+                        <Link
+                          ref={linkRef}
+                          to={`/${rule.frontmatter.uri}`}
+                          state={{ category: category.parent.name }}
+                          title={`Read more about ${rule.frontmatter.title}`}
+                        >
+                          <FontAwesomeIcon icon={faArrowCircleRight} /> Read
+                          more
                         </Link>
                       </p>
                     </section>

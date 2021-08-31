@@ -7,7 +7,10 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Bookmark from '../components/bookmark/bookmark';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowCircleRight,
+  faPencilAlt,
+} from '@fortawesome/free-solid-svg-icons';
 
 export default function Category({ data }) {
   const linkRef = useRef();
@@ -198,14 +201,15 @@ export default function Category({ data }) {
                           <div
                             dangerouslySetInnerHTML={{ __html: rule.excerpt }}
                           />
-                          <p className="pt-5 pb-0">
-                            Read more about{' '}
+                          <p className="pt-5 pb-0 font-bold">
                             <Link
                               ref={linkRef}
                               to={`/${rule.frontmatter.uri}`}
                               state={{ category: category.parent.name }}
+                              title={`Read more about ${rule.frontmatter.title}`}
                             >
-                              {rule.frontmatter.title}
+                              <FontAwesomeIcon icon={faArrowCircleRight} /> Read
+                              more
                             </Link>
                           </p>
                         </section>

@@ -28,7 +28,7 @@ jobs:
           echo "APPINSIGHTS ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY  }}!"
       - run: yarn install
       - name: build
-      - run: |
+        run: |
           touch .env.production
           echo GOOGLE_ANALYTICS: ${{ secrets.GOOGLE_ANALYTICS }} >> .env.production
           echo RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }} >> .env.production

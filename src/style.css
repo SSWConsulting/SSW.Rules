@@ -77,20 +77,8 @@ h4 {
   @apply mb-2;
 }
 
-h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
-  color: #cc4141;
-  text-decoration-color: #cc4141;
-  -webkit-text-decoration-thickness: 1px;
-  text-decoration-thickness: 1px;
-}
-
-h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
-  color: #222;
-  text-decoration-color: #222;
-}
-
 a, a:visited {
-  &:not(.unstyled):not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a) {
+  &:not(.unstyled) {
     color: #222;
     text-decoration: none;
     transition: color 0.25s ease;
@@ -103,14 +91,11 @@ a, a:visited {
 }
 
 a.footer-link,a.footer-link:visited  {
-  @apply text-gray-300;
-  font-weight: bolder;
+  @apply text-white;
   line-height: .75rem;
   transition: all 0.3s ease-in-out;
-  text-decoration:underline;  
   &:hover {
     @apply text-ssw-red;
-    text-decoration:underline;
   }
 }
 
@@ -760,7 +745,7 @@ b, strong {
 }
 
 .rule-content a, .rule-category-top a {
-  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(.info-btn-container):not(h1 a):not(h2 a):not(h3 a):not(h4 a):not(h5 a):not(h6 a) {
+  &:not(.unstyled):not(.action-btn-link):not(.action-btn-link-underlined):not(.info-btn-container) {
     transition: color 0.25s ease;
     line-height: 1.5rem;
     -webkit-text-decoration: underline;
@@ -778,6 +763,12 @@ b, strong {
       text-decoration-color: #cc4141;
     } 
   } 
+}
+
+.rule-content h1 a, .rule-content h1 a:visited, .rule-content h2 a, .rule-content h2 a:visited, .rule-content h3 a, .rule-content h3 a:visited, .rule-content h4 a, .rule-content h4 a:visited, .rule-content h5 a, .rule-content h5 a:visited, .rule-content h6 a, .rule-content h6 a:visited {
+  color: #cc4141;
+  text-decoration-color: #cc4141 !important;
+  -webkit-text-decoration-color: #cc4141;
 }
 
 h6.top-category-header,
@@ -958,6 +949,10 @@ blockquote p:before {
   margin-bottom: 1rem;
 }
 
+.old-rules-link {
+  padding-left: 1rem;
+}
+
 /* Category List
 -------------------------------------------------- */
 
@@ -1013,8 +1008,12 @@ blockquote p:before {
 
 .rule-content-title h2 {
   padding: .5rem .75rem;
-  background: #f5f5f5;
+  margin: 0;
   border-left: 2px solid #cc4141; 
+}
+
+.rule-header-container .bookmark-icon, .rule-header-container .bookmark-icon-pressed {
+  margin-top: 1rem;
 }
 
 .rule-category-top p {
@@ -1056,13 +1055,13 @@ blockquote p:before {
 
 .rule-content a,
 .rule-category a {
-  text-decoration-line: underline;
+  text-decoration: underline;
   transition: color 0.25s ease;
 }
 
 .rule-content a:hover,
 .rule-category a:hover:not(.github-link, .disqus-link, .get-username-btn::after) {
-  text-decoration:underline;;
+  text-decoration:underline;
   color: #cc4141;
 }
 
@@ -1575,6 +1574,10 @@ div.greybox {
   display: flex;
 }
 
+.rule-content-title .rule-header-container {
+  background-color: #f5f5f5;
+}
+
 .edit-button-container::after {
   font-family: FontAwesome;
   content: '\f040';
@@ -1601,6 +1604,10 @@ div.greybox {
   color: #cc4141;
 }
 
+.category .tooltip .bookmark-icon, .category .tooltip .bookmark-icon-pressed {
+  margin-bottom: 0.5rem;
+}
+
 .header-icon {
   color: #414141;
 }
@@ -1612,6 +1619,10 @@ div.greybox {
 .category-icon {
   margin-top: 0;
   margin-left: 0.5rem;
+}
+
+.category-bookmark {
+  padding-bottom: 0.5rem;
 }
 
 .tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
@@ -2854,6 +2865,10 @@ margin-bottom: 1em;
 
 .email-template table tr td:last-child {
   word-break: break-word;
+}
+
+.email-template th, .email-template tr:nth-child(2n) {
+    background-color: initial !important;
 }
 
 .email-content {

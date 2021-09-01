@@ -6,6 +6,11 @@ import GreyBox from '../components/greybox/greybox';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import Bookmark from '../components/bookmark/bookmark';
+import {
+  faArrowCircleRight,
+  faPencilAlt,
+} from '@fortawesome/free-solid-svg-icons';
 
 export default function Category({ data }) {
   const linkRef = useRef();
@@ -131,15 +136,55 @@ export default function Category({ data }) {
                     <>
                       <li>
                         <section className="rule-content-title pl-2">
-                          <h2>
-                            <Link
-                              ref={linkRef}
-                              to={`/${rule.frontmatter.uri}`}
-                              state={{ category: category.parent.name }}
-                            >
-                              {rule.frontmatter.title}
-                            </Link>
-                          </h2>
+                          <div className="rule-header-container align-middle justify-between">
+                            <h2 className="flex flex-col justify-center">
+                              <Link
+                                ref={linkRef}
+                                to={`/${rule.frontmatter.uri}`}
+                                state={{ category: category.parent.name }}
+                              >
+                                {rule.frontmatter.title}
+                              </Link>
+                            </h2>
+                            <div className="rule-buttons flex flex-col sm:flex-row category">
+                              <Bookmark
+                                ruleId={rule.frontmatter.guid}
+                                className="category-bookmark"
+                              />
+                              <button className="tooltip">
+                                <a
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
+                                  className="tooltip tooltip-button"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faPencilAlt}
+                                    size="lg"
+                                    className="text-ssw-red bookmark-icon"
+                                  />
+                                </a>
+                                <span className="tooltiptext">Edit</span>
+                              </button>
+                              <button className="tooltip">
+                                <a
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
+                                  className="tooltip tooltip-button"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faGithub}
+                                    size="lg"
+                                    className="text-ssw-red bookmark-icon"
+                                  />
+                                </a>
+                                <span className="tooltiptext">
+                                  Edit in GitHub
+                                </span>
+                              </button>
+                            </div>
+                          </div>
                         </section>
 
                         <section
@@ -156,14 +201,15 @@ export default function Category({ data }) {
                           <div
                             dangerouslySetInnerHTML={{ __html: rule.excerpt }}
                           />
-                          <p className="pt-5 pb-0">
-                            Read more about{' '}
+                          <p className="pt-5 pb-0 font-bold">
                             <Link
                               ref={linkRef}
                               to={`/${rule.frontmatter.uri}`}
                               state={{ category: category.parent.name }}
+                              title={`Read more about ${rule.frontmatter.title}`}
                             >
-                              {rule.frontmatter.title}
+                              <FontAwesomeIcon icon={faArrowCircleRight} /> Read
+                              more
                             </Link>
                           </p>
                         </section>

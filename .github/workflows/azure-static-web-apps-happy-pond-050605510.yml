@@ -25,7 +25,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: |
           echo "Contact API: ${{ secrets.CONTACT_API }}!"
-          echo "APPINSIGHTS ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY  }}!"
+          echo "APPINSIGHTS ${{ secrets.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY  }}!"
       - run: yarn install
       - name: build
         run: |
@@ -33,7 +33,7 @@ jobs:
           echo GOOGLE_ANALYTICS: ${{ secrets.GOOGLE_ANALYTICS }} >> .env.production
           echo RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }} >> .env.production
           echo CONTACT_API: ${{ secrets.CONTACT_API }} >> .env.production
-          echo APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }} >> .env.production
+          echo GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY }} >> .env.production
           echo VERSION_DEPLOYED: ${{ secrets.VERSION_DEPLOYED }} >> .env.production
           echo CONTENT_BRANCH: ${{ secrets.CONTENT_BRANCH }} >> .env.production
           echo API_BASE_URL: ${{ secrets.API_BASE_URL }} >> .env.production

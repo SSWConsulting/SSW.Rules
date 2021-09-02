@@ -10,7 +10,7 @@ import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 const appInsights = new ApplicationInsights({
   config: {
-    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+    instrumentationKey: process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY,
   },
 });
 

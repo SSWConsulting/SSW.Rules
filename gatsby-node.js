@@ -8,16 +8,16 @@ const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
 const Map = require('core-js/features/map');
 
-if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+if (process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
   appInsights
-    .setup()
+    .setup(process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY)
     .setAutoCollectConsole(true, true) // Enable logging of console.xxx
     .start();
 } else {
   // eslint-disable-next-line no-console
   console.warn(
-    'Missing APPINSIGHTS_INSTRUMENTATIONKEY, this build will not be logged to Application Insights'
+    'Missing GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY, this build will not be logged to Application Insights'
   );
 }
 

@@ -5,7 +5,7 @@ require('gatsby-remark-vscode/styles.css');
 
 const appInsights = new ApplicationInsights({
   config: {
-    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+    instrumentationKey: process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY,
   },
 });
 appInsights.loadAppInsights();

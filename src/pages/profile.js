@@ -10,13 +10,13 @@ import GitHubIcon from '-!svg-react-loader!../images/github.svg';
 import DisqusIcon from '-!svg-react-loader!../images/disqusIcon.svg';
 import { useAuth0 } from '@auth0/auth0-react';
 import { GetUser } from '../services/apiService';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+/*import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 const appInsights = new ApplicationInsights({
   config: {
     instrumentationKey: process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY,
   },
-});
+});*/
 
 const Profile = ({ data, gitHubUsername }) => {
   const [selectedFilter, setSelectedFilter] = useState(4);
@@ -38,10 +38,10 @@ const Profile = ({ data, gitHubUsername }) => {
         setCommentsConnected(success.commentsConnected);
       })
       .catch((err) => {
-        appInsights.trackException({
+        /*appInsights.trackException({
           error: new Error(err),
           severityLevel: 3,
-        });
+        });*/
       });
   }
 

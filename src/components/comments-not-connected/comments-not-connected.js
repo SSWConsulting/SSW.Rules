@@ -9,12 +9,12 @@ import {
 import DisqusIcon from '-!svg-react-loader!../../images/disqusIcon.svg';
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+/*import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 const appInsights = new ApplicationInsights({
   config: {
     instrumentationKey: process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY,
   },
-});
+});*/
 
 const CommentsNotConnected = ({ userCommentsConnected, setState, state }) => {
   const [disqusUsername, setDisqusUsername] = useState();
@@ -46,17 +46,17 @@ const CommentsNotConnected = ({ userCommentsConnected, setState, state }) => {
               }
             })
             .catch((err) => {
-              appInsights.trackException({
+              /*appInsights.trackException({
                 error: new Error(err),
                 severityLevel: 3,
-              });
+              });*/
             });
         })
         .catch((err) => {
-          appInsights.trackException({
+          /*appInsights.trackException({
             error: new Error(err),
             severityLevel: 3,
-          });
+          });*/
         });
     }
   }

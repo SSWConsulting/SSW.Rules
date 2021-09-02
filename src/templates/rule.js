@@ -23,7 +23,6 @@ import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 import {
   GetOrganisations,
@@ -33,13 +32,15 @@ import {
 
 import { detectLinks } from '../helpers/convertUrlFromString';
 
+/*import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
 const appInsights = new ApplicationInsights({
   config: {
     instrumentationKey: process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY,
   },
 });
 
-appInsights.loadAppInsights();
+appInsights.loadAppInsights();*/
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
@@ -76,17 +77,17 @@ const Rule = ({ data, location }) => {
                       hiddenBlock.className = 'secret-content';
                     })
                     .catch((err) => {
-                      appInsights.trackException({
+                      /*appInsights.trackException({
                         error: new Error(err),
                         severityLevel: 3,
-                      });
+                      });*/
                     });
                 })
                 .catch((err) => {
-                  appInsights.trackException({
+                  /*appInsights.trackException({
                     error: new Error(err),
                     severityLevel: 3,
-                  });
+                  });*/
                 })
             : null;
         }
@@ -143,10 +144,10 @@ const Rule = ({ data, location }) => {
             );
           })
           .catch((err) => {
-            appInsights.trackException({
+            /*appInsights.trackException({
               error: new Error(err),
               severityLevel: 3,
-            });
+            });*/
           })
       : null;
   }, [user, isAuthenticated, hiddenCount]);
@@ -306,9 +307,9 @@ const Rule = ({ data, location }) => {
                                 <button
                                   className="button-next text-white"
                                   onClick={() => {
-                                    appInsights.trackEvent({
+                                    /*appInsights.trackEvent({
                                       name: 'PreviousButtonPressed',
-                                    });
+                                    });*/
                                   }}
                                 >
                                   <FontAwesomeIcon icon={faAngleDoubleLeft} />
@@ -326,9 +327,9 @@ const Rule = ({ data, location }) => {
                               category.frontmatter.index.length - 1 && (
                               <Link
                                 onClick={() => {
-                                  appInsights.trackEvent({
+                                  /*appInsights.trackEvent({
                                     name: 'NextButtonPressed',
-                                  });
+                                  });*/
                                 }}
                                 ref={linkRef}
                                 to={`/${

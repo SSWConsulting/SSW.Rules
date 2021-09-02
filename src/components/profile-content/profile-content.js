@@ -20,17 +20,17 @@ import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Filter } from '../profile-filter-menu/profile-filter-menu';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 import CommentsNotConnected from '../comments-not-connected/comments-not-connected';
 import DisableDisqusPrivacy from '../disable-disqus-privacy/disable-disqus-privacy';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-/*import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 const appInsights = new ApplicationInsights({
   config: {
     instrumentationKey: process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY,
   },
-});*/
+});
 
 const ProfileContent = (props) => {
   const [bookmarkedRules, setBookmarkedRules] = useState([]);
@@ -62,20 +62,20 @@ const ProfileContent = (props) => {
               props.setState(props.state + 1);
             })
             .catch((err) => {
-             /*appInsights.trackException({
+              appInsights.trackException({
                 error: new Error(err),
                 severityLevel: 3,
-              });*/
+              });
             })
         : RemoveReaction({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
             .then(() => {
               setChange(change + 1);
             })
             .catch((err) => {
-              /*appInsights.trackException({
+              appInsights.trackException({
                 error: new Error(err),
                 severityLevel: 3,
-              });*/
+              });
             });
     }
   }
@@ -100,10 +100,10 @@ const ProfileContent = (props) => {
         props.setBookmarkedRulesCount(bookmarkedRulesSpread.length);
       })
       .catch((err) => {
-        /*appInsights.trackException({
+        appInsights.trackException({
           error: new Error(err),
           severityLevel: 3,
-        });*/
+        });
       });
   }
 
@@ -149,10 +149,10 @@ const ProfileContent = (props) => {
             }
           })
           .catch((err) => {
-            /*appInsights.trackException({
+            appInsights.trackException({
               error: new Error(err),
               severityLevel: 3,
-            });*/
+            });
           });
       }
     });
@@ -219,10 +219,10 @@ const ProfileContent = (props) => {
         props.setSuperDislikedRulesCount(superDislikedRules.length);
       })
       .catch((err) => {
-        /*appInsights.trackException({
+        appInsights.trackException({
           error: new Error(err),
           severityLevel: 3,
-        });*/
+        });
       });
   }
 
@@ -367,10 +367,10 @@ const RuleList = ({
         setState(state + 1);
       })
       .catch((err) => {
-        /*appInsights.trackException({
+        appInsights.trackException({
           error: new Error(err),
           severityLevel: 3,
-        });*/
+        });
       });
   }
 

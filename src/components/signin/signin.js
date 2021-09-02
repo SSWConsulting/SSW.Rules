@@ -6,13 +6,13 @@ import {
   GetGithubOrganisations,
   setUserOrganisation,
 } from '../../services/apiService';
-/*import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 const appInsights = new ApplicationInsights({
   config: {
     instrumentationKey: process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY,
   },
-});*/
+});
 
 const SignIn = () => {
   const { isAuthenticated, loginWithRedirect, user, getIdTokenClaims } =
@@ -38,10 +38,10 @@ const SignIn = () => {
             });
           })
           .catch((err) => {
-            /*appInsights.trackException({
+            appInsights.trackException({
               error: new Error(err),
               severityLevel: 3,
-            });*/
+            });
           })
       : null;
   };

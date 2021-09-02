@@ -1,6 +1,6 @@
 const siteConfig = require('./site-config');
 const { createFilePath } = require('gatsby-source-filesystem');
-//const appInsights = require('applicationinsights');
+const appInsights = require('applicationinsights');
 const makePluginData = require('./src/helpers/plugin-data');
 const createRewriteMap = require('./src/helpers/createRewriteMap');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
@@ -8,7 +8,7 @@ const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
 const Map = require('core-js/features/map');
 
-/*if (process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY) {
+if (process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
   appInsights
     .setup(process.env.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY)
@@ -19,7 +19,7 @@ const Map = require('core-js/features/map');
   console.warn(
     'Missing GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY, this build will not be logged to Application Insights'
   );
-}*/
+}
 
 let assetsManifest = {};
 

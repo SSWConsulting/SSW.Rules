@@ -43,7 +43,7 @@ jobs:
           echo API_BASE_URL: ${{ secrets.API_BASE_URL }} >> .env.production
           echo AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }} >> .env.production
           echo GATSBY_CACHE: false >> .env.production
-          yarn build
+          GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true yarn build
       # - name: Build And Deploy
       #  id: builddeploy
       #  uses: Azure/static-web-apps-deploy@v1

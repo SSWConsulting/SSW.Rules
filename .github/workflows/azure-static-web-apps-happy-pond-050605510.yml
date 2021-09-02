@@ -23,28 +23,9 @@ jobs:
         with:
           node-version: 12.x
           registry-url: https://registry.npmjs.org/
-      - run: |
-          echo "Contact API: ${{ secrets.CONTACT_API }}!"
-          echo "APPINSIGHTS ${{ secrets.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY  }}!"
       - run: yarn install
       - name: build
-        run: |
-          touch .env.production
-          echo GOOGLE_ANALYTICS: ${{ secrets.GOOGLE_ANALYTICS }} >> .env.production
-          echo RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }} >> .env.production
-          echo CONTACT_API: ${{ secrets.CONTACT_API }} >> .env.production
-          echo GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY }} >> .env.production
-          echo VERSION_DEPLOYED: ${{ secrets.VERSION_DEPLOYED }} >> .env.production
-          echo CONTENT_BRANCH: ${{ secrets.CONTENT_BRANCH }} >> .env.production
-          echo API_BASE_URL: ${{ secrets.API_BASE_URL }} >> .env.production
-          echo AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }} >> .env.production
-          echo API_BASE_URL: ${{ secrets.API_BASE_URL }} >> .env.production
-          echo AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }} >> .env.production
-          echo API_BASE_URL: ${{ secrets.API_BASE_URL }} >> .env.production
-          echo AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }} >> .env.production
-          echo GATSBY_CACHE: false >> .env.production
-          cat .env.production
-          GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true yarn build
+        run: GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true yarn build
         env:
           GOOGLE_ANALYTICS: ${{ secrets.GOOGLE_ANALYTICS }}
           RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }}

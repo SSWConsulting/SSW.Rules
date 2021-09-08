@@ -44,6 +44,11 @@ jobs:
           DISQUS_FORUM: ${{ secrets.DISQUS_FORUM }}
           DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
           GATSBY_CACHE: false
+      - name: checkfiles
+        run: |
+            ls -a
+            cd public
+            ls | wc -l
       - name: Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1

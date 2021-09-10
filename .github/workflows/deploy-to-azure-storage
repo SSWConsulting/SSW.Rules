@@ -1,0 +1,59 @@
+name: Azure Static Web Apps CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' 
+        || github.event_name == 'push' 
+        || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn install
+      - name: build
+        run: GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true yarn build
+        env:
+          GOOGLE_ANALYTICS: ${{ secrets.GOOGLE_ANALYTICS }}
+          RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }}
+          CONTACT_API: ${{ secrets.CONTACT_API }}
+          GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.GATSBY_APPINSIGHTS_INSTRUMENTATIONKEY }}
+          VERSION_DEPLOYED: "1.22"
+          CONTENT_BRANCH: ${{ secrets.CONTENT_BRANCH }}
+          B2C_AUTHORITY: ""
+          B2C_CLIENT_ID: ""
+          B2C_REDIRECT_URI: ""
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          AUTH0_REDIRECT_URI: ${{ secrets.AUTH0_REDIRECT_URI }}
+          GITHUB_API_PAT: ""
+          DISQUS_FORUM: ${{ secrets.DISQUS_FORUM }}
+          DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
+          GATSBY_CACHE: false
+      - name: checkfiles
+        run: |
+            ls -a
+            cd public
+            ls | wc -l
+            ls -a
+
+#  close_pull_request_job:
+#    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+#    runs-on: ubuntu-latest
+#    name: Close Pull Request Job
+#    steps:
+#      - name: Close Pull Request
+#        id: closepullrequest
+#        uses: Azure/static-web-apps-deploy@v1
+#        with:
+#          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_POND_050605510 }}
+#          action: "close"

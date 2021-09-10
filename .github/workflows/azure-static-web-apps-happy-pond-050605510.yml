@@ -13,8 +13,8 @@ on:
 jobs:
   build:
     if: github.event_name == 'workflow_dispatch' 
-        || github.event_name == 'push' 
-        || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    #    || github.event_name == 'push' 
+    #    || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -47,7 +47,7 @@ jobs:
         with:
           azcliversion: 2.0.72
           inlineScript: |
-              az storage blob upload-batch --account-name sswrulestaticteststorage -d '$web' -s .
+              az storage blob upload-batch --account-name sswrulestaticteststorage -d '$web' -s ./public
       - name: Purge CDN endpoint
         uses: azure/CLI@v1
         with:

@@ -119,7 +119,7 @@ module.exports = {
               // the content container as this plugin uses this as the
               // base for generating different widths of each image.
               //linkImagesToOriginal: false,
-              maxWidth: 1024,
+              maxWidth: 1232,
               backgroundColor: 'transparent',
             },
           },

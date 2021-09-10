@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: yarn install
       - name: build
-        run: GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true yarn build
+        run: GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true yarn build --prefix-paths
         env:
           GOOGLE_ANALYTICS: ${{ secrets.GOOGLE_ANALYTICS }}
           RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }}

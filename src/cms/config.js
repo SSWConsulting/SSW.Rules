@@ -42,8 +42,8 @@ var configJson = {
             name: 'uri',
             label: 'uri (a unique identifier for the url)',
             pattern: [
-              '^[a-zA-Z0-9_-]*$',
-              'Must only contain alphanumeric or the "-" and "_" characters',
+              '^[a-z0-9_-]*$',
+              'Must only contain lowercase alphanumeric or the "-" and "_" characters',
             ],
           },
           {
@@ -80,8 +80,8 @@ var configJson = {
               name: 'relatedRule',
               label: 'Rule uri',
               pattern: [
-                '^[a-zA-Z0-9_-]*$',
-                'Must only contain alphanumeric or the "-" and "_" characters',
+                '^[a-z0-9_-]*$',
+                'Must only contain lowercase alphanumeric or the "-" and "_" characters',
               ],
             },
           },

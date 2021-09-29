@@ -5,6 +5,7 @@ import NumberFormat from 'react-number-format';
 import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { Widget } from 'ssw.rules.widget';
 
 const SideBar = ({ ruleTotalNumber }) => {
   return (
@@ -18,6 +19,9 @@ const SideBar = ({ ruleTotalNumber }) => {
           />
         </h2>
         <p>SSW Rules</p>
+      </section>
+      <section>
+        <Widget token={process.env.GITHUB_API_PAT}/>
       </section>
       <section>
         <h4>Why all these rules?</h4>

@@ -1035,10 +1035,6 @@ blockquote p:before {
 
 .rule-content h1 {
   color: #cc4141;
-  font-weight: 100;
-  margin-right: 0;
-  right: 0;
-  padding-right: 0;
 }
 
 .rule-content h3 {

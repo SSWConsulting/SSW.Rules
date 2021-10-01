@@ -1574,6 +1574,10 @@ div.greybox {
   background-color: #f5f5f5;
 }
 
+.rule-buttons.category {
+  margin: 14px 12px 6px;
+}
+
 .rule-buttons {
   margin-top: 2.2rem;
 }

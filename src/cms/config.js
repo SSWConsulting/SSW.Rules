@@ -112,7 +112,7 @@ var configJson = {
           },
           {
             name: 'archivedreason',
-            label: 'Archived Reason (leave blank if none)',
+            label: 'Archive this rule by adding a reason (leave blank to unarchive)',
             required: false,
           },
           {

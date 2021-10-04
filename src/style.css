@@ -1012,10 +1012,6 @@ blockquote p:before {
   border-left: 2px solid #cc4141; 
 }
 
-.rule-header-container .bookmark-icon, .rule-header-container .bookmark-icon-pressed {
-  margin-top: 1rem;
-}
-
 .rule-category-top p {
   margin-top: 0;
   margin-bottom: 1rem;
@@ -1574,6 +1570,14 @@ div.greybox {
   background-color: #f5f5f5;
 }
 
+.rule-buttons.category {
+  margin: 14px 12px 6px;
+}
+
+.rule-buttons {
+  margin-top: 2.2rem;
+}
+
 .edit-button-container::after {
   font-family: FontAwesome;
   content: '\f040';
@@ -1582,7 +1586,6 @@ div.greybox {
 
 .bookmark-icon, .bookmark-icon-pressed {
   height: 2rem;
-  margin-top: 1.5rem;
   color: #414141;
 }
 
@@ -1617,13 +1620,11 @@ div.greybox {
   margin-left: 0.5rem;
 }
 
-.category-bookmark {
-  padding-bottom: 0.5rem;
-}
-
 .tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
+  display: flex;
   position: relative;
-  display: inline-block;
+  margin: 2px 0;
+  height: 2.5rem;
 }
 
 .tooltip-button {
@@ -1664,17 +1665,6 @@ div.greybox {
   margin-left: -58px;
 }
 
-@media screen and (max-width: 640px) {
-  .rule-buttons button:first-child 
-  {
-    margin-top: 1rem;
-  }
-
-  .tooltip-button svg {
-    margin-top: 0.75rem;
-  }
-}
-
 .disqus-tooltip {
   margin: auto 1rem auto auto;
   height: 3rem;
@@ -1702,16 +1692,11 @@ div.greybox {
   padding: 5px 0;
   border-radius: 6px;
   font-size: small;
-  bottom: 70%;
+  top: -90%;
+  left: -20px;
   position: absolute;
   opacity: 0;
   transition: opacity 0.2s;
-}
-
-.tooltip .tooltiptext {
-  left: 65%;
-  margin-left: -60px;
-  margin-bottom: 0;
 }
 
 .category-tooltip {

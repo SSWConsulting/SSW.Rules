@@ -2811,7 +2811,7 @@ margin-bottom: 1em;
   width: 100%;
 }
 
-.email-template table {
+.email-template table:first-child {
   padding:5px;
   max-width: 100%;
   width: 100%;
@@ -2830,13 +2830,13 @@ margin-bottom: 1em;
   margin-bottom: 1rem;
 }
 
-.email-template table tr td {
+.email-template table:first-child tr td {
   border: 1px solid #ccc;
   background-color: #fff;
   padding: 10px 15px;
 }
 
-.email-template table tr td:first-child {
+.email-template table:first-child tr td:first-child {
   background-color: #eee;
   text-align: right;
   padding: 10px 10px 10px 0;
@@ -2844,11 +2844,11 @@ margin-bottom: 1em;
   width: 100px;
 }
 
-.email-template table tr td:last-child {
+.email-template table:first-child tr td:last-child {
   word-break: break-word;
 }
 
-.email-template th, .email-template tr:nth-child(2n) {
+.email-template table:first-child th, .email-template table:first-child tr:nth-child(2n) {
     background-color: initial !important;
 }
 

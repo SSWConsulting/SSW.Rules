@@ -239,6 +239,7 @@ export const query = graphql`
         title
         index
         uri
+        guid
       }
       parent {
         ... on File {
@@ -254,6 +255,7 @@ export const query = graphql`
           uri
           archivedreason
           title
+          guid
         }
         htmlAst
       }

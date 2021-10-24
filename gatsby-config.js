@@ -86,6 +86,9 @@ module.exports = {
         excerpt_separator: '<!--endintro-->',
         plugins: [
           {
+            resolve: 'gatsby-remark-relative-images-v2',
+          },
+          {
             resolve: 'gatsby-remark-images-anywhere',
             options: {
               staticDir: 'static',
@@ -98,13 +101,25 @@ module.exports = {
                 base64,
                 presentationWidth,
               }) => {
-                return `<img src="${src}" srcset="${srcSet}" sizes="${sizes}" aspectratio="${aspectRatio}" alt="${alt}" base64="${base64}" presentationwidth="${presentationWidth}"></custom-image>`;
+                return `<img src="${src}" class="gatsby-resp-image-image medium-zoom-image"  srcset="${srcSet}" sizes="${sizes}" aspectratio="${aspectRatio}" alt="${alt}" base64="${base64}" presentationwidth="${presentationWidth}"></img`;
               },
               sharpMethod: 'fluid',
               // Additional sharp image arguments: https://www.gatsbyjs.org/packages/gatsby-plugin-sharp/
               // maxWidth: 650,
             },
           },
+          // {
+          //   resolve: 'gatsby-remark-images',
+          //   options: {
+          //     // It's important to specify the maxWidth (in pixels) of
+          //     // the content container as this plugin uses this as the
+          //     // base for generating different widths of each image.
+          //     linkImagesToOriginal: false,
+          //     maxWidth: 1232,
+          //     backgroundColor: 'transparent',
+          //   },
+          // },
+          'gatsby-remark-images-zoom',
           {
             resolve: '@raae/gatsby-remark-oembed',
             options: {

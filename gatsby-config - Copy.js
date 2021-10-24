@@ -98,7 +98,7 @@ module.exports = {
                 base64,
                 presentationWidth,
               }) => {
-                return `<img src="${src}" srcset="${srcSet}" sizes="${sizes}" aspectratio="${aspectRatio}" alt="${alt}" base64="${base64}" presentationwidth="${presentationWidth}"></custom-image>`;
+                return `<custom-image src="${src}" srcset="${srcSet}" sizes="${sizes}" aspectratio="${aspectRatio}" alt="${alt}" base64="${base64}" presentationwidth="${presentationWidth}"></custom-image>`
               },
               sharpMethod: 'fluid',
               // Additional sharp image arguments: https://www.gatsbyjs.org/packages/gatsby-plugin-sharp/
@@ -134,6 +134,22 @@ module.exports = {
           {
             resolve: 'gatsby-remark-figure-caption',
             options: { figureClassName: 'image' },
+          },
+          // gatsby-remark-relative-images must
+          // go before gatsby-remark-images
+          {
+            resolve: 'gatsby-remark-relative-images-v2',
+          },
+          {
+            resolve: 'gatsby-remark-images',
+            options: {
+              // It's important to specify the maxWidth (in pixels) of
+              // the content container as this plugin uses this as the
+              // base for generating different widths of each image.
+              //linkImagesToOriginal: false,
+              maxWidth: 1232,
+              backgroundColor: 'transparent',
+            },
           },
           'gatsby-remark-copy-linked-files',
           'gatsby-remark-fenced-divs',

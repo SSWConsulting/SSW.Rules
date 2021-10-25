@@ -74,13 +74,6 @@ module.exports = {
     'gatsby-plugin-sharp',
     'gatsby-transformer-sharp',
     {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'projects',
-        path: `${__dirname}/src/projects/`,
-      },
-    },
-    {
       resolve: 'gatsby-transformer-remark',
       options: {
         excerpt_separator: '<!--endintro-->',
@@ -108,17 +101,17 @@ module.exports = {
               // maxWidth: 650,
             },
           },
-          // {
-          //   resolve: 'gatsby-remark-images',
-          //   options: {
-          //     // It's important to specify the maxWidth (in pixels) of
-          //     // the content container as this plugin uses this as the
-          //     // base for generating different widths of each image.
-          //     linkImagesToOriginal: false,
-          //     maxWidth: 1232,
-          //     backgroundColor: 'transparent',
-          //   },
-          // },
+          {
+            resolve: 'gatsby-remark-images',
+            options: {
+              // It's important to specify the maxWidth (in pixels) of
+              // the content container as this plugin uses this as the
+              // base for generating different widths of each image.
+              linkImagesToOriginal: false,
+              maxWidth: 1232,
+              backgroundColor: 'transparent',
+            },
+          },
           'gatsby-remark-images-zoom',
           {
             resolve: '@raae/gatsby-remark-oembed',

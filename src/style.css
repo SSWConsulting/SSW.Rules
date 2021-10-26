@@ -615,6 +615,10 @@ pre {
   color: #777;
 }
 
+ul {
+  text-decoration: underline;
+}
+
 /**
 * Rules CSS
 */
@@ -2494,8 +2498,12 @@ html {
 }
 
 #sidebar a {
-  text-decoration:underline;
+  /* text-decoration:underline; */
   transition: color 0.25s ease;
+}
+
+a.underlined-link  {
+  text-decoration: underline;
 }
 
 #sidebar a:hover {

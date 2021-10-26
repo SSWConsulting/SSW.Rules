@@ -31,6 +31,7 @@ const SideBar = ({ ruleTotalNumber }) => {
             href="https://www.codemag.com/article/0605091"
             target="_blank"
             rel="noopener noreferrer"
+            className="underlined-link"
           >
             History of SSW Rules
           </a>
@@ -55,11 +56,11 @@ const SideBar = ({ ruleTotalNumber }) => {
             SSW rules are a great resource for developers all around the world.
             However it’s hard to keep rules current and correct. If you spot a
             rule that is out of date, please{' '}
-            <a href="https://www.ssw.com.au/ssw/Company/ContactUs.aspx">
+            <a className="underlined-link" href="https://www.ssw.com.au/ssw/Company/ContactUs.aspx">
               contact us
             </a>
             , or if you are cool{' '}
-            <a href="https://twitter.com/adamcogan">
+            <a className="underlined-link" href="https://twitter.com/adamcogan">
               <FontAwesomeIcon icon={faTwitter} /> tweet me
             </a>
             .

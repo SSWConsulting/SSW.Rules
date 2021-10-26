@@ -11,21 +11,21 @@ const SideBar = ({ ruleTotalNumber }) => {
   return (
     <div>
       <section className="rules-counter">
-          <div className="flex grid grid-cols-6">
-            <div className="col-span-1 col-start-2">
-                <GavelIcon className="gavel-icon"/>
-            </div>
-            <div className="col-span-2">
-              <h2>
-                <NumberFormat
-                  value={ruleTotalNumber}
-                  displayType={'text'}
-                  thousandSeparator={true}
-                />
-              </h2>
-              <p>SSW Rules</p>
-            </div>
+        <div className="flex grid grid-cols-6">
+          <div className="col-span-1 col-start-2">
+            <GavelIcon className="gavel-icon" />
           </div>
+          <div className="col-span-2">
+            <h2>
+              <NumberFormat
+                value={ruleTotalNumber}
+                displayType={'text'}
+                thousandSeparator={true}
+              />
+            </h2>
+            <p>SSW Rules</p>
+          </div>
+        </div>
       </section>
       <section>
         <h4>Why all these rules?</h4>
@@ -72,7 +72,7 @@ const SideBar = ({ ruleTotalNumber }) => {
       </section>
       <section>
         <h4>Join the conversation</h4>
-        <a 
+        <a
           href="https://twitter.com/intent/tweet?button_hashtag=SSWRules&ref_src=twsrc%5Etfw"
           className="button twitter-hashtag-button"
         >

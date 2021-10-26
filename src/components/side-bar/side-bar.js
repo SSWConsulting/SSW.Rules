@@ -20,7 +20,7 @@ const SideBar = ({ ruleTotalNumber }) => {
         </h2>
         <p>SSW Rules</p>
       </section>
-      <section>
+      <section id="widget">
         <Widget token={process.env.GITHUB_API_PAT} />
       </section>
       <section>
@@ -31,7 +31,6 @@ const SideBar = ({ ruleTotalNumber }) => {
             href="https://www.codemag.com/article/0605091"
             target="_blank"
             rel="noopener noreferrer"
-            className="underlined-link"
           >
             History of SSW Rules
           </a>
@@ -56,14 +55,11 @@ const SideBar = ({ ruleTotalNumber }) => {
             SSW rules are a great resource for developers all around the world.
             However it’s hard to keep rules current and correct. If you spot a
             rule that is out of date, please{' '}
-            <a
-              className="underlined-link"
-              href="https://www.ssw.com.au/ssw/Company/ContactUs.aspx"
-            >
+            <a href="https://www.ssw.com.au/ssw/Company/ContactUs.aspx">
               contact us
             </a>
             , or if you are cool{' '}
-            <a className="underlined-link" href="https://twitter.com/adamcogan">
+            <a href="https://twitter.com/adamcogan">
               <FontAwesomeIcon icon={faTwitter} /> tweet me
             </a>
             .

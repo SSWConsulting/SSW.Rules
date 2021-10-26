@@ -2498,12 +2498,12 @@ html {
 }
 
 #sidebar a {
-  /* text-decoration:underline; */
+  text-decoration:underline; 
   transition: color 0.25s ease;
 }
 
-a.underlined-link  {
-  text-decoration: underline;
+#widget a {
+  text-decoration: none;
 }
 
 #sidebar a:hover {

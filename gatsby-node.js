@@ -58,6 +58,7 @@ exports.createSchemaCustomization = ({ actions }) => {
 
 exports.onCreateWebpackConfig = ({ actions }) => {
   actions.setWebpackConfig({
+    devtool: 'eval-source-map',
     plugins: [
       new WebpackAssetsManifest({
         assets: assetsManifest, // mutates object with entries

@@ -73,15 +73,6 @@ const SideBar = ({ ruleTotalNumber }) => {
         </div>
       </section>
       <section>
-        <h4>Join the conversation</h4>
-        <a
-          href="https://twitter.com/intent/tweet?button_hashtag=SSWRules&ref_src=twsrc%5Etfw"
-          className="button twitter-hashtag-button"
-        >
-          <FontAwesomeIcon icon={faTwitter} /> Tweet #SSWRules
-        </a>
-      </section>
-      <section>
         <h4>About SSW</h4>
         <p>
           SSW Consulting has over 25 years of experience developing awesome
@@ -97,6 +88,21 @@ const SideBar = ({ ruleTotalNumber }) => {
       </section>
       <section id="widget">
         <Widget token={process.env.GITHUB_API_PAT} />
+      </section>
+      <section>
+        <h4>Join the conversation</h4>
+        <div
+          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+        >
+          <a
+            href="https://twitter.com/intent/tweet?button_hashtag=SSWRules&ref_src=twsrc%5Etfw"
+            className="button twitter-hashtag-button"
+            style={{ margin: 'auto' }}
+          >
+            <FontAwesomeIcon icon={faTwitter} />
+            Tweet #SSWRules
+          </a>
+        </div>
       </section>
     </div>
   );

@@ -28,9 +28,7 @@ const SideBar = ({ ruleTotalNumber }) => {
           </div>
         </div>
       </section>
-      <section id="widget">
-        <Widget token={process.env.GITHUB_API_PAT} />
-      </section>
+
       <section>
         <h4>Why all these rules?</h4>
         <p>
@@ -96,6 +94,9 @@ const SideBar = ({ ruleTotalNumber }) => {
       </section>
       <section>
         <Contact />
+      </section>
+      <section id="widget">
+        <Widget token={process.env.GITHUB_API_PAT} />
       </section>
     </div>
   );

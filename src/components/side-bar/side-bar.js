@@ -5,6 +5,7 @@ import NumberFormat from 'react-number-format';
 import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { Widget } from 'ssw.rules.widget';
 import GavelIcon from '-!svg-react-loader!../../images/gavel.svg';
 
 const SideBar = ({ ruleTotalNumber }) => {
@@ -27,6 +28,7 @@ const SideBar = ({ ruleTotalNumber }) => {
           </div>
         </div>
       </section>
+
       <section>
         <h4>Why all these rules?</h4>
         <p>
@@ -71,15 +73,6 @@ const SideBar = ({ ruleTotalNumber }) => {
         </div>
       </section>
       <section>
-        <h4>Join the conversation</h4>
-        <a
-          href="https://twitter.com/intent/tweet?button_hashtag=SSWRules&ref_src=twsrc%5Etfw"
-          className="button twitter-hashtag-button"
-        >
-          <FontAwesomeIcon icon={faTwitter} /> Tweet #SSWRules
-        </a>
-      </section>
-      <section>
         <h4>About SSW</h4>
         <p>
           SSW Consulting has over 25 years of experience developing awesome
@@ -92,6 +85,22 @@ const SideBar = ({ ruleTotalNumber }) => {
       </section>
       <section>
         <Contact />
+      </section>
+      <section id="widget">
+        <Widget token={process.env.GITHUB_API_PAT} />
+      </section>
+      <section>
+        <h4>Join the conversation</h4>
+        <div className="sidebar-spacing ">
+          <a
+            href="https://twitter.com/intent/tweet?button_hashtag=SSWRules&ref_src=twsrc%5Etfw"
+            className="button twitter-hashtag-button"
+            style={{ margin: 'auto' }}
+          >
+            <FontAwesomeIcon icon={faTwitter} />
+            Tweet #SSWRules
+          </a>
+        </div>
       </section>
     </div>
   );

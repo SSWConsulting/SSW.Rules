@@ -91,9 +91,7 @@ const SideBar = ({ ruleTotalNumber }) => {
       </section>
       <section>
         <h4>Join the conversation</h4>
-        <div
-          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
-        >
+        <div className="sidebar-spacing ">
           <a
             href="https://twitter.com/intent/tweet?button_hashtag=SSWRules&ref_src=twsrc%5Etfw"
             className="button twitter-hashtag-button"

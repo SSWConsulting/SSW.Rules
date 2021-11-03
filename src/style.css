@@ -2521,6 +2521,12 @@ html {
   padding-top: 10px;
 }
 
+#sidebar .sidebar-spacing {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .rules-counter{text-align:center;}
 .rules-counter h2{margin: 0;}
 

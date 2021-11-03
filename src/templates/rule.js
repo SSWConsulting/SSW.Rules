@@ -1,37 +1,33 @@
+import {
+  GetGithubOrganisationName,
+  GetOrganisations,
+  GetSecretContent,
+} from '../services/apiService';
+import { Link, graphql } from 'gatsby';
 /* eslint-disable jsx-a11y/anchor-has-content */
-import React, { useRef, useState, useLayoutEffect } from 'react';
-import ReactDOMServer from 'react-dom/server';
-import { graphql, Link } from 'gatsby';
-import { format } from 'date-fns';
-import formatDistance from 'date-fns/formatDistance';
-import PropTypes from 'prop-types';
-
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
   faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import GitHubIcon from '-!svg-react-loader!../images/github.svg';
+import Acknowledgements from '../components/acknowledgements/acknowledgements';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import Acknowledgements from '../components/acknowledgements/acknowledgements';
 import Comments from '../components/comments/comments';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import GitHubIcon from '-!svg-react-loader!../images/github.svg';
+import PropTypes from 'prop-types';
+import ReactDOMServer from 'react-dom/server';
 import Reaction from '../components/reaction/reaction';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-
-import { useAuth0 } from '@auth0/auth0-react';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-
-import {
-  GetOrganisations,
-  GetSecretContent,
-  GetGithubOrganisationName,
-} from '../services/apiService';
-
 import { detectLinks } from '../helpers/convertUrlFromString';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { format } from 'date-fns';
+import formatDistance from 'date-fns/formatDistance';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -262,14 +258,12 @@ const Rule = ({ data, location }) => {
                           <>
                             <li>
                               <section>
-                                <p>
-                                  <Link
-                                    ref={linkRef}
-                                    to={`/${relatedRule.frontmatter.uri}`}
-                                  >
-                                    {relatedRule.frontmatter.title}
-                                  </Link>
-                                </p>
+                                <Link
+                                  ref={linkRef}
+                                  to={`/${relatedRule.frontmatter.uri}`}
+                                >
+                                  {relatedRule.frontmatter.title}
+                                </Link>
                               </section>
                             </li>
                           </>

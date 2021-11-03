@@ -20,7 +20,7 @@ const AllRules = ({ data }) => {
   const [rules, setRules] = useState(data.allMarkdownRemark.nodes);
   const [notFound, setNotFound] = useState(false);
   const [filterTitle, setFilterTitle] = useState('Results');
-  const [filtereditems, setFilteredItems] = useState({ list: [], filter: {} });
+  const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
 
   const qs = queryString.parse(location.search, { parseNumbers: true });
@@ -34,7 +34,6 @@ const AllRules = ({ data }) => {
     if (!_filter || _filter?.length === 0) {
       return;
     }
-    let timeSelect = new Date();
 
     setFilteredItems({});
     let count = 0;
@@ -49,14 +48,11 @@ const AllRules = ({ data }) => {
         return;
 
       count++;
-      // console.log(timeSelect);
       return { item: item, file: findRule };
     });
 
     //Remove undefined
     const filteredRules = foundRules.filter((i) => i !== undefined);
-
-    // setFilterTitle(`Sorted by ${_filter}`);
 
     if (filteredRules.length === 0) {
       setNotFound(true);
@@ -64,7 +60,6 @@ const AllRules = ({ data }) => {
     } else {
       setNotFound(false);
     }
-    console.log(FilterOptions);
 
     switch (_filter) {
       case FilterOptions.Dc:
@@ -88,7 +83,6 @@ const AllRules = ({ data }) => {
     }
 
     setFilteredItems({ list: filteredRules, filter: _filter });
-    // console.log(foundRules);
   };
 
   const sanitizeName = (file, slug) => {
@@ -113,7 +107,7 @@ const AllRules = ({ data }) => {
             </span>
             <div className="rule-index archive no-gutters rounded">
               <AllRulesContent
-                filtereditems={filtereditems}
+                filteredItems={filteredItems}
                 title={filterTitle}
                 notFound={notFound}
                 isAscending={isAscending}
@@ -160,30 +154,30 @@ const Heading = ({ title, children, isAscending, setIsAscending }) => {
 };
 
 const AllRulesContent = ({
-  filtereditems,
+  filteredItems,
   title,
   notFound,
   isAscending,
   setIsAscending,
 }) => {
-  // console.log(filtereditems);
+  // console.log(filteredItems);
   const formatDistanceLocale = {
-    lessThanXSeconds: '{{count}}s',
-    xSeconds: '{{count}}s',
+    lessThanXSeconds: '{{count}} sec',
+    xSeconds: '{{count}} sec',
     halfAMinute: '30s',
-    lessThanXMinutes: '{{count}}m',
-    xMinutes: '{{count}}m',
-    aboutXHours: '{{count}}h',
-    xHours: '{{count}}h',
-    xDays: '{{count}}d',
-    aboutXWeeks: '{{count}}w',
-    xWeeks: '{{count}}w',
-    aboutXMonths: '{{count}}M',
-    xMonths: '{{count}}M',
-    aboutXYears: '{{count}}y',
-    xYears: '{{count}}y',
-    overXYears: '{{count}}y',
-    almostXYears: '{{count}}y',
+    lessThanXMinutes: '{{count}} min',
+    xMinutes: '{{count}} min',
+    aboutXHours: '{{count}} hour',
+    xHours: '{{count}} hour',
+    xDays: '{{count}} day',
+    aboutXWeeks: '{{count}} week',
+    xWeeks: '{{count}} week',
+    aboutXMonths: '{{count}} month',
+    xMonths: '{{count}} month',
+    aboutXYears: '{{count}} year',
+    xYears: '{{count}} year',
+    overXYears: '{{count}} year',
+    almostXYears: '{{count}} year',
   };
 
   const formatDistance = (token, count, options) => {
@@ -192,10 +186,8 @@ const AllRulesContent = ({
     const result = formatDistanceLocale[token].replace('{{count}}', count);
 
     if (options.addSuffix) {
-      if (options.comparison > 0) {
-        return 'in ' + result;
-      } else {
-        return '> ' + result;
+      if (count > 1) {
+        return result + 's';
       }
     }
 
@@ -210,7 +202,7 @@ const AllRulesContent = ({
         setIsAscending={setIsAscending}
       >
         {!notFound ? (
-          filtereditems.list.map((item, idx) => {
+          filteredItems.list.map((item, idx) => {
             return (
               <div key={idx} className="cat-grid-container">
                 <div className="cat-rule-num">{idx + 1}.</div>
@@ -220,7 +212,7 @@ const AllRulesContent = ({
                   </Link>
                 </div>
                 <span className="block">
-                  {filtereditems.filter === FilterOptions.De
+                  {filteredItems.filter === FilterOptions.De
                     ? formatDistanceToNow(
                         new Date(item.file.node.lastUpdated),
                         {

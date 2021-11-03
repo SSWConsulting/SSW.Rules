@@ -819,8 +819,12 @@ h6.top-category-header a:hover {
 
 .cat-grid-container {
   display: grid;
-  grid-template-columns: 2rem auto 3rem;
+  grid-template-columns: 2rem auto 5rem;
   margin-bottom: 1rem;
+}
+
+.cat-grid-container span {
+  text-align: right;
 }
 
 .cat-rule-link {

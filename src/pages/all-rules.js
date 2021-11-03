@@ -160,7 +160,6 @@ const AllRulesContent = ({
   isAscending,
   setIsAscending,
 }) => {
-  // console.log(filteredItems);
   const formatDistanceLocale = {
     lessThanXSeconds: '{{count}} sec',
     xSeconds: '{{count}} sec',

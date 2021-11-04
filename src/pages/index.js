@@ -56,7 +56,7 @@ const Index = ({ data }) => {
             <section className="pb-8">
               <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-items-start gap-4 md:gap-0 text-center md:text-left">
                 <Link to={'/all-rules?size=10'}>
-                  <FontAwesomeIcon icon={faStar} /> New rules
+                  <FontAwesomeIcon icon={faStar} /> All rules
                 </Link>
                 <a href={`${pathPrefix}/archived`}>
                   <FontAwesomeIcon icon={faArchive} /> Archived rules

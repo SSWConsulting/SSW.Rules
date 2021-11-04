@@ -836,6 +836,10 @@ h6.top-category-header a:hover {
   color: #ccc;
 }
 
+.all-rules-time {
+  color: #ccc;
+}
+
 blockquote {
   padding: 1rem;
   border-left: 4px solid #f5f5f5;

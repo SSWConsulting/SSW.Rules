@@ -210,7 +210,7 @@ const AllRulesContent = ({
                     {item.item.frontmatter.title}
                   </Link>
                 </div>
-                <span className="block">
+                <span className="block all-rules-time">
                   {filteredItems.filter === FilterOptions.De
                     ? formatDistanceToNow(
                         new Date(item.file.node.lastUpdated),

@@ -32,11 +32,15 @@ API_BASE_URL=#{API_BASE_URL}
 ### Development
 1. Branch off main for your PBI
 2. Run *yarn build* (.env.production is required for this step)
-3. Do your work
-4. Run the site in development mode by *yarn develop* (.env.development is required for this step)
-5. Commit code and push
-6. Raise a PR
-7. Get it merged!
+3. Install the recommended extensions if using VS Code
+4. Do your work
+5. Run the site in development mode by *yarn develop* (.env.development is required for this step)
+6. Commit code and push
+7. Raise a PR
+8. Get it merged!
+
+![recommended extensions notification](_docs/img/vs-code-recommended-extensions.png)
+**Figure: VS Code recommended extensions notification**
 
 ### Definition of Done
 
@@ -58,7 +62,7 @@ API_BASE_URL=#{API_BASE_URL}
 
 ### Builds
 - Changes made to http://github.com/SSWConsulting/SSW.Rules.Content (i.e. rule changes) trigger builds that deploy:
-  - **main** to the **staging** site: https://sydiisp01.sydney.ssw.com.au/rules/
+  - **main** to the **staging** site: https://staging.ssw.com.au/rules/
   - latest **release/xx** to the **production** site: https://www.ssw.com.au/rules
   
 - Branching off **main** to **release/xx**, or making changes to **release/xx** will build and deploy to the **production** site: https://www.ssw.com.au/rules
@@ -69,5 +73,5 @@ API_BASE_URL=#{API_BASE_URL}
 > Rules repository lives here: https://github.com/SSWConsulting/SSW.Rules.Content
 
 Merging changes to **main** on this repo will trigger:
-- a build/release of the **main** branch in Staging (https://sydiis2016q01.sydney.ssw.com.au/rules/).
+- a build/release of the **main** branch in Staging (https://staging.ssw.com.au/rules/).
 - a build/release of the **release** branch Production (https://www.ssw.com.au/rules)

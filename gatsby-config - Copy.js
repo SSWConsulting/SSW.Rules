@@ -98,7 +98,7 @@ module.exports = {
                 base64,
                 presentationWidth,
               }) => {
-                return `<custom-image src="${src}" srcset="${srcSet}" sizes="${sizes}" aspectratio="${aspectRatio}" alt="${alt}" base64="${base64}" presentationwidth="${presentationWidth}"></custom-image>`
+                return `<custom-image src="${src}" srcset="${srcSet}" sizes="${sizes}" aspectratio="${aspectRatio}" alt="${alt}" base64="${base64}" presentationwidth="${presentationWidth}"></custom-image>`;
               },
               sharpMethod: 'fluid',
               // Additional sharp image arguments: https://www.gatsbyjs.org/packages/gatsby-plugin-sharp/

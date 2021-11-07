@@ -112,7 +112,10 @@ module.exports = {
               backgroundColor: 'transparent',
             },
           },
-          'gatsby-remark-images-zoom',
+          {
+            resolve: 'gatsby-remark-images-zoom',
+            options: { background: 'rgba(50,50,50,0.9)' },
+          },
           {
             resolve: '@raae/gatsby-remark-oembed',
             options: {

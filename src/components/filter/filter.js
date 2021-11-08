@@ -5,12 +5,14 @@ import { faSortAmountDown } from '@fortawesome/free-solid-svg-icons';
 import useSortFilter from '../../hooks/useSoftFilter';
 
 export const FilterOptions = {
-  Dc: 'Date Created',
-  De: 'Date Edited',
+  DateCreated: 'Date Created',
+  DateEdited: 'Date Edited',
 };
 
 const Filter = ({ selected }) => {
-  const [selectedOption, setSelectedOption] = useState(FilterOptions.Dc);
+  const [selectedOption, setSelectedOption] = useState(
+    FilterOptions.DateCreated
+  );
   // const { filters, set, clear } = useSortFilter('');
 
   useEffect(() => {
@@ -27,8 +29,8 @@ const Filter = ({ selected }) => {
         onChange={(e) => setSelectedOption(e.target.value)}
         onBlur={(e) => setSelectedOption(e.target.value)}
       >
-        <option id="1">{FilterOptions.Dc}</option>
-        <option id="2">{FilterOptions.De}</option>
+        <option id="1">{FilterOptions.DateCreated}</option>
+        <option id="2">{FilterOptions.DateEdited}</option>
       </select>
     </div>
   );

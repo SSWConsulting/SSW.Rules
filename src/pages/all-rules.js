@@ -1,75 +1,73 @@
-import Filter, { FilterOptions } from '../components/filter';
+import Filter, { FilterOptions } from '../components/filter/filter';
 import React, { useEffect, useState } from 'react';
-import {
-  faSortAmountDown,
-  faSortAmountUp,
-} from '@fortawesome/free-solid-svg-icons';
 
+import AllRulesContent from '../components/all-rules-content/allRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'gatsby';
 import SideBar from '../components/side-bar/side-bar';
-import { formatDistanceToNow } from 'date-fns';
 import { graphql } from 'gatsby';
-import locale from 'date-fns/locale/en-AU';
-import queryString from 'query-string';
+import qs from 'query-string';
 
 const AllRules = ({ data }) => {
   const [filter, setFilter] = useState();
-  const [history, setHistory] = useState(data.allHistoryJson.edges);
-  const [rules, setRules] = useState(data.allMarkdownRemark.nodes);
   const [notFound, setNotFound] = useState(false);
   const [filterTitle, setFilterTitle] = useState('Results');
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
 
-  const qs = queryString.parse(location.search, { parseNumbers: true });
-  const qsSize = qs.size ? (qs.size > 100 ? 100 : qs.size) : 10;
+  const history = data.allHistoryJson.edges;
+  const rules = data.allMarkdownRemark.nodes;
+
+  const queryStringSearch = qs.parse(location.search, {
+    parseNumbers: true,
+  });
+
+  const queryStringRulesListSize = (() => {
+    if (!queryStringSearch.size) {
+      return 10;
+    } else {
+      return queryStringSearch.size > 100 ? 100 : queryStringSearch.size;
+    }
+  })();
 
   useEffect(() => {
-    filterBySort(filter);
+    filterAndSort(filter);
   }, [filter, isAscending]);
 
-  const filterBySort = (_filter) => {
-    if (!_filter || _filter?.length === 0) {
-      return;
-    }
-
-    setFilteredItems({});
+  const filterAndValidateRules = async () => {
     let count = 0;
-    const foundRules = rules.map((item) => {
-      //Todo(Jack): Depending on the speed - optimise this find
+    const foundRules = await rules.map((item) => {
+      //TODO: Depending on the speed - optimise this find
       let findRule = history.find(
         (r) => sanitizeName(r) === sanitizeName(item.fields.slug, true)
       );
 
-      //Return if a rule isn't found in history.json or if its archived
-      if (!findRule || item.frontmatter.archivedreason || count >= qsSize)
+      //Return if a rule isn't found in history.json,if its archived or if we have reached the count
+      if (
+        !findRule ||
+        item.frontmatter.archivedreason ||
+        count >= queryStringRulesListSize
+      ) {
         return;
+      }
 
       count++;
       return { item: item, file: findRule };
     });
 
-    //Remove undefined
-    const filteredRules = foundRules.filter((i) => i !== undefined);
+    //Remove undefined and Return results
+    return foundRules.filter((i) => i !== undefined);
+  };
 
-    if (filteredRules.length === 0) {
-      setNotFound(true);
-      return;
-    } else {
-      setNotFound(false);
-    }
-
+  const sort = (_filter, filteredRules) => {
     switch (_filter) {
-      case FilterOptions.Dc:
+      case FilterOptions.DateCreated:
         filteredRules.sort((a, b) => {
           if (a.file.node.created < b.file.node.created) return 1;
           if (a.file.node.created > b.file.node.created) return -1;
           return 0;
         });
         break;
-      case FilterOptions.De:
+      case FilterOptions.DateEdited:
         filteredRules.sort((a, b) => {
           if (a.file.node.lastUpdated < b.file.node.lastUpdated) return 1;
           if (a.file.node.lastUpdated > b.file.node.lastUpdated) return -1;
@@ -81,16 +79,31 @@ const AllRules = ({ data }) => {
     if (!isAscending) {
       filteredRules.reverse();
     }
+  };
+
+  const filterAndSort = async (_filter) => {
+    if (!_filter) {
+      return;
+    }
+
+    const filteredRules = await filterAndValidateRules();
+
+    if (filteredRules.count === 0) {
+      setNotFound(true);
+      return;
+    } else {
+      setNotFound(false);
+    }
+
+    sort(_filter, filteredRules);
 
     setFilteredItems({ list: filteredRules, filter: _filter });
   };
 
-  const sanitizeName = (file, slug) => {
-    const name = slug
+  const sanitizeName = (file, slug) =>
+    slug
       ? file.slice(1, file.length - 6)
       : file.node.file.slice(0, file.node.file.length - 8);
-    return name;
-  };
 
   return (
     <div className="w-full">
@@ -121,123 +134,6 @@ const AllRules = ({ data }) => {
         </div>
       </div>
     </div>
-  );
-};
-
-const Heading = ({ title, children, isAscending, setIsAscending }) => {
-  return (
-    <>
-      <h6 className={'top-category-header px-4 py-2 flex rounded-t'}>
-        <button
-          onClick={() => setIsAscending(!isAscending)}
-          className="w-full text-left"
-        >
-          {title}{' '}
-          <span className="number">
-            <p
-              style={{
-                textTransform: 'none',
-                display: 'inline-block',
-              }}
-            ></p>
-          </span>
-          <span className="collapse-icon">
-            <FontAwesomeIcon
-              icon={isAscending ? faSortAmountUp : faSortAmountDown}
-            />
-          </span>
-        </button>
-      </h6>
-      <ol className={'pt-3 px-4 py-2 block'}>{children}</ol>
-    </>
-  );
-};
-
-const AllRulesContent = ({
-  filteredItems,
-  title,
-  notFound,
-  isAscending,
-  setIsAscending,
-}) => {
-  const formatDistanceLocale = {
-    lessThanXSeconds: '{{count}} sec',
-    xSeconds: '{{count}} sec',
-    halfAMinute: '30s',
-    lessThanXMinutes: '{{count}} min',
-    xMinutes: '{{count}} min',
-    aboutXHours: '{{count}} hour',
-    xHours: '{{count}} hour',
-    xDays: '{{count}} day',
-    aboutXWeeks: '{{count}} week',
-    xWeeks: '{{count}} week',
-    aboutXMonths: '{{count}} month',
-    xMonths: '{{count}} month',
-    aboutXYears: '{{count}} year',
-    xYears: '{{count}} year',
-    overXYears: '{{count}} year',
-    almostXYears: '{{count}} year',
-  };
-
-  const formatDistance = (token, count, options) => {
-    options = options || {};
-
-    const result = formatDistanceLocale[token].replace('{{count}}', count);
-
-    if (options.addSuffix) {
-      if (count > 1) {
-        return result + 's';
-      }
-    }
-
-    return result;
-  };
-
-  return (
-    <section className="mb-5 relative">
-      <Heading
-        title={title}
-        isAscending={isAscending}
-        setIsAscending={setIsAscending}
-      >
-        {!notFound ? (
-          filteredItems.list.map((item, idx) => {
-            return (
-              <div key={idx} className="cat-grid-container">
-                <div className="cat-rule-num">{idx + 1}.</div>
-                <div className="cat-rule-link">
-                  <Link to={`${item.item.fields.slug}`}>
-                    {item.item.frontmatter.title}
-                  </Link>
-                </div>
-                <span className="block all-rules-time">
-                  {filteredItems.filter === FilterOptions.De
-                    ? formatDistanceToNow(
-                        new Date(item.file.node.lastUpdated),
-                        {
-                          locale: {
-                            ...locale,
-                            formatDistance,
-                          },
-                          addSuffix: true,
-                        }
-                      )
-                    : formatDistanceToNow(new Date(item.file.node.created), {
-                        locale: {
-                          ...locale,
-                          formatDistance,
-                        },
-                        addSuffix: true,
-                      })}
-                </span>
-              </div>
-            );
-          })
-        ) : (
-          <div>No Results...</div>
-        )}
-      </Heading>
-    </section>
   );
 };
 

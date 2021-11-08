@@ -29,6 +29,9 @@ const SideBar = ({ ruleTotalNumber }) => {
         </div>
       </section>
 
+      <section id="widget">
+        <Widget token={process.env.GITHUB_API_PAT} />
+      </section>
       <section>
         <h4>Why all these rules?</h4>
         <p>
@@ -43,7 +46,6 @@ const SideBar = ({ ruleTotalNumber }) => {
           , published in CoDe Magazine.
         </p>
       </section>
-
       <section>
         <h4>Help and improve our rules</h4>
         <div className="testimonial text-center rounded p-3">
@@ -73,6 +75,9 @@ const SideBar = ({ ruleTotalNumber }) => {
         </div>
       </section>
       <section>
+        <Contact />
+      </section>
+      <section>
         <h4>About SSW</h4>
         <p>
           SSW Consulting has over 25 years of experience developing awesome
@@ -82,12 +87,6 @@ const SideBar = ({ ruleTotalNumber }) => {
           have delivered the best in the business to more than 1,000 clients in
           15 countries.
         </p>
-      </section>
-      <section>
-        <Contact />
-      </section>
-      <section id="widget">
-        <Widget token={process.env.GITHUB_API_PAT} />
       </section>
       <section>
         <h4>Join the conversation</h4>

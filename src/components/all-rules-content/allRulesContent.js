@@ -1,10 +1,6 @@
-import {
-  faSortAmountDown,
-  faSortAmountUp,
-} from '@fortawesome/free-solid-svg-icons';
+import { bool, func, object, objectOf, string } from 'prop-types';
 
 import { FilterOptions } from '../filter/filter';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Heading from '../heading/heading';
 import { Link } from 'gatsby';
 import React from 'react';
@@ -97,3 +93,12 @@ const AllRulesContent = ({
 };
 
 export default AllRulesContent;
+
+AllRulesContent.propTypes = {
+  filteredItems: object,
+  title: string,
+  notFound: bool,
+  isAscending: bool,
+  setIsAscending: func,
+  item: objectOf(Object),
+};

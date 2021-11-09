@@ -5,15 +5,16 @@ import AllRulesContent from '../components/all-rules-content/allRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import SideBar from '../components/side-bar/side-bar';
 import { graphql } from 'gatsby';
+import { objectOf } from 'prop-types';
 import qs from 'query-string';
 
 const AllRules = ({ data }) => {
   const [filter, setFilter] = useState();
   const [notFound, setNotFound] = useState(false);
-  const [filterTitle, setFilterTitle] = useState('Results');
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
 
+  const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
   const rules = data.allMarkdownRemark.nodes;
 
@@ -165,3 +166,7 @@ export const pageQuery = graphql`
 `;
 
 export default AllRules;
+
+AllRules.propTypes = {
+  data: objectOf(Object),
+};

@@ -1,8 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSortAmountDown } from '@fortawesome/free-solid-svg-icons';
-import useSortFilter from '../../hooks/useSoftFilter';
+import { func } from 'prop-types';
 
 export const FilterOptions = {
   DateCreated: 'Date Created',
@@ -13,7 +11,6 @@ const Filter = ({ selected }) => {
   const [selectedOption, setSelectedOption] = useState(
     FilterOptions.DateCreated
   );
-  // const { filters, set, clear } = useSortFilter('');
 
   useEffect(() => {
     selected(selectedOption);
@@ -37,3 +34,7 @@ const Filter = ({ selected }) => {
 };
 
 export default Filter;
+
+Filter.propTypes = {
+  selected: func,
+};

@@ -1,3 +1,4 @@
+import { array, bool, func, string } from 'prop-types';
 import {
   faSortAmountDown,
   faSortAmountUp,
@@ -36,3 +37,10 @@ const Heading = ({ title, children, isAscending, setIsAscending }) => {
 };
 
 export default Heading;
+
+Heading.propTypes = {
+  title: string,
+  children: array,
+  isAscending: bool,
+  setIsAscending: func,
+};

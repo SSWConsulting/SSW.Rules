@@ -615,6 +615,10 @@ pre {
   color: #777;
 }
 
+ul {
+  text-decoration: underline;
+}
+
 /**
 * Rules CSS
 */
@@ -2487,8 +2491,12 @@ html {
 }
 
 #sidebar a {
-  text-decoration:underline;
+  text-decoration:underline; 
   transition: color 0.25s ease;
+}
+
+#widget a {
+  text-decoration: none;
 }
 
 #sidebar a:hover {
@@ -2519,6 +2527,12 @@ html {
 
 #sidebar .get-started-text {
   padding-top: 10px;
+}
+
+#sidebar .sidebar-spacing {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .rules-counter{text-align:center;}

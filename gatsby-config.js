@@ -81,26 +81,6 @@ module.exports = {
           {
             resolve: 'gatsby-remark-relative-images-v2',
           },
-          // {
-          //   resolve: 'gatsby-remark-images-anywhere',
-          //   options: {
-          //     staticDir: 'static',
-          //     createMarkup: ({
-          //       src,
-          //       srcSet,
-          //       sizes,
-          //       aspectRatio,
-          //       alt,
-          //       base64,
-          //       presentationWidth,
-          //     }) => {
-          //       return `<img src="${src}" class="gatsby-resp-image-image medium-zoom-image"  srcset="${srcSet}" sizes="${sizes}" aspectratio="${aspectRatio}" alt="${alt}" base64="${base64}" presentationwidth="${presentationWidth}"></img`;
-          //     },
-          //     sharpMethod: 'fluid',
-          //     // Additional sharp image arguments: https://www.gatsbyjs.org/packages/gatsby-plugin-sharp/
-          //     // maxWidth: 650,
-          //   },
-          // },
           {
             resolve: 'gatsby-remark-images',
             options: {
@@ -130,7 +110,10 @@ module.exports = {
               },
             },
           },
-
+          {
+            resolve: 'gatsby-remark-figure-caption',
+            options: { figureClassName: 'image' },
+          },
           {
             resolve: 'gatsby-remark-vscode',
             options: {
@@ -140,11 +123,6 @@ module.exports = {
               extensionDataDirectory: path.resolve('extensions'),
               logLevel: 'error',
             },
-          },
-
-          {
-            resolve: 'gatsby-remark-figure-caption',
-            options: { figureClassName: 'image' },
           },
           'gatsby-remark-copy-linked-files',
           'gatsby-remark-fenced-divs',

@@ -18,7 +18,7 @@ const AllRules = ({ data }) => {
   const history = data.allHistoryJson.edges;
   const rules = data.allMarkdownRemark.nodes;
 
-  const queryStringSearch = qs.parse(location.search, {
+  const queryStringSearch = qs.parse(location?.search, {
     parseNumbers: true,
   });
 

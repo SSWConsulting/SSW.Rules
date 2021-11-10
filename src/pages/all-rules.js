@@ -8,7 +8,7 @@ import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
 
-const AllRules = ({ data }) => {
+const AllRules = ({ data, location }) => {
   const [filter, setFilter] = useState();
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
@@ -35,7 +35,6 @@ const AllRules = ({ data }) => {
   }, [filter, isAscending]);
 
   const filterAndValidateRules = async () => {
-    let count = 0;
     const foundRules = await rules.map((item) => {
       //TODO: Depending on the speed - optimise this find
       let findRule = history.find(
@@ -43,15 +42,9 @@ const AllRules = ({ data }) => {
       );
 
       //Return if a rule isn't found in history.json,if its archived or if we have reached the count
-      if (
-        !findRule ||
-        item.frontmatter.archivedreason ||
-        count >= queryStringRulesListSize
-      ) {
+      if (!findRule || item.frontmatter.archivedreason) {
         return;
       }
-
-      count++;
       return { item: item, file: findRule };
     });
 
@@ -98,7 +91,12 @@ const AllRules = ({ data }) => {
 
     sort(_filter, filteredRules);
 
-    setFilteredItems({ list: filteredRules, filter: _filter });
+    //Only show the top x queryStringRulesListSize
+
+    setFilteredItems({
+      list: filteredRules.slice(0, queryStringRulesListSize),
+      filter: _filter,
+    });
   };
 
   const sanitizeName = (file, slug) =>
@@ -169,4 +167,5 @@ export default AllRules;
 
 AllRules.propTypes = {
   data: objectOf(Object),
+  location: objectOf(Object),
 };

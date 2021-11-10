@@ -72,30 +72,11 @@ module.exports = {
       },
     },
     'gatsby-plugin-sharp',
-    'gatsby-transformer-sharp',
     {
       resolve: 'gatsby-transformer-remark',
       options: {
         excerpt_separator: '<!--endintro-->',
         plugins: [
-          {
-            resolve: 'gatsby-remark-relative-images-v2',
-          },
-          {
-            resolve: 'gatsby-remark-images',
-            options: {
-              // It's important to specify the maxWidth (in pixels) of
-              // the content container as this plugin uses this as the
-              // base for generating different widths of each image.
-              linkImagesToOriginal: false,
-              maxWidth: 1232,
-              backgroundColor: 'transparent',
-            },
-          },
-          {
-            resolve: 'gatsby-remark-images-zoom',
-            options: { background: 'rgba(50,50,50,0.9)' },
-          },
           {
             resolve: '@raae/gatsby-remark-oembed',
             options: {
@@ -122,6 +103,26 @@ module.exports = {
               extensions: [],
               extensionDataDirectory: path.resolve('extensions'),
               logLevel: 'error',
+            },
+          },
+          {
+            resolve: 'gatsby-remark-figure-caption',
+            options: { figureClassName: 'image' },
+          },
+          // gatsby-remark-relative-images must
+          // go before gatsby-remark-images
+          {
+            resolve: 'gatsby-remark-relative-images-v2',
+          },
+          {
+            resolve: 'gatsby-remark-images',
+            options: {
+              // It's important to specify the maxWidth (in pixels) of
+              // the content container as this plugin uses this as the
+              // base for generating different widths of each image.
+              //linkImagesToOriginal: false,
+              maxWidth: 1024,
+              backgroundColor: 'transparent',
             },
           },
           'gatsby-remark-copy-linked-files',

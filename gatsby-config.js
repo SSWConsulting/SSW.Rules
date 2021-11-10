@@ -91,7 +91,10 @@ module.exports = {
               },
             },
           },
-
+          {
+            resolve: 'gatsby-remark-figure-caption',
+            options: { figureClassName: 'image' },
+          },
           {
             resolve: 'gatsby-remark-vscode',
             options: {
@@ -102,7 +105,6 @@ module.exports = {
               logLevel: 'error',
             },
           },
-
           {
             resolve: 'gatsby-remark-figure-caption',
             options: { figureClassName: 'image' },

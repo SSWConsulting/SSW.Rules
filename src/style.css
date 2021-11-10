@@ -615,10 +615,6 @@ pre {
   color: #777;
 }
 
-ul {
-  text-decoration: underline;
-}
-
 /**
 * Rules CSS
 */
@@ -1625,10 +1621,21 @@ div.greybox {
 }
 
 .tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
-  display: flex;
   position: relative;
   margin: 2px 0;
   height: 2.5rem;
+}
+
+.rule-buttons .tooltip {
+  position: relative;
+  margin: 2px 0;
+  height: 2.5rem;
+  display: flex;
+}
+
+.rule-buttons .tooltiptext {
+  left: -20px;
+  margin-bottom: 1rem;
 }
 
 .tooltip-button {
@@ -1696,8 +1703,7 @@ div.greybox {
   padding: 5px 0;
   border-radius: 6px;
   font-size: small;
-  top: -90%;
-  left: -20px;
+  bottom: 80%;
   position: absolute;
   opacity: 0;
   transition: opacity 0.2s;

@@ -31,13 +31,12 @@ API_BASE_URL=#{API_BASE_URL}
 
 ### Development
 1. Branch off main for your PBI
-2. Run *yarn build* (.env.production is required for this step)
-3. Install the recommended extensions if using VS Code
-4. Do your work
-5. Run the site in development mode by *yarn develop* (.env.development is required for this step)
-6. Commit code and push
-7. Raise a PR
-8. Get it merged!
+2. Install the recommended extensions if using VS Code
+3. Do your work
+4. Run the site in development mode by *yarn develop* (.env.development is required for this step)
+5. Commit code and push
+6. Raise a PR
+7. Get it merged!
 
 ![recommended extensions notification](_docs/img/vs-code-recommended-extensions.png)
 **Figure: VS Code recommended extensions notification**

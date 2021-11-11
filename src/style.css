@@ -1130,6 +1130,7 @@ blockquote p:before {
 
 .rule-content img {
   max-width: 100%;
+  width: auto !important;
   border: 12px solid #eee;
   outline: 1px solid #ccc;
 }

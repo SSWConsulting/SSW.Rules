@@ -10,8 +10,6 @@ import TopCategory from '../components/top-category/top-category';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { pathPrefix } from '../../site-config';
 
-// import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
-
 config.autoAddCss = false;
 
 const Index = ({ data }) => {

@@ -63,7 +63,7 @@ const Index = ({ data }) => {
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
                   className="col-span-2 md:col-span-1"
                 >
-                  <FontAwesomeIcon icon={faPause} /> Unmitigated rules
+                  <FontAwesomeIcon icon={faPause} /> Unmigrated rules
                 </a>
               </div>
 

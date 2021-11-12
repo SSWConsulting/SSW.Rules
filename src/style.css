@@ -153,6 +153,10 @@ footer {
   line-height: 25px;
 }
 
+.rules-counter {
+  margin-bottom: 16px;
+}
+
 #youtube-icon {
   background-color: #b31217;
 }

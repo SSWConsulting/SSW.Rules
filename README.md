@@ -43,6 +43,8 @@ API_BASE_URL=#{API_BASE_URL}
 
 ### Definition of Done
 
+- Recommended extensions have been installed if using VS Code
+- Have run `yarn lint` and have no warnings/errors 
 - Code Compiles
 - Check the Acceptance Criteria.
 - Code is squash-merged to main via a pull request that was approved by a 2nd developer.

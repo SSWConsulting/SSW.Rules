@@ -153,10 +153,6 @@ footer {
   line-height: 25px;
 }
 
-.rules-counter {
-  margin-bottom: 16px;
-}
-
 #youtube-icon {
   background-color: #b31217;
 }
@@ -2490,10 +2486,6 @@ html {
 
 #sidebar {
   text-align: center;
-}
-
-#sidebar #widget a{
-  text-decoration: none;
 }
 
 #sidebar h4 {

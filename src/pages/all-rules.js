@@ -7,6 +7,7 @@ import SideBar from '../components/side-bar/side-bar';
 import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
+import { sanitizeName } from '../helpers/sanitizeName';
 
 const AllRules = ({ data, location }) => {
   const [filter, setFilter] = useState();
@@ -98,11 +99,6 @@ const AllRules = ({ data, location }) => {
       filter: _filter,
     });
   };
-
-  const sanitizeName = (file, slug) =>
-    slug
-      ? file.slice(1, file.length - 6)
-      : file.node.file.slice(0, file.node.file.length - 8);
 
   return (
     <div className="w-full">

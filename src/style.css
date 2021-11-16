@@ -823,8 +823,12 @@ h6.top-category-header a:hover {
 
 .cat-grid-container {
   display: grid;
-  grid-template-columns: 2rem auto 3rem;
+  grid-template-columns: 2rem auto 5rem;
   margin-bottom: 1rem;
+}
+
+.cat-grid-container span {
+  text-align: right;
 }
 
 .cat-rule-link {
@@ -833,6 +837,10 @@ h6.top-category-header a:hover {
 
 .cat-rule-count {
   padding-left: 2rem;
+  color: #ccc;
+}
+
+.all-rules-time {
   color: #ccc;
 }
 
@@ -953,9 +961,6 @@ blockquote p:before {
   margin-bottom: 1rem;
 }
 
-.old-rules-link {
-  padding-left: 1rem;
-}
 
 /* Category List
 -------------------------------------------------- */

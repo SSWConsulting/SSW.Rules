@@ -1,13 +1,13 @@
-import React from 'react';
-import { StaticQuery, graphql } from 'gatsby';
-import PropTypes from 'prop-types';
-import { config } from '@fortawesome/fontawesome-svg-core';
-// import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
-import { faArchive, faPause } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import TopCategory from '../components/top-category/top-category';
+import { Link, StaticQuery, graphql } from 'gatsby';
+import { faArchive, faPause, faStar } from '@fortawesome/free-solid-svg-icons';
+
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
+import React from 'react';
 import SideBar from '../components/side-bar/side-bar';
+import TopCategory from '../components/top-category/top-category';
+import { config } from '@fortawesome/fontawesome-svg-core';
 import { pathPrefix } from '../../site-config';
 
 config.autoAddCss = false;
@@ -52,17 +52,21 @@ const Index = ({ data }) => {
               })}
             </div>
             <section className="pb-8">
-              <p>
+              <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-items-start gap-4 md:gap-0 text-center md:text-left">
+                <Link to={`${pathPrefix}/all-rules?size=10`}>
+                  <FontAwesomeIcon icon={faStar} /> All rules
+                </Link>
                 <a href={`${pathPrefix}/archived`}>
-                  <FontAwesomeIcon icon={faArchive} /> Show archived rules
+                  <FontAwesomeIcon icon={faArchive} /> Archived rules
                 </a>
                 <a
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
-                  className="old-rules-link"
+                  className="col-span-2 md:col-span-1"
                 >
-                  <FontAwesomeIcon icon={faPause} /> Show unmigrated rules
+                  <FontAwesomeIcon icon={faPause} /> Unmigrated rules
                 </a>
-              </p>
+              </div>
+
               {/* This like has been commented out as this page doesn't exisit.*/}
               {/* TODO: Create /out-of-dates page */}
               {/* <p>

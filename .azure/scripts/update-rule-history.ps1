@@ -8,6 +8,9 @@ param (
 
 cd SSW.Rules.Content/
 
+#Step 0: Prep the Repo for git log
+git commit-graph write --reachable --changed-paths
+
 #Step 1: GetHistorySyncCommitHash - Retrieve CommitHash from AzureFunction
 $Uri = $AzFunctionBaseUrl + 'GetHistorySyncCommitHash'
 $Headers = @{'x-functions-key' = $GetHistorySyncCommitHashKey}
@@ -40,13 +43,21 @@ $historyArray | Foreach-Object {
     $fileArray | Where-Object {$_ -Match "^*.md" } | Foreach-Object {
         if(!$filesProcessed.ContainsKey($_))
         {
+            $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae" --date=iso-strict -- $_
+            $createdDetails = $createdRecord -split "<LINE>"
+
             $filesProcessed.Add($_, 0)
             $historyFileArray += @{
                 file = $($_)
                 lastUpdated = $lastUpdated
                 lastUpdatedBy = $lastUpdatedBy
                 lastUpdatedByEmail = $lastUpdatedByEmail
+                created = $createdDetails[0]
+                createdBy = $createdDetails[1]
+                createdByEmail = $createdDetails[2]
             }
+
+            echo $_
         }
     }
 }

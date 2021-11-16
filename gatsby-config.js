@@ -54,7 +54,7 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-source-git',
+      resolve: 'gatsby-source-filesystem',
       options: {
         name: 'history',
         path: `${__dirname}/history.json`,

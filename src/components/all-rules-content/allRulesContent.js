@@ -6,6 +6,7 @@ import { Link } from 'gatsby';
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import locale from 'date-fns/locale/en-AU';
+import { sanitizeName } from '../../helpers/sanitizeName';
 
 const AllRulesContent = ({
   filteredItems,
@@ -76,7 +77,7 @@ const AllRulesContent = ({
               <div key={idx} className="cat-grid-container">
                 <div className="cat-rule-num">{idx + 1}.</div>
                 <div className="cat-rule-link">
-                  <Link to={`${item.item.fields.slug}`}>
+                  <Link to={`/${sanitizeName(item.item.fields.slug, true)}`}>
                     {item.item.frontmatter.title}
                   </Link>
                 </div>

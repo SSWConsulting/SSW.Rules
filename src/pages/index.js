@@ -8,7 +8,6 @@ import React from 'react';
 import SideBar from '../components/side-bar/side-bar';
 import TopCategory from '../components/top-category/top-category';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import { pathPrefix } from '../../site-config';
 
 config.autoAddCss = false;
 
@@ -53,12 +52,12 @@ const Index = ({ data }) => {
             </div>
             <section className="pb-8">
               <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-items-start gap-4 md:gap-0 text-center md:text-left">
-                <Link to={`${pathPrefix}/all-rules?size=10`}>
+                <Link to={'/all-rules?size=10'}>
                   <FontAwesomeIcon icon={faStar} /> All rules
                 </Link>
-                <a href={`${pathPrefix}/archived`}>
+                <Link to={'/archived'}>
                   <FontAwesomeIcon icon={faArchive} /> Archived rules
-                </a>
+                </Link>
                 <a
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
                   className="col-span-2 md:col-span-1"
@@ -66,15 +65,6 @@ const Index = ({ data }) => {
                   <FontAwesomeIcon icon={faPause} /> Unmigrated rules
                 </a>
               </div>
-
-              {/* This like has been commented out as this page doesn't exisit.*/}
-              {/* TODO: Create /out-of-dates page */}
-              {/* <p>
-                <a href="/out-of-dates">
-                  <FontAwesomeIcon icon={faFlag} /> Show rules flagged as out of
-                  date
-                </a>
-              </p> */}
             </section>
           </div>
 

@@ -8,7 +8,6 @@ import React from 'react';
 import SideBar from '../components/side-bar/side-bar';
 import TopCategory from '../components/top-category/top-category';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import { pathPrefix } from '../../site-config';
 
 config.autoAddCss = false;
 
@@ -53,10 +52,10 @@ const Index = ({ data }) => {
             </div>
             <section className="pb-8">
               <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-items-start gap-4 md:gap-0 text-center md:text-left">
-                <Link to={`/all-rules?size=10`}>
+                <Link to={'/all-rules?size=10'}>
                   <FontAwesomeIcon icon={faStar} /> All rules
                 </Link>
-                <Link to={`/archived`}>
+                <Link to={'/archived'}>
                   <FontAwesomeIcon icon={faArchive} /> Archived rules
                 </Link>
                 <a

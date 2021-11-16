@@ -73,7 +73,7 @@
     "react-modal": "^3.14.4",
     "react-number-format": "^4.8.0",
     "react-pose": "^4.0.10",
-    "rehype-react": "^6.2.1",
+    "rehype-react": "^7.0.3",
     "sharp": "^0.29.3",
     "ssw.rules.widget": "^1.0.10",
     "svg-react-loader": "^0.4.6",

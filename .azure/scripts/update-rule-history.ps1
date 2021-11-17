@@ -6,6 +6,8 @@ param (
     [string]$endCommitHash = "HEAD"
 )
 
+$ErrorActionPreference = 'Stop'
+
 cd SSW.Rules.Content/
 
 #Step 0: Prep the Repo for git log
@@ -67,14 +69,18 @@ $historyFileContents = ConvertTo-Json $historyFileArray
 #Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
 $Uri = $AzFunctionBaseUrl + 'UpdateRuleHistory'
 $Headers = @{'x-functions-key' = $UpdateRuleHistoryKey}
-$Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $historyFileContents -Headers $Headers
+$Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $historyFileContents -Headers $Headers -ContentType 'application/json; charset=utf-8'
 
-#Step 4: UpdateHistorySyncCommitHash - Update Commit Hash with AzureFunction
-$Uri = $AzFunctionBaseUrl + 'UpdateHistorySyncCommitHash'
-$Headers = @{'x-functions-key' = $UpdateHistorySyncCommitHashKey}
-$Body = @{
-    commitHash  = $commitSyncHash
+if(![string]::IsNullOrWhiteSpace($commitSyncHash))
+{
+    #Step 4: UpdateHistorySyncCommitHash - Update Commit Hash with AzureFunction
+    $Uri = $AzFunctionBaseUrl + 'UpdateHistorySyncCommitHash'
+    $Headers = @{'x-functions-key' = $UpdateHistorySyncCommitHashKey}
+    $Body = @{
+        commitHash  = $commitSyncHash
+    }
+    $Result = Invoke-WebRequest -Uri $Uri -Method Post -Body $Body -Headers $Headers
 }
-$Result = Invoke-WebRequest -Uri $Uri -Method Post -Body $Body -Headers $Headers
 
 echo $historyFileContents
+echo $commitSyncHash

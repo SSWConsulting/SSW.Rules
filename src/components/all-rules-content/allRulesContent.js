@@ -64,6 +64,11 @@ const AllRulesContent = ({
     </span>
   );
 
+  const sanitizeRule = (item) => {
+    let rule = sanitizeName(item, true);
+    return rule.slice(6, rule.length);
+  };
+
   return (
     <section className="mb-5 relative">
       <Heading
@@ -77,7 +82,7 @@ const AllRulesContent = ({
               <div key={idx} className="cat-grid-container">
                 <div className="cat-rule-num">{idx + 1}.</div>
                 <div className="cat-rule-link">
-                  <Link to={`/${sanitizeName(item.item.fields.slug, true)}`}>
+                  <Link to={`/${sanitizeRule(item.item.fields.slug)}`}>
                     {item.item.frontmatter.title}
                   </Link>
                 </div>

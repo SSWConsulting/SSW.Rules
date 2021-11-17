@@ -69,7 +69,7 @@ $historyFileContents = ConvertTo-Json $historyFileArray
 #Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
 $Uri = $AzFunctionBaseUrl + 'UpdateRuleHistory'
 $Headers = @{'x-functions-key' = $UpdateRuleHistoryKey}
-$Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $historyFileContents -Headers $Headers
+$Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $historyFileContents -Headers $Headers -ContentType 'application/json; charset=utf-8'
 
 if(![string]::IsNullOrWhiteSpace($commitSyncHash))
 {

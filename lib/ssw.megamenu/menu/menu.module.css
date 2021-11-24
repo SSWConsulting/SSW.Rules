@@ -43,8 +43,10 @@
 .menuContent {
   display: inline-block;
   float: left;
+  width: 100%;
 }
 .menuMobile {
+  width: 100%;
   float: left;
   position: relative;
 }

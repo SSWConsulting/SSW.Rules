@@ -54,14 +54,10 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-source-git',
+      resolve: 'gatsby-source-filesystem',
       options: {
         name: 'history',
-        remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
-        // Optionally supply a branch. If none supplied, you'll get the default branch.
-        branch: process.env.CONTENT_BRANCH,
-        // Tailor which files get imported eg. import the docs folder from a codebase.
-        patterns: ['history.json'],
+        path: `${__dirname}/history.json`,
       },
     },
     {

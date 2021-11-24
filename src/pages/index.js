@@ -1,6 +1,5 @@
-import { StaticQuery, graphql } from 'gatsby';
-import { faArchive, faPause } from '@fortawesome/free-solid-svg-icons';
-
+import { Link, StaticQuery, graphql } from 'gatsby';
+import { faArchive, faPause, faStar } from '@fortawesome/free-solid-svg-icons';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -8,7 +7,6 @@ import React from 'react';
 import SideBar from '../components/side-bar/side-bar';
 import TopCategory from '../components/top-category/top-category';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import { pathPrefix } from '../../site-config';
 
 // import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
 
@@ -54,25 +52,20 @@ const Index = ({ data }) => {
               })}
             </div>
             <section className="pb-8">
-              <p>
-                <a href={`${pathPrefix}/archived`}>
-                  <FontAwesomeIcon icon={faArchive} /> Show archived rules
-                </a>
+              <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-items-start gap-4 md:gap-0 text-center md:text-left">
+                <Link to={'/all-rules?size=10'}>
+                  <FontAwesomeIcon icon={faStar} /> All rules
+                </Link>
+                <Link to={'/archived'}>
+                  <FontAwesomeIcon icon={faArchive} /> Archived rules
+                </Link>
                 <a
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
-                  className="old-rules-link"
+                  className="col-span-2 md:col-span-1"
                 >
-                  <FontAwesomeIcon icon={faPause} /> Show unmigrated rules
+                  <FontAwesomeIcon icon={faPause} /> Unmigrated rules
                 </a>
-              </p>
-              {/* This like has been commented out as this page doesn't exisit.*/}
-              {/* TODO: Create /out-of-dates page */}
-              {/* <p>
-                <a href="/out-of-dates">
-                  <FontAwesomeIcon icon={faFlag} /> Show rules flagged as out of
-                  date
-                </a>
-              </p> */}
+              </div>
             </section>
           </div>
 

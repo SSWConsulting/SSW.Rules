@@ -823,8 +823,12 @@ h6.top-category-header a:hover {
 
 .cat-grid-container {
   display: grid;
-  grid-template-columns: 2rem auto 3rem;
+  grid-template-columns: 2rem auto 5rem;
   margin-bottom: 1rem;
+}
+
+.cat-grid-container span {
+  text-align: right;
 }
 
 .cat-rule-link {
@@ -833,6 +837,10 @@ h6.top-category-header a:hover {
 
 .cat-rule-count {
   padding-left: 2rem;
+  color: #ccc;
+}
+
+.all-rules-time {
   color: #ccc;
 }
 
@@ -953,9 +961,6 @@ blockquote p:before {
   margin-bottom: 1rem;
 }
 
-.old-rules-link {
-  padding-left: 1rem;
-}
 
 /* Category List
 -------------------------------------------------- */
@@ -2900,20 +2905,20 @@ margin-bottom: 1em;
     -------------------------------------------------- */
 
     @media all and (max-width:768px) {
-      .email-template table {
+      .email-template table:first-child {
         border-spacing: 5px;
       }
-      .email-template table tr td {
+      .email-template table:first-child tr td {
         display: table;
-        padding: 5px 9px;
+        padding: 6px 8px;
         width: 100%;
       }
-      .email-template table tr td:first-child {
+      .email-template table:first-child tr td:first-child {
         text-align: left;
-        padding: 5px 0;
+        padding: 5px 0 0;
       }    
       .email-content {
-        margin: 20px 10px;
+        margin: 20px 15px;
       }
     }
 

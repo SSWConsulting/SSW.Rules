@@ -1,14 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import Contact from '../contact/contact';
-import NumberFormat from 'react-number-format';
-import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTwitter } from '@fortawesome/free-brands-svg-icons';
-import { Widget } from 'ssw.rules.widget';
 import GavelIcon from '-!svg-react-loader!../../images/gavel.svg';
+import NumberFormat from 'react-number-format';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Widget } from 'ssw.rules.widget';
+import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
+import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 
-const SideBar = ({ ruleTotalNumber }) => {
+const SideBar = ({ ruleTotalNumber, location }) => {
+  console.log(location);
   return (
     <div>
       <section className="rules-counter">
@@ -30,7 +31,7 @@ const SideBar = ({ ruleTotalNumber }) => {
       </section>
 
       <section id="widget">
-        <Widget token={process.env.GITHUB_API_PAT} />
+        <Widget token={process.env.GITHUB_API_PAT} location={location} />
       </section>
       <section>
         <h4>Why all these rules?</h4>
@@ -107,6 +108,7 @@ const SideBar = ({ ruleTotalNumber }) => {
 
 SideBar.propTypes = {
   ruleTotalNumber: PropTypes.number.isRequired,
+  location: PropTypes.object,
 };
 
 export default SideBar;

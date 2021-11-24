@@ -1,14 +1,16 @@
-import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
-import PropTypes from 'prop-types';
-import { config } from '@fortawesome/fontawesome-svg-core';
-// import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
 import { faArchive, faPause } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import TopCategory from '../components/top-category/top-category';
+
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
+import React from 'react';
 import SideBar from '../components/side-bar/side-bar';
+import TopCategory from '../components/top-category/top-category';
+import { config } from '@fortawesome/fontawesome-svg-core';
 import { pathPrefix } from '../../site-config';
+
+// import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
 
 config.autoAddCss = false;
 
@@ -75,7 +77,10 @@ const Index = ({ data }) => {
           </div>
 
           <div className="w-full lg:w-1/4 px-4" id="sidebar">
-            <SideBar ruleTotalNumber={data.rules.nodes.length} />
+            <SideBar
+              ruleTotalNumber={data.rules.nodes.length}
+              location={location}
+            />
           </div>
         </div>
       </div>

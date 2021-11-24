@@ -9,7 +9,6 @@ import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 const SideBar = ({ ruleTotalNumber, location }) => {
-  console.log(location);
   return (
     <div>
       <section className="rules-counter">

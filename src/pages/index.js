@@ -9,9 +9,11 @@ import SideBar from '../components/side-bar/side-bar';
 import TopCategory from '../components/top-category/top-category';
 import { config } from '@fortawesome/fontawesome-svg-core';
 
+// import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
+
 config.autoAddCss = false;
 
-const Index = ({ data }) => {
+const Index = ({ data, location }) => {
   const notArchivedRules = data.rules.nodes.filter(
     (r) => !r.frontmatter.archivedreason
   );
@@ -69,7 +71,10 @@ const Index = ({ data }) => {
           </div>
 
           <div className="w-full lg:w-1/4 px-4" id="sidebar">
-            <SideBar ruleTotalNumber={data.rules.nodes.length} />
+            <SideBar
+              ruleTotalNumber={data.rules.nodes.length}
+              location={location}
+            />
           </div>
         </div>
       </div>
@@ -79,7 +84,7 @@ const Index = ({ data }) => {
 Index.propTypes = {
   data: PropTypes.object.isRequired,
   pageContext: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
+  location: PropTypes.object,
 };
 
 const IndexWithQuery = (props) => (

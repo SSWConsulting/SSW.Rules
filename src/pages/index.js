@@ -1,5 +1,6 @@
 import { Link, StaticQuery, graphql } from 'gatsby';
 import { faArchive, faPause, faStar } from '@fortawesome/free-solid-svg-icons';
+
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -12,7 +13,7 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 
 config.autoAddCss = false;
 
-const Index = ({ data }) => {
+const Index = ({ data, location }) => {
   const notArchivedRules = data.rules.nodes.filter(
     (r) => !r.frontmatter.archivedreason
   );
@@ -83,7 +84,7 @@ const Index = ({ data }) => {
 Index.propTypes = {
   data: PropTypes.object.isRequired,
   pageContext: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
+  location: PropTypes.object,
 };
 
 const IndexWithQuery = (props) => (

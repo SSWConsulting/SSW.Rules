@@ -3,6 +3,7 @@ const { createFilePath } = require('gatsby-source-filesystem');
 const appInsights = require('applicationinsights');
 const makePluginData = require('./src/helpers/plugin-data');
 const createRewriteMap = require('./src/helpers/createRewriteMap');
+const historyFeedGenerator = require('./src/helpers/historyFeedGenerator');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
@@ -111,6 +112,7 @@ exports.createPages = async ({ graphql, actions }) => {
           }
           frontmatter {
             uri
+            title
             archivedreason
             related
             redirects
@@ -145,6 +147,7 @@ exports.createPages = async ({ graphql, actions }) => {
         uri: node.frontmatter.uri,
         redirects: node.frontmatter.redirects,
         file: `rules/${node.frontmatter.uri}/rule.md`,
+        title: node.frontmatter.title,
       },
     });
   });
@@ -157,7 +160,7 @@ exports.createPages = async ({ graphql, actions }) => {
   });
 };
 
-exports.onPostBuild = async ({ store, pathPrefix }) => {
+exports.onPostBuild = async ({ store, pathPrefix, graphql }) => {
   const { pages } = store.getState();
   const pluginData = makePluginData(store, assetsManifest, pathPrefix);
   const rewrites = Array.from(pages.values())
@@ -178,4 +181,5 @@ exports.onPostBuild = async ({ store, pathPrefix }) => {
     ...new Map(rewrites.map((item) => [item.fromPath, item])).values(),
   ];
   await createRewriteMap.writeRewriteMapsFile(pluginData, allRewritesUnique);
+  await historyFeedGenerator.createHistoryFeed(pluginData, pages, graphql);
 };

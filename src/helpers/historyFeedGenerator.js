@@ -43,8 +43,8 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
         lastUpdatedBy: node.lastUpdatedBy,
         lastUpdatedByEmail: node.lastUpdatedByEmail,
         file: node.file,
-        title: currentPage?.title ?? 'No title',
-        uri: currentPage?.uri ?? 'not-found',
+        title: currentPage?.title,
+        uri: currentPage?.uri,
       };
     })
   );

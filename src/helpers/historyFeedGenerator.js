@@ -51,6 +51,7 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
 
   const data = `[ ${nodes.map((x) => JSON.stringify(x)).join(',')} ]`;
 
+  fs.writeFile('history-feed.json', data);
   return fs.writeFile(FILE_PATH, data);
 };
 

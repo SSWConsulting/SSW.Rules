@@ -4,7 +4,6 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
   const { publicFolder } = pluginData;
   const FILE_PATH = publicFolder('history-feed.json');
   const pageData = Array.from(pages.values()).map((page) => {
-    console.log(page);
     return {
       path: page.path,
       id: page.context.id,

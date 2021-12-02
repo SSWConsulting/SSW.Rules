@@ -153,6 +153,10 @@ footer {
   line-height: 25px;
 }
 
+.rules-counter {
+  margin-bottom: 16px;
+}
+
 #youtube-icon {
   background-color: #b31217;
 }
@@ -2488,6 +2492,10 @@ html {
   text-align: center;
 }
 
+#sidebar #widget a{
+  text-decoration: none;
+}
+
 #sidebar h4 {
   font-weight: 600;
   text-transform: uppercase;
@@ -2897,20 +2905,20 @@ margin-bottom: 1em;
     -------------------------------------------------- */
 
     @media all and (max-width:768px) {
-      .email-template table {
+      .email-template table:first-child {
         border-spacing: 5px;
       }
-      .email-template table tr td {
+      .email-template table:first-child tr td {
         display: table;
-        padding: 5px 9px;
+        padding: 6px 8px;
         width: 100%;
       }
-      .email-template table tr td:first-child {
+      .email-template table:first-child tr td:first-child {
         text-align: left;
-        padding: 5px 0;
+        padding: 5px 0 0;
       }    
       .email-content {
-        margin: 20px 10px;
+        margin: 20px 15px;
       }
     }
 

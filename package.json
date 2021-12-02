@@ -41,6 +41,7 @@
     "gatsby-plugin-react-helmet": "^5.1.0",
     "gatsby-plugin-sharp": "^3.13.0",
     "gatsby-plugin-sitemap": "^5.1.1",
+    "gatsby-remark-autolink-headers": "^5.2.0",
     "gatsby-remark-copy-linked-files": "^5.1.0",
     "gatsby-remark-custom-blocks": "^3.13.0",
     "gatsby-remark-embed-video": "^3.1.1",
@@ -76,7 +77,7 @@
     "react-pose": "^4.0.10",
     "rehype-react": "^7.0.3",
     "sharp": "^0.29.3",
-    "ssw.rules.widget": "^1.0.10",
+    "ssw.rules.widget": "^1.2.0",
     "svg-react-loader": "^0.4.6",
     "webpack-assets-manifest": "5.0.6"
   },

@@ -18,7 +18,7 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
       history: allHistoryJson(
         sort: { fields: lastUpdated, order: DESC }
         filter: { file: { glob: "rules/**" } }
-        limit: 100
+        limit: 10
       ) {
         edges {
           node {
@@ -33,6 +33,7 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
     }
   `);
 
+  //TODO: Fix this code block
   const nodes = Array.from(
     result.data.history.edges.map(({ node }) => {
       var currentPage = pageData.find((x) => node.file == x.file);
@@ -43,8 +44,8 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
         lastUpdatedBy: node.lastUpdatedBy,
         lastUpdatedByEmail: node.lastUpdatedByEmail,
         file: node.file,
-        title: currentPage?.title,
-        uri: currentPage?.uri,
+        title: currentPage?.title ?? 'No title',
+        uri: currentPage?.uri ?? 'not-found',
       };
     })
   );

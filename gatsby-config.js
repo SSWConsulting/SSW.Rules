@@ -10,7 +10,9 @@ module.exports = {
   siteMetadata: {
     ...siteConfig,
   },
-
+  flags: {
+    FUNCTIONS: true,
+  },
   plugins: [
     {
       resolve: 'gatsby-plugin-netlify-cms',

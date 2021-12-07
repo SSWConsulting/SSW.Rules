@@ -32,7 +32,6 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
     }
   `);
 
-  //TODO: Fix this code block
   const nodes = Array.from(
     result.data.history.edges.map(({ node }) => {
       var currentPage = pageData.find((x) => node.file == x.file);

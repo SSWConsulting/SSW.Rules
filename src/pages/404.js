@@ -5,9 +5,9 @@ const NotFound = () => {
   return (
     <div className="not-found-page">
       <div className="not-found-grid">
-        <h1>404</h1>
+        <h1 className="unselectable">404</h1>
         <div className="not-found-message">
-          <h2>
+          <h2 className="unselectable">
             The verdict is in... <p />
             SSW Rules has concluded that this page is <span>NOT FOUND!</span>
           </h2>

@@ -18,7 +18,7 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
       history: allHistoryJson(
         sort: { fields: lastUpdated, order: DESC }
         filter: { file: { glob: "rules/**" } }
-        limit: 10
+        limit: 500
       ) {
         edges {
           node {
@@ -26,7 +26,6 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
             file
             lastUpdated
             lastUpdatedBy
-            lastUpdatedByEmail
           }
         }
       }
@@ -42,7 +41,6 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
         id: node.id,
         lastUpdated: node.lastUpdated,
         lastUpdatedBy: node.lastUpdatedBy,
-        lastUpdatedByEmail: node.lastUpdatedByEmail,
         file: node.file,
         title: currentPage?.title ?? 'No title',
         uri: currentPage?.uri ?? 'not-found',

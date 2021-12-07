@@ -3034,3 +3034,10 @@ margin-bottom: 1em;
 .rule-content tr:nth-child(even) {
   background-color: #F6F8FA;
 }
+
+.unselectable {
+  user-select: none;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+}

@@ -1,5 +1,3 @@
-const fs = require('fs-extra');
-
 export default async function handle(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 

@@ -3,14 +3,27 @@ param (
     [string]$GetHistorySyncCommitHashKey,
     [string]$UpdateRuleHistoryKey,
     [string]$UpdateHistorySyncCommitHashKey,
-    [string]$endCommitHash = "HEAD"
+    [string]$endCommitHash = "HEAD",
+    [string]$gitHubPAT
 )
 
 $ErrorActionPreference = 'Stop'
 
 cd SSW.Rules.Content/
-
 #Step 0: Prep the Repo for git log
+$gitHubRequest = $null
+$test = $null
+$pageNumber = 1
+
+while($null -eq $test){    
+    Write-Output "GitHub Request: $($pageNumber)"
+    $endpoint = "https://api.github.com/repos/SSWConsulting/SSW.Rules.Content/commits?page=$($pageNumber)&per_page=100"
+
+    $gitHubRequest += Invoke-RestMethod -Method 'Get' -Uri $endpoint -Headers @{"Authorization"="Bearer $($gitHubPAT)"}
+    $test = $gitHubRequest | Where-Object sha -eq $syncedCommit
+    ++$pageNumber
+}
+
 git commit-graph write --reachable --changed-paths
 
 #Step 1: GetHistorySyncCommitHash - Retrieve CommitHash from AzureFunction
@@ -23,7 +36,7 @@ $filesProcessed = @{}
 $historyFileArray = @()
 
 #Step 2: Get commits within range 
-$listOfCommits = git log --pretty="<HISTORY_ENTRY>%n%h%n%ad%n%aN%n%ae%n<FILES_CHANGED>" --name-only --date=iso-strict $startCommitHash^..$endCommitHash origin/main --
+$listOfCommits = git log --pretty="<HISTORY_ENTRY>%n%h%n%ad%n%aN%n%ae%n%H%n<FILES_CHANGED>" --name-only --date=iso-strict $startCommitHash^..$endCommitHash origin/main --
 $historyChangeEntry = $listOfCommits -join "<LINE>"
 $historyArray = $historyChangeEntry -split "<HISTORY_ENTRY>"
 
@@ -41,6 +54,7 @@ $historyArray | Foreach-Object {
     $lastUpdated = $userDetails[2]
     $lastUpdatedBy = $userDetails[3]
     $lastUpdatedByEmail = $userDetails[4]
+    $commitHash = $userDetails[5]
     
     $fileArray | Where-Object {$_ -Match "^*.md" } | Foreach-Object {
         if(!$filesProcessed.ContainsKey($_))
@@ -48,11 +62,15 @@ $historyArray | Foreach-Object {
             $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae" --date=iso-strict -- $_
             $createdDetails = $createdRecord -split "<LINE>"
 
+            $commit = $gitHubRequest | Where-Object sha -eq $commitHash
+            $gitHubUser = $commit.author.login
+
             $filesProcessed.Add($_, 0)
             $historyFileArray += @{
                 file = $($_)
                 lastUpdated = $lastUpdated
                 lastUpdatedBy = $lastUpdatedBy
+                lastUpdatedByUsername = $gitHubUser
                 lastUpdatedByEmail = $lastUpdatedByEmail
                 created = $createdDetails[0]
                 createdBy = $createdDetails[1]

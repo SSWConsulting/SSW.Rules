@@ -10,7 +10,16 @@ param (
 $ErrorActionPreference = 'Stop'
 
 cd SSW.Rules.Content/
+
 #Step 0: Prep the Repo for git log
+git commit-graph write --reachable --changed-paths
+
+#Step 1: GetHistorySyncCommitHash - Retrieve CommitHash from AzureFunction and make GitHub Requests
+$Uri = $AzFunctionBaseUrl + 'GetHistorySyncCommitHash'
+$Headers = @{'x-functions-key' = $GetHistorySyncCommitHashKey}
+$Response = Invoke-WebRequest -URI $Uri -Headers $Headers
+$startCommitHash = $Response.Content
+
 $gitHubRequest = $null
 $test = $null
 $pageNumber = 1
@@ -20,17 +29,9 @@ while($null -eq $test){
     $endpoint = "https://api.github.com/repos/SSWConsulting/SSW.Rules.Content/commits?page=$($pageNumber)&per_page=100"
 
     $gitHubRequest += Invoke-RestMethod -Method 'Get' -Uri $endpoint -Headers @{"Authorization"="Bearer $($gitHubPAT)"}
-    $test = $gitHubRequest | Where-Object sha -eq $syncedCommit
+    $test = $gitHubRequest | Where-Object sha -eq $startCommitHash
     ++$pageNumber
 }
-
-git commit-graph write --reachable --changed-paths
-
-#Step 1: GetHistorySyncCommitHash - Retrieve CommitHash from AzureFunction
-$Uri = $AzFunctionBaseUrl + 'GetHistorySyncCommitHash'
-$Headers = @{'x-functions-key' = $GetHistorySyncCommitHashKey}
-$Response = Invoke-WebRequest -URI $Uri -Headers $Headers
-$startCommitHash = $Response.Content
 
 $filesProcessed = @{}
 $historyFileArray = @()

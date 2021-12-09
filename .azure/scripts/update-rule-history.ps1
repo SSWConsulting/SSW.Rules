@@ -48,17 +48,27 @@ $historyArray | Foreach-Object {
             $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae" --date=iso-strict -- $_
             $createdDetails = $createdRecord -split "<LINE>"
 
+            $created = $createdDetails[0]
+            $createdBy = $createdDetails[1]
+            $createdByEmail = $createdDetails[2]
+
+            if($null -eq $createdRecord){
+                $created = $lastUpdated
+                $createdBy = $lastUpdatedBy
+                $createdByEmail = $lastUpdatedByEmail
+            }
+
             $filesProcessed.Add($_, 0)
             $historyFileArray += @{
                 file = $($_)
                 lastUpdated = $lastUpdated
                 lastUpdatedBy = $lastUpdatedBy
+                lastUpdatedByUsername = $gitHubUser
                 lastUpdatedByEmail = $lastUpdatedByEmail
-                created = $createdDetails[0]
-                createdBy = $createdDetails[1]
-                createdByEmail = $createdDetails[2]
+                created = $created
+                createdBy = $createdBy
+                createdByEmail = $createdByEmail
             }
-
             echo $_
         }
     }

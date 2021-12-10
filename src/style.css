@@ -271,6 +271,30 @@ footer {
   margin-right: auto;
 }
 
+@media (min-width: 600px){
+  .breadcrumb-container ul li{
+    display: inline;
+  }
+}
+
+.breadcrumb-category{
+  display: inline;
+  margin-right: 5px;
+}
+
+.breadcrumb-container div ul{
+  text-align: left;
+  margin-top: -3px;
+}
+
+.breadcrumb-container ul li::before{
+  content: ">";
+  padding-right: 5px;
+  padding-left: 5px;
+  opacity: .5; 
+  font-weight: 100;
+}
+
 @media (min-width: 600px) and (max-width: 1279px) {
   header {
     width: 95%;
@@ -334,18 +358,12 @@ footer {
 
 .breadcrumb {
   display: inline-flex;
-  text-align: center;
-  flex-wrap: wrap;
-  align-items: center;
   font-size: 1rem;
+
 
   span {
     opacity: .5; 
     font-weight: 100;
-  }
-
-  ol{
-    display: inline-flex;
   }
 }
 

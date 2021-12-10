@@ -7,28 +7,62 @@ import { parentSiteUrl, siteUrl } from '../../../site-config';
 const Breadcrumbs = (props) => {
   const linkRef = useRef();
   const getCategories = () => {
-    return props.categories.map((cat, i) => {
-      return (
-        <div key={i} className="text-left">
-          <Link ref={linkRef} to={cat.link}>
-            <div className="breadcrumb-content px-1 hover:text-red-600">
-              {cat.title}
-            </div>
-          </Link>
-        </div>
-      );
-    });
+    props.categories.push({ link: '/', title: 'This is another category' });
+    props.categories.push({ link: '/', title: 'This is another category' });
+    return (
+      <div style={{ display: 'inline' }}>
+        {props.categories.map((cat, i) => {
+          return (
+            <>
+              <div key={i} className="breadcrumb-category">
+                <Link
+                  ref={linkRef}
+                  to={cat.link}
+                  className="breadcrumb-content"
+                >
+                  {cat.title}
+                </Link>
+              </div>
+            </>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
     <div className="breadcrumb-container">
       <div className="mx-4 mb-4 breadcrumb">
         <a href={parentSiteUrl}>
-          <img alt={'SSW Consulting'} src={Icon} className="w-4" />
+          <img
+            alt={'SSW Consulting'}
+            src={Icon}
+            className="w-4"
+            style={{ marginTop: '0px' }}
+          />
         </a>
 
-        <span className="pl-1 breadcrumb__separator">&gt;</span>
+        <div>
+          <ul>
+            <li>
+              <Link ref={linkRef} to={siteUrl} className="breadcrumb-content">
+                SSW Rules
+              </Link>
+            </li>
+            {props.categories && <li>{getCategories()}</li>}
+            {props.isArchived ? (
+              <li>Archived</li>
+            ) : props.isCategory ? (
+              <li>{props.categoryTitle}</li>
+            ) : (
+              <li>{props.title}</li>
+            )}
+          </ul>
+        </div>
 
+        {
+          //TODO: Remove Dead Code
+          /* <span className="pl-1 breadcrumb__separator">&gt;</span>
         <Link ref={linkRef} to={siteUrl}>
           <div className="breadcrumb-content px-1 hover:text-red-600">
             SSW Rules
@@ -50,7 +84,8 @@ const Breadcrumbs = (props) => {
             <span className="px-1">{props.isHomePage ? '' : '>'}</span>
             {props.title}
           </div>
-        )}
+        )} */
+        }
       </div>
     </div>
   );

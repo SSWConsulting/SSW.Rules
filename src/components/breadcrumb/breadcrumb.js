@@ -1,11 +1,11 @@
 import './breadcrumb.css';
 
-import React, { useRef } from 'react';
 import { parentSiteUrl, siteUrl } from '../../../site-config';
 
 import Icon from '../../images/icon.png';
 import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 const Breadcrumbs = (props) => {
   const getCategories = () => {

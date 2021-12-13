@@ -23,13 +23,30 @@ $startCommitHash = $Response.Content
 $gitHubRequest = $null
 $test = $null
 $pageNumber = 1
+$found = $false
+$obj = @()
 
 while($null -eq $test){    
     Write-Output "GitHub Request: $($pageNumber)"
     $endpoint = "https://api.github.com/repos/SSWConsulting/SSW.Rules.Content/commits?page=$($pageNumber)&per_page=100"
 
     $gitHubRequest += Invoke-RestMethod -Method 'Get' -Uri $endpoint -Headers @{"Authorization"="Bearer $($gitHubPAT)"}
-    $test = $gitHubRequest | Where-Object sha -eq $startCommitHash
+    
+    Foreach ($res in $gitHubRequest) {
+        $shortSha = $res.sha.substring(0,9) 
+        $user = $res.author.login
+        if($shortSha -eq $startCommitHash)
+        {
+            $found = $true
+        }
+        $obj += New-Object PSObject -Property @{
+            User = $user
+            ShortSha = $shortSha
+        }
+    
+    }
+    $test = $found
+
     ++$pageNumber
 }
 
@@ -63,8 +80,8 @@ $historyArray | Foreach-Object {
             $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae" --date=iso-strict -- $_
             $createdDetails = $createdRecord -split "<LINE>"
 
-            $commit = $gitHubRequest | Where-Object sha -eq $commitHash
-            $gitHubUser = $commit.author.login
+            $commit = $obj | Where-Object ShortSha -eq $commitHash
+            $gitHubUser = $commit.User
 
             $filesProcessed.Add($_, 0)
             $historyFileArray += @{

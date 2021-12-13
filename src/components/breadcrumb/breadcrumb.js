@@ -11,35 +11,47 @@ const Breadcrumbs = (props) => {
   const getCategories = () => {
     return props.categories.map((cat, i) => {
       return (
-        <Link key={i} to={cat.link}>
+        <Link key={i} to={cat.link} className="flex-1 mr-4">
           {cat.title}
         </Link>
       );
     });
   };
 
+  const checkCategory = (prop) => {
+    if (prop.isHomePage) {
+      return <></>;
+    }
+
+    if (props.isCategory) {
+      return <li>{props.categoryTitle}</li>;
+    }
+
+    return <li>{props.title}</li>;
+  };
+
   return (
-    <div className="breadcrumb-container">
-      <Link to={parentSiteUrl}>
-        <img alt="SSW Foursquare" src={Icon} className="w-4" />
+    <div className="w-full m-4 md:mx-12 mx-8 h-full flex min-w-full">
+      <Link to={parentSiteUrl} className="mx-2 h-full">
+        <img alt="SSW Foursquare" src={Icon} className="w-4 mt-1" />
       </Link>
-      <ul className="breadcrumb">
-        <li>
-          <Link to={siteUrl} className="breadcrumb-content">
-            SSW Rules
-          </Link>
-        </li>
-        {props.categories && (
-          <li className="breadcrumb-category">{getCategories()}</li>
-        )}
-        {props.isArchived ? (
-          <li>Archived</li>
-        ) : props.isCategory ? (
-          <li>{props.categoryTitle}</li>
-        ) : (
-          <li>{props.title}</li>
-        )}
-      </ul>
+      <div className="w-full">
+        <ul className="flex flex-col md:flex-row align-middle breadcrumb ">
+          <li className="w-auto flex">
+            <Link to={siteUrl} className="flex-1 align-middle">
+              SSW Rules
+            </Link>
+          </li>
+          {props.categories ? (
+            <li className="flex-initial flex-col align-middle breadcrumb-category">
+              {getCategories()}
+            </li>
+          ) : (
+            <></>
+          )}
+          {props.isArchived ? <li>Archived</li> : checkCategory(props)}
+        </ul>
+      </div>
     </div>
   );
 };

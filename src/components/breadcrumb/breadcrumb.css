@@ -32,7 +32,7 @@
   }
   
   ul.breadcrumb li.breadcrumb-category a:not(:first-child){
-      padding-left:1.5rem;
+      padding-left:1.4rem;
   }
   
   @media only screen and (min-width: 600px) and (max-width: 1279px){

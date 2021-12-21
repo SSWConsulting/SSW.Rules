@@ -1,0 +1,18 @@
+  
+  ul.breadcrumb li:before {
+    list-style: none;
+    content: ">";
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+  
+  ul.breadcrumb li.breadcrumb-category a:after{
+    content:"\a";
+    white-space: pre;
+
+}
+
+ul.breadcrumb li.breadcrumb-category a:not(:first-child){
+  padding-left:1.5rem;
+}
+

@@ -1,56 +1,56 @@
-import React, { useRef } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'gatsby';
-import Icon from '../../images/icon.png';
+import './breadcrumb.css';
+
 import { parentSiteUrl, siteUrl } from '../../../site-config';
 
+import Icon from '../../images/icon.png';
+import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 const Breadcrumbs = (props) => {
-  const linkRef = useRef();
   const getCategories = () => {
     return props.categories.map((cat, i) => {
       return (
-        <div key={i} className="text-left">
-          <Link ref={linkRef} to={cat.link}>
-            <div className="breadcrumb-content px-1 hover:text-red-600">
-              {cat.title}
-            </div>
-          </Link>
-        </div>
+        <Link key={i} to={cat.link} className="flex-1">
+          {cat.title}
+        </Link>
       );
     });
   };
 
+  const checkCategory = (prop) => {
+    if (prop.isHomePage) {
+      return <></>;
+    }
+
+    if (props.isCategory) {
+      return <li className="mr-8">{props.categoryTitle}</li>;
+    }
+
+    return <li className="mr-8">{props.title}</li>;
+  };
+
   return (
-    <div className="breadcrumb-container">
-      <div className="mx-4 mb-4 breadcrumb">
-        <a href={parentSiteUrl}>
-          <img alt={'SSW Consulting'} src={Icon} className="w-4" />
-        </a>
-
-        <span className="pl-1 breadcrumb__separator">&gt;</span>
-
-        <Link ref={linkRef} to={siteUrl}>
-          <div className="breadcrumb-content px-1 hover:text-red-600">
-            SSW Rules
-          </div>
-        </Link>
-
-        <span className="px-1">
-          {props.isCategory || props.isRule || props.isArchived ? '>' : ''}
-        </span>
-        {props.categories && (
-          <div className="text-left ">{getCategories()}</div>
-        )}
-        {props.isArchived ? (
-          <div className="px-1">Archived</div>
-        ) : props.isCategory ? (
-          <div className="px-1">{props.categoryTitle}</div>
-        ) : (
-          <div>
-            <span className="px-1">{props.isHomePage ? '' : '>'}</span>
-            {props.title}
-          </div>
-        )}
+    <div className="w-full m-4 mx-8 md:mx-2 h-full flex min-w-full">
+      <Link to={parentSiteUrl} className="mx-2 h-full">
+        <img alt="SSW Foursquare" src={Icon} className="w-4 mt-1" />
+      </Link>
+      <div className="w-full">
+        <ul className="flex flex-col md:flex-row align-middle breadcrumb mr-8">
+          <li className="w-auto flex">
+            <Link to={siteUrl} className="flex-1 align-middle">
+              SSW Rules
+            </Link>
+          </li>
+          {props.categories ? (
+            <li className="flex-initial flex-col align-middle breadcrumb-category">
+              {getCategories()}
+            </li>
+          ) : (
+            <></>
+          )}
+          {props.isArchived ? <li>Archived</li> : checkCategory(props)}
+        </ul>
       </div>
     </div>
   );

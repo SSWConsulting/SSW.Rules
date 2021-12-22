@@ -5,7 +5,7 @@ import NumberFormat from 'react-number-format';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Widget } from 'ssw.rules.widget';
-import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
+import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 const SideBar = ({ ruleTotalNumber, location }) => {
@@ -47,8 +47,22 @@ const SideBar = ({ ruleTotalNumber, location }) => {
         </p>
       </section>
       <section>
-        <h4>Help and improve our rules</h4>
         <div className="testimonial text-center rounded p-3">
+          <h4>Help and improve our rules</h4>
+          <blockquote>
+            <FontAwesomeIcon icon={faQuoteLeft} /> Nothing great is easy. The
+            SSW rules are a great resource for developers all around the world.
+            However it’s hard to keep rules current and correct. If you spot a
+            rule that is out of date, please{' '}
+            <a href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/How-to-Edit-Rules">
+              suggest an edit
+            </a>
+            , or if you are cool{' '}
+            <a href="https://twitter.com/adamcogan">
+              <FontAwesomeIcon icon={faTwitter} /> tweet me
+            </a>
+            . <FontAwesomeIcon icon={faQuoteRight} />
+          </blockquote>
           <div className="avatar">
             <img
               className="inline rounded-full"
@@ -56,22 +70,10 @@ const SideBar = ({ ruleTotalNumber, location }) => {
               alt="Adam Cogan"
             />
           </div>
-          <h5>Adam Cogan</h5>
+          <h5>
+            <a href="https://www.ssw.com.au/people/adam-cogan/">Adam Cogan</a>
+          </h5>
           <h6>Chief Software Architect at SSW</h6>
-          <blockquote>
-            <FontAwesomeIcon icon={faQuoteLeft} /> Nothing great is easy. The
-            SSW rules are a great resource for developers all around the world.
-            However it’s hard to keep rules current and correct. If you spot a
-            rule that is out of date, please{' '}
-            <a href="https://www.ssw.com.au/ssw/Company/ContactUs.aspx">
-              contact us
-            </a>
-            , or if you are cool{' '}
-            <a href="https://twitter.com/adamcogan">
-              <FontAwesomeIcon icon={faTwitter} /> tweet me
-            </a>
-            .
-          </blockquote>
         </div>
       </section>
       <section>

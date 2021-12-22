@@ -2465,7 +2465,11 @@ html {
 #sidebar .testimonial blockquote {
   font-style: italic;
   border-left: 0;
-  font-size: small;
+  font-size: smaller;
+}
+
+#sidebar .testimonial h4 {
+  padding-top: 20px;
 }
 
 #sidebar .get-started-icon {

@@ -2979,6 +2979,6 @@ margin-bottom: 1em;
   -ms-user-select: none; /* IE 10+ */
 }
 
-ol.nocount {
+.rule-index ol.nocount {
   list-style: none;  
 }

@@ -56,7 +56,9 @@ const TopCategoryHeader = ({ children, topCategory, categories, rules }) => {
           </span>
         </button>
       </h6>
-      <ol className={`pt-3 px-4 py-2 ${isCollapsed ? 'hidden' : 'block'}`}>
+      <ol
+        className={`pt-3 px-4 py-2 ${isCollapsed ? 'hidden' : 'block'} nocount`}
+      >
         {children}
       </ol>
     </>

@@ -30,7 +30,11 @@ const SideBar = ({ ruleTotalNumber, location }) => {
       </section>
 
       <section id="widget">
-        <Widget token={process.env.GITHUB_API_PAT} location={location} />
+        <Widget
+          token={process.env.GITHUB_API_PAT}
+          location={location}
+          numberOfRules={10}
+        />
       </section>
       <section>
         <h4>Why all these rules?</h4>
@@ -54,11 +58,19 @@ const SideBar = ({ ruleTotalNumber, location }) => {
             SSW rules are a great resource for developers all around the world.
             However it’s hard to keep rules current and correct. If you spot a
             rule that is out of date, please{' '}
-            <a href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/How-to-Edit-Rules">
+            <a
+              href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/How-to-Edit-Rules"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               suggest an edit
             </a>
             , or if you are cool{' '}
-            <a href="https://twitter.com/adamcogan">
+            <a
+              href="https://twitter.com/adamcogan"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <FontAwesomeIcon icon={faTwitter} /> tweet me
             </a>
             . <FontAwesomeIcon icon={faQuoteRight} />
@@ -71,7 +83,13 @@ const SideBar = ({ ruleTotalNumber, location }) => {
             />
           </div>
           <h5>
-            <a href="https://www.ssw.com.au/people/adam-cogan/">Adam Cogan</a>
+            <a
+              href="https://www.ssw.com.au/people/adam-cogan/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Adam Cogan
+            </a>
           </h5>
           <h6>Chief Software Architect at SSW</h6>
         </div>

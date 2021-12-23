@@ -54,11 +54,11 @@ const Archived = ({ data }) => {
               if (cat) {
                 return (
                   <li key={i}>
-                    {cat.frontmatter.title}
+                    <strong>{cat.frontmatter.title}</strong>
                     <span className="d-none d-md-block">
-                      ({getNumberOfRulesForCat(cat)})
+                      {getNumberOfRulesForCat(cat)}
                     </span>
-                    <ul className="pt-2 px-4 py-2">
+                    <ol className="pt-2 px-4 py-2">
                       {archivedRules
                         .filter((r) =>
                           cat.frontmatter.index.includes(r.frontmatter.uri)
@@ -76,7 +76,7 @@ const Archived = ({ data }) => {
                             </li>
                           );
                         })}
-                    </ul>
+                    </ol>
                   </li>
                 );
               }

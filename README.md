@@ -3,7 +3,7 @@
 v2 of the Rules.
 
 This is a Gatsby generated site pulling data from:
-- [SSW Rules Repo](https://github.com/SSWConsulting/SSW.Rules.Content)
+- [SSW Rules Content Repo 📜](https://github.com/SSWConsulting/SSW.Rules.Content)
 
 
 ## Getting Started

@@ -125,7 +125,7 @@ exports.createPages = async ({ graphql, actions }) => {
   const categoryTemplate = require.resolve('./src/templates/category.js');
   const ruleTemplate = require.resolve('./src/templates/rule.js');
 
-  var count = 0;
+  //  var count = 0;
 
   result.data.categories.nodes.forEach((node) => {
     // Find any categories that can't resolve a rule
@@ -146,7 +146,8 @@ exports.createPages = async ({ graphql, actions }) => {
       });
 
       if (match == false) {
-        count++;
+        // count++;
+        // eslint-disable-next-line no-console
         console.log(node.parent.name + ' cannot find rule ' + inCat);
       }
     });
@@ -178,7 +179,8 @@ exports.createPages = async ({ graphql, actions }) => {
       match = true;
     }
     if (match == false) {
-      count++;
+      // count++;
+      // eslint-disable-next-line no-console
       console.log(
         'https://www.ssw.com.au/rules/' +
           node.frontmatter.uri +

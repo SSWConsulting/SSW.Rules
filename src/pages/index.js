@@ -9,28 +9,12 @@ import SideBar from '../components/side-bar/side-bar';
 import TopCategory from '../components/top-category/top-category';
 import { config } from '@fortawesome/fontawesome-svg-core';
 
-// import { faArchive, faFlag } from '@fortawesome/free-solid-svg-icons';
-
 config.autoAddCss = false;
 
 const Index = ({ data, location }) => {
   const notArchivedRules = data.rules.nodes.filter(
     (r) => !r.frontmatter.archivedreason
   );
-
-  const displayTopCategories = (topcategory) => {
-    return (
-      <>
-        <section className="mb-5 relative">
-          <TopCategory
-            topcategory={topcategory}
-            categories={data.categories}
-            rules={notArchivedRules}
-          ></TopCategory>
-        </section>
-      </>
-    );
-  };
 
   return (
     <div className="w-full">
@@ -40,14 +24,22 @@ const Index = ({ data, location }) => {
           <div className="w-full lg:w-3/4 px-4">
             <div className="rule-index no-gutters rounded">
               {data.main.nodes.map((element) => {
-                return element.frontmatter.index.map((category) => {
+                return element.frontmatter.index.map((category, i) => {
                   const cat = data.topCategories.nodes.find(
                     (c) =>
                       c.parent.relativeDirectory.toLowerCase() ===
                       `categories/${category.toLowerCase()}`
                   );
                   if (cat) {
-                    return displayTopCategories(cat);
+                    return (
+                      <section className="mb-5 relative" key={i}>
+                        <TopCategory
+                          topcategory={cat}
+                          categories={data.categories}
+                          rules={notArchivedRules}
+                        ></TopCategory>
+                      </section>
+                    );
                   }
                 });
               })}

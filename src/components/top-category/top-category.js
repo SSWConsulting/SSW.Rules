@@ -29,7 +29,7 @@ const TopCategory = ({ topcategory, categories, rules }) => {
           const cat = findCategoryFromIndexValue(category);
           if (cat) {
             return (
-              <div className="cat-grid-container">
+              <div className="cat-grid-container" key={i}>
                 <div className="cat-rule-num">{i + 1}.</div>
                 <div className="cat-rule-link">
                   <Link ref={linkRef} to={`/${cat.parent.name}`}>

@@ -1358,6 +1358,7 @@ div.greybox {
 
 .acknowledgements h5, .tags h5, .likes h5 {
   margin-top: 2rem!important;
+  margin-bottom: 0.5rem!important;
 }
 
 .rate-heading {

@@ -953,9 +953,15 @@ blockquote p:before {
 }
 
 .rule-content-title h2 {
-  padding: .5rem .75rem;
+  border-left: 2px solid #cc4141;
   margin: 0;
-  border-left: 2px solid #cc4141; 
+  padding: 0.5rem .75rem;
+  margin-bottom: 0rem!important;
+  margin-top: 0rem!important;
+}
+
+.rule-content-title.pl-2 {
+  padding-bottom: 1rem;
 }
 
 .rule-category-top p {
@@ -1348,6 +1354,14 @@ div.greybox {
   /* overflow: auto; */
   text-align: center;
   border-top: 1px solid #f5f5f5;
+}
+
+.acknowledgements h5, .tags h5, .likes h5 {
+  margin-top: 2rem!important;
+}
+
+.rate-heading {
+  padding-right: 1.6rem;
 }
 
 #more .acknowledgements .avatar img {

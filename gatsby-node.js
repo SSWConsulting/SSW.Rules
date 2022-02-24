@@ -126,6 +126,30 @@ exports.createPages = async ({ graphql, actions }) => {
   const ruleTemplate = require.resolve('./src/templates/rule.js');
 
   result.data.categories.nodes.forEach((node) => {
+    // Find any categories that can't resolve a rule
+    node.frontmatter.index.forEach((inCat) => {
+      var match = false;
+
+      result.data.rules.nodes.forEach((rulenode) => {
+        if (rulenode.frontmatter.uri == inCat) {
+          match = true;
+        }
+        if (rulenode.frontmatter.redirects) {
+          rulenode.frontmatter.redirects.forEach((redirect) => {
+            if (redirect == inCat) {
+              match = true;
+            }
+          });
+        }
+      });
+
+      if (match == false) {
+        // eslint-disable-next-line no-console
+        console.log(node.parent.name + ' cannot find rule ' + inCat);
+      }
+    });
+
+    // Create the page for the category
     createPage({
       path: node.parent.name,
       component: categoryTemplate,
@@ -138,6 +162,29 @@ exports.createPages = async ({ graphql, actions }) => {
   });
 
   result.data.rules.nodes.forEach((node) => {
+    // Find any rules missing a category
+    var match = false;
+    if (!node.frontmatter.archivedreason) {
+      result.data.categories.nodes.forEach((catNode) => {
+        catNode.frontmatter.index.forEach((inCat) => {
+          if (node.frontmatter.uri == inCat) {
+            match = true;
+          }
+        });
+      });
+    } else {
+      match = true;
+    }
+    if (match == false) {
+      // eslint-disable-next-line no-console
+      console.log(
+        'https://www.ssw.com.au/rules/' +
+          node.frontmatter.uri +
+          ' is missing a category'
+      );
+    }
+
+    // Create the page for the rule
     createPage({
       path: node.frontmatter.uri,
       component: ruleTemplate,

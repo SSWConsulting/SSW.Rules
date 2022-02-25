@@ -52,28 +52,11 @@ const SideBar = ({ ruleTotalNumber, location }) => {
       </section>
       <section>
         <div className="testimonial text-center rounded p-3">
-          <h4>Help and improve our rules</h4>
+          <h4>Help improve our rules</h4>
           <blockquote>
-            <FontAwesomeIcon icon={faQuoteLeft} /> Nothing great is easy. The
-            SSW rules are a great resource for developers all around the world.
-            However it’s hard to keep rules current and correct. If you spot a
-            rule that is out of date, please{' '}
-            <a
-              href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/How-to-Edit-Rules"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              suggest an edit
-            </a>
-            , or if you are cool{' '}
-            <a
-              href="https://twitter.com/adamcogan"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FontAwesomeIcon icon={faTwitter} /> tweet me
-            </a>
-            . <FontAwesomeIcon icon={faQuoteRight} />
+            <FontAwesomeIcon icon={faQuoteLeft} /> It’s just like Wikipedia, if
+            you think something should be changed. Hit the pencil icon and make
+            an edit! <FontAwesomeIcon icon={faQuoteRight} />
           </blockquote>
           <div className="avatar">
             <img

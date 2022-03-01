@@ -62,7 +62,7 @@ var configJson = {
           },
           {
             name: 'authors',
-            label: 'Authors',
+            label: 'Acknowledgements',
             widget: 'list',
             fields: [
               { name: 'title', label: 'Name' },

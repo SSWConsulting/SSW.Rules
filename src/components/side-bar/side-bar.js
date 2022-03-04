@@ -54,9 +54,9 @@ const SideBar = ({ ruleTotalNumber, location }) => {
         <div className="testimonial text-center rounded p-3">
           <h4>Help improve our rules</h4>
           <blockquote>
-            <FontAwesomeIcon icon={faQuoteLeft} /> It’s just like Wikipedia, if
-            you think something should be changed. Hit the pencil icon and make
-            an edit! <FontAwesomeIcon icon={faQuoteRight} />
+            <FontAwesomeIcon icon={faQuoteLeft} /> The SSW Rules website works just like Wikipedia. If
+            you think something should be changed, hit the pencil icon and make
+            an edit! Or if you are cool <a href="https://twitter.com/adamcogan">tweet me. <FontAwesomeIcon icon={faQuoteRight} />
           </blockquote>
           <div className="avatar">
             <img

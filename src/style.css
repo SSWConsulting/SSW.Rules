@@ -1085,6 +1085,7 @@ blockquote p:before {
   width: auto !important;
   border: 12px solid #eee;
   outline: 1px solid #ccc;
+  background-color: #eee;
 }
 
 .rule-content .acknowledgements img {

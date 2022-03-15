@@ -731,6 +731,10 @@ h6.top-category-header .number {
   letter-spacing: initial;
 }
 
+h6.top-category-header {
+  margin: 0 !important;
+}
+
 .number p {
   text-transform: none;
   display: 'inline-block';

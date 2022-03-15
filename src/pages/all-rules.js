@@ -113,7 +113,7 @@ const AllRules = ({ data, location }) => {
                 <Filter selected={setFilter} />
               </div>
             </span>
-            <div className="rule-index archive no-gutters rounded">
+            <div className="rule-index archive no-gutters rounded mb-12">
               <AllRulesContent
                 filteredItems={filteredItems}
                 title={filterTitle}

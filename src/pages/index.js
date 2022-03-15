@@ -22,7 +22,7 @@ const Index = ({ data, location }) => {
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
-            <div className="rule-index no-gutters rounded">
+            <div className="rule-index no-gutters rounded mb-12">
               {data.main.nodes.map((element) => {
                 return element.frontmatter.index.map((category, i) => {
                   const cat = data.topCategories.nodes.find(

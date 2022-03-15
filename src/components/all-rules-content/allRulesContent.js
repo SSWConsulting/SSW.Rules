@@ -81,7 +81,7 @@ const AllRulesContent = ({
             return (
               <div key={idx} className="cat-grid-container">
                 <div className="cat-rule-num">{idx + 1}.</div>
-                <div className="cat-rule-link">
+                <div className="text-left">
                   <Link to={`/${sanitizeRule(item.item.fields.slug)}`}>
                     {item.item.frontmatter.title}
                   </Link>

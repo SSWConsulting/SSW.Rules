@@ -731,6 +731,10 @@ h6.top-category-header .number {
   letter-spacing: initial;
 }
 
+h6.top-category-header {
+  margin: 0 !important;
+}
+
 .number p {
   text-transform: none;
   display: 'inline-block';
@@ -766,10 +770,6 @@ h6.top-category-header a:hover {
 
 .cat-grid-container span {
   text-align: right;
-}
-
-.cat-rule-link {
-  text-align: left;
 }
 
 .cat-rule-count {
@@ -862,10 +862,6 @@ blockquote p:before {
 
 /* Main Index
 -------------------------------------------------- */
-
-.rule-index {
-  margin-bottom: 3rem;
-}
 
 .rule-index section {
   display: flow-root;

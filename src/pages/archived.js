@@ -100,7 +100,7 @@ const Archived = ({ data }) => {
               />{' '}
               The rules listed below have been archived
             </div>
-            <div className="rule-index archive no-gutters rounded">
+            <div className="rule-index archive no-gutters rounded mb-12">
               {data.main.nodes.map((element) => {
                 return element.frontmatter.index.map((category) => {
                   const cat = topCategoriesWithArchive.find(

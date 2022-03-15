@@ -772,10 +772,6 @@ h6.top-category-header a:hover {
   text-align: right;
 }
 
-.cat-rule-link {
-  text-align: left;
-}
-
 .cat-rule-count {
   padding-left: 2rem;
   color: #ccc;
@@ -866,10 +862,6 @@ blockquote p:before {
 
 /* Main Index
 -------------------------------------------------- */
-
-.rule-index {
-  margin-bottom: 3rem;
-}
 
 .rule-index section {
   display: flow-root;

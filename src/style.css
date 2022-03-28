@@ -23,6 +23,10 @@
   font-weight: normal;
   font-style: normal;
 }
+
+*, ::before, ::after {
+  border-style: none;
+}
  
 html {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif

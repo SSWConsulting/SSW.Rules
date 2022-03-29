@@ -38,7 +38,7 @@ const Header = ({ displayActions }) => {
               >
                 <SSWLogo aria-label="logo" width="113.5" height="75.5" />
               </a>
-              <a href="/">
+              <a href="/rules">
                 <h1 className="title unselectable ml-2">Rules</h1>
               </a>
             </div>

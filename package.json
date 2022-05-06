@@ -8,7 +8,7 @@
     "build:dir": "mkdirp ./public/icons/",
     "build:favicons": "node scripts/favicons",
     "build": "yarn run build:dir && yarn run build:favicons && gatsby build --prefix-paths --log-pages",
-    "build:incremental": "gatsby build --prefix-paths --log-pages",
+    "build:incremental": "gatsby build --prefix-paths --log-pages --max_old_space_size=4096",
     "devbuild": "gatsby clean && yarn run build:dir && yarn run build:favicons && gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",

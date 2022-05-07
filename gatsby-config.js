@@ -10,9 +10,6 @@ module.exports = {
   siteMetadata: {
     ...siteConfig,
   },
-  flags: {
-    PARALLEL_QUERY_RUNNING: true,
-  },
   plugins: [
     {
       resolve: 'gatsby-plugin-netlify-cms',

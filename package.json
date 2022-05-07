@@ -79,8 +79,7 @@
     "sharp": "^0.29.3",
     "ssw.rules.widget": "^1.2.0",
     "svg-react-loader": "^0.4.6",
-    "webpack-assets-manifest": "5.0.6",
-    "lmdb-store": "1.6.14"
+    "webpack-assets-manifest": "5.0.6"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",

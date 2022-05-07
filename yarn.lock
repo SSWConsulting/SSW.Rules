@@ -12892,6 +12892,17 @@
   dependencies:
     "uc.micro" "^1.0.1"
 
+"lmdb-store@1.6.14":
+  "integrity" "sha512-4woZfvfgolMEngjoMJrwePjdLotr3QKGJsDWURlJmKBed5JtE00IfAKo7ryPowl4ksGcs21pcdLkwrPnKomIuA=="
+  "resolved" "https://registry.npmjs.org/lmdb-store/-/lmdb-store-1.6.14.tgz"
+  "version" "1.6.14"
+  dependencies:
+    "msgpackr" "^1.5.0"
+    "nan" "^2.14.2"
+    "node-gyp-build" "^4.2.3"
+    "ordered-binary" "^1.0.0"
+    "weak-lru-cache" "^1.0.0"
+
 "load-bmfont@^1.2.3", "load-bmfont@^1.3.1", "load-bmfont@^1.4.0":
   "integrity" "sha512-8UyQoYmdRDy81Brz6aLAUhfZLwr5zV0L3taTQ4hju7m6biuwiWiJXjPhBJxbUQJA8PrkvJ/7Enqmwk2sM14soA=="
   "resolved" "https://registry.npmjs.org/load-bmfont/-/load-bmfont-1.4.1.tgz"
@@ -14081,6 +14092,32 @@
   "resolved" "https://registry.npmjs.org/ms/-/ms-2.1.1.tgz"
   "version" "2.1.1"
 
+"msgpackr-extract-darwin-arm64@1.1.0":
+  "integrity" "sha512-s1kHoT12tS2cCQOv+Wl3I+/cYNJXBPtwQqGA+dPYoXmchhXiE0Nso+BIfvQ5PxbmAyjj54Q5o7PnLTqVquNfZA=="
+  "resolved" "https://registry.npmjs.org/msgpackr-extract-darwin-arm64/-/msgpackr-extract-darwin-arm64-1.1.0.tgz"
+  "version" "1.1.0"
+
+"msgpackr-extract@^1.1.4":
+  "integrity" "sha512-WQbHvsThprXh+EqZYy+SQFEs7z6bNM7a0vgirwUfwUcphWGT2mdPcpyLCNiRsN6w5q5VKJUMblHY+tNEyceb9Q=="
+  "resolved" "https://registry.npmjs.org/msgpackr-extract/-/msgpackr-extract-1.1.4.tgz"
+  "version" "1.1.4"
+  dependencies:
+    "node-gyp-build-optional-packages" "^4.3.2"
+  optionalDependencies:
+    "msgpackr-extract-darwin-arm64" "1.1.0"
+    "msgpackr-extract-darwin-x64" "1.1.0"
+    "msgpackr-extract-linux-arm" "1.1.0"
+    "msgpackr-extract-linux-arm64" "1.1.0"
+    "msgpackr-extract-linux-x64" "1.1.0"
+    "msgpackr-extract-win32-x64" "1.1.0"
+
+"msgpackr@^1.5.0":
+  "integrity" "sha512-Hsa80i8W4BiObSMHslfnwC+CC1CYHZzoXJZn0+3EvoCEOgt3c5QlXhdcjgFk2aZxMgpV8aUFZqJyQUCIp4UrzA=="
+  "resolved" "https://registry.npmjs.org/msgpackr/-/msgpackr-1.5.7.tgz"
+  "version" "1.5.7"
+  optionalDependencies:
+    "msgpackr-extract" "^1.1.4"
+
 "multer@^1.4.2":
   "integrity" "sha512-xY8pX7V+ybyUpbYMxtjM9KAiD9ixtg5/JkeKUTD6xilfDv0vzzOFcCp4Ljb1UU3tSOM3VTZtKo63OmzOrGi3Cg=="
   "resolved" "https://registry.npmjs.org/multer/-/multer-1.4.2.tgz"
@@ -14113,7 +14150,7 @@
   "resolved" "https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.8.tgz"
   "version" "0.0.8"
 
-"nan@^2.12.1":
+"nan@^2.12.1", "nan@^2.14.2":
   "integrity" "sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ=="
   "resolved" "https://registry.npmjs.org/nan/-/nan-2.15.0.tgz"
   "version" "2.15.0"
@@ -14583,6 +14620,16 @@
   "resolved" "https://registry.npmjs.org/node-forge/-/node-forge-0.10.0.tgz"
   "version" "0.10.0"
 
+"node-gyp-build-optional-packages@^4.3.2":
+  "integrity" "sha512-P5Ep3ISdmwcCkZIaBaQamQtWAG0facC89phWZgi5Z3hBU//J6S48OIvyZWSPPf6yQMklLZiqoosWAZUj7N+esA=="
+  "resolved" "https://registry.npmjs.org/node-gyp-build-optional-packages/-/node-gyp-build-optional-packages-4.3.2.tgz"
+  "version" "4.3.2"
+
+"node-gyp-build@^4.2.3":
+  "integrity" "sha512-amJnQCcgtRVw9SvoebO3BKGESClrfXGCUTX9hSn1OuGQTQBOZmVd0Z0OlecpuRksKvbsUqALE8jls/ErClAPuQ=="
+  "resolved" "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.4.0.tgz"
+  "version" "4.4.0"
+
 "node-int64@^0.4.0":
   "integrity" "sha1-h6kGXNs1XTGC2PlM4RGIuCXGijs="
   "resolved" "https://registry.npmjs.org/node-int64/-/node-int64-0.4.0.tgz"
@@ -15017,6 +15064,11 @@
     "prelude-ls" "^1.2.1"
     "type-check" "^0.4.0"
     "word-wrap" "^1.2.3"
+
+"ordered-binary@^1.0.0":
+  "integrity" "sha512-djRmZoEpOGvIRW7ufsCDHtvcUa18UC9TxnPbHhSVFZHsoyg0dtut1bWtBZ/fmxdPN62oWXrV6adM7NoWU+CneA=="
+  "resolved" "https://registry.npmjs.org/ordered-binary/-/ordered-binary-1.2.5.tgz"
+  "version" "1.2.5"
 
 "original@^1.0.0":
   "integrity" "sha512-hyBVl6iqqUOJ8FqRe+l/gS8H+kKYjrEndd5Pm1MfBtsEKA038HkkdbAl/72EAXGyonD/PFsvmVG+EvcIpliMBg=="
@@ -21890,6 +21942,11 @@
   "version" "1.7.3"
   dependencies:
     "minimalistic-assert" "^1.0.0"
+
+"weak-lru-cache@^1.0.0":
+  "integrity" "sha512-DEAoo25RfSYMuTGc9vPJzZcZullwIqRDSI9LOy+fkCJPi6hykCnfKaXTuPBDuXAUcqHXyOgFtHNp/kB2FjYHbw=="
+  "resolved" "https://registry.npmjs.org/weak-lru-cache/-/weak-lru-cache-1.2.2.tgz"
+  "version" "1.2.2"
 
 "web-namespaces@^1.0.0", "web-namespaces@^1.1.2":
   "integrity" "sha512-wYxSGajtmoP4WxfejAPIr4l0fVh+jeMXZb08wNc0tMg6xsfZXj3cECqIK0G7ZAqUq0PP8WlMDtaOGVBTAWztNw=="

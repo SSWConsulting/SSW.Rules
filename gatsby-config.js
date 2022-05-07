@@ -11,7 +11,7 @@ module.exports = {
     ...siteConfig,
   },
   flags: {
-    PARALLEL_QUERY_RUNNING: true
+    PARALLEL_QUERY_RUNNING: true,
   },
   plugins: [
     {

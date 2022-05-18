@@ -55,13 +55,22 @@ const Head = ({
     <meta content={canonical} name="twitter:url" />
     <link rel="canonical" href={canonical} />
 
-    <meta content={imageUrl || `${siteUrl}/assets/Rules-OpenGraph.jpg`} property="og:image" />
+    <meta
+      content={imageUrl || `${siteUrl}/assets/Rules-OpenGraph.jpg`}
+      property="og:image"
+    />
     <meta content="1024" property="og:image:width" />
     <meta content="512" property="og:image:height" />
-    <meta content={imageUrl || `${siteUrl}/assets/Rules-OpenGraph.jpg`} name="twitter:image" />
+    <meta
+      content={imageUrl || `${siteUrl}/assets/Rules-OpenGraph.jpg`}
+      name="twitter:image"
+    />
     <meta content="1024" name="twitter:image:width" />
     <meta content="512" name="twitter:image:height" />
-    <meta content={imageUrl || `${siteUrl}/assets/Rules-OpenGraph.jpg`} property="og:image" />
+    <meta
+      content={imageUrl || `${siteUrl}/assets/Rules-OpenGraph.jpg`}
+      property="og:image"
+    />
     <meta content="1024" property="og:image:width" />
     <meta content="512" property="og:image:height" />
 

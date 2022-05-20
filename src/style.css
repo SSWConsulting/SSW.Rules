@@ -2995,79 +2995,63 @@ margin-bottom: 1em;
   list-style: none;  
 }
 
-.rule-content a[href$='.pdf']:before {
+.rule-content a[href$='.pdf']:before, 
+.rule-content a[href$='.docx']:before, .rule-content a[href$='.mp3']:before, .rule-content  a[href$='.wav']:before, .rule-content  a[href$='.wma']:before,
+.rule-content a[href$='.xlsx']:before, 
+.rule-content a[href$='.pptx']:before, 
+.rule-content a[href$='.txt']:before, 
+.rule-content a[href$='.mov']:before, .rule-content a[href$='.avi']:before, .rule-content a[href$='.mpg']:before, .rule-content a[href$='.mp4']:before, 
+.rule-content a[href$='.ics']:before, .rule-content a[href$='.vsc']:before, 
+.rule-content a[href$='.zip']:before,
+.rule-content a[href*='mailto:']:before,
+.rule-content a[href*='youtube']:before, .rule-content a[href*='youtu.be']:before{
   content: "\F1C1 ";
   font-family: FontAwesome;
   padding-right: 4px;
   display: inline-block;
+  color: #cc4141;
+}
+
+.rule-content a[href$='.pdf']:before {
+  content: "\F1C1 ";
 }
 
 .rule-content a[href$='.docx']:before {
   content: "\F1C2";
-  font-family: FontAwesome;
-  padding-right: 4px;
-  display: inline-block;
 }
 
 .rule-content a[href$='.mp3']:before, .rule-content  a[href$='.wav']:before, .rule-content  a[href$='.wma']:before {
   content: "\F1C7 ";
-  font-family: FontAwesome;
-  padding-right: 4px;
-  display: inline-block;
 }
 
 .rule-content a[href$='.xlsx']:before {
   content: "\F1C3 ";
-  font-family: FontAwesome;
-  padding-right: 4px;
-  display: inline-block;
 }
 
 .rule-content a[href$='.pptx']:before {
   content: "\F1C4 ";
-  font-family: FontAwesome;
-  padding-right: 4px;
-  display: inline-block;
 }
 
 .rule-content a[href$='.txt']:before {
   content: "\F0F6 ";
-  font-family: FontAwesome;
-  padding-right: 4px;
-  display: inline-block;
 }
 
 .rule-content a[href$='.mov']:before, .rule-content a[href$='.avi']:before, .rule-content a[href$='.mpg']:before, .rule-content a[href$='.mp4']:before {
   content: "\F1C8 ";
-  font-family: FontAwesome;
-  padding-right: 4px;
-  display: inline-block;
 }
 
 .rule-content a[href$='.ics']:before, .rule-content a[href$='.vsc']:before  {
   content: "\F133 ";
-  font-family: FontAwesome;
-  padding-right: 4px;
-  display: inline-block;
 }
 
 .rule-content a[href$='.zip']:before {
   content: "\F1C6 ";
-  font-family: FontAwesome;
-  padding-right: 4px;
-  display: inline-block;
 }
 
 .rule-content a[href*='mailto:']:before {
   content: "\F003 ";
-  font-family: FontAwesome;
-  padding-right: 4px;
-  display: inline-block;
 }
 
 .rule-content a[href*='youtube']:before, .rule-content a[href*='youtu.be']:before {
   content: "\F167 ";
-  font-family: FontAwesome;
-  padding-right: 4px;
-  display: inline-block;
 }

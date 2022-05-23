@@ -3009,49 +3009,59 @@ margin-bottom: 1em;
   font-family: FontAwesome;
   padding-right: 4px;
   display: inline-block;
-  color: #cc4141;
 }
 
 .rule-content a[href$='.pdf']:before {
   content: "\F1C1 ";
+  color:#ff2116;
 }
 
 .rule-content a[href$='.docx']:before {
   content: "\F1C2";
+  color: #185ABD;
 }
 
 .rule-content a[href$='.mp3']:before, .rule-content  a[href$='.wav']:before, .rule-content  a[href$='.wma']:before {
   content: "\F1C7 ";
+  color:#797979;
 }
 
 .rule-content a[href$='.xlsx']:before {
   content: "\F1C3 ";
+  color: #107C41;
 }
 
 .rule-content a[href$='.pptx']:before {
   content: "\F1C4 ";
+  color: #C43E1C;
 }
 
 .rule-content a[href$='.txt']:before {
   content: "\F0F6 ";
+  color:#797979;
 }
 
 .rule-content a[href$='.mov']:before, .rule-content a[href$='.avi']:before, .rule-content a[href$='.mpg']:before, .rule-content a[href$='.mp4']:before {
   content: "\F1C8 ";
+  color:#797979;
 }
 
 .rule-content a[href$='.ics']:before, .rule-content a[href$='.vsc']:before  {
   content: "\F133 ";
+  color: #0072C6;
 }
 
 .rule-content a[href$='.zip']:before {
   content: "\F1C6 ";
+  color: #f4cd49;
 }
 
 .rule-content a[href*='mailto:']:before {
   content: "\F003 ";
+  color: #0072C6;
 }
 
 .rule-content a[href*='youtube']:before, .rule-content a[href*='youtu.be']:before {
   content: "\F167 ";
+  color: #FF0000;
 }

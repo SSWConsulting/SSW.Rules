@@ -76,7 +76,7 @@
     "react-number-format": "^4.8.0",
     "react-pose": "^4.0.10",
     "rehype-react": "^7.0.3",
-    "sharp": "^0.29.3",
+    "sharp": "^0.30.5",
     "ssw.rules.widget": "^1.2.0",
     "svg-react-loader": "^0.4.6",
     "webpack-assets-manifest": "5.0.6"

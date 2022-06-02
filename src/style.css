@@ -265,6 +265,7 @@ footer {
 
 .gatsby-resp-image-wrapper {
   margin-left: 0% !important;
+  padding:10px;
 }
 
 @media (min-width: 600px) and (max-width: 1279px) {
@@ -1084,7 +1085,7 @@ blockquote p:after {
 .rule-content img {
   max-width: 100%;
   width: auto !important;
-  border: 12px solid #eee;
+  border: 10px solid #eee;
   outline: 1px solid #ccc;
   background-color: #eee;
 }

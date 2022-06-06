@@ -168,6 +168,10 @@ module.exports = {
                   classes: 'greybox',
                   title: 'optional',
                 },
+                noBorder: {
+                  classes: 'no-border',
+                  title: 'optional',
+                },
               },
             },
           },

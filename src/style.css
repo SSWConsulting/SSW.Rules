@@ -586,18 +586,16 @@ pre {
   border: 1px #cc4141 solid;
 }
 
-/*.greybox{
-  border: 1px solid #ccc;
-    background: #eee;
-    padding: 6px 12px;
-    margin: 1em 0 1em 1em;
-    max-width: 95%;
-}*/
-
 .greybox {
   padding: 1rem 1.5rem;
   background-color: #eee;
   width: 100%;
+}
+
+.rule-content .no-border img {
+  border: none;
+  outline: none;
+  background: none;
 }
 
 .good figcaption, .bad figcaption, .ok figcaption,

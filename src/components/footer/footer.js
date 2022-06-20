@@ -48,7 +48,7 @@ const Footer = () => {
                 <span className="px-2">|</span>
                 <a
                   className="footer-link"
-                  href="https://www.ssw.com.au/ssw/Consulting/Terms-and-Conditions/"
+                  href="https://www.ssw.com.au/ssw/Consulting/Terms-and-Conditions"
                 >
                   TERMS AND CONDITIONS
                 </a>
@@ -107,7 +107,7 @@ const Footer = () => {
                     className="unstyled social-media-icon"
                     id="linkedin-icon"
                     title="SSW on LinkedIn"
-                    href="https://www.linkedin.com/company/ssw/"
+                    href="https://www.linkedin.com/company/ssw"
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -117,7 +117,7 @@ const Footer = () => {
                     className="unstyled social-media-icon"
                     id="youtube-icon"
                     title="SSW on YouTube"
-                    href="https://www.youtube.com/user/sswtechtalks/"
+                    href="https://www.youtube.com/user/sswtechtalks"
                     target="_blank"
                     rel="noreferrer"
                   >

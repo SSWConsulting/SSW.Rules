@@ -13,8 +13,10 @@ const NotFound = () => {
           </h2>
         </div>
         <div className="not-found-greybox greybox">
-          Visit <Link to="/">SSW Rules homepage</Link> and find out more secret ingredients to quality software; or{' '}
-          <button onClick={() => navigate(-1)}>go back</button> to the previous page.
+          Visit <Link to="/">SSW Rules homepage</Link> and find out more secret
+          ingredients to quality software; or{' '}
+          <button onClick={() => navigate(-1)}>go back</button> to the previous
+          page.
         </div>
         <div className="not-found-greybox greybox">
           This page is as per{' '}

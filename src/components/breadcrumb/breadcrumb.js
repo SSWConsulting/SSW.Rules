@@ -31,7 +31,7 @@ const Breadcrumbs = (props) => {
   };
 
   return (
-    <div className="w-full m-4 mx-8 md:mx-2 h-full flex min-w-full">
+    <div className="m-4 mx-8 md:mx-2 md:ml-4 h-full flex">
       <Link to={parentSiteUrl} className="mx-2 h-full">
         <img alt="SSW Foursquare" src={Icon} className="w-4 mt-1" />
       </Link>

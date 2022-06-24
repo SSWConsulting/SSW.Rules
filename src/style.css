@@ -158,7 +158,9 @@ footer {
 }
 
 .rules-counter {
-  margin-bottom: 16px;
+  width: 280px;
+  margin: auto;
+  text-align: center;
 }
 
 #youtube-icon {
@@ -2130,10 +2132,6 @@ div.greybox {
   color: #cc4141 !important;
 }
 
-.rules-counter {
-  padding-left: 0.5rem;
-}
-
 .gavel-icon {
   height: 50px;
   margin-top: 10px;
@@ -2500,7 +2498,6 @@ html {
   justify-content: center;
 }
 
-.rules-counter{text-align:center;}
 .rules-counter h2{margin: 0;}
 
 .preview{

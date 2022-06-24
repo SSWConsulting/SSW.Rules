@@ -12,7 +12,7 @@ const SideBar = ({ ruleTotalNumber, location }) => {
   return (
     <div>
       <section className="rules-counter">
-        <div className="flex grid grid-cols-6">
+        <div className="grid grid-cols-6">
           <div className="col-span-1 col-start-2">
             <GavelIcon className="gavel-icon" />
           </div>

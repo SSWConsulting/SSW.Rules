@@ -20186,10 +20186,10 @@ ssri@^8.0.1:
   dependencies:
     minipass "^3.1.1"
 
-ssw.rules.widget@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/ssw.rules.widget/-/ssw.rules.widget-1.2.0.tgz#dfb1450e68933ff7866b5a8e4839e5f3a0f38464"
-  integrity sha512-4ckQ46UcS9fcgD1B2vyejiAZosWhb8LcLhSKhhwsgczvJ0Zmke6P4atxcBSeO6bCRkez4/UPAwZ/ZnBRj2IcQQ==
+ssw.rules.widget@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/ssw.rules.widget/-/ssw.rules.widget-1.2.1.tgz#1a69fcde1dfb17fae201f1b8c2d7e39a0411891d"
+  integrity sha512-C7s+wnS4wYdo5q+dIaqmYJYGOc5AXnf2xuPy1WUd9L4HZPk5I0d4fpl9nmWTWDBEqJLoRKPkDXjG1j6Vvbs25g==
   dependencies:
     "@babel/polyfill" "^7.12.1"
     "@fortawesome/fontawesome-svg-core" "^1.2.35"

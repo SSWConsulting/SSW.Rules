@@ -21,7 +21,12 @@ const Acknowledgements = ({ authors }) => {
 
   function ProfileImg(props) {
     const author = props.author;
-    if (author.img && author.img.includes('http')) {
+    console.log(author);
+    if (author.noimage) {
+      return (
+        <img src={PlaceHolderImage} alt={author.title} title={author.title} />
+      );
+    } else if (author.img && author.img.includes('http')) {
       return <img src={author.img} alt={author.title} title={author.title} />;
     } else if (author.url && author.url.includes('ssw.com.au/people')) {
       return (

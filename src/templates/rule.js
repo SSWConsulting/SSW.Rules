@@ -147,6 +147,8 @@ const Rule = ({ data, location }) => {
       : null;
   }, [user, isAuthenticated, hiddenCount]);
 
+  console.log(rule.frontmatter.authors);
+
   return (
     <div>
       <Breadcrumb
@@ -434,6 +436,7 @@ export const query = graphql`
           title
           url
           img
+          noimage
         }
         created(formatString: "DD MMM YYYY")
         archivedreason

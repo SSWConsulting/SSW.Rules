@@ -3005,7 +3005,7 @@ margin-bottom: 1em;
 .rule-content a[href$='.ics']:before, .rule-content a[href$='.vsc']:before, 
 .rule-content a[href$='.zip']:before,
 .rule-content a[href*='mailto:']:before,
-.rule-content a[href*='youtube']:before, .rule-content a[href*='youtu.be']:before{
+.rule-content a[href*='youtube.com']:before, .rule-content a[href*='youtu.be']:before {
   content: "\F1C1 ";
   font-family: FontAwesome;
   padding-right: 4px;
@@ -3062,7 +3062,7 @@ margin-bottom: 1em;
   color: #0072C6;
 }
 
-.rule-content a[href*='youtube']:before, .rule-content a[href*='youtu.be']:before {
+.rule-content a[href*='youtube.com']:before, .rule-content a[href*='youtu.be']:before {
   content: "\F167 ";
   color: #FF0000;
 }

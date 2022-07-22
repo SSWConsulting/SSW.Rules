@@ -21,7 +21,6 @@ const Acknowledgements = ({ authors }) => {
 
   function ProfileImg(props) {
     const author = props.author;
-    console.log(author);
     if (author.noimage) {
       return (
         <img src={PlaceHolderImage} alt={author.title} title={author.title} />

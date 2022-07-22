@@ -147,8 +147,6 @@ const Rule = ({ data, location }) => {
       : null;
   }, [user, isAuthenticated, hiddenCount]);
 
-  console.log(rule.frontmatter.authors);
-
   return (
     <div>
       <Breadcrumb

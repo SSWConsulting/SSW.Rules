@@ -52,6 +52,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       title: String
       url: String
       img: String
+      noimage: Boolean
     }
   `;
   createTypes(typeDefs);

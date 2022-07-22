@@ -1,5 +1,7 @@
 # SSW.Rules
 
+[![Scheduled CodeAuditor test](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/codeauditor-test.yml/badge.svg?event=schedule)](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/codeauditor-test.yml)
+
 v2 of the Rules.
 
 This is a Gatsby generated site pulling data from:

@@ -42,7 +42,7 @@ const ProfileFilterMenu = ({
                 : 'filter-menu-bookmark-icon-pressed'
             }
           />
-          <div className="rules-counter">{bookmarkedRulesCount ?? 0}</div>
+          <div className="mx-1">{bookmarkedRulesCount ?? 0}</div>
         </div>
         <div
           className="menu-item"
@@ -67,7 +67,7 @@ const ProfileFilterMenu = ({
                 : 'filter-menu-disqus-icon-pressed'
             }
           />
-          <div className="rules-counter">{commentedRulesCount ?? 0}</div>
+          <div className="mx-2">{commentedRulesCount ?? 0}</div>
         </div>
         <div
           className="menu-item"
@@ -93,7 +93,7 @@ const ProfileFilterMenu = ({
           >
             Love it
           </div>
-          <div className="rules-counter">{superLikedRulesCount ?? 0}</div>
+          <div className="mx-1">{superLikedRulesCount ?? 0}</div>
         </div>
         <div
           className="menu-item"
@@ -119,7 +119,7 @@ const ProfileFilterMenu = ({
           >
             Agree
           </div>
-          <div className="rules-counter">{likedRulesCount ?? 0}</div>
+          <div className="mx-1">{likedRulesCount ?? 0}</div>
         </div>
         <div
           className="menu-item"
@@ -145,7 +145,7 @@ const ProfileFilterMenu = ({
           >
             Disagree
           </div>
-          <div className="rules-counter">{dislikedRulesCount ?? 0}</div>
+          <div className="mx-1">{dislikedRulesCount ?? 0}</div>
         </div>
         <div
           className="menu-item"
@@ -171,7 +171,7 @@ const ProfileFilterMenu = ({
           >
             No way
           </div>
-          <div className="rules-counter">{superDislikedRulesCount ?? 0}</div>
+          <div className="mx-1">{superDislikedRulesCount ?? 0}</div>
         </div>
       </div>
     </>

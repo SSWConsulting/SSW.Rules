@@ -248,7 +248,7 @@ const Rule = ({ data, location }) => {
           <div dangerouslySetInnerHTML={{ __html: rule.html }} />
           {rule.frontmatter.related && rule.frontmatter.related.length > 0 && (
             <div>
-              <h2>Related Rules</h2>
+              <h2>Related rules</h2>
               <ol>
                 {rule.frontmatter.related
                   ? rule.frontmatter.related.map((relatedUri) => {
@@ -363,7 +363,7 @@ const Rule = ({ data, location }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                   />
-                  <span className="tooltiptext">How to add a Category</span>
+                  <span className="tooltiptext">How to add a category</span>
                 </div>
               </div>
               {categories.map((category, i) => (

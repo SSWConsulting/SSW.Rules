@@ -157,6 +157,11 @@ export default function Category({ data }) {
                                   rel="noopener noreferrer"
                                   href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
                                   className="tooltip tooltip-button"
+                                  onClick={() => {
+                                    appInsights.trackEvent({
+                                      name: 'EditMode-NetlifyCMS',
+                                    });
+                                  }}
                                 >
                                   <FontAwesomeIcon
                                     icon={faPencilAlt}
@@ -172,6 +177,11 @@ export default function Category({ data }) {
                                   rel="noopener noreferrer"
                                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
                                   className="tooltip tooltip-button"
+                                  onClick={() => {
+                                    appInsights.trackEvent({
+                                      name: 'EditMode-GitHub',
+                                    });
+                                  }}
                                 >
                                   <FontAwesomeIcon
                                     icon={faGithub}

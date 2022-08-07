@@ -175,6 +175,11 @@ const Rule = ({ data, location }) => {
                   rel="noopener noreferrer"
                   href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
                   className="tooltip tooltip-button"
+                  onClick={() => {
+                    appInsights.trackEvent({
+                      name: 'EditMode-NetlifyCMS',
+                    });
+                  }}
                 >
                   <FontAwesomeIcon
                     icon={faPencilAlt}
@@ -190,6 +195,11 @@ const Rule = ({ data, location }) => {
                   rel="noopener noreferrer"
                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.parent.relativePath}`}
                   className="tooltip tooltip-button"
+                  onClick={() => {
+                    appInsights.trackEvent({
+                      name: 'EditMode-GitHub',
+                    });
+                  }}
                 >
                   <FontAwesomeIcon
                     icon={faGithub}

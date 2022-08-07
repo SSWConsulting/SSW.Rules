@@ -7,10 +7,19 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Bookmark from '../components/bookmark/bookmark';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import {
   faArrowCircleRight,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
+
+appInsights.loadAppInsights();
 
 export default function Category({ data }) {
   const linkRef = useRef();
@@ -127,14 +136,14 @@ export default function Category({ data }) {
             </div>
             <div className="category-rule">
               <ol className="rule-number">
-                {category.frontmatter.index.map((r) => {
+                {category.frontmatter.index.map((r, i) => {
                   var rule = rules.find((rr) => rr.frontmatter.uri == r);
                   if (!rule) {
                     return;
                   }
                   return (
-                    <>
-                      <li>
+                    <div key={i}>
+                      <li key={i}>
                         <section className="rule-content-title pl-2">
                           <div className="rule-header-container align-middle justify-between">
                             <h2 className="flex flex-col justify-center">
@@ -157,6 +166,11 @@ export default function Category({ data }) {
                                   rel="noopener noreferrer"
                                   href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
                                   className="tooltip tooltip-button"
+                                  onClick={() => {
+                                    appInsights.trackEvent({
+                                      name: 'EditMode-NetlifyCMS',
+                                    });
+                                  }}
                                 >
                                   <FontAwesomeIcon
                                     icon={faPencilAlt}
@@ -172,6 +186,11 @@ export default function Category({ data }) {
                                   rel="noopener noreferrer"
                                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
                                   className="tooltip tooltip-button"
+                                  onClick={() => {
+                                    appInsights.trackEvent({
+                                      name: 'EditMode-GitHub',
+                                    });
+                                  }}
                                 >
                                   <FontAwesomeIcon
                                     icon={faGithub}
@@ -214,7 +233,7 @@ export default function Category({ data }) {
                           </p>
                         </section>
                       </li>
-                    </>
+                    </div>
                   );
                 })}
               </ol>

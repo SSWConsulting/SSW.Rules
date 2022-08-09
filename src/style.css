@@ -592,6 +592,7 @@ pre {
   padding: 1rem 1.5rem;
   background-color: #eee;
   width: 100%;
+  margin-bottom: .5rem;
 }
 
 .rule-content .no-border img {
@@ -611,7 +612,7 @@ pre {
   position: relative;
 }
 
-.greybox p:last-child, .greybox ul:last-child, .highlight p:last-child, .info p:last-child, .china p:last-child, .todo p:last-child, blockquote p:last-child{
+.greybox p:last-child, .greybox ul:last-child, .highlight p:last-child, .info p:last-child, .china p:last-child, .codeauditor p:last-child, .todo p:last-child, blockquote p:last-child{
   margin-bottom:0;
 }
 
@@ -1102,24 +1103,21 @@ blockquote p:after {
   display: table-caption;
 }
 
+.rule-content figure figcaption.bad-example:before, .rule-content figure figcaption.good-example:before {
+  width: 16px;
+  position: absolute;
+  left: 0px;
+  top:2px;
+}
+
 .rule-content figure figcaption.bad-example:before {
   background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Bad.gif) no-repeat;
   content: "\00a0 ";
-  padding-left: 20px;
-  padding-right: 0.5rem;
-  position: absolute;
-  left: 0px;
-  top:0px;
 }
 
 .rule-content figure figcaption.good-example:before {
   background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Good.gif) no-repeat;
   content: "\00a0 ";
-  padding-left: 20px;
-  padding-right: 0.5rem;
-  position: absolute;
-  left: 0px;
-  top:0px;
 }
 
 .rule-content figure figcaption.ok-example:before {
@@ -1129,7 +1127,6 @@ blockquote p:after {
   font-weight: normal;
   text-decoration: inherit;
   color: #777;
-  padding-right: 0.5rem;
 }
 
 .rule-content figure.image {
@@ -1157,11 +1154,10 @@ blockquote p:after {
 div.good-example .custom-block-heading::after {
   background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Good.gif) no-repeat;
   content: "\00a0 ";
-  padding-left: 20px;
-  padding-right: 0.5rem;
+  width: 16px;
   position: absolute;
   left: 0px;
-  top:0px;
+  top:2px;
 }
 
 .bad-example figure figcaption::after,
@@ -1170,11 +1166,10 @@ div.good-example .custom-block-heading::after {
 div.bad-example .custom-block-heading::after {
   background: transparent url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/Bad.gif) no-repeat;
   content: "\00a0 ";
-  padding-left: 20px;
-  padding-right: 0.5rem;
+  width: 16px;
   position: absolute;
   left: 0px;
-  top:0px;
+  top:2px;
 }
 
 .ok-example figure figcaption::after,
@@ -1187,10 +1182,9 @@ div.ok-example .custom-block-heading::after {
   font-weight: normal;
   text-decoration: inherit;
   color: #777;
-  padding-right: 0.5rem;
   position: absolute;
   left: 0px;
-  top:0px;
+  top:2px;
 }
 
 div.ok-example .custom-block-heading,
@@ -1222,9 +1216,7 @@ div.bad-example .custom-block-body:has(img){
 
 div.ok-example,
 div.good-example,
-div.bad-example,
-div.greybox {
-  max-width: 95%;
+div.bad-example {
   display: block;
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -1255,26 +1247,19 @@ div.greybox {
   text-decoration: none;
 }
 
-.rule-content .highlight {
-  background-color: yellow;
-}
-
-.rule-content p.highlight, .rule-content div.highlight {
+.rule-content .highlight, .rule-content p.highlight, .rule-content div.highlight {
   display: table;
-  padding: 10px;
+  padding: 1rem;
   margin: 0 0 1rem;
   background-color: yellow;
   border: 1px solid #ccc;
 }
 
-.rule-content .todo {
+.rule-content .todo, .rule-content p.todo, .rule-content div.todo {
   color: red;
   font-weight: bold;
-}
-
-.rule-content p.todo, .rule-content div.todo {
+  padding: 1rem;
   display: table;
-  padding: 10px;
   margin: 0 0 1rem;
   border: 1px solid red;
 }
@@ -1282,7 +1267,7 @@ div.greybox {
 .rule-content .info:before {
   content: "\f05a ";
   font-family: FontAwesome;
-  font-size: 38px;
+  font-size: 2.5rem;
   color: #cc4141;
   float: left;
   line-height: normal;
@@ -1292,7 +1277,7 @@ div.greybox {
 .rule-content .codeauditor:before {
   content: "\f121 ";
   font-family: FontAwesome;
-  font-size: 38px;
+  font-size: 2.5rem;
   color: #cc4141;
   float: left;
   line-height: normal;
@@ -1301,19 +1286,11 @@ div.greybox {
 
 .rule-content .info, .rule-content .china, .rule-content .codeauditor {
   display: block;
-  padding: 10px;
+  padding: 1rem;
   margin: 0 0 1rem;
   max-width: 100%;
-  min-height: 3.6rem;
+  min-height: 4.5rem;
   border: 1px solid #ccc;
-}
-
-.rule-content .info p, .rule-content .china p {
-  padding-top: 0.35rem;
-}
-
-.rule-content .codeauditor p {
-  padding-top: 0.45rem;
 }
 
 .rule-content .china:before {

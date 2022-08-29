@@ -1,5 +1,5 @@
-import { Link, navigate } from 'gatsby';
-import React from 'react';
+import { Link, navigate } from "gatsby";
+import React from "react";
 
 const NotFound = () => {
   return (
@@ -17,7 +17,7 @@ const NotFound = () => {
           ingredients to quality software.
         </div>
         <div className="not-found-greybox greybox">
-          Learn more about{' '}
+          Learn more about{" "}
           <a href="https://ssw.com.au/rules/404-useful-error-page">
             having a useful 404 error page.
           </a>

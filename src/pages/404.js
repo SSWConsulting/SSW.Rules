@@ -14,14 +14,12 @@ const NotFound = () => {
         </div>
         <div className="not-found-greybox greybox">
           Visit <Link to="/">SSW Rules homepage</Link> and find out more secret
-          ingredients to quality software; or{' '}
-          <button onClick={() => navigate(-1)}>go back</button> to the previous
-          page.
+          ingredients to quality software.
         </div>
         <div className="not-found-greybox greybox">
-          This page is as per{' '}
+          Learn more about{' '}
           <a href="https://ssw.com.au/rules/404-useful-error-page">
-            Do you replace the 404 error with a useful error page?
+            having a useful 404 error page.
           </a>
         </div>
       </div>

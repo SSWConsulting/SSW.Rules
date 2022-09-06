@@ -2347,7 +2347,8 @@ div.bad-example {
 }
 
 .not-found-greybox {
-  margin: auto;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 @media (max-width: 850px) {

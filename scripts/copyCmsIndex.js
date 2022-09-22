@@ -1,3 +1,4 @@
+// copies index file that fixes editor issues - remove after https://github.com/netlify/netlify-cms/issues/5902 is fixed
 const fs = require('fs');
 
 const fileName = 'admin/index.html';

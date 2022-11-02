@@ -19,6 +19,7 @@ This is a Gatsby generated site pulling data from:
 - Clone the repo from https://github.com/SSWConsulting/SSW.Rules
 - Run *yarn install* to install packages
 - Create environment files (.env.development and .env.production) and ask a member of the SSW.Rules team (@pierssinclairssw, @bradystroud) for the values of the following keys:
+
 ```
 GA_MEASUREMENT_ID=#{GA_MEASUREMENT_ID}
 GOOGLE_ANALYTICS=#{GOOGLE_ANALYTICS}
@@ -35,6 +36,13 @@ DISQUS_FORUM=#{DISQUS_FORUM}
 GITHUB_API_PAT=#{GITHUB_API_PAT}
 DISQUS_API_KEY=#{DISQUS_API_KEY}
 ```
+
+> **Note**  
+> If you don't work at SSW or can't get on to the SSW.Rules team you can just add values to GITHUB_API_PAT and CONTENT_BRANCH  
+> For `GITHUB_API_PAT`, create a [PAT on GitHub](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (remove angle brackets <>)  
+> Set `CONTENT_BRANCH` to `sample-content-with-guid` (its a smaller version of the main content branch which will build much quicker 🙂)
+> Sometimes you might want to use `main` or create your own branch if you are testing something.
+
 
 ### Development
 1. Branch off main for your PBI

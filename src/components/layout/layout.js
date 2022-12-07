@@ -6,7 +6,7 @@ import Header from '../header/header';
 import Footer from '../footer/footer';
 import '../../style.css';
 import Menu from '../../../lib/ssw.megamenu/menu/menu';
-import MobileMenu from '../../../lib/ssw.megamenu/mobile-menu/mobile-menu';
+import { MobileMenu } from 'ssw.megamenu';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { Auth0Provider } from '@auth0/auth0-react';

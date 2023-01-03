@@ -1,7 +1,7 @@
 import Contact from '../contact/contact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GavelIcon from '-!svg-react-loader!../../images/gavel.svg';
-import NumberFormat from 'react-number-format';
+import { NumericFormat } from 'react-number-format';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Widget } from 'ssw.rules.widget';
@@ -18,7 +18,7 @@ const SideBar = ({ ruleTotalNumber, location }) => {
           </div>
           <div className="col-span-2">
             <h2>
-              <NumberFormat
+              <NumericFormat
                 value={ruleTotalNumber}
                 displayType={'text'}
                 thousandSeparator={true}

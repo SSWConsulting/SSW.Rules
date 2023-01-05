@@ -2765,7 +2765,7 @@ margin-bottom: 1em;
 * your stylesheet by default.
 */
 
-@tailwind screens;
+@tailwind variants;
 
 /* Email Templates
 -------------------------------------------------- */

@@ -57,7 +57,7 @@ const SideBar = ({ ruleTotalNumber, location }) => {
             <FontAwesomeIcon icon={faQuoteLeft} /> The SSW Rules website works
             just like Wikipedia. If you think something should be changed, hit
             the pencil icon and make an edit! Or if you are cool{' '}
-            <a href="https://twitter.com/adamcogan">tweet me.</a>
+            <a href="https://twitter.com/adamcogan">tweet me</a>
             <FontAwesomeIcon icon={faQuoteRight} />
           </blockquote>
           <div className="avatar">
@@ -69,7 +69,7 @@ const SideBar = ({ ruleTotalNumber, location }) => {
           </div>
           <h5>
             <a
-              href="https://www.ssw.com.au/people/adam-cogan/"
+              href="https://ssw.com.au/people/adam-cogan"
               target="_blank"
               rel="noopener noreferrer"
             >

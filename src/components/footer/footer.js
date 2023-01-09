@@ -65,7 +65,7 @@ const Footer = () => {
                     <FontAwesomeIcon icon={faWeixin} size="lg" />
                     <span id="qr-code">
                       <img
-                        src="http://www.ssw.com.au/ssw/Images/QRcode.jpg"
+                        src="https://www.ssw.com.au/ssw/Images/QRcode.jpg"
                         alt="SSW QR Code"
                         width="100"
                         title="SSW WeChat QR Code"

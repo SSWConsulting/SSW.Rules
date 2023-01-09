@@ -1260,7 +1260,7 @@ div.bad-example {
   font-weight: bold;
   padding: 1rem;
   display: table;
-  margin: 0 0 1rem;
+  margin: 1rem 0;
   border: 1px solid red;
 }
 
@@ -1287,7 +1287,7 @@ div.bad-example {
 .rule-content .info, .rule-content .china, .rule-content .codeauditor {
   display: block;
   padding: 1rem;
-  margin: 0 0 1rem;
+  margin: 1rem 0;
   max-width: 100%;
   min-height: 4.5rem;
   border: 1px solid #ccc;
@@ -2947,6 +2947,10 @@ margin-bottom: 1em;
 
 /* Rule content tables
 -------------------------------------------------- */
+.rule-content table {
+  margin: 1rem 0;
+}
+
 .rule-content td {
   border: 1px solid #E0E2E5;
   padding: 0.375rem 0.8125rem;

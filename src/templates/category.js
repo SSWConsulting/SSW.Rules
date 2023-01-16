@@ -49,6 +49,9 @@ export default function Category({ data }) {
       <Breadcrumb
         categoryTitle={category.frontmatter.title}
         isCategory={true}
+        categories={
+          category.frontmatter.archivedreason && [{ link: '/archived', title: 'Archived' }]
+        }
       />
       <div className="w-full">
         <div className="rule-category rounded">

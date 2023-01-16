@@ -8,6 +8,7 @@ import { Link } from 'gatsby';
 import TopCategoryHeader from '../components/topcategory-header/topcategory-header';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArchive } from '@fortawesome/free-solid-svg-icons';
 
 config.autoAddCss = false;
 
@@ -19,6 +20,11 @@ const Archived = ({ data }) => {
   var categoriesWithArchive = data.categories.nodes.filter((c) =>
     archivedRules.find((r) => c.frontmatter.index.includes(r.frontmatter.uri))
   );
+
+  let archivedCategories = data.categories.nodes.filter((c) => c.frontmatter.archivedreason);
+
+  categoriesWithArchive = [...categoriesWithArchive, ...archivedCategories];
+
   var topCategoriesWithArchive = data.topCategories.nodes.filter((t) =>
     categoriesWithArchive.find((c) =>
       t.frontmatter.index.includes(c.parent.name.toLowerCase())
@@ -55,6 +61,7 @@ const Archived = ({ data }) => {
                 return (
                   <li key={i}>
                     <strong>{cat.frontmatter.title}</strong>
+                    {cat.frontmatter.archivedreason && <FontAwesomeIcon className="ml-2" icon={faArchive} title="Archived Category" />}
                     <span className="d-none d-md-block">
                       {getNumberOfRulesForCat(cat)}
                     </span>
@@ -187,6 +194,7 @@ const ArchivedWithQuery = (props) => (
             frontmatter {
               type
               title
+              archivedreason
               index
             }
             parent {

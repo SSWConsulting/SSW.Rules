@@ -5,12 +5,14 @@ import MD from 'gatsby-custom-md';
 import GreyBox from '../components/greybox/greybox';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { detectLinks } from '../helpers/convertUrlFromString';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Bookmark from '../components/bookmark/bookmark';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import {
   faArrowCircleRight,
   faPencilAlt,
+  faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 
 const appInsights = new ApplicationInsights({
@@ -79,7 +81,29 @@ export default function Category({ data }) {
 
             <div className="rule-category-top pt-5 py-4 px-6">
               <MD components={components} htmlAst={category.htmlAst} />
-            </div>
+
+              {category.frontmatter.archivedreason &&
+                category.frontmatter.archivedreason.length > 0 && (
+                  <div>
+                    <br />
+                    <div className="attention archived px-4">
+                      <FontAwesomeIcon
+                        icon={faExclamationTriangle}
+                        className="attentionIcon"
+                      />{' '}
+                      This category has been archived
+                    </div>
+                    <div className="RuleArchivedReasonContainer px-4">
+                      <span className="ReasonTitle">Archived Reason: </span>
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: detectLinks(category.frontmatter.archivedreason),
+                        }}
+                      ></span>
+                    </div>
+                  </div>
+                )}
+                </div>
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none">
               <div></div>
               <div>
@@ -256,6 +280,7 @@ export const query = graphql`
       htmlAst
       frontmatter {
         title
+        archivedreason
         index
         uri
         guid

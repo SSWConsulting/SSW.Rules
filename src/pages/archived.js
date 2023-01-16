@@ -39,10 +39,16 @@ const Archived = ({ data }) => {
         c.parent.name.toLowerCase() === `${categoryFromIndex.toLowerCase()}`
     );
   };
-
-  const getNumberOfRulesForCat = (categories) => {
+    
+  /**
+    * Get the total number of archived/unarchived rules
+    * @param {Object} categories The category to search a rule for
+    * @param {boolean} [archived=true] Whether to get the total count of archived vs unarchived rules
+    * @return {number} The total rule count
+  */
+  const getNumberOfRulesForCat = (categories, archived = true) => {
     return categories.frontmatter.index.filter((c) =>
-      archivedRules.find((r) => c == r.frontmatter.uri)
+      archivedRules.find((r) => archived ? c == r.frontmatter.uri : c != r.frontmatter.uri )
     ).length;
   };
 
@@ -60,7 +66,8 @@ const Archived = ({ data }) => {
               if (cat) {
                 return (
                   <li key={i}>
-                    <strong>{cat.frontmatter.title}</strong>
+                    <strong><Link ref={linkRef} to={`/${cat.parent.name}`}> {cat.frontmatter.title}</Link></strong>
+
                     {cat.frontmatter.archivedreason && <FontAwesomeIcon className="ml-2" icon={faArchive} title="Archived Category" />}
                     <span className="d-none d-md-block">
                       {getNumberOfRulesForCat(cat)}

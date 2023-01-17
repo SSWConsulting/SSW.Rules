@@ -49,6 +49,9 @@ const Index = ({ data, location }) => {
                 <Link to={'/all-rules?size=10'}>
                   <FontAwesomeIcon icon={faStar} /> All rules
                 </Link>
+                <Link to={'/orphaned'}>
+                  <FontAwesomeIcon icon={faArchive} /> Orphaned rules
+                </Link>
                 <Link to={'/archived'}>
                   <FontAwesomeIcon icon={faArchive} /> Archived rules
                 </Link>

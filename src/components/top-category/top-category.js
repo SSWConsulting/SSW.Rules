@@ -18,6 +18,16 @@ const TopCategory = ({ topcategory, categories, rules }) => {
       rules.find((r) => c == r.frontmatter.uri)
     ).length;
   };
+
+  // Update the category lists to only contain non-archived categories
+  topcategory.frontmatter.index = topcategory.frontmatter.index.filter(category => {
+      const cat = findCategoryFromIndexValue(category);
+
+      if (cat) {
+        return !cat.frontmatter.archivedreason
+      }
+  });
+
   return (
     <>
       <TopCategoryHeader

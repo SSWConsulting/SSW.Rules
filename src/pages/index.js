@@ -136,6 +136,7 @@ const IndexWithQuery = (props) => (
               type
               title
               index
+              archivedreason
             }
             parent {
               ... on File {

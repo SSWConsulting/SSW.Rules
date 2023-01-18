@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.12.0",
-    "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@microsoft/applicationinsights-web": "^2.8.9",
     "@raae/gatsby-remark-oembed": "^0.3.3",
     "applicationinsights": "^2.3.6",

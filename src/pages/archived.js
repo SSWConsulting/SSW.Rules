@@ -8,6 +8,7 @@ import { Link } from 'gatsby';
 import TopCategoryHeader from '../components/topcategory-header/topcategory-header';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArchive } from '@fortawesome/free-solid-svg-icons';
 
 config.autoAddCss = false;
 
@@ -19,6 +20,13 @@ const Archived = ({ data }) => {
   var categoriesWithArchive = data.categories.nodes.filter((c) =>
     archivedRules.find((r) => c.frontmatter.index.includes(r.frontmatter.uri))
   );
+
+  let archivedCategories = data.categories.nodes.filter(
+    (c) => c.frontmatter.archivedreason
+  );
+
+  categoriesWithArchive = [...categoriesWithArchive, ...archivedCategories];
+
   var topCategoriesWithArchive = data.topCategories.nodes.filter((t) =>
     categoriesWithArchive.find((c) =>
       t.frontmatter.index.includes(c.parent.name.toLowerCase())
@@ -34,9 +42,17 @@ const Archived = ({ data }) => {
     );
   };
 
-  const getNumberOfRulesForCat = (categories) => {
+  /**
+   * Get the total number of archived/unarchived rules
+   * @param {Object} categories The category to search a rule for
+   * @param {boolean} [archived=true] Whether to get the total count of archived vs unarchived rules
+   * @return {number} The total rule count
+   */
+  const getNumberOfRulesForCat = (categories, archived = true) => {
     return categories.frontmatter.index.filter((c) =>
-      archivedRules.find((r) => c == r.frontmatter.uri)
+      archivedRules.find((r) =>
+        archived ? c == r.frontmatter.uri : c != r.frontmatter.uri
+      )
     ).length;
   };
 
@@ -54,7 +70,20 @@ const Archived = ({ data }) => {
               if (cat) {
                 return (
                   <li key={i}>
-                    <strong>{cat.frontmatter.title}</strong>
+                    <strong>
+                      <Link ref={linkRef} to={`/${cat.parent.name}`}>
+                        {' '}
+                        {cat.frontmatter.title}
+                      </Link>
+                    </strong>
+
+                    {cat.frontmatter.archivedreason && (
+                      <FontAwesomeIcon
+                        className="ml-2"
+                        icon={faArchive}
+                        title="Archived Category"
+                      />
+                    )}
                     <span className="d-none d-md-block">
                       {getNumberOfRulesForCat(cat)}
                     </span>
@@ -187,6 +216,7 @@ const ArchivedWithQuery = (props) => (
             frontmatter {
               type
               title
+              archivedreason
               index
             }
             parent {

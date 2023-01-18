@@ -9,13 +9,21 @@ import React from 'react';
 
 const Breadcrumbs = (props) => {
   const getCategories = () => {
-    return props.categories.map((cat, i) => {
+    if (props.categories.length > 0) {
+        return props.categories.map((cat, i) => {
+          return (
+            <Link key={i} to={cat.link} className="flex-1">
+              {cat.title}
+            </Link>
+          );
+        });
+    }
+
       return (
-        <Link key={i} to={cat.link} className="flex-1">
-          {cat.title}
+        <Link to={"/orphaned"} className="flex-1">
+          Orphaned
         </Link>
       );
-    });
   };
 
   const checkCategory = (prop) => {

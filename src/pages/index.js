@@ -1,5 +1,6 @@
 import { Link, StaticQuery, graphql } from 'gatsby';
-import { faArchive, faPause, faStar, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faArchive, faPause, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faFrown } from '@fortawesome/free-regular-svg-icons';
 
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -50,7 +51,7 @@ const Index = ({ data, location }) => {
                   <FontAwesomeIcon icon={faStar} /> All rules
                 </Link>
                 <Link to={'/orphaned'}>
-                  <FontAwesomeIcon icon={faQuestionCircle} /> Orphaned rules
+                  <FontAwesomeIcon icon={faFrown} /> Orphaned rules
                 </Link>
                 <Link to={'/archived'} class="mt-2 md:mt-0">
                   <FontAwesomeIcon icon={faArchive} /> Archived rules

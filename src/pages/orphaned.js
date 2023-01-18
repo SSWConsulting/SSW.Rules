@@ -8,7 +8,6 @@ import { Link } from 'gatsby';
 import TopCategoryHeader from '../components/topcategory-header/topcategory-header';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArchive } from '@fortawesome/free-solid-svg-icons';
 
 import {
   faFacebook,
@@ -21,6 +20,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowCircleRight,
+  faArchive,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import MD from 'gatsby-custom-md';

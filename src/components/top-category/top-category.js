@@ -20,13 +20,15 @@ const TopCategory = ({ topcategory, categories, rules }) => {
   };
 
   // Update the category lists to only contain non-archived categories
-  topcategory.frontmatter.index = topcategory.frontmatter.index.filter(category => {
+  topcategory.frontmatter.index = topcategory.frontmatter.index.filter(
+    (category) => {
       const cat = findCategoryFromIndexValue(category);
 
       if (cat) {
-        return !cat.frontmatter.archivedreason
+        return !cat.frontmatter.archivedreason;
       }
-  });
+    }
+  );
 
   return (
     <>

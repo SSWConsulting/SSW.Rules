@@ -50,7 +50,9 @@ export default function Category({ data }) {
         categoryTitle={category.frontmatter.title}
         isCategory={true}
         categories={
-          category.frontmatter.archivedreason && [{ link: '/archived', title: 'Archived' }]
+          category.frontmatter.archivedreason && [
+            { link: '/archived', title: 'Archived' },
+          ]
         }
       />
       <div className="w-full">
@@ -100,13 +102,15 @@ export default function Category({ data }) {
                       <span className="ReasonTitle">Archived Reason: </span>
                       <span
                         dangerouslySetInnerHTML={{
-                          __html: detectLinks(category.frontmatter.archivedreason),
+                          __html: detectLinks(
+                            category.frontmatter.archivedreason
+                          ),
                         }}
                       ></span>
                     </div>
                   </div>
                 )}
-                </div>
+            </div>
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none">
               <div></div>
               <div>

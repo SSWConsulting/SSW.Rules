@@ -73,7 +73,7 @@ const Orphaned = ({ data }) => {
   }
 
   const category = data.categories.nodes[0]
-  const rules = findOrphanedRules(data.rules, data.categories); 
+  const rules = findOrphanedRules(data.rules, data.categories);
 
   return (
     <div>
@@ -118,10 +118,7 @@ const Orphaned = ({ data }) => {
                     icon={faExclamationTriangle}
                     className="attentionIcon"
                   />{' '}
-                    These rules have no parent category
-                </div>
-                <div className="RuleArchivedReasonContainer px-4">
-                  <span className="ReasonTitle">All rules displayed below have no parent categories. </span>
+                    The rules listed below have no parent category
                 </div>
               </div>
 
@@ -183,7 +180,6 @@ const Orphaned = ({ data }) => {
             <div className="category-rule">
               <ol className="rule-number">
                 {rules.map((rule, i) => {
-                    console.log(rule)
                   if (!rule) {
                     return;
                   }
@@ -255,8 +251,8 @@ const Orphaned = ({ data }) => {
                           className={`rule-content mb-4
                             ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                         >
-                        {/*<MD components={components} htmlAst={rule.htmlAst} />*/}
-                                                </section>
+                        <MD components={components} htmlAst={rule.htmlAst} />
+                        </section>
 
                         <section
                           className={`rule-content mb-4
@@ -269,7 +265,6 @@ const Orphaned = ({ data }) => {
                             <Link
                               ref={linkRef}
                               to={`/${rule.frontmatter.uri}`}
-                              state={{ category: category.parent.name }}
                               title={`Read more about ${rule.frontmatter.title}`}
                             >
                               <FontAwesomeIcon icon={faArrowCircleRight} /> Read
@@ -406,7 +401,7 @@ const ArchivedWithQuery = (props) => (
               title
             }
             htmlAst
-            excerpt
+            excerpt(format: HTML, pruneLength: 500)
           }
         }
       }

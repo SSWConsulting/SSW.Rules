@@ -251,7 +251,7 @@ const Orphaned = ({ data }) => {
                           className={`rule-content mb-4
                             ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                         >
-                        <MD components={components} htmlAst={rule.htmlAst} />
+                          <MD components={components} htmlAst={rule.htmlAst} />
                         </section>
 
                         <section
@@ -327,7 +327,7 @@ Orphaned.propTypes = {
 const OrphanedWithQuery = (props) => (
   <StaticQuery
     query={graphql`
-      query ArchiveQuery {
+      query OrphanedQuery {
         main: allMarkdownRemark(
           filter: {
             fileAbsolutePath: { regex: "/(categories)/" }

@@ -1,5 +1,10 @@
 import { Link, StaticQuery, graphql } from 'gatsby';
-import { faArchive, faPause, faStar, faFrownOpen } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArchive,
+  faPause,
+  faStar,
+  faFrownOpen,
+} from '@fortawesome/free-solid-svg-icons';
 
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -57,7 +62,7 @@ const Index = ({ data, location }) => {
                 </Link>
                 <a
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
-                  class="mt-2 md:mt-0"
+                  className="mt-2 md:mt-0"
                 >
                   <FontAwesomeIcon icon={faPause} /> Unmigrated rules
                 </a>

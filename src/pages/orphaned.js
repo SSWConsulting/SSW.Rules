@@ -3,24 +3,13 @@ import { StaticQuery, graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import SideBar from '../components/side-bar/side-bar';
 import { Link } from 'gatsby';
-import TopCategoryHeader from '../components/topcategory-header/topcategory-header';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import {
-  faFacebook,
-  faGithub,
-  faInstagram,
-  faLinkedin,
-  faTwitter,
-  faWeixin,
-  faYoutube,
-} from '@fortawesome/free-brands-svg-icons';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowCircleRight,
-  faArchive,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import MD from 'gatsby-custom-md';
@@ -28,6 +17,14 @@ import GreyBox from '../components/greybox/greybox';
 import Bookmark from '../components/bookmark/bookmark';
 
 config.autoAddCss = false;
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
+
+appInsights.loadAppInsights();
 
 const Orphaned = ({ data }) => {
   const linkRef = useRef();
@@ -41,46 +38,44 @@ const Orphaned = ({ data }) => {
   const components = {
     greyBox: GreyBox,
   };
-  
+
   /**
-    * Get all rules that don't have an associated category
-    * @param {Object} rules All rule nodes
-    * @param {Object} categories All category nodes
-    * @return {array} All rules without an associated category 
-  */
+   * Get all rules that don't have an associated category
+   * @param {Object} rules All rule nodes
+   * @param {Object} categories All category nodes
+   * @return {array} All rules without an associated category
+   */
   const findOrphanedRules = (rules, categories) => {
-      const orphanedRules = [];
+    const orphanedRules = [];
 
-      rules.nodes.forEach((node) => {
-        // Find any rules missing a category
-        var match = false;
-        if (!node.frontmatter.archivedreason) {
-          categories.nodes.forEach((catNode) => {
-            catNode.frontmatter.index.forEach((inCat) => {
-              if (node.frontmatter.uri == inCat) {
-                match = true;
-              }
-            });
+    rules.nodes.forEach((node) => {
+      // Find any rules missing a category
+      var match = false;
+      if (!node.frontmatter.archivedreason) {
+        categories.nodes.forEach((catNode) => {
+          catNode.frontmatter.index.forEach((inCat) => {
+            if (node.frontmatter.uri == inCat) {
+              match = true;
+            }
           });
-        } else {
-          match = true;
-        }
-        if (match == false) {
-          orphanedRules.push(node)
-      }})
+        });
+      } else {
+        match = true;
+      }
+      if (match == false) {
+        orphanedRules.push(node);
+      }
+    });
 
-      return orphanedRules;
-  }
+    return orphanedRules;
+  };
 
-  const category = data.categories.nodes[0]
+  const category = data.categories.nodes[0];
   const rules = findOrphanedRules(data.rules, data.categories);
 
   return (
     <div>
-      <Breadcrumb 
-        categoryTitle="Orphaned"
-        isCategory={true}
-      />
+      <Breadcrumb categoryTitle="Orphaned" isCategory={true} />
       <div className="w-full">
         <div className="rule-category rounded">
           <section className="mb-20 pb-2 rounded">
@@ -118,10 +113,9 @@ const Orphaned = ({ data }) => {
                     icon={faExclamationTriangle}
                     className="attentionIcon"
                   />{' '}
-                    The rules listed below have no parent category
+                  The rules listed below have no parent category
                 </div>
               </div>
-
             </div>
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none">
               <div></div>
@@ -279,39 +273,6 @@ const Orphaned = ({ data }) => {
               </ol>
             </div>
           </section>
-        </div>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="w-full">
-      <Breadcrumb isArchived={true} />
-      <div className="container" id="rules">
-        <div className="flex flex-wrap">
-          <div className="w-full lg:w-3/4 px-4">
-            <div className="rule-index archive no-gutters rounded mb-12">
-                <ol className="pt-2 px-4 py-2">
-                  {findOrphanedRules(data.rules, data.categories)
-                    .map((r, i) => {
-                      return (
-                        <li key={i}>
-                          <Link
-                            ref={linkRef}
-                            to={`/${r.frontmatter.uri}`}
-                          >
-                            {r.frontmatter.title}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                </ol>
-            </div>
-          </div>
-
-          <div className="w-full lg:w-1/4 px-4" id="sidebar">
-            <SideBar ruleTotalNumber={data.rules.nodes.length} />
-          </div>
         </div>
       </div>
     </div>

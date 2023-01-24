@@ -57,7 +57,7 @@ const Index = ({ data, location }) => {
                 <Link to={'/orphaned'}>
                   <FontAwesomeIcon icon={faFrownOpen} /> Orphaned rules
                 </Link>
-                <Link to={'/archived'} class="mt-2 md:mt-0">
+                <Link to={'/archived'} className="mt-2 md:mt-0">
                   <FontAwesomeIcon icon={faArchive} /> Archived rules
                 </Link>
                 <a

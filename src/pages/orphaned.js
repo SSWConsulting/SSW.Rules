@@ -280,7 +280,6 @@ const Orphaned = ({ data }) => {
 };
 Orphaned.propTypes = {
   data: PropTypes.object.isRequired,
-  search: PropTypes.object.isRequired,
   pageContext: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
 };

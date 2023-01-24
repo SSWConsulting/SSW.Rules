@@ -4396,9 +4396,9 @@ application-config-path@^0.1.0:
   integrity sha512-zy9cHePtMP0YhwG+CfHm0bgwdnga2X3gZexpdCwEj//dpb+TKajtiC8REEUJUSq6Ab4f9cgNy2l8ObXzCXFkEw==
 
 applicationinsights@^2.3.6:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.4.0.tgz#3ee69bbfb26b7d605f9dfd2cf07eb3bef752616d"
-  integrity sha512-7jjwXxszDTOiQ/Fvar0YqNRfNpahoA6nz99j+Ohgb5phVluTekfO3sZ32bgxbDI9608qOdvGelWtn0yxDiqvxw==
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.4.1.tgz#4de4c4dd3c7c4a44445cfbf3d15808fc0dcc423d"
+  integrity sha512-0n0Ikd0gzSm460xm+M0UTWIwXrhrH/0bqfZatcJjYObWyefxfAxapGEyNnSGd1Tg90neHz+Yhf+Ff/zgvPiQYA==
   dependencies:
     "@azure/core-auth" "^1.4.0"
     "@azure/core-rest-pipeline" "^1.10.0"
@@ -5657,9 +5657,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001400, caniuse-lite@^1.0.30001426:
-  version "1.0.30001445"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001445.tgz#cf2d4eb93f2bcdf0310de9dd6d18be271bc0b447"
-  integrity sha512-8sdQIdMztYmzfTMO6KfLny878Ln9c2M0fc7EH60IjlP4Dc4PiCy7K2Vl3ITmWgOyPgVQKa5x+UP/KqFsxj4mBg==
+  version "1.0.30001446"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001446.tgz#6d4ba828ab19f49f9bcd14a8430d30feebf1e0c5"
+  integrity sha512-fEoga4PrImGcwUUGEol/PoFCSBnSkA9drgdkxXkJLsUBOnJ8rs3zDv6ApqYXGQFOyMPsjh79naWhF4DAxbF8rw==
 
 capital-case@^1.0.4:
   version "1.0.4"

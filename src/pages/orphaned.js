@@ -324,7 +324,7 @@ Orphaned.propTypes = {
   location: PropTypes.object.isRequired,
 };
 
-const ArchivedWithQuery = (props) => (
+const OrphanedWithQuery = (props) => (
   <StaticQuery
     query={graphql`
       query ArchiveQuery {
@@ -410,4 +410,4 @@ const ArchivedWithQuery = (props) => (
   />
 );
 
-export default ArchivedWithQuery;
+export default OrphanedWithQuery;

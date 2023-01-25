@@ -245,7 +245,7 @@ const Orphaned = ({ data }) => {
                           className={`rule-content mb-4
                             ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                         >
-                          <MD components={components} htmlAst={rule.htmlAst} />
+                          <div dangerouslySetInnerHTML={{ __html: rule.html }} />
                         </section>
 
                         <section
@@ -360,7 +360,7 @@ const OrphanedWithQuery = (props) => (
               archivedreason
               title
             }
-            htmlAst
+            html
             excerpt(format: HTML, pruneLength: 500)
           }
         }

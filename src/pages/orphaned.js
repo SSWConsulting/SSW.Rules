@@ -12,8 +12,6 @@ import {
   faArrowCircleRight,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import MD from 'gatsby-custom-md';
-import GreyBox from '../components/greybox/greybox';
 import Bookmark from '../components/bookmark/bookmark';
 
 config.autoAddCss = false;
@@ -33,10 +31,6 @@ const Orphaned = ({ data }) => {
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
-  };
-
-  const components = {
-    greyBox: GreyBox,
   };
 
   /**
@@ -245,7 +239,9 @@ const Orphaned = ({ data }) => {
                           className={`rule-content mb-4
                             ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                         >
-                          <div dangerouslySetInnerHTML={{ __html: rule.html }} />
+                          <div
+                            dangerouslySetInnerHTML={{ __html: rule.html }}
+                          />
                         </section>
 
                         <section

@@ -1,5 +1,10 @@
 import { Link, StaticQuery, graphql } from 'gatsby';
-import { faArchive, faPause, faStar } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArchive,
+  faPause,
+  faStar,
+  faFrownOpen,
+} from '@fortawesome/free-solid-svg-icons';
 
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -45,16 +50,19 @@ const Index = ({ data, location }) => {
               })}
             </div>
             <section className="pb-8">
-              <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-items-start gap-4 md:gap-0 text-center md:text-left">
+              <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-between text-center md:text-left">
                 <Link to={'/all-rules?size=10'}>
                   <FontAwesomeIcon icon={faStar} /> All rules
                 </Link>
-                <Link to={'/archived'}>
+                <Link to={'/orphaned'}>
+                  <FontAwesomeIcon icon={faFrownOpen} /> Orphaned rules
+                </Link>
+                <Link to={'/archived'} className="mt-2 md:mt-0">
                   <FontAwesomeIcon icon={faArchive} /> Archived rules
                 </Link>
                 <a
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
-                  className="col-span-2 md:col-span-1"
+                  className="mt-2 md:mt-0"
                 >
                   <FontAwesomeIcon icon={faPause} /> Unmigrated rules
                 </a>

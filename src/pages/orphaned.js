@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { Link } from 'gatsby';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowCircleRight,
   faPencilAlt,
+  faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 import Bookmark from '../components/bookmark/bookmark';
 

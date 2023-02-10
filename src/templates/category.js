@@ -173,7 +173,7 @@ export default function Category({ data }) {
                     return;
                   }
                   return (
-                    <div key={i}>
+                    <div key={i} className="mb-3">
                       <li key={i}>
                         <section className="rule-content-title sm:pl-2">
                           <div className="rule-header-container align-middle justify-between">

@@ -165,17 +165,17 @@ export default function Category({ data }) {
                 </label>
               </div>
             </div>
-            <div className="category-rule">
-              <ol className="rule-number">
+            <div className="category-rule p-0 sm:p-[2.2rem]">
+              <ol className="rule-number list-none sm:list-decimal">
                 {category.frontmatter.index.map((r, i) => {
                   var rule = rules.find((rr) => rr.frontmatter.uri == r);
                   if (!rule) {
                     return;
                   }
                   return (
-                    <div key={i}>
+                    <div key={i} className="mb-3">
                       <li key={i}>
-                        <section className="rule-content-title pl-2">
+                        <section className="rule-content-title sm:pl-2">
                           <div className="rule-header-container align-middle justify-between">
                             <h2 className="flex flex-col justify-center">
                               <Link

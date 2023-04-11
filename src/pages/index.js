@@ -2,7 +2,7 @@ import { Link, StaticQuery, graphql } from 'gatsby';
 import {
   faArchive,
   faPause,
-  faStar,
+  faBolt,
   faFrownOpen,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -27,6 +27,13 @@ const Index = ({ data, location }) => {
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
+            <span className="flex items-center">
+              <h2 className="flex-1">Categories</h2>
+              <Link to={'/all-rules?size=10'}>
+                <FontAwesomeIcon icon={faBolt} size={30} />{' '}
+                <span className="text-lg">Latest Rules</span>
+              </Link>
+            </span>
             <div className="rule-index no-gutters rounded mb-12">
               {data.main.nodes.map((element) => {
                 return element.frontmatter.index.map((category, i) => {
@@ -51,9 +58,6 @@ const Index = ({ data, location }) => {
             </div>
             <section className="pb-8">
               <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-between text-center md:text-left">
-                <Link to={'/all-rules?size=10'}>
-                  <FontAwesomeIcon icon={faStar} /> All rules
-                </Link>
                 <Link to={'/orphaned'}>
                   <FontAwesomeIcon icon={faFrownOpen} /> Orphaned rules
                 </Link>

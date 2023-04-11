@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { func } from 'prop-types';
 
 export const FilterOptions = {
-  DateCreated: 'Date Created',
-  DateEdited: 'Date Edited',
+  RecentlyAdded: 'Recently Added',
+  RecentlyUpdated: 'Recently Updated',
 };
 
 const Filter = ({ selected }) => {
   const [selectedOption, setSelectedOption] = useState(
-    FilterOptions.DateCreated
+    FilterOptions.RecentlyAdded
   );
 
   useEffect(() => {
@@ -18,16 +18,16 @@ const Filter = ({ selected }) => {
 
   return (
     <div className="relative inline-block text-left">
-      <span>Sort by</span>
+      <span className="mr-2">Sort by</span>
       <select
         id="sortFilter"
         name="sortFilter"
-        className="text-start text-base focus:outline-none focus:border-transparent"
+        className="text-start py-1 pl-3 text-base focus:outline-none focus:border-transparent"
         onChange={(e) => setSelectedOption(e.target.value)}
         onBlur={(e) => setSelectedOption(e.target.value)}
       >
-        <option id="1">{FilterOptions.DateCreated}</option>
-        <option id="2">{FilterOptions.DateEdited}</option>
+        <option id="1">{FilterOptions.RecentlyAdded}</option>
+        <option id="2">{FilterOptions.RecentlyUpdated}</option>
       </select>
     </div>
   );

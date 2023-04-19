@@ -1,8 +1,9 @@
 name: Scheduled CodeAuditor test
 
-on:
+# Schedule scan for SSW Rules at 1pm every Friday
+on: 
   schedule:
-    - cron: '0 2 * * 2'
+  - cron: "0 2 * * 5"
 
   workflow_dispatch:
 

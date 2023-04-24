@@ -310,7 +310,7 @@ footer {
   text-decoration-thickness: 1px;
   -webkit-text-decoration-color: #AAA;
   text-decoration-color: #AAA;
-  margin-left: 12px;
+  margin: 0 12px;
 }
 
 .action-btn-link-underlined:hover {
@@ -1565,7 +1565,6 @@ div.bad-example {
 
 .category-icon {
   margin-top: 0;
-  margin-left: 0.5rem;
 }
 
 .tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
@@ -1646,6 +1645,9 @@ div.bad-example {
   position: relative;
   margin: 2px 0;
   height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .tooltip-text {
@@ -1662,9 +1664,7 @@ div.bad-example {
   white-space: nowrap;
   padding: 5px;
   margin: 0 auto;
-  transform: translateX(-52%);
 }
-
 
 .tooltiptext {
   visibility: hidden;

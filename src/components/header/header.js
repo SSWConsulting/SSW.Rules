@@ -57,7 +57,7 @@ const Header = ({ displayActions }) => {
               >
                 <FontAwesomeIcon
                   icon={faPlusCircle}
-                  className="mr-4 header-icon"
+                  className="header-icon"
                   size="2x"
                 />
               </a>
@@ -72,7 +72,7 @@ const Header = ({ displayActions }) => {
               >
                 <FontAwesomeIcon
                   icon={faQuestionCircle}
-                  className="mr-4 header-icon"
+                  className="header-icon"
                   size="2x"
                 />
               </a>

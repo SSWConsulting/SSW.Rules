@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
+import Tooltip from '../tooltip/tooltip';
 import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
 import SignIn from '../signin/signin';
 import { parentSiteUrl } from '../../../site-config';
@@ -47,30 +48,35 @@ const Header = ({ displayActions }) => {
             </p>
           </div>
           <div className="action-btn-container flex justify-items-end align-middle">
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://www.ssw.com.au/rules/admin/#/collections/rule/new"
-              className="action-btn-link-underlined"
-            >
-              <FontAwesomeIcon
-                icon={faPlusCircle}
-                className="mr-4 header-icon"
-                size="2x"
-              />
-            </a>
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki"
-              className="action-btn-link-underlined"
-            >
-              <FontAwesomeIcon
-                icon={faQuestionCircle}
-                className="mr-4 header-icon"
-                size="2x"
-              />
-            </a>
+            <Tooltip text="Add New Rule">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.ssw.com.au/rules/admin/#/collections/rule/new"
+                className="action-btn-link-underlined"
+              >
+                <FontAwesomeIcon
+                  icon={faPlusCircle}
+                  className="mr-4 header-icon"
+                  size="2x"
+                />
+              </a>
+            </Tooltip>
+
+            <Tooltip text="How to Edit Rules">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki"
+                className="action-btn-link-underlined"
+              >
+                <FontAwesomeIcon
+                  icon={faQuestionCircle}
+                  className="mr-4 header-icon"
+                  size="2x"
+                />
+              </a>
+            </Tooltip>
             <SignIn />
           </div>
         </div>

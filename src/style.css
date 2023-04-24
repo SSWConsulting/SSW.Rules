@@ -1642,6 +1642,30 @@ div.bad-example {
   text-decoration: none;
 }
 
+.tooltip-wrapper {
+  position: relative;
+  margin: 2px 0;
+  height: 2.5rem;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  background-color: #9e9e9e;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  font-size: small;
+  bottom: 80%;
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  padding: 5px;
+  margin: 0 auto;
+  transform: translateX(-52%);
+}
+
+
 .tooltiptext {
   visibility: hidden;
   width: 100px;
@@ -1698,8 +1722,19 @@ div.bad-example {
   border-color: #9e9e9e transparent transparent transparent;
 }
 
+.tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #9e9e9e transparent transparent transparent;
+}
+
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .disqus-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext, .forgot-username-tooltip:hover .tooltiptext{
+.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .disqus-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext, .forgot-username-tooltip:hover .tooltiptext, .tooltip-wrapper:hover .tooltip-text{
   visibility: visible;
   opacity: 1;
   padding: 0.3rem !important;

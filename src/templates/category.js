@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { detectLinks } from '../helpers/convertUrlFromString';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Bookmark from '../components/bookmark/bookmark';
+import Tooltip from '../components/tooltip/tooltip';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import {
   faArrowCircleRight,
@@ -57,7 +58,7 @@ export default function Category({ data }) {
       />
       <div className="w-full">
         <div className="rule-category rounded">
-          <section className="mb-20 pb-2 rounded">
+          <section className="mb-20 rounded pb-2">
             <div className="cat-title-grid-container">
               <h2 className="cat-title">
                 {category.frontmatter.title}
@@ -65,26 +66,25 @@ export default function Category({ data }) {
                   {' - '} {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
                 </span>
               </h2>
-              <button className="tooltip justify-self-end mt-1">
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${category.parent.relativePath}`}
-                  className="tooltip tooltip-button"
-                >
-                  <FontAwesomeIcon
-                    icon={faGithub}
-                    size="2x"
-                    className="category-icon bookmark-icon"
-                  />
-                </a>
-                <span className="category-tooltip tooltiptext">
-                  Edit in GitHub
-                </span>
-              </button>
+
+              <Tooltip text="Edit in GitHub">
+                <button className="mt-1 justify-self-end">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${category.parent.relativePath}`}
+                  >
+                    <FontAwesomeIcon
+                      icon={faGithub}
+                      size="2x"
+                      className="category-icon bookmark-icon"
+                    />
+                  </a>
+                </button>
+              </Tooltip>
             </div>
 
-            <div className="rule-category-top pt-5 py-4 px-6">
+            <div className="rule-category-top py-4 px-6 pt-5">
               <MD components={components} htmlAst={category.htmlAst} />
 
               {category.frontmatter.archivedreason &&
@@ -111,7 +111,7 @@ export default function Category({ data }) {
                   </div>
                 )}
             </div>
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none">
+            <div className="radio-toolbar how-to-view d-print-none grid grid-cols-1 gap-5 p-4 text-center lg:grid-cols-5">
               <div></div>
               <div>
                 <input
@@ -176,7 +176,7 @@ export default function Category({ data }) {
                     <div key={i} className="mb-3">
                       <li key={i}>
                         <section className="rule-content-title sm:pl-2">
-                          <div className="rule-header-container align-middle justify-between">
+                          <div className="rule-header-container justify-between align-middle">
                             <h2 className="flex flex-col justify-center">
                               <Link
                                 ref={linkRef}
@@ -186,7 +186,7 @@ export default function Category({ data }) {
                                 {rule.frontmatter.title}
                               </Link>
                             </h2>
-                            <div className="rule-buttons flex flex-col sm:flex-row category">
+                            <div className="rule-buttons category flex flex-col sm:flex-row">
                               <Bookmark
                                 ruleId={rule.frontmatter.guid}
                                 className="category-bookmark"

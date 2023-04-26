@@ -3,6 +3,7 @@ import { StaticQuery, graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import Tooltip from '../components/tooltip/tooltip';
 import { Link } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
@@ -80,12 +81,12 @@ const Orphaned = ({ data }) => {
                   {' - '} {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
                 </span>
               </h2>
-              <button className="tooltip justify-self-end mt-1">
+
+              <Tooltip text="Edit in GitHub">
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${category.parent.relativePath}`}
-                  className="tooltip tooltip-button"
                 >
                   <FontAwesomeIcon
                     icon={faGithub}
@@ -93,10 +94,7 @@ const Orphaned = ({ data }) => {
                     className="category-icon bookmark-icon"
                   />
                 </a>
-                <span className="category-tooltip tooltiptext">
-                  Edit in GitHub
-                </span>
-              </button>
+              </Tooltip>
             </div>
 
             <div className="rule-category-top pt-5 py-4 px-6">

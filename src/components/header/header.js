@@ -30,7 +30,7 @@ const Header = ({ displayActions }) => {
   return (
     <AnimatedContainer>
       <header>
-        <div className="flex mt-4 mb-3">
+        <div className="mt-4 mb-3 flex">
           <div className="column">
             <div className="flex items-center">
               <a
@@ -39,9 +39,7 @@ const Header = ({ displayActions }) => {
               >
                 <SSWLogo aria-label="logo" width="113.5" height="75.5" />
               </a>
-              <a href="/rules">
-                <h1 className="title unselectable ml-2">Rules</h1>
-              </a>
+              <h1 className="title ml-2">Rules</h1>
             </div>
             <p className={displayActions ? 'tagline-hidden' : 'tagline'}>
               Secret ingredients to quality software

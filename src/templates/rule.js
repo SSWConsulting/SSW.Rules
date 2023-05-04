@@ -296,7 +296,7 @@ const Rule = ({ data, location }) => {
                     );
                     return (
                       <>
-                        <div className="w-full flex py-2 text-sm ">
+                        <div className="flex w-full py-2 text-sm ">
                           <div className="w-1/2 pr-6 text-right">
                             {indexCat > 0 && (
                               <Link
@@ -320,7 +320,7 @@ const Rule = ({ data, location }) => {
                               </Link>
                             )}
                             {indexCat == 0 && (
-                              <button className="button-next bg-ssw-grey text-white">
+                              <button className="relative box-border h-10 w-10 rounded bg-gray-200 text-lg font-medium text-white">
                                 <FontAwesomeIcon icon={faAngleDoubleLeft} />
                               </button>
                             )}
@@ -347,7 +347,7 @@ const Rule = ({ data, location }) => {
                             )}
                             {indexCat ==
                               category.frontmatter.index.length - 1 && (
-                              <button className="button-next bg-ssw-grey text-white">
+                              <button className="relative box-border h-10 w-10 rounded bg-gray-200 text-lg font-medium text-white">
                                 <FontAwesomeIcon icon={faAngleDoubleRight} />
                               </button>
                             )}
@@ -359,11 +359,11 @@ const Rule = ({ data, location }) => {
               </section>
             </>
           )}
-          <section id="more" className="pt-4 mt-12 flex flex-wrap text-center">
+          <section id="more" className="mt-12 flex flex-wrap pt-4 text-center">
             <div className="acknowledgements w-full lg:w-1/3">
               <Acknowledgements authors={rule.frontmatter.authors} />
             </div>
-            <div className="tags rounded w-full lg:w-1/3">
+            <div className="tags w-full rounded lg:w-1/3">
               <div className="info-link-grid-container">
                 <h5>Categories</h5>
                 <div className="info-tooltip">
@@ -377,7 +377,7 @@ const Rule = ({ data, location }) => {
                 </div>
               </div>
               {categories.map((category, i) => (
-                <div className="px-1 inline" key={i}>
+                <div className="inline px-1" key={i}>
                   <span className="category-tag">
                     <Link ref={linkRef} to={`/${category.parent.name}`}>
                       {category.frontmatter.title

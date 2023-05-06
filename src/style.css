@@ -362,14 +362,6 @@ button:focus {
   outline: 0;
 }
 
-.text-ssw-red {
-  color: #cc4141;
-}
-
-.bg-ssw-red {
-  background-color: #cc4141;
-}
-
 .bg-ssw-dark-grey {
   background-color: #CCCCCC;
 }
@@ -2553,6 +2545,7 @@ box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
 }
 
 .contactUs-form{
+@apply bg-ssw-grey;
 margin: auto;
 height: fit-content;
 box-sizing: content-box;

@@ -9,6 +9,7 @@ module.exports = {
         'gray-tooltip': '#9e9e9e',
         'black-next-button': '#222',
         'ssw-red': '#cc4141',
+        'ssw-grey': '#eee',
       },
     },
   },

@@ -206,7 +206,7 @@ export default function Category({ data }) {
                                   <FontAwesomeIcon
                                     icon={faPencilAlt}
                                     size="lg"
-                                    className="text-ssw-red bookmark-icon"
+                                    className="bookmark-icon"
                                   />
                                 </a>
                                 <span className="tooltiptext">Edit</span>
@@ -226,7 +226,7 @@ export default function Category({ data }) {
                                   <FontAwesomeIcon
                                     icon={faGithub}
                                     size="lg"
-                                    className="text-ssw-red bookmark-icon"
+                                    className="bookmark-icon"
                                   />
                                 </a>
                                 <span className="tooltiptext">

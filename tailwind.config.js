@@ -8,7 +8,7 @@ module.exports = {
       colors: {
         'gray-tooltip': '#9e9e9e',
         'black-next-button': '#222',
-        'red-hover-button': '#cc4141',
+        'ssw-red': '#cc4141',
       },
     },
   },

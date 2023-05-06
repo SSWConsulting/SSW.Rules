@@ -73,7 +73,7 @@ const Orphaned = ({ data }) => {
       <Breadcrumb categoryTitle="Orphaned" isCategory={true} />
       <div className="w-full">
         <div className="rule-category rounded">
-          <section className="mb-20 pb-2 rounded">
+          <section className="mb-20 rounded pb-2">
             <div className="cat-title-grid-container">
               <h2 className="cat-title">
                 Orphaned Rules
@@ -97,7 +97,7 @@ const Orphaned = ({ data }) => {
               </Tooltip>
             </div>
 
-            <div className="rule-category-top pt-5 py-4 px-6">
+            <div className="rule-category-top py-4 px-6 pt-5">
               <div>
                 <br />
                 <div className="attention archived px-4">
@@ -109,7 +109,7 @@ const Orphaned = ({ data }) => {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none">
+            <div className="radio-toolbar how-to-view d-print-none grid grid-cols-1 gap-5 p-4 text-center lg:grid-cols-5">
               <div></div>
               <div>
                 <input
@@ -173,7 +173,7 @@ const Orphaned = ({ data }) => {
                     <div key={i}>
                       <li key={i}>
                         <section className="rule-content-title pl-2">
-                          <div className="rule-header-container align-middle justify-between">
+                          <div className="rule-header-container justify-between align-middle">
                             <h2 className="flex flex-col justify-center">
                               <Link
                                 ref={linkRef}
@@ -182,7 +182,7 @@ const Orphaned = ({ data }) => {
                                 {rule.frontmatter.title}
                               </Link>
                             </h2>
-                            <div className="rule-buttons flex flex-col sm:flex-row category">
+                            <div className="rule-buttons category flex flex-col sm:flex-row">
                               <Bookmark
                                 ruleId={rule.frontmatter.guid}
                                 className="category-bookmark"
@@ -202,7 +202,7 @@ const Orphaned = ({ data }) => {
                                   <FontAwesomeIcon
                                     icon={faPencilAlt}
                                     size="lg"
-                                    className="text-ssw-red bookmark-icon"
+                                    className="bookmark-icon"
                                   />
                                 </a>
                                 <span className="tooltiptext">Edit</span>
@@ -222,7 +222,7 @@ const Orphaned = ({ data }) => {
                                   <FontAwesomeIcon
                                     icon={faGithub}
                                     size="lg"
-                                    className="text-ssw-red bookmark-icon"
+                                    className="bookmark-icon"
                                   />
                                 </a>
                                 <span className="tooltiptext">

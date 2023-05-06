@@ -184,7 +184,7 @@ const Rule = ({ data, location }) => {
                   <FontAwesomeIcon
                     icon={faPencilAlt}
                     size="2x"
-                    className="text-ssw-red bookmark-icon"
+                    className="bookmark-icon"
                   />
                 </a>
                 <span className="tooltiptext">Edit</span>
@@ -204,7 +204,7 @@ const Rule = ({ data, location }) => {
                   <FontAwesomeIcon
                     icon={faGithub}
                     size="2x"
-                    className="text-ssw-red bookmark-icon"
+                    className="bookmark-icon"
                   />
                 </a>
                 <span className="tooltiptext">Edit in GitHub</span>
@@ -308,7 +308,7 @@ const Rule = ({ data, location }) => {
                                 className={'unstyled'}
                               >
                                 <button
-                                  className="relative box-border h-10 w-10 rounded bg-black-next-button text-lg font-medium text-white hover:bg-red-hover-button"
+                                  className="relative box-border h-10 w-10 rounded bg-black-next-button text-lg font-medium text-white hover:bg-ssw-red"
                                   onClick={() => {
                                     appInsights.trackEvent({
                                       name: 'PreviousButtonPressed',
@@ -340,7 +340,7 @@ const Rule = ({ data, location }) => {
                                 }`}
                                 state={{ category: cat }}
                               >
-                                <button className="button-relative box-border h-10 w-10 rounded bg-black-next-button text-lg font-medium text-white hover:bg-red-hover-button">
+                                <button className="button-relative box-border h-10 w-10 rounded bg-black-next-button text-lg font-medium text-white hover:bg-ssw-red">
                                   <FontAwesomeIcon icon={faAngleDoubleRight} />
                                 </button>
                               </Link>

@@ -308,7 +308,7 @@ const Rule = ({ data, location }) => {
                                 className={'unstyled'}
                               >
                                 <button
-                                  className="button-next text-white"
+                                  className="relative box-border h-10 w-10 rounded bg-black-next-button text-lg font-medium text-white hover:bg-red-hover-button"
                                   onClick={() => {
                                     appInsights.trackEvent({
                                       name: 'PreviousButtonPressed',
@@ -340,7 +340,7 @@ const Rule = ({ data, location }) => {
                                 }`}
                                 state={{ category: cat }}
                               >
-                                <button className="button-next text-white">
+                                <button className="button-relative box-border h-10 w-10 rounded bg-black-next-button text-lg font-medium text-white hover:bg-red-hover-button">
                                   <FontAwesomeIcon icon={faAngleDoubleRight} />
                                 </button>
                               </Link>

@@ -358,43 +358,8 @@ a.twitter-hashtag-button, a.twitter-hashtag-button:visited,a.twitter-hashtag-but
   cursor: pointer;
 }
 
-.button-next {
-  position: relative;
-  height: 40px;
-  width: 40px;
-  box-sizing: border-box;
-  border-radius: 3px;
-  font-weight: 500;
-  cursor: pointer;
-  font-size: large;
-}
-
-.button-next:not(.bg-ssw-grey) {
-  background-color: #222;
-}
-
-.button-next:not(.bg-ssw-grey):hover {
-  background-color: #cc4141;
-}
-
-.button-next.bg-ssw-grey {
-  cursor:default;
-}
-
 button:focus {
   outline: 0;
-}
-
-.text-ssw-red {
-  color: #cc4141;
-}
-
-.bg-ssw-red {
-  background-color: #cc4141;
-}
-
-.bg-ssw-grey {
-  background-color: rgb(238, 238, 238);
 }
 
 .bg-ssw-dark-grey {

@@ -58,15 +58,21 @@ const Index = ({ data, location }) => {
             </div>
             <section className="pb-8">
               <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-between text-center md:text-left">
-                <Link to={'/orphaned'}>
+                <Link
+                  to={'/orphaned'}
+                  className="flex-1 underline decoration-dotted unstyled"
+                >
                   <FontAwesomeIcon icon={faFrownOpen} /> Orphaned rules
                 </Link>
-                <Link to={'/archived'} className="mt-2 md:mt-0">
+                <Link
+                  to={'/archived'}
+                  className="mt-2 md:mt-0 underline decoration-dotted unstyled"
+                >
                   <FontAwesomeIcon icon={faArchive} /> Archived rules
                 </Link>
                 <a
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
-                  className="mt-2 md:mt-0"
+                  className="mt-2 md:mt-0 underline decoration-dotted unstyled"
                 >
                   <FontAwesomeIcon icon={faPause} /> Unmigrated rules
                 </a>

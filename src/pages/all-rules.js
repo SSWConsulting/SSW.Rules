@@ -55,14 +55,14 @@ const AllRules = ({ data, location }) => {
 
   const sort = (_filter, filteredRules) => {
     switch (_filter) {
-      case FilterOptions.DateCreated:
+      case FilterOptions.RecentlyAdded:
         filteredRules.sort((a, b) => {
           if (a.file.node.created < b.file.node.created) return 1;
           if (a.file.node.created > b.file.node.created) return -1;
           return 0;
         });
         break;
-      case FilterOptions.DateEdited:
+      case FilterOptions.RecentlyUpdated:
         filteredRules.sort((a, b) => {
           if (a.file.node.lastUpdated < b.file.node.lastUpdated) return 1;
           if (a.file.node.lastUpdated > b.file.node.lastUpdated) return -1;
@@ -103,7 +103,6 @@ const AllRules = ({ data, location }) => {
   return (
     <div className="w-full">
       <Breadcrumb title="All Rules" />
-
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">

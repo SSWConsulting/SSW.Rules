@@ -26,8 +26,8 @@ const Filter = ({ selected }) => {
         onChange={(e) => setSelectedOption(e.target.value)}
         onBlur={(e) => setSelectedOption(e.target.value)}
       >
-        <option id="1">{FilterOptions.RecentlyAdded}</option>
-        <option id="2">{FilterOptions.RecentlyUpdated}</option>
+        <option id="1">{FilterOptions.RecentlyUpdated}</option>
+        <option id="2">{FilterOptions.RecentlyAdded}</option>
       </select>
     </div>
   );

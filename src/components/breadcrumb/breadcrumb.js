@@ -12,7 +12,15 @@ const Breadcrumbs = (props) => {
     if (props.categories.length > 0) {
       return props.categories.map((cat, i) => {
         return (
-          <Link key={i} to={cat.link} className="flex-1">
+          <Link
+            key={i}
+            to={cat.link}
+            style={{
+              'text-decoration': 'underline',
+              'text-decoration-style': 'dotted',
+            }}
+            className="flex-1"
+          >
             {cat.title}
           </Link>
         );
@@ -46,7 +54,14 @@ const Breadcrumbs = (props) => {
       <div className="w-full">
         <ul className="flex flex-col md:flex-row align-middle breadcrumb mr-8">
           <li className="w-auto flex">
-            <Link to={siteUrl} className="flex-1 align-middle">
+            <Link
+              to={siteUrl}
+              style={{
+                'text-decoration': 'underline',
+                'text-decoration-style': 'dotted',
+              }}
+              className="flex-1 align-middle"
+            >
               SSW Rules
             </Link>
           </li>

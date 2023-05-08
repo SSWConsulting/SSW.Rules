@@ -15,11 +15,7 @@ const Breadcrumbs = (props) => {
           <Link
             key={i}
             to={cat.link}
-            style={{
-              'text-decoration': 'underline',
-              'text-decoration-style': 'dotted',
-            }}
-            className="flex-1"
+            className="flex-1 underline decoration-dotted unstyled"
           >
             {cat.title}
           </Link>

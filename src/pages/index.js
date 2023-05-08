@@ -60,31 +60,19 @@ const Index = ({ data, location }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-between text-center md:text-left">
                 <Link
                   to={'/orphaned'}
-                  style={{
-                    'text-decoration': 'underline',
-                    'text-decoration-style': 'dotted',
-                  }}
-                  className="flex-1"
+                  className="flex-1 underline decoration-dotted unstyled"
                 >
                   <FontAwesomeIcon icon={faFrownOpen} /> Orphaned rules
                 </Link>
                 <Link
                   to={'/archived'}
-                  style={{
-                    'text-decoration': 'underline',
-                    'text-decoration-style': 'dotted',
-                  }}
-                  className="mt-2 md:mt-0"
+                  className="mt-2 md:mt-0 underline decoration-dotted unstyled"
                 >
                   <FontAwesomeIcon icon={faArchive} /> Archived rules
                 </Link>
                 <a
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
-                  style={{
-                    'text-decoration': 'underline',
-                    'text-decoration-style': 'dotted',
-                  }}
-                  className="mt-2 md:mt-0"
+                  className="mt-2 md:mt-0 underline decoration-dotted unstyled"
                 >
                   <FontAwesomeIcon icon={faPause} /> Unmigrated rules
                 </a>

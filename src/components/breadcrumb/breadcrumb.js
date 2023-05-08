@@ -52,11 +52,7 @@ const Breadcrumbs = (props) => {
           <li className="w-auto flex">
             <Link
               to={siteUrl}
-              style={{
-                'text-decoration': 'underline',
-                'text-decoration-style': 'dotted',
-              }}
-              className="flex-1 align-middle"
+              className="flex-1 align-middle underline decoration-dotted unstyled"
             >
               SSW Rules
             </Link>

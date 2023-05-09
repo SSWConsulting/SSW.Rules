@@ -1,6 +1,4 @@
 import React from 'react';
-import preval from 'preval.macro';
-import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -12,8 +10,6 @@ import {
   faWeixin,
   faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
-
-const buildTimestamp = preval`module.exports = new Date().getTime();`;
 
 const Footer = () => {
   return (
@@ -137,14 +133,7 @@ const Footer = () => {
                 >
                   CONSTANT CONTINUOUS DEPLOYMENT
                 </a>
-                . Last deployed {getLastDeployTime()} ago (Build #{' '}
-                <a
-                  className="footer-link"
-                  href="https://github.com/SSWConsulting/SSW.Rules/releases/latest"
-                >
-                  {process.env.VERSION_DEPLOYED}
-                </a>
-                )
+                .
               </div>
               <div className="md:text-right py-2">
                 Powered by{' '}
@@ -169,28 +158,6 @@ const Footer = () => {
       </footer>
     </>
   );
-};
-
-const getLastDeployTime = () => {
-  const lastDeployDuration = moment.duration(Date.now() - buildTimestamp);
-  let delta = Math.abs(lastDeployDuration) / 1000;
-
-  const days = Math.floor(delta / 86400);
-  delta -= days * 86400;
-
-  var hours = Math.floor(delta / 3600) % 24;
-  delta -= hours * 3600;
-
-  var minutes = Math.floor(delta / 60) % 60;
-  delta -= minutes * 60;
-
-  return days !== 0
-    ? `${days} day(s)`
-    : ' ' + hours !== 0
-    ? `${hours} hour(s)`
-    : ' ' + minutes > 1
-    ? `${minutes} minutes`
-    : '1 minute';
 };
 
 Footer.propTypes = {};

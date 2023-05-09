@@ -46,7 +46,7 @@ const AllRulesContent = ({
 
   const FormatDate = ({ item }) => (
     <span className="block all-rules-time">
-      {filteredItems.filter === FilterOptions.DateEdited
+      {filteredItems.filter === FilterOptions.RecentlyUpdated
         ? formatDistanceToNow(new Date(item.file.node.lastUpdated), {
             locale: {
               ...locale,

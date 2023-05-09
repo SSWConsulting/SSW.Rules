@@ -9,7 +9,7 @@ export const FilterOptions = {
 
 const Filter = ({ selected }) => {
   const [selectedOption, setSelectedOption] = useState(
-    FilterOptions.RecentlyAdded
+    FilterOptions.RecentlyUpdated
   );
 
   useEffect(() => {

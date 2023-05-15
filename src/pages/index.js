@@ -31,7 +31,9 @@ const Index = ({ data, location }) => {
               <h2 className="flex-1">Categories</h2>
               <Link to={'/all-rules?size=10'}>
                 <FontAwesomeIcon icon={faBolt} size={30} />{' '}
-                <span className="text-lg">Latest Rules</span>
+                <span className="text-lg underline unstyled decoration-underline">
+                  Latest Rules
+                </span>
               </Link>
             </span>
             <div className="rule-index no-gutters rounded mb-12">
@@ -60,19 +62,19 @@ const Index = ({ data, location }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-between text-center md:text-left">
                 <Link
                   to={'/orphaned'}
-                  className="flex-1 underline decoration-dotted unstyled"
+                  className="flex-1 underline unstyled decoration-underline"
                 >
                   <FontAwesomeIcon icon={faFrownOpen} /> Orphaned rules
                 </Link>
                 <Link
                   to={'/archived'}
-                  className="mt-2 md:mt-0 underline decoration-dotted unstyled"
+                  className="mt-2 md:mt-0 underline decoration-underline unstyled"
                 >
                   <FontAwesomeIcon icon={faArchive} /> Archived rules
                 </Link>
                 <a
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
-                  className="mt-2 md:mt-0 underline decoration-dotted unstyled"
+                  className="mt-2 md:mt-0 underline decoration-underline unstyled"
                 >
                   <FontAwesomeIcon icon={faPause} /> Unmigrated rules
                 </a>

@@ -10,6 +10,7 @@ module.exports = {
         'black-next-button': '#222',
         'ssw-red': '#cc4141',
         'ssw-grey': '#eee',
+        underline: '#aaa',
       },
     },
   },

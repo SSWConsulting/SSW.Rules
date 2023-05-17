@@ -3,7 +3,7 @@
 module.exports = {
   siteTitle: `SSW.Rules`,
   siteTitleShort: `SSW.Rules`,
-  siteDescription: ``,
+  siteDescription: `Secret Ingredients to Quality Software | SSW Rules provides best practices for developing secure, reliable, and efficient .NET, Azure, CRM, Angular, React, Dynamics, and AI applications. Learn more today!`,
   siteUrl: `https://www.ssw.com.au/rules`,
   themeColor: `#cc4141`,
   backgroundColor: `#fff`,

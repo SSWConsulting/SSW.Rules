@@ -17,7 +17,7 @@ const Breadcrumbs = (props) => {
             to={cat.link}
             className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled"
           >
-            {cat.title}
+            {cat.title.replace('Rules to ', '')}
           </Link>
         );
       });
@@ -36,10 +36,10 @@ const Breadcrumbs = (props) => {
     }
 
     if (props.isCategory) {
-      return <li className="mr-8">{props.categoryTitle}</li>;
+      return <li className="mr-8">This category</li>;
     }
 
-    return <li className="mr-8">{props.title}</li>;
+    return <li className="mr-8">This rule</li>;
   };
 
   return (

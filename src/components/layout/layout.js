@@ -4,6 +4,7 @@ import { StaticQuery, graphql, navigate } from 'gatsby';
 import Head from '../head/head';
 import Header from '../header/header';
 import Footer from '../footer/footer';
+import FloatingBubble from '../floating-bubble/floating-bubble';
 import '../../style.css';
 import { MobileMenu, Menu } from 'ssw.megamenu';
 import { config } from '@fortawesome/fontawesome-svg-core';
@@ -66,6 +67,7 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
           <Footer />
         </div>
 
+        <FloatingBubble linkToJump={'https://rulesgpt.ssw.com.au/'} />
         <MobileMenu isMenuOpened={isMenuOpened}></MobileMenu>
       </Auth0Provider>
     </div>

@@ -15,7 +15,7 @@ const Breadcrumbs = (props) => {
           <Link
             key={i}
             to={cat.link}
-            className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled"
+            className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled hover:decoration-ssw-red"
           >
             {cat.title}
           </Link>

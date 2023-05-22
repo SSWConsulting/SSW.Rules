@@ -15,7 +15,7 @@ const Breadcrumbs = (props) => {
           <Link
             key={i}
             to={cat.link}
-            className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled"
+            className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled hover:decoration-ssw-red"
           >
             {cat.title.replace('Rules to ', '')}
           </Link>
@@ -52,7 +52,7 @@ const Breadcrumbs = (props) => {
           <li className="w-auto flex">
             <Link
               to={siteUrl}
-              className="flex-1 align-middle transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled"
+              className="flex-1 align-middle transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline hover:decoration-ssw-red unstyled"
             >
               SSW Rules
             </Link>

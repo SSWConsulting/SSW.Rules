@@ -31,7 +31,7 @@ const Index = ({ data, location }) => {
               <h2 className="flex-1">Categories</h2>
               <Link to={'/all-rules?size=10'}>
                 <FontAwesomeIcon icon={faBolt} size={30} />{' '}
-                <span className="text-lg transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline unstyled decoration-underline">
+                <span className="text-lg transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline unstyled decoration-underline hover:decoration-ssw-red">
                   Latest Rules
                 </span>
               </Link>
@@ -62,19 +62,19 @@ const Index = ({ data, location }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center md:justify-between text-center md:text-left">
                 <Link
                   to={'/orphaned'}
-                  className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline unstyled decoration-underline"
+                  className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline unstyled decoration-underline hover:decoration-ssw-red"
                 >
                   <FontAwesomeIcon icon={faFrownOpen} /> Orphaned rules
                 </Link>
                 <Link
                   to={'/archived'}
-                  className="mt-2 md:mt-0 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled"
+                  className="mt-2 md:mt-0 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline hover:decoration-ssw-red unstyled"
                 >
                   <FontAwesomeIcon icon={faArchive} /> Archived rules
                 </Link>
                 <a
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
-                  className="mt-2 md:mt-0 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled"
+                  className="mt-2 md:mt-0 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline hover:decoration-ssw-red unstyled"
                 >
                   <FontAwesomeIcon icon={faPause} /> Unmigrated rules
                 </a>

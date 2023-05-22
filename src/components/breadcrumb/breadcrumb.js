@@ -1,6 +1,6 @@
 import './breadcrumb.css';
 
-import { parentSiteUrl, siteUrl } from '../../../site-config';
+import { parentSiteUrl, siteUrlRelative } from '../../../site-config';
 
 import Icon from '../../images/icon.png';
 import { Link } from 'gatsby';
@@ -51,7 +51,7 @@ const Breadcrumbs = (props) => {
         <ul className="flex flex-col md:flex-row align-middle breadcrumb mr-8">
           <li className="w-auto flex">
             <Link
-              to={siteUrl}
+              to={siteUrlRelative}
               className="flex-1 align-middle transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline hover:decoration-ssw-red unstyled"
             >
               SSW Rules

@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments } from '@fortawesome/free-solid-svg-icons';
 
-const FloatingBubble = () => {
+const FloatingBubble = ({ linkToJump }) => {
   const handleBubbleClick = () => {
-    location.href = 'https://rulesgpt.ssw.com.au/';
+    location.href = linkToJump;
   };
 
   return (
@@ -15,6 +16,10 @@ const FloatingBubble = () => {
       <FontAwesomeIcon icon={faComments} size="2x" className="text-white" />
     </button>
   );
+};
+
+FloatingBubble.propTypes = {
+  linkToJump: PropTypes.string.isRequired,
 };
 
 export default FloatingBubble;

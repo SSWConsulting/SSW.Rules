@@ -67,7 +67,7 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
           <Footer />
         </div>
 
-        <FloatingBubble />
+        <FloatingBubble linkToJump={'https://rulesgpt.ssw.com.au/'} />
         <MobileMenu isMenuOpened={isMenuOpened}></MobileMenu>
       </Auth0Provider>
     </div>

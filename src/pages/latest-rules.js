@@ -1,7 +1,7 @@
 import Filter, { FilterOptions } from '../components/filter/filter';
 import React, { useEffect, useState } from 'react';
 
-import AllRulesContent from '../components/all-rules-content/allRulesContent';
+import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import SideBar from '../components/side-bar/side-bar';
 import { graphql } from 'gatsby';
@@ -9,7 +9,7 @@ import { objectOf } from 'prop-types';
 import qs from 'query-string';
 import { sanitizeName } from '../helpers/sanitizeName';
 
-const AllRules = ({ data, location }) => {
+const LatestRules = ({ data, location }) => {
   const [filter, setFilter] = useState();
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
@@ -102,18 +102,18 @@ const AllRules = ({ data, location }) => {
 
   return (
     <div className="w-full">
-      <Breadcrumb title="All Rules" />
+      <Breadcrumb title="Latest Rules" />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
             <span className="flex">
-              <h2 className="flex-1">All Rules</h2>
+              <h2 className="flex-1">Latest Rules</h2>
               <div className="flex items-center align-middle">
                 <Filter selected={setFilter} />
               </div>
             </span>
             <div className="rule-index archive no-gutters rounded mb-12">
-              <AllRulesContent
+              <LatestRulesContent
                 filteredItems={filteredItems}
                 title={filterTitle}
                 notFound={notFound}
@@ -158,9 +158,9 @@ export const pageQuery = graphql`
   }
 `;
 
-export default AllRules;
+export default LatestRules;
 
-AllRules.propTypes = {
+LatestRules.propTypes = {
   data: objectOf(Object),
   location: objectOf(Object),
 };

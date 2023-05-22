@@ -7,8 +7,8 @@
   "scripts": {
     "build:dir": "mkdirp ./public/icons/",
     "build:favicons": "node scripts/favicons",
-    "build": "yarn run build:dir && yarn run build:favicons && gatsby build --prefix-paths --log-pages && yarn copyCmsIndex",
-    "build:incremental": "gatsby build --prefix-paths --log-pages && yarn copyCmsIndex",
+    "build": "yarn run build:dir && yarn run build:favicons && gatsby build --prefix-paths --log-pages && yarn copyCmsIndex && yarn updateRelativePath",
+    "build:incremental": "gatsby build --prefix-paths --log-pages && yarn copyCmsIndex && yarn updateRelativePath",
     "devbuild": "gatsby clean && yarn run build:dir && yarn run build:favicons && gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
@@ -17,7 +17,8 @@
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
     "lint": "eslint --max-warnings=0 . --ext ts --ext tsx --ext js --ext jsx",
-    "copyCmsIndex": "node scripts/copyCmsIndex.js"
+    "copyCmsIndex": "node scripts/copyCmsIndex.js",
+    "updateRelativePath": "node scripts/updateRelativePath.js"
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.12.0",

@@ -54,7 +54,7 @@ const Header = ({ displayActions }) => {
                 href="https://rulesgpt.ssw.com.au/"
                 className="action-btn-link-underlined"
               >
-                <GPTIcon />
+                <GPTIcon className="group group-hover:[&>circle]:fill-ssw-red" />
               </a>
             </Tooltip>
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import posed from 'react-pose';
 import Tooltip from '../tooltip/tooltip';
 import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
+import GPTIcon from '-!svg-react-loader!../../images/chatgpt_icon.svg';
 import SignIn from '../signin/signin';
 import { parentSiteUrl } from '../../../site-config';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -46,6 +47,17 @@ const Header = ({ displayActions }) => {
             </p>
           </div>
           <div className="action-btn-container flex justify-items-end align-middle">
+            <Tooltip text="RulesGPT">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://rulesgpt.ssw.com.au/"
+                className="action-btn-link-underlined"
+              >
+                <GPTIcon />
+              </a>
+            </Tooltip>
+
             <Tooltip text="Add New Rule">
               <a
                 target="_blank"

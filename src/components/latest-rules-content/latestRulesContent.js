@@ -8,7 +8,7 @@ import { formatDistanceToNow } from 'date-fns';
 import locale from 'date-fns/locale/en-AU';
 import { sanitizeName } from '../../helpers/sanitizeName';
 
-const AllRulesContent = ({
+const LatestRulesContent = ({
   filteredItems,
   title,
   notFound,
@@ -98,9 +98,9 @@ const AllRulesContent = ({
   );
 };
 
-export default AllRulesContent;
+export default LatestRulesContent;
 
-AllRulesContent.propTypes = {
+LatestRulesContent.propTypes = {
   filteredItems: object,
   title: string,
   notFound: bool,

@@ -387,6 +387,15 @@ const Rule = ({ data, location }) => {
                   </span>
                 </div>
               ))}
+              {rule.frontmatter.archivedreason?.length > 0 && (
+                <div className="inline px-1">
+                  <span className="bg-ssw-red transition-colors duration-250 ease-in px-1.5 py-0.5 my-1 text-xs rounded inline-block cursor-pointer hover:opacity-80">
+                    <Link ref={linkRef} to={'/archived'}>
+                      Archived
+                    </Link>
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="likes w-full  lg:w-1/3">

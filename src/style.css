@@ -1355,18 +1355,6 @@ div.bad-example {
   margin-left: auto;
 }
 
-#more .tags .category-tag {
-  background-color: #cc4141;
-  color: #fff;
-  transition: color 0.25s ease;
-  padding: 3px 6px;
-  margin: 0 auto 4px;
-  font-size: 12px;
-  border-radius: 0.2rem;
-  display: inline-block;
-  cursor: pointer;
-}
-
 #more .tags span a,
 #more .tags span a:visited,
 #more .tags span a:hover {
@@ -1374,11 +1362,6 @@ div.bad-example {
   transition: color 0.25s ease;
   text-decoration: none;
   border-bottom: none;
-}
-
-
-#more .tags .category-tag:hover {
-  opacity: 0.8;
 }
 
 #more .likes span {

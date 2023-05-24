@@ -983,7 +983,7 @@ blockquote p:after {
   color: #cc4141;
 }
 
-.rule-content a[href*="//"]:not([href*="ssw.com.au"], .info-btn-container, .tooltip-button):after {
+.rule-content a[href*="//"]:not([href*="ssw.com.au"], [href*="youtube.com"], .info-btn-container, .tooltip-button):after {
     content: "\f08b ";
     font-family: FontAwesome;
     opacity: .5;
@@ -1522,6 +1522,10 @@ div.bad-example {
 
 .header-icon {
   color: #414141;
+}
+
+.hoverable-icon:hover circle {
+  fill: red;
 }
 
 .header-icon:hover {

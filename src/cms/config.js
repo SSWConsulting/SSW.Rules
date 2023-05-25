@@ -10,6 +10,7 @@ var configJson = {
       auth_endpoint: '/api/auth',
       always_fork: true,
       base_url: process.env.API_BASE_URL,
+      use_graphql: true,
     },
     site_url: 'https://www.ssw.com.au/rules',
     publish_mode: 'editorial_workflow',

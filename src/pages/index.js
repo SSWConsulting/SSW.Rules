@@ -29,9 +29,13 @@ const Index = ({ data, location }) => {
           <div className="w-full lg:w-3/4 px-4">
             <span className="flex items-center">
               <h2 className="flex-1">Categories</h2>
-              <Link to={'/latest-rules?size=10'}>
-                <FontAwesomeIcon icon={faBolt} size={30} />{' '}
-                <span className="text-lg transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline unstyled decoration-underline hover:decoration-ssw-red">
+              <Link to={'/latest-rules?size=10'} className="group unstyled">
+                <FontAwesomeIcon
+                  icon={faBolt}
+                  size={30}
+                  className="group-hover:text-ssw-red transition ease-in-out delay-75 duration-150"
+                />{' '}
+                <span className="text-lg underline decoration-underline duration-150 group-hover:decoration-ssw-red group-hover:text-ssw-red transition ease-in-out delay-75">
                   Latest Rules
                 </span>
               </Link>

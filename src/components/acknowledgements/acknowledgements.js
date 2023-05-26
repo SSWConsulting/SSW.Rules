@@ -61,35 +61,28 @@ const Acknowledgements = ({ authors }) => {
 
   return (
     <>
-      <div className="info-link-grid-container">
-        <h5>Acknowledgements</h5>
-        <div className="info-tooltip">
-          <a
-            className="info-btn-container"
-            href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Editing-rules"
-            target="_blank"
-            rel="noopener noreferrer"
-          />
-          <span className="tooltiptext">How to add an Acknowledgement</span>
-        </div>
+      <div className="flex text-center before:mr-5 after:ml-5 before:mb-6 after:mb-6 before:content-[''] before:flex-1 before:border-b before:border-solid after:flex-1 after:border-b after:border-solid">
+        <h5 className="text-ssw-red text-xl ">Authors</h5>
       </div>
-      <div className="flex flex-row flex-wrap justify-center">
+      <div className="flex flex-row flex-wrap">
         {authors &&
           authors.map((author, index) => (
-            <div
-              style={{
-                width: '75px',
-                height: '75px',
-                overflow: 'hidden',
-                borderRadius: '50%',
-                marginRight: '10px',
-              }}
-              key={`author_${index}`}
-            >
-              <ProfileBadge author={author} />
-
-              <span className="tooltiptext">{author.title}</span>
-            </div>
+            <>
+              <div
+                className="pl-5 flex items-center my-2"
+                key={`author_${index}`}
+              >
+                <div
+                  className="w-14 h-14 overflow-hidden rounded-full mr-2.5"
+                  key={`author_${index}`}
+                >
+                  <ProfileBadge author={author} />
+                </div>
+                <div className="ml-2.5">
+                  <a href={author.url}>{author.title}</a>
+                </div>
+              </div>
+            </>
           ))}
       </div>
     </>

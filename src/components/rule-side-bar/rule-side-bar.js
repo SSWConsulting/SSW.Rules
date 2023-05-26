@@ -1,9 +1,10 @@
 import React from 'react';
+import Acknowledgements from '../acknowledgements/acknowledgements';
 
-const RuleSideBar = () => {
+const RuleSideBar = ({ authors }) => {
   return (
     <div>
-      <section className="text-center">Sidebar</section>
+      <Acknowledgements authors={authors} />
     </div>
   );
 };

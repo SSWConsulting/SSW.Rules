@@ -379,43 +379,6 @@ const Rule = ({ data, location }) => {
                   id="more"
                   className="mt-12 flex flex-wrap pt-4 text-center"
                 >
-                  <div className="tags w-full rounded lg:w-1/3">
-                    <div className="info-link-grid-container">
-                      <h5>Categories</h5>
-                      <div className="info-tooltip">
-                        <a
-                          className="info-btn-container"
-                          href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        />
-                        <span className="tooltiptext">
-                          How to add a category
-                        </span>
-                      </div>
-                    </div>
-                    {categories.map((category, i) => (
-                      <div className="inline px-1" key={i}>
-                        <span className="bg-ssw-red transition-colors duration-250 ease-in px-1.5 py-0.5 my-1 text-xs rounded inline-block cursor-pointer hover:opacity-80">
-                          <Link ref={linkRef} to={`/${category.parent.name}`}>
-                            {category.frontmatter.title
-                              .replace('Rules to Better ', '')
-                              .replace('Rules to ', '')}
-                          </Link>
-                        </span>
-                      </div>
-                    ))}
-                    {rule.frontmatter.archivedreason?.length > 0 && (
-                      <div className="inline px-1">
-                        <span className="bg-ssw-red transition-colors duration-250 ease-in px-1.5 py-0.5 my-1 text-xs rounded inline-block cursor-pointer hover:opacity-80">
-                          <Link ref={linkRef} to={'/archived'}>
-                            Archived
-                          </Link>
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
                   <div className="likes w-full  lg:w-1/3">
                     <h5 className="rate-heading">Rate</h5>
                     <Reaction ruleId={rule.frontmatter.guid} />
@@ -450,7 +413,12 @@ const Rule = ({ data, location }) => {
           </div>
 
           <div className="w-full lg:w-1/4 md:w-1/1 px-4">
-            <RuleSideBar authors={rule.frontmatter.authors} />
+            <RuleSideBar
+              authors={rule.frontmatter.authors}
+              categories={categories}
+              location={location}
+              rule={rule}
+            />
           </div>
         </div>
       </div>

@@ -10,14 +10,20 @@ import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
   faExclamationTriangle,
+  faChevronRight,
+  faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Comments from '../components/comments/comments';
+import Tooltip from '../components/tooltip/tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GitHubIcon from '-!svg-react-loader!../images/github.svg';
+import ClockIcon from '-!svg-react-loader!../images/clock-regular.svg';
+import SquarePen from '-!svg-react-loader!../images/square-pen-solid.svg';
+import SquareGit from '-!svg-react-loader!../images/square-github.svg';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
 import Reaction from '../components/reaction/reaction';
@@ -47,6 +53,7 @@ const Rule = ({ data, location }) => {
   const categories = data.categories.nodes;
   const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
   const [hiddenCount, setHiddenCount] = useState(0);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const loadSecretContent = async (userOrgId) => {
     const hidden = document.getElementsByClassName('hidden');
@@ -165,79 +172,79 @@ const Rule = ({ data, location }) => {
       />
       <div className="container full-width" id="rules" style={{}}>
         <div className="flex flex-wrap">
-          <div className="w-full lg:w-3/4 md:w-1/1 px-4">
-            <div className="rule-single rounded">
+          <div
+            className={`w-full px-4 ${isCollapsed ? '' : 'lg:w-3/4 md:w-1/1'}`}
+          >
+            <div className="rule-single rounded relative">
               <section className="rule-content">
                 <div className="rule-header-container justify-between">
                   <h1>{rule.frontmatter.title}</h1>
-                  <div className="rule-buttons flex flex-col sm:flex-row">
-                    <Bookmark ruleId={rule.frontmatter.guid} />
-                    <button className="tooltip">
+                  <div
+                    className="absolute hidden lg:block top-6 right-0 w-6 h-14 leading-[3.5rem] text-center text bg-ssw-grey text-neutral-500 rounded-l-md cursor-pointer"
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                  >
+                    {isCollapsed ? (
+                      <FontAwesomeIcon icon={faChevronLeft} />
+                    ) : (
+                      <FontAwesomeIcon icon={faChevronRight} />
+                    )}
+                  </div>
+                </div>
+                <div className="lg:flex">
+                  {data.history && data.history.nodes[0] && (
+                    <small className="history flex items-center">
+                      Last updated by
+                      <strong className="mx-0.5">
+                        {capitalizeFirstLetter(
+                          data.history.nodes[0].lastUpdatedBy
+                        )}
+                      </strong>
+                      {format(
+                        new Date(data.history.nodes[0].lastUpdated),
+                        'dd MMM yyyy'
+                      )}
+                      <a
+                        className="not-external"
+                        href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
+                      >
+                        <ClockIcon className="w-3 ml-1" />
+                      </a>
+                    </small>
+                  )}
+                  <div className="flex my-2 lg:w-40 justify-center">
+                    <Bookmark ruleId={rule.frontmatter.guid} isSmall={true} />
+                    <Tooltip text="Edit">
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
                         href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
-                        className="tooltip tooltip-button"
+                        className="not-external"
                         onClick={() => {
                           appInsights.trackEvent({
                             name: 'EditMode-NetlifyCMS',
                           });
                         }}
                       >
-                        <FontAwesomeIcon
-                          icon={faPencilAlt}
-                          size="2x"
-                          className="bookmark-icon"
-                        />
+                        <SquarePen className="w-icon lg:mx-6 mx-16 hover:fill-ssw-red hover:w-6" />
                       </a>
-                      <span className="tooltiptext">Edit</span>
-                    </button>
-                    <button className="tooltip">
+                    </Tooltip>
+                    <Tooltip text="Edit in GitHub">
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
                         href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.parent.relativePath}`}
-                        className="tooltip tooltip-button"
                         onClick={() => {
                           appInsights.trackEvent({
                             name: 'EditMode-GitHub',
                           });
                         }}
+                        className="not-external"
                       >
-                        <FontAwesomeIcon
-                          icon={faGithub}
-                          size="2x"
-                          className="bookmark-icon"
-                        />
+                        <SquareGit className="w-icon hover:fill-ssw-red hover:w-6" />
                       </a>
-                      <span className="tooltiptext">Edit in GitHub</span>
-                    </button>
+                    </Tooltip>
                   </div>
                 </div>
-                {data.history && data.history.nodes[0] && (
-                  <small className="history">
-                    Last updated by{' '}
-                    <strong>
-                      {capitalizeFirstLetter(
-                        data.history.nodes[0].lastUpdatedBy
-                      )}
-                    </strong>
-                    {' on '}
-                    {format(
-                      new Date(data.history.nodes[0].lastUpdated),
-                      'dd MMM yyyy hh:mm aaa'
-                    )}
-                    {` (${formatDistance(
-                      new Date(data.history.nodes[0].lastUpdated),
-                      new Date()
-                    )} ago)`}{' '}
-                    <a
-                      href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
-                    >
-                      See History
-                    </a>
-                  </small>
-                )}
                 {rule.frontmatter.archivedreason &&
                   rule.frontmatter.archivedreason.length > 0 && (
                     <div>
@@ -411,7 +418,11 @@ const Rule = ({ data, location }) => {
             </div>
           </div>
 
-          <div className="w-full lg:w-1/4 md:w-1/1 px-4">
+          <div
+            className={`${
+              isCollapsed ? 'hidden' : 'w-full lg:w-1/4 md:w-1/1 px-4'
+            }`}
+          >
             <RuleSideBar
               categories={categories}
               location={location}

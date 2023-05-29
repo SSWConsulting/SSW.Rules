@@ -2,6 +2,9 @@ module.exports = {
   content: ['./src/**/*.js'],
   theme: {
     extend: {
+      width: {
+        icon: '1.375rem',
+      },
       fontSize: {
         xs: '0.8rem',
       },

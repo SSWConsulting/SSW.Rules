@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
+import Tooltip from '../tooltip/tooltip';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
@@ -16,8 +17,7 @@ const appInsights = new ApplicationInsights({
   },
 });
 
-const Bookmark = (props) => {
-  const { ruleId } = props;
+const Bookmark = ({ ruleId, isSmall }) => {
   const [change, setChange] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
 
@@ -83,15 +83,29 @@ const Bookmark = (props) => {
   return (
     <>
       {bookmarked ? (
-        <button onClick={onClick} className="tooltip category-bookmark">
-          <BookmarkIcon className="bookmark-icon-pressed" />
-          <span className="tooltiptext">Remove Bookmark</span>
-        </button>
+        <Tooltip text="Remove Bookmark">
+          <button onClick={onClick}>
+            <BookmarkIcon
+              className={` ${
+                isSmall
+                  ? 'w-4 hover:text-ssw-red hover:w-[18px]'
+                  : 'bookmark-icon-pressed'
+              }`}
+            />
+          </button>
+        </Tooltip>
       ) : (
-        <button onClick={onClick} className="tooltip category-bookmark">
-          <BookmarkIcon className="bookmark-icon" />
-          <span className="tooltiptext">Add Bookmark</span>
-        </button>
+        <Tooltip text="Add Bookmark">
+          <button onClick={onClick}>
+            <BookmarkIcon
+              className={` ${
+                isSmall
+                  ? 'w-4 hover:text-ssw-red hover:w-[18px]'
+                  : 'bookmark-icon'
+              }`}
+            />
+          </button>
+        </Tooltip>
       )}
     </>
   );

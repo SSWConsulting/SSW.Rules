@@ -983,7 +983,7 @@ blockquote p:after {
   color: #cc4141;
 }
 
-.rule-content a[href*="//"]:not([href*="ssw.com.au"], [href*="youtube.com"], .info-btn-container, .tooltip-button):after {
+.rule-content a[href*="//"]:not([href*="ssw.com.au"], [href*="youtube.com"], .info-btn-container, .tooltip-button, .not-external):after {
     content: "\f08b ";
     font-family: FontAwesome;
     opacity: .5;
@@ -1002,12 +1002,6 @@ blockquote p:after {
 .history a {
   padding-left: 0.4rem;
 }
-
-.history a:after {
-  font-family: FontAwesome;
-  content: '\f1da' !important;
-}
-
 
 .rule-content figure{display:table}
 .rule-content figcaption{caption-side:bottom}

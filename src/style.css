@@ -1312,10 +1312,6 @@ div.bad-example {
   margin-bottom: 0.5rem!important;
 }
 
-.rate-heading {
-  padding-right: 1.6rem;
-}
-
 #more .acknowledgements .avatar img {
   max-width: 75px;
 }
@@ -1383,10 +1379,6 @@ div.bad-example {
 
 #more .likes span .bad:hover {
   color: #cc4141;
-}
-
-.rate-heading {
-  margin-bottom: 0;
 }
 
 .reaction-grid {

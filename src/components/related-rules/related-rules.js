@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'gatsby';
 
 const RelatedRules = ({ relatedRules, relatedRulesFromRedirects, rule }) => {
-  const RelatedRuleArr = rule.frontmatter.related;
+  const RelatedRuleArr = rule.frontmatter.related || [];
 
   const filteredRelatedRules = RelatedRuleArr.map((uri) => {
     let relatedRule = relatedRules.nodes.find((r) => r.frontmatter.uri === uri);

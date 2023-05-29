@@ -379,8 +379,7 @@ const Rule = ({ data, location }) => {
                   id="more"
                   className="mt-12 flex flex-wrap pt-4 text-center"
                 >
-                  <div className="likes w-full  lg:w-1/3">
-                    <h5 className="rate-heading">Rate</h5>
+                  <div className="likes w-full">
                     <Reaction ruleId={rule.frontmatter.guid} />
                     <div className="suggestion">
                       <span className="action-btn-container">
@@ -414,10 +413,11 @@ const Rule = ({ data, location }) => {
 
           <div className="w-full lg:w-1/4 md:w-1/1 px-4">
             <RuleSideBar
-              authors={rule.frontmatter.authors}
               categories={categories}
               location={location}
               rule={rule}
+              relatedRules={data.relatedRules}
+              relatedRulesFromRedirects={data.relatedRulesFromRedirects}
             />
           </div>
         </div>

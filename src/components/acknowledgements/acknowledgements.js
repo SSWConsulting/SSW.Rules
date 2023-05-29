@@ -61,9 +61,6 @@ const Acknowledgements = ({ authors }) => {
 
   return (
     <>
-      <div className="flex text-center before:mr-5 after:ml-5 before:mb-6 after:mb-6 before:content-[''] before:flex-1 before:border-b before:border-solid after:flex-1 after:border-b after:border-solid">
-        <h5 className="text-ssw-red text-xl ">Authors</h5>
-      </div>
       <div className="flex flex-row flex-wrap">
         {authors &&
           authors.map((author, index) => (

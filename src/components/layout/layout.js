@@ -30,11 +30,7 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
   };
 
   return (
-    <div
-      style={{
-        overflow: isMenuOpened ? 'hidden' : 'auto',
-      }}
-    >
+    <div className="md:overflow-auto lg:overflow-visible">
       <Auth0Provider
         domain={process.env.AUTH0_DOMAIN}
         clientId={process.env.AUTH0_CLIENT_ID}

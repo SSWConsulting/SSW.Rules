@@ -7,8 +7,6 @@ import { Link, graphql } from 'gatsby';
 /* eslint-disable jsx-a11y/anchor-has-content */
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import {
-  faAngleDoubleLeft,
-  faAngleDoubleRight,
   faExclamationTriangle,
   faChevronRight,
   faChevronLeft,
@@ -98,24 +96,6 @@ const Rule = ({ data, location }) => {
     }
   };
 
-  const getRelatedRule = (relatedUri) => {
-    var relatedRule = data.relatedRules.nodes.find(
-      (r) => r.frontmatter.uri === relatedUri
-    );
-    if (!relatedRule) {
-      for (const r of data.relatedRulesFromRedirects.nodes) {
-        if (r.frontmatter.redirects) {
-          for (const redirect of r.frontmatter.redirects) {
-            if (redirect === relatedUri) {
-              return r;
-            }
-          }
-        }
-      }
-    }
-    return relatedRule;
-  };
-
   const SecretContent = (props) => {
     return (
       <>
@@ -170,13 +150,13 @@ const Rule = ({ data, location }) => {
               })
         }
       />
-      <div className="container full-width" id="rules" style={{}}>
+      <div className="container full-width m-auto" id="rules">
         <div className="flex flex-wrap">
           <div
             className={`w-full px-4 ${isCollapsed ? '' : 'lg:w-3/4 md:w-1/1'}`}
           >
             <div className="rule-single rounded relative">
-              <section className="rule-content">
+              <section className="rule-content mb-0">
                 <div className="rule-header-container justify-between">
                   <h1>{rule.frontmatter.title}</h1>
                   <div
@@ -270,145 +250,25 @@ const Rule = ({ data, location }) => {
                   )}
                 <hr />
                 <div dangerouslySetInnerHTML={{ __html: rule.html }} />
-                {rule.frontmatter.related &&
-                  rule.frontmatter.related.length > 0 && (
-                    <div>
-                      <h2>Related rules</h2>
-                      <ol>
-                        {rule.frontmatter.related
-                          ? rule.frontmatter.related.map((relatedUri) => {
-                              const relatedRule = getRelatedRule(relatedUri);
-                              if (relatedRule) {
-                                return (
-                                  <>
-                                    <li>
-                                      <section>
-                                        <Link
-                                          ref={linkRef}
-                                          to={`/${relatedRule.frontmatter.uri}`}
-                                        >
-                                          {relatedRule.frontmatter.title}
-                                        </Link>
-                                      </section>
-                                    </li>
-                                  </>
-                                );
-                              }
-                            })
-                          : ''}
-                      </ol>
-                    </div>
-                  )}
-                {cat && (
-                  <>
-                    <hr className="pb-4" />
-                    <section id="previous-next" className="flex flex-col">
-                      {categories
-                        .filter((category) => category.parent.name === cat)
-                        .map((category) => {
-                          let indexCat = category.frontmatter.index.indexOf(
-                            rule.frontmatter.uri
-                          );
-                          return (
-                            <>
-                              <div className="flex w-full py-2 text-sm ">
-                                <div className="w-1/2 pr-6 text-right">
-                                  {indexCat > 0 && (
-                                    <Link
-                                      ref={linkRef}
-                                      to={`/${
-                                        category.frontmatter.index[indexCat - 1]
-                                      }`}
-                                      state={{ category: cat }}
-                                      className={'unstyled'}
-                                    >
-                                      <button
-                                        className="relative box-border h-10 w-10 rounded bg-black-next-button text-lg font-medium text-white hover:bg-ssw-red"
-                                        onClick={() => {
-                                          appInsights.trackEvent({
-                                            name: 'PreviousButtonPressed',
-                                          });
-                                        }}
-                                      >
-                                        <FontAwesomeIcon
-                                          icon={faAngleDoubleLeft}
-                                        />
-                                      </button>
-                                    </Link>
-                                  )}
-                                  {indexCat == 0 && (
-                                    <button className="relative box-border h-10 w-10 rounded bg-gray-200 text-lg font-medium text-white">
-                                      <FontAwesomeIcon
-                                        icon={faAngleDoubleLeft}
-                                      />
-                                    </button>
-                                  )}
-                                </div>
-                                <div className="w-1/2 pl-6 text-left">
-                                  {indexCat <
-                                    category.frontmatter.index.length - 1 && (
-                                    <Link
-                                      onClick={() => {
-                                        appInsights.trackEvent({
-                                          name: 'NextButtonPressed',
-                                        });
-                                      }}
-                                      ref={linkRef}
-                                      to={`/${
-                                        category.frontmatter.index[indexCat + 1]
-                                      }`}
-                                      state={{ category: cat }}
-                                    >
-                                      <button className="button-relative box-border h-10 w-10 rounded bg-black-next-button text-lg font-medium text-white hover:bg-ssw-red">
-                                        <FontAwesomeIcon
-                                          icon={faAngleDoubleRight}
-                                        />
-                                      </button>
-                                    </Link>
-                                  )}
-                                  {indexCat ==
-                                    category.frontmatter.index.length - 1 && (
-                                    <button className="relative box-border h-10 w-10 rounded bg-gray-200 text-lg font-medium text-white">
-                                      <FontAwesomeIcon
-                                        icon={faAngleDoubleRight}
-                                      />
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                            </>
-                          );
-                        })}
-                    </section>
-                  </>
-                )}
                 <section
                   id="more"
-                  className="mt-12 flex flex-wrap pt-4 text-center"
+                  className="mt-12 flex flex-wrap pt-10 text-center -mb-6"
                 >
                   <div className="likes w-full">
                     <Reaction ruleId={rule.frontmatter.guid} />
-                    <div className="suggestion">
-                      <span className="action-btn-container">
-                        <a
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href="https://github.com/SSWConsulting/SSW.Rules.Content/issues"
-                          className="action-btn-link-underlined"
-                        >
-                          <div className="action-btn-label">
-                            Make a suggestion
-                          </div>
-                          <GitHubIcon
-                            aria-label="logo"
-                            className="action-btn-icon"
-                          />{' '}
-                        </a>
-                      </span>
-                    </div>
                   </div>
                 </section>
               </section>
+
+              <div className="lg:hidden md:w-1/1 px-4">
+                <RuleSideBar
+                  categories={categories}
+                  location={location}
+                  rule={rule}
+                  relatedRules={data.relatedRules}
+                  relatedRulesFromRedirects={data.relatedRulesFromRedirects}
+                />
+              </div>
 
               <Comments
                 ruleGuid={rule.frontmatter.guid}
@@ -419,8 +279,8 @@ const Rule = ({ data, location }) => {
           </div>
 
           <div
-            className={`${
-              isCollapsed ? 'hidden' : 'w-full lg:w-1/4 md:w-1/1 px-4'
+            className={`hidden ${
+              isCollapsed ? '' : 'lg:w-1/4 lg:block md:hidden'
             }`}
           >
             <RuleSideBar

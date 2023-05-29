@@ -22,7 +22,7 @@ const RelatedRules = ({ relatedRules, relatedRulesFromRedirects, rule }) => {
           <ol className="text-sm">
             {filteredRelatedRules.map((relatedUri, index) => {
               return (
-                <li className="ml-4 mb-3" key={index}>
+                <li className="ml-5 mb-3" key={index}>
                   <span className="text-ssw-red mr-2">{index + 1}.</span>
                   <Link to={`/${relatedUri.frontmatter.uri}`}>
                     {relatedUri.frontmatter.title}

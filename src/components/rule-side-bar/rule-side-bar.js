@@ -2,6 +2,7 @@ import React from 'react';
 import Acknowledgements from '../acknowledgements/acknowledgements';
 import Categories from '../categories/categories';
 import RelatedRules from '../related-rules/related-rules';
+import PropTypes from 'prop-types';
 
 const SidebarHeader = ({ header }) => {
   return (
@@ -34,6 +35,10 @@ const RuleSideBar = ({
       />
     </div>
   );
+};
+
+SidebarHeader.propTypes = {
+  header: PropTypes.string,
 };
 
 export default RuleSideBar;

@@ -3,9 +3,9 @@ import {
   GetOrganisations,
   GetSecretContent,
 } from '../services/apiService';
-import { Link, graphql } from 'gatsby';
+import { graphql } from 'gatsby';
 /* eslint-disable jsx-a11y/anchor-has-content */
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import {
   faExclamationTriangle,
   faChevronRight,
@@ -18,7 +18,6 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Comments from '../components/comments/comments';
 import Tooltip from '../components/tooltip/tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import GitHubIcon from '-!svg-react-loader!../images/github.svg';
 import ClockIcon from '-!svg-react-loader!../images/clock-regular.svg';
 import SquarePen from '-!svg-react-loader!../images/square-pen-solid.svg';
 import SquareGit from '-!svg-react-loader!../images/square-github.svg';
@@ -27,10 +26,7 @@ import ReactDOMServer from 'react-dom/server';
 import Reaction from '../components/reaction/reaction';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
 import { detectLinks } from '../helpers/convertUrlFromString';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { format } from 'date-fns';
-import formatDistance from 'date-fns/formatDistance';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const appInsights = new ApplicationInsights({
@@ -45,8 +41,6 @@ const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
-  const cat = location.state ? location.state.category : null;
-  const linkRef = useRef();
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
   const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
@@ -159,7 +153,7 @@ const Rule = ({ data, location }) => {
               <section className="rule-content mb-0">
                 <div className="rule-header-container justify-between">
                   <h1>{rule.frontmatter.title}</h1>
-                  <div
+                  <button
                     className="absolute hidden lg:block top-6 right-0 w-6 h-14 leading-[3.5rem] text-center text bg-ssw-grey text-neutral-500 rounded-l-md cursor-pointer"
                     onClick={() => setIsCollapsed(!isCollapsed)}
                   >
@@ -168,7 +162,7 @@ const Rule = ({ data, location }) => {
                     ) : (
                       <FontAwesomeIcon icon={faChevronRight} />
                     )}
-                  </div>
+                  </button>
                 </div>
                 <div className="lg:flex">
                   {data.history && data.history.nodes[0] && (

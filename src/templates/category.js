@@ -45,6 +45,7 @@ export default function Category({ data }) {
     .filter((r) => {
       return category.frontmatter.index.includes(r.frontmatter.uri);
     });
+
   return (
     <div>
       <Breadcrumb
@@ -271,6 +272,40 @@ export default function Category({ data }) {
             </div>
           </section>
         </div>
+
+        {(category.frontmatter.consulting || category.frontmatter.experts) && (
+          <div className="flex flex-col items-center justify-center gap-4">
+            <h3 className="text-3xl">
+              Need some help with{' '}
+              <span className="text-ssw-red">
+                {category.frontmatter.title.replace('Rules to', '')}
+              </span>
+              ?
+            </h3>
+
+            {category.frontmatter.consulting && (
+              <button
+                className="bg-ssw-red text-white px-5 py-3 text-lg"
+                onClick={() =>
+                  window.open(category.frontmatter.consulting, '_blank')
+                }
+              >
+                See our consulting services
+              </button>
+            )}
+
+            {category.frontmatter.experts && (
+              <Link
+                to={category.frontmatter.experts}
+                className="group unstyled"
+              >
+                <span className="text-lg font-medium underline decoration-underline duration-150 group-hover:decoration-ssw-red group-hover:text-ssw-red transition ease-in-out delay-75">
+                  Meet our experts
+                </span>
+              </Link>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -288,6 +323,8 @@ export const query = graphql`
       frontmatter {
         title
         archivedreason
+        consulting
+        experts
         index
         uri
         guid

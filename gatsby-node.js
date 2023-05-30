@@ -46,6 +46,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       authors: [Author]
       related: [String]
       redirects: [String]
+      experts: String
+      consulting: String
       guid: String
     }
     type Author {

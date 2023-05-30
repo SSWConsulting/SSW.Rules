@@ -93,6 +93,8 @@ exports.createPages = async ({ graphql, actions }) => {
           frontmatter {
             index
             redirects
+            experts
+            consulting
           }
           parent {
             ... on File {

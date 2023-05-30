@@ -54,9 +54,7 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
           <div className="flex flex-col min-h-screen main-container">
             <Head
               pageTitle={
-                crumbLabel == 'SSW Rules'
-                  ? 'Secret ingredients to quality software'
-                  : crumbLabel
+                crumbLabel == 'SSW Rules' ? 'Latest Rules' : crumbLabel
               }
             />
             <Header displayActions={displayActions} ruleUri={ruleUri} />

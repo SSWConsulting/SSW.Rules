@@ -17,7 +17,7 @@ const appInsights = new ApplicationInsights({
   },
 });
 
-const Bookmark = ({ ruleId, isSmall }) => {
+const Bookmark = ({ ruleId, isSmall = false }) => {
   const [change, setChange] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
 
@@ -113,6 +113,7 @@ const Bookmark = ({ ruleId, isSmall }) => {
 
 Bookmark.propTypes = {
   ruleId: PropTypes.string,
+  isSmall: PropTypes.bool,
 };
 
 export default Bookmark;

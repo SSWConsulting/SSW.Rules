@@ -41,4 +41,13 @@ SidebarHeader.propTypes = {
   header: PropTypes.string,
 };
 
+RuleSideBar.propTypes = {
+  header: PropTypes.string,
+  categories: PropTypes.array,
+  rule: PropTypes.object,
+  location: PropTypes.object,
+  relatedRules: PropTypes.object,
+  relatedRulesFromRedirects: PropTypes.object,
+};
+
 export default RuleSideBar;

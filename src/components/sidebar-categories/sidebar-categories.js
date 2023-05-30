@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Link } from 'gatsby';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
@@ -123,6 +124,12 @@ const Categories = ({ categories, location, rule }) => {
       </div>
     </>
   );
+};
+
+Categories.propTypes = {
+  categories: PropTypes.array,
+  location: PropTypes.object,
+  rule: PropTypes.object,
 };
 
 export default Categories;

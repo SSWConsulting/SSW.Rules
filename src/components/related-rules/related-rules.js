@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
 
 const RelatedRules = ({ relatedRules, relatedRulesFromRedirects, rule }) => {
   const RelatedRuleArr = rule.frontmatter.related || [];
@@ -35,6 +36,12 @@ const RelatedRules = ({ relatedRules, relatedRulesFromRedirects, rule }) => {
       )}
     </>
   );
+};
+
+RelatedRules.propTypes = {
+  relatedRules: PropTypes.object,
+  relatedRulesFromRedirects: PropTypes.object,
+  rule: PropTypes.object,
 };
 
 export default RelatedRules;

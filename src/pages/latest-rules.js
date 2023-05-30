@@ -102,7 +102,7 @@ const LatestRules = ({ data, location }) => {
 
   return (
     <div className="w-full">
-      <Breadcrumb title="Latest Rules" />
+      <Breadcrumb isLatest />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">

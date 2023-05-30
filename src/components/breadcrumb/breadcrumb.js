@@ -64,7 +64,13 @@ const Breadcrumbs = (props) => {
           ) : (
             <></>
           )}
-          {props.isArchived ? <li>Archived</li> : checkCategory(props)}
+          {props.isArchived ? (
+            <li>Archived</li>
+          ) : props.isLatest ? (
+            <li>Latest Rules</li>
+          ) : (
+            checkCategory(props)
+          )}
         </ul>
       </div>
     </div>

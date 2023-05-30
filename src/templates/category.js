@@ -323,11 +323,11 @@ export const query = graphql`
       frontmatter {
         title
         archivedreason
-        consulting
-        experts
         index
         uri
         guid
+        consulting
+        experts
       }
       parent {
         ... on File {
@@ -344,6 +344,8 @@ export const query = graphql`
           archivedreason
           title
           guid
+          consulting
+          experts
         }
         htmlAst
       }

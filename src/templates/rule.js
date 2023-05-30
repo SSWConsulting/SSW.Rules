@@ -10,6 +10,7 @@ import {
   faExclamationTriangle,
   faChevronRight,
   faChevronLeft,
+  faPenSquare,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
@@ -19,8 +20,6 @@ import Comments from '../components/comments/comments';
 import Tooltip from '../components/tooltip/tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ClockIcon from '-!svg-react-loader!../images/clock-regular.svg';
-import SquarePen from '-!svg-react-loader!../images/square-pen-solid.svg';
-import SquareGit from '-!svg-react-loader!../images/square-github.svg';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
 import Reaction from '../components/reaction/reaction';
@@ -28,6 +27,7 @@ import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
 import { detectLinks } from '../helpers/convertUrlFromString';
 import { format } from 'date-fns';
 import { useAuth0 } from '@auth0/auth0-react';
+import { faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -199,7 +199,10 @@ const Rule = ({ data, location }) => {
                           });
                         }}
                       >
-                        <SquarePen className="w-icon lg:mx-6 mx-16 hover:fill-ssw-red hover:w-6" />
+                        <FontAwesomeIcon
+                          icon={faPenSquare}
+                          className="fa-xl lg:mx-6 mx-16 hover:fill-ssw-red hover:w-6"
+                        />
                       </a>
                     </Tooltip>
                     <Tooltip text="Edit in GitHub">
@@ -214,7 +217,10 @@ const Rule = ({ data, location }) => {
                         }}
                         className="not-external"
                       >
-                        <SquareGit className="w-icon hover:fill-ssw-red hover:w-6" />
+                        <FontAwesomeIcon
+                          icon={faGithubSquare}
+                          className="fa-xl  hover:fill-ssw-red hover:w-6"
+                        />
                       </a>
                     </Tooltip>
                   </div>

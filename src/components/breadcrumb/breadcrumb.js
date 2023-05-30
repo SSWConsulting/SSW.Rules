@@ -64,7 +64,13 @@ const Breadcrumbs = (props) => {
           ) : (
             <></>
           )}
-          {props.isArchived ? <li>Archived</li> : checkCategory(props)}
+          {props.isArchived ? (
+            <li>Archived</li>
+          ) : props.isLatest ? (
+            <li>Latest Rules</li>
+          ) : (
+            checkCategory(props)
+          )}
         </ul>
       </div>
     </div>
@@ -79,6 +85,7 @@ Breadcrumbs.propTypes = {
   isRule: PropTypes.bool,
   isHomePage: PropTypes.bool,
   isArchived: PropTypes.bool,
+  isLatest: PropTypes.bool,
 };
 
 export default Breadcrumbs;

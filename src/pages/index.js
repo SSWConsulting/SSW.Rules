@@ -26,10 +26,12 @@ const Index = ({ data, location }) => {
       <Breadcrumb isHomePage={true} />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
-          <div className="w-full lg:w-3/4 px-4">            <span className="flex items-center">
+          <div className="w-full lg:w-3/4 px-4">            
+            <span className="flex items-center">
               <h2 className="flex-1">Categories</h2>
               <Link to={'/latest-rules?size=10'} className="group unstyled">
-                <FontAwesomeIcon               icon={faBolt}
+                <FontAwesomeIcon               
+                  icon={faBolt}
                   size={30}
                   className="group-hover:text-ssw-red transition ease-in-out delay-75 duration-150"
                 />{' '}

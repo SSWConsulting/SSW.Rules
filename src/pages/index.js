@@ -29,7 +29,7 @@ const Index = ({ data, location }) => {
           <div className="w-full lg:w-3/4 px-4">
             <span className="flex items-center">
               <h2 className="flex-1">Categories</h2>
-              <Link to={'/latest-rules?size=10'} className="group unstyled">
+              <Link to={'/latest-rules?size=50'} className="group unstyled">
                 <FontAwesomeIcon
                   icon={faBolt}
                   size={30}

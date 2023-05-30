@@ -25,7 +25,7 @@ const LatestRules = ({ data, location }) => {
 
   const queryStringRulesListSize = (() => {
     if (!queryStringSearch.size) {
-      return 10;
+      return 50;
     } else {
       return queryStringSearch.size > 100 ? 100 : queryStringSearch.size;
     }

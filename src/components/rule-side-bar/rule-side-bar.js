@@ -1,6 +1,6 @@
 import React from 'react';
 import Acknowledgements from '../acknowledgements/acknowledgements';
-import Categories from '../categories/categories';
+import Categories from '../sidebar-categories/sidebar-categories';
 import RelatedRules from '../related-rules/related-rules';
 import PropTypes from 'prop-types';
 

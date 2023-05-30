@@ -185,7 +185,7 @@ const Rule = ({ data, location }) => {
                       </a>
                     </small>
                   )}
-                  <div className="flex my-2 lg:w-40 justify-center">
+                  <div className="flex my-2 lg:w-40 justify-center ml-4">
                     <Bookmark ruleId={rule.frontmatter.guid} isSmall={true} />
                     <Tooltip text="Edit">
                       <a
@@ -252,7 +252,7 @@ const Rule = ({ data, location }) => {
                 <div dangerouslySetInnerHTML={{ __html: rule.html }} />
                 <section
                   id="more"
-                  className="mt-12 flex flex-wrap pt-10 text-center -mb-6"
+                  className="mt-12 flex flex-wrap pt-6 pb-6 lg:pb-12 text-center -mb-6"
                 >
                   <div className="likes w-full">
                     <Reaction ruleId={rule.frontmatter.guid} />

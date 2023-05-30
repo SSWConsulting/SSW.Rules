@@ -1419,15 +1419,6 @@ div.bad-example {
   padding-left: 0.1rem;
 }
 
-.reaction-counter-container {
-  position: relative;
-  top: .3rem;
-  padding-left: 0.2rem;
-  text-align: start;
-  display: inline-block;
-  align-self: center;
-}
-
 .agree-grid-item {
   grid-column: 2;
 }
@@ -1794,7 +1785,8 @@ div.bad-example {
     padding: 1rem;
   }
   .reaction-grid {
-    grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.3rem 1rem auto;
+    /* grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.3rem 1rem auto; */
+    grid-template-columns: auto 2rem 0.5rem 1.5rem 2.2rem 0.5rem 1.5rem 2.2rem 0.5rem 1.5rem 2.3rem 1rem auto;
   }
   .profile-image {
     visibility: hidden;

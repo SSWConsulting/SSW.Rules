@@ -61,7 +61,7 @@ const Acknowledgements = ({ authors }) => {
 
   return (
     <>
-      <div className="flex flex-row flex-wrap">
+      <div className="flex flex-row flex-wrap lg:mb-8">
         {authors &&
           authors.map((author, index) => (
             <>
@@ -70,12 +70,12 @@ const Acknowledgements = ({ authors }) => {
                 key={`author_${index}`}
               >
                 <div
-                  className="w-14 h-14 overflow-hidden rounded-full mr-2.5"
+                  className="w-12 h-12 overflow-hidden rounded-full mr-2.5"
                   key={`author_${index}`}
                 >
                   <ProfileBadge author={author} />
                 </div>
-                <div className="ml-2.5 w-60">
+                <div className="ml-2.5 w-60 text-sm">
                   <a href={author.url}>{author.title}</a>
                 </div>
               </div>

@@ -85,6 +85,7 @@ Breadcrumbs.propTypes = {
   isRule: PropTypes.bool,
   isHomePage: PropTypes.bool,
   isArchived: PropTypes.bool,
+  isLatest: PropTypes.bool,
 };
 
 export default Breadcrumbs;

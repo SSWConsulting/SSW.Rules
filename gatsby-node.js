@@ -46,6 +46,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       authors: [Author]
       related: [String]
       redirects: [String]
+      experts: String
+      consulting: String
       guid: String
     }
     type Author {
@@ -93,6 +95,8 @@ exports.createPages = async ({ graphql, actions }) => {
           frontmatter {
             index
             redirects
+            experts
+            consulting
           }
           parent {
             ... on File {

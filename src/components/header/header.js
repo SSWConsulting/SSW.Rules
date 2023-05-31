@@ -47,7 +47,7 @@ const Header = ({ displayActions }) => {
             </p>
           </div>
           <div className="action-btn-container flex justify-items-end align-middle">
-            <Tooltip text="RulesGPT">
+            <Tooltip text="✨ Try out RulesGPT">
               <a
                 target="_blank"
                 rel="noopener noreferrer"
@@ -58,7 +58,7 @@ const Header = ({ displayActions }) => {
               </a>
             </Tooltip>
 
-            <Tooltip text="Add New Rule">
+            <Tooltip text="Create a SSW Rule">
               <a
                 target="_blank"
                 rel="noopener noreferrer"

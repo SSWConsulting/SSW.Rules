@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const tooltipShowDelay = 3000;
 const tooltipHideDelay = 18000;
@@ -45,6 +46,11 @@ const Tooltip = ({ children, text }) => {
       )}
     </button>
   );
+};
+
+Tooltip.propTypes = {
+  children: PropTypes.object.isRequired,
+  text: PropTypes.string.isRequired,
 };
 
 export default Tooltip;

@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-const tooltipShowDelay = 3000;
-const tooltipHideDelay = 18000;
-
-const Tooltip = ({ children, text }) => {
+const Tooltip = ({ children, text, showDelay, hideDelay }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
-    if (text.includes('RulesGPT')) {
+    if (showDelay && hideDelay) {
       const tooltipTimeout = setTimeout(() => {
         setShowTooltip(true);
-      }, tooltipShowDelay);
+      }, showDelay);
 
       const hideTooltipTimeout = setTimeout(() => {
         setShowTooltip(false);
-      }, tooltipHideDelay);
+      }, hideDelay);
 
       return () => {
         clearTimeout(tooltipTimeout);
         clearTimeout(hideTooltipTimeout);
       };
     }
-  }, [text, location.pathname]);
+  }, [text]);
 
   return (
     <button
@@ -51,6 +48,8 @@ const Tooltip = ({ children, text }) => {
 Tooltip.propTypes = {
   children: PropTypes.object.isRequired,
   text: PropTypes.string.isRequired,
+  showDelay: PropTypes.number,
+  hideDelay: PropTypes.number,
 };
 
 export default Tooltip;

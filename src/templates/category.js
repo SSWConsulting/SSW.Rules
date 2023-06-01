@@ -145,7 +145,7 @@ export default function Category({ data }) {
                   className="view-blurb custom-control-label ml-1"
                   htmlFor="customRadioInline3"
                 >
-                  Show Blurb
+                  Show blurb
                 </label>
               </div>
               <div>

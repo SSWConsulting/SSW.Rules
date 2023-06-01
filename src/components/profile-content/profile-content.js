@@ -268,7 +268,7 @@ const ProfileContent = (props) => {
             className="view-blurb custom-control-label"
             htmlFor="customRadioInline3"
           >
-            Show Blurb
+            Show blurb
           </label>
         </div>
         <div className="radio-button-3">

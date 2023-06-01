@@ -272,9 +272,8 @@ export default function Category({ data }) {
             </div>
           </section>
         </div>
-
         {(category.frontmatter.consulting || category.frontmatter.experts) && (
-          <div className="flex flex-col items-center justify-center gap-4">
+          <div className="flex flex-col items-center justify-center gap-4 -mt-16 mb-10">
             <h3 className="text-3xl">
               Need some help with{' '}
               <span className="text-ssw-red">

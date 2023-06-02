@@ -178,21 +178,21 @@ const Rule = ({ data, location }) => {
                         'dd MMM yyyy'
                       )}
                       <a
-                        className="not-external"
+                        className="not-external block"
                         href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
                       >
                         <ClockIcon className="w-3 ml-1" />
                       </a>
                     </small>
                   )}
-                  <div className="flex my-2 lg:w-40 justify-center ml-4">
+                  <div className="flex my-2 lg:w-40 justify-center lg:justify-around lg:ml-4">
                     <Bookmark ruleId={rule.frontmatter.guid} isSmall={true} />
                     <Tooltip text="Edit">
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
                         href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
-                        className="not-external"
+                        className="not-external block"
                         onClick={() => {
                           appInsights.trackEvent({
                             name: 'EditMode-NetlifyCMS',
@@ -201,7 +201,7 @@ const Rule = ({ data, location }) => {
                       >
                         <FontAwesomeIcon
                           icon={faPenSquare}
-                          className="fa-xl lg:mx-6 mx-16 hover:fill-ssw-red hover:w-6"
+                          className="fa-xl lg:mx-0 mx-16 hover:fill-ssw-red hover:w-6"
                         />
                       </a>
                     </Tooltip>
@@ -215,7 +215,7 @@ const Rule = ({ data, location }) => {
                             name: 'EditMode-GitHub',
                           });
                         }}
-                        className="not-external"
+                        className="not-external block"
                       >
                         <FontAwesomeIcon
                           icon={faGithubSquare}

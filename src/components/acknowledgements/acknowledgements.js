@@ -66,7 +66,7 @@ const Acknowledgements = ({ authors }) => {
           authors.map((author, index) => (
             <>
               <div
-                className="pl-5 flex items-center my-2 w-full justify-center"
+                className="pl-5 flex items-center my-2 w-full lg:w-auto justify-center"
                 key={`author_${index}`}
               >
                 <div
@@ -75,7 +75,7 @@ const Acknowledgements = ({ authors }) => {
                 >
                   <ProfileBadge author={author} />
                 </div>
-                <div className="ml-2.5 w-60 text-sm">
+                <div className="ml-2.5 w-60 lg:w-40 text-sm">
                   <a href={author.url}>{author.title}</a>
                 </div>
               </div>

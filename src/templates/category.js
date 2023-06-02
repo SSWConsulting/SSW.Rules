@@ -145,7 +145,7 @@ export default function Category({ data }) {
                   className="view-blurb custom-control-label ml-1"
                   htmlFor="customRadioInline3"
                 >
-                  Show Blurb
+                  Show blurb
                 </label>
               </div>
               <div>
@@ -272,13 +272,12 @@ export default function Category({ data }) {
             </div>
           </section>
         </div>
-
         {(category.frontmatter.consulting || category.frontmatter.experts) && (
-          <div className="flex flex-col items-center justify-center gap-4">
+          <div className="flex flex-col items-center justify-center gap-4 -mt-16 mb-10">
             <h3 className="text-3xl">
               Need some help with{' '}
               <span className="text-ssw-red">
-                {category.frontmatter.title.replace('Rules to', '')}
+                {category.frontmatter.title.replace(/Rules to(?: Better)?/, '')}
               </span>
               ?
             </h3>

@@ -1003,6 +1003,11 @@ blockquote p:after {
   padding-left: 0.4rem;
 }
 
+.history a:after {
+  font-family: FontAwesome;
+  content: '\f1da' !important;
+}
+
 .rule-content figure{display:table}
 .rule-content figcaption{caption-side:bottom}
 

@@ -10,24 +10,23 @@ import {
   faExclamationTriangle,
   faChevronRight,
   faChevronLeft,
-  faPenSquare,
+  faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Comments from '../components/comments/comments';
-import Tooltip from '../components/tooltip/tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ClockIcon from '-!svg-react-loader!../images/clock-regular.svg';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
 import Reaction from '../components/reaction/reaction';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
 import { detectLinks } from '../helpers/convertUrlFromString';
 import { format } from 'date-fns';
+import formatDistance from 'date-fns/formatDistance';
 import { useAuth0 } from '@auth0/auth0-react';
-import { faGithubSquare } from '@fortawesome/free-brands-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -163,36 +162,14 @@ const Rule = ({ data, location }) => {
                       <FontAwesomeIcon icon={faChevronRight} />
                     )}
                   </button>
-                </div>
-                <div className="lg:flex">
-                  {data.history && data.history.nodes[0] && (
-                    <small className="history flex items-center">
-                      Last updated by
-                      <strong className="mx-0.5">
-                        {capitalizeFirstLetter(
-                          data.history.nodes[0].lastUpdatedBy
-                        )}
-                      </strong>
-                      {format(
-                        new Date(data.history.nodes[0].lastUpdated),
-                        'dd MMM yyyy'
-                      )}
-                      <a
-                        className="not-external block"
-                        href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
-                      >
-                        <ClockIcon className="w-3 ml-1" />
-                      </a>
-                    </small>
-                  )}
-                  <div className="flex my-2 lg:w-40 justify-center lg:justify-around lg:ml-4">
-                    <Bookmark ruleId={rule.frontmatter.guid} isSmall={true} />
-                    <Tooltip text="Edit">
+                  <div className="rule-buttons flex flex-col sm:flex-row">
+                    <Bookmark ruleId={rule.frontmatter.guid} />
+                    <button className="tooltip">
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
                         href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
-                        className="not-external block"
+                        className="tooltip tooltip-button"
                         onClick={() => {
                           appInsights.trackEvent({
                             name: 'EditMode-NetlifyCMS',
@@ -200,31 +177,60 @@ const Rule = ({ data, location }) => {
                         }}
                       >
                         <FontAwesomeIcon
-                          icon={faPenSquare}
-                          className="fa-xl lg:mx-0 mx-16 hover:fill-ssw-red hover:w-6"
+                          icon={faPencilAlt}
+                          size="2x"
+                          className="bookmark-icon"
                         />
                       </a>
-                    </Tooltip>
-                    <Tooltip text="Edit in GitHub">
+                      <span className="tooltiptext">Edit</span>
+                    </button>
+                    <button className="tooltip">
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
                         href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.parent.relativePath}`}
+                        className="tooltip tooltip-button"
                         onClick={() => {
                           appInsights.trackEvent({
                             name: 'EditMode-GitHub',
                           });
                         }}
-                        className="not-external block"
                       >
                         <FontAwesomeIcon
-                          icon={faGithubSquare}
-                          className="fa-xl  hover:fill-ssw-red hover:w-6"
+                          icon={faGithub}
+                          size="2x"
+                          className="bookmark-icon"
                         />
                       </a>
-                    </Tooltip>
+                      <span className="tooltiptext">Edit in GitHub</span>
+                    </button>
                   </div>
                 </div>
+
+                {data.history && data.history.nodes[0] && (
+                  <small className="history">
+                    Last updated by{' '}
+                    <strong>
+                      {capitalizeFirstLetter(
+                        data.history.nodes[0].lastUpdatedBy
+                      )}
+                    </strong>
+                    {' on '}
+                    {format(
+                      new Date(data.history.nodes[0].lastUpdated),
+                      'dd MMM yyyy hh:mm aaa'
+                    )}
+                    {` (${formatDistance(
+                      new Date(data.history.nodes[0].lastUpdated),
+                      new Date()
+                    )} ago)`}{' '}
+                    <a
+                      href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
+                    >
+                      See History
+                    </a>
+                  </small>
+                )}
                 {rule.frontmatter.archivedreason &&
                   rule.frontmatter.archivedreason.length > 0 && (
                     <div>

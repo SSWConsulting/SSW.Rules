@@ -20,18 +20,17 @@ const RelatedRules = ({ relatedRules, relatedRulesFromRedirects, rule }) => {
     <>
       {filteredRelatedRules && filteredRelatedRules.length > 0 && (
         <div className="flex flex-col items-center">
-          <ol className="text-sm">
+          <ul className="text-sm px-2 lg:mb-20">
             {filteredRelatedRules.map((relatedUri, index) => {
               return (
-                <li className="ml-5 mb-3" key={index}>
-                  <span className="text-ssw-red mr-2">{index + 1}.</span>
+                <li className="ml-5 mb-2" key={index}>
                   <Link to={`/${relatedUri.frontmatter.uri}`}>
                     {relatedUri.frontmatter.title}
                   </Link>
                 </li>
               );
             })}
-          </ol>
+          </ul>
         </div>
       )}
     </>

@@ -19,44 +19,42 @@ const Acknowledgements = ({ authors }) => {
     author: PropTypes.any,
   };
 
-  function ProfileImg(props) {
-    const author = props.author;
-    if (author.noimage) {
-      return (
-        <img src={PlaceHolderImage} alt={author.title} title={author.title} />
-      );
-    } else if (author.img && author.img.includes('http')) {
-      return <img src={author.img} alt={author.title} title={author.title} />;
-    } else if (author.url && author.url.includes('ssw.com.au/people')) {
-      return (
-        <img
-          src={`https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${author.title.replace(
-            / /g,
-            '-'
-          )}/Images/${author.title.replace(/ /g, '-')}-Profile.jpg`}
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = PlaceHolderImage;
-          }}
-          alt={author.title}
-          title={author.title}
-        />
-      );
-    } else if (author.url && author.url.includes('github.com/')) {
-      const urlList = author.url.split('github.com/');
-      const gitHubUsername = urlList[urlList.length - 1];
-      return (
-        <img
-          src={`https://avatars.githubusercontent.com/${gitHubUsername}`}
-          alt={author.title}
-          title={author.title}
-        />
-      );
-    } else {
-      return (
-        <img src={PlaceHolderImage} alt={author.title} title={author.title} />
-      );
+  function ProfileImg({ author }) {
+    const { noimage, img, title, url } = author;
+
+    if (!title) {
+      // eslint-disable-next-line no-console
+      console.warn('Warning: Title is missing.');
     }
+
+    const getImgSource = () => {
+      if (noimage) {
+        return PlaceHolderImage;
+      } else if (img?.includes('http')) {
+        return img;
+      } else if (url?.includes('ssw.com.au/people')) {
+        const formattedTitle = title?.replace(/ /g, '-');
+        return `https://github.com/SSWConsulting/SSW.People.Profiles/raw/main/${formattedTitle}/Images/${formattedTitle}-Profile.jpg`;
+      } else if (url?.includes('github.com/')) {
+        const urlList = url.split('github.com/');
+        const gitHubUsername = urlList[urlList.length - 1];
+        return `https://avatars.githubusercontent.com/${gitHubUsername}`;
+      } else {
+        return PlaceHolderImage;
+      }
+    };
+
+    return (
+      <img
+        src={getImgSource()}
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = PlaceHolderImage;
+        }}
+        alt={title}
+        title={title}
+      />
+    );
   }
 
   return (

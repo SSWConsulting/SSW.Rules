@@ -983,7 +983,7 @@ blockquote p:after {
   color: #cc4141;
 }
 
-.rule-content a[href*="//"]:not([href*="ssw.com.au"], [href*="youtube.com"], .info-btn-container, .tooltip-button):after {
+.rule-content a[href*="//"]:not([href*="ssw.com.au"], [href*="youtube.com"], [href*="google.com/map"], .info-btn-container, .tooltip-button):after {
     content: "\f08b ";
     font-family: FontAwesome;
     opacity: .5;
@@ -2944,6 +2944,7 @@ margin-bottom: 1em;
 .rule-content a[href$='.ics']:before, .rule-content a[href$='.vsc']:before, 
 .rule-content a[href$='.zip']:before,
 .rule-content a[href*='mailto:']:before,
+.rule-content a[href*='google.com/map']:before,
 .rule-content a[href*='youtube.com']:before, .rule-content a[href*='youtu.be']:before {
   content: "\F1C1 ";
   font-family: FontAwesome;
@@ -3003,5 +3004,11 @@ margin-bottom: 1em;
 
 .rule-content a[href*='youtube.com']:before, .rule-content a[href*='youtu.be']:before {
   content: "\F167 ";
+  color: #FF0000;
+}
+
+.rule-content a[href*='google.com/map']:before {
+  content: "\f041 ";
+  font-size: 1.1em;
   color: #FF0000;
 }

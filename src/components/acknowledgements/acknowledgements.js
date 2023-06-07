@@ -61,22 +61,19 @@ const Acknowledgements = ({ authors }) => {
 
   return (
     <>
-      <div className="flex flex-row flex-wrap lg:mb-8">
+      <div className="flex flex-row flex-wrap justify-center">
         {authors &&
           authors.map((author, index) => (
             <>
               <div
-                className="pl-5 flex items-center my-2 w-full lg:w-auto justify-center"
+                className="px-2 flex items-center my-2 justify-center"
                 key={`author_${index}`}
               >
                 <div
-                  className="w-12 h-12 overflow-hidden rounded-full mr-2.5"
+                  className="w-16 h-16 overflow-hidden rounded-full"
                   key={`author_${index}`}
                 >
                   <ProfileBadge author={author} />
-                </div>
-                <div className="ml-2.5 w-60 lg:w-40 text-sm">
-                  <a href={author.url}>{author.title}</a>
                 </div>
               </div>
             </>

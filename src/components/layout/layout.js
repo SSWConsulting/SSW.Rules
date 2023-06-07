@@ -5,19 +5,16 @@ import Head from '../head/head';
 import Header from '../header/header';
 import Footer from '../footer/footer';
 import '../../style.css';
-import { MobileMenu, Menu } from 'ssw.megamenu';
+import { MenuBar } from 'ssw.megamenu';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import '@fortawesome/fontawesome-svg-core/styles.css';
 import { Auth0Provider } from '@auth0/auth0-react';
+import 'ssw.megamenu/dist/style.css';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 
 config.autoAddCss = false;
 const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
   const node = useRef();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
-
-  const actionOnToggleClick = () => {
-    setIsMenuOpened(!isMenuOpened);
-  };
 
   const handleClick = (e) => {
     if (node.current.contains(e.target)) {
@@ -54,13 +51,11 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
               }
             />
             <Header displayActions={displayActions} ruleUri={ruleUri} />
-            <Menu onClickToggle={() => actionOnToggleClick()}></Menu>
+            <MenuBar />
             <main className="flex-1">{children}</main>
           </div>
           <Footer />
         </div>
-
-        <MobileMenu isMenuOpened={isMenuOpened}></MobileMenu>
       </Auth0Provider>
     </div>
   );

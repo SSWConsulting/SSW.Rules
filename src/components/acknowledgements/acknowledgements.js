@@ -2,6 +2,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import PlaceHolderImage from '../../images/ssw-employee-profile-placeholder-sketch.jpg';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
+appInsights.loadAppInsights();
 
 const Acknowledgements = ({ authors }) => {
   function ProfileBadge(props) {
@@ -23,8 +31,10 @@ const Acknowledgements = ({ authors }) => {
     const { noimage, img, title, url } = author;
 
     if (!title) {
-      // eslint-disable-next-line no-console
-      console.warn('Warning: Title is missing.');
+      appInsights.trackTrace({
+        message: `Profile title is missing at ${window.location.href}`,
+        severityLevel: 2,
+      });
     }
 
     const getImgSource = () => {

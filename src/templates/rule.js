@@ -361,7 +361,10 @@ const Rule = ({ data, location }) => {
           )}
           <section id="more" className="mt-12 flex flex-wrap pt-4 text-center">
             <div className="acknowledgements w-full lg:w-1/3">
-              <Acknowledgements authors={rule.frontmatter.authors} />
+              <Acknowledgements
+                authors={rule.frontmatter.authors}
+                location={location}
+              />
             </div>
             <div className="tags w-full rounded lg:w-1/3">
               <div className="info-link-grid-container">

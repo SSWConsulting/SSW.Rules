@@ -11,7 +11,7 @@ const appInsights = new ApplicationInsights({
 });
 appInsights.loadAppInsights();
 
-const Acknowledgements = ({ authors }) => {
+const Acknowledgements = ({ authors, location }) => {
   function ProfileBadge(props) {
     const author = props.author;
     return (
@@ -32,7 +32,7 @@ const Acknowledgements = ({ authors }) => {
 
     if (!title) {
       appInsights.trackTrace({
-        message: `Profile title is missing at ${window.location.href}`,
+        message: `Profile title is missing at ${location.href}`,
         severityLevel: 2,
       });
     }
@@ -107,6 +107,7 @@ const Acknowledgements = ({ authors }) => {
 Acknowledgements.propTypes = {
   authors: PropTypes.any,
   author: PropTypes.any,
+  location: PropTypes.string,
 };
 
 export default Acknowledgements;

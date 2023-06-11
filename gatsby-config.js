@@ -192,7 +192,6 @@ module.exports = {
         ],
       },
     },
-    // 'gatsby-source-local-git',
     {
       resolve: 'gatsby-plugin-google-gtag',
       options: {
@@ -202,7 +201,6 @@ module.exports = {
         },
       },
     },
-    // 'gatsby-plugin-styled-components',
     'gatsby-plugin-fontawesome-css',
   ],
 };

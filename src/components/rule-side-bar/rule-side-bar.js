@@ -48,7 +48,10 @@ const RuleSideBar = ({
   return (
     <div className="sticky top-0 lg:overflow-y-scroll lg:hide-scrollbar lg:mb-20">
       <SidebarHeader sectionTitle="Authors" />
-      <Acknowledgements authors={rule.frontmatter.authors} />
+      <Acknowledgements
+        authors={rule.frontmatter.authors}
+        location={location}
+      />
 
       <SidebarHeader sectionTitle="Categories" />
       <Categories categories={categories} location={location} rule={rule} />

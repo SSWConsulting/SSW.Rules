@@ -20,7 +20,7 @@ const RelatedRules = ({ relatedRules, relatedRulesFromRedirects, rule }) => {
     <>
       {filteredRelatedRules && filteredRelatedRules.length > 0 && (
         <div className="flex flex-col items-center">
-          <ul className="text-sm px-2 lg:mb-20">
+          <ul className="text-sm px-2">
             {filteredRelatedRules.map((relatedUri, index) => {
               return (
                 <li className="ml-5 mb-2" key={index}>

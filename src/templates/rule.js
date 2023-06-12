@@ -8,8 +8,6 @@ import { graphql } from 'gatsby';
 import React, { useLayoutEffect, useState } from 'react';
 import {
   faExclamationTriangle,
-  faChevronRight,
-  faChevronLeft,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -44,7 +42,6 @@ const Rule = ({ data, location }) => {
   const categories = data.categories.nodes;
   const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
   const [hiddenCount, setHiddenCount] = useState(0);
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const loadSecretContent = async (userOrgId) => {
     const hidden = document.getElementsByClassName('hidden');
@@ -145,9 +142,7 @@ const Rule = ({ data, location }) => {
       />
       <div className="container full-width m-auto" id="rules">
         <div className="flex flex-wrap">
-          <div
-            className={`w-full px-4 ${isCollapsed ? '' : 'lg:w-3/4 md:w-1/1'}`}
-          >
+          <div className={'w-full px-4 lg:w-3/4 md:w-1/1'}>
             <div className="rule-single rounded relative">
               <section className="rule-content mb-0">
                 <div className="rule-header-container justify-between display:flex flex-col md:flex-row">
@@ -178,16 +173,6 @@ const Rule = ({ data, location }) => {
                       </small>
                     )}
                   </div>
-                  <button
-                    className="absolute hidden lg:block top-6 right-0 w-6 h-14 leading-[3.5rem] text-center text bg-ssw-grey text-neutral-500 rounded-l-md cursor-pointer"
-                    onClick={() => setIsCollapsed(!isCollapsed)}
-                  >
-                    {isCollapsed ? (
-                      <FontAwesomeIcon icon={faChevronLeft} />
-                    ) : (
-                      <FontAwesomeIcon icon={faChevronRight} />
-                    )}
-                  </button>
                   <div className="rule-buttons flex flex-row justify-center mt-5">
                     <Bookmark ruleId={rule.frontmatter.guid} />
                     <button className="tooltip !mx-6 md:!mx-0">
@@ -286,11 +271,7 @@ const Rule = ({ data, location }) => {
             </div>
           </div>
 
-          <div
-            className={`hidden ${
-              isCollapsed ? '' : 'lg:w-1/4 lg:block md:hidden'
-            }`}
-          >
+          <div className="hidden lg:w-1/4 lg:block md:hidden">
             <RuleSideBar
               categories={categories}
               location={location}

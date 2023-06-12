@@ -26,7 +26,6 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-disqus',
       options: {
-        // shortname: 'sswrulesdev',
         shortname: process.env.DISQUS_FORUM,
       },
     },
@@ -193,20 +192,15 @@ module.exports = {
         ],
       },
     },
-    'gatsby-source-local-git',
     {
       resolve: 'gatsby-plugin-google-gtag',
       options: {
-        trackingIds: [
-          process.env.GOOGLE_ANALYTICS, // Tracking Id: UA-111111111-1
-          process.env.GA_MEASUREMENT_ID, // Measurement Id: G-AB123AB12A
-        ],
+        trackingIds: [process.env.GOOGLE_ANALYTICS],
         pluginConfig: {
           head: true,
         },
       },
     },
-    'gatsby-plugin-styled-components',
     'gatsby-plugin-fontawesome-css',
   ],
 };

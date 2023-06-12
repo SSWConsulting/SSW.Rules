@@ -162,7 +162,7 @@ const Rule = ({ data, location }) => {
                       <FontAwesomeIcon icon={faChevronRight} />
                     )}
                   </button>
-                  <div className="rule-buttons flex flex-col sm:flex-row">
+                  <div className="rule-buttons flex flex-col sm:flex-row mt-5">
                     <Bookmark ruleId={rule.frontmatter.guid} />
                     <button className="tooltip">
                       <a

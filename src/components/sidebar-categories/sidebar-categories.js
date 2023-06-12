@@ -56,7 +56,7 @@ const Categories = ({ categories, location, rule }) => {
                       </span>
                     )}
                   </div>
-                  <span className="mx-6 select-none bg-ssw-red px-1.5 py-1 rounded hover:opacity-80 transition-colors duration-250 ease-in cursor-pointer">
+                  <span className="mx-6 select-none bg-ssw-red px-2.5 py-1 rounded hover:opacity-80 transition-colors duration-250 ease-in cursor-pointer">
                     <Link
                       ref={linkRef}
                       to={`/${category.parent.name}`}

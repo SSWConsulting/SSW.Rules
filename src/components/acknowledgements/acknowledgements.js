@@ -72,19 +72,17 @@ const Acknowledgements = ({ authors, location }) => {
       <div className="flex flex-row flex-wrap justify-center">
         {authors &&
           authors.map((author, index) => (
-            <>
+            <div
+              className="px-2 flex items-center my-2 justify-center"
+              key={`author_${index}`}
+            >
               <div
-                className="px-2 flex items-center my-2 justify-center"
+                className="w-16 h-16 overflow-hidden rounded-full"
                 key={`author_${index}`}
               >
-                <div
-                  className="w-16 h-16 overflow-hidden rounded-full"
-                  key={`author_${index}`}
-                >
-                  <ProfileBadge author={author} />
-                </div>
+                <ProfileBadge author={author} />
               </div>
-            </>
+            </div>
           ))}
       </div>
     </>
@@ -94,7 +92,7 @@ const Acknowledgements = ({ authors, location }) => {
 Acknowledgements.propTypes = {
   authors: PropTypes.any,
   author: PropTypes.any,
-  location: PropTypes.string,
+  location: PropTypes.object,
 };
 
 export default Acknowledgements;

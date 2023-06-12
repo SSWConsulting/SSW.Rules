@@ -150,8 +150,34 @@ const Rule = ({ data, location }) => {
           >
             <div className="rule-single rounded relative">
               <section className="rule-content mb-0">
-                <div className="rule-header-container justify-between">
-                  <h1>{rule.frontmatter.title}</h1>
+                <div className="rule-header-container justify-between display:flex flex-col md:flex-row">
+                  <div>
+                    <h1>{rule.frontmatter.title}</h1>
+                    {data.history && data.history.nodes[0] && (
+                      <small className="history">
+                        Last updated by{' '}
+                        <strong>
+                          {capitalizeFirstLetter(
+                            data.history.nodes[0].lastUpdatedBy
+                          )}
+                        </strong>
+                        {' on '}
+                        {format(
+                          new Date(data.history.nodes[0].lastUpdated),
+                          'dd MMM yyyy hh:mm aaa'
+                        )}
+                        {` (${formatDistance(
+                          new Date(data.history.nodes[0].lastUpdated),
+                          new Date()
+                        )} ago)`}{' '}
+                        <a
+                          href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
+                        >
+                          See History
+                        </a>
+                      </small>
+                    )}
+                  </div>
                   <button
                     className="absolute hidden lg:block top-6 right-0 w-6 h-14 leading-[3.5rem] text-center text bg-ssw-grey text-neutral-500 rounded-l-md cursor-pointer"
                     onClick={() => setIsCollapsed(!isCollapsed)}
@@ -162,9 +188,9 @@ const Rule = ({ data, location }) => {
                       <FontAwesomeIcon icon={faChevronRight} />
                     )}
                   </button>
-                  <div className="rule-buttons flex flex-col sm:flex-row mt-5">
+                  <div className="rule-buttons flex flex-row justify-center mt-5">
                     <Bookmark ruleId={rule.frontmatter.guid} />
-                    <button className="tooltip">
+                    <button className="tooltip !mx-6 md:!mx-0">
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
@@ -207,30 +233,6 @@ const Rule = ({ data, location }) => {
                   </div>
                 </div>
 
-                {data.history && data.history.nodes[0] && (
-                  <small className="history">
-                    Last updated by{' '}
-                    <strong>
-                      {capitalizeFirstLetter(
-                        data.history.nodes[0].lastUpdatedBy
-                      )}
-                    </strong>
-                    {' on '}
-                    {format(
-                      new Date(data.history.nodes[0].lastUpdated),
-                      'dd MMM yyyy hh:mm aaa'
-                    )}
-                    {` (${formatDistance(
-                      new Date(data.history.nodes[0].lastUpdated),
-                      new Date()
-                    )} ago)`}{' '}
-                    <a
-                      href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
-                    >
-                      See History
-                    </a>
-                  </small>
-                )}
                 {rule.frontmatter.archivedreason &&
                   rule.frontmatter.archivedreason.length > 0 && (
                     <div>

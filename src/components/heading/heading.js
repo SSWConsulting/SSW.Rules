@@ -33,7 +33,7 @@ const Heading = ({ title, children, isAscending, setIsAscending }) => {
         </button>
       </h6>
       {children.length == 0 ? (
-        <div className="flex justify-center p-5">
+        <div className="flex justify-center p-10">
           <FontAwesomeIcon
             icon={faSpinner}
             className="animate-spin text-gray-700 duration-300"

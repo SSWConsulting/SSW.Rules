@@ -1790,7 +1790,6 @@ div.bad-example {
     padding: 1rem;
   }
   .reaction-grid {
-    /* grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.3rem 1rem auto; */
     grid-template-columns: auto 2rem 0.5rem 1.5rem 2.2rem 0.5rem 1.5rem 2.2rem 0.5rem 1.5rem 2.3rem 1rem auto;
   }
   .profile-image {

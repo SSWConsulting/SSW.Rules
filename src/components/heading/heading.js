@@ -2,6 +2,7 @@ import { array, bool, func, string } from 'prop-types';
 import {
   faSortAmountDown,
   faSortAmountUp,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,7 +32,16 @@ const Heading = ({ title, children, isAscending, setIsAscending }) => {
           </span>
         </button>
       </h6>
-      <ol className={'pt-3 px-4 py-2 block'}>{children}</ol>
+      {children.length == 0 ? (
+        <div className="flex justify-center p-10">
+          <FontAwesomeIcon
+            icon={faSpinner}
+            className="animate-spin text-gray-700 duration-300"
+          />
+        </div>
+      ) : (
+        <ol className={'pt-3 px-4 py-2 block'}>{children}</ol>
+      )}
     </>
   );
 };

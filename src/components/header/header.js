@@ -56,11 +56,7 @@ const Header = ({ displayActions }) => {
             </p>
           </div>
           <div className="action-btn-container flex justify-items-end align-middle">
-            <Tooltip
-              text="✨ Try out RulesGPT"
-              showDelay={3000}
-              hideDelay={18000}
-            >
+            <Tooltip text="Try out RulesGPT" showDelay={3000} hideDelay={18000}>
               <a
                 target="_blank"
                 rel="noopener noreferrer"

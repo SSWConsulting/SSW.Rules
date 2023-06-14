@@ -983,7 +983,7 @@ blockquote p:after {
   color: #cc4141;
 }
 
-.rule-content a[href*="//"]:not([href*="ssw.com.au"], [href*="youtube.com"], [href*="google.com/map"], .info-btn-container, .tooltip-button):after {
+.rule-content a[href*="//"]:not([href*="ssw.com.au"], [href*="youtube.com"], [href*="google.com/map"], .info-btn-container, .tooltip-button, .not-external):after {
     content: "\f08b ";
     font-family: FontAwesome;
     opacity: .5;
@@ -1007,7 +1007,6 @@ blockquote p:after {
   font-family: FontAwesome;
   content: '\f1da' !important;
 }
-
 
 .rule-content figure{display:table}
 .rule-content figcaption{caption-side:bottom}
@@ -1312,10 +1311,6 @@ div.bad-example {
   margin-bottom: 0.5rem!important;
 }
 
-.rate-heading {
-  padding-right: 1.6rem;
-}
-
 #more .acknowledgements .avatar img {
   max-width: 75px;
 }
@@ -1385,10 +1380,6 @@ div.bad-example {
   color: #cc4141;
 }
 
-.rate-heading {
-  margin-bottom: 0;
-}
-
 .reaction-grid {
   grid-template-columns: auto 2.5rem 2.2rem 0.7rem 2.2rem 2.2rem 0.7rem 2.2rem 2.2rem 0.7rem 2.2rem 2.7rem auto;
   display: grid;
@@ -1431,15 +1422,6 @@ div.bad-example {
   font-family: FontAwesome;
   font-size: 1.7rem;
   padding-left: 0.1rem;
-}
-
-.reaction-counter-container {
-  position: relative;
-  top: .3rem;
-  padding-left: 0.2rem;
-  text-align: start;
-  display: inline-block;
-  align-self: center;
 }
 
 .agree-grid-item {
@@ -1808,7 +1790,7 @@ div.bad-example {
     padding: 1rem;
   }
   .reaction-grid {
-    grid-template-columns: auto 2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.2rem 0.5rem 1rem 2.3rem 1rem auto;
+    grid-template-columns: auto 2rem 0.5rem 1.5rem 2.2rem 0.5rem 1.5rem 2.2rem 0.5rem 1.5rem 2.3rem 1rem auto;
   }
   .profile-image {
     visibility: hidden;

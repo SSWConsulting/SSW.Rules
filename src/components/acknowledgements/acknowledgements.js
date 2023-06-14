@@ -69,34 +69,19 @@ const Acknowledgements = ({ authors, location }) => {
 
   return (
     <>
-      <div className="info-link-grid-container">
-        <h5>Acknowledgements</h5>
-        <div className="info-tooltip">
-          <a
-            className="info-btn-container"
-            href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Editing-rules"
-            target="_blank"
-            rel="noopener noreferrer"
-          />
-          <span className="tooltiptext">How to add an Acknowledgement</span>
-        </div>
-      </div>
       <div className="flex flex-row flex-wrap justify-center">
         {authors &&
           authors.map((author, index) => (
             <div
-              style={{
-                width: '75px',
-                height: '75px',
-                overflow: 'hidden',
-                borderRadius: '50%',
-                marginRight: '10px',
-              }}
+              className="px-2 flex items-center my-2 justify-center"
               key={`author_${index}`}
             >
-              <ProfileBadge author={author} />
-
-              <span className="tooltiptext">{author.title}</span>
+              <div
+                className="w-16 h-16 overflow-hidden rounded-full"
+                key={`author_${index}`}
+              >
+                <ProfileBadge author={author} />
+              </div>
             </div>
           ))}
       </div>
@@ -107,7 +92,7 @@ const Acknowledgements = ({ authors, location }) => {
 Acknowledgements.propTypes = {
   authors: PropTypes.any,
   author: PropTypes.any,
-  location: PropTypes.string,
+  location: PropTypes.object,
 };
 
 export default Acknowledgements;

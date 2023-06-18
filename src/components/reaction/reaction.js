@@ -154,7 +154,9 @@ const Reaction = (props) => {
           </span>
         </div>
       </div>
-      <div className="reaction-counter-container">{superLikesCount}</div>
+      <div className="relative top-3 text-sm text-start pl-2">
+        {superLikesCount}
+      </div>
       <div className="somewhat-agree-grid-item">
         <div className="react-tooltip">
           <button
@@ -172,7 +174,7 @@ const Reaction = (props) => {
           </span>
         </div>
       </div>
-      <div className="reaction-counter-container">{likesCount}</div>
+      <div className="relative top-3 text-sm text-start pl-2">{likesCount}</div>
       <div className="somewhat-disagree-grid-item">
         <div className="react-tooltip">
           <button
@@ -190,7 +192,9 @@ const Reaction = (props) => {
           </span>
         </div>
       </div>
-      <div className="reaction-counter-container">{dislikesCount}</div>
+      <div className="relative top-3 text-sm text-start pl-2">
+        {dislikesCount}
+      </div>
       <div className="disagree-grid-item">
         <div className="react-tooltip">
           <button
@@ -208,7 +212,9 @@ const Reaction = (props) => {
           </span>
         </div>
       </div>
-      <div className="reaction-counter-container">{superDislikesCount}</div>
+      <div className="relative top-3 text-sm text-start pl-2">
+        {superDislikesCount}
+      </div>
     </div>
   );
 };

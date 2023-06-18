@@ -1,3 +1,4 @@
+const plugin = require('tailwindcss/plugin');
 module.exports = {
   content: ['./src/**/*.js'],
   theme: {
@@ -14,5 +15,20 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        '.hide-scrollbar': {
+          'max-height': '45rem',
+          'scrollbar-width': 'none',
+          '&::-webkit-scrollbar': {
+            width: '0',
+          },
+          'mask-image':
+            'linear-gradient(to bottom, transparent, black 30px, black calc(100% - 20px), transparent), linear-gradient(black, black)',
+          'mask-size': '100% 100%, 0 100%',
+        },
+      });
+    }),
+  ],
 };

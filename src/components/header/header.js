@@ -11,6 +11,15 @@ import {
   faPlusCircle,
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
+
+appInsights.loadAppInsights();
 
 // Example of a component-specific page transition
 const AnimatedContainer = posed.div({
@@ -47,16 +56,17 @@ const Header = ({ displayActions }) => {
             </p>
           </div>
           <div className="action-btn-container flex justify-items-end align-middle">
-            <Tooltip
-              text="✨ Try out RulesGPT"
-              showDelay={3000}
-              hideDelay={18000}
-            >
+            <Tooltip text="Try out RulesGPT" showDelay={3000} hideDelay={18000}>
               <a
                 target="_blank"
                 rel="noopener noreferrer"
                 href="https://rulesgpt.ssw.com.au/"
                 className="action-btn-link-underlined"
+                onClick={() => {
+                  appInsights.trackEvent({
+                    name: 'RulesGPTButtonPressed',
+                  });
+                }}
               >
                 <GPTIcon className="group group-hover:[&>circle]:fill-ssw-red" />
               </a>
@@ -77,7 +87,7 @@ const Header = ({ displayActions }) => {
               </a>
             </Tooltip>
 
-            <Tooltip text="How to Edit Rules">
+            <Tooltip text="SSW Rules wiki">
               <a
                 target="_blank"
                 rel="noopener noreferrer"

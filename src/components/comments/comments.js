@@ -9,7 +9,6 @@ const Comments = (props) => {
   };
   return (
     <div className="disqus-box">
-      <hr className="pb-4" />
       <Disqus config={disqusConfig} />
     </div>
   );

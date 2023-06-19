@@ -56,12 +56,17 @@ const RuleSideBar = ({
       <SidebarHeader sectionTitle="Categories" />
       <Categories categories={categories} location={location} rule={rule} />
 
-      <SidebarHeader sectionTitle="Related Rules" />
-      <RelatedRules
-        rule={rule}
-        relatedRules={relatedRules}
-        relatedRulesFromRedirects={relatedRulesFromRedirects}
-      />
+      {(relatedRules.nodes.length !== 0 ||
+        relatedRulesFromRedirects.nodes.length !== 0) && (
+        <>
+          <SidebarHeader sectionTitle="Related Rules" />
+          <RelatedRules
+            rule={rule}
+            relatedRules={relatedRules}
+            relatedRulesFromRedirects={relatedRulesFromRedirects}
+          />
+        </>
+      )}
     </div>
   );
 };

@@ -94,7 +94,7 @@ const Categories = ({ categories, location, rule }) => {
         </>
       )}
 
-      <div className="flex flex-col py-1 text-sm items-center justify-center lg:mb-8">
+      <div className="flex flex-col py-1 text-sm items-center justify-center">
         {categories
           .filter((category) => category.parent.name !== cat)
           .map((category, i) => (

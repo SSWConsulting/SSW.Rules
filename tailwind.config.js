@@ -19,7 +19,7 @@ module.exports = {
     plugin(function ({ addUtilities }) {
       addUtilities({
         '.hide-scrollbar': {
-          'max-height': '45rem',
+          'max-height': '44rem',
           'scrollbar-width': 'none',
           '&::-webkit-scrollbar': {
             width: '0',

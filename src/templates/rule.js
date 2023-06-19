@@ -193,7 +193,13 @@ const Rule = ({ data, location }) => {
                           className="bookmark-icon"
                         />
                       </a>
-                      <span className="tooltiptext">Edit</span>
+                      <span className="tooltiptext w-52 !-left-[4.6rem]">
+                        Edit
+                        <p>
+                          (Warning: Stale branches can cause issues - See wiki
+                          for help)
+                        </p>
+                      </span>
                     </button>
                     <button className="tooltip">
                       <a

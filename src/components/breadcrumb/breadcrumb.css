@@ -3,6 +3,8 @@
     content: ">";
     padding-right: 0.5rem;
     padding-left: 0.5rem;
+    display: inline-block;
+    width: 1.5rem;
   }
   
   ul.breadcrumb li.breadcrumb-category a:after{

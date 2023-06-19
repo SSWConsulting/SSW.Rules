@@ -17,7 +17,7 @@ const Breadcrumbs = (props) => {
             to={cat.link}
             className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled hover:decoration-ssw-red"
           >
-            {cat.title.replace('Rules to ', '')}
+            {cat.title.replace(/Rules to(?: Better)?/, '')}
           </Link>
         );
       });
@@ -44,7 +44,7 @@ const Breadcrumbs = (props) => {
 
   return (
     <div className="m-4 md:mx-2 md:ml-4 h-full flex">
-      <Link to={parentSiteUrl} className="ml-2 h-full">
+      <Link to={parentSiteUrl} className="mx-2 h-full">
         <img alt="SSW Foursquare" src={Icon} className="w-4 mt-1" />
       </Link>
       <div className="w-full">

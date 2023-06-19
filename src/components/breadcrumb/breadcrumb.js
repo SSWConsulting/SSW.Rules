@@ -36,19 +36,19 @@ const Breadcrumbs = (props) => {
     }
 
     if (props.isCategory) {
-      return <li className="mr-8">This category</li>;
+      return <li>This category</li>;
     }
 
-    return <li className="mr-8">This rule</li>;
+    return <li>This rule</li>;
   };
 
   return (
-    <div className="m-4 mx-8 md:mx-2 md:ml-4 h-full flex">
-      <Link to={parentSiteUrl} className="mx-2 h-full">
+    <div className="m-4 md:mx-2 md:ml-4 h-full flex">
+      <Link to={parentSiteUrl} className="ml-2 h-full">
         <img alt="SSW Foursquare" src={Icon} className="w-4 mt-1" />
       </Link>
       <div className="w-full">
-        <ul className="flex flex-col md:flex-row align-middle breadcrumb mr-8">
+        <ul className="flex flex-col md:flex-row align-middle breadcrumb">
           <li className="w-auto flex">
             <Link
               to={siteUrlRelative}

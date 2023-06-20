@@ -46,7 +46,7 @@ const RuleSideBar = ({
   relatedRulesFromRedirects,
 }) => {
   return (
-    <div className="sticky top-0 lg:overflow-y-scroll lg:hide-scrollbar lg:mb-20">
+    <div className="sticky top-0 lg:overflow-y-scroll pt-1 lg:hide-scrollbar lg:mb-20">
       <SidebarHeader sectionTitle="Authors" />
       <Acknowledgements
         authors={rule.frontmatter.authors}

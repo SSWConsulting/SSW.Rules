@@ -25,7 +25,7 @@ module.exports = {
             width: '0',
           },
           'mask-image':
-            'linear-gradient(to bottom, transparent, black 30px, black calc(100% - 20px), transparent), linear-gradient(black, black)',
+            'linear-gradient(to bottom, transparent, black 8px, black calc(100% - 10px), transparent), linear-gradient(black, black)',
           'mask-size': '100% 100%, 0 100%',
         },
       });

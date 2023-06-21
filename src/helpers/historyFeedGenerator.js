@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 
 const createHistoryFeed = async (pluginData, pages, graphql) => {
   const { publicFolder } = pluginData;
-  const FILE_PATH = publicFolder('history-feed.json');
+  const FILE_PATH = publicFolder('widget-history.json');
   const pageData = Array.from(pages.values()).map((page) => {
     return {
       path: page.path,
@@ -18,7 +18,6 @@ const createHistoryFeed = async (pluginData, pages, graphql) => {
       history: allHistoryJson(
         sort: { fields: lastUpdated, order: DESC }
         filter: { file: { glob: "rules/**" } }
-        limit: 500
       ) {
         edges {
           node {

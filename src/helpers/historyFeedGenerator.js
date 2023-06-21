@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 
 const createHistoryFeed = async (pluginData, pages, graphql) => {
   const { publicFolder } = pluginData;
-  const FILE_PATH = publicFolder('history-feed.json');
+  const FILE_PATH = publicFolder('widget-history.json');
   const pageData = Array.from(pages.values()).map((page) => {
     return {
       path: page.path,

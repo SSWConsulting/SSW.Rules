@@ -62,10 +62,9 @@ const Categories = ({ categories, location, rule }) => {
                       to={`/${category.parent.name}`}
                       style={{ color: '#fff' }}
                     >
-                      {category.frontmatter.title.replace(
-                        /Rules to(?: Better)?/,
-                        ''
-                      )}
+                      {category.frontmatter.title
+                        .replace(/Rules to(?: Better)?/, '')
+                        .trim()}
                     </Link>
                   </span>
                   <div className="box-border cursor-pointer text-lg font-medium text-black hover:text-ssw-red">
@@ -106,10 +105,9 @@ const Categories = ({ categories, location, rule }) => {
                   to={`/${category.parent.name}`}
                   style={{ color: '#fff' }}
                 >
-                  {category.frontmatter.title.replace(
-                    /Rules to(?: Better)?/,
-                    ''
-                  )}
+                  {category.frontmatter.title
+                    .replace(/Rules to(?: Better)?/, '')
+                    .trim()}
                 </Link>
               </span>
             </div>

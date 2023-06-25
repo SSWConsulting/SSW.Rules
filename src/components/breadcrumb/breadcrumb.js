@@ -17,7 +17,7 @@ const Breadcrumbs = (props) => {
             to={cat.link}
             className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled hover:decoration-ssw-red"
           >
-            {cat.title.replace(/Rules to(?: Better)?/, '')}
+            {cat.title.replace(/Rules to(?: Better)?/, '').trim()}
           </Link>
         );
       });

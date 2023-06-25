@@ -283,7 +283,9 @@ export default function Category({ data }) {
             <h3 className="text-3xl">
               Need some help with{' '}
               <span className="text-ssw-red">
-                {category.frontmatter.title.replace(/Rules to(?: Better)?/, '')}
+                {category.frontmatter.title
+                  .replace(/Rules to(?: Better)?/, '')
+                  .trim()}
               </span>
               ?
             </h3>

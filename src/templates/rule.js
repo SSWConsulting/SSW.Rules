@@ -11,6 +11,8 @@ import {
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
+import { faClock } from '@fortawesome/free-regular-svg-icons';
+
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -22,7 +24,6 @@ import Reaction from '../components/reaction/reaction';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
 import { detectLinks } from '../helpers/convertUrlFromString';
 import { format } from 'date-fns';
-import formatDistance from 'date-fns/formatDistance';
 import { useAuth0 } from '@auth0/auth0-react';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
@@ -149,27 +150,37 @@ const Rule = ({ data, location }) => {
                   <div>
                     <h1>{rule.frontmatter.title}</h1>
                     {data.history && data.history.nodes[0] && (
-                      <small className="history">
-                        Last updated by{' '}
+                      <small>
+                        <span className="opacity-60">
+                          Created{' '}
+                          {format(
+                            new Date(data.history.nodes[0].created),
+                            'dd MMM yyyy'
+                          )}
+                          .
+                        </span>{' '}
+                        <span className="opacity-60">Last updated</span>{' '}
+                        <span className="opacity-60">
+                          {format(
+                            new Date(data.history.nodes[0].lastUpdated),
+                            'dd MMM yyyy'
+                          )}{' '}
+                          by
+                        </span>{' '}
                         <strong>
                           {capitalizeFirstLetter(
                             data.history.nodes[0].lastUpdatedBy
                           )}
-                        </strong>
-                        {' on '}
-                        {format(
-                          new Date(data.history.nodes[0].lastUpdated),
-                          'dd MMM yyyy hh:mm aaa'
-                        )}
-                        {` (${formatDistance(
-                          new Date(data.history.nodes[0].lastUpdated),
-                          new Date()
-                        )} ago)`}{' '}
-                        <a
-                          href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
-                        >
-                          See History
-                        </a>
+                        </strong>{' '}
+                        <FontAwesomeIcon
+                          className="cursor-pointer"
+                          onClick={() =>
+                            window.open(
+                              `https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`
+                            )
+                          }
+                          icon={faClock}
+                        />
                       </small>
                     )}
                   </div>

@@ -32,7 +32,7 @@ const SideBar = ({ ruleTotalNumber, location }) => {
       <section id="widget">
         <RulesWidget
           token={process.env.GITHUB_API_PAT}
-          location={location}
+          location="https://www.ssw.com.au/rules"
           numberOfRules={10}
         />
       </section>
@@ -111,7 +111,7 @@ const SideBar = ({ ruleTotalNumber, location }) => {
 
 SideBar.propTypes = {
   ruleTotalNumber: PropTypes.number.isRequired,
-  location: PropTypes.object,
+  location: PropTypes.string,
 };
 
 export default SideBar;

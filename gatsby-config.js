@@ -130,7 +130,12 @@ module.exports = {
               elements: ['h2', 'h3', 'h4'],
             },
           },
-          'gatsby-remark-copy-linked-files',
+          {
+            resolve: 'gatsby-remark-copy-linked-files',
+            options: {
+              ignoreFileExtensions: [],
+            },
+          },
           'gatsby-remark-fenced-divs',
           {
             resolve: 'gatsby-remark-custom-blocks',

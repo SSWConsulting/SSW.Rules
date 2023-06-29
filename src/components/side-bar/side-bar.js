@@ -5,6 +5,7 @@ import { NumericFormat } from 'react-number-format';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { RulesWidget } from 'ssw.rules.widget';
+import { siteUrl } from '../../../site-config';
 import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 
@@ -32,7 +33,7 @@ const SideBar = ({ ruleTotalNumber }) => {
       <section id="widget">
         <RulesWidget
           token={process.env.GITHUB_API_PAT}
-          location="https://www.ssw.com.au/rules"
+          location={siteUrl}
           numberOfRules={10}
         />
       </section>

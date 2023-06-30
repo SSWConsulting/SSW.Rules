@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
@@ -29,6 +29,11 @@ const Orphaned = ({ data }) => {
   const linkRef = useRef();
 
   const [selectedOption, setSelectedOption] = useState('all');
+  const [showViewButton, setShowViewButton] = useState(false);
+
+  useEffect(() => {
+    setShowViewButton(true);
+  }, []);
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
@@ -109,60 +114,62 @@ const Orphaned = ({ data }) => {
                 </div>
               </div>
             </div>
-            <div className="radio-toolbar how-to-view d-print-none grid grid-cols-1 gap-5 p-4 text-center lg:grid-cols-5">
-              <div></div>
-              <div>
-                <input
-                  type="radio"
-                  id="customRadioInline1"
-                  name="customRadioInline1"
-                  className="custom-control-input"
-                  value="titleOnly"
-                  checked={selectedOption === 'titleOnly'}
-                  onChange={handleOptionChange}
-                />
-                <label
-                  className="view-title custom-control-label ml-1"
-                  htmlFor="customRadioInline1"
-                >
-                  View titles only
-                </label>
+            {showViewButton && (
+              <div className="radio-toolbar how-to-view d-print-none grid grid-cols-1 gap-5 p-4 text-center lg:grid-cols-5">
+                <div></div>
+                <div>
+                  <input
+                    type="radio"
+                    id="customRadioInline1"
+                    name="customRadioInline1"
+                    className="custom-control-input"
+                    value="titleOnly"
+                    checked={selectedOption === 'titleOnly'}
+                    onChange={handleOptionChange}
+                  />
+                  <label
+                    className="view-title custom-control-label ml-1"
+                    htmlFor="customRadioInline1"
+                  >
+                    View titles only
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="customRadioInline3"
+                    name="customRadioInline1"
+                    className="custom-control-input"
+                    value="blurb"
+                    checked={selectedOption === 'blurb'}
+                    onChange={handleOptionChange}
+                  />
+                  <label
+                    className="view-blurb custom-control-label ml-1"
+                    htmlFor="customRadioInline3"
+                  >
+                    Show blurb
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="customRadioInline2"
+                    name="customRadioInline1"
+                    className="custom-control-input"
+                    value="all"
+                    checked={selectedOption === 'all'}
+                    onChange={handleOptionChange}
+                  />
+                  <label
+                    className="view-full custom-control-label ml-1"
+                    htmlFor="customRadioInline2"
+                  >
+                    Gimme everything!
+                  </label>
+                </div>
               </div>
-              <div>
-                <input
-                  type="radio"
-                  id="customRadioInline3"
-                  name="customRadioInline1"
-                  className="custom-control-input"
-                  value="blurb"
-                  checked={selectedOption === 'blurb'}
-                  onChange={handleOptionChange}
-                />
-                <label
-                  className="view-blurb custom-control-label ml-1"
-                  htmlFor="customRadioInline3"
-                >
-                  Show blurb
-                </label>
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  id="customRadioInline2"
-                  name="customRadioInline1"
-                  className="custom-control-input"
-                  value="all"
-                  checked={selectedOption === 'all'}
-                  onChange={handleOptionChange}
-                />
-                <label
-                  className="view-full custom-control-label ml-1"
-                  htmlFor="customRadioInline2"
-                >
-                  Gimme everything!
-                </label>
-              </div>
-            </div>
+            )}
             <div className="category-rule">
               <ol className="rule-number">
                 {rules.map((rule, i) => {

@@ -14,4 +14,4 @@ jobs:
     steps:
       - name: 'SSW CodeAuditor - Check broken links and performance'
         continue-on-error: true
-        run: 'docker run sswconsulting/codeauditor --token ${{ secrets.CODEAUDITOR_TOKEN }} --url https://www.ssw.com.au/rules/ --maxthread 200 --debug'
+        run: 'docker container run --cap-add=SYS_ADMIN sswconsulting/codeauditor --token ${{ secrets.CODEAUDITOR_TOKEN }} --url https://www.ssw.com.au/rules/ --maxthread 200'

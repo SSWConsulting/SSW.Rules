@@ -22,6 +22,7 @@ import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
 import Reaction from '../components/reaction/reaction';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
+import formatDistance from 'date-fns/formatDistance';
 import { detectLinks } from '../helpers/convertUrlFromString';
 import { format } from 'date-fns';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -151,29 +152,8 @@ const Rule = ({ data, location }) => {
                     <h1>{rule.frontmatter.title}</h1>
                     {data.history && data.history.nodes[0] && (
                       <small>
-                        <span className="opacity-60">
-                          Created{' '}
-                          {format(
-                            new Date(data.history.nodes[0].created),
-                            'dd MMM yyyy'
-                          )}
-                          .
-                        </span>{' '}
-                        <span className="opacity-60">Last updated</span>{' '}
-                        <span className="opacity-60">
-                          {format(
-                            new Date(data.history.nodes[0].lastUpdated),
-                            'dd MMM yyyy'
-                          )}{' '}
-                          by
-                        </span>{' '}
-                        <strong>
-                          {capitalizeFirstLetter(
-                            data.history.nodes[0].lastUpdatedBy
-                          )}
-                        </strong>{' '}
                         <FontAwesomeIcon
-                          className="cursor-pointer"
+                          className="cursor-pointer pr-1"
                           onClick={() =>
                             window.open(
                               `https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`
@@ -181,6 +161,28 @@ const Rule = ({ data, location }) => {
                           }
                           icon={faClock}
                         />
+                        <span className="opacity-60">
+                          Created{' '}
+                          {format(
+                            new Date(data.history.nodes[0].created),
+                            'dd MMM yyyy'
+                          )}
+                        </span>
+                        {' | '}
+                        <span
+                          className="opacity-60"
+                          title={`${formatDistance(
+                            new Date(data.history.nodes[0].lastUpdated),
+                            new Date()
+                          )} ago`}
+                        >
+                          Last updated by
+                        </span>{' '}
+                        <strong>
+                          {capitalizeFirstLetter(
+                            data.history.nodes[0].lastUpdatedBy
+                          )}
+                        </strong>{' '}
                       </small>
                     )}
                   </div>

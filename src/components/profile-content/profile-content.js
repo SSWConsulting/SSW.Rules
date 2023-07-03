@@ -24,6 +24,7 @@ import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 import CommentsNotConnected from '../comments-not-connected/comments-not-connected';
 import DisableDisqusPrivacy from '../disable-disqus-privacy/disable-disqus-privacy';
+import RadioButton from '../radio-button/radio-button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
 
@@ -236,58 +237,35 @@ const ProfileContent = (props) => {
   }, [isAuthenticated, props.filter, change, props.state]);
   return (
     <>
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-5 radio-toolbar how-to-view text-center p-4 d-print-none pt-12">
-        <div className="radio-button-1">
-          <input
-            type="radio"
-            id="customRadioInline1"
-            name="customRadioInline1"
-            className="custom-control-input"
-            value="titleOnly"
-            checked={viewStyle === 'titleOnly'}
-            onChange={handleOptionChange}
-          />
-          <label
-            className="view-title custom-control-label"
-            htmlFor="customRadioInline1"
-          >
-            View titles only
-          </label>
-        </div>
-        <div className="radio-button-2">
-          <input
-            type="radio"
-            id="customRadioInline3"
-            name="customRadioInline1"
-            className="custom-control-input"
-            value="blurb"
-            checked={viewStyle === 'blurb'}
-            onChange={handleOptionChange}
-          />
-          <label
-            className="view-blurb custom-control-label"
-            htmlFor="customRadioInline3"
-          >
-            Show blurb
-          </label>
-        </div>
-        <div className="radio-button-3">
-          <input
-            type="radio"
-            id="customRadioInline2"
-            name="customRadioInline1"
-            className="custom-control-input"
-            value="all"
-            checked={viewStyle === 'all'}
-            onChange={handleOptionChange}
-          />
-          <label
-            className="view-full custom-control-label ml-1"
-            htmlFor="customRadioInline2"
-          >
-            Gimme everything!
-          </label>
-        </div>
+      <div className="border-b border-solid border-b-gray-100 grid grid-cols-1 gap-5 p-4 text-center lg:grid-cols-5">
+        <div></div>
+        <RadioButton
+          id="customRadioInline1"
+          name="customRadioInline1"
+          value="titleOnly"
+          selectedOption={viewStyle}
+          handleOptionChange={handleOptionChange}
+          additionalClassName="bg-view-title"
+          labelText="View titles only"
+        />
+        <RadioButton
+          id="customRadioInline3"
+          name="customRadioInline1"
+          value="blurb"
+          selectedOption={viewStyle}
+          handleOptionChange={handleOptionChange}
+          additionalClassName="bg-view-blurb"
+          labelText="Show blurb"
+        />
+        <RadioButton
+          id="customRadioInline2"
+          name="customRadioInline1"
+          value="all"
+          selectedOption={viewStyle}
+          handleOptionChange={handleOptionChange}
+          additionalClassName="bg-view-full"
+          labelText="Gimme everything!"
+        />
       </div>
       {bookmarkedRules && likedRulesList && dislikedRulesList ? (
         <RuleList

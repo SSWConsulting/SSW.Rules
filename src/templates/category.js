@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../components/greybox/greybox';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import RadioButton from '../components/radio-button/radio-button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { detectLinks } from '../helpers/convertUrlFromString';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -118,59 +119,35 @@ export default function Category({ data }) {
                 )}
             </div>
             {showViewButton && (
-              <div className="radio-toolbar how-to-view d-print-none grid grid-cols-1 gap-5 p-4 text-center lg:grid-cols-5">
+              <div className="border-b border-solid border-b-gray-100 grid grid-cols-1 gap-5 p-4 text-center lg:grid-cols-5">
                 <div></div>
-                <div>
-                  <input
-                    type="radio"
-                    id="customRadioInline1"
-                    name="customRadioInline1"
-                    className="custom-control-input"
-                    value="titleOnly"
-                    checked={selectedOption === 'titleOnly'}
-                    onChange={handleOptionChange}
-                  />
-                  <label
-                    className="view-title custom-control-label ml-1"
-                    htmlFor="customRadioInline1"
-                  >
-                    View titles only
-                  </label>
-                </div>
-                <div>
-                  <input
-                    type="radio"
-                    id="customRadioInline3"
-                    name="customRadioInline1"
-                    className="custom-control-input"
-                    value="blurb"
-                    checked={selectedOption === 'blurb'}
-                    onChange={handleOptionChange}
-                  />
-                  <label
-                    className="view-blurb custom-control-label ml-1"
-                    htmlFor="customRadioInline3"
-                  >
-                    Show blurb
-                  </label>
-                </div>
-                <div>
-                  <input
-                    type="radio"
-                    id="customRadioInline2"
-                    name="customRadioInline1"
-                    className="custom-control-input"
-                    value="all"
-                    checked={selectedOption === 'all'}
-                    onChange={handleOptionChange}
-                  />
-                  <label
-                    className="view-full custom-control-label ml-1"
-                    htmlFor="customRadioInline2"
-                  >
-                    Gimme everything!
-                  </label>
-                </div>
+                <RadioButton
+                  id="customRadioInline1"
+                  name="customRadioInline1"
+                  value="titleOnly"
+                  selectedOption={selectedOption}
+                  handleOptionChange={handleOptionChange}
+                  additionalClassName="bg-view-title"
+                  labelText="View titles only"
+                />
+                <RadioButton
+                  id="customRadioInline3"
+                  name="customRadioInline1"
+                  value="blurb"
+                  selectedOption={selectedOption}
+                  handleOptionChange={handleOptionChange}
+                  additionalClassName="bg-view-blurb"
+                  labelText="Show blurb"
+                />
+                <RadioButton
+                  id="customRadioInline2"
+                  name="customRadioInline1"
+                  value="all"
+                  selectedOption={selectedOption}
+                  handleOptionChange={handleOptionChange}
+                  additionalClassName="bg-view-full"
+                  labelText="Gimme everything!"
+                />
               </div>
             )}
 

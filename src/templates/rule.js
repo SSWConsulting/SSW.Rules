@@ -162,27 +162,38 @@ const Rule = ({ data, location }) => {
                           icon={faClock}
                         />
                         <span className="opacity-60">
-                          Created{' '}
+                          Created on{' '}
                           {format(
                             new Date(data.history.nodes[0].created),
                             'dd MMM yyyy'
                           )}
                         </span>
                         {' | '}
-                        <span
-                          className="opacity-60"
-                          title={`${formatDistance(
-                            new Date(data.history.nodes[0].lastUpdated),
-                            new Date()
-                          )} ago`}
-                        >
-                          Last updated by
-                        </span>{' '}
+                        <span className="opacity-60">Last updated by</span>{' '}
                         <strong>
                           {capitalizeFirstLetter(
                             data.history.nodes[0].lastUpdatedBy
                           )}
                         </strong>{' '}
+                        <span
+                          className="opacity-60"
+                          title={`On ${format(
+                            new Date(data.history.nodes[0].lastUpdated),
+                            'dd MMM yyyy'
+                          )} at ${new Date(
+                            data.history.nodes[0].lastUpdated
+                          ).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            hour12: true,
+                            minute: 'numeric',
+                          })}`}
+                        >
+                          {formatDistance(
+                            new Date(data.history.nodes[0].lastUpdated),
+                            new Date()
+                          )}{' '}
+                          ago
+                        </span>
                       </small>
                     )}
                   </div>

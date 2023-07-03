@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Tooltip from '../components/tooltip/tooltip';
+import RadioButton from '../components/radio-button/radio-button';
 import { Link } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
@@ -29,6 +30,11 @@ const Orphaned = ({ data }) => {
   const linkRef = useRef();
 
   const [selectedOption, setSelectedOption] = useState('all');
+  const [showViewButton, setShowViewButton] = useState(false);
+
+  useEffect(() => {
+    setShowViewButton(true);
+  }, []);
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
@@ -109,60 +115,38 @@ const Orphaned = ({ data }) => {
                 </div>
               </div>
             </div>
-            <div className="radio-toolbar how-to-view d-print-none grid grid-cols-1 gap-5 p-4 text-center lg:grid-cols-5">
-              <div></div>
-              <div>
-                <input
-                  type="radio"
+            {showViewButton && (
+              <div className="border-b border-solid border-b-gray-100 grid grid-cols-1 gap-5 p-4 text-center lg:grid-cols-5">
+                <div></div>
+                <RadioButton
                   id="customRadioInline1"
                   name="customRadioInline1"
-                  className="custom-control-input"
                   value="titleOnly"
-                  checked={selectedOption === 'titleOnly'}
-                  onChange={handleOptionChange}
+                  selectedOption={selectedOption}
+                  handleOptionChange={handleOptionChange}
+                  additionalClassName="bg-view-title"
+                  labelText="View titles only"
                 />
-                <label
-                  className="view-title custom-control-label ml-1"
-                  htmlFor="customRadioInline1"
-                >
-                  View titles only
-                </label>
-              </div>
-              <div>
-                <input
-                  type="radio"
+                <RadioButton
                   id="customRadioInline3"
                   name="customRadioInline1"
-                  className="custom-control-input"
                   value="blurb"
-                  checked={selectedOption === 'blurb'}
-                  onChange={handleOptionChange}
+                  selectedOption={selectedOption}
+                  handleOptionChange={handleOptionChange}
+                  additionalClassName="bg-view-blurb"
+                  labelText="Show blurb"
                 />
-                <label
-                  className="view-blurb custom-control-label ml-1"
-                  htmlFor="customRadioInline3"
-                >
-                  Show blurb
-                </label>
-              </div>
-              <div>
-                <input
-                  type="radio"
+                <RadioButton
                   id="customRadioInline2"
                   name="customRadioInline1"
-                  className="custom-control-input"
                   value="all"
-                  checked={selectedOption === 'all'}
-                  onChange={handleOptionChange}
+                  selectedOption={selectedOption}
+                  handleOptionChange={handleOptionChange}
+                  additionalClassName="bg-view-full"
+                  labelText="Gimme everything!"
                 />
-                <label
-                  className="view-full custom-control-label ml-1"
-                  htmlFor="customRadioInline2"
-                >
-                  Gimme everything!
-                </label>
               </div>
-            </div>
+            )}
             <div className="category-rule">
               <ol className="rule-number">
                 {rules.map((rule, i) => {

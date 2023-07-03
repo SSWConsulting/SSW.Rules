@@ -6,12 +6,26 @@ module.exports = {
       fontSize: {
         xs: '0.8rem',
       },
+      padding: {
+        '42px': '42px',
+      },
+      minWidth: {
+        '200px': '200px',
+      },
       colors: {
         'gray-tooltip': '#9e9e9e',
         'black-next-button': '#222',
         'ssw-red': '#cc4141',
         'ssw-grey': '#eee',
         underline: '#aaa',
+      },
+      backgroundImage: {
+        'view-title': 'url(/assets/view-title.png)',
+        'view-blurb': 'url(/assets/view-blurb.png)',
+        'view-full': 'url(/assets/view-full.png)',
+      },
+      backgroundPosition: {
+        '10px': '10px',
       },
     },
   },

@@ -11,8 +11,6 @@ import {
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
-import { faClock } from '@fortawesome/free-regular-svg-icons';
-
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';

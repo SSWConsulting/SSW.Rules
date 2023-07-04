@@ -20,9 +20,9 @@ import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
 import Reaction from '../components/reaction/reaction';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
+import formatDistance from 'date-fns/formatDistance';
 import { detectLinks } from '../helpers/convertUrlFromString';
 import { format } from 'date-fns';
-import formatDistance from 'date-fns/formatDistance';
 import { useAuth0 } from '@auth0/auth0-react';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
@@ -150,25 +150,30 @@ const Rule = ({ data, location }) => {
                     <h1>{rule.frontmatter.title}</h1>
                     {data.history && data.history.nodes[0] && (
                       <small className="history">
-                        Last updated by{' '}
+                        <span className="opacity-60">Last updated by</span>{' '}
                         <strong>
                           {capitalizeFirstLetter(
                             data.history.nodes[0].lastUpdatedBy
                           )}
-                        </strong>
-                        {' on '}
-                        {format(
-                          new Date(data.history.nodes[0].lastUpdated),
-                          'dd MMM yyyy hh:mm aaa'
-                        )}
-                        {` (${formatDistance(
-                          new Date(data.history.nodes[0].lastUpdated),
-                          new Date()
-                        )} ago)`}{' '}
+                        </strong>{' '}
+                        <span className="opacity-60">
+                          {formatDistance(
+                            new Date(data.history.nodes[0].lastUpdated),
+                            new Date()
+                          )}{' '}
+                          ago.
+                        </span>
                         <a
+                          title={`Created ${format(
+                            new Date(data.history.nodes[0].created),
+                            'dd MMM yyyy'
+                          )}\nLast updated ${format(
+                            new Date(data.history.nodes[0].lastUpdated),
+                            'dd MMM yyyy'
+                          )}`}
                           href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
                         >
-                          See History
+                          See history
                         </a>
                       </small>
                     )}

@@ -151,49 +151,32 @@ const Rule = ({ data, location }) => {
                   <div>
                     <h1>{rule.frontmatter.title}</h1>
                     {data.history && data.history.nodes[0] && (
-                      <small>
-                        <FontAwesomeIcon
-                          className="cursor-pointer pr-1"
-                          onClick={() =>
-                            window.open(
-                              `https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`
-                            )
-                          }
-                          icon={faClock}
-                        />
-                        <span className="opacity-60">
-                          Created on{' '}
-                          {format(
-                            new Date(data.history.nodes[0].created),
-                            'dd MMM yyyy'
-                          )}
-                        </span>
-                        {' | '}
+                      <small className="history">
                         <span className="opacity-60">Last updated by</span>{' '}
                         <strong>
                           {capitalizeFirstLetter(
                             data.history.nodes[0].lastUpdatedBy
                           )}
                         </strong>{' '}
-                        <span
-                          className="opacity-60"
-                          title={`On ${format(
-                            new Date(data.history.nodes[0].lastUpdated),
-                            'dd MMM yyyy'
-                          )} at ${new Date(
-                            data.history.nodes[0].lastUpdated
-                          ).toLocaleTimeString('en-US', {
-                            hour: 'numeric',
-                            hour12: true,
-                            minute: 'numeric',
-                          })}`}
-                        >
+                        <span className="opacity-60">
                           {formatDistance(
                             new Date(data.history.nodes[0].lastUpdated),
                             new Date()
                           )}{' '}
-                          ago
+                          ago.
                         </span>
+                        <a
+                          title={`Created ${format(
+                            new Date(data.history.nodes[0].created),
+                            'dd MMM yyyy'
+                          )}\nLast updated ${format(
+                            new Date(data.history.nodes[0].lastUpdated),
+                            'dd MMM yyyy'
+                          )}`}
+                          href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
+                        >
+                          See History
+                        </a>
                       </small>
                     )}
                   </div>

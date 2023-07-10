@@ -5,7 +5,6 @@ import { NumericFormat } from 'react-number-format';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Widget } from 'ssw.rules.widget';
-import { siteUrl } from '../../../site-config';
 import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 

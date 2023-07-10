@@ -18863,10 +18863,10 @@ ssw.megamenu@^3.1.3:
   resolved "https://registry.yarnpkg.com/ssw.megamenu/-/ssw.megamenu-3.1.3.tgz#e0b0f348fbc533b78117b389c0eab9d15cac5758"
   integrity sha512-FIYqNIqSwmZXAMTtdNbnOepEs3HRJzvRh9uTdNeYltrFujS3FaSTDxPwYF3s3YyaaRCifkCTet8Uew103ccb2Q==
 
-ssw.rules.widget@^1.3.4:
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/ssw.rules.widget/-/ssw.rules.widget-1.3.4.tgz#e7bf5c98b614fd82f153bb333f8a6a13fd63aa65"
-  integrity sha512-ny//PuUg17dJZk/ki3fzgoQ2AgWPrL+StZWXUYJlV2xuFiit15Ps9BYTuJvE2cw7tt//Jw5PzZ15QXOJA6I1PQ==
+ssw.rules.widget@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/ssw.rules.widget/-/ssw.rules.widget-1.4.1.tgz#3b79fa4f0296fcf11db99e03071bcd943706be20"
+  integrity sha512-mxwJlyjbf3E8zFTRfqnjgfeQzhX2UMdXRcnIvZRkLJ70kkJ0KzhWwwl9OaCmL1Nbd/n520NYdwibH6pMpOcjrg==
   dependencies:
     "@babel/polyfill" "^7.12.1"
     "@fortawesome/fontawesome-svg-core" "^1.2.35"

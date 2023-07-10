@@ -4,12 +4,11 @@ import GavelIcon from '-!svg-react-loader!../../images/gavel.svg';
 import { NumericFormat } from 'react-number-format';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { RulesWidget } from 'ssw.rules.widget';
-import { siteUrl } from '../../../site-config';
+import { Widget } from 'ssw.rules.widget';
 import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 
-const SideBar = ({ ruleTotalNumber }) => {
+const SideBar = ({ ruleTotalNumber, location }) => {
   return (
     <div>
       <section className="rules-counter">
@@ -31,9 +30,9 @@ const SideBar = ({ ruleTotalNumber }) => {
       </section>
 
       <section id="widget">
-        <RulesWidget
+        <Widget
           token={process.env.GITHUB_API_PAT}
-          location={siteUrl}
+          location={location}
           numberOfRules={10}
         />
       </section>
@@ -112,6 +111,7 @@ const SideBar = ({ ruleTotalNumber }) => {
 
 SideBar.propTypes = {
   ruleTotalNumber: PropTypes.number.isRequired,
+  location: PropTypes.object,
 };
 
 export default SideBar;

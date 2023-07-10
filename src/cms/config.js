@@ -80,6 +80,7 @@ var configJson = {
             field: {
               name: 'relatedRule',
               label: 'Rule uri',
+              hint: 'The URI for the related rule, i.e. label-your-assets',
               pattern: [
                 '^[a-z0-9_-]*$',
                 'Must only contain lowercase alphanumeric or the "-" and "_" characters',
@@ -94,6 +95,7 @@ var configJson = {
             field: {
               name: 'redirectUri',
               label: 'Redirect uri',
+              hint: 'The URI for the old rule, i.e. label-your-assets',
             },
           },
           {

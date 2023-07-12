@@ -5,7 +5,7 @@ import { useFlexSearch } from 'react-use-flexsearch';
 import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import SideBar from '../components/side-bar/side-bar';
-import SearchBar from '../components/search/search';
+import SearchBar from '../components/search-bar/search-bar';
 import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';

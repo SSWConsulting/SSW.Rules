@@ -1,9 +1,11 @@
 import Filter, { FilterOptions } from '../components/filter/filter';
 import React, { useEffect, useState } from 'react';
+import { useFlexSearch } from 'react-use-flexsearch';
 
 import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import SideBar from '../components/side-bar/side-bar';
+import SearchBar from '../components/search/search';
 import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
@@ -14,6 +16,7 @@ const LatestRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
@@ -22,6 +25,9 @@ const LatestRules = ({ data, location }) => {
   const queryStringSearch = qs.parse(location?.search, {
     parseNumbers: true,
   });
+
+  const { index, store } = data.localSearchPages;
+  const searchResult = useFlexSearch(searchQuery, index, store);
 
   const queryStringRulesListSize = (() => {
     if (!queryStringSearch.size) {
@@ -33,10 +39,11 @@ const LatestRules = ({ data, location }) => {
 
   useEffect(() => {
     filterAndSort(filter);
-  }, [filter, isAscending]);
+  }, [filter, isAscending, searchQuery]);
 
   const filterAndValidateRules = async () => {
-    const foundRules = await rules.map((item) => {
+    const selectedRules = searchQuery ? searchResult : rules;
+    const foundRules = await selectedRules.map((item) => {
       //TODO: Depending on the speed - optimise this find
       let findRule = history.find(
         (r) => sanitizeName(r) === sanitizeName(item.fields.slug, true)
@@ -82,8 +89,7 @@ const LatestRules = ({ data, location }) => {
     }
 
     const filteredRules = await filterAndValidateRules();
-
-    if (filteredRules.count === 0) {
+    if (filteredRules.length === 0) {
       setNotFound(true);
       return;
     } else {
@@ -91,7 +97,6 @@ const LatestRules = ({ data, location }) => {
     }
 
     sort(_filter, filteredRules);
-
     //Only show the top x queryStringRulesListSize
 
     setFilteredItems({
@@ -103,6 +108,7 @@ const LatestRules = ({ data, location }) => {
   return (
     <div className="w-full">
       <Breadcrumb isLatest />
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
@@ -133,6 +139,10 @@ const LatestRules = ({ data, location }) => {
 
 export const pageQuery = graphql`
   query latestRulesQuery {
+    localSearchPages {
+      index
+      store
+    }
     allHistoryJson {
       edges {
         node {

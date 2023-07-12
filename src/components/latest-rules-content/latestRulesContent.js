@@ -91,7 +91,7 @@ const LatestRulesContent = ({
             );
           })
         ) : (
-          <div>No Results...</div>
+          <div className="py-2">No Results...</div>
         )}
       </Heading>
     </section>

@@ -14,8 +14,6 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-local-search',
       options: {
-        // A unique name for the search index. This should be descriptive of
-        // what the index contains. This is required.
         name: 'pages',
         engine: 'flexsearch',
         engineOptions: 'speed',
@@ -26,7 +24,6 @@ module.exports = {
               id
               frontmatter {
                 title
-                archivedreason
               }
               fields {
                 slug
@@ -36,32 +33,13 @@ module.exports = {
           }
         }
         `,
-        ref: 'id',
-        // List of keys to index. The values of the keys are taken from the
-        // normalizer function below.
-        index: ['id', 'frontmatter.title', 'rawMarkdownBody'],
-        // List of keys to store and make available in your UI. The values of
-        // the keys are taken from the normalizer function below.
-        store: [
-          'id',
-          'frontmatter.title',
-          'frontmatter.archivedreason',
-          'fields.slug',
-        ],
-        // Function used to map the result from the GraphQL query. This should
-        // return an array of items to index in the form of flat objects
-        // containing properties to index. The objects must contain the `ref`
-        // field above (default: 'id'). This is required.
+        ref: 'slug',
+        index: ['slug', 'title', 'rawMarkdownBody'],
+        store: ['slug', 'title'],
         normalizer: ({ data }) =>
           data.allMarkdownRemark.nodes.map((node) => ({
-            id: node.id,
-            frontmatter: {
-              title: node.frontmatter.title,
-              archivedreason: node.frontmatter.archivedreason,
-            },
-            fields: {
-              slug: node.fields.slug,
-            },
+            slug: node.fields.slug,
+            title: node.frontmatter.title,
             rawMarkdownBody: node.rawMarkdownBody,
           })),
       },

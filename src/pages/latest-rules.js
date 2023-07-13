@@ -1,5 +1,6 @@
 import Filter, { FilterOptions } from '../components/filter/filter';
 import React, { useEffect, useState } from 'react';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -9,6 +10,14 @@ import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
 import { sanitizeName } from '../helpers/sanitizeName';
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
+
+appInsights.loadAppInsights();
 
 const LatestRules = ({ data, location }) => {
   const [filter, setFilter] = useState();
@@ -51,8 +60,11 @@ const LatestRules = ({ data, location }) => {
         const storeResponse = await fetch(publicStoreURL);
         const storeData = await storeResponse.json();
         setSearchStore(storeData);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        appInsights.trackException({
+          error: new Error(err),
+          severityLevel: 3,
+        });
       }
     };
 

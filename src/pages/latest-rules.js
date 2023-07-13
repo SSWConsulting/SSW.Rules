@@ -1,6 +1,5 @@
 import Filter, { FilterOptions } from '../components/filter/filter';
 import React, { useEffect, useState } from 'react';
-import { useFlexSearch } from 'react-use-flexsearch';
 
 import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -17,6 +16,9 @@ const LatestRules = ({ data, location }) => {
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchIndex, setSearchIndex] = useState(null);
+  const [searchStore, setSearchStore] = useState(null);
+  const [searchResult, setSearchResult] = useState(null);
 
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
@@ -25,9 +27,6 @@ const LatestRules = ({ data, location }) => {
   const queryStringSearch = qs.parse(location?.search, {
     parseNumbers: true,
   });
-
-  const { index, store } = data.localSearchPages;
-  const searchResult = useFlexSearch(searchQuery, index, store);
 
   const queryStringRulesListSize = (() => {
     if (!queryStringSearch.size) {
@@ -39,7 +38,26 @@ const LatestRules = ({ data, location }) => {
 
   useEffect(() => {
     filterAndSort(filter);
-  }, [filter, isAscending, searchQuery]);
+  }, [filter, isAscending, searchResult]);
+
+  useEffect(() => {
+    const { publicIndexURL, publicStoreURL } = data.localSearchPages;
+    const fetchData = async () => {
+      try {
+        const indexResponse = await fetch(publicIndexURL);
+        const indexData = await indexResponse.text();
+        setSearchIndex(indexData);
+
+        const storeResponse = await fetch(publicStoreURL);
+        const storeData = await storeResponse.json();
+        setSearchStore(storeData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const filterAndValidateRules = async () => {
     const selectedRules = searchQuery ? unFlattenResults(searchResult) : rules;
@@ -115,7 +133,15 @@ const LatestRules = ({ data, location }) => {
   return (
     <div className="w-full">
       <Breadcrumb isLatest />
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      {searchIndex && searchStore && (
+        <SearchBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          index={searchIndex}
+          store={searchStore}
+          setSearchResult={setSearchResult}
+        />
+      )}
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
@@ -147,8 +173,8 @@ const LatestRules = ({ data, location }) => {
 export const pageQuery = graphql`
   query latestRulesQuery {
     localSearchPages {
-      index
-      store
+      publicIndexURL
+      publicStoreURL
     }
     allHistoryJson {
       edges {

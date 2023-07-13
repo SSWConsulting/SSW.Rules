@@ -42,7 +42,7 @@ const LatestRules = ({ data, location }) => {
   }, [filter, isAscending, searchQuery]);
 
   const filterAndValidateRules = async () => {
-    const selectedRules = searchQuery ? searchResult : rules;
+    const selectedRules = searchQuery ? unFlattenResults(searchResult) : rules;
     const foundRules = await selectedRules.map((item) => {
       //TODO: Depending on the speed - optimise this find
       let findRule = history.find(
@@ -102,6 +102,13 @@ const LatestRules = ({ data, location }) => {
     setFilteredItems({
       list: filteredRules.slice(0, queryStringRulesListSize),
       filter: _filter,
+    });
+  };
+
+  const unFlattenResults = (results) => {
+    return results.map((x) => {
+      const { title, slug } = x;
+      return { frontmatter: { title }, fields: { slug } };
     });
   };
 

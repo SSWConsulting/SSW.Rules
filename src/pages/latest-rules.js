@@ -1,6 +1,5 @@
 import Filter, { FilterOptions } from '../components/filter/filter';
 import React, { useEffect, useState } from 'react';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -11,23 +10,12 @@ import { objectOf } from 'prop-types';
 import qs from 'query-string';
 import { sanitizeName } from '../helpers/sanitizeName';
 
-const appInsights = new ApplicationInsights({
-  config: {
-    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
-  },
-});
-
-appInsights.loadAppInsights();
-
 const LatestRules = ({ data, location }) => {
   const [filter, setFilter] = useState();
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchIndex, setSearchIndex] = useState(null);
-  const [searchStore, setSearchStore] = useState(null);
-  const [searchResult, setSearchResult] = useState(null);
 
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
@@ -47,33 +35,10 @@ const LatestRules = ({ data, location }) => {
 
   useEffect(() => {
     filterAndSort(filter);
-  }, [filter, isAscending, searchResult]);
-
-  useEffect(() => {
-    const { publicIndexURL, publicStoreURL } = data.localSearchPages;
-    const fetchData = async () => {
-      try {
-        const indexResponse = await fetch(publicIndexURL);
-        const indexData = await indexResponse.text();
-        setSearchIndex(indexData);
-
-        const storeResponse = await fetch(publicStoreURL);
-        const storeData = await storeResponse.json();
-        setSearchStore(storeData);
-      } catch (err) {
-        appInsights.trackException({
-          error: new Error(err),
-          severityLevel: 3,
-        });
-      }
-    };
-
-    fetchData();
-  }, []);
+  }, [filter, isAscending]);
 
   const filterAndValidateRules = async () => {
-    const selectedRules = searchQuery ? unFlattenResults(searchResult) : rules;
-    const foundRules = await selectedRules.map((item) => {
+    const foundRules = await rules.map((item) => {
       //TODO: Depending on the speed - optimise this find
       let findRule = history.find(
         (r) => sanitizeName(r) === sanitizeName(item.fields.slug, true)
@@ -135,25 +100,14 @@ const LatestRules = ({ data, location }) => {
     });
   };
 
-  const unFlattenResults = (results) => {
-    return results.map((x) => {
-      const { title, slug } = x;
-      return { frontmatter: { title }, fields: { slug } };
-    });
-  };
-
   return (
     <div className="w-full">
       <Breadcrumb isLatest />
-      {searchIndex && searchStore && (
-        <SearchBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          index={searchIndex}
-          store={searchStore}
-          setSearchResult={setSearchResult}
-        />
-      )}
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        toSearch
+      />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
@@ -184,10 +138,6 @@ const LatestRules = ({ data, location }) => {
 
 export const pageQuery = graphql`
   query latestRulesQuery {
-    localSearchPages {
-      publicIndexURL
-      publicStoreURL
-    }
     allHistoryJson {
       edges {
         node {

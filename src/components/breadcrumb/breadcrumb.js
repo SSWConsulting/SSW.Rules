@@ -24,7 +24,10 @@ const Breadcrumbs = (props) => {
     }
 
     return (
-      <Link to={'/orphaned'} className="flex-1">
+      <Link
+        to={'/orphaned'}
+        className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline unstyled hover:decoration-ssw-red"
+      >
         Orphaned
       </Link>
     );

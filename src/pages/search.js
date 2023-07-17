@@ -1,5 +1,6 @@
 import Filter, { FilterOptions } from '../components/filter/filter';
 import React, { useEffect, useState } from 'react';
+import { useFlexSearch } from 'react-use-flexsearch';
 
 import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -19,33 +20,36 @@ const LatestRules = ({ data, location }) => {
 
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
-  const rules = data.allMarkdownRemark.nodes;
 
-  const queryStringSearch = qs.parse(location?.search, {
-    parseNumbers: true,
-  });
+  const { index, store } = data.localSearchPages;
+  const searchResult = useFlexSearch(searchQuery, index, store);
 
-  const queryStringRulesListSize = (() => {
-    if (!queryStringSearch.size) {
-      return 50;
-    } else {
-      return queryStringSearch.size > 100 ? 100 : queryStringSearch.size;
-    }
-  })();
+  const unFlattenResults = (results) => {
+    return results.map((x) => {
+      const { title, slug } = x;
+      return { frontmatter: { title }, fields: { slug } };
+    });
+  };
+  const rules = unFlattenResults(searchResult);
 
   useEffect(() => {
     filterAndSort(filter);
-  }, [filter, isAscending]);
+  }, [filter, isAscending, searchResult]);
+
+  useEffect(() => {
+    const searchString = qs.parse(location?.search).string;
+    if (searchString) {
+      setSearchQuery(searchString);
+    }
+  }, []);
 
   const filterAndValidateRules = async () => {
-    const foundRules = await rules.map((item) => {
-      //TODO: Depending on the speed - optimise this find
+    const foundRules = await rules?.map((item) => {
       let findRule = history.find(
         (r) => sanitizeName(r) === sanitizeName(item.fields.slug, true)
       );
 
-      //Return if a rule isn't found in history.json,if its archived or if we have reached the count
-      if (!findRule || item.frontmatter.archivedreason) {
+      if (!findRule) {
         return;
       }
       return { item: item, file: findRule };
@@ -92,27 +96,22 @@ const LatestRules = ({ data, location }) => {
     }
 
     sort(_filter, filteredRules);
-    //Only show the top x queryStringRulesListSize
 
     setFilteredItems({
-      list: filteredRules.slice(0, queryStringRulesListSize),
+      list: filteredRules.slice(0, 50),
       filter: _filter,
     });
   };
 
   return (
     <div className="w-full">
-      <Breadcrumb isLatest />
-      <SearchBar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        toSearch
-      />
+      <Breadcrumb isSearch />
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
             <span className="flex">
-              <h2 className="flex-1">Latest Rules</h2>
+              <h2 className="flex-1">Search</h2>
               <div className="flex items-center align-middle">
                 <Filter selected={setFilter} />
               </div>
@@ -138,6 +137,10 @@ const LatestRules = ({ data, location }) => {
 
 export const pageQuery = graphql`
   query latestRulesQuery {
+    localSearchPages {
+      index
+      store
+    }
     allHistoryJson {
       edges {
         node {
@@ -146,17 +149,6 @@ export const pageQuery = graphql`
           lastUpdated
           lastUpdatedBy
           file
-        }
-      }
-    }
-    allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
-      nodes {
-        frontmatter {
-          title
-          archivedreason
-        }
-        fields {
-          slug
         }
       }
     }

@@ -16,6 +16,7 @@ const LatestRules = ({ data, location }) => {
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [authorName, setAuthorName] = useState('');
 
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
@@ -32,10 +33,30 @@ const LatestRules = ({ data, location }) => {
       return queryStringSearch.size > 100 ? 100 : queryStringSearch.size;
     }
   })();
+  const queryStringRulesAuthor = queryStringSearch.author || '';
 
   useEffect(() => {
     filterAndSort(filter);
   }, [filter, isAscending]);
+
+  const fetchGithubName = async (author) => {
+    const token = process.env.GITHUB_API_PAT;
+    const response = await fetch(`https://api.github.com/users/${author}`, {
+      method: 'GET',
+      headers: {
+        Authorization: token ? `bearer ${token}` : '',
+      },
+    });
+
+    const { name } = await response.json();
+    setAuthorName(name);
+    return name;
+  };
+
+  const filterByAuthor = async (rules) => {
+    const name = authorName || (await fetchGithubName(queryStringRulesAuthor));
+    return rules.filter((rule) => rule.file.node.lastUpdatedBy === name);
+  };
 
   const filterAndValidateRules = async () => {
     const foundRules = await rules.map((item) => {
@@ -83,7 +104,12 @@ const LatestRules = ({ data, location }) => {
       return;
     }
 
-    const filteredRules = await filterAndValidateRules();
+    let filteredRules = await filterAndValidateRules();
+
+    if (queryStringRulesAuthor) {
+      filteredRules = await filterByAuthor(filteredRules);
+    }
+
     if (filteredRules.length === 0) {
       setNotFound(true);
       return;
@@ -95,7 +121,9 @@ const LatestRules = ({ data, location }) => {
     //Only show the top x queryStringRulesListSize
 
     setFilteredItems({
-      list: filteredRules.slice(0, queryStringRulesListSize),
+      list: queryStringRulesAuthor
+        ? filteredRules
+        : filteredRules.slice(0, queryStringRulesListSize),
       filter: _filter,
     });
   };

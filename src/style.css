@@ -167,7 +167,7 @@ footer {
   margin-top: -20px;
 }
 
-#rules ul li::before, .rule-content ul li::before, .rule-category-top ul li::before {
+#rules ul > li::before, .rule-content ul > li::before, .rule-category-top ul > li::before {
   content: "\25A0";
   color: #cc4141;
   display: inline-block; 

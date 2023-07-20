@@ -37,7 +37,7 @@ const LatestRules = ({ data, location }) => {
   }, [filter, isAscending, searchResult]);
 
   useEffect(() => {
-    const searchString = qs.parse(location?.search).string;
+    const searchString = qs.parse(location?.search).keyword;
     if (searchString) {
       setSearchQuery(searchString);
     }

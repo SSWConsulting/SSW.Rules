@@ -6,11 +6,9 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 const SearchBar = ({ searchQuery, setSearchQuery, toSearch }) => {
   const handlePressEnter = (val) => {
     if (!toSearch || !searchQuery) return;
-    if (process.env.NODE_ENV === 'development') {
-      window.location.href = `/search?keyword=${val}`;
-    } else {
-      window.location.href = `/rules/search?keyword=${val}`;
-    }
+
+    const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
+    window.location.href = `${pathPrefix}/search?keyword=${val}`;
   };
 
   return (

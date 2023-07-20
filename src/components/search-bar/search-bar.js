@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { navigate } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const SearchBar = ({ searchQuery, setSearchQuery, toSearch }) => {
   const handlePressEnter = (val) => {
     if (!toSearch || !searchQuery) return;
-    navigate(`/search?keyword=${val}`);
+    if (process.env.NODE_ENV === 'development') {
+      window.location.href = `/search?keyword=${val}`;
+    } else {
+      window.location.href = `/rules/search?keyword=${val}`;
+    }
   };
 
   return (

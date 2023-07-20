@@ -48,7 +48,7 @@ const Footer = () => {
                 <span className="px-2">|</span>
                 <a
                   className="footer-link"
-                  href="https://www.ssw.com.au/ssw/Consulting/Terms-and-Conditions"
+                  href="https://ssw.com.au/terms-and-conditions"
                 >
                   TERMS AND CONDITIONS
                 </a>

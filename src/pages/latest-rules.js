@@ -21,6 +21,7 @@ const LatestRules = ({ data, location }) => {
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
   const rules = data.allMarkdownRemark.nodes;
+  const userRules = data.allCommitsJson.edges;
 
   const queryStringSearch = qs.parse(location?.search, {
     parseNumbers: true,
@@ -53,9 +54,22 @@ const LatestRules = ({ data, location }) => {
     return name;
   };
 
-  const filterByAuthor = async (rules) => {
-    const name = authorName || (await fetchGithubName(queryStringRulesAuthor));
-    return rules.filter((rule) => rule.file.node.lastUpdatedBy === name);
+  const filterByAuthor = async (rulesList) => {
+    const filteredRules = new Set();
+    for (const rule of userRules) {
+      if (rule.node.user === queryStringRulesAuthor) {
+        rule.node.commits.forEach((commit) => {
+          commit.FilesChanged.forEach((path) => {
+            const lastIndex = path.lastIndexOf('/');
+            filteredRules.add(path.substring(0, lastIndex));
+          });
+        });
+      }
+    }
+    const foundRules = rulesList.filter((item) => {
+      return filteredRules.has(sanitizeName(item.item.fields.slug, true));
+    });
+    return foundRules;
   };
 
   const filterAndValidateRules = async () => {
@@ -185,6 +199,18 @@ export const pageQuery = graphql`
         }
         fields {
           slug
+        }
+      }
+    }
+    allCommitsJson {
+      edges {
+        node {
+          id
+          commits {
+            CommitTime
+            FilesChanged
+          }
+          user
         }
       }
     }

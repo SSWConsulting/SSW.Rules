@@ -16,7 +16,6 @@ const LatestRules = ({ data, location }) => {
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [authorName, setAuthorName] = useState('');
 
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
@@ -39,20 +38,6 @@ const LatestRules = ({ data, location }) => {
   useEffect(() => {
     filterAndSort(filter);
   }, [filter, isAscending]);
-
-  const fetchGithubName = async (author) => {
-    const token = process.env.GITHUB_API_PAT;
-    const response = await fetch(`https://api.github.com/users/${author}`, {
-      method: 'GET',
-      headers: {
-        Authorization: token ? `bearer ${token}` : '',
-      },
-    });
-
-    const { name } = await response.json();
-    setAuthorName(name);
-    return name;
-  };
 
   const filterByAuthor = async (rulesList) => {
     const filteredRules = new Set();

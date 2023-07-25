@@ -40,20 +40,25 @@ const LatestRules = ({ data, location }) => {
   }, [filter, isAscending]);
 
   const filterByAuthor = async (rulesList) => {
-    const filteredRules = new Set();
-    for (const rule of userRules) {
-      if (rule.node.user === queryStringRulesAuthor) {
-        rule.node.commits.forEach((commit) => {
-          commit.FilesChanged.forEach((path) => {
-            const lastIndex = path.lastIndexOf('/');
-            filteredRules.add(path.substring(0, lastIndex));
-          });
-        });
-      }
-    }
+    const getCommitPathsFromRule = (rule) => {
+      return rule.node.commits.flatMap((commit) => {
+        return commit.FilesChanged.map((path) =>
+          path.substring(0, path.lastIndexOf('/'))
+        );
+      });
+    };
+
+    // eslint-disable-next-line no-undef
+    const filteredPathsSet = new Set(
+      userRules
+        .filter((rule) => rule.node.user === queryStringRulesAuthor)
+        .flatMap(getCommitPathsFromRule)
+    );
+
     const foundRules = rulesList.filter((item) => {
-      return filteredRules.has(sanitizeName(item.item.fields.slug, true));
+      return filteredPathsSet.has(sanitizeName(item.item.fields.slug, true));
     });
+
     return foundRules;
   };
 

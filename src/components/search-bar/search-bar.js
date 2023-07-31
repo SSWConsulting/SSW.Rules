@@ -34,7 +34,9 @@ const SearchBar = ({
       setIsLoaded(true);
     };
 
-    fetchData();
+    if (!toSearch) {
+      fetchData();
+    }
   }, []);
 
   const handlePressEnter = (val) => {

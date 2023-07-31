@@ -15,6 +15,7 @@ const LatestRules = ({ data, location }) => {
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
   const [searchResult, setSearchResult] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
@@ -97,6 +98,8 @@ const LatestRules = ({ data, location }) => {
     <div className="w-full">
       <Breadcrumb isSearch />
       <SearchBar
+        isLoaded={isLoaded}
+        setIsLoaded={setIsLoaded}
         publicIndexURL={publicIndexURL}
         publicStoreURL={publicStoreURL}
         setSearchResult={setSearchResult}
@@ -115,7 +118,7 @@ const LatestRules = ({ data, location }) => {
               <LatestRulesContent
                 filteredItems={filteredItems}
                 title={filterTitle}
-                notFound={notFound}
+                notFound={isLoaded ? notFound : isLoaded}
                 isAscending={isAscending}
                 setIsAscending={setIsAscending}
               />

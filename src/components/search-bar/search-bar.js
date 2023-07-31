@@ -6,17 +6,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const SearchBar = ({
+  isLoaded,
   toSearch,
   publicIndexURL,
   publicStoreURL,
   setSearchResult,
   location,
+  setIsLoaded,
 }) => {
   const [query, setQuery] = useState('');
   const [searchIndex, setSearchIndex] = useState(null);
   const [searchStore, setSearchStore] = useState(null);
   const [index, setIndex] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const searchString = qs.parse(location?.search).keyword;

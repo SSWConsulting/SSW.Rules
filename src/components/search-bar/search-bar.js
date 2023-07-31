@@ -102,8 +102,10 @@ export default SearchBar;
 
 SearchBar.propTypes = {
   toSearch: PropTypes.bool,
+  isLoaded: PropTypes.bool,
   publicIndexURL: PropTypes.string,
   publicStoreURL: PropTypes.string,
   setSearchResult: PropTypes.func,
+  setIsLoaded: PropTypes.func,
   location: PropTypes.object,
 };

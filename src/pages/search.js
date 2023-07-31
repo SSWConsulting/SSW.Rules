@@ -1,6 +1,5 @@
 import Filter, { FilterOptions } from '../components/filter/filter';
 import React, { useEffect, useState } from 'react';
-import { useFlexSearch } from 'react-use-flexsearch';
 
 import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -8,7 +7,6 @@ import SideBar from '../components/side-bar/side-bar';
 import SearchBar from '../components/search-bar/search-bar';
 import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
-import qs from 'query-string';
 import { sanitizeName } from '../helpers/sanitizeName';
 
 const LatestRules = ({ data, location }) => {
@@ -16,13 +14,12 @@ const LatestRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
 
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
 
-  const { index, store } = data.localSearchPages;
-  const searchResult = useFlexSearch(searchQuery, index, store);
+  const { publicIndexURL, publicStoreURL } = data.localSearchPages;
 
   const unFlattenResults = (results) => {
     return results.map((x) => {
@@ -35,13 +32,6 @@ const LatestRules = ({ data, location }) => {
   useEffect(() => {
     filterAndSort(filter);
   }, [filter, isAscending, searchResult]);
-
-  useEffect(() => {
-    const searchString = qs.parse(location?.search).keyword;
-    if (searchString) {
-      setSearchQuery(searchString);
-    }
-  }, []);
 
   const filterAndValidateRules = async () => {
     const foundRules = await rules?.map((item) => {
@@ -106,7 +96,12 @@ const LatestRules = ({ data, location }) => {
   return (
     <div className="w-full">
       <Breadcrumb isSearch />
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <SearchBar
+        publicIndexURL={publicIndexURL}
+        publicStoreURL={publicStoreURL}
+        setSearchResult={setSearchResult}
+        location={location}
+      />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
@@ -127,7 +122,7 @@ const LatestRules = ({ data, location }) => {
             </div>
           </div>
           <div className="w-full lg:w-1/4 px-4" id="sidebar">
-            <SideBar ruleTotalNumber={rules.length} />
+            <SideBar ruleTotalNumber={rules?.length} />
           </div>
         </div>
       </div>
@@ -138,8 +133,8 @@ const LatestRules = ({ data, location }) => {
 export const pageQuery = graphql`
   query latestRulesQuery {
     localSearchPages {
-      index
-      store
+      publicIndexURL
+      publicStoreURL
     }
     allHistoryJson {
       edges {
@@ -149,6 +144,17 @@ export const pageQuery = graphql`
           lastUpdated
           lastUpdatedBy
           file
+        }
+      }
+    }
+    allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
+      nodes {
+        frontmatter {
+          title
+          archivedreason
+        }
+        fields {
+          slug
         }
       }
     }

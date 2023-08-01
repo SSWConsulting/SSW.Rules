@@ -15,7 +15,6 @@ const LatestRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
   const [authorName, setAuthorName] = useState('');
 
   const filterTitle = 'Results';
@@ -131,11 +130,7 @@ const LatestRules = ({ data, location }) => {
   return (
     <div className="w-full">
       <Breadcrumb isLatest />
-      <SearchBar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        toSearch
-      />
+      <SearchBar toSearch />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">

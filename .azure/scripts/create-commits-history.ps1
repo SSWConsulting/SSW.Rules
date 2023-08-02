@@ -13,7 +13,7 @@ $apiUrl = "https://api.github.com/repos/SSWConsulting/SSW.Rules.Content/contribu
 for ($page = 1; $page -le 2; $page++) {
     $url = $apiUrl + $page
     $headers = @{
-        "Authorization" = "Bearer $PersonalAccessToken"
+        "Authorization" = "$PersonalAccessToken"
     }
     $response = Invoke-RestMethod -Uri $url -Method Get
     
@@ -26,7 +26,7 @@ for ($page = 1; $page -le 2; $page++) {
 function Get-Commits($author) {
     $url = "https://api.github.com/repos/SSWConsulting/SSW.Rules.Content/commits?author=$author"
     $headers = @{
-        "Authorization" = "Bearer $PersonalAccessToken"
+        "Authorization" = "$PersonalAccessToken"
     }
     try {
         $response = Invoke-RestMethod -Uri $url -Method Get -Headers $headers

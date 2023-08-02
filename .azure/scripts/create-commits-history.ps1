@@ -1,5 +1,5 @@
 param (
-    [string]$PersonalAccessToken
+    [string]$Token
 )
 
 $ErrorActionPreference = 'Stop'
@@ -15,7 +15,7 @@ $apiUrl = "https://api.github.com/repos/SSWConsulting/SSW.Rules.Content/contribu
 for ($page = 1; $page -le 2; $page++) {
     $url = $apiUrl + $page
     $headers = @{
-        "Authorization" = "$PersonalAccessToken"
+        "Authorization" = "Bearer $Token"
     }
     $response = Invoke-RestMethod -Uri $url -Method Get
     
@@ -28,7 +28,7 @@ for ($page = 1; $page -le 2; $page++) {
 function Get-Commits($author) {
     $url = "https://api.github.com/repos/SSWConsulting/SSW.Rules.Content/commits?author=$author"
     $headers = @{
-        "Authorization" = "$PersonalAccessToken"
+        "Authorization" = "Bearer $Token"
     }
     try {
         $response = Invoke-RestMethod -Uri $url -Method Get -Headers $headers

@@ -1,5 +1,5 @@
 param (
-    [string]$PersonalAccessToken,
+    [string]$PersonalAccessToken
 )
 
 $ErrorActionPreference = 'Stop'

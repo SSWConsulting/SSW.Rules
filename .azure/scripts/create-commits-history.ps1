@@ -87,6 +87,6 @@ foreach ($author in $authors) {
 $jsonData = $commitInfo | ConvertTo-Json -Depth 100
 
 #Step 4: Save the commit information to JSON
-$file = [System.IO.Path]::Combine((Get-Location), "./static/commits.json")
+$file = [System.IO.Path]::Combine((Get-Location), "../static/commits.json")
 $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
 [System.IO.File]::WriteAllText($file, $jsonData, $utf8NoBomEncoding)

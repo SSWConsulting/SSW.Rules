@@ -68,19 +68,22 @@ const Index = ({ data, location }) => {
                   to={'/orphaned'}
                   className="flex-1 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline unstyled decoration-underline hover:decoration-ssw-red"
                 >
-                  <FontAwesomeIcon icon={faFrownOpen} /> Orphaned rules
+                  <FontAwesomeIcon icon={faFrownOpen} className="mr-1" />
+                  Orphaned Rules
                 </Link>
                 <Link
                   to={'/archived'}
                   className="mt-2 md:mt-0 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline hover:decoration-ssw-red unstyled"
                 >
-                  <FontAwesomeIcon icon={faArchive} /> Archived rules
+                  <FontAwesomeIcon icon={faArchive} className="mr-1" />
+                  Archived Rules
                 </Link>
                 <a
                   href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
                   className="mt-2 md:mt-0 transition ease-in-out delay-75 hover:text-ssw-red duration-150 underline decoration-underline hover:decoration-ssw-red unstyled"
                 >
-                  <FontAwesomeIcon icon={faPause} /> Unmigrated rules
+                  <FontAwesomeIcon icon={faPause} className="mr-1" />
+                  Unmigrated Rules
                 </a>
               </div>
             </section>

@@ -46,8 +46,6 @@ do {
     }
 } while ($true)
 
-Write-Host "Total number of contributors: $($authors.Count)"
-
 #Step 2: Get all commit info of each contributor
 function Get-Commits($author) {
     $url = "https://api.github.com/repos/$GithubOrg/$GithubRepo/commits?author=$author"

@@ -1,16 +1,18 @@
 param (
     [string]$Token
+    [string]$GithubOrg
+    [string]$GithubRepo
 )
 
 $ErrorActionPreference = 'Stop'
 
-git clone https://github.com/SSWConsulting/SSW.Rules.Content.git
+git clone https://github.com/$GithubOrg/$GithubRepo.git
 
 cd SSW.Rules.Content/
 
 #Step 1: Fetch all contributors - Retrieve from GitHub
 $authors = @()
-$apiUrl = "https://api.github.com/repos/SSWConsulting/SSW.Rules.Content/contributors?per_page=100&page="
+$apiUrl = "https://api.github.com/repos/$GithubOrg/$GithubRepo/contributors?per_page=100&page="
 
 for ($page = 1; $page -le 2; $page++) {
     $url = $apiUrl + $page
@@ -26,7 +28,7 @@ for ($page = 1; $page -le 2; $page++) {
 
 #Step 2: Get all commit info of each contributor
 function Get-Commits($author) {
-    $url = "https://api.github.com/repos/SSWConsulting/SSW.Rules.Content/commits?author=$author"
+    $url = "https://api.github.com/repos/$GithubOrg/$GithubRepo/commits?author=$author"
     $headers = @{
         "Authorization" = "Bearer $Token"
     }

@@ -12,19 +12,35 @@ cd SSW.Rules.Content/
 
 #Step 1: Fetch all contributors - Retrieve from GitHub
 $authors = @()
-$apiUrl = "https://api.github.com/repos/$GithubOrg/$GithubRepo/contributors?per_page=100&page="
+$apiUrl = "https://api.github.com/repos/$GithubOrg/$GithubRepo/contributors?per_page=100"
 
-for ($page = 1; $page -le 2; $page++) {
-    $url = $apiUrl + $page
-    $headers = @{
-        "Authorization" = "Bearer $Token"
+function Get-NextPageUrlFromLinkHeader($linkHeader) {
+    $nextPageUrl = $null
+    $linkHeaderParts = $linkHeader -split ','
+    foreach ($linkPart in $linkHeaderParts) {
+        if ($linkPart -match '<([^>]+)>;\s*rel="next"') {
+            $nextPageUrl = $matches[1]
+            break
+        }
     }
-    $response = Invoke-RestMethod -Uri $url -Method Get
-    
+    return $nextPageUrl
+}
+
+do {
+    $response = Invoke-RestMethod -Uri $apiUrl -Method Get -ResponseHeadersVariable "Headers"
     foreach ($contributor in $response) {
         $authors += $contributor.login
     }
-}
+    $nextPageUrl = Get-NextPageUrlFromLinkHeader $response.Headers.Link
+    if ($nextPageUrl) {
+        $apiUrl = $nextPageUrl
+        break
+    } else {
+        break
+    }
+} while ($true)
+
+Write-Host "Total number of contributors: $($authors.Count)"
 
 #Step 2: Get all commit info of each contributor
 function Get-Commits($author) {

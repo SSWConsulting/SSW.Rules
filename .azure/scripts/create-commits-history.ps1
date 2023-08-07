@@ -1,6 +1,6 @@
 param (
-    [string]$Token
-    [string]$GithubOrg
+    [string]$Token,
+    [string]$GithubOrg,
     [string]$GithubRepo
 )
 

@@ -13,10 +13,14 @@ cd SSW.Rules.Content/
 #Step 1: Fetch all contributors - Retrieve from GitHub
 $authors = @()
 $apiUrl = "https://api.github.com/repos/$GithubOrg/$GithubRepo/contributors?per_page=100"
+$headers = @{
+    "Authorization" = "Bearer $Token"
+}
 
 function Get-NextPageUrlFromLinkHeader($linkHeader) {
     $nextPageUrl = $null
     $linkHeaderParts = $linkHeader -split ','
+
     foreach ($linkPart in $linkHeaderParts) {
         if ($linkPart -match '<([^>]+)>;\s*rel="next"') {
             $nextPageUrl = $matches[1]
@@ -27,14 +31,16 @@ function Get-NextPageUrlFromLinkHeader($linkHeader) {
 }
 
 do {
-    $response = Invoke-RestMethod -Uri $apiUrl -Method Get -ResponseHeadersVariable "Headers"
-    foreach ($contributor in $response) {
+    $response = Invoke-WebRequest -Uri $apiUrl -Method Get -Headers $headers
+    $contentArr = $response.Content | ConvertFrom-Json
+    foreach ($contributor in $contentArr) {
         $authors += $contributor.login
     }
+
     $nextPageUrl = Get-NextPageUrlFromLinkHeader $response.Headers.Link
+
     if ($nextPageUrl) {
         $apiUrl = $nextPageUrl
-        break
     } else {
         break
     }
@@ -45,9 +51,6 @@ Write-Host "Total number of contributors: $($authors.Count)"
 #Step 2: Get all commit info of each contributor
 function Get-Commits($author) {
     $url = "https://api.github.com/repos/$GithubOrg/$GithubRepo/commits?author=$author"
-    $headers = @{
-        "Authorization" = "Bearer $Token"
-    }
     try {
         $response = Invoke-RestMethod -Uri $url -Method Get -Headers $headers
         return $response
@@ -74,7 +77,7 @@ foreach ($author in $authors) {
     $commits = Get-Commits $author
     $userCommits = @{
         "user" = $author
-	"authorName" = ""
+	    "authorName" = ""
         "commits" = @()
     }
 

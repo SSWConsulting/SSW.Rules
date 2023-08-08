@@ -130,6 +130,7 @@ const LatestRules = ({ data, location }) => {
   return (
     <div className="w-full">
       <Breadcrumb isLatest />
+      {/* Hide the searchbar until it is ready for production as per https://github.com/SSWConsulting/SSW.Rules/issues/1068 */}
       {/* <SearchBar toSearch /> */}
       <div className="container" id="rules">
         <div className="flex flex-wrap">

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import SideBar from '../components/side-bar/side-bar';
-import SearchBar from '../components/search-bar/search-bar';
+// import SearchBar from '../components/search-bar/search-bar';
 import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
@@ -130,7 +130,7 @@ const LatestRules = ({ data, location }) => {
   return (
     <div className="w-full">
       <Breadcrumb isLatest />
-      <SearchBar toSearch />
+      {/* <SearchBar toSearch /> */}
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">

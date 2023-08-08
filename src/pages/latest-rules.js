@@ -15,11 +15,11 @@ const LatestRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
-  const [authorName, setAuthorName] = useState('');
 
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
   const rules = data.allMarkdownRemark.nodes;
+  const userRules = data.allCommitsJson.edges;
 
   const queryStringSearch = qs.parse(location?.search, {
     parseNumbers: true,
@@ -38,23 +38,27 @@ const LatestRules = ({ data, location }) => {
     filterAndSort(filter);
   }, [filter, isAscending]);
 
-  const fetchGithubName = async (author) => {
-    const token = process.env.GITHUB_API_PAT;
-    const response = await fetch(`https://api.github.com/users/${author}`, {
-      method: 'GET',
-      headers: {
-        Authorization: token ? `bearer ${token}` : '',
-      },
+  const filterByAuthor = async (rulesList) => {
+    const getCommitPathsFromRule = (rule) => {
+      return rule.node.commits.flatMap((commit) => {
+        return commit.FilesChanged.map((path) =>
+          path.substring(0, path.lastIndexOf('/'))
+        );
+      });
+    };
+
+    // eslint-disable-next-line no-undef
+    const filteredPathsSet = new Set(
+      userRules
+        .filter((rule) => rule.node.user === queryStringRulesAuthor)
+        .flatMap(getCommitPathsFromRule)
+    );
+
+    const foundRules = rulesList.filter((item) => {
+      return filteredPathsSet.has(sanitizeName(item.item.fields.slug, true));
     });
 
-    const { name } = await response.json();
-    setAuthorName(name);
-    return name;
-  };
-
-  const filterByAuthor = async (rules) => {
-    const name = authorName || (await fetchGithubName(queryStringRulesAuthor));
-    return rules.filter((rule) => rule.file.node.lastUpdatedBy === name);
+    return foundRules;
   };
 
   const filterAndValidateRules = async () => {
@@ -181,6 +185,18 @@ export const pageQuery = graphql`
         }
         fields {
           slug
+        }
+      }
+    }
+    allCommitsJson {
+      edges {
+        node {
+          id
+          commits {
+            CommitTime
+            FilesChanged
+          }
+          user
         }
       }
     }

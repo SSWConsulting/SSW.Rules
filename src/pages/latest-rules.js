@@ -41,8 +41,8 @@ const LatestRules = ({ data, location }) => {
   const filterByAuthor = async (rulesList) => {
     const getCommitPathsFromRule = (rule) => {
       return rule.node.commits.flatMap((commit) => {
-        return commit.FilesChanged.map((path) =>
-          path.substring(0, path.lastIndexOf('/'))
+        return commit.FilesChanged.map((x) =>
+          x.path.substring(0, x.path.lastIndexOf('/'))
         );
       });
     };
@@ -122,7 +122,6 @@ const LatestRules = ({ data, location }) => {
 
     sort(_filter, filteredRules);
     //Only show the top x queryStringRulesListSize
-
     setFilteredItems({
       list: queryStringRulesAuthor
         ? filteredRules
@@ -194,7 +193,11 @@ export const pageQuery = graphql`
           id
           commits {
             CommitTime
-            FilesChanged
+            FilesChanged {
+              title
+              path
+              uri
+            }
           }
           user
         }

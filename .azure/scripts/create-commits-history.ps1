@@ -69,6 +69,41 @@ function Get-CommitDiffFiles($sha) {
     return $diff
 }
 
+function Get-FileMetadata($currentFolder, $commits) {
+    $updatedCommits = @()
+
+    foreach ($commitPath in $commits) {
+        $updatedFilesChanged = @()
+
+        $fullPath = Join-Path $currentFolder $commitPath.Replace("rules/", "")
+
+        try {
+            $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
+            $streamReader = New-Object System.IO.StreamReader -Arg $fullPath, $utf8NoBomEncoding
+            $content = $streamReader.ReadToEnd()
+            $streamReader.Close()
+
+            $lines = $content -split "`n"
+            $titleLine = $lines | Where-Object { $_.StartsWith('title:') }
+            $title = $titleLine.Trim().Substring(7)
+            $uriLine = $lines | Where-Object { $_.Trim().StartsWith('uri:') }
+            $uri = $uriLine.Trim().Substring(5)
+
+            $newFileChanged = @{
+                uri = $uri
+                title = $title
+                path = $commitPath
+            }
+            $updatedFilesChanged += $newFileChanged
+            $updatedCommits += @($updatedFilesChanged)
+        } catch {
+            continue
+        }
+    }
+
+    return $updatedCommits
+}
+
 $commitInfo = @()
 
 foreach ($author in $authors) {
@@ -87,8 +122,12 @@ foreach ($author in $authors) {
         if ($commitDetails) {
             $commitDetailsArray = $commitDetails -split '\r?\n'
             $commitTimeValue = $commitDetailsArray[1]
-
             $filesChangedList = $filesChangedList | Where-Object { $_ -like "*.md" } | Where-Object { $_ -ne '' }
+            $newFilesChangedList = Get-FileMetadata $rootFolder $filesChangedList
+
+            if ($newFilesChangedList.Count -eq 0) {
+                continue
+            }
 
             $commitInfoObj = @{
                 "CommitTime" = $commitTimeValue

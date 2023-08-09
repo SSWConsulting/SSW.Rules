@@ -16,7 +16,7 @@ $apiUrl = "https://api.github.com/repos/$GithubOrg/$GithubRepo/contributors?per_
 $headers = @{
     "Authorization" = "Bearer $Token"
 }
-$rootFolder = "./rules"
+$rootFolder = "./SSW.Rules.Content/rules"
 
 function Get-NextPageUrlFromLinkHeader($linkHeader) {
     $nextPageUrl = $null

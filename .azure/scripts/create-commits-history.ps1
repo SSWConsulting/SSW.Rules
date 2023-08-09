@@ -16,6 +16,7 @@ $apiUrl = "https://api.github.com/repos/$GithubOrg/$GithubRepo/contributors?per_
 $headers = @{
     "Authorization" = "Bearer $Token"
 }
+$rootFolder = "./rules"
 
 function Get-NextPageUrlFromLinkHeader($linkHeader) {
     $nextPageUrl = $null
@@ -131,7 +132,7 @@ foreach ($author in $authors) {
 
             $commitInfoObj = @{
                 "CommitTime" = $commitTimeValue
-                "FilesChanged" = @($filesChangedList) # Convert to an array
+                "FilesChanged" = @($newFilesChangedList)
             }
 
             $userCommits["commits"] += $commitInfoObj
@@ -139,7 +140,7 @@ foreach ($author in $authors) {
     }
 
     if ($userCommits["commits"].Count -gt 0) {
-	$userCommits["authorName"] = $commit.commit[0].author.name
+	    $userCommits["authorName"] = $commit.commit[0].author.name
         $commitInfo += $userCommits
     }
 }

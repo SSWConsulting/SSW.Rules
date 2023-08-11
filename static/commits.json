@@ -3,170 +3,211 @@
         "commits":  [
                         {
                             "FilesChanged":  [
-                                                 "rules/containerize-sql-server/rule.md"
+                                                 {
+                                                     "title":  "Project setup - Do you use Docker to containerize your SQL Server environment?",
+                                                     "path":  "rules/containerize-sql-server/rule.md",
+                                                     "uri":  "containerize-sql-server"
+                                                 }
                                              ],
                             "CommitTime":  "2023-06-02T04:15:07+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/have-a-clear-mission-statement/rule.md"
+                                                 {
+                                                     "title":  "Do you have a clear mission statement?",
+                                                     "path":  "rules/have-a-clear-mission-statement/rule.md",
+                                                     "uri":  "have-a-clear-mission-statement"
+                                                 }
                                              ],
                             "CommitTime":  "2022-06-28T02:23:27+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/scrum-master-do-you-schedule-the-3-meetings/rule.md"
+                                                 {
+                                                     "title":  "Scrum Master - Do you schedule the 3 meetings?",
+                                                     "path":  "rules/scrum-master-do-you-schedule-the-3-meetings/rule.md",
+                                                     "uri":  "scrum-master-do-you-schedule-the-3-meetings"
+                                                 }
                                              ],
                             "CommitTime":  "2022-06-20T15:34:48+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/choose-azure-services/rule.md"
+                                                 {
+                                                     "title":  "Do you know how to choose Azure services?",
+                                                     "path":  "rules/choose-azure-services/rule.md",
+                                                     "uri":  "choose-azure-services"
+                                                 }
                                              ],
                             "CommitTime":  "2022-06-17T00:17:06+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/choose-azure-services/rule.md"
+                                                 {
+                                                     "title":  "Do you know how to choose Azure services?",
+                                                     "path":  "rules/choose-azure-services/rule.md",
+                                                     "uri":  "choose-azure-services"
+                                                 }
                                              ],
                             "CommitTime":  "2022-06-16T22:53:44+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/automation-tools/rule.md"
+                                                 {
+                                                     "title":  "Do you use the right tool to automate your processes?",
+                                                     "path":  "rules/automation-tools/rule.md",
+                                                     "uri":  "automation-tools"
+                                                 }
                                              ],
                             "CommitTime":  "2022-05-26T20:01:32+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/premiere-pro-markers-as-youtube-chapter-links/rule.md"
+                                                 {
+                                                     "title":  "Do you use Premiere Pro Markers as YouTube Chapter Links?",
+                                                     "path":  "rules/premiere-pro-markers-as-youtube-chapter-links/rule.md",
+                                                     "uri":  "premiere-pro-markers-as-youtube-chapter-links"
+                                                 }
                                              ],
                             "CommitTime":  "2022-05-10T18:23:59+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-give-your-emails-a-business-value/rule.md",
-                                                 "rules/give-emails-a-business-value/rule.md"
+                                                 {
+                                                     "title":  "Do you give your emails a Business Value?",
+                                                     "path":  "rules/give-emails-a-business-value/rule.md",
+                                                     "uri":  "give-emails-a-business-value"
+                                                 }
                                              ],
                             "CommitTime":  "2022-04-29T03:05:21+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/being-a-good-consultant/rule.md"
+                                                 {
+                                                     "title":  "Do you know the 3 A\u0027s for being a good consultant?",
+                                                     "path":  "rules/being-a-good-consultant/rule.md",
+                                                     "uri":  "being-a-good-consultant"
+                                                 }
                                              ],
                             "CommitTime":  "2022-04-29T02:38:42+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/follow-up-emails-effectively/rule.md"
-                                             ],
-                            "CommitTime":  "2022-04-11T20:26:16+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/follow-up-emails-effectively/rule.md"
-                                             ],
-                            "CommitTime":  "2022-04-11T20:06:24+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/record-a-quick-and-dirty-done-video/rule.md"
+                                                 {
+                                                     "title":  "Do you know how to record a quick and dirty \u0027Done Video\u0027?",
+                                                     "path":  "rules/record-a-quick-and-dirty-done-video/rule.md",
+                                                     "uri":  "record-a-quick-and-dirty-done-video"
+                                                 }
                                              ],
                             "CommitTime":  "2022-03-30T17:04:49+11:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/appointments-do-you-explain-why-youve-deleted-or-modified-an-appointment/rule.md"
-                                             ],
-                            "CommitTime":  "2022-03-30T14:20:57+11:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/searching-outlook-effectively/rule.md"
+                                                 {
+                                                     "title":  "Do you know how to search Outlook effectively?",
+                                                     "path":  "rules/searching-outlook-effectively/rule.md",
+                                                     "uri":  "searching-outlook-effectively"
+                                                 }
                                              ],
                             "CommitTime":  "2022-03-10T23:37:00+11:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/semantic-versioning/rule.md"
+                                                 {
+                                                     "title":  "Do you understand the value of Semantic Versioning?",
+                                                     "path":  "rules/semantic-versioning/rule.md",
+                                                     "uri":  "semantic-versioning"
+                                                 }
                                              ],
                             "CommitTime":  "2022-02-03T18:52:55+11:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/use-a-signature-with-a-link-when-commenting-on-a-blog/rule.md"
+                                                 {
+                                                     "title":  "Do you use a signature with a link when commenting on a blog?",
+                                                     "path":  "rules/use-a-signature-with-a-link-when-commenting-on-a-blog/rule.md",
+                                                     "uri":  "use-a-signature-with-a-link-when-commenting-on-a-blog"
+                                                 }
                                              ],
                             "CommitTime":  "2022-02-03T11:11:11+11:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/use-a-signature-with-a-link-when-commenting-on-a-blog/rule.md"
+                                                 {
+                                                     "title":  "Do you use a signature with a link when commenting on a blog?",
+                                                     "path":  "rules/use-a-signature-with-a-link-when-commenting-on-a-blog/rule.md",
+                                                     "uri":  "use-a-signature-with-a-link-when-commenting-on-a-blog"
+                                                 }
                                              ],
                             "CommitTime":  "2022-02-03T10:52:07+11:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/spec-do-you-conduct-a-specification-review-ask-for-a-coffee-not-a-marriage/rule.md"
+                                                 {
+                                                     "title":  "Do you conduct a Specification Review? (ask for a coffee not a marriage)",
+                                                     "path":  "rules/spec-do-you-conduct-a-specification-review-ask-for-a-coffee-not-a-marriage/rule.md",
+                                                     "uri":  "spec-do-you-conduct-a-specification-review-ask-for-a-coffee-not-a-marriage"
+                                                 }
                                              ],
                             "CommitTime":  "2021-12-02T04:12:59+11:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/the-right-way-to-report-bugs-and-give-feedback-suggestions/rule.md"
-                                             ],
-                            "CommitTime":  "2021-12-02T04:12:37+11:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/important-documents-to-get-started-on-unit-testing/rule.md"
+                                                 {
+                                                     "title":  "Do you know good sources of information to get started with Unit Testing?",
+                                                     "path":  "rules/important-documents-to-get-started-on-unit-testing/rule.md",
+                                                     "uri":  "important-documents-to-get-started-on-unit-testing"
+                                                 }
                                              ],
                             "CommitTime":  "2021-10-15T20:33:52+11:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/ups-send-email/rule.md"
+                                                 {
+                                                     "title":  "UPS - Do you have your UPS send an email when it kicks in?",
+                                                     "path":  "rules/ups-send-email/rule.md",
+                                                     "uri":  "ups-send-email"
+                                                 }
                                              ],
                             "CommitTime":  "2021-09-22T15:48:50+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-know-when-to-do-use-checked-by-xxx/rule.md"
-                                             ],
-                            "CommitTime":  "2021-07-27T08:25:22+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/do-you-know-when-you-should-change-a-subject/rule.md"
-                                             ],
-                            "CommitTime":  "2021-07-27T01:06:15+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/do-you-know-the-right-format-to-show-your-phone-number/rule.md"
-                                             ],
-                            "CommitTime":  "2021-07-26T09:18:06+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/answer-im-questions-in-order/rule.md"
+                                                 {
+                                                     "title":  "Clarity - Do you answer IM questions in order?",
+                                                     "path":  "rules/answer-im-questions-in-order/rule.md",
+                                                     "uri":  "answer-im-questions-in-order"
+                                                 }
                                              ],
                             "CommitTime":  "2019-01-18T01:42:56+11:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-know-when-to-branch-in-git/rule.md"
+                                                 {
+                                                     "title":  "Do you know when to branch in git?",
+                                                     "path":  "rules/do-you-know-when-to-branch-in-git/rule.md",
+                                                     "uri":  "do-you-know-when-to-branch-in-git"
+                                                 }
                                              ],
                             "CommitTime":  "2018-02-22T14:53:20+11:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-know-when-to-branch-in-git/rule.md"
+                                                 {
+                                                     "title":  "Do you know when to branch in git?",
+                                                     "path":  "rules/do-you-know-when-to-branch-in-git/rule.md",
+                                                     "uri":  "do-you-know-when-to-branch-in-git"
+                                                 }
                                              ],
                             "CommitTime":  "2018-02-22T14:41:25+11:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/where-to-keep-your-files/rule.md"
+                                                 {
+                                                     "title":  "Files - Do you know where to keep your files?",
+                                                     "path":  "rules/where-to-keep-your-files/rule.md",
+                                                     "uri":  "where-to-keep-your-files"
+                                                 }
                                              ],
                             "CommitTime":  "2018-02-09T13:35:00+11:00"
                         }
@@ -178,381 +219,281 @@
         "commits":  [
                         {
                             "FilesChanged":  [
-
-                                             ],
-                            "CommitTime":  "2023-08-08T09:54:10+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/google-maps-profile/rule.md"
-                                             ],
-                            "CommitTime":  "2023-08-02T13:00:54+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/chatgpt-for-powerpoint/rule.md"
-                                             ],
-                            "CommitTime":  "2023-08-01T17:10:35+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/use-nextjs/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-21T11:25:54+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/dynamically-load-components/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-21T11:18:39+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/lowercase-urls/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-20T11:29:40+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/lowercase-urls/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-19T15:59:09+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/meetings-do-you-know-the-agenda-for-the-initial-meeting/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-19T10:14:07+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/avoid-auto-closing-issues/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-18T14:39:46+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/software-development/rules-to-better-github.md"
-                                             ],
-                            "CommitTime":  "2023-07-18T14:32:36+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/application-lifecycle-management-alm/rules-to-better-scrum-using-github.md",
-                                                 "rules/avoid-auto-closing-issues/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-18T10:36:15+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/close-pbis-with-context/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-17T13:19:20+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/communication/rules-to-better-technical-documentation.md"
-                                             ],
-                            "CommitTime":  "2023-07-15T09:16:22+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/artificial-intelligence/rules-to-better-gpt.md",
-                                                 "rules/generate-ai-images/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-11T15:33:22+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/understanding-data-lakes/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-08T18:58:31+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-
-                                             ],
-                            "CommitTime":  "2023-07-06T11:29:17+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-
-                                             ],
-                            "CommitTime":  "2023-07-03T11:26:05+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/over-the-shoulder-prs/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-30T14:51:15+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/escalate-key-updates/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-27T11:06:25+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/marketing-and-video/rules-to-better-google-rankings-and-seo.md",
-                                                 "rules/create-friendly-short-urls/rule.md",
-                                                 "rules/lowercase-urls/rule.md",
-                                                 "rules/use-dashes-in-urls/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-27T11:03:46+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/escalate-done-videos/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-27T01:31:40+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-
-                                             ],
-                            "CommitTime":  "2023-06-26T18:42:48+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/generate-ai-images/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-23T09:57:18+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/application-lifecycle-management-alm/rules-to-better-scrum-using-azure-devops.md",
-                                                 "categories/application-lifecycle-management-alm/rules-to-better-scrum-using-github.md",
-                                                 "categories/communication/rules-to-better-communication.md",
-                                                 "rules/escalate-done-videos/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-21T00:47:05+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/escalate-done-videos/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-19T20:35:36+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/chatgpt-prompts-for-video-production/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-19T11:44:54+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/use-the-right-database/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-16T14:59:17+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-
-                                             ],
-                            "CommitTime":  "2023-06-10T19:39:45+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/dotnet-upgrade-for-complex-projects/rule.md",
-                                                 "rules/examples-and-analogies-clarification/rule.md",
-                                                 "rules/install-chatgpt-as-an-app/rule.md",
-                                                 "rules/migrate-from-system-web-to-modern-alternatives/rule.md",
-                                                 "rules/pros-and-cons-and-ratings/rule.md",
-                                                 "rules/summarize-long-conversations/rule.md",
-                                                 "rules/technical-debt/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-07T11:51:02+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/chatgpt-for-email/rule.md"
-                                             ],
-                            "CommitTime":  "2023-06-07T11:36:07+10:00"
-                        }
-                    ],
-        "user":  "bradystroud",
-        "authorName":  "Brady Stroud [SSW]"
-    },
-    {
-        "commits":  [
-                        {
-                            "FilesChanged":  [
-                                                 "categories/software-development/rules-for-error-handling.md"
-                                             ],
-                            "CommitTime":  "2023-07-31T09:12:27+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/when-to-use-raw-sql/rule.md"
+                                                 {
+                                                     "title":  "Do you know when to use raw sql?",
+                                                     "path":  "rules/when-to-use-raw-sql/rule.md",
+                                                     "uri":  "when-to-use-raw-sql"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-20T02:41:46+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/build-criteria-by-using-a-where-clause/rule.md"
+                                                 {
+                                                     "title":  "Do you build criteria by using a where clause?",
+                                                     "path":  "rules/build-criteria-by-using-a-where-clause/rule.md",
+                                                     "uri":  "build-criteria-by-using-a-where-clause"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-20T02:40:55+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-refer-to-images-the-correct-way-in-asp-net/rule.md"
+                                                 {
+                                                     "title":  "Do you refer to images the correct way in ASP .NET?",
+                                                     "path":  "rules/do-you-refer-to-images-the-correct-way-in-asp-net/rule.md",
+                                                     "uri":  "do-you-refer-to-images-the-correct-way-in-asp-net"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-20T02:39:11+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/only-explicitly-include-relationships-you-need/rule.md"
+                                                 {
+                                                     "title":  "Do you only explicitly include relationships you need?",
+                                                     "path":  "rules/only-explicitly-include-relationships-you-need/rule.md",
+                                                     "uri":  "only-explicitly-include-relationships-you-need"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-20T02:32:00+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-deploy-your-applications-correctly/rule.md"
+                                                 {
+                                                     "title":  "Do you deploy your applications correctly?",
+                                                     "path":  "rules/do-you-deploy-your-applications-correctly/rule.md",
+                                                     "uri":  "do-you-deploy-your-applications-correctly"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-20T01:45:28+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-keep-clean-on-imports-of-project-property/rule.md"
+                                                 {
+                                                     "title":  "Do you keep clean on Imports of Project Property?",
+                                                     "path":  "rules/do-you-keep-clean-on-imports-of-project-property/rule.md",
+                                                     "uri":  "do-you-keep-clean-on-imports-of-project-property"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-20T01:43:51+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-secure-your-web-services-using-wcf-over-wse3-and-ssl/rule.md"
+                                                 {
+                                                     "title":  "Do you secure your web services using WCF over WSE3 and SSL?",
+                                                     "path":  "rules/do-you-secure-your-web-services-using-wcf-over-wse3-and-ssl/rule.md",
+                                                     "uri":  "do-you-secure-your-web-services-using-wcf-over-wse3-and-ssl"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-20T01:41:46+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-use-treeview-control-instead-of-xml-control/rule.md"
+                                                 {
+                                                     "title":  "Do you use TreeView control instead of XML control?",
+                                                     "path":  "rules/do-you-use-treeview-control-instead-of-xml-control/rule.md",
+                                                     "uri":  "do-you-use-treeview-control-instead-of-xml-control"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-20T01:36:47+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-provide-a-warning-before-the-program-exits/rule.md"
+                                                 {
+                                                     "title":  "Do you provide a warning before the program exits?",
+                                                     "path":  "rules/do-you-provide-a-warning-before-the-program-exits/rule.md",
+                                                     "uri":  "do-you-provide-a-warning-before-the-program-exits"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T19:54:23+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/seo-nofollow/rule.md"
+                                                 {
+                                                     "title":  "SEO - Do you tag external URLs with rel=”nofollow”?",
+                                                     "path":  "rules/seo-nofollow/rule.md",
+                                                     "uri":  "seo-nofollow"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T19:53:39+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/only-project-properties-you-need/rule.md"
+                                                 {
+                                                     "title":  "Do you only project properties you need?",
+                                                     "path":  "rules/only-project-properties-you-need/rule.md",
+                                                     "uri":  "only-project-properties-you-need"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T19:52:03+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/avoid-using-update/rule.md"
+                                                 {
+                                                     "title":  "Do you avoid using update?",
+                                                     "path":  "rules/avoid-using-update/rule.md",
+                                                     "uri":  "avoid-using-update"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T19:50:40+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/use-tagwith/rule.md"
+                                                 {
+                                                     "title":  "Do you use TagWith?",
+                                                     "path":  "rules/use-tagwith/rule.md",
+                                                     "uri":  "use-tagwith"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T19:49:50+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/bulk-process-in-chunks/rule.md"
+                                                 {
+                                                     "title":  "Do you bulk process in chunks?",
+                                                     "path":  "rules/bulk-process-in-chunks/rule.md",
+                                                     "uri":  "bulk-process-in-chunks"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T19:49:40+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-use-comments-not-exclusion-files-when-you-ignore-a-code-analysis-rule/rule.md"
+                                                 {
+                                                     "title":  "Do you use comments not exclusion files when you ignore a Code Analysis rule?",
+                                                     "path":  "rules/do-you-use-comments-not-exclusion-files-when-you-ignore-a-code-analysis-rule/rule.md",
+                                                     "uri":  "do-you-use-comments-not-exclusion-files-when-you-ignore-a-code-analysis-rule"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T11:15:25+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-let-the-adapter-handle-the-connection-for-you/rule.md"
+                                                 {
+                                                     "title":  "Do you let the adapter handle the connection for you?",
+                                                     "path":  "rules/do-you-let-the-adapter-handle-the-connection-for-you/rule.md",
+                                                     "uri":  "do-you-let-the-adapter-handle-the-connection-for-you"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T11:13:28+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-know-how-to-create-nice-urls-using-asp-net-4/rule.md"
+                                                 {
+                                                     "title":  "Do you know how to create nice URLs using ASP.NET 4?",
+                                                     "path":  "rules/do-you-know-how-to-create-nice-urls-using-asp-net-4/rule.md",
+                                                     "uri":  "do-you-know-how-to-create-nice-urls-using-asp-net-4"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T11:10:06+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/help-in-powershell-functions-and-scripts/rule.md"
+                                                 {
+                                                     "title":  "Do you use Comment-Based Help in PowerShell functions and scripts?",
+                                                     "path":  "rules/help-in-powershell-functions-and-scripts/rule.md",
+                                                     "uri":  "help-in-powershell-functions-and-scripts"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T11:07:37+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-avoid-using-duplicate-connection-string-in-web-config/rule.md"
+                                                 {
+                                                     "title":  "Do you avoid using duplicate connection string in web.config?",
+                                                     "path":  "rules/do-you-avoid-using-duplicate-connection-string-in-web-config/rule.md",
+                                                     "uri":  "do-you-avoid-using-duplicate-connection-string-in-web-config"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T11:05:21+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/have-generic-exception-handler-in-your-global-asax/rule.md"
+                                                 {
+                                                     "title":  "Do you have generic exception handler in your Global.asax?",
+                                                     "path":  "rules/have-generic-exception-handler-in-your-global-asax/rule.md",
+                                                     "uri":  "have-generic-exception-handler-in-your-global-asax"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T11:04:24+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-make-your-projects-regenerated-easily/rule.md"
+                                                 {
+                                                     "title":  "Do you make your projects regenerated easily?",
+                                                     "path":  "rules/do-you-make-your-projects-regenerated-easily/rule.md",
+                                                     "uri":  "do-you-make-your-projects-regenerated-easily"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T11:02:54+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-use-more-meaningful-names-than-hungarian-short-form/rule.md"
+                                                 {
+                                                     "title":  "Do you use more meaningful names than Hungarian short form?",
+                                                     "path":  "rules/do-you-use-more-meaningful-names-than-hungarian-short-form/rule.md",
+                                                     "uri":  "do-you-use-more-meaningful-names-than-hungarian-short-form"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T10:36:21+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-wrote-your-angular-1-x-directives-in-typescript/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-19T10:32:07+10:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/do-you-use-one-class-per-file/rule.md"
+                                                 {
+                                                     "title":  "Do you use one class per file?",
+                                                     "path":  "rules/do-you-use-one-class-per-file/rule.md",
+                                                     "uri":  "do-you-use-one-class-per-file"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T10:31:42+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-explain-the-logistics/rule.md"
+                                                 {
+                                                     "title":  "Do you explain the event logistics?",
+                                                     "path":  "rules/do-you-explain-the-logistics/rule.md",
+                                                     "uri":  "do-you-explain-the-logistics"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T10:30:21+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/clean-your-data-before-modelling/rule.md"
+                                                 {
+                                                     "title":  "Do you clean your data before modelling?",
+                                                     "path":  "rules/clean-your-data-before-modelling/rule.md",
+                                                     "uri":  "clean-your-data-before-modelling"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T10:21:39+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/use-301-redirect-on-renamed-or-moved-pages/rule.md"
+                                                 {
+                                                     "title":  "Do you use \"301\" code to redirect renamed or moved pages?",
+                                                     "path":  "rules/use-301-redirect-on-renamed-or-moved-pages/rule.md",
+                                                     "uri":  "use-301-redirect-on-renamed-or-moved-pages"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T10:20:14+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/do-you-use-resource-file-for-storing-your-static-script/rule.md"
+                                                 {
+                                                     "title":  "Do you use resource file for storing your static script?",
+                                                     "path":  "rules/do-you-use-resource-file-for-storing-your-static-script/rule.md",
+                                                     "uri":  "do-you-use-resource-file-for-storing-your-static-script"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T10:15:54+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/release-build-your-web-applications-before-you-deploy-them/rule.md"
+                                                 {
+                                                     "title":  "Do you release build your web applications before you deploy them?",
+                                                     "path":  "rules/release-build-your-web-applications-before-you-deploy-them/rule.md",
+                                                     "uri":  "release-build-your-web-applications-before-you-deploy-them"
+                                                 }
                                              ],
                             "CommitTime":  "2023-07-19T10:13:45+10:00"
                         }
@@ -564,216 +505,246 @@
         "commits":  [
                         {
                             "FilesChanged":  [
-                                                 "rules/better-late-than-never/rule.md"
+                                                 {
+                                                     "title":  "Google Business - Do you make your Google Maps profile look awesome?",
+                                                     "path":  "rules/google-maps-profile/rule.md",
+                                                     "uri":  "google-maps-profile"
+                                                 }
                                              ],
-                            "CommitTime":  "2023-07-31T10:46:09+08:00"
+                            "CommitTime":  "2023-08-02T13:00:54+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/use-icons-to-not-surprise-users/rule.md"
+                                                 {
+                                                     "title":  "Do you know how to make a PowerPoint presentation using ChatGPT?",
+                                                     "path":  "rules/chatgpt-for-powerpoint/rule.md",
+                                                     "uri":  "chatgpt-for-powerpoint"
+                                                 }
                                              ],
-                            "CommitTime":  "2023-06-06T15:35:41+08:00"
+                            "CommitTime":  "2023-08-01T17:10:35+10:00"
                         },
                         {
                             "FilesChanged":  [
-                                                 "rules/avoid-using-any/rule.md"
+                                                 {
+                                                     "title":  "Do you know why Next.js is awesome?",
+                                                     "path":  "rules/use-nextjs/rule.md",
+                                                     "uri":  "use-nextjs"
+                                                 }
                                              ],
-                            "CommitTime":  "2023-04-21T20:24:34+08:00"
+                            "CommitTime":  "2023-07-21T11:25:54+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you know when to use dynamic imports in Next.js?",
+                                                     "path":  "rules/dynamically-load-components/rule.md",
+                                                     "uri":  "dynamically-load-components"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-07-21T11:18:39+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you use lowercase URLs?",
+                                                     "path":  "rules/lowercase-urls/rule.md",
+                                                     "uri":  "lowercase-urls"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-07-20T11:29:40+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you use lowercase URLs?",
+                                                     "path":  "rules/lowercase-urls/rule.md",
+                                                     "uri":  "lowercase-urls"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-07-19T15:59:09+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Meetings - Do you know the agenda for the initial meeting?",
+                                                     "path":  "rules/meetings-do-you-know-the-agenda-for-the-initial-meeting/rule.md",
+                                                     "uri":  "meetings-do-you-know-the-agenda-for-the-initial-meeting"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-07-19T10:14:07+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you avoid linking issues to PRs in GitHub?",
+                                                     "path":  "rules/avoid-auto-closing-issues/rule.md",
+                                                     "uri":  "avoid-auto-closing-issues"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-07-18T14:39:46+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you avoid linking issues to PRs in GitHub?",
+                                                     "path":  "rules/avoid-auto-closing-issues/rule.md",
+                                                     "uri":  "avoid-auto-closing-issues"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-07-18T10:36:15+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you close PBIs with context?",
+                                                     "path":  "rules/close-pbis-with-context/rule.md",
+                                                     "uri":  "close-pbis-with-context"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-07-17T13:19:20+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you know how and when to use AI generated images?",
+                                                     "path":  "rules/generate-ai-images/rule.md",
+                                                     "uri":  "generate-ai-images"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-07-11T15:33:22+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you understand Data Lakes?",
+                                                     "path":  "rules/understanding-data-lakes/rule.md",
+                                                     "uri":  "understanding-data-lakes"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-07-08T18:58:31+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Pull Request - Do you do over the shoulder reviews?",
+                                                     "path":  "rules/over-the-shoulder-prs/rule.md",
+                                                     "uri":  "over-the-shoulder-prs"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-06-30T14:51:15+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you escalate key updates and deliverables?",
+                                                     "path":  "rules/escalate-key-updates/rule.md",
+                                                     "uri":  "escalate-key-updates"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-06-27T11:06:25+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you make URLs short and readable?",
+                                                     "path":  "rules/create-friendly-short-urls/rule.md",
+                                                     "uri":  "create-friendly-short-urls"
+                                                 },
+                                                 {
+                                                     "title":  "Do you use lowercase URLs?",
+                                                     "path":  "rules/lowercase-urls/rule.md",
+                                                     "uri":  "lowercase-urls"
+                                                 },
+                                                 {
+                                                     "title":  "Do you use dashes in your URLs?",
+                                                     "path":  "rules/use-dashes-in-urls/rule.md",
+                                                     "uri":  "use-dashes-in-urls"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-06-27T11:03:46+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you know how and when to use AI generated images?",
+                                                     "path":  "rules/generate-ai-images/rule.md",
+                                                     "uri":  "generate-ai-images"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-06-23T09:57:18+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you use ChatGPT prompts for video production?",
+                                                     "path":  "rules/chatgpt-prompts-for-video-production/rule.md",
+                                                     "uri":  "chatgpt-prompts-for-video-production"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-06-19T11:44:54+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you use the right database for the job?",
+                                                     "path":  "rules/use-the-right-database/rule.md",
+                                                     "uri":  "use-the-right-database"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-06-16T14:59:17+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you know how to handle complex .NET migrations?",
+                                                     "path":  "rules/dotnet-upgrade-for-complex-projects/rule.md",
+                                                     "uri":  "dotnet-upgrade-for-complex-projects"
+                                                 },
+                                                 {
+                                                     "title":  "Do you ask for examples or analogies to clarify complex concepts?",
+                                                     "path":  "rules/examples-and-analogies-clarification/rule.md",
+                                                     "uri":  "examples-and-analogies-clarification"
+                                                 },
+                                                 {
+                                                     "title":  "Do you install ChatGPT as an App on Windows and iOS?",
+                                                     "path":  "rules/install-chatgpt-as-an-app/rule.md",
+                                                     "uri":  "install-chatgpt-as-an-app"
+                                                 },
+                                                 {
+                                                     "title":  "Do you know how to migrate from System.Web to modern alternatives",
+                                                     "path":  "rules/migrate-from-system-web-to-modern-alternatives/rule.md",
+                                                     "uri":  "migrate-from-system-web-to-modern-alternatives"
+                                                 },
+                                                 {
+                                                     "title":  "Do you ask for pros and cons and a rating when seeking advice or",
+                                                     "path":  "rules/pros-and-cons-and-ratings/rule.md",
+                                                     "uri":  "pros-and-cons-and-ratings"
+                                                 },
+                                                 {
+                                                     "title":  "Do you summarize long conversations for better context retention?",
+                                                     "path":  "rules/summarize-long-conversations/rule.md",
+                                                     "uri":  "summarize-long-conversations"
+                                                 },
+                                                 {
+                                                     "title":  "Do you know the importance of paying back Technical Debt?",
+                                                     "path":  "rules/technical-debt/rule.md",
+                                                     "uri":  "technical-debt"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-06-07T11:51:02+10:00"
+                        },
+                        {
+                            "FilesChanged":  [
+                                                 {
+                                                     "title":  "Do you use ChatGPT for better emails?",
+                                                     "path":  "rules/chatgpt-for-email/rule.md",
+                                                     "uri":  "chatgpt-for-email"
+                                                 }
+                                             ],
+                            "CommitTime":  "2023-06-07T11:36:07+10:00"
                         }
                     ],
-        "user":  "Aibono1225",
-        "authorName":  "Chloe Lin [SSW]"
-    },
-    {
-        "commits":  [
-                        {
-                            "FilesChanged":  [
-                                                 "rules/video-reduce-noise/rule.md"
-                                             ],
-                            "CommitTime":  "2023-08-07T17:41:59-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/application-lifecycle-management-alm/rules-to-better-scrum.md",
-                                                 "rules/encourage-spikes-when-a-story-is-inestimable/rule.md"
-                                             ],
-                            "CommitTime":  "2023-08-06T22:57:39-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/backlog-refinement-meeting/rule.md"
-                                             ],
-                            "CommitTime":  "2023-08-06T22:57:05-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/how-to-generate-an-ai-image/rule.md"
-                                             ],
-                            "CommitTime":  "2023-08-06T22:56:26-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/write-an-image-prompt/rule.md"
-                                             ],
-                            "CommitTime":  "2023-08-06T22:56:11-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/marketing-and-video/rules-to-better-marketing.md"
-                                             ],
-                            "CommitTime":  "2023-08-06T21:52:11-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/websites/rules-to-better-websites-navigation.md"
-                                             ],
-                            "CommitTime":  "2023-08-06T21:51:29-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/find-the-best-hashtags/rule.md"
-                                             ],
-                            "CommitTime":  "2023-08-02T16:42:04-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/marketing-and-video/rules-to-better-social-media-for-business.md",
-                                                 "rules/find-the-best-hashtags/rule.md"
-                                             ],
-                            "CommitTime":  "2023-08-02T08:07:49-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/do-you-send-control4-notifications-to-a-slack-channel/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-31T05:12:28-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/use-var/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-27T19:07:11-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/use-subdirectories-not-domains/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-27T16:44:25-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/different-types-of-testing/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-26T19:16:16-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/avoid-using-specific-characters-in-friendly-url/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-25T17:06:48-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/avoid-using-specific-characters-in-friendly-url/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-25T16:36:05-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/infrastructure-and-networking/rules-to-better-backups.md"
-                                             ],
-                            "CommitTime":  "2023-07-24T21:10:03-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/what-is-a-spec-review/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-24T21:09:46-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/change-the-subject/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-24T21:09:11-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/does-your-team-write-acceptance-tests-to-verify-acceptance-criteria/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-24T21:05:14-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/gpt-tokens/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-24T20:55:43-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/avoid-using-specific-characters-in-friendly-url/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-24T20:34:05-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/optimize-videos-for-youtube/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-24T20:33:47-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/azure-resources-creating/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-24T18:17:33-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/post-production-do-you-know-how-to-structure-your-files/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-20T15:43:33-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/confirm-quotes/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-20T15:41:01-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/have-a-word-template/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-19T23:11:13-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/management/index.md",
-                                                 "categories/management/rules-to-better-contractors.md",
-                                                 "rules/confirm-quotes/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-19T21:13:58-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/websites/rules-to-better-angularjs.md",
-                                                 "rules/write-your-angular-1-x-directives-in-typescript/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-18T19:08:23-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "categories/marketing-and-video/rules-to-better-video-recording.md",
-                                                 "rules/do-you-know-how-to-record-the-screen-on-a-mac/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-18T19:07:17-07:00"
-                        },
-                        {
-                            "FilesChanged":  [
-                                                 "rules/production-do-you-know-how-to-start-recording-with-camtasia/rule.md"
-                                             ],
-                            "CommitTime":  "2023-07-18T19:06:44-07:00"
-                        }
-                    ],
-        "user":  "tiagov8",
-        "authorName":  "Tiago Araújo [SSW]"
+        "user":  "bradystroud",
+        "authorName":  "Brady Stroud [SSW]"
     }
 ]

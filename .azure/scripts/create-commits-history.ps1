@@ -16,6 +16,7 @@ $apiUrl = "https://api.github.com/repos/$GithubOrg/$GithubRepo/contributors?per_
 $headers = @{
     "Authorization" = "Bearer $Token"
 }
+$rootFolder = "./SSW.Rules.Content/rules"
 
 function Get-NextPageUrlFromLinkHeader($linkHeader) {
     $nextPageUrl = $null
@@ -69,6 +70,41 @@ function Get-CommitDiffFiles($sha) {
     return $diff
 }
 
+function Get-FileMetadata($currentFolder, $commits) {
+    $updatedCommits = @()
+
+    foreach ($commitPath in $commits) {
+        $updatedFilesChanged = @()
+
+        $fullPath = Join-Path $currentFolder $commitPath.Replace("rules/", "")
+
+        try {
+            $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
+            $streamReader = New-Object System.IO.StreamReader -Arg $fullPath, $utf8NoBomEncoding
+            $content = $streamReader.ReadToEnd()
+            $streamReader.Close()
+
+            $lines = $content -split "`n"
+            $titleLine = $lines | Where-Object { $_.StartsWith('title:') }
+            $title = $titleLine.Trim().Substring(7)
+            $uriLine = $lines | Where-Object { $_.Trim().StartsWith('uri:') }
+            $uri = $uriLine.Trim().Substring(5)
+
+            $newFileChanged = @{
+                uri = $uri
+                title = $title
+                path = $commitPath
+            }
+            $updatedFilesChanged += $newFileChanged
+            $updatedCommits += @($updatedFilesChanged)
+        } catch {
+            continue
+        }
+    }
+
+    return $updatedCommits
+}
+
 $commitInfo = @()
 
 foreach ($author in $authors) {
@@ -87,12 +123,16 @@ foreach ($author in $authors) {
         if ($commitDetails) {
             $commitDetailsArray = $commitDetails -split '\r?\n'
             $commitTimeValue = $commitDetailsArray[1]
-
             $filesChangedList = $filesChangedList | Where-Object { $_ -like "*.md" } | Where-Object { $_ -ne '' }
+            $newFilesChangedList = Get-FileMetadata $rootFolder $filesChangedList
+
+            if ($newFilesChangedList.Count -eq 0) {
+                continue
+            }
 
             $commitInfoObj = @{
                 "CommitTime" = $commitTimeValue
-                "FilesChanged" = @($filesChangedList) # Convert to an array
+                "FilesChanged" = @($newFilesChangedList)
             }
 
             $userCommits["commits"] += $commitInfoObj
@@ -100,7 +140,7 @@ foreach ($author in $authors) {
     }
 
     if ($userCommits["commits"].Count -gt 0) {
-	$userCommits["authorName"] = $commit.commit[0].author.name
+	    $userCommits["authorName"] = $commit.commit[0].author.name
         $commitInfo += $userCommits
     }
 }

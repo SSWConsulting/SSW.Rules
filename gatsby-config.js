@@ -12,6 +12,14 @@ module.exports = {
   },
   plugins: [
     {
+      resolve: 'gatsby-plugin-google-tagmanager',
+      options: {
+        id: process.env.GTM_CONTAINER_ID,
+        includeInDevelopment: false,
+        enableWebVitalsTracking: true,
+      },
+    },
+    {
       resolve: 'gatsby-plugin-local-search',
       options: {
         name: 'pages',

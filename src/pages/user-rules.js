@@ -19,7 +19,6 @@ const LatestRules = ({ data, location }) => {
   const [endCursor, setEndCursor] = useState('');
 
   const filterTitle = 'Results';
-  const history = data.allHistoryJson.edges;
   const rules = data.allMarkdownRemark.nodes;
   const userRules = data.allCommitsJson.edges;
 
@@ -37,23 +36,31 @@ const LatestRules = ({ data, location }) => {
   const queryStringRulesAuthor = queryStringSearch.author || '';
 
   useEffect(() => {
-    // filterAndSort(filter);
-  }, [filter, isAscending]);
+    const getPageData = async () => {
+      const searchData = await fetchGithubData();
+      const resultList = searchData.nodes;
+      setStartCursor(searchData.pageInfo.startCursor);
+      setEndCursor(searchData.pageInfo.endCursor);
 
-  useEffect(() => {
-    const fetchGithubData = async () => {
-      const githubOwner = 'SSWConsulting';
-      const githubRepo = 'SSW.Rules.Content';
-      const apiBaseUrl = 'https://api.github.com/graphql';
-      const token = process.env.GITHUB_API_PAT;
+      updateAndFilterRules(resultList);
+    };
 
-      const res = await fetch(apiBaseUrl, {
-        method: 'POST',
-        headers: {
-          Authorization: `bearer ${token}`,
-        },
-        body: JSON.stringify({
-          query: `{
+    getPageData();
+  }, []);
+
+  const fetchGithubData = async () => {
+    const githubOwner = 'SSWConsulting';
+    const githubRepo = 'SSW.Rules.Content';
+    const apiBaseUrl = 'https://api.github.com/graphql';
+    const token = process.env.GITHUB_API_PAT;
+
+    const res = await fetch(apiBaseUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `bearer ${token}`,
+      },
+      body: JSON.stringify({
+        query: `{
             search( query: "repo:${githubOwner}/${githubRepo} is:pr base:main is:merged sort:updated-desc author:${queryStringRulesAuthor}"
             type: ISSUE
             first: 30) {
@@ -73,68 +80,65 @@ const LatestRules = ({ data, location }) => {
                 }
           }
         }`,
-        }),
-      })
-        .then((res) => res.json())
-        .catch((error) => {
-          return error;
-        });
-
-      const resNodesArr = res.data.search.nodes;
-      setStartCursor(res.data.search.pageInfo.startCursor);
-      setEndCursor(res.data.search.pageInfo.endCursor);
-
-      const newResNodesArr = [];
-
-      for (let i = 0; i < resNodesArr.length; i++) {
-        const kk = [...resNodesArr[i].files.nodes];
-        const updatedTime = resNodesArr[i].mergedAt;
-
-        kk.forEach((path) => {
-          newResNodesArr.push({
-            file: {
-              node: {
-                path: path.path.replace('rule.md', ''),
-                lastUpdated: updatedTime,
-              },
-            },
-          });
-        });
-      }
-
-      const filteredRule = newResNodesArr
-        .map((r) => {
-          const rule = rules.find((rule) => {
-            const newSlug = rule.fields.slug.slice(
-              1,
-              rule.fields.slug.length - 5
-            );
-            return newSlug === r.file.node.path;
-          });
-
-          if (rule) {
-            return { item: rule, file: r.file };
-          } else {
-            return null;
-          }
-        })
-        .filter((result) => result !== null);
-
-      if (filteredRule.length === 0) {
-        setNotFound(true);
-        return;
-      } else {
-        setNotFound(false);
-      }
-
-      setFilteredItems({
-        list: filteredRule,
-        filter: FilterOptions.RecentlyUpdated,
+      }),
+    })
+      .then((res) => res.json())
+      .catch((error) => {
+        return error;
       });
-    };
 
-    fetchGithubData();
-  }, []);
+    return res.data.search;
+  };
+
+  const updateAndFilterRules = (resultList) => {
+    const newResNodesArr = [];
+
+    for (let i = 0; i < resultList.length; i++) {
+      const nodes = [...resultList[i].files.nodes];
+      const updatedTime = resultList[i].mergedAt;
+
+      nodes.forEach((path) => {
+        newResNodesArr.push({
+          file: {
+            node: {
+              path: path.path.replace('rule.md', ''),
+              lastUpdated: updatedTime,
+            },
+          },
+        });
+      });
+    }
+
+    const filteredRule = newResNodesArr
+      .map((r) => {
+        const rule = rules.find((rule) => {
+          const newSlug = rule.fields.slug.slice(
+            1,
+            rule.fields.slug.length - 5
+          );
+          return newSlug === r.file.node.path;
+        });
+
+        if (rule) {
+          return { item: rule, file: r.file };
+        } else {
+          return null;
+        }
+      })
+      .filter((result) => result !== null);
+
+    if (filteredRule.length === 0) {
+      setNotFound(true);
+      return;
+    } else {
+      setNotFound(false);
+    }
+
+    setFilteredItems({
+      list: filteredRule,
+      filter: FilterOptions.RecentlyUpdated,
+    });
+  };
 
   const filterByAuthor = async (rulesList) => {
     const getCommitPathsFromRule = (rule) => {
@@ -157,24 +161,6 @@ const LatestRules = ({ data, location }) => {
     });
 
     return foundRules;
-  };
-
-  const filterAndValidateRules = async () => {
-    const foundRules = await rules.map((item) => {
-      //TODO: Depending on the speed - optimise this find
-      let findRule = history.find(
-        (r) => sanitizeName(r) === sanitizeName(item.fields.slug, true)
-      );
-
-      //Return if a rule isn't found in history.json,if its archived or if we have reached the count
-      if (!findRule || item.frontmatter.archivedreason) {
-        return;
-      }
-      return { item: item, file: findRule };
-    });
-
-    //Remove undefined and Return results
-    return foundRules.filter((i) => i !== undefined);
   };
 
   return (
@@ -207,17 +193,6 @@ const LatestRules = ({ data, location }) => {
 
 export const pageQuery = graphql`
   query latestRulesQuery {
-    allHistoryJson {
-      edges {
-        node {
-          created
-          createdBy
-          lastUpdated
-          lastUpdatedBy
-          file
-        }
-      }
-    }
     allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
       nodes {
         frontmatter {

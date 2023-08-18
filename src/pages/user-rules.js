@@ -6,7 +6,6 @@ import SideBar from '../components/side-bar/side-bar';
 import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
-import { sanitizeName } from '../helpers/sanitizeName';
 import { FilterOptions } from '../components/filter/filter';
 
 const LatestRules = ({ data, location }) => {
@@ -14,13 +13,11 @@ const LatestRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
-  const [githubRule, setGithubRule] = useState(null);
   const [startCursor, setStartCursor] = useState('');
   const [endCursor, setEndCursor] = useState('');
 
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
-  const userRules = data.allCommitsJson.edges;
 
   const queryStringSearch = qs.parse(location?.search, {
     parseNumbers: true,
@@ -109,6 +106,8 @@ const LatestRules = ({ data, location }) => {
       });
     }
 
+    // eslint-disable-next-line no-undef
+    const seenTitles = new Set();
     const filteredRule = newResNodesArr
       .map((r) => {
         const rule = rules.find((rule) => {
@@ -119,7 +118,8 @@ const LatestRules = ({ data, location }) => {
           return newSlug === r.file.node.path;
         });
 
-        if (rule) {
+        if (rule && !seenTitles.has(rule.frontmatter.title)) {
+          seenTitles.add(rule.frontmatter.title);
           return { item: rule, file: r.file };
         } else {
           return null;
@@ -138,29 +138,6 @@ const LatestRules = ({ data, location }) => {
       list: filteredRule,
       filter: FilterOptions.RecentlyUpdated,
     });
-  };
-
-  const filterByAuthor = async (rulesList) => {
-    const getCommitPathsFromRule = (rule) => {
-      return rule.node.commits.flatMap((commit) => {
-        return commit.FilesChanged.map((x) =>
-          x.path.substring(0, x.path.lastIndexOf('/'))
-        );
-      });
-    };
-
-    // eslint-disable-next-line no-undef
-    const filteredPathsSet = new Set(
-      userRules
-        .filter((rule) => rule.node.user === queryStringRulesAuthor)
-        .flatMap(getCommitPathsFromRule)
-    );
-
-    const foundRules = rulesList.filter((item) => {
-      return filteredPathsSet.has(sanitizeName(item.item.fields.slug, true));
-    });
-
-    return foundRules;
   };
 
   return (
@@ -201,22 +178,6 @@ export const pageQuery = graphql`
         }
         fields {
           slug
-        }
-      }
-    }
-    allCommitsJson {
-      edges {
-        node {
-          id
-          commits {
-            CommitTime
-            FilesChanged {
-              title
-              path
-              uri
-            }
-          }
-          user
         }
       }
     }

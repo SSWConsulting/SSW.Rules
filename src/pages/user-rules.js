@@ -120,8 +120,17 @@ const LatestRules = ({ data, location }) => {
         })
         .filter((result) => result !== null);
 
-      setGithubRule(filteredRule);
-      filterAndSort(FilterOptions.RecentlyUpdated);
+      if (filteredRule.length === 0) {
+        setNotFound(true);
+        return;
+      } else {
+        setNotFound(false);
+      }
+
+      setFilteredItems({
+        list: filteredRule,
+        filter: FilterOptions.RecentlyUpdated,
+      });
     };
 
     fetchGithubData();
@@ -166,24 +175,6 @@ const LatestRules = ({ data, location }) => {
 
     //Remove undefined and Return results
     return foundRules.filter((i) => i !== undefined);
-  };
-
-  const filterAndSort = async (_filter) => {
-    if (!_filter) {
-      return;
-    }
-
-    if (githubRule.length === 0) {
-      setNotFound(true);
-      return;
-    } else {
-      setNotFound(false);
-    }
-
-    setFilteredItems({
-      list: githubRule,
-      filter: _filter,
-    });
   };
 
   return (

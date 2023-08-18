@@ -1,4 +1,3 @@
-import Filter, { FilterOptions } from '../components/filter/filter';
 import React, { useEffect, useState } from 'react';
 
 import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
@@ -8,6 +7,7 @@ import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
 import { sanitizeName } from '../helpers/sanitizeName';
+import { FilterOptions } from '../components/filter/filter';
 
 const LatestRules = ({ data, location }) => {
   const [filter, setFilter] = useState();
@@ -121,7 +121,7 @@ const LatestRules = ({ data, location }) => {
         .filter((result) => result !== null);
 
       setGithubRule(filteredRule);
-      filterAndSort(filter);
+      filterAndSort(FilterOptions.RecentlyUpdated);
     };
 
     fetchGithubData();
@@ -173,19 +173,7 @@ const LatestRules = ({ data, location }) => {
       return;
     }
 
-    let filteredRules = await filterAndValidateRules();
-
-    // if (queryStringRulesAuthor) {
-    //   filteredRules = await filterByAuthor(filteredRules);
-    // }
-    setFilteredItems({
-      list: queryStringRulesAuthor
-        ? githubRule
-        : filteredRules.slice(0, queryStringRulesListSize),
-      filter: _filter,
-    });
-
-    if (filteredRules.length === 0) {
+    if (githubRule.length === 0) {
       setNotFound(true);
       return;
     } else {
@@ -193,9 +181,7 @@ const LatestRules = ({ data, location }) => {
     }
 
     setFilteredItems({
-      list: queryStringRulesAuthor
-        ? githubRule
-        : filteredRules.slice(0, queryStringRulesListSize),
+      list: githubRule,
       filter: _filter,
     });
   };

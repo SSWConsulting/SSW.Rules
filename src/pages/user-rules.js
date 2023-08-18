@@ -9,12 +9,9 @@ import qs from 'query-string';
 import { FilterOptions } from '../components/filter/filter';
 
 const LatestRules = ({ data, location }) => {
-  const [filter, setFilter] = useState();
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
-  const [startCursor, setStartCursor] = useState('');
-  const [endCursor, setEndCursor] = useState('');
 
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
@@ -23,26 +20,20 @@ const LatestRules = ({ data, location }) => {
     parseNumbers: true,
   });
 
-  const queryStringRulesListSize = (() => {
-    if (!queryStringSearch.size) {
-      return 50;
-    } else {
-      return queryStringSearch.size > 100 ? 100 : queryStringSearch.size;
-    }
-  })();
   const queryStringRulesAuthor = queryStringSearch.author || '';
 
   useEffect(() => {
-    const getPageData = async () => {
-      const searchData = await fetchGithubData();
-      const resultList = searchData.nodes;
-      setStartCursor(searchData.pageInfo.startCursor);
-      setEndCursor(searchData.pageInfo.endCursor);
-
-      updateAndFilterRules(resultList);
+    const fetchPageData = async () => {
+      try {
+        const searchData = await fetchGithubData();
+        const resultList = searchData.nodes;
+        updateAndFilterRules(resultList);
+      } catch (err) {
+        setNotFound(true);
+      }
     };
 
-    getPageData();
+    fetchPageData();
   }, []);
 
   const fetchGithubData = async () => {
@@ -51,7 +42,7 @@ const LatestRules = ({ data, location }) => {
     const apiBaseUrl = 'https://api.github.com/graphql';
     const token = process.env.GITHUB_API_PAT;
 
-    const res = await fetch(apiBaseUrl, {
+    const response = await fetch(apiBaseUrl, {
       method: 'POST',
       headers: {
         Authorization: `bearer ${token}`,
@@ -60,11 +51,7 @@ const LatestRules = ({ data, location }) => {
         query: `{
             search( query: "repo:${githubOwner}/${githubRepo} is:pr base:main is:merged sort:updated-desc author:${queryStringRulesAuthor}"
             type: ISSUE
-            first: 30) {
-                pageInfo {
-                    endCursor
-                    startCursor
-                }
+            first: 100) {
                 nodes {
                     ... on PullRequest {
                         files(first: 10) {
@@ -78,17 +65,16 @@ const LatestRules = ({ data, location }) => {
           }
         }`,
       }),
-    })
-      .then((res) => res.json())
-      .catch((error) => {
-        return error;
-      });
+    });
 
-    return res.data.search;
+    const data = await response.json();
+    return data.data.search;
   };
 
   const updateAndFilterRules = (resultList) => {
     const newResNodesArr = [];
+    // eslint-disable-next-line no-undef
+    const seenTitles = new Set();
 
     for (let i = 0; i < resultList.length; i++) {
       const nodes = [...resultList[i].files.nodes];
@@ -105,9 +91,6 @@ const LatestRules = ({ data, location }) => {
         });
       });
     }
-
-    // eslint-disable-next-line no-undef
-    const seenTitles = new Set();
     const filteredRule = newResNodesArr
       .map((r) => {
         const rule = rules.find((rule) => {

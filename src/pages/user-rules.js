@@ -12,6 +12,11 @@ const LatestRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
+  const [startCursor, setStartCursor] = useState([]);
+  const [endCursor, setEndCursor] = useState('');
+  const [temp, setTemp] = useState('');
+  const [hasPrevious, setHasPrevious] = useState(false);
+  const [hasNext, setHasNext] = useState(false);
 
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
@@ -36,11 +41,16 @@ const LatestRules = ({ data, location }) => {
     fetchPageData();
   }, []);
 
-  const fetchGithubData = async () => {
+  const fetchGithubData = async (action) => {
     const githubOwner = 'SSWConsulting';
     const githubRepo = 'SSW.Rules.Content';
     const apiBaseUrl = 'https://api.github.com/graphql';
     const token = process.env.GITHUB_API_PAT;
+
+    if (action == 'after') {
+      const newArr = [...startCursor, temp];
+      setStartCursor(newArr);
+    }
 
     const response = await fetch(apiBaseUrl, {
       method: 'POST',
@@ -51,12 +61,25 @@ const LatestRules = ({ data, location }) => {
         query: `{
             search( query: "repo:${githubOwner}/${githubRepo} is:pr base:main is:merged sort:updated-desc author:${queryStringRulesAuthor}"
             type: ISSUE
-            first: 100) {
+            first: 30
+            ${
+              action == 'before'
+                ? `before: "${startCursor[startCursor.length - 1]}"`
+                : ''
+            }
+            ${action == 'after' ? `after: "${endCursor}"` : ''}
+            ) {
+                pageInfo {
+                  endCursor
+                  startCursor
+                  hasNextPage
+                  hasPreviousPage
+                }
                 nodes {
                     ... on PullRequest {
-                        files(first: 10) {
-                        nodes {
-                        path
+                        files(first: 20) {
+                          nodes {
+                          path
                         }
                     }
                         mergedAt
@@ -66,9 +89,17 @@ const LatestRules = ({ data, location }) => {
         }`,
       }),
     });
-
     const data = await response.json();
-    return data.data.search;
+
+    if (action == 'before') {
+      startCursor.pop();
+    }
+
+    setEndCursor(data.data?.search?.pageInfo?.endCursor);
+    setTemp(data.data?.search?.pageInfo?.startCursor);
+    setHasPrevious(data.data?.search?.pageInfo?.hasPreviousPage);
+    setHasNext(data.data?.search?.pageInfo?.hasNextPage);
+    return data.data?.search;
   };
 
   const updateAndFilterRules = (resultList) => {
@@ -123,6 +154,12 @@ const LatestRules = ({ data, location }) => {
     });
   };
 
+  const handleChangePage = async (action) => {
+    const searchData = await fetchGithubData(action);
+    const resultList = searchData.nodes;
+    updateAndFilterRules(resultList);
+  };
+
   return (
     <div className="w-full">
       <Breadcrumb isLatest />
@@ -140,6 +177,30 @@ const LatestRules = ({ data, location }) => {
                 isAscending={isAscending}
                 setIsAscending={setIsAscending}
               />
+            </div>
+            <div className="text-center">
+              <button
+                className={`m-3 p-2  rounded-md ${
+                  hasPrevious
+                    ? 'bg-ssw-red text-white'
+                    : 'bg-ssw-grey text-text-gray-400'
+                }`}
+                onClick={() => handleChangePage('before')}
+                disabled={!hasPrevious}
+              >
+                Previous
+              </button>
+              <button
+                className={`m-3 p-2  rounded-md ${
+                  hasNext
+                    ? 'bg-ssw-red text-white'
+                    : 'bg-ssw-grey text-text-gray-400'
+                }`}
+                onClick={() => handleChangePage('after')}
+                disabled={!hasNext}
+              >
+                Next
+              </button>
             </div>
           </div>
           <div className="w-full lg:w-1/4 px-4" id="sidebar">

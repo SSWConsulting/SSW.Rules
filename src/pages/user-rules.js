@@ -48,8 +48,7 @@ const LatestRules = ({ data, location }) => {
     const token = process.env.GITHUB_API_PAT;
 
     if (action == 'after') {
-      const newArr = [...startCursor, temp];
-      setStartCursor(newArr);
+      setStartCursor([...startCursor, temp]);
     }
 
     const response = await fetch(apiBaseUrl, {
@@ -61,7 +60,7 @@ const LatestRules = ({ data, location }) => {
         query: `{
             search( query: "repo:${githubOwner}/${githubRepo} is:pr base:main is:merged sort:updated-desc author:${queryStringRulesAuthor}"
             type: ISSUE
-            first: 30
+            first: 50
             ${
               action == 'before'
                 ? `before: "${startCursor[startCursor.length - 1]}"`
@@ -77,7 +76,7 @@ const LatestRules = ({ data, location }) => {
                 }
                 nodes {
                     ... on PullRequest {
-                        files(first: 20) {
+                        files(first: 50) {
                           nodes {
                           path
                         }
@@ -89,6 +88,13 @@ const LatestRules = ({ data, location }) => {
         }`,
       }),
     });
+
+    if (!response.ok) {
+      throw new Error(
+        `GitHub API request failed with status: ${response.status}`
+      );
+    }
+
     const data = await response.json();
 
     if (action == 'before') {

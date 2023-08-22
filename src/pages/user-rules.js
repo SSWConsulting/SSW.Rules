@@ -13,7 +13,7 @@ const ActionTypes = {
   AFTER: 'after',
 };
 
-const LatestRules = ({ data, location }) => {
+const UserRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
@@ -246,9 +246,9 @@ export const pageQuery = graphql`
   }
 `;
 
-export default LatestRules;
+export default UserRules;
 
-LatestRules.propTypes = {
+UserRules.propTypes = {
   data: objectOf(Object),
   location: objectOf(Object),
 };

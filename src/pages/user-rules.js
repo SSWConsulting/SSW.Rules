@@ -60,7 +60,7 @@ const LatestRules = ({ data, location }) => {
         query: `{
             search( query: "repo:${githubOwner}/${githubRepo} is:pr base:main is:merged sort:updated-desc author:${queryStringRulesAuthor}"
             type: ISSUE
-            first: 50
+            first: 30
             ${
               action == 'before'
                 ? `before: "${startCursor[startCursor.length - 1]}"`
@@ -168,12 +168,12 @@ const LatestRules = ({ data, location }) => {
 
   return (
     <div className="w-full">
-      <Breadcrumb isLatest />
+      <Breadcrumb isUser />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
             <span className="flex">
-              <h2 className="flex-1">Latest Rules</h2>
+              <h2 className="flex-1">User Rules</h2>
             </span>
             <div className="rule-index archive no-gutters rounded mb-12">
               <LatestRulesContent
@@ -184,9 +184,9 @@ const LatestRules = ({ data, location }) => {
                 setIsAscending={setIsAscending}
               />
             </div>
-            <div className="text-center">
+            <div className="text-center mb-4">
               <button
-                className={`m-3 p-2  rounded-md ${
+                className={`m-3 mx-6 p-2  rounded-md ${
                   hasPrevious
                     ? 'bg-ssw-red text-white'
                     : 'bg-ssw-grey text-text-gray-400'
@@ -197,7 +197,7 @@ const LatestRules = ({ data, location }) => {
                 Previous
               </button>
               <button
-                className={`m-3 p-2  rounded-md ${
+                className={`m-3 mx-6 p-2  rounded-md ${
                   hasNext
                     ? 'bg-ssw-red text-white'
                     : 'bg-ssw-grey text-text-gray-400'

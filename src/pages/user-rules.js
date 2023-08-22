@@ -8,13 +8,18 @@ import { objectOf } from 'prop-types';
 import qs from 'query-string';
 import { FilterOptions } from '../components/filter/filter';
 
+const ActionTypes = {
+  BEFORE: 'before',
+  AFTER: 'after',
+};
+
 const LatestRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
-  const [startCursor, setStartCursor] = useState([]);
-  const [endCursor, setEndCursor] = useState('');
-  const [temp, setTemp] = useState('');
+  const [previousPageCursor, setPreviousPageCursor] = useState([]);
+  const [nextPageCursor, setNextPageCursor] = useState('');
+  const [tempCursor, setTempCursor] = useState('');
   const [hasPrevious, setHasPrevious] = useState(false);
   const [hasNext, setHasNext] = useState(false);
 
@@ -47,46 +52,49 @@ const LatestRules = ({ data, location }) => {
     const apiBaseUrl = 'https://api.github.com/graphql';
     const token = process.env.GITHUB_API_PAT;
 
-    if (action == 'after') {
-      setStartCursor([...startCursor, temp]);
+    let cursorQuery = '';
+    if (action === ActionTypes.BEFORE) {
+      cursorQuery = `before: "${
+        previousPageCursor[previousPageCursor.length - 1]
+      }"`;
+    } else if (action === ActionTypes.AFTER) {
+      setPreviousPageCursor([...previousPageCursor, tempCursor]);
+      cursorQuery = `after: "${nextPageCursor}"`;
     }
+
+    const query = `
+        {
+          search( query: "repo:${githubOwner}/${githubRepo} is:pr base:${process.env.CONTENT_BRANCH} is:merged sort:updated-desc author:${queryStringRulesAuthor}"
+          type: ISSUE
+          first: 30
+          ${cursorQuery}
+          ) {
+              pageInfo {
+                endCursor
+                startCursor
+                hasNextPage
+                hasPreviousPage
+              }
+              nodes {
+                  ... on PullRequest {
+                      files(first: 20) {
+                        nodes {
+                        path
+                      }
+                  }
+                      mergedAt
+                  }
+              }
+        }
+      }
+    `;
 
     const response = await fetch(apiBaseUrl, {
       method: 'POST',
       headers: {
         Authorization: `bearer ${token}`,
       },
-      body: JSON.stringify({
-        query: `{
-            search( query: "repo:${githubOwner}/${githubRepo} is:pr base:main is:merged sort:updated-desc author:${queryStringRulesAuthor}"
-            type: ISSUE
-            first: 30
-            ${
-              action == 'before'
-                ? `before: "${startCursor[startCursor.length - 1]}"`
-                : ''
-            }
-            ${action == 'after' ? `after: "${endCursor}"` : ''}
-            ) {
-                pageInfo {
-                  endCursor
-                  startCursor
-                  hasNextPage
-                  hasPreviousPage
-                }
-                nodes {
-                    ... on PullRequest {
-                        files(first: 50) {
-                          nodes {
-                          path
-                        }
-                    }
-                        mergedAt
-                    }
-                }
-          }
-        }`,
-      }),
+      body: JSON.stringify({ query }),
     });
 
     if (!response.ok) {
@@ -97,14 +105,18 @@ const LatestRules = ({ data, location }) => {
 
     const data = await response.json();
 
-    if (action == 'before') {
-      startCursor.pop();
+    if (action == ActionTypes.BEFORE) {
+      previousPageCursor.pop();
     }
 
-    setEndCursor(data.data?.search?.pageInfo?.endCursor);
-    setTemp(data.data?.search?.pageInfo?.startCursor);
-    setHasPrevious(data.data?.search?.pageInfo?.hasPreviousPage);
-    setHasNext(data.data?.search?.pageInfo?.hasNextPage);
+    const { endCursor, startCursor, hasPreviousPage, hasNextPage } =
+      data.data?.search?.pageInfo;
+
+    setNextPageCursor(endCursor);
+    setTempCursor(startCursor);
+    setHasPrevious(hasPreviousPage);
+    setHasNext(hasNextPage);
+
     return data.data?.search;
   };
 
@@ -186,23 +198,23 @@ const LatestRules = ({ data, location }) => {
             </div>
             <div className="text-center mb-4">
               <button
-                className={`m-3 mx-6 p-2  rounded-md ${
+                className={`m-3 mx-6 p-2 w-24 rounded-md ${
                   hasPrevious
                     ? 'bg-ssw-red text-white'
                     : 'bg-ssw-grey text-text-gray-400'
                 }`}
-                onClick={() => handleChangePage('before')}
+                onClick={() => handleChangePage(ActionTypes.BEFORE)}
                 disabled={!hasPrevious}
               >
                 Previous
               </button>
               <button
-                className={`m-3 mx-6 p-2  rounded-md ${
+                className={`m-3 mx-6 p-2 w-24 rounded-md ${
                   hasNext
                     ? 'bg-ssw-red text-white'
                     : 'bg-ssw-grey text-text-gray-400'
                 }`}
-                onClick={() => handleChangePage('after')}
+                onClick={() => handleChangePage(ActionTypes.AFTER)}
                 disabled={!hasNext}
               >
                 Next

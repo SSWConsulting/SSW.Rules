@@ -588,7 +588,7 @@ ol ol, ol li ol {
 }
 
 .rule-content {
-  color: black;
+  @apply text-ssw-black;
   font-weight: normal;
   font-size: 1rem;
   word-break: break-word;

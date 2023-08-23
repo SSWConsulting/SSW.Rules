@@ -362,12 +362,12 @@ button:focus {
 
 .img-medium, .img-medium figure img {
   height: auto;
-  max-width: 400px;
+  max-width: 600px;
 }
 
 .img-small, .img-small figure img {
   height: auto;
-  max-width: 200px;
+  max-width: 300px;
 }
 
 div.youtube-playlist li {
@@ -395,7 +395,7 @@ div.youtube-playlist li {
   border-left: 4px solid #cc4141;
   border-radius: 0 .25rem .25rem 0;
   margin: 1rem 0;
-  color: #5b5656;
+  color: #333;
 }
 
 .blockquote p {
@@ -537,7 +537,7 @@ pre {
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-bottom: 1rem !important;
-  margin-top: 1rem !important;
+  margin-top: 1rem;
   font-weight: 500;
   line-height: 1.2;
 }
@@ -835,12 +835,13 @@ blockquote p:after {
 /* Single Rule
 -------------------------------------------------- */
 
-.rule-content h1, .rule-content h2, .rule-content h3, .rule-content h4, .rule-content h5, .rule-content h6, .rule-content .h1, .rule-content .h2, .rule-content .h3, .rule-content .h4, .rule-content .h5, .rule-content .h6 {
-  margin-top: 2rem;
+
+.rule-content h1, .rule-content .h1 {
+  font-size: 2.5rem;
 }
 
-.rule-content h1 {
-  color: #cc4141;
+.rule-header-container h1 {
+  margin-top: 1rem;
 }
 
 .rule-content h3 {
@@ -851,8 +852,8 @@ blockquote p:after {
   color: #414141;
 }
 
-.rule-content h4 {
-  word-break: break-word;
+.rule-content h1, .rule-content h2, .rule-content h3 {
+  color: #cc4141;
 }
 
 .rule-content a,

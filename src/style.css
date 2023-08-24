@@ -856,6 +856,10 @@ blockquote p:after {
   color: #cc4141;
 }
 
+.rule-content h4, .rule-content h5, .rule-content h6 {
+  color: #000;
+}
+
 .rule-content a,
 .rule-category a {
   text-decoration: underline;

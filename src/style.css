@@ -163,7 +163,7 @@ footer {
 
 #rules ul > li::before, .rule-content ul > li::before, .rule-category-top ul > li::before {
   content: "\25A0";
-  color: #cc4141;
+  @apply text-ssw-red;
   display: inline-block; 
   width: 1rem;
   margin-left: -1rem;
@@ -616,7 +616,7 @@ b, strong {
 }
 
 .rule-content h1 a, .rule-content h1 a:visited, .rule-content h2 a, .rule-content h2 a:visited, .rule-content h3 a, .rule-content h3 a:visited, .rule-content h4 a, .rule-content h4 a:visited, .rule-content h5 a, .rule-content h5 a:visited, .rule-content h6 a, .rule-content h6 a:visited {
-  color: #cc4141;
+  @apply text-ssw-red; 
   text-decoration-color: #cc4141 !important;
   -webkit-text-decoration-color: #cc4141;
 }
@@ -812,7 +812,7 @@ blockquote p:after {
 }
 
 .rule-content-title a:hover {
-  color: #cc4141 !important;
+  @apply text-ssw-red !important;
 }
 
 .rule-content-title h2 {
@@ -835,6 +835,9 @@ blockquote p:after {
 /* Single Rule
 -------------------------------------------------- */
 
+.rule-category h1 {
+  @apply text-ssw-red; 
+}
 
 .rule-content h1, .rule-content .h1 {
   font-size: 2.5rem;
@@ -853,7 +856,7 @@ blockquote p:after {
 }
 
 .rule-content h1, .rule-content h2, .rule-content h3 {
-  color: #cc4141;
+  @apply text-ssw-red; 
 }
 
 .rule-content h4, .rule-content h5, .rule-content h6 {
@@ -869,7 +872,7 @@ blockquote p:after {
 .rule-content a:hover,
 .rule-category a:hover:not(.github-link, .disqus-link, .get-username-btn::after) {
   text-decoration:underline;
-  color: #cc4141;
+  @apply text-ssw-red; 
 }
 
 .rule-content a[href*="//"]:not([href*="ssw.com.au"], [href*="youtube.com"], [href*="google.com/map"], .info-btn-container, .tooltip-button, .not-external):after {
@@ -1121,7 +1124,7 @@ div.bad-example {
   content: "\f05a ";
   font-family: FontAwesome;
   font-size: 2.5rem;
-  color: #cc4141;
+  @apply text-ssw-red; 
   float: left;
   line-height: normal;
   margin-right: 1rem;
@@ -1131,7 +1134,7 @@ div.bad-example {
   content: "\f121 ";
   font-family: FontAwesome;
   font-size: 2.5rem;
-  color: #cc4141;
+  @apply text-ssw-red; 
   float: left;
   line-height: normal;
   margin-right: 1rem;
@@ -1166,7 +1169,7 @@ div.bad-example {
   font-size: 28px;
   font-weight: normal;
   text-decoration: inherit;
-  color: #CC4141;
+  @apply text-ssw-red; 
   padding-right: 1rem;
   float: left;
   line-height: normal;
@@ -1214,7 +1217,7 @@ div.bad-example {
 }
 
 .info-btn-container:hover::after {
-  color: #cc4141;
+  @apply text-ssw-red; 
   text-decoration: none !important;
   font-size: 1.1em;
   transition: font-size 0.2s ease;
@@ -1260,7 +1263,7 @@ div.bad-example {
 }
 
 #more .likes span .bad:hover {
-  color: #cc4141;
+  @apply text-ssw-red; 
 }
 
 .reaction-grid {
@@ -1278,11 +1281,11 @@ div.bad-example {
 }
 
 .agree-btn-container-pressed:after, .somewhat-disagree-btn-container-pressed:after, .disagree-btn-container-pressed:after, .somewhat-agree-btn-container-pressed:after  {
-  color: #CC4141;
+  @apply text-ssw-red; 
 }
 
 .agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after, .somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after, .disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after, .somewhat-agree-btn-container:hover:after, .somewhat-agree-btn-container-pressed:hover:after {
-  color: #cc4141;
+  @apply text-ssw-red; 
   font-size: 1.8rem;
   transition: font-size 0.2s;
 }
@@ -1351,7 +1354,7 @@ div.bad-example {
 }
 
 .bookmark-icon-pressed {
-  color: #cc4141;
+  @apply text-ssw-red; 
 }
 
 .bookmark-icon-pressed:hover, .bookmark-icon:hover {
@@ -1361,7 +1364,7 @@ div.bad-example {
 }
 
 .bookmark-icon:hover {
-  color: #cc4141;
+  @apply text-ssw-red; 
 }
 
 .category .tooltip .bookmark-icon, .category .tooltip .bookmark-icon-pressed {
@@ -1377,7 +1380,7 @@ div.bad-example {
 }
 
 .header-icon:hover {
-  color: #cc4141;
+  @apply text-ssw-red; 
 }
 
 .category-icon {
@@ -1578,7 +1581,7 @@ div.bad-example {
 }
 
 .dropdown-user-btn-container:hover {
-  color: #CC4141 !important;
+  @apply text-ssw-red !important;
 }
 
 .dropdown-signout-btn-container:before {
@@ -1598,7 +1601,7 @@ div.bad-example {
 }
 
 .dropdown-signout-btn-container:hover {
-  color: #CC4141 !important;
+  @apply text-ssw-red !important;
 }
 
 .dropdown-badge {
@@ -1746,7 +1749,7 @@ div.bad-example {
 .github-link, .disqus-link {
   width: fit-content;
   font-size: 14;
-  color: #CC4141 !important;
+  @apply text-ssw-red !important;
   display: flex;
 }
 
@@ -1798,7 +1801,7 @@ div.bad-example {
 }
 
 .menu-item:hover .agree-title:after, .menu-item:hover .love-title:after, .menu-item:hover .disagree-title:after, .menu-item:hover .comments-title:after, .menu-item:hover .super-disagree-title:after, .menu-item:hover .filter-menu-bookmark-icon {
-  color: #CC4141;
+  @apply text-ssw-red; 
 }
 
 .bookmarks-item:after, .love-title:after, .love-title-pressed:after, .agree-title:after, .agree-title-pressed:after, .super-disagree-title:after, .super-disagree-title-pressed:after, .disagree-title:after, .disagree-title-pressed:after, .comments-title:after, .comments-title-pressed:after  {
@@ -1823,7 +1826,7 @@ div.bad-example {
 }
 
 .love-title-pressed:after, .agree-title-pressed:after, .disagree-title-pressed:after, .super-disagree-title-pressed:after {
-  color: #cc4141;
+  @apply text-ssw-red; 
 }
 
 .heading-container {
@@ -1854,7 +1857,7 @@ div.bad-example {
 }
 
 .filter-menu-bookmark-icon-pressed {
-  color: #CC4141;
+  @apply text-ssw-red; 
 }
 
 .filter-menu-disqus-icon, .filter-menu-disqus-icon-pressed {
@@ -1865,13 +1868,13 @@ div.bad-example {
 }
 
 .filter-menu-disqus-icon-pressed {
-  color: #CC4141;
+  @apply text-ssw-red; 
 }
 
 .rule-heading-love:after {
   content: '\f004';
   font-family: FontAwesome;
-  color: #CC4141;
+  @apply text-ssw-red; 
   margin-left: 1rem;
   padding-left: 0.5rem;
 }
@@ -1879,21 +1882,21 @@ div.bad-example {
 .rule-heading-agree:after {
   content: '\f164';
   font-family: FontAwesome;
-  color: #CC4141;
+  @apply text-ssw-red; 
   margin-left: 1rem;
 }
 
 .rule-heading-disagree:after {
   content: '\f165';
   font-family: FontAwesome;
-  color: #CC4141;
+  @apply text-ssw-red; 
   margin-left: 1rem;
 }
 
 .rule-heading-no-way:after {
   content: '\f05e';
   font-family: FontAwesome;
-  color: #CC4141;
+  @apply text-ssw-red; 
   margin-left: 1rem;
 }
 
@@ -1923,7 +1926,7 @@ div.bad-example {
 }
 
 .remove-item:hover:after {
-  color: #cc4141 !important;
+  @apply text-ssw-red !important;
 }
 
 .gavel-icon {
@@ -1995,7 +1998,7 @@ div.bad-example {
 }
 
 .disconnect-acc-button:hover {
-  color: #CC4141;
+  @apply text-ssw-red; 
 }
 
 .connect-acc-container {
@@ -2013,11 +2016,11 @@ div.bad-example {
 }
 
 .disqus-profile-link {
-  color: #cc4141 !important;
+  @apply text-ssw-red !important;
 }
 
 .error-text {
-  color: #CC4141;
+  @apply text-ssw-red; 
 }
 
 .privacy-toggle-figure {
@@ -2045,7 +2048,7 @@ div.bad-example {
 }
 
 .get-username-btn:hover:after {
-  color: #CC4141;
+  @apply text-ssw-red; 
 }
 
 .form {
@@ -2068,7 +2071,7 @@ div.bad-example {
   font-size: 38px;
   font-weight: normal;
   text-decoration: inherit;
-  color: #cc4141;
+  @apply text-ssw-red; 
   padding-right: 1rem;
   float: left;
   line-height: normal;
@@ -2131,7 +2134,7 @@ div.bad-example {
 
 .not-found-page h1 {
   grid-column: 1;
-  color: #cc4141;
+  @apply text-ssw-red; 
   font-size: 14rem; 
   font-weight: bold;
   margin: -0.3rem 0 -2rem;
@@ -2155,7 +2158,7 @@ div.bad-example {
 }
 
 .not-found-grid a, .not-found-page button  {
-  color: #CC4141 !important;
+  @apply text-ssw-red !important;
 }
 
 .not-found-message a:hover, .not-found-message button:hover {
@@ -2279,7 +2282,7 @@ html {
 
 #sidebar .get-started-icon {
   font-size: 2.75rem;
-  color: #cc4141;
+  @apply text-ssw-red; 
   margin-right: 10px;
 }
 
@@ -2678,7 +2681,7 @@ margin-bottom: 1em;
 }
 
 .editor-preview a:hover {
-  color: #cc4141;
+  @apply text-ssw-red; 
   text-decoration-color: #cc4141;
 }
 
@@ -2692,7 +2695,7 @@ margin-bottom: 1em;
 
 .editor-preview h2 {
   font-size: 1.875rem;
-  color: #cc4141;
+  @apply text-ssw-red; 
 }
 
 .editor-preview ul {

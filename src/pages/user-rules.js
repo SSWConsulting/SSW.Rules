@@ -39,24 +39,24 @@ const UserRules = ({ data, location }) => {
   const queryStringRulesAuthor = queryStringSearch.author || '';
 
   useEffect(() => {
-    const fetchPageData = async () => {
-      try {
-        const searchData = await fetchGithubData();
-        const resultList = searchData.nodes;
-        const extractedFiles = getExtractedFiles(resultList);
-        const filteredRules = filterUniqueRules(extractedFiles);
-        updateFilteredItems(filteredRules);
-      } catch (err) {
-        setNotFound(true);
-        appInsights.trackException({
-          error: new Error(err),
-          severityLevel: 3,
-        });
-      }
-    };
-
     fetchPageData();
   }, []);
+
+  const fetchPageData = async (action) => {
+    try {
+      const searchData = await fetchGithubData(action);
+      const resultList = searchData.nodes;
+      const extractedFiles = getExtractedFiles(resultList);
+      const filteredRules = filterUniqueRules(extractedFiles);
+      updateFilteredItems(filteredRules);
+    } catch (err) {
+      setNotFound(true);
+      appInsights.trackException({
+        error: new Error(err),
+        severityLevel: 3,
+      });
+    }
+  };
 
   const fetchGithubData = async (action) => {
     const githubOwner = process.env.GITHUB_ORG;
@@ -194,14 +194,6 @@ const UserRules = ({ data, location }) => {
     });
   };
 
-  const handleChangePage = async (action) => {
-    const searchData = await fetchGithubData(action);
-    const resultList = searchData.nodes;
-    const extractedFiles = getExtractedFiles(resultList);
-    const filteredRules = filterUniqueRules(extractedFiles);
-    updateFilteredItems(filteredRules);
-  };
-
   return (
     <div className="w-full">
       <Breadcrumb isUser />
@@ -227,7 +219,7 @@ const UserRules = ({ data, location }) => {
                     ? 'bg-ssw-red text-white'
                     : 'bg-ssw-grey text-gray-400'
                 }`}
-                onClick={() => handleChangePage(ActionTypes.BEFORE)}
+                onClick={() => fetchPageData(ActionTypes.BEFORE)}
                 disabled={!hasPrevious}
               >
                 Previous
@@ -238,7 +230,7 @@ const UserRules = ({ data, location }) => {
                     ? 'bg-ssw-red text-white'
                     : 'bg-ssw-grey text-gray-400'
                 }`}
-                onClick={() => handleChangePage(ActionTypes.AFTER)}
+                onClick={() => fetchPageData(ActionTypes.AFTER)}
                 disabled={!hasNext}
               >
                 Next

@@ -43,7 +43,9 @@ const UserRules = ({ data, location }) => {
       try {
         const searchData = await fetchGithubData();
         const resultList = searchData.nodes;
-        updateAndFilterRules(resultList);
+        const extractedFiles = getExtractedFiles(resultList);
+        const filteredRules = filterUniqueRules(extractedFiles);
+        updateFilteredItems(filteredRules);
       } catch (err) {
         setNotFound(true);
         appInsights.trackException({
@@ -115,7 +117,7 @@ const UserRules = ({ data, location }) => {
 
     const data = await response.json();
 
-    if (action == ActionTypes.BEFORE) {
+    if (action === ActionTypes.BEFORE) {
       previousPageCursor.pop();
     }
 
@@ -130,17 +132,15 @@ const UserRules = ({ data, location }) => {
     return data.data?.search;
   };
 
-  const updateAndFilterRules = (resultList) => {
-    const newResNodesArr = [];
-    // eslint-disable-next-line no-undef
-    const seenTitles = new Set();
+  const getExtractedFiles = (resultList) => {
+    const extractedFiles = [];
 
     for (let i = 0; i < resultList.length; i++) {
       const nodes = [...resultList[i].files.nodes];
       const updatedTime = resultList[i].mergedAt;
 
       nodes.forEach((path) => {
-        newResNodesArr.push({
+        extractedFiles.push({
           file: {
             node: {
               path: path.path.replace('rule.md', ''),
@@ -150,7 +150,15 @@ const UserRules = ({ data, location }) => {
         });
       });
     }
-    const filteredRule = newResNodesArr
+
+    return extractedFiles;
+  };
+
+  const filterUniqueRules = (extractedFiles) => {
+    // eslint-disable-next-line no-undef
+    const uniqueRuleTitles = new Set();
+
+    const filteredRules = extractedFiles
       .map((r) => {
         const rule = rules.find((rule) => {
           const newSlug = rule.fields.slug.slice(
@@ -160,8 +168,8 @@ const UserRules = ({ data, location }) => {
           return newSlug === r.file.node.path;
         });
 
-        if (rule && !seenTitles.has(rule.frontmatter.title)) {
-          seenTitles.add(rule.frontmatter.title);
+        if (rule && !uniqueRuleTitles.has(rule.frontmatter.title)) {
+          uniqueRuleTitles.add(rule.frontmatter.title);
           return { item: rule, file: r.file };
         } else {
           return null;
@@ -169,6 +177,10 @@ const UserRules = ({ data, location }) => {
       })
       .filter((result) => result !== null);
 
+    return filteredRules;
+  };
+
+  const updateFilteredItems = (filteredRule) => {
     if (filteredRule.length === 0) {
       setNotFound(true);
       return;
@@ -185,7 +197,9 @@ const UserRules = ({ data, location }) => {
   const handleChangePage = async (action) => {
     const searchData = await fetchGithubData(action);
     const resultList = searchData.nodes;
-    updateAndFilterRules(resultList);
+    const extractedFiles = getExtractedFiles(resultList);
+    const filteredRules = filterUniqueRules(extractedFiles);
+    updateFilteredItems(filteredRules);
   };
 
   return (

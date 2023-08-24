@@ -47,10 +47,10 @@ const UserRules = ({ data, location }) => {
   }, []);
 
   const fetchGithubData = async (action) => {
-    const githubOwner = 'SSWConsulting';
-    const githubRepo = 'SSW.Rules.Content';
-    const apiBaseUrl = 'https://api.github.com/graphql';
+    const githubOwner = process.env.GITHUB_ORG;
+    const githubRepo = process.env.GITHUB_REPO;
     const token = process.env.GITHUB_API_PAT;
+    const apiBaseUrl = 'https://api.github.com/graphql';
 
     let cursorQuery = '';
     if (action === ActionTypes.BEFORE) {
@@ -201,7 +201,7 @@ const UserRules = ({ data, location }) => {
                 className={`m-3 mx-6 p-2 w-24 rounded-md ${
                   hasPrevious
                     ? 'bg-ssw-red text-white'
-                    : 'bg-ssw-grey text-text-gray-400'
+                    : 'bg-ssw-grey text-gray-400'
                 }`}
                 onClick={() => handleChangePage(ActionTypes.BEFORE)}
                 disabled={!hasPrevious}
@@ -210,9 +210,7 @@ const UserRules = ({ data, location }) => {
               </button>
               <button
                 className={`m-3 mx-6 p-2 w-24 rounded-md ${
-                  hasNext
-                    ? 'bg-ssw-red text-white'
-                    : 'bg-ssw-grey text-text-gray-400'
+                  hasNext ? 'bg-ssw-red white' : 'bg-ssw-grey text-gray-400'
                 }`}
                 onClick={() => handleChangePage(ActionTypes.AFTER)}
                 disabled={!hasNext}

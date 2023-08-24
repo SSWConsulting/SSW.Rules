@@ -7,6 +7,12 @@ import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
 import { FilterOptions } from '../components/filter/filter';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+  },
+});
 
 const ActionTypes = {
   BEFORE: 'before',
@@ -40,6 +46,10 @@ const UserRules = ({ data, location }) => {
         updateAndFilterRules(resultList);
       } catch (err) {
         setNotFound(true);
+        appInsights.trackException({
+          error: new Error(err),
+          severityLevel: 3,
+        });
       }
     };
 
@@ -210,7 +220,9 @@ const UserRules = ({ data, location }) => {
               </button>
               <button
                 className={`m-3 mx-6 p-2 w-24 rounded-md ${
-                  hasNext ? 'bg-ssw-red white' : 'bg-ssw-grey text-gray-400'
+                  hasNext
+                    ? 'bg-ssw-red text-white'
+                    : 'bg-ssw-grey text-gray-400'
                 }`}
                 onClick={() => handleChangePage(ActionTypes.AFTER)}
                 disabled={!hasNext}

@@ -59,12 +59,6 @@ h1 {
   @apply text-ssw-red;
 }
 
-h1.title {
-  font-size: 2.5em;
-  color: #414141;
-  margin-bottom: 0.1em;
-}
-
 h2 {
   @apply text-3xl;
   @apply mb-2;
@@ -801,11 +795,6 @@ blockquote p:after {
   min-height: 4.25rem;
 }
 
-.cat-title-grid-container h2.cat-title {
-  margin: 0;
-  color: #333;
-}
-
 .cat-title-grid-container .rule-count {
   letter-spacing: normal;
   color: #ccc;
@@ -847,7 +836,6 @@ blockquote p:after {
 -------------------------------------------------- */
 
 .rule-category h1 {
-  color: #cc4141;
   font-weight: 100;
 }
 

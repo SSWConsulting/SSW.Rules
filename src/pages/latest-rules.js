@@ -139,7 +139,7 @@ const LatestRules = ({ data, location }) => {
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
             <span className="flex">
-              <h2 className="flex-1">Latest Rules</h2>
+              <h1 className="flex-1 text-3xl">Latest Rules</h1>
               <div className="flex items-center align-middle">
                 <Filter selected={setFilter} />
               </div>

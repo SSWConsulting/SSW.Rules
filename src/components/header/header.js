@@ -49,9 +49,9 @@ const Header = ({ displayActions }) => {
               >
                 <SSWLogo aria-label="logo" width="113.5" height="75.5" />
               </a>
-              <h1 className="title ml-2">
+              <div className="my-4 leading-[1.2] ml-2 text-[2.5rem]">
                 <a href="/rules">Rules</a>
-              </h1>
+              </div>
             </div>
             <p className={displayActions ? 'tagline-hidden' : 'tagline'}>
               Secret ingredients to quality software

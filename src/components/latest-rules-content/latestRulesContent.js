@@ -45,7 +45,7 @@ const LatestRulesContent = ({
   };
 
   const FormatDate = ({ item }) => (
-    <span className="block all-rules-time">
+    <span className="block text-light-grey text-right">
       {filteredItems.filter === FilterOptions.RecentlyUpdated
         ? formatDistanceToNow(new Date(item.file.node.lastUpdated), {
             locale: {
@@ -79,12 +79,20 @@ const LatestRulesContent = ({
         {!notFound ? (
           filteredItems.list.map((item, idx) => {
             return (
-              <div key={idx} className="cat-grid-container">
+              <div
+                key={idx}
+                className="grid grid-cols-[2rem_auto_8rem_4rem] mb-4"
+              >
                 <div className="cat-rule-num">{idx + 1}.</div>
-                <div className="text-left">
+                <div className="text-left mr-2 pr-1">
                   <Link to={`/${sanitizeRule(item.item.fields.slug)}`}>
                     {item.item.frontmatter.title}
                   </Link>
+                </div>
+                <div className="text-left text-ellipsis text-light-grey whitespace-nowrap overflow-hidden">
+                  {item.file.node.createdBy
+                    .replace('[SSW]', '')
+                    .replace(/([a-z])([A-Z])/g, '$1 $2')}
                 </div>
                 <FormatDate item={item} />
               </div>

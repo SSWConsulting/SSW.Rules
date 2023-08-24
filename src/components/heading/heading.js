@@ -25,6 +25,7 @@ const Heading = ({ title, children, isAscending, setIsAscending }) => {
               }}
             ></p>
           </span>
+          <span className="absolute right-24">Updated BY</span>
           <span className="collapse-icon">
             <FontAwesomeIcon
               icon={isAscending ? faSortAmountUp : faSortAmountDown}

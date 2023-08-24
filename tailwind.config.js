@@ -15,9 +15,10 @@ module.exports = {
         '200px': '200px',
       },
       colors: {
-        'gray-tooltip': '#9e9e9e',
+        'tooltip-grey': '#9e9e9e',
         'ssw-red': '#cc4141',
         'ssw-grey': '#eee',
+        'light-grey': '#ccc',
         'ssw-black': '#333',
         underline: '#aaa',
       },

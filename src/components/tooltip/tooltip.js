@@ -32,9 +32,9 @@ const Tooltip = ({ children, text, showDelay, hideDelay }) => {
         <span
           className="
             absolute bottom-full mb-1 whitespace-nowrap rounded-md 
-            bg-gray-tooltip p-1.5 text-xs text-white transition-opacity 
+            bg-tooltip-grey p-1.5 text-xs text-white transition-opacity 
             after:absolute after:top-full after:left-2/4 after:-translate-x-1/2 
-            after:border-4 after:border-solid after:border-gray-tooltip after:border-l-transparent 
+            after:border-4 after:border-solid after:border-tooltip-grey after:border-l-transparent 
             after:border-r-transparent after:border-b-transparent after:content-['']
           "
         >

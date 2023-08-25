@@ -73,6 +73,8 @@ const Breadcrumbs = (props) => {
             <li>Latest Rules</li>
           ) : props.isSearch ? (
             <li>Search</li>
+          ) : props.isUser ? (
+            <li>User Rules</li>
           ) : (
             checkCategory(props)
           )}
@@ -92,6 +94,7 @@ Breadcrumbs.propTypes = {
   isArchived: PropTypes.bool,
   isLatest: PropTypes.bool,
   isSearch: PropTypes.bool,
+  isUser: PropTypes.bool,
 };
 
 export default Breadcrumbs;

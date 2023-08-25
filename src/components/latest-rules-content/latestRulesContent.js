@@ -2,7 +2,7 @@ import { bool, func, object, objectOf, string } from 'prop-types';
 
 import { FilterOptions } from '../filter/filter';
 import Heading from '../heading/heading';
-import { Link } from 'gatsby';
+import { Link, navigate } from 'gatsby';
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import locale from 'date-fns/locale/en-AU';
@@ -73,7 +73,12 @@ const LatestRulesContent = ({
   const openUserRule = async (path) => {
     const loginName = await fetchGithubName(path);
     const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
-    window.location.href = `${pathPrefix}/user-rules/?author=${loginName}`;
+
+    if (loginName) {
+      navigate(`${pathPrefix}/user-rules/?author=${loginName}`);
+    } else {
+      navigate('/404');
+    }
   };
 
   const fetchGithubName = async (path) => {

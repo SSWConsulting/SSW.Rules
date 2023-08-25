@@ -69,6 +69,37 @@ const LatestRulesContent = ({
     return rule.slice(6, rule.length);
   };
 
+  const openUserRule = async (path) => {
+    const loginName = await fetchGithubName(path);
+    const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
+    window.location.href = `${pathPrefix}/user-rules/?author=${loginName}`;
+  };
+
+  const fetchGithubName = async (path) => {
+    const githubOwner = process.env.GITHUB_ORG;
+    const githubRepo = process.env.GITHUB_REPO;
+    const token = process.env.GITHUB_API_PAT;
+    const response = await fetch(
+      `https://api.github.com/repos/${githubOwner}/${githubRepo}/commits?path=${path}`,
+      {
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `GitHub API request failed with status: ${response.status}`
+      );
+    }
+
+    const data = await response.json();
+    const loginName = data[data.length - 1]?.author?.login;
+
+    return loginName;
+  };
+
   return (
     <section className="mb-5 relative">
       <Heading
@@ -89,12 +120,15 @@ const LatestRulesContent = ({
                     {item.item.frontmatter.title}
                   </Link>
                 </div>
-                <div className="text-left text-light-grey">
-                  <Link className="cursor-pointer">
+                <div>
+                  <button
+                    onClick={() => openUserRule(item.file.node.file)}
+                    className="text-left cursor-pointer"
+                  >
                     {item.file.node.createdBy
                       .replace('[SSW]', '')
                       .replace(/([a-z])([A-Z])/g, '$1 $2')}
-                  </Link>
+                  </button>
                 </div>
                 <FormatDate item={item} />
               </div>

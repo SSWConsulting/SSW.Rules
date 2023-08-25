@@ -62,6 +62,8 @@ const UserRules = ({ data, location }) => {
     const githubOwner = process.env.GITHUB_ORG;
     const githubRepo = process.env.GITHUB_REPO;
     const token = process.env.GITHUB_API_PAT;
+    const resultPerPage = 30;
+    const filesPerPullRequest = 20;
     const apiBaseUrl = 'https://api.github.com/graphql';
 
     let cursorQuery = '';
@@ -78,7 +80,7 @@ const UserRules = ({ data, location }) => {
         {
           search( query: "repo:${githubOwner}/${githubRepo} is:pr base:${process.env.CONTENT_BRANCH} is:merged sort:updated-desc author:${queryStringRulesAuthor}"
           type: ISSUE
-          first: 30
+          first: ${resultPerPage}
           ${cursorQuery}
           ) {
               pageInfo {
@@ -89,7 +91,7 @@ const UserRules = ({ data, location }) => {
               }
               nodes {
                   ... on PullRequest {
-                      files(first: 20) {
+                      files(first: ${filesPerPullRequest}) {
                         nodes {
                         path
                       }

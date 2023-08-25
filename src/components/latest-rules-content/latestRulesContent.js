@@ -89,10 +89,12 @@ const LatestRulesContent = ({
                     {item.item.frontmatter.title}
                   </Link>
                 </div>
-                <div className="text-left text-ellipsis text-light-grey whitespace-nowrap overflow-hidden">
-                  {item.file.node.createdBy
-                    .replace('[SSW]', '')
-                    .replace(/([a-z])([A-Z])/g, '$1 $2')}
+                <div className="text-left text-light-grey">
+                  <Link className="cursor-pointer">
+                    {item.file.node.createdBy
+                      .replace('[SSW]', '')
+                      .replace(/([a-z])([A-Z])/g, '$1 $2')}
+                  </Link>
                 </div>
                 <FormatDate item={item} />
               </div>

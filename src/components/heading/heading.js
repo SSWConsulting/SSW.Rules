@@ -31,7 +31,9 @@ const Heading = ({
               }}
             ></p>
           </span>
-          {isShowAuthor && <span className="absolute right-28">Added BY</span>}
+          {isShowAuthor && (
+            <span className="hidden lg:inline absolute right-28">Added BY</span>
+          )}
           <span className="collapse-icon">
             <FontAwesomeIcon
               icon={isAscending ? faSortAmountUp : faSortAmountDown}

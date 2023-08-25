@@ -14,7 +14,7 @@ const LatestRulesContent = ({
   notFound,
   isAscending,
   setIsAscending,
-  isShowAuthor = false,
+  isShowAuthor,
 }) => {
   const formatDistanceLocale = {
     lessThanXSeconds: '{{count}} sec',
@@ -114,10 +114,8 @@ const LatestRulesContent = ({
             return (
               <div
                 key={idx}
-                className={`${
-                  isShowAuthor
-                    ? 'grid grid-cols-[2rem_auto_8rem_4rem] mb-4'
-                    : 'cat-grid-container'
+                className={`cat-grid-container ${
+                  isShowAuthor ? 'lg:grid-cols-[2rem_auto_8rem_4rem]' : ''
                 }`}
               >
                 <div className="cat-rule-num">{idx + 1}.</div>
@@ -127,10 +125,10 @@ const LatestRulesContent = ({
                   </Link>
                 </div>
                 {isShowAuthor && (
-                  <div>
+                  <div className="hidden lg:block">
                     <button
                       onClick={() => openUserRule(item.file.node.file)}
-                      className="text-left cursor-pointer"
+                      className="text-left cursor-pointer hover:text-ssw-red"
                     >
                       {item.file.node.createdBy
                         .replace('[SSW]', '')

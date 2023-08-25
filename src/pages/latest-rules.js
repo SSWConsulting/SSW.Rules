@@ -151,6 +151,7 @@ const LatestRules = ({ data, location }) => {
                 notFound={notFound}
                 isAscending={isAscending}
                 setIsAscending={setIsAscending}
+                isShowAuthor
               />
             </div>
           </div>

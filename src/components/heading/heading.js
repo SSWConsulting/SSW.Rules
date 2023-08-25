@@ -8,7 +8,13 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
-const Heading = ({ title, children, isAscending, setIsAscending }) => {
+const Heading = ({
+  title,
+  children,
+  isAscending,
+  setIsAscending,
+  isShowAuthor,
+}) => {
   return (
     <>
       <h6 className={'top-category-header px-4 py-2 flex rounded-t'}>
@@ -25,7 +31,7 @@ const Heading = ({ title, children, isAscending, setIsAscending }) => {
               }}
             ></p>
           </span>
-          <span className="absolute right-28">Added BY</span>
+          {isShowAuthor && <span className="absolute right-28">Added BY</span>}
           <span className="collapse-icon">
             <FontAwesomeIcon
               icon={isAscending ? faSortAmountUp : faSortAmountDown}
@@ -54,4 +60,5 @@ Heading.propTypes = {
   children: array,
   isAscending: bool,
   setIsAscending: func,
+  isShowAuthor: bool,
 };

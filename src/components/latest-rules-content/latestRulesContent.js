@@ -14,6 +14,7 @@ const LatestRulesContent = ({
   notFound,
   isAscending,
   setIsAscending,
+  isShowAuthor = false,
 }) => {
   const formatDistanceLocale = {
     lessThanXSeconds: '{{count}} sec',
@@ -106,30 +107,37 @@ const LatestRulesContent = ({
         title={title}
         isAscending={isAscending}
         setIsAscending={setIsAscending}
+        isShowAuthor={isShowAuthor}
       >
         {!notFound ? (
           filteredItems.list.map((item, idx) => {
             return (
               <div
                 key={idx}
-                className="grid grid-cols-[2rem_auto_8rem_4rem] mb-4"
+                className={`${
+                  isShowAuthor
+                    ? 'grid grid-cols-[2rem_auto_8rem_4rem] mb-4'
+                    : 'cat-grid-container'
+                }`}
               >
                 <div className="cat-rule-num">{idx + 1}.</div>
-                <div className="text-left mr-2 pr-1">
+                <div className={`text-left ${isShowAuthor ? 'mr-2 pr-1' : ''}`}>
                   <Link to={`/${sanitizeRule(item.item.fields.slug)}`}>
                     {item.item.frontmatter.title}
                   </Link>
                 </div>
-                <div>
-                  <button
-                    onClick={() => openUserRule(item.file.node.file)}
-                    className="text-left cursor-pointer"
-                  >
-                    {item.file.node.createdBy
-                      .replace('[SSW]', '')
-                      .replace(/([a-z])([A-Z])/g, '$1 $2')}
-                  </button>
-                </div>
+                {isShowAuthor && (
+                  <div>
+                    <button
+                      onClick={() => openUserRule(item.file.node.file)}
+                      className="text-left cursor-pointer"
+                    >
+                      {item.file.node.createdBy
+                        .replace('[SSW]', '')
+                        .replace(/([a-z])([A-Z])/g, '$1 $2')}
+                    </button>
+                  </div>
+                )}
                 <FormatDate item={item} />
               </div>
             );
@@ -151,4 +159,5 @@ LatestRulesContent.propTypes = {
   isAscending: bool,
   setIsAscending: func,
   item: objectOf(Object),
+  isShowAuthor: bool,
 };

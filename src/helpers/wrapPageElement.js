@@ -10,13 +10,19 @@ const wrapPageElement = ({ element, props }) => {
       ? props.data.markdownRemark
       : null;
 
+  const isHomePage = props.path === '/';
+
   return (
     //<Transition {...props}>
     <Layout
       {...props}
       crumbLocation={props.location}
       crumbLabel={
-        markdown ? markdown.frontmatter.title : siteConfig.breadcrumbDefault
+        markdown
+          ? markdown.frontmatter.title
+          : isHomePage
+          ? siteConfig.homepageTitle
+          : siteConfig.breadcrumbDefault
       }
       displayActions={markdown ? true : false}
       ruleUri={markdown ? markdown.parent.relativePath : null}

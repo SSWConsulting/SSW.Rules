@@ -16,4 +16,5 @@ module.exports = {
   },
   parentSiteUrl: `https://www.ssw.com.au`,
   breadcrumbDefault: `SSW Rules`,
+  homepageTitle: `Secret ingredients to quality software`,
 };

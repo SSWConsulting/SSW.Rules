@@ -835,10 +835,6 @@ blockquote p:after {
 /* Single Rule
 -------------------------------------------------- */
 
-.rule-category h1 {
-  @apply text-ssw-red; 
-}
-
 .rule-content h1, .rule-content .h1 {
   font-size: 2.5rem;
 }

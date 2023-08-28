@@ -203,7 +203,7 @@ const UserRules = ({ data, location }) => {
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
             <span className="flex">
-              <h2 className="flex-1">User Rules</h2>
+              <h1 className="flex-1 text-3xl">User Rules</h1>
             </span>
             <div className="rule-index archive no-gutters rounded mb-12">
               <LatestRulesContent

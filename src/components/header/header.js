@@ -62,7 +62,7 @@ const Header = ({ displayActions }) => {
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href="https://rulesgpt.ssw.com.au/"
+                href="https://rulesgpt.ssw.com.au"
                 className="action-btn-link-underlined"
                 onClick={() => {
                   appInsights.trackEvent({

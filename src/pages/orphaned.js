@@ -81,12 +81,12 @@ const Orphaned = ({ data }) => {
         <div className="rule-category rounded">
           <section className="mb-20 rounded pb-2">
             <div className="cat-title-grid-container">
-              <h2 className="cat-title">
+              <h1 className="text-ssw-black font-medium text-3xl">
                 Orphaned Rules
                 <span className="rule-count">
                   {' - '} {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
                 </span>
-              </h2>
+              </h1>
 
               <Tooltip text="Edit in GitHub">
                 <a

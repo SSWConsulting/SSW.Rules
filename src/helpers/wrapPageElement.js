@@ -10,8 +10,7 @@ const wrapPageElement = ({ element, props }) => {
       ? props.data.markdownRemark
       : null;
 
-  const pathPrefix = process.env.NODE_ENV === 'development' ? '/' : '/rules/';
-  const isHomePage = props.path === pathPrefix;
+  const isHomePage = props.path === '/';
 
   return (
     //<Transition {...props}>

@@ -46,7 +46,7 @@ header {
   position: relative;
   top: 0;
   opacity: .7;
-  color: #333;
+  @apply text-ssw-black;
 }
 
 .tagline-hidden {
@@ -395,7 +395,7 @@ div.youtube-playlist li {
   border-left: 4px solid #cc4141;
   border-radius: 0 .25rem .25rem 0;
   margin: 1rem 0;
-  color: #333;
+  @apply text-ssw-black;
 }
 
 .blockquote p {
@@ -856,7 +856,7 @@ blockquote p:after {
 }
 
 .rule-content h4, .rule-content h5, .rule-content h6 {
-  color: #000;
+  @apply text-real-black;
 }
 
 .rule-content a,
@@ -929,7 +929,7 @@ blockquote p:after {
 
 .rule-content ul li ul li::before, .rule-category-top ul li ul li::before {
   content: "\26AC";
-  color: #000;
+  @apply text-real-black;
   display: inline-block;
   width: 1em;
   margin-left: -1em;
@@ -2422,7 +2422,7 @@ padding: 0 24px 0 14px;
 outline: none;
 font-size: 16px;
 line-height: 1.75;
-color: #333;
+@apply text-ssw-black;
 background-image: none;
 border: 1px solid #ccc;
 -ms-word-break: normal;
@@ -2435,7 +2435,7 @@ border-bottom: 1px solid #ccc;
 background: transparent;
 box-shadow: none;
 padding: 6px 12px 6px 0;
-color: #333;
+@apply text-ssw-black;
 font-size: 1em;
 }
 
@@ -2456,7 +2456,7 @@ height: 34px;
 padding: 6px 12px;
 font-size: 14px;
 line-height: 1.42857143;
-color: #333;
+@apply text-ssw-black;
 background-color: transparent;
 background-image: none;
 border: 1px solid #ccc;

@@ -19,6 +19,7 @@ module.exports = {
         'ssw-red': '#cc4141',
         'ssw-grey': '#eee',
         'ssw-black': '#333',
+        'real-black': '#000',
         underline: '#aaa',
       },
       backgroundImage: {

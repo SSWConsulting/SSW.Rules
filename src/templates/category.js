@@ -67,7 +67,7 @@ export default function Category({ data }) {
         <div className="rule-category rounded">
           <section className="mb-20 rounded pb-2">
             <div className="cat-title-grid-container">
-              <h1 className="text-ssw-black font-medium text-3xl">
+              <h1 className="text-real-black font-medium text-3xl">
                 {category.frontmatter.title}
                 <span className="rule-count">
                   {' - '} {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}

@@ -73,12 +73,7 @@ const LatestRulesContent = ({
   const openUserRule = async (path) => {
     const loginName = await fetchGithubName(path);
     const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
-
-    if (loginName) {
-      navigate(`${pathPrefix}/user-rules/?author=${loginName}`);
-    } else {
-      navigate('/404');
-    }
+    navigate(`${pathPrefix}/user-rules/?author=${loginName}`);
   };
 
   const fetchGithubName = async (path) => {

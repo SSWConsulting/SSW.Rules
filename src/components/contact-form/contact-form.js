@@ -3,6 +3,30 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import ReCAPTCHA from 'react-google-recaptcha';
 
+const ReferralSource = {
+  Conference: 8,
+  Google: 1,
+  ['Government Suppliers List']: 20,
+  ['Outbound Call']: 15,
+  ['Repeat Business']: 4,
+  ['.NET User Group']: 3,
+  ['SSW Training Event']: 2,
+  Referral: 12,
+  Signage: 7,
+  ['Yellow Pages']: 9,
+  ['SSW TV']: 17,
+  Webinars: 16,
+  ['Other search engines']: 10,
+  Other: 14,
+};
+
+const ReferralSourceList = Object.keys(ReferralSource).map((key) => {
+  return {
+    label: key,
+    value: ReferralSource[key],
+  };
+});
+
 const ContactForm = ({ onClose }) => {
   const node = useRef();
   const [contactSuccess, setContactSuccess] = useState(false);
@@ -12,9 +36,10 @@ const ContactForm = ({ onClose }) => {
   const [contactFormCompanyName, setContactFormCompanyName] = useState('');
   const [contactFormNote, setContactFormNote] = useState('');
   const [contactFormCountry, setContactFormCountry] = useState('');
-  const [contactFormState, setContactFormState] = useState('');
+  const [contactFormState, setContactFormState] = useState('100000008');
   const [contactFormStateText, setContactFormStateText] = useState('');
   const [contactReCaptcha, setContactReCaptcha] = useState('');
+  const [referralSource, setReferralSource] = useState('');
 
   const handleSubmit = async (event) => {
     let subject =
@@ -22,6 +47,13 @@ const ContactForm = ({ onClose }) => {
       contactFormCompanyName +
       ' - ' +
       contactFormName;
+
+    let sourceWebPageURL;
+    if (typeof window !== 'undefined') {
+      sourceWebPageURL = window.location.href;
+    } else {
+      sourceWebPageURL = '';
+    }
 
     let body = 'Consulting enquiry from ' + document.URL + '<br/>';
     body = body + 'Company: ' + contactFormCompanyName + '<br/>';
@@ -36,6 +68,7 @@ const ContactForm = ({ onClose }) => {
     body = body + 'Email:   ' + contactFormEmail + '<br/>';
     body = body + 'Note:    ' + contactFormNote + '<br/><br/>';
     event.preventDefault();
+
     if (process.env.CONTACT_API !== 'FALSE') {
       await axios
         .post(
@@ -52,6 +85,8 @@ const ContactForm = ({ onClose }) => {
             Recaptcha: contactReCaptcha,
             EmailSubject: subject,
             EmailBody: body + 'The associated CRM lead is ',
+            ReferralSource: referralSource,
+            SourceWebPageURL: sourceWebPageURL,
           },
           { headers: { 'Content-Type': 'application/json' } }
         )
@@ -225,6 +260,29 @@ const ContactForm = ({ onClose }) => {
               className="form-control"
               placeholder="Company"
             />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <div className="field-wrapper list">
+            <label htmlFor="contactFormCountry" className="control-label">
+              How did you hear about us?
+            </label>
+            <select
+              id="contactFormCountry"
+              className="form-control"
+              value={referralSource}
+              onChange={(e) => setReferralSource(e.target.value)}
+            >
+              <option className="hidden" value="">
+                How did you hear about us?
+              </option>
+              {ReferralSourceList.map((source) => (
+                <option key={source.value} value={source.value}>
+                  {source.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

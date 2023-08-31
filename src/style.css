@@ -2763,6 +2763,7 @@ margin-bottom: 1em;
 -------------------------------------------------- */
 .rule-content table {
   margin: 1rem 0;
+  word-break: initial;
 }
 
 .rule-content td {

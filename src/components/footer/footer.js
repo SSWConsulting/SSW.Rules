@@ -131,7 +131,7 @@ const Footer = () => {
                 . Last deployed {getLastDeployTime()} ago (Build #{' '}
                 <a
                   className="footer-link"
-                  href="https://github.com/SSWConsulting/SSW.Rules/releases/latest"
+                  href="https://dev.azure.com/ssw/SSW.Rules/_release?_a=releases&view=mine&definitionId=3"
                 >
                   {process.env.VERSION_DEPLOYED}
                 </a>

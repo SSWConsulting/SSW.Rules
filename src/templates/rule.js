@@ -178,7 +178,7 @@ const Rule = ({ data, location }) => {
                       </small>
                     )}
                   </div>
-                  <div className="rule-buttons flex flex-row justify-center mt-5">
+                  <div className="rule-buttons flex flex-row justify-center mt-[1.35rem]">
                     <Bookmark ruleId={rule.frontmatter.guid} />
                     <button className="tooltip !mx-6 md:!mx-0">
                       <a

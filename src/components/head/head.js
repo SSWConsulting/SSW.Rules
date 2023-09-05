@@ -56,19 +56,25 @@ const Head = ({
     <link rel="canonical" href={canonical} />
 
     <meta
-      content={imageUrl || `${siteUrl}/assets/Rules-OpenGraph-V2.jpg`}
+      content={
+        imageUrl || `${siteUrl}/assets/Open-Graph-images-Website-Rules.jpg`
+      }
       property="og:image"
     />
     <meta content="1024" property="og:image:width" />
     <meta content="512" property="og:image:height" />
     <meta
-      content={imageUrl || `${siteUrl}/assets/Rules-OpenGraph-V2.jpg`}
+      content={
+        imageUrl || `${siteUrl}/assets/Open-Graph-images-Website-Rules.jpg`
+      }
       name="twitter:image"
     />
     <meta content="1024" name="twitter:image:width" />
     <meta content="512" name="twitter:image:height" />
     <meta
-      content={imageUrl || `${siteUrl}/assets/Rules-OpenGraph-V2.jpg`}
+      content={
+        imageUrl || `${siteUrl}/assets/Open-Graph-images-Website-Rules.jpg`
+      }
       property="og:image"
     />
     <meta content="1024" property="og:image:width" />

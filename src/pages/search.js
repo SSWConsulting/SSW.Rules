@@ -121,7 +121,7 @@ const LatestRules = ({ data, location }) => {
             </div>
           </div>
           <div className="w-full lg:w-1/4 px-4" id="sidebar">
-            <SideBar ruleTotalNumber={rules?.length} />
+            <SideBar ruleTotalNumber={rules?.length} hideCount />
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import algoliasearch from 'algoliasearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-const SearchBar = ({ toSearch, setSearchResult, location }) => {
+const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   const [query, setQuery] = useState('');
   const [debouncedValue, setDebouncedValue] = useState('');
 
@@ -39,30 +39,32 @@ const SearchBar = ({ toSearch, setSearchResult, location }) => {
     };
   }, [query]);
 
+  useEffect(() => {
+    if (debouncedValue && !toSearch) {
+      fetchSearch();
+    }
+  }, [debouncedValue]);
+
   const handlePressEnter = (val) => {
-    if (!toSearch) return;
+    if (!toSearch || !val) return;
     const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
     window.location.href = `${pathPrefix}/search?keyword=${val}`;
   };
 
   const fetchSearch = async () => {
     if (!query) return [];
+    setIsLoaded(false);
     const { results } = await searchClient.search([
       {
-        indexName: 'Pages',
+        indexName: 'Rules',
         query,
       },
     ]);
     const rawResults = results[0].hits;
 
     setSearchResult(rawResults);
+    setIsLoaded(true);
   };
-
-  useEffect(() => {
-    if (debouncedValue) {
-      fetchSearch();
-    }
-  }, [debouncedValue]);
 
   return (
     <div className="border border-solid w-96 ml-4 flex items-center pl-3 p-2 rounded shadow bg-gray-50">
@@ -73,7 +75,6 @@ const SearchBar = ({ toSearch, setSearchResult, location }) => {
       />
       <input
         value={query}
-        // onInput={(e) => setQuery(e.target.value)}
         onChange={(e) => handleInputChange(e)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
@@ -93,5 +94,6 @@ export default SearchBar;
 SearchBar.propTypes = {
   toSearch: PropTypes.bool,
   setSearchResult: PropTypes.func,
+  setIsLoaded: PropTypes.func,
   location: PropTypes.object,
 };

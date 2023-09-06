@@ -9,15 +9,15 @@ import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import { sanitizeName } from '../helpers/sanitizeName';
 
-const LatestRules = ({ data, location }) => {
+const SearchRules = ({ data, location }) => {
   const [filter, setFilter] = useState();
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
   const [searchResult, setSearchResult] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [filterTitle, setFilterTitle] = useState('Results');
 
-  const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
 
   const unFlattenResults = (results) => {
@@ -77,6 +77,8 @@ const LatestRules = ({ data, location }) => {
     }
 
     const filteredRules = await filterAndValidateRules();
+    setFilterTitle(`Results - ${filteredRules.length} rules`);
+
     if (filteredRules.length === 0) {
       setNotFound(true);
       return;
@@ -87,7 +89,7 @@ const LatestRules = ({ data, location }) => {
     sort(_filter, filteredRules);
 
     setFilteredItems({
-      list: filteredRules.slice(0, 50),
+      list: filteredRules,
       filter: _filter,
     });
   };
@@ -130,7 +132,7 @@ const LatestRules = ({ data, location }) => {
 };
 
 export const pageQuery = graphql`
-  query latestRulesQuery {
+  query searchRulesQuery {
     allHistoryJson {
       edges {
         node {
@@ -156,9 +158,9 @@ export const pageQuery = graphql`
   }
 `;
 
-export default LatestRules;
+export default SearchRules;
 
-LatestRules.propTypes = {
+SearchRules.propTypes = {
   data: objectOf(Object),
   location: objectOf(Object),
 };

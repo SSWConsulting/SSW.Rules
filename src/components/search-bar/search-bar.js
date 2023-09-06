@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import FlexSearch from 'flexsearch';
 import PropTypes from 'prop-types';
 import qs from 'query-string';
 import algoliasearch from 'algoliasearch';
@@ -9,16 +8,11 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 const SearchBar = ({
   isLoaded,
   toSearch,
-  publicIndexURL,
-  publicStoreURL,
   setSearchResult,
   location,
   setIsLoaded,
 }) => {
   const [query, setQuery] = useState('');
-  const [searchIndex, setSearchIndex] = useState(null);
-  const [searchStore, setSearchStore] = useState(null);
-  const [index, setIndex] = useState(null);
 
   const searchClient = useMemo(
     () =>
@@ -34,14 +28,6 @@ const SearchBar = ({
     setQuery(searchString);
 
     const fetchData = async () => {
-      const indexResponse = await fetch(publicIndexURL);
-      const indexData = await indexResponse.text();
-      setSearchIndex(indexData);
-
-      const storeResponse = await fetch(publicStoreURL);
-      const storeData = await storeResponse.json();
-      setSearchStore(storeData);
-
       setIsLoaded(true);
     };
 
@@ -58,7 +44,6 @@ const SearchBar = ({
 
   const fetchSearch = async () => {
     if (!query) return [];
-    // const rawResults = index.search(query);
     const { results } = await searchClient.search([
       {
         indexName: 'Pages',
@@ -75,22 +60,6 @@ const SearchBar = ({
       fetchSearch();
     }
   }, [query, isLoaded]);
-
-  useEffect(() => {
-    if (!searchIndex) {
-      setIndex(null);
-      return;
-    }
-    if (searchIndex instanceof FlexSearch) {
-      setIndex(searchIndex);
-      return;
-    }
-
-    const importedIndex = FlexSearch.create();
-    importedIndex.import(searchIndex);
-
-    setIndex(importedIndex);
-  }, [searchIndex]);
 
   return (
     <div className="border border-solid w-96 ml-4 flex items-center pl-3 p-2 rounded shadow bg-gray-50">

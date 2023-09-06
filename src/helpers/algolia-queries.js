@@ -4,6 +4,7 @@ const pageQuery = `{
     pages: allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
         nodes {
             id
+            excerpt(format: PLAIN, pruneLength: 500)
             frontmatter {
                 title
             }

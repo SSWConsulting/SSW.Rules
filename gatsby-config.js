@@ -27,39 +27,6 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-plugin-local-search',
-      options: {
-        name: 'pages',
-        engine: 'flexsearch',
-        engineOptions: 'speed',
-        query: `
-        {
-          allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
-            nodes {
-              id
-              frontmatter {
-                title
-              }
-              fields {
-                slug
-              }
-              rawMarkdownBody
-            }
-          }
-        }
-        `,
-        ref: 'slug',
-        index: ['slug', 'title', 'rawMarkdownBody'],
-        store: ['slug', 'title'],
-        normalizer: ({ data }) =>
-          data.allMarkdownRemark.nodes.map((node) => ({
-            slug: node.fields.slug,
-            title: node.frontmatter.title,
-            rawMarkdownBody: node.rawMarkdownBody,
-          })),
-      },
-    },
-    {
       resolve: 'gatsby-plugin-netlify-cms',
       options: {
         manualInit: true,

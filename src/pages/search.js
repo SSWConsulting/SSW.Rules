@@ -20,8 +20,6 @@ const LatestRules = ({ data, location }) => {
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
 
-  const { publicIndexURL, publicStoreURL } = data.localSearchPages;
-
   const unFlattenResults = (results) => {
     return results.map((x) => {
       const { title, slug } = x;
@@ -100,8 +98,6 @@ const LatestRules = ({ data, location }) => {
       <SearchBar
         isLoaded={isLoaded}
         setIsLoaded={setIsLoaded}
-        publicIndexURL={publicIndexURL}
-        publicStoreURL={publicStoreURL}
         setSearchResult={setSearchResult}
         location={location}
       />
@@ -135,10 +131,6 @@ const LatestRules = ({ data, location }) => {
 
 export const pageQuery = graphql`
   query latestRulesQuery {
-    localSearchPages {
-      publicIndexURL
-      publicStoreURL
-    }
     allHistoryJson {
       edges {
         node {

@@ -8982,11 +8982,6 @@ flatten@^1.0.2:
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.3.tgz#c1283ac9f27b368abc1e36d1ff7b04501a30356b"
   integrity sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==
 
-flexsearch@^0.6.32:
-  version "0.6.32"
-  resolved "https://registry.yarnpkg.com/flexsearch/-/flexsearch-0.6.32.tgz#1e20684d317af65baa445cdd9864a5f5b320f510"
-  integrity sha512-EF1BWkhwoeLtbIlDbY/vDSLBen/E5l/f1Vg7iX5CDymQCamcx1vhlc3tIZxIDplPjgi0jhG37c67idFbjg+v+Q==
-
 focus-group@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/focus-group/-/focus-group-0.3.1.tgz#e0f32ed86b0dabdd6ffcebdf898ecb32e47fedce"
@@ -9436,16 +9431,6 @@ gatsby-plugin-google-tagmanager@^5.11.0:
   dependencies:
     "@babel/runtime" "^7.20.13"
     web-vitals "^1.1.2"
-
-gatsby-plugin-local-search@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/gatsby-plugin-local-search/-/gatsby-plugin-local-search-2.0.1.tgz#adf0aeff4b06feee57574420369ca0950a4bcdf7"
-  integrity sha512-qrApdH2IYfHL+dSmcwSzhDPVxlkt13N0IfEkKxfWf0gITmBwObOJBYAMnYiYUmP0dpYmSV9anJE//SLZBSsisA==
-  dependencies:
-    flexsearch "^0.6.32"
-    lodash "^4.17.19"
-    lunr "^2.3.8"
-    pascal-case "^3.1.1"
 
 gatsby-plugin-netlify-cms@7.10.0:
   version "7.10.0"
@@ -13170,11 +13155,6 @@ lru-queue@^0.1.0:
   dependencies:
     es5-ext "~0.10.2"
 
-lunr@^2.3.8:
-  version "2.3.9"
-  resolved "https://registry.yarnpkg.com/lunr/-/lunr-2.3.9.tgz#18b123142832337dd6e964df1a5a7707b25d35e1"
-  integrity sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==
-
 magic-string@^0.25.0, magic-string@^0.25.7:
   version "0.25.9"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.25.9.tgz#de7f9faf91ef8a1c91d02c2e5314c8277dbcdd1c"
@@ -15145,7 +15125,7 @@ parseurl@^1.3.3, parseurl@~1.3.2, parseurl@~1.3.3:
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.3.tgz#9da19e7bee8d12dff0513ed5b76957793bc2e8d4"
   integrity sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==
 
-pascal-case@^3.1.1, pascal-case@^3.1.2:
+pascal-case@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/pascal-case/-/pascal-case-3.1.2.tgz#b48e0ef2b98e205e7c1dae747d0b1508237660eb"
   integrity sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import FlexSearch from 'flexsearch';
 import PropTypes from 'prop-types';
 import qs from 'query-string';
+import algoliasearch from 'algoliasearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -18,6 +19,15 @@ const SearchBar = ({
   const [searchIndex, setSearchIndex] = useState(null);
   const [searchStore, setSearchStore] = useState(null);
   const [index, setIndex] = useState(null);
+
+  const searchClient = useMemo(
+    () =>
+      algoliasearch(
+        process.env.GATSBY_ALGOLIA_APP_ID,
+        process.env.GATSBY_ALGOLIA_SEARCH_KEY
+      ),
+    []
+  );
 
   useEffect(() => {
     const searchString = qs.parse(location?.search).keyword;
@@ -47,10 +57,17 @@ const SearchBar = ({
   };
 
   const fetchSearch = async () => {
-    if (!query || !index || !searchStore) return [];
-    const rawResults = index.search(query);
+    if (!query) return [];
+    // const rawResults = index.search(query);
+    const { results } = await searchClient.search([
+      {
+        indexName: 'Pages',
+        query,
+      },
+    ]);
+    const rawResults = results[0].hits;
 
-    setSearchResult(rawResults.map((id) => searchStore[id]));
+    setSearchResult(rawResults);
   };
 
   useEffect(() => {

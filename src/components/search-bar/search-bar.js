@@ -5,14 +5,9 @@ import algoliasearch from 'algoliasearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-const SearchBar = ({
-  isLoaded,
-  toSearch,
-  setSearchResult,
-  location,
-  setIsLoaded,
-}) => {
+const SearchBar = ({ toSearch, setSearchResult, location }) => {
   const [query, setQuery] = useState('');
+  const [debouncedValue, setDebouncedValue] = useState('');
 
   const searchClient = useMemo(
     () =>
@@ -23,18 +18,26 @@ const SearchBar = ({
     []
   );
 
+  const handleInputChange = (e) => {
+    const newValue = e.target.value;
+    setQuery(newValue);
+  };
+
   useEffect(() => {
     const searchString = qs.parse(location?.search).keyword;
     setQuery(searchString);
-
-    const fetchData = async () => {
-      setIsLoaded(true);
-    };
-
-    if (!toSearch) {
-      fetchData();
-    }
   }, []);
+
+  useEffect(() => {
+    const delay = 500;
+    const timer = setTimeout(() => {
+      setDebouncedValue(query);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [query]);
 
   const handlePressEnter = (val) => {
     if (!toSearch) return;
@@ -56,10 +59,10 @@ const SearchBar = ({
   };
 
   useEffect(() => {
-    if (isLoaded) {
+    if (debouncedValue) {
       fetchSearch();
     }
-  }, [query, isLoaded]);
+  }, [debouncedValue]);
 
   return (
     <div className="border border-solid w-96 ml-4 flex items-center pl-3 p-2 rounded shadow bg-gray-50">
@@ -70,7 +73,8 @@ const SearchBar = ({
       />
       <input
         value={query}
-        onInput={(e) => setQuery(e.target.value)}
+        // onInput={(e) => setQuery(e.target.value)}
+        onChange={(e) => handleInputChange(e)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             handlePressEnter(e.target.value);
@@ -88,8 +92,6 @@ export default SearchBar;
 
 SearchBar.propTypes = {
   toSearch: PropTypes.bool,
-  isLoaded: PropTypes.bool,
   setSearchResult: PropTypes.func,
-  setIsLoaded: PropTypes.func,
   location: PropTypes.object,
 };

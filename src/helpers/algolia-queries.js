@@ -1,4 +1,4 @@
-const indexName = 'Pages';
+const indexName = 'Rules';
 
 const pageQuery = `{
     pages: allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {

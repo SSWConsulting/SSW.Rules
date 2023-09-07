@@ -16,7 +16,7 @@ const SearchRules = ({ data, location }) => {
   const [isAscending, setIsAscending] = useState(true);
   const [searchResult, setSearchResult] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [filterTitle, setFilterTitle] = useState('Results');
+  const [filterTitle, setFilterTitle] = useState('Results - 0 rules');
 
   const history = data.allHistoryJson.edges;
 

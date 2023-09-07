@@ -8,6 +8,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   const [query, setQuery] = useState('');
   const [queryString, setQueryString] = useState('');
+  const [isShow, setIsShow] = useState(false);
 
   const searchClient = useMemo(
     () =>
@@ -22,6 +23,7 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
     const searchString = qs.parse(location?.search).keyword;
     setQuery(searchString);
     setQueryString(searchString);
+    setIsShow(true);
   }, []);
 
   useEffect(() => {
@@ -53,7 +55,11 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   };
 
   return (
-    <div className="border border-solid w-96 ml-4 flex items-center pl-3 p-2 rounded shadow bg-gray-50">
+    <div
+      className={`border border-solid w-96 ml-4 flex items-center pl-3 p-2 rounded shadow bg-gray-50 ${
+        isShow ? 'block' : 'hidden'
+      }`}
+    >
       <FontAwesomeIcon
         icon={faSearch}
         size="lg"

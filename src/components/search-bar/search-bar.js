@@ -7,6 +7,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   const [query, setQuery] = useState('');
+  const [queryString, setQueryString] = useState('');
 
   const searchClient = useMemo(
     () =>
@@ -20,19 +21,24 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   useEffect(() => {
     const searchString = qs.parse(location?.search).keyword;
     setQuery(searchString);
+    setQueryString(searchString);
   }, []);
+
+  useEffect(() => {
+    fetchSearch(queryString);
+  }, [queryString]);
 
   const handlePressEnter = (val) => {
     if (toSearch) {
       const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
       window.location.href = `${pathPrefix}/search?keyword=${val}`;
     } else {
-      fetchSearch();
+      fetchSearch(val);
     }
   };
 
-  const fetchSearch = async () => {
-    if (!query) return [];
+  const fetchSearch = async (val) => {
+    if (!val) return [];
     setIsLoaded(false);
     const { results } = await searchClient.search([
       {

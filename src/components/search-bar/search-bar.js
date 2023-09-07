@@ -7,7 +7,6 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   const [query, setQuery] = useState('');
-  const [debouncedValue, setDebouncedValue] = useState('');
 
   const searchClient = useMemo(
     () =>
@@ -18,37 +17,18 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
     []
   );
 
-  const handleInputChange = (e) => {
-    const newValue = e.target.value;
-    setQuery(newValue);
-  };
-
   useEffect(() => {
     const searchString = qs.parse(location?.search).keyword;
     setQuery(searchString);
   }, []);
 
-  useEffect(() => {
-    const delay = 500;
-    const timer = setTimeout(() => {
-      setDebouncedValue(query);
-    }, delay);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [query]);
-
-  useEffect(() => {
-    if (debouncedValue && !toSearch) {
+  const handlePressEnter = (val) => {
+    if (toSearch) {
+      const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
+      window.location.href = `${pathPrefix}/search?keyword=${val}`;
+    } else {
       fetchSearch();
     }
-  }, [debouncedValue]);
-
-  const handlePressEnter = (val) => {
-    if (!toSearch || !val) return;
-    const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
-    window.location.href = `${pathPrefix}/search?keyword=${val}`;
   };
 
   const fetchSearch = async () => {
@@ -75,7 +55,7 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
       />
       <input
         value={query}
-        onChange={(e) => handleInputChange(e)}
+        onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             handlePressEnter(e.target.value);

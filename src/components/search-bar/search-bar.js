@@ -10,14 +10,13 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   const [queryString, setQueryString] = useState('');
   const [isShow, setIsShow] = useState(false);
 
-  const searchClient = useMemo(
-    () =>
-      algoliasearch(
-        process.env.GATSBY_ALGOLIA_APP_ID,
-        process.env.GATSBY_ALGOLIA_SEARCH_KEY
-      ),
-    []
-  );
+  const searchClient = useMemo(() => {
+    const client = algoliasearch(
+      process.env.GATSBY_ALGOLIA_APP_ID,
+      process.env.GATSBY_ALGOLIA_SEARCH_KEY
+    );
+    return client.initIndex('Rules');
+  }, []);
 
   useEffect(() => {
     const searchString = qs.parse(location?.search).keyword;
@@ -42,13 +41,8 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   const fetchSearch = async (val) => {
     if (!val) return [];
     setIsLoaded(false);
-    const { results } = await searchClient.search([
-      {
-        indexName: 'Rules',
-        query,
-      },
-    ]);
-    const rawResults = results[0].hits;
+    const results = await searchClient.search(val);
+    const rawResults = results.hits;
 
     setSearchResult(rawResults);
     setIsLoaded(true);

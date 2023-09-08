@@ -30,6 +30,7 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   }, [queryString]);
 
   const handlePressEnter = (val) => {
+    if (!val) return;
     if (toSearch) {
       const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
       window.location.href = `${pathPrefix}/search?keyword=${val}`;
@@ -50,7 +51,7 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
 
   return (
     <div
-      className={`border border-solid w-96 ml-4 flex items-center pl-3 p-2 rounded shadow bg-gray-50 ${
+      className={`border border-solid mx-4 md:mx-2 md:ml-4 md:w-[22rem] flex items-center pl-3 p-2 rounded shadow bg-gray-50 ${
         isShow ? 'block' : 'hidden'
       }`}
     >

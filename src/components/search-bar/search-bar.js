@@ -1,82 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import FlexSearch from 'flexsearch';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import qs from 'query-string';
+import algoliasearch from 'algoliasearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-const SearchBar = ({
-  isLoaded,
-  toSearch,
-  publicIndexURL,
-  publicStoreURL,
-  setSearchResult,
-  location,
-  setIsLoaded,
-}) => {
+const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   const [query, setQuery] = useState('');
-  const [searchIndex, setSearchIndex] = useState(null);
-  const [searchStore, setSearchStore] = useState(null);
-  const [index, setIndex] = useState(null);
+  const [queryString, setQueryString] = useState('');
+  const [isShow, setIsShow] = useState(false);
+
+  const searchClient = useMemo(() => {
+    const client = algoliasearch(
+      process.env.GATSBY_ALGOLIA_APP_ID,
+      process.env.GATSBY_ALGOLIA_SEARCH_KEY
+    );
+    return client.initIndex('Rules');
+  }, []);
 
   useEffect(() => {
     const searchString = qs.parse(location?.search).keyword;
     setQuery(searchString);
-
-    const fetchData = async () => {
-      const indexResponse = await fetch(publicIndexURL);
-      const indexData = await indexResponse.text();
-      setSearchIndex(indexData);
-
-      const storeResponse = await fetch(publicStoreURL);
-      const storeData = await storeResponse.json();
-      setSearchStore(storeData);
-
-      setIsLoaded(true);
-    };
-
-    if (!toSearch) {
-      fetchData();
-    }
+    setQueryString(searchString);
+    setIsShow(true);
   }, []);
 
+  useEffect(() => {
+    fetchSearch(queryString);
+  }, [queryString]);
+
   const handlePressEnter = (val) => {
-    if (!toSearch) return;
-    const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
-    window.location.href = `${pathPrefix}/search?keyword=${val}`;
+    if (!val) return;
+    if (toSearch) {
+      const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
+      window.location.href = `${pathPrefix}/search?keyword=${val}`;
+    } else {
+      fetchSearch(val);
+    }
   };
 
-  const fetchSearch = async () => {
-    if (!query || !index || !searchStore) return [];
-    const rawResults = index.search(query);
+  const fetchSearch = async (val) => {
+    if (!val) return [];
+    setIsLoaded(false);
+    const results = await searchClient.search(val);
+    const rawResults = results.hits;
 
-    setSearchResult(rawResults.map((id) => searchStore[id]));
+    setSearchResult(rawResults);
+    setIsLoaded(true);
   };
-
-  useEffect(() => {
-    if (isLoaded) {
-      fetchSearch();
-    }
-  }, [query, isLoaded]);
-
-  useEffect(() => {
-    if (!searchIndex) {
-      setIndex(null);
-      return;
-    }
-    if (searchIndex instanceof FlexSearch) {
-      setIndex(searchIndex);
-      return;
-    }
-
-    const importedIndex = FlexSearch.create();
-    importedIndex.import(searchIndex);
-
-    setIndex(importedIndex);
-  }, [searchIndex]);
 
   return (
-    <div className="border border-solid w-96 ml-4 flex items-center pl-3 p-2 rounded shadow bg-gray-50">
+    <div
+      className={`border border-solid mx-4 md:mx-2 md:ml-4 md:w-[22rem] flex items-center pl-3 p-2 rounded shadow bg-gray-50 ${
+        isShow ? 'block' : 'hidden'
+      }`}
+    >
       <FontAwesomeIcon
         icon={faSearch}
         size="lg"
@@ -84,7 +62,7 @@ const SearchBar = ({
       />
       <input
         value={query}
-        onInput={(e) => setQuery(e.target.value)}
+        onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             handlePressEnter(e.target.value);
@@ -102,9 +80,6 @@ export default SearchBar;
 
 SearchBar.propTypes = {
   toSearch: PropTypes.bool,
-  isLoaded: PropTypes.bool,
-  publicIndexURL: PropTypes.string,
-  publicStoreURL: PropTypes.string,
   setSearchResult: PropTypes.func,
   setIsLoaded: PropTypes.func,
   location: PropTypes.object,

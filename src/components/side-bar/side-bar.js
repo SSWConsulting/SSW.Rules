@@ -8,25 +8,27 @@ import { Widget } from 'ssw.rules.widget';
 import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 
-const SideBar = ({ ruleTotalNumber, location }) => {
+const SideBar = ({ ruleTotalNumber, location, hideCount }) => {
   return (
     <div>
       <section className="rules-counter">
-        <div className="grid grid-cols-6">
-          <div className="col-span-1 col-start-2">
-            <GavelIcon className="gavel-icon" />
+        {!hideCount && (
+          <div className="grid grid-cols-6">
+            <div className="col-span-1 col-start-2">
+              <GavelIcon className="gavel-icon" />
+            </div>
+            <div className="col-span-2">
+              <h2>
+                <NumericFormat
+                  value={ruleTotalNumber}
+                  displayType={'text'}
+                  thousandSeparator={true}
+                />
+              </h2>
+              <p>SSW Rules</p>
+            </div>
           </div>
-          <div className="col-span-2">
-            <h2>
-              <NumericFormat
-                value={ruleTotalNumber}
-                displayType={'text'}
-                thousandSeparator={true}
-              />
-            </h2>
-            <p>SSW Rules</p>
-          </div>
-        </div>
+        )}
       </section>
 
       <section id="widget">
@@ -112,6 +114,7 @@ const SideBar = ({ ruleTotalNumber, location }) => {
 SideBar.propTypes = {
   ruleTotalNumber: PropTypes.number.isRequired,
   location: PropTypes.object,
+  hideCount: PropTypes.bool,
 };
 
 export default SideBar;

@@ -9,18 +9,16 @@ import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import { sanitizeName } from '../helpers/sanitizeName';
 
-const LatestRules = ({ data, location }) => {
+const SearchRules = ({ data, location }) => {
   const [filter, setFilter] = useState();
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
   const [isAscending, setIsAscending] = useState(true);
   const [searchResult, setSearchResult] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [filterTitle, setFilterTitle] = useState('Results - 0 rules');
 
-  const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
-
-  const { publicIndexURL, publicStoreURL } = data.localSearchPages;
 
   const unFlattenResults = (results) => {
     return results.map((x) => {
@@ -79,6 +77,8 @@ const LatestRules = ({ data, location }) => {
     }
 
     const filteredRules = await filterAndValidateRules();
+    setFilterTitle(`Results - ${filteredRules.length} rules`);
+
     if (filteredRules.length === 0) {
       setNotFound(true);
       return;
@@ -89,7 +89,7 @@ const LatestRules = ({ data, location }) => {
     sort(_filter, filteredRules);
 
     setFilteredItems({
-      list: filteredRules.slice(0, 50),
+      list: filteredRules,
       filter: _filter,
     });
   };
@@ -100,8 +100,6 @@ const LatestRules = ({ data, location }) => {
       <SearchBar
         isLoaded={isLoaded}
         setIsLoaded={setIsLoaded}
-        publicIndexURL={publicIndexURL}
-        publicStoreURL={publicStoreURL}
         setSearchResult={setSearchResult}
         location={location}
       />
@@ -125,7 +123,7 @@ const LatestRules = ({ data, location }) => {
             </div>
           </div>
           <div className="w-full lg:w-1/4 px-4" id="sidebar">
-            <SideBar ruleTotalNumber={rules?.length} />
+            <SideBar ruleTotalNumber={rules?.length} hideCount />
           </div>
         </div>
       </div>
@@ -134,11 +132,7 @@ const LatestRules = ({ data, location }) => {
 };
 
 export const pageQuery = graphql`
-  query latestRulesQuery {
-    localSearchPages {
-      publicIndexURL
-      publicStoreURL
-    }
+  query searchRulesQuery {
     allHistoryJson {
       edges {
         node {
@@ -164,9 +158,9 @@ export const pageQuery = graphql`
   }
 `;
 
-export default LatestRules;
+export default SearchRules;
 
-LatestRules.propTypes = {
+SearchRules.propTypes = {
   data: objectOf(Object),
   location: objectOf(Object),
 };

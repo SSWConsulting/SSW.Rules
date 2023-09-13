@@ -12,43 +12,18 @@ module.exports = {
   },
   plugins: [
     {
+      resolve: 'gatsby-plugin-algolia',
+      options: {
+        appId: process.env.GATSBY_ALGOLIA_APP_ID,
+        apiKey: process.env.ALGOLIA_ADMIN_KEY,
+        queries: require('./src/helpers/algolia-queries'),
+      },
+    },
+    {
       resolve: 'gatsby-plugin-google-tagmanager',
       options: {
         id: process.env.GTM_CONTAINER_ID,
         includeInDevelopment: true,
-      },
-    },
-    {
-      resolve: 'gatsby-plugin-local-search',
-      options: {
-        name: 'pages',
-        engine: 'flexsearch',
-        engineOptions: 'speed',
-        query: `
-        {
-          allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
-            nodes {
-              id
-              frontmatter {
-                title
-              }
-              fields {
-                slug
-              }
-              rawMarkdownBody
-            }
-          }
-        }
-        `,
-        ref: 'slug',
-        index: ['slug', 'title', 'rawMarkdownBody'],
-        store: ['slug', 'title'],
-        normalizer: ({ data }) =>
-          data.allMarkdownRemark.nodes.map((node) => ({
-            slug: node.fields.slug,
-            title: node.frontmatter.title,
-            rawMarkdownBody: node.rawMarkdownBody,
-          })),
       },
     },
     {

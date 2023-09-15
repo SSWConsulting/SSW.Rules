@@ -19003,10 +19003,10 @@ ssri@^8.0.1:
   dependencies:
     minipass "^3.1.1"
 
-ssw.megamenu@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/ssw.megamenu/-/ssw.megamenu-3.2.2.tgz#2cae3bbf645fcf041331f7c5f6f56865c1b5fbe7"
-  integrity sha512-Tnqq8Az3q45drMbmnl1uqL+SKyV/vplGv5GlfgQIza/UTzGYqEiEM+CTsv9ewGiFWoq+C2n4X0D7PpwwbJuKdA==
+ssw.megamenu@3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/ssw.megamenu/-/ssw.megamenu-3.2.3.tgz#ab50182511f34b32e1057eb30cd7917407aa1394"
+  integrity sha512-kjrTqGG1PodbyunsfuiPD4kO353MCb70vZMowj8zROXE1UGoVrTZ2jskxcG/DGnbnKsCyatOm+ELPLeU7mL6gQ==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.35"
     "@fortawesome/free-solid-svg-icons" "^5.15.3"

@@ -11,15 +11,20 @@ const pageQuery = `{
             fields {
                 slug
             }
+            internal {
+              # querying internal.contentDigest is required - https://github.com/algolia/gatsby-plugin-algolia#partial-updates
+              contentDigest
+            }
         }
     }
 }`;
 
-function pageToAlgoliaRecord({ id, frontmatter, fields, ...rest }) {
+function pageToAlgoliaRecord({ id, frontmatter, fields, internal, ...rest }) {
   return {
     objectID: id,
     ...frontmatter,
     ...fields,
+    ...internal,
     ...rest,
   };
 }

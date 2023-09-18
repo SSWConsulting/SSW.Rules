@@ -24,7 +24,9 @@ function pageToAlgoliaRecord({ id, frontmatter, fields, internal, ...rest }) {
     objectID: id,
     ...frontmatter,
     ...fields,
-    contentDigest: internal.contentDigest,
+    internal: {
+      contentDigest: internal.contentDigest
+    },
     ...rest,
   };
 }

@@ -1,4 +1,4 @@
-const indexName = 'Rules';
+const indexName = "Rules";
 
 const pageQuery = `{
     pages: allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
@@ -25,7 +25,7 @@ function pageToAlgoliaRecord({ id, frontmatter, fields, internal, ...rest }) {
     ...frontmatter,
     ...fields,
     internal: {
-      contentDigest: internal.contentDigest
+      contentDigest: internal.contentDigest,
     },
     ...rest,
   };
@@ -36,7 +36,7 @@ const queries = [
     query: pageQuery,
     transformer: ({ data }) => data.pages.nodes.map(pageToAlgoliaRecord),
     indexName,
-    settings: { attributesToSnippet: ['excerpt:20'] },
+    settings: { attributesToSnippet: ["excerpt:20"] },
   },
 ];
 

@@ -15,7 +15,7 @@ if (!fs.existsSync(dir)) {
 
 const source = 'src/images/icon.png';
 const configuration = {
-  path: '/icons/',
+  path: '/rules/icons/',
   appName: siteTitleShort,
   appDescription: null,
   developerName: null,

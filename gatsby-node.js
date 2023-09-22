@@ -107,7 +107,9 @@ exports.createPages = async ({ graphql, actions }) => {
       }
       rules: allMarkdownRemark(
         filter: {
-          frontmatter: { type: { nin: ["category", "top-category", "main"] } }
+          frontmatter: {
+            type: { nin: ["category", "top-category", "main", "diagram"] }
+          }
         }
       ) {
         nodes {

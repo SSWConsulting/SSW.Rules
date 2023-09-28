@@ -114,7 +114,7 @@ const LatestRulesContent = ({
               <div
                 key={idx}
                 className={`cat-grid-container ${
-                  isShowAuthor ? 'lg:grid-cols-[2rem_auto_8rem_4rem]' : ''
+                  isShowAuthor ? 'lg:grid-cols-[2rem_auto_8.5rem_5rem]' : ''
                 }`}
               >
                 <div className="cat-rule-num">{idx + 1}.</div>

@@ -22,7 +22,7 @@ const ActionTypes = {
 const UserRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
-  const [isAscending, setIsAscending] = useState(true);
+  const [isAscending, setIsAscending] = useState(false);
   const [previousPageCursor, setPreviousPageCursor] = useState([]);
   const [nextPageCursor, setNextPageCursor] = useState('');
   const [tempCursor, setTempCursor] = useState('');
@@ -45,6 +45,10 @@ const UserRules = ({ data, location }) => {
     fetchGithubName();
     fetchPageData();
   }, []);
+
+  useEffect(() => {
+    filteredItems.list?.reverse();
+  }, [isAscending]);
 
   const fetchGithubName = async () => {
     const token = process.env.GITHUB_API_PAT;

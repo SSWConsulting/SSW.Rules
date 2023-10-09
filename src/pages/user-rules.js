@@ -22,6 +22,10 @@ const ActionTypes = {
 const UserRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
+  const [acknowledgedRules, setAcknowledgedRules] = useState({
+    list: [],
+    filter: {},
+  });
   const [isAscending, setIsAscending] = useState(false);
   const [previousPageCursor, setPreviousPageCursor] = useState([]);
   const [nextPageCursor, setNextPageCursor] = useState('');
@@ -48,6 +52,7 @@ const UserRules = ({ data, location }) => {
 
   useEffect(() => {
     filteredItems.list?.reverse();
+    acknowledgedRules.list?.reverse();
   }, [isAscending]);
 
   const fetchGithubName = async () => {
@@ -220,8 +225,21 @@ const UserRules = ({ data, location }) => {
       }
     });
 
+    const acknowledgmentsList = mergedList.filter((ruleItem) => {
+      const authorList = ruleItem.item.frontmatter.authors?.flatMap(
+        (author) => author.title
+      );
+
+      return authorList.includes(authorName);
+    });
+
     setFilteredItems({
       list: mergedList,
+      filter: FilterOptions.RecentlyUpdated,
+    });
+
+    setAcknowledgedRules({
+      list: acknowledgmentsList,
       filter: FilterOptions.RecentlyUpdated,
     });
   };
@@ -248,6 +266,24 @@ const UserRules = ({ data, location }) => {
                 setIsAscending={setIsAscending}
               />
             </div>
+
+            <span className="flex">
+              {authorName && (
+                <h1 className="flex-1 text-3xl">
+                  Rules Acknowledging {authorName}
+                </h1>
+              )}
+            </span>
+            <div className="rule-index archive no-gutters rounded mb-12">
+              <LatestRulesContent
+                filteredItems={acknowledgedRules}
+                title={filterTitle}
+                notFound={notFound}
+                isAscending={isAscending}
+                setIsAscending={setIsAscending}
+              />
+            </div>
+
             <div className="text-center mb-4">
               <button
                 className={`m-3 mx-6 p-2 w-32 rounded-md ${
@@ -278,6 +314,9 @@ export const pageQuery = graphql`
         frontmatter {
           title
           archivedreason
+          authors {
+            title
+          }
         }
         fields {
           slug

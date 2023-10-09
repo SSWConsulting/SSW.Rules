@@ -28,6 +28,7 @@ const UserRules = ({ data, location }) => {
   const [tempCursor, setTempCursor] = useState('');
   const [hasPrevious, setHasPrevious] = useState(false);
   const [hasNext, setHasNext] = useState(false);
+  const [authorName, setAuthorName] = useState('');
 
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
@@ -39,8 +40,25 @@ const UserRules = ({ data, location }) => {
   const queryStringRulesAuthor = queryStringSearch.author || '';
 
   useEffect(() => {
+    fetchGithubName();
     fetchPageData();
   }, []);
+
+  const fetchGithubName = async () => {
+    const token = process.env.GITHUB_API_PAT;
+    const response = await fetch(
+      `https://api.github.com/users/${queryStringRulesAuthor}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: token ? `bearer ${token}` : '',
+        },
+      }
+    );
+
+    const { name } = await response.json();
+    setAuthorName(name.replace(' [SSW]', ''));
+  };
 
   const fetchPageData = async (action) => {
     try {
@@ -203,7 +221,11 @@ const UserRules = ({ data, location }) => {
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
             <span className="flex">
-              <h1 className="flex-1 text-3xl">User Rules</h1>
+              {authorName && (
+                <h1 className="flex-1 text-3xl">
+                  {authorName}&#39;s Last Modified Rules
+                </h1>
+              )}
             </span>
             <div className="rule-index archive no-gutters rounded mb-12">
               <LatestRulesContent

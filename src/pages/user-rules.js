@@ -26,12 +26,14 @@ const UserRules = ({ data, location }) => {
   const [previousPageCursor, setPreviousPageCursor] = useState([]);
   const [nextPageCursor, setNextPageCursor] = useState('');
   const [tempCursor, setTempCursor] = useState('');
-  const [hasPrevious, setHasPrevious] = useState(false);
   const [hasNext, setHasNext] = useState(false);
   const [authorName, setAuthorName] = useState('');
 
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
+
+  // eslint-disable-next-line no-undef
+  const uniqueRuleTitles = new Set();
 
   const queryStringSearch = qs.parse(location?.search, {
     parseNumbers: true,
@@ -80,7 +82,7 @@ const UserRules = ({ data, location }) => {
     const githubOwner = process.env.GITHUB_ORG;
     const githubRepo = process.env.GITHUB_REPO;
     const token = process.env.GITHUB_API_PAT;
-    const resultPerPage = 30;
+    const resultPerPage = 40;
     const filesPerPullRequest = 20;
     const apiBaseUrl = 'https://api.github.com/graphql';
 
@@ -105,7 +107,6 @@ const UserRules = ({ data, location }) => {
                 endCursor
                 startCursor
                 hasNextPage
-                hasPreviousPage
               }
               nodes {
                   ... on PullRequest {
@@ -141,12 +142,10 @@ const UserRules = ({ data, location }) => {
       previousPageCursor.pop();
     }
 
-    const { endCursor, startCursor, hasPreviousPage, hasNextPage } =
-      data.data?.search?.pageInfo;
+    const { endCursor, startCursor, hasNextPage } = data.data?.search?.pageInfo;
 
     setNextPageCursor(endCursor);
     setTempCursor(startCursor);
-    setHasPrevious(hasPreviousPage);
     setHasNext(hasNextPage);
 
     return data.data?.search;
@@ -175,9 +174,6 @@ const UserRules = ({ data, location }) => {
   };
 
   const filterUniqueRules = (extractedFiles) => {
-    // eslint-disable-next-line no-undef
-    const uniqueRuleTitles = new Set();
-
     const filteredRules = extractedFiles
       .map((r) => {
         const rule = rules.find((rule) => {
@@ -208,8 +204,20 @@ const UserRules = ({ data, location }) => {
       setNotFound(false);
     }
 
+    const mergedList = [...filteredItems.list];
+
+    filteredRule.forEach((ruleItem) => {
+      const isDuplicate = mergedList.some(
+        (mergedItem) => mergedItem.file.node.path === ruleItem.file.node.path
+      );
+
+      if (!isDuplicate) {
+        mergedList.push(ruleItem);
+      }
+    });
+
     setFilteredItems({
-      list: filteredRule,
+      list: mergedList,
       filter: FilterOptions.RecentlyUpdated,
     });
   };
@@ -238,18 +246,7 @@ const UserRules = ({ data, location }) => {
             </div>
             <div className="text-center mb-4">
               <button
-                className={`m-3 mx-6 p-2 w-24 rounded-md ${
-                  hasPrevious
-                    ? 'bg-ssw-red text-white'
-                    : 'bg-ssw-grey text-gray-400'
-                }`}
-                onClick={() => fetchPageData(ActionTypes.BEFORE)}
-                disabled={!hasPrevious}
-              >
-                Previous
-              </button>
-              <button
-                className={`m-3 mx-6 p-2 w-24 rounded-md ${
+                className={`m-3 mx-6 p-2 w-32 rounded-md ${
                   hasNext
                     ? 'bg-ssw-red text-white'
                     : 'bg-ssw-grey text-gray-400'
@@ -257,7 +254,7 @@ const UserRules = ({ data, location }) => {
                 onClick={() => fetchPageData(ActionTypes.AFTER)}
                 disabled={!hasNext}
               >
-                Next
+                Load More
               </button>
             </div>
           </div>

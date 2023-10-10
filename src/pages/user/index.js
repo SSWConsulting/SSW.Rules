@@ -26,7 +26,7 @@ const UserRules = ({ data, location }) => {
     list: [],
     filter: {},
   });
-  const [isAscending, setIsAscending] = useState(false);
+  const [isAscending, setIsAscending] = useState(true);
   const [previousPageCursor, setPreviousPageCursor] = useState([]);
   const [nextPageCursor, setNextPageCursor] = useState('');
   const [tempCursor, setTempCursor] = useState('');
@@ -47,13 +47,13 @@ const UserRules = ({ data, location }) => {
 
   useEffect(() => {
     fetchGithubName();
-    fetchPageData();
   }, []);
 
   useEffect(() => {
-    filteredItems.list?.reverse();
-    acknowledgedRules.list?.reverse();
-  }, [isAscending]);
+    if (authorName) {
+      fetchPageData();
+    }
+  }, [authorName]);
 
   const fetchGithubName = async () => {
     const token = process.env.GITHUB_API_PAT;
@@ -244,6 +244,12 @@ const UserRules = ({ data, location }) => {
     });
   };
 
+  const toggleSortOrder = (order) => {
+    filteredItems.list?.reverse();
+    acknowledgedRules.list?.reverse();
+    setIsAscending(order);
+  };
+
   return (
     <div className="w-full">
       <Breadcrumb isUser />
@@ -263,7 +269,7 @@ const UserRules = ({ data, location }) => {
                 title={filterTitle}
                 notFound={notFound}
                 isAscending={isAscending}
-                setIsAscending={setIsAscending}
+                setIsAscending={toggleSortOrder}
               />
             </div>
 
@@ -280,7 +286,7 @@ const UserRules = ({ data, location }) => {
                 title={filterTitle}
                 notFound={notFound}
                 isAscending={isAscending}
-                setIsAscending={setIsAscending}
+                setIsAscending={toggleSortOrder}
               />
             </div>
 

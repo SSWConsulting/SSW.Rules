@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import SideBar from '../components/side-bar/side-bar';
+import LatestRulesContent from '@/components/latest-rules-content/latestRulesContent';
+import Breadcrumb from '@/components/breadcrumb/breadcrumb';
+import SideBar from '@/components/side-bar/side-bar';
 import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
-import { FilterOptions } from '../components/filter/filter';
+import { FilterOptions } from '@/components/filter/filter';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 const appInsights = new ApplicationInsights({
   config: {

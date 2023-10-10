@@ -72,7 +72,7 @@ const LatestRulesContent = ({
 
   const openUserRule = async (path) => {
     const loginName = await fetchGithubName(path);
-    navigate(`/user-rules/?author=${loginName}`);
+    navigate(`/user/?author=${loginName}`);
   };
 
   const fetchGithubName = async (path) => {

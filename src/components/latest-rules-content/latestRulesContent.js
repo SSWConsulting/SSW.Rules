@@ -39,10 +39,10 @@ const LatestRulesContent = ({
     const result = formatDistanceLocale[token].replace('{{count}}', count);
 
     if (options.addSuffix && count > 1) {
-      return `${result}s`;
+      return `${result}s ago`;
     }
 
-    return result;
+    return result + ' ago';
   };
 
   const FormatDate = ({ item }) => (
@@ -114,7 +114,7 @@ const LatestRulesContent = ({
               <div
                 key={idx}
                 className={`cat-grid-container ${
-                  isShowAuthor ? 'lg:grid-cols-[2rem_auto_8.5rem_5rem]' : ''
+                  isShowAuthor ? 'lg:grid-cols-[2rem_auto_8.5rem_6.5rem]' : ''
                 }`}
               >
                 <div className="cat-rule-num">{idx + 1}.</div>

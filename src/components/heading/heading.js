@@ -32,9 +32,7 @@ const Heading = ({
             ></p>
           </span>
           {isShowAuthor && (
-            <span className="hidden lg:inline absolute right-[8.5rem]">
-              Added BY
-            </span>
+            <span className="hidden lg:inline absolute right-40">Added BY</span>
           )}
           <span className="collapse-icon">
             <FontAwesomeIcon

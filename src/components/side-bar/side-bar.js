@@ -8,7 +8,7 @@ import { RulesWidget } from 'ssw.rules.widget';
 import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 
-const SideBar = ({ ruleTotalNumber, location, hideCount }) => {
+const SideBar = ({ ruleTotalNumber, hideCount }) => {
   return (
     <div>
       <section className="rules-counter">
@@ -116,7 +116,6 @@ const SideBar = ({ ruleTotalNumber, location, hideCount }) => {
 
 SideBar.propTypes = {
   ruleTotalNumber: PropTypes.number.isRequired,
-  location: PropTypes.object,
   hideCount: PropTypes.bool,
 };
 

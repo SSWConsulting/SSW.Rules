@@ -21,8 +21,9 @@ const ActionTypes = {
 
 const UserRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
+  const [noAuthorRules, setNoAuthorRules] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
-  const [acknowledgedRules, setAcknowledgedRules] = useState({
+  const [authorRules, setAuthorRules] = useState({
     list: [],
     filter: {},
   });
@@ -68,7 +69,15 @@ const UserRules = ({ data, location }) => {
     );
 
     const { name } = await response.json();
-    setAuthorName(name.replace(' [SSW]', ''));
+    const normalizedName = normalizeName(name);
+    setAuthorName(normalizedName);
+  };
+
+  const normalizeName = (name) => {
+    return name
+      .normalize('NFD')
+      .replace(' [SSW]', '')
+      .replace(/\p{Diacritic}/gu, '');
   };
 
   const fetchPageData = async (action) => {
@@ -206,13 +215,6 @@ const UserRules = ({ data, location }) => {
   };
 
   const updateFilteredItems = (filteredRule) => {
-    if (filteredRule.length === 0) {
-      setNotFound(true);
-      return;
-    } else {
-      setNotFound(false);
-    }
-
     const mergedList = [...filteredItems.list];
 
     filteredRule.forEach((ruleItem) => {
@@ -233,12 +235,15 @@ const UserRules = ({ data, location }) => {
       return authorList.includes(authorName);
     });
 
+    setNotFound(mergedList.length === 0);
+    setNoAuthorRules(acknowledgmentsList.length === 0);
+
     setFilteredItems({
       list: mergedList,
       filter: FilterOptions.RecentlyUpdated,
     });
 
-    setAcknowledgedRules({
+    setAuthorRules({
       list: acknowledgmentsList,
       filter: FilterOptions.RecentlyUpdated,
     });
@@ -246,7 +251,7 @@ const UserRules = ({ data, location }) => {
 
   const toggleSortOrder = (order) => {
     filteredItems.list?.reverse();
-    acknowledgedRules.list?.reverse();
+    authorRules.list?.reverse();
     setIsAscending(order);
   };
 
@@ -276,15 +281,15 @@ const UserRules = ({ data, location }) => {
             <span className="flex">
               {authorName && (
                 <h1 className="flex-1 text-3xl">
-                  Rules Acknowledging {authorName}
+                  {authorName}&#39;s Acknowledged Rules
                 </h1>
               )}
             </span>
             <div className="rule-index archive no-gutters rounded mb-12">
               <LatestRulesContent
-                filteredItems={acknowledgedRules}
+                filteredItems={authorRules}
                 title={filterTitle}
-                notFound={notFound}
+                notFound={noAuthorRules}
                 isAscending={isAscending}
                 setIsAscending={toggleSortOrder}
               />

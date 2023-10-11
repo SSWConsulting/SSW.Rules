@@ -272,10 +272,14 @@ const UserRules = ({ data, location }) => {
           <div className="w-full lg:w-3/4 px-4">
             <span className="flex">
               {authorName && (
-                <h1 className="flex-1 text-3xl">
-                  {authorName}&#39;s Last Modified Rules
-                </h1>
+                <h2 className="flex-1 text-ssw-red">
+                  {authorName}&#39;s Rules
+                </h2>
               )}
+            </span>
+            <hr className="mt-0" />
+            <span className="flex">
+              <h3 className="flex-1 text-ssw-red">Last Modified</h3>
             </span>
             <div className="rule-index archive no-gutters rounded mb-12">
               <LatestRulesContent
@@ -288,11 +292,7 @@ const UserRules = ({ data, location }) => {
             </div>
 
             <span className="flex">
-              {authorName && (
-                <h1 className="flex-1 text-3xl">
-                  {authorName}&#39;s Acknowledged Rules
-                </h1>
-              )}
+              <h3 className="flex-1 text-ssw-red">Acknowledged</h3>
             </span>
             <div className="rule-index archive no-gutters rounded mb-12">
               <LatestRulesContent

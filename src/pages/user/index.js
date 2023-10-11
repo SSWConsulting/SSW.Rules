@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import SideBar from '../components/side-bar/side-bar';
+import LatestRulesContent from '@/components/latest-rules-content/latestRulesContent';
+import Breadcrumb from '@/components/breadcrumb/breadcrumb';
+import SideBar from '@/components/side-bar/side-bar';
 import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
-import { FilterOptions } from '../components/filter/filter';
+import { FilterOptions } from '@/components/filter/filter';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 const appInsights = new ApplicationInsights({
   config: {
@@ -21,16 +21,24 @@ const ActionTypes = {
 
 const UserRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
+  const [noAuthorRules, setNoAuthorRules] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
+  const [authorRules, setAuthorRules] = useState({
+    list: [],
+    filter: {},
+  });
   const [isAscending, setIsAscending] = useState(true);
   const [previousPageCursor, setPreviousPageCursor] = useState([]);
   const [nextPageCursor, setNextPageCursor] = useState('');
   const [tempCursor, setTempCursor] = useState('');
-  const [hasPrevious, setHasPrevious] = useState(false);
   const [hasNext, setHasNext] = useState(false);
+  const [authorName, setAuthorName] = useState('');
 
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
+
+  // eslint-disable-next-line no-undef
+  const uniqueRuleTitles = new Set();
 
   const queryStringSearch = qs.parse(location?.search, {
     parseNumbers: true,
@@ -39,8 +47,45 @@ const UserRules = ({ data, location }) => {
   const queryStringRulesAuthor = queryStringSearch.author || '';
 
   useEffect(() => {
-    fetchPageData();
+    fetchGithubName();
   }, []);
+
+  useEffect(() => {
+    if (authorName) {
+      fetchPageData();
+    }
+  }, [authorName]);
+
+  const fetchGithubName = async () => {
+    const token = process.env.GITHUB_API_PAT;
+    const response = await fetch(
+      `https://api.github.com/users/${queryStringRulesAuthor}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: token ? `bearer ${token}` : '',
+        },
+      }
+    );
+
+    const { name } = await response.json();
+
+    if (!name) {
+      setNotFound(true);
+      setNoAuthorRules(true);
+      return;
+    }
+
+    const normalizedName = normalizeName(name);
+    setAuthorName(normalizedName);
+  };
+
+  const normalizeName = (name) => {
+    return name
+      .normalize('NFD')
+      .replace(' [SSW]', '')
+      .replace(/\p{Diacritic}/gu, '');
+  };
 
   const fetchPageData = async (action) => {
     try {
@@ -62,7 +107,7 @@ const UserRules = ({ data, location }) => {
     const githubOwner = process.env.GITHUB_ORG;
     const githubRepo = process.env.GITHUB_REPO;
     const token = process.env.GITHUB_API_PAT;
-    const resultPerPage = 30;
+    const resultPerPage = 40;
     const filesPerPullRequest = 20;
     const apiBaseUrl = 'https://api.github.com/graphql';
 
@@ -87,7 +132,6 @@ const UserRules = ({ data, location }) => {
                 endCursor
                 startCursor
                 hasNextPage
-                hasPreviousPage
               }
               nodes {
                   ... on PullRequest {
@@ -123,12 +167,10 @@ const UserRules = ({ data, location }) => {
       previousPageCursor.pop();
     }
 
-    const { endCursor, startCursor, hasPreviousPage, hasNextPage } =
-      data.data?.search?.pageInfo;
+    const { endCursor, startCursor, hasNextPage } = data.data?.search?.pageInfo;
 
     setNextPageCursor(endCursor);
     setTempCursor(startCursor);
-    setHasPrevious(hasPreviousPage);
     setHasNext(hasNextPage);
 
     return data.data?.search;
@@ -157,9 +199,6 @@ const UserRules = ({ data, location }) => {
   };
 
   const filterUniqueRules = (extractedFiles) => {
-    // eslint-disable-next-line no-undef
-    const uniqueRuleTitles = new Set();
-
     const filteredRules = extractedFiles
       .map((r) => {
         const rule = rules.find((rule) => {
@@ -183,27 +222,64 @@ const UserRules = ({ data, location }) => {
   };
 
   const updateFilteredItems = (filteredRule) => {
-    if (filteredRule.length === 0) {
-      setNotFound(true);
-      return;
-    } else {
-      setNotFound(false);
-    }
+    const mergedList = [...filteredItems.list];
+
+    filteredRule.forEach((ruleItem) => {
+      const isDuplicate = mergedList.some(
+        (mergedItem) => mergedItem.file.node.path === ruleItem.file.node.path
+      );
+
+      if (!isDuplicate) {
+        mergedList.push(ruleItem);
+      }
+    });
+
+    const acknowledgmentsList = mergedList.filter((ruleItem) => {
+      const authorList = ruleItem.item.frontmatter.authors?.flatMap(
+        (author) => author.title
+      );
+
+      return authorList.includes(authorName);
+    });
+
+    setNotFound(mergedList.length === 0);
+    setNoAuthorRules(acknowledgmentsList.length === 0);
 
     setFilteredItems({
-      list: filteredRule,
+      list: mergedList,
+      filter: FilterOptions.RecentlyUpdated,
+    });
+
+    setAuthorRules({
+      list: acknowledgmentsList,
       filter: FilterOptions.RecentlyUpdated,
     });
   };
 
+  const toggleSortOrder = (order) => {
+    filteredItems.list?.reverse();
+    authorRules.list?.reverse();
+    setIsAscending(order);
+  };
+
   return (
     <div className="w-full">
-      <Breadcrumb isUser />
+      <Breadcrumb
+        breadcrumbText={authorName ? `${authorName}'s Rules` : 'User Rules'}
+      />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
             <span className="flex">
-              <h1 className="flex-1 text-3xl">User Rules</h1>
+              {authorName && (
+                <h2 className="flex-1 text-ssw-red">
+                  {authorName}&#39;s Rules
+                </h2>
+              )}
+            </span>
+            <hr className="mt-0" />
+            <span className="flex">
+              <h3 className="flex-1 text-ssw-red">Last Modified</h3>
             </span>
             <div className="rule-index archive no-gutters rounded mb-12">
               <LatestRulesContent
@@ -211,23 +287,26 @@ const UserRules = ({ data, location }) => {
                 title={filterTitle}
                 notFound={notFound}
                 isAscending={isAscending}
-                setIsAscending={setIsAscending}
+                setIsAscending={toggleSortOrder}
               />
             </div>
+
+            <span className="flex">
+              <h3 className="flex-1 text-ssw-red">Acknowledged</h3>
+            </span>
+            <div className="rule-index archive no-gutters rounded mb-12">
+              <LatestRulesContent
+                filteredItems={authorRules}
+                title={filterTitle}
+                notFound={noAuthorRules}
+                isAscending={isAscending}
+                setIsAscending={toggleSortOrder}
+              />
+            </div>
+
             <div className="text-center mb-4">
               <button
-                className={`m-3 mx-6 p-2 w-24 rounded-md ${
-                  hasPrevious
-                    ? 'bg-ssw-red text-white'
-                    : 'bg-ssw-grey text-gray-400'
-                }`}
-                onClick={() => fetchPageData(ActionTypes.BEFORE)}
-                disabled={!hasPrevious}
-              >
-                Previous
-              </button>
-              <button
-                className={`m-3 mx-6 p-2 w-24 rounded-md ${
+                className={`m-3 mx-6 p-2 w-32 rounded-md ${
                   hasNext
                     ? 'bg-ssw-red text-white'
                     : 'bg-ssw-grey text-gray-400'
@@ -235,7 +314,7 @@ const UserRules = ({ data, location }) => {
                 onClick={() => fetchPageData(ActionTypes.AFTER)}
                 disabled={!hasNext}
               >
-                Next
+                Load More
               </button>
             </div>
           </div>
@@ -255,6 +334,9 @@ export const pageQuery = graphql`
         frontmatter {
           title
           archivedreason
+          authors {
+            title
+          }
         }
         fields {
           slug

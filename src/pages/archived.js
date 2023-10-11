@@ -118,7 +118,7 @@ const Archived = ({ data }) => {
 
   return (
     <div className="w-full">
-      <Breadcrumb isArchived={true} />
+      <Breadcrumb breadcrumbText="Archived" />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">

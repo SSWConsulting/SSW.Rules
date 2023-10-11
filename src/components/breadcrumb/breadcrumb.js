@@ -7,10 +7,15 @@ import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const Breadcrumbs = (props) => {
+const Breadcrumbs = ({
+  categories,
+  isCategory,
+  isHomePage,
+  breadcrumbText,
+}) => {
   const getCategories = () => {
-    if (props.categories.length > 0) {
-      return props.categories.map((cat, i) => {
+    if (categories.length > 0) {
+      return categories.map((cat, i) => {
         return (
           <Link
             key={i}
@@ -33,16 +38,11 @@ const Breadcrumbs = (props) => {
     );
   };
 
-  const checkCategory = (prop) => {
-    if (prop.isHomePage) {
-      return <></>;
-    }
+  const setBreadcrumbText = () => {
+    let breadcrumbContent =
+      breadcrumbText || (isCategory ? 'This category' : 'This rule');
 
-    if (props.isCategory) {
-      return <li>This category</li>;
-    }
-
-    return <li>This rule</li>;
+    return <li>{breadcrumbContent}</li>;
   };
 
   return (
@@ -60,24 +60,14 @@ const Breadcrumbs = (props) => {
               SSW Rules
             </Link>
           </li>
-          {props.categories ? (
+          {categories ? (
             <li className="flex-initial flex-col align-middle breadcrumb-category">
               {getCategories()}
             </li>
           ) : (
             <></>
           )}
-          {props.isArchived ? (
-            <li>Archived</li>
-          ) : props.isLatest ? (
-            <li>Latest Rules</li>
-          ) : props.isSearch ? (
-            <li>Search</li>
-          ) : props.isUser ? (
-            <li>User Rules</li>
-          ) : (
-            checkCategory(props)
-          )}
+          {!isHomePage && setBreadcrumbText()}
         </ul>
       </div>
     </div>
@@ -85,16 +75,11 @@ const Breadcrumbs = (props) => {
 };
 
 Breadcrumbs.propTypes = {
-  title: PropTypes.any,
   categories: PropTypes.array,
-  categoryTitle: PropTypes.string,
   isCategory: PropTypes.bool,
   isRule: PropTypes.bool,
   isHomePage: PropTypes.bool,
-  isArchived: PropTypes.bool,
-  isLatest: PropTypes.bool,
-  isSearch: PropTypes.bool,
-  isUser: PropTypes.bool,
+  breadcrumbText: PropTypes.string,
 };
 
 export default Breadcrumbs;

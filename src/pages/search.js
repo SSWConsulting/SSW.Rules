@@ -96,7 +96,7 @@ const SearchRules = ({ data, location }) => {
 
   return (
     <div className="w-full">
-      <Breadcrumb isSearch />
+      <Breadcrumb breadcrumbText="Search" />
       <SearchBar
         isLoaded={isLoaded}
         setIsLoaded={setIsLoaded}

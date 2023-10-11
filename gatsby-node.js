@@ -75,6 +75,9 @@ exports.onCreateWebpackConfig = ({ actions }) => {
           exclude: /node_modules/,
         }),
       ],
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
     },
   });
 };

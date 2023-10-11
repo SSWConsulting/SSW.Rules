@@ -69,6 +69,13 @@ const UserRules = ({ data, location }) => {
     );
 
     const { name } = await response.json();
+
+    if (!name) {
+      setNotFound(true);
+      setNoAuthorRules(true);
+      return;
+    }
+
     const normalizedName = normalizeName(name);
     setAuthorName(normalizedName);
   };
@@ -257,7 +264,9 @@ const UserRules = ({ data, location }) => {
 
   return (
     <div className="w-full">
-      <Breadcrumb isUser />
+      <Breadcrumb
+        breadcrumbText={authorName ? `${authorName}'s Rules` : 'User Rules'}
+      />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">

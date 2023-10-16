@@ -26,7 +26,12 @@ import CommentsNotConnected from '../comments-not-connected/comments-not-connect
 import DisableDisqusPrivacy from '../disable-disqus-privacy/disable-disqus-privacy';
 import RadioButton from '../radio-button/radio-button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowCircleRight,
+  faQuoteLeft,
+  faFileLines,
+  faBook,
+} from '@fortawesome/free-solid-svg-icons';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -243,28 +248,28 @@ const ProfileContent = (props) => {
           id="customRadioInline1"
           name="customRadioInline1"
           value="titleOnly"
-          selectedOption={viewStyle}
+          selectedOption={selectedOption}
           handleOptionChange={handleOptionChange}
-          additionalClassName="bg-view-title"
           labelText="View titles only"
+          icon={faQuoteLeft}
         />
         <RadioButton
           id="customRadioInline3"
           name="customRadioInline1"
           value="blurb"
-          selectedOption={viewStyle}
+          selectedOption={selectedOption}
           handleOptionChange={handleOptionChange}
-          additionalClassName="bg-view-blurb"
           labelText="Show blurb"
+          icon={faFileLines}
         />
         <RadioButton
           id="customRadioInline2"
           name="customRadioInline1"
           value="all"
-          selectedOption={viewStyle}
+          selectedOption={selectedOption}
           handleOptionChange={handleOptionChange}
-          additionalClassName="bg-view-full"
           labelText="Gimme everything!"
+          icon={faBook}
         />
       </div>
       {bookmarkedRules && likedRulesList && dislikedRulesList ? (

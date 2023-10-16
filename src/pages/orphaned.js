@@ -13,6 +13,9 @@ import {
   faArrowCircleRight,
   faPencilAlt,
   faExclamationTriangle,
+  faQuoteLeft,
+  faFileLines,
+  faBook,
 } from '@fortawesome/free-solid-svg-icons';
 import Bookmark from '../components/bookmark/bookmark';
 
@@ -124,8 +127,8 @@ const Orphaned = ({ data }) => {
                   value="titleOnly"
                   selectedOption={selectedOption}
                   handleOptionChange={handleOptionChange}
-                  additionalClassName="bg-view-title"
                   labelText="View titles only"
+                  icon={faQuoteLeft}
                 />
                 <RadioButton
                   id="customRadioInline3"
@@ -133,8 +136,8 @@ const Orphaned = ({ data }) => {
                   value="blurb"
                   selectedOption={selectedOption}
                   handleOptionChange={handleOptionChange}
-                  additionalClassName="bg-view-blurb"
                   labelText="Show blurb"
+                  icon={faFileLines}
                 />
                 <RadioButton
                   id="customRadioInline2"
@@ -142,8 +145,8 @@ const Orphaned = ({ data }) => {
                   value="all"
                   selectedOption={selectedOption}
                   handleOptionChange={handleOptionChange}
-                  additionalClassName="bg-view-full"
                   labelText="Gimme everything!"
+                  icon={faBook}
                 />
               </div>
             )}

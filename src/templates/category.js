@@ -15,6 +15,9 @@ import {
   faArrowCircleRight,
   faPencilAlt,
   faExclamationTriangle,
+  faQuoteLeft,
+  faFileLines,
+  faBook,
 } from '@fortawesome/free-solid-svg-icons';
 
 const appInsights = new ApplicationInsights({
@@ -127,8 +130,8 @@ export default function Category({ data }) {
                   value="titleOnly"
                   selectedOption={selectedOption}
                   handleOptionChange={handleOptionChange}
-                  additionalClassName="bg-view-title"
                   labelText="View titles only"
+                  icon={faQuoteLeft}
                 />
                 <RadioButton
                   id="customRadioInline3"
@@ -136,8 +139,8 @@ export default function Category({ data }) {
                   value="blurb"
                   selectedOption={selectedOption}
                   handleOptionChange={handleOptionChange}
-                  additionalClassName="bg-view-blurb"
                   labelText="Show blurb"
+                  icon={faFileLines}
                 />
                 <RadioButton
                   id="customRadioInline2"
@@ -145,8 +148,8 @@ export default function Category({ data }) {
                   value="all"
                   selectedOption={selectedOption}
                   handleOptionChange={handleOptionChange}
-                  additionalClassName="bg-view-full"
                   labelText="Gimme everything!"
+                  icon={faBook}
                 />
               </div>
             )}

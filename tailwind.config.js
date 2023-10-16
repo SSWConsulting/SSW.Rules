@@ -23,11 +23,6 @@ module.exports = {
         'real-black': '#000',
         underline: '#aaa',
       },
-      backgroundImage: {
-        'view-title': `url(${siteConfig.pathPrefix}/assets/view-title.png)`,
-        'view-blurb': `url(${siteConfig.pathPrefix}/assets/view-blurb.png)`,
-        'view-full': `url(${siteConfig.pathPrefix}/assets/view-full.png)`,
-      },
       backgroundPosition: {
         '10px': '10px',
       },

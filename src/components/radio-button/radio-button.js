@@ -12,7 +12,7 @@ const RadioButton = ({
   additionalClassName,
   icon,
 }) => {
-  const labelClassName = `${additionalClassName} min-w-200px bg-stone-200 bg-no-repeat bg-10px p-3 ml-1 cursor-pointer hover:bg-neutral-600 hover:text-white peer-checked:bg-neutral-600 peer-checked:text-white peer-focus:bg-neutral-600`;
+  const labelClassName = `${additionalClassName} min-w-200px bg-stone-200 p-3 ml-1 cursor-pointer hover:bg-neutral-600 hover:text-white peer-checked:bg-neutral-600 peer-checked:text-white peer-focus:bg-neutral-600`;
 
   return (
     <div>

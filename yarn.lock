@@ -10265,18 +10265,18 @@ gatsby-plugin-fontawesome-css@^1.2.0:
   resolved "https://registry.yarnpkg.com/gatsby-plugin-fontawesome-css/-/gatsby-plugin-fontawesome-css-1.2.0.tgz#fc828dd1d39ff46d7a22f1389642ba65d4755a18"
   integrity sha512-Me7zFKPDmFQAWZmC2MQN7vWSHGFneu6FeIylkVinSMh89C0wPeoF165rpfuEdpgG0HScNg0fSh3xCIxYr5gPOQ==
 
-gatsby-plugin-google-gtag@^5.3.0:
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/gatsby-plugin-google-gtag/-/gatsby-plugin-google-gtag-5.10.0.tgz#94117a6b4e92ece63a25f513f8569f47a9c3d597"
-  integrity sha512-GZRLaDhEV7QtGsyMkO7sdp7grcLiTQm9LNFjPLvGTRfm+H3tM782yVt3BUIBLqpex/ST+Sr0Om//6FJ98Ji3BA==
+gatsby-plugin-google-gtag@^5.12.1:
+  version "5.12.1"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-google-gtag/-/gatsby-plugin-google-gtag-5.12.1.tgz#9f6b767e50b51bcd932a5dca6fd7465f44736974"
+  integrity sha512-pAqCW+FEww0l1Prvg7WeenwsMu5XJJg+/hyW2aP0uL2PETzTK6eQekkWE+moxrRXEt2r4V9+GdrpQnuma7a52A==
   dependencies:
     "@babel/runtime" "^7.20.13"
     minimatch "^3.1.2"
 
-gatsby-plugin-google-tagmanager@^5.11.0:
-  version "5.11.0"
-  resolved "https://registry.yarnpkg.com/gatsby-plugin-google-tagmanager/-/gatsby-plugin-google-tagmanager-5.11.0.tgz#48b61d5539ce0c90f95b2433c80ca64142f3a558"
-  integrity sha512-+QRH6k90Y1G8nJP89fCwhgEodGSUQa7B26McegTP+QCwf+cmAKaUOg2n7F7/PbbWl+JzINyI5YZMn8KX7bq2bA==
+gatsby-plugin-google-tagmanager@^5.12.1:
+  version "5.12.1"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-google-tagmanager/-/gatsby-plugin-google-tagmanager-5.12.1.tgz#4f05e5b96d1fb82c9ead2cdee2f502bc2bc80bc7"
+  integrity sha512-wik8eWul8yzQ6TBiVmkgHh6ZVpTecP8a0+RyDo3gjPY5ZuEcSxEcLnci7NzwV0JXd6xDSw8sGylO4s5Ea4ZP2w==
   dependencies:
     "@babel/runtime" "^7.20.13"
     web-vitals "^1.1.2"
@@ -10322,10 +10322,10 @@ gatsby-plugin-postcss@6.10.0:
     "@babel/runtime" "^7.20.13"
     postcss-loader "^7.3.0"
 
-gatsby-plugin-react-helmet@^6.3.0:
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/gatsby-plugin-react-helmet/-/gatsby-plugin-react-helmet-6.10.0.tgz#8d827db570e36042f4aba6a2bbaf804aaaec91a6"
-  integrity sha512-js/XJdx1wGA6ht306PXV5mhk+traQ7rOcoLBzcHAiIC6nS+7M4AuFDu+Sb4fLXd8S666UBoCA+b0P5CSP27ntQ==
+gatsby-plugin-react-helmet@^6.12.0:
+  version "6.12.0"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-react-helmet/-/gatsby-plugin-react-helmet-6.12.0.tgz#8e6a2ec967a33a0c48266316c92844ea3272d4b2"
+  integrity sha512-agcBCT9H8nlpkAU3D1fUeJbjh7IMPjGO/njoa7avIYLGsQ2nyGlHwcrEmS2zBHxYKaxPkztvr47OpCdnuEIvEw==
   dependencies:
     "@babel/runtime" "^7.20.13"
 
@@ -10347,10 +10347,10 @@ gatsby-plugin-sharp@^5.8.1:
     semver "^7.5.0"
     sharp "^0.32.1"
 
-gatsby-plugin-sitemap@^6.3.1:
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/gatsby-plugin-sitemap/-/gatsby-plugin-sitemap-6.10.0.tgz#f5c81963dcafcdc8d477b5cc41dc2dd85fefa805"
-  integrity sha512-E5ct5BxCLTKQihL8y1wZWzCG3LFjv4rjB39DmKMYxZ4SEbaQAx/9aXhH/vnAP/py9ijhGcxliOcjemP91w3CWQ==
+gatsby-plugin-sitemap@^6.12.1:
+  version "6.12.1"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-sitemap/-/gatsby-plugin-sitemap-6.12.1.tgz#2862b2279f73ebef0e9977ed04b79b66bb68832a"
+  integrity sha512-rV0RGbkoiuPYe7znHxIyhBbD2Sb+OLoIKyHYD4+ufRgycefbwqIQTlc3QAR9PLiSD1eLtCpXeUsc9E/GJ3E/nA==
   dependencies:
     "@babel/runtime" "^7.20.13"
     common-tags "^1.8.2"

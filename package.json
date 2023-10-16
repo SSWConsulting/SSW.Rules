@@ -22,11 +22,11 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.1.0",
-    "@microsoft/applicationinsights-web": "^3.0.2",
+    "@microsoft/applicationinsights-web": "^3.0.3",
     "@raae/gatsby-remark-oembed": "^0.3.3",
     "algoliasearch": "^4.19.1",
     "applicationinsights": "^2.3.6",
-    "autoprefixer": "^10.4.13",
+    "autoprefixer": "^10.4.16",
     "axios": "1.4.0",
     "babel-eslint": "^10.1.0",
     "classnames": "^2.3.2",
@@ -94,7 +94,7 @@
     "@fortawesome/react-fontawesome": "^0.1.16",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.1",
-    "tailwindcss": "^3.2.4"
+    "tailwindcss": "^3.3.3"
   },
   "resolutions": {
     "webpack": "5.75.0"

@@ -1,5 +1,4 @@
 const plugin = require('tailwindcss/plugin');
-const siteConfig = require('./site-config');
 
 module.exports = {
   content: ['./src/**/*.js'],

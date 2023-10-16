@@ -10351,10 +10351,10 @@ gatsby-plugin-react-helmet@^6.12.0:
   dependencies:
     "@babel/runtime" "^7.20.13"
 
-gatsby-plugin-sharp@^5.8.1:
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/gatsby-plugin-sharp/-/gatsby-plugin-sharp-5.10.0.tgz#abd9fd8d761a12924fb5876a04609efc130899d4"
-  integrity sha512-hG95JQrpByH8w7Ey25zlFsvgyi99NFmk1+0hmKjMkfh43BxNsTuvhcB2kcbcO2FaZdO9OK89pilRGbLaeA0gew==
+gatsby-plugin-sharp@^5.12.1:
+  version "5.12.1"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-sharp/-/gatsby-plugin-sharp-5.12.1.tgz#440f8414d3102e78f963f10e7d9bb66ff896e28e"
+  integrity sha512-IJFBL+m1H5RMs4rRiGiZa5NreKxRzycUzAVj17upxs3DTUysSlwoIORGEYJfIJP+bM2p7RjMccpEAqcrXQ8K5g==
   dependencies:
     "@babel/runtime" "^7.20.13"
     async "^3.2.4"
@@ -10362,12 +10362,12 @@ gatsby-plugin-sharp@^5.8.1:
     debug "^4.3.4"
     filenamify "^4.3.0"
     fs-extra "^11.1.1"
-    gatsby-core-utils "^4.10.0"
-    gatsby-plugin-utils "^4.10.0"
+    gatsby-core-utils "^4.12.0"
+    gatsby-plugin-utils "^4.12.1"
     lodash "^4.17.21"
     probe-image-size "^7.2.3"
-    semver "^7.5.0"
-    sharp "^0.32.1"
+    semver "^7.5.3"
+    sharp "^0.32.6"
 
 gatsby-plugin-sitemap@^6.12.1:
   version "6.12.1"
@@ -10504,15 +10504,15 @@ gatsby-remark-images-zoom@^1.1.0:
   dependencies:
     medium-zoom "^1.0.4"
 
-gatsby-remark-images@^7.3.1:
-  version "7.10.0"
-  resolved "https://registry.yarnpkg.com/gatsby-remark-images/-/gatsby-remark-images-7.10.0.tgz#a91d68064db0536da825d512cf36c5d35d9582cd"
-  integrity sha512-Oh2cTlsGn0gDZug8wuW+eiQn3EU0476B/U8ieyE6eiLy0kTybpUbF9Ic8InnIFJfDOB+hCX5Ve9Ao8nj+PnytQ==
+gatsby-remark-images@^7.12.1:
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/gatsby-remark-images/-/gatsby-remark-images-7.12.1.tgz#b73ece0af0f17e0faf327e545d3e4fab1eb4dfd0"
+  integrity sha512-RaY5aRb3di1WsoDm3IHyekQGfnFKiYGSyb4NQu4sA+Tgoc1etGcAoG2Gx3xCxOCS+2A4dPnjKyDlLahdeLOfNQ==
   dependencies:
     "@babel/runtime" "^7.20.13"
     chalk "^4.1.2"
     cheerio "^1.0.0-rc.10"
-    gatsby-core-utils "^4.10.0"
+    gatsby-core-utils "^4.12.0"
     is-relative-url "^3.0.0"
     lodash "^4.17.21"
     mdast-util-definitions "^4.0.0"

@@ -10430,10 +10430,10 @@ gatsby-react-router-scroll@^6.10.0:
     "@babel/runtime" "^7.20.13"
     prop-types "^15.8.1"
 
-gatsby-remark-autolink-headers@^6.3.1:
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/gatsby-remark-autolink-headers/-/gatsby-remark-autolink-headers-6.10.0.tgz#6e7026aa00bfa3a497aa62a467fcfdf6eaea0dea"
-  integrity sha512-ZxGbOEBAVtdhlJChgmzFsHthdNt5G3sGaFQxW7/YcbzR5L5+NTtOzZmUXNM61hBUjcG1v4z5ABfcPkgq383oNg==
+gatsby-remark-autolink-headers@^6.12.1:
+  version "6.12.1"
+  resolved "https://registry.yarnpkg.com/gatsby-remark-autolink-headers/-/gatsby-remark-autolink-headers-6.12.1.tgz#6da73e7ce9ff7ce426257ed2db73cce93dcc0af3"
+  integrity sha512-RZxFWod7xcnj62F4/ai+xI+cXU4wlW0QLX1y9+fvL8hH5lSDEkNU7yO4rxUzoIwWGghrhKj7apTuXteEVM4KtA==
   dependencies:
     "@babel/runtime" "^7.20.13"
     github-slugger "^1.5.0"
@@ -10441,10 +10441,10 @@ gatsby-remark-autolink-headers@^6.3.1:
     mdast-util-to-string "^2.0.0"
     unist-util-visit "^2.0.3"
 
-gatsby-remark-copy-linked-files@^6.3.0:
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/gatsby-remark-copy-linked-files/-/gatsby-remark-copy-linked-files-6.10.0.tgz#2c02ea539158aefcaee2a370ab01e961c71e67f5"
-  integrity sha512-6t2paFX4l3MjrUHT5c0TNa7pJw+RFmI1LmfZgsK6Zpqr/lrdav5ancPq4mMk73E+JNtWAGWanGAEatZN33Cwbw==
+gatsby-remark-copy-linked-files@^6.12.0:
+  version "6.12.0"
+  resolved "https://registry.yarnpkg.com/gatsby-remark-copy-linked-files/-/gatsby-remark-copy-linked-files-6.12.0.tgz#59576fa2af68829790c90856a3f669dcd639a087"
+  integrity sha512-QzD21eGL1hzSYr4XpLPbRealJreXCj4N7bicMYVyBE7vAVoROLj+29IpqCNLCq5oGwrihRkvf8Zqk/vymkTRhA==
   dependencies:
     "@babel/runtime" "^7.20.13"
     cheerio "^1.0.0-rc.10"
@@ -10595,20 +10595,20 @@ gatsby-source-filesystem@^2.1.19:
     valid-url "^1.0.9"
     xstate "^4.14.0"
 
-gatsby-source-filesystem@^5.3.1:
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/gatsby-source-filesystem/-/gatsby-source-filesystem-5.10.0.tgz#9b009a42ea1c202c7aa3dbd59d9042c2a6512814"
-  integrity sha512-pTcqFvngUqap4NJfzG9VMmJ4T5TTf/WsMVTVORw18kprXZBchioLu0m5vVb9Tm7/MW7XPXvKJPZQkw+/otmVYw==
+gatsby-source-filesystem@^5.12.0:
+  version "5.12.0"
+  resolved "https://registry.yarnpkg.com/gatsby-source-filesystem/-/gatsby-source-filesystem-5.12.0.tgz#5f970fccc3102a4c62d99575c55a2a167912bb02"
+  integrity sha512-0BZkgADBu56vTzZ6TLvrMXhp8MzpEqvtpsI+VRtNTlsu6ULaHRjoMClomlAqWecjBXTkujhwpSjnIfEmpmCaLQ==
   dependencies:
     "@babel/runtime" "^7.20.13"
     chokidar "^3.5.3"
     file-type "^16.5.4"
     fs-extra "^11.1.1"
-    gatsby-core-utils "^4.10.0"
+    gatsby-core-utils "^4.12.0"
     mime "^3.0.0"
     pretty-bytes "^5.6.0"
     valid-url "^1.0.9"
-    xstate "^4.37.2"
+    xstate "^4.38.0"
 
 gatsby-source-git@^1.0.2:
   version "1.1.0"
@@ -21586,6 +21586,11 @@ xstate@^4.14.0, xstate@^4.37.2:
   version "4.37.2"
   resolved "https://registry.yarnpkg.com/xstate/-/xstate-4.37.2.tgz#c5f4c1d8062784238b91e2dfddca05f821cb4eac"
   integrity sha512-Qm337O49CRTZ3PRyRuK6b+kvI+D3JGxXIZCTul+xEsyFCVkTFDt5jixaL1nBWcUBcaTQ9um/5CRGVItPi7fveg==
+
+xstate@^4.38.0:
+  version "4.38.2"
+  resolved "https://registry.yarnpkg.com/xstate/-/xstate-4.38.2.tgz#1b74544fc9c8c6c713ba77f81c6017e65aa89804"
+  integrity sha512-Fba/DwEPDLneHT3tbJ9F3zafbQXszOlyCJyQqqdzmtlY/cwE2th462KK48yaANf98jHlP6lJvxfNtN0LFKXPQg==
 
 xtend@^4.0.0, xtend@^4.0.1:
   version "4.0.2"

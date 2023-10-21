@@ -19113,10 +19113,10 @@ ssw.megamenu@3.2.3:
     "@fortawesome/react-fontawesome" "^0.1.14"
     classnames "^2.3.2"
 
-ssw.rules.widget@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/ssw.rules.widget/-/ssw.rules.widget-1.6.0.tgz#29162357ae574c25c6b4d3f9eb25ab32d232c2d8"
-  integrity sha512-CJF/76WOy8YfAfjoE7BRTE/PVb9wYTrLcpjlvVPraKlkv/yzX57vbtVaV2m8MTJLkpFMuC6nt6WUMSOQJt/11g==
+ssw.rules.widget@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/ssw.rules.widget/-/ssw.rules.widget-1.6.1.tgz#9ccd4e70ed406920934943941f728cd2f4b5919c"
+  integrity sha512-u0wQ5tWat/X8qlJF43Ve9DFn2BFYVIJb4BAjxPb8ler99Pfq+6Zr2rMZ9zp4mD8l+hBhPehyQWweySuo0wMHmQ==
   dependencies:
     "@babel/polyfill" "^7.12.1"
     "@fortawesome/fontawesome-svg-core" "^1.2.35"

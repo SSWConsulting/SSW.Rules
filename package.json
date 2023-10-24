@@ -7,9 +7,9 @@
   "scripts": {
     "build:dir": "mkdirp ./public/icons/",
     "build:favicons": "node scripts/favicons",
-    "build": "yarn run build:dir && yarn run build:favicons && gatsby build --prefix-paths --log-pages && yarn copyCmsIndex && yarn updateRelativePath",
-    "build:incremental": "gatsby build --prefix-paths --log-pages && yarn copyCmsIndex && yarn updateRelativePath",
-    "devbuild": "gatsby clean && yarn run build:dir && yarn run build:favicons && gatsby build",
+    "build": "yarn playwright install && yarn run build:dir && yarn run build:favicons && gatsby build --prefix-paths --log-pages && yarn copyCmsIndex && yarn updateRelativePath",
+    "build:incremental": "yarn playwright install && gatsby build --prefix-paths --log-pages && yarn copyCmsIndex && yarn updateRelativePath",
+    "devbuild": "gatsby clean && yarn playwright install && yarn run build:dir && yarn run build:favicons && gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "yarn run develop",

@@ -107,5 +107,6 @@
     "⚠️ favicons": "Locked to 6.2.2 - See jantimon/favicons-webpack-plugin#309 (comment) for more info",
     "⚠️ gatsby-transformer-remark": "Locked to ^3.2.0 - Due to gatsby-remark-custom-blocks relying on the locked version",
     "📦 gatsby-plugin-fontawesome-css": "Added to disable Font Awesomes auto CSS insertion and instead insert it at compile time. This stops the brief flicker of the icons stying being incorrect when the page is refreshed"
-  }
+  },
+  "packageManager": "yarn@4.0.1"
 }

@@ -91,16 +91,27 @@ module.exports = {
     {
       resolve: 'gatsby-transformer-remark',
       options: {
-        strategy: 'img',
         excerpt_separator: '<!--endintro-->',
         plugins: [
           {
-            resolve: 'gatsby-remark-draw',
-            options: {
-              mermaid: {
+            resolve: 'gatsby-remark-mermaid',
+            options: /** @type {import('gatsby-remark-mermaid').Options} */ ({
+              mermaidConfig: {
                 theme: 'neutral',
+                // TODO: Re-implement once light-mode is supported - https://github.com/SSWConsulting/SSW.Mermaid/blob/main/master-theme.txt
+                // theme: 'base',
+                // themeVariables: {
+                //   primaryColor: '#CC4141',
+                //   primaryTextColor: '#fff',
+                //   lineColor: '#CC4141',
+                //   secondaryColor: '#AAAAAA',
+                //   tertiaryColor: '#797979',
+                //   noteBkgColor: '#333333',
+                //   noteTextColor: '#fff',
+                //   sequenceNumberColor: '#333333',
+                // },
               },
-            },
+            }),
           },
           {
             resolve: '@raae/gatsby-remark-oembed',

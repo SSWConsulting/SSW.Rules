@@ -91,17 +91,8 @@ module.exports = {
     {
       resolve: 'gatsby-transformer-remark',
       options: {
-        strategy: 'img',
         excerpt_separator: '<!--endintro-->',
         plugins: [
-          {
-            resolve: 'gatsby-remark-draw',
-            options: {
-              mermaid: {
-                theme: 'neutral',
-              },
-            },
-          },
           {
             resolve: '@raae/gatsby-remark-oembed',
             options: {

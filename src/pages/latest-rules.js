@@ -194,7 +194,6 @@ export const pageQuery = graphql`
           commits {
             CommitTime
             FilesChanged {
-              title
               path
               uri
             }

@@ -37,10 +37,10 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
   const typeDefs = `
-    type MarkdownRemark implements Node {
+    type MarkdownRemark implements Node @infer {
       frontmatter: Frontmatter
     }
-    type Frontmatter {
+    type Frontmatter @infer {
       archivedreason: String   
       authors: [Author]
       related: [String]
@@ -49,7 +49,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       consulting: String
       guid: String
     }
-    type Author {
+    type Author implements Node @dontInfer {
       title: String
       url: String
       img: String

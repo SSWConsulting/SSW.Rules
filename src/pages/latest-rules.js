@@ -50,7 +50,11 @@ const LatestRules = ({ data, location }) => {
     // eslint-disable-next-line no-undef
     const filteredPathsSet = new Set(
       userRules
-        .filter((rule) => rule.node.user === queryStringRulesAuthor)
+        .filter(
+          (rule) =>
+            rule.node.user === queryStringRulesAuthor &&
+            rule.node.commits.FilesChanged?.title
+        )
         .flatMap(getCommitPathsFromRule)
     );
 

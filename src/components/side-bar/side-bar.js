@@ -32,8 +32,9 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
       </section>
 
       <section id="widget">
+        {/*TODO: Fix this - Currently removing to stop this from working until this is fixed  */}
         <RulesWidget
-          githubToken={process.env.GITHUB_API_PAT}
+          githubToken={''}
           appInsightsToken={
             process.env.RULESWIDGET_APPINSIGHTS_INSTRUMENTATIONKEY
           }

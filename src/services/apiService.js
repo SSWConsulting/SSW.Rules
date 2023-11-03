@@ -181,7 +181,10 @@ export async function GetUser(userId, token) {
       Authorization: `Bearer ${token}`,
     },
   });
-  return response.json();
+
+  if (!response.ok) return null;
+
+  response.json();
 }
 
 export async function ConnectUserCommentsAccount(data, token) {

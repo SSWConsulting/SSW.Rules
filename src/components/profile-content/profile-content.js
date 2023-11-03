@@ -141,6 +141,14 @@ const ProfileContent = (props) => {
   async function getUserComments() {
     const jwt = await getIdTokenClaims();
     GetUser(user.sub, jwt.__raw).then((success) => {
+      if (!success) {
+        appInsights.trackException({
+          error: new Error('Error getting user'),
+          severityLevel: 3,
+        });
+        return;
+      }
+
       setUserCommentsConnected(success.commentsConnected);
       if (!success.commentsConnected) {
         setCommentedRulesList([]);

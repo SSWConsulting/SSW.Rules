@@ -10,7 +10,10 @@ const ContactInfo = ({ onClick }) => {
         Book a Free Initial Meeting
       </button>
       <p>
-      or call on <span className="font-semibold"><a href="tel:+61299533000">+61 2 9953 3000</a></span>
+        or call on{' '}
+        <span className="font-semibold">
+          <a href="tel:+61299533000">+61 2 9953 3000</a>
+        </span>
       </p>
     </div>
   );

@@ -141,6 +141,14 @@ const ProfileContent = (props) => {
   async function getUserComments() {
     const jwt = await getIdTokenClaims();
     GetUser(user.sub, jwt.__raw).then((success) => {
+      if (!success) {
+        appInsights.trackException({
+          error: new Error('Error getting user'),
+          severityLevel: 3,
+        });
+        return;
+      }
+
       setUserCommentsConnected(success.commentsConnected);
       if (!success.commentsConnected) {
         setCommentedRulesList([]);
@@ -248,7 +256,7 @@ const ProfileContent = (props) => {
           id="customRadioInline1"
           name="customRadioInline1"
           value="titleOnly"
-          selectedOption={selectedOption}
+          selectedOption={viewStyle}
           handleOptionChange={handleOptionChange}
           labelText="View titles only"
           icon={faQuoteLeft}
@@ -257,7 +265,7 @@ const ProfileContent = (props) => {
           id="customRadioInline3"
           name="customRadioInline1"
           value="blurb"
-          selectedOption={selectedOption}
+          selectedOption={viewStyle}
           handleOptionChange={handleOptionChange}
           labelText="Show blurb"
           icon={faFileLines}
@@ -266,7 +274,7 @@ const ProfileContent = (props) => {
           id="customRadioInline2"
           name="customRadioInline1"
           value="all"
-          selectedOption={selectedOption}
+          selectedOption={viewStyle}
           handleOptionChange={handleOptionChange}
           labelText="Gimme everything!"
           icon={faBook}

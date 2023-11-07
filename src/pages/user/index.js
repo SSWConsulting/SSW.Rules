@@ -167,11 +167,11 @@ const UserRules = ({ data, location }) => {
       previousPageCursor.pop();
     }
 
-    const { endCursor, startCursor, hasNextPage } = data.data?.search?.pageInfo;
+    const { endCursor, startCursor, hasNextPage } = data.data.search.pageInfo;
 
-    setNextPageCursor(endCursor);
-    setTempCursor(startCursor);
-    setHasNext(hasNextPage);
+    setNextPageCursor(endCursor || null);
+    setTempCursor(startCursor || null);
+    setHasNext(hasNextPage || null);
 
     return data.data?.search;
   };

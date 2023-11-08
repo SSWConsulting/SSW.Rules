@@ -31,7 +31,10 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
       <Auth0Provider
         domain={process.env.AUTH0_DOMAIN}
         clientId={process.env.AUTH0_CLIENT_ID}
-        redirectUri={process.env.AUTH0_REDIRECT_URI}
+        authorizationParams={{
+          redirect_uri: process.env.AUTH0_REDIRECT_URI,
+        }}
+        // redirectUri={process.env.AUTH0_REDIRECT_URI}
         onRedirectCallback={onRedirectCallback}
         useRefreshTokens={true}
         cacheLocation="localstorage"

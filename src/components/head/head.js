@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { StaticQuery, graphql } from 'gatsby';
 import { Location } from '@reach/router';
 import schemaGenerator from '../../helpers/schemaGenerator';
-import { pathPrefix } from '../site-config';
+import { pathPrefix } from '../../../site-config';
 
 const Head = ({
   siteTitle,

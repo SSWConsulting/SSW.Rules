@@ -1,6 +1,6 @@
 import { Link } from 'gatsby';
 import React from 'react';
-import { pathPrefix } from '../site-config';
+import { pathPrefix } from '../../site-config';
 
 const NotFound = () => {
   return (

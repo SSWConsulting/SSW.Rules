@@ -5,7 +5,7 @@ import Tooltip from '../tooltip/tooltip';
 import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
 import GPTIcon from '-!svg-react-loader!../../images/chatgpt_icon.svg';
 import SignIn from '../signin/signin';
-import { parentSiteUrl } from '../../../site-config';
+import { parentSiteUrl, pathPrefix } from '../../../site-config';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlusCircle,
@@ -78,7 +78,7 @@ const Header = ({ displayActions }) => {
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href="/rules/admin/#/collections/rule/new"
+                href={`${pathPrefix}/admin/#/collections/rule/new`}
                 className="action-btn-link-underlined"
               >
                 <FontAwesomeIcon

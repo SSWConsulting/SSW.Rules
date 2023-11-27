@@ -12,6 +12,7 @@ import {
   faTiktok,
   faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
+import { pathPrefix } from '../../../site-config';
 
 const buildTimestamp = preval`module.exports = new Date().getTime();`;
 
@@ -123,7 +124,7 @@ const Footer = () => {
                 This website is under{' '}
                 <a
                   className="footer-link"
-                  href="/rules/rules-to-better-websites-deployment"
+                  href={`${pathPrefix}/rules-to-better-websites-deployment`}
                 >
                   CONSTANT CONTINUOUS DEPLOYMENT
                 </a>
@@ -138,11 +139,17 @@ const Footer = () => {
               </div>
               <div className="md:text-right py-2">
                 Powered by{' '}
-                <a className="footer-link" href="/rules/rules-to-better-azure">
+                <a
+                  className="footer-link"
+                  href={`${pathPrefix}/rules-to-better-azure`}
+                >
                   Azure
                 </a>{' '}
                 and{' '}
-                <a className="footer-link" href="/rules/static-site-generator">
+                <a
+                  className="footer-link"
+                  href={`${pathPrefix}/static-site-generator`}
+                >
                   {' '}
                   GitHub
                 </a>

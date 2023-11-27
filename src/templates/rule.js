@@ -10,6 +10,7 @@ import {
   faExclamationTriangle,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
+import { pathPrefix } from '../../site-config.js';
 
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import Bookmark from '../components/bookmark/bookmark';
@@ -184,7 +185,7 @@ const Rule = ({ data, location }) => {
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
+                        href={`${pathPrefix}/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
                         className="tooltip tooltip-button"
                         onClick={() => {
                           appInsights.trackEvent({

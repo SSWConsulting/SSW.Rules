@@ -12,6 +12,7 @@ import {
   faTiktok,
   faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
+import { pathPrefix } from '../../../site-config';
 
 const buildTimestamp = preval`module.exports = new Date().getTime();`;
 
@@ -123,7 +124,7 @@ const Footer = () => {
                 This website is under{' '}
                 <a
                   className="footer-link"
-                  href="https://www.ssw.com.au/rules/rules-to-better-websites-deployment"
+                  href={`${pathPrefix}/rules-to-better-websites-deployment`}
                 >
                   CONSTANT CONTINUOUS DEPLOYMENT
                 </a>
@@ -140,14 +141,14 @@ const Footer = () => {
                 Powered by{' '}
                 <a
                   className="footer-link"
-                  href="https://www.ssw.com.au/rules/rules-to-better-azure"
+                  href={`${pathPrefix}/rules-to-better-azure`}
                 >
                   Azure
                 </a>{' '}
                 and{' '}
                 <a
                   className="footer-link"
-                  href="https://www.ssw.com.au/rules/static-site-generator"
+                  href={`${pathPrefix}/static-site-generator`}
                 >
                   {' '}
                   GitHub

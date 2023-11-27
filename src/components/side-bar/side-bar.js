@@ -7,6 +7,7 @@ import React from 'react';
 import { RulesWidget } from 'ssw.rules.widget';
 import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { pathPrefix } from '../../../site-config';
 
 const SideBar = ({ ruleTotalNumber, hideCount }) => {
   return (
@@ -38,7 +39,7 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
           appInsightsToken={
             process.env.RULESWIDGET_APPINSIGHTS_INSTRUMENTATIONKEY
           }
-          location="https://www.ssw.com.au/rules"
+          location={pathPrefix}
           numberOfRules={10}
         />
       </section>

@@ -18,6 +18,7 @@ import {
   faBook,
 } from '@fortawesome/free-solid-svg-icons';
 import Bookmark from '../components/bookmark/bookmark';
+import { pathPrefix } from '../../site-config';
 
 config.autoAddCss = false;
 
@@ -178,7 +179,7 @@ const Orphaned = ({ data }) => {
                                 <a
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  href={`/rules/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
+                                  href={`${pathPrefix}/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
                                   className="tooltip tooltip-button"
                                   onClick={() => {
                                     appInsights.trackEvent({

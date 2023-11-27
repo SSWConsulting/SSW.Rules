@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import { StaticQuery, graphql } from 'gatsby';
 import { Location } from '@reach/router';
 import schemaGenerator from '../../helpers/schemaGenerator';
+import { pathPrefix } from '../../../site-config';
 
 const Head = ({
   siteTitle,
@@ -102,7 +103,7 @@ const Head = ({
       name="msapplication-square310x310"
     />
 
-    <link href="/rules/manifest.json" rel="manifest" />
+    <link href={`${pathPrefix}/manifest.json`} rel="manifest" />
 
     <link
       href="/ssw/include/pigeon/img/apple-touch-icon-57x57.png"

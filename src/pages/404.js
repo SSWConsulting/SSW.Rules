@@ -1,5 +1,6 @@
 import { Link } from 'gatsby';
 import React from 'react';
+import { pathPrefix } from '../../site-config';
 
 const NotFound = () => {
   return (
@@ -18,7 +19,7 @@ const NotFound = () => {
         </div>
         <div className="not-found-greybox greybox">
           Learn more about{' '}
-          <a href="https://ssw.com.au/rules/404-useful-error-page">
+          <a href={`${pathPrefix}/404-useful-error-page`}>
             having a useful 404 error page.
           </a>
         </div>

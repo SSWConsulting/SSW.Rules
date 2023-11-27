@@ -138,17 +138,11 @@ const Footer = () => {
               </div>
               <div className="md:text-right py-2">
                 Powered by{' '}
-                <a
-                  className="footer-link"
-                  href="/rules/rules-to-better-azure"
-                >
+                <a className="footer-link" href="/rules/rules-to-better-azure">
                   Azure
                 </a>{' '}
                 and{' '}
-                <a
-                  className="footer-link"
-                  href="/rules/static-site-generator"
-                >
+                <a className="footer-link" href="/rules/static-site-generator">
                   {' '}
                   GitHub
                 </a>

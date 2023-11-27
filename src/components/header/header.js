@@ -78,7 +78,7 @@ const Header = ({ displayActions }) => {
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href="https://www.ssw.com.au/rules/admin/#/collections/rule/new"
+                href="/rules/admin/#/collections/rule/new"
                 className="action-btn-link-underlined"
               >
                 <FontAwesomeIcon

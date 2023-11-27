@@ -38,7 +38,7 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
           appInsightsToken={
             process.env.RULESWIDGET_APPINSIGHTS_INSTRUMENTATIONKEY
           }
-          location="https://www.ssw.com.au/rules"
+          location="/rules"
           numberOfRules={10}
         />
       </section>

@@ -123,7 +123,7 @@ const Footer = () => {
                 This website is under{' '}
                 <a
                   className="footer-link"
-                  href="https://www.ssw.com.au/rules/rules-to-better-websites-deployment"
+                  href="/rules/rules-to-better-websites-deployment"
                 >
                   CONSTANT CONTINUOUS DEPLOYMENT
                 </a>
@@ -140,14 +140,14 @@ const Footer = () => {
                 Powered by{' '}
                 <a
                   className="footer-link"
-                  href="https://www.ssw.com.au/rules/rules-to-better-azure"
+                  href="/rules/rules-to-better-azure"
                 >
                   Azure
                 </a>{' '}
                 and{' '}
                 <a
                   className="footer-link"
-                  href="https://www.ssw.com.au/rules/static-site-generator"
+                  href="/rules/static-site-generator"
                 >
                   {' '}
                   GitHub

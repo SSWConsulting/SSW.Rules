@@ -27,7 +27,7 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-plugin-netlify-cms',
+      resolve: 'gatsby-plugin-decap-cms',
       options: {
         manualInit: true,
         stylesPath: `${__dirname}/src/styles.css`,

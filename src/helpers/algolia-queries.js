@@ -7,6 +7,9 @@ const pageQuery = `{
             excerpt(format: PLAIN, pruneLength: 500)
             frontmatter {
                 title
+                authors {
+                  title
+                }
             }
             fields {
                 slug

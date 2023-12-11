@@ -6,7 +6,6 @@ import GreyBox from '../components/greybox/greybox';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import RadioButton from '../components/radio-button/radio-button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { detectLinks } from '../helpers/convertUrlFromString';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Bookmark from '../components/bookmark/bookmark';
 import Tooltip from '../components/tooltip/tooltip';
@@ -113,9 +112,7 @@ export default function Category({ data }) {
                       <span className="ReasonTitle">Archived Reason: </span>
                       <span
                         dangerouslySetInnerHTML={{
-                          __html: detectLinks(
-                            category.frontmatter.archivedreason
-                          ),
+                          __html: category.frontmatter.archivedreason,
                         }}
                       ></span>
                     </div>

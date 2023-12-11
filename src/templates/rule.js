@@ -22,7 +22,6 @@ import ReactDOMServer from 'react-dom/server';
 import Reaction from '../components/reaction/reaction';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
 import formatDistance from 'date-fns/formatDistance';
-import { detectLinks } from '../helpers/convertUrlFromString';
 import { format } from 'date-fns';
 import { useAuth0 } from '@auth0/auth0-react';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -245,9 +244,7 @@ const Rule = ({ data, location }) => {
                         <span className="ReasonTitle">Archived Reason: </span>
                         <span
                           dangerouslySetInnerHTML={{
-                            __html: detectLinks(
-                              rule.frontmatter.archivedreason
-                            ),
+                            __html: rule.frontmatter.archivedreason,
                           }}
                         ></span>
                       </div>

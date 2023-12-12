@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import { graphql, Link } from 'gatsby';
 import PropTypes from 'prop-types';
 import MD from 'gatsby-custom-md';
-import { marked } from 'marked';
 import GreyBox from '../components/greybox/greybox';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import RadioButton from '../components/radio-button/radio-button';
@@ -20,6 +19,7 @@ import {
   faBook,
 } from '@fortawesome/free-solid-svg-icons';
 import { pathPrefix } from '../../site-config';
+import markdownIt from 'markdown-it';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -113,11 +113,9 @@ export default function Category({ data }) {
                       <span className="ReasonTitle">Archived Reason: </span>
                       <span
                         dangerouslySetInnerHTML={{
-                          /* marked.parse() produces content wrapped in <p> tags, this messes with formatting */
-                          __html: marked
-                            .parse(category.frontmatter.archivedreason)
-                            .replace('<p>', '<span>')
-                            .replace('</p>', '</span>'),
+                          __html: markdownIt().renderInline(
+                            category.frontmatter.archivedreason
+                          ),
                         }}
                       ></span>
                     </div>

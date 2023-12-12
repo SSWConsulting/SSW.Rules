@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { graphql, Link } from 'gatsby';
 import PropTypes from 'prop-types';
 import MD from 'gatsby-custom-md';
+import { marked } from 'marked';
 import GreyBox from '../components/greybox/greybox';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import RadioButton from '../components/radio-button/radio-button';
@@ -112,7 +113,11 @@ export default function Category({ data }) {
                       <span className="ReasonTitle">Archived Reason: </span>
                       <span
                         dangerouslySetInnerHTML={{
-                          __html: category.frontmatter.archivedreason,
+                          /* marked.parse() produces content wrapped in <p> tags, this messes with formatting */
+                          __html: marked
+                            .parse(category.frontmatter.archivedreason)
+                            .replace('<p>', '<span>')
+                            .replace('</p>', '</span>'),
                         }}
                       ></span>
                     </div>

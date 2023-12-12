@@ -11,6 +11,7 @@ import {
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { pathPrefix } from '../../site-config.js';
+import { marked } from 'marked';
 
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import Bookmark from '../components/bookmark/bookmark';
@@ -244,7 +245,11 @@ const Rule = ({ data, location }) => {
                         <span className="ReasonTitle">Archived Reason: </span>
                         <span
                           dangerouslySetInnerHTML={{
-                            __html: rule.frontmatter.archivedreason,
+                            /* marked.parse() produces content wrapped in <p> tags, this messes with formatting */
+                            __html: marked
+                              .parse(rule.frontmatter.archivedreason)
+                              .replace('<p>', '<span>')
+                              .replace('</p>', '</span>'),
                           }}
                         ></span>
                       </div>

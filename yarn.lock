@@ -6371,6 +6371,7 @@ __metadata:
     gatsby-transformer-sharp: "npm:^5.12.1"
     markdown-it: "npm:^13.0.2"
     markdown-it-container: "npm:^3.0.0"
+    marked: "npm:^11.0.1"
     mkdirp: "npm:^3.0.1"
     postcss: "npm:^8.4.31"
     postcss-import: "npm:^15.1.0"
@@ -18513,6 +18514,15 @@ __metadata:
   dependencies:
     repeat-string: "npm:^1.0.0"
   checksum: f257e0781ea50eb946919df84bdee4ba61f983971b277a369ca7276f89740fd0e2749b9b187163a42df4c48682b71962d4007215ce3523480028f06c11ddc2e6
+  languageName: node
+  linkType: hard
+
+"marked@npm:^11.0.1":
+  version: 11.0.1
+  resolution: "marked@npm:11.0.1"
+  bin:
+    marked: bin/marked.js
+  checksum: 9cb65db2c9f8eb1b578858de7e6ca931d41872fb19eefb44a722eead70a4faaf10a4cbd990a97f9e2af05f1bd0b7e16448154b8069dfbaf138d547df3336cb10
   languageName: node
   linkType: hard
 

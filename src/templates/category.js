@@ -19,6 +19,7 @@ import {
   faBook,
 } from '@fortawesome/free-solid-svg-icons';
 import { pathPrefix } from '../../site-config';
+import markdownIt from 'markdown-it';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -112,7 +113,9 @@ export default function Category({ data }) {
                       <span className="ReasonTitle">Archived Reason: </span>
                       <span
                         dangerouslySetInnerHTML={{
-                          __html: category.frontmatter.archivedreason,
+                          __html: markdownIt().renderInline(
+                            category.frontmatter.archivedreason
+                          ),
                         }}
                       ></span>
                     </div>

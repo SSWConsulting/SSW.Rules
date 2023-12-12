@@ -11,6 +11,7 @@ import {
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { pathPrefix } from '../../site-config.js';
+import markdownIt from 'markdown-it';
 
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import Bookmark from '../components/bookmark/bookmark';
@@ -244,7 +245,9 @@ const Rule = ({ data, location }) => {
                         <span className="ReasonTitle">Archived Reason: </span>
                         <span
                           dangerouslySetInnerHTML={{
-                            __html: rule.frontmatter.archivedreason,
+                            __html: markdownIt().renderInline(
+                              rule.frontmatter.archivedreason
+                            ),
                           }}
                         ></span>
                       </div>

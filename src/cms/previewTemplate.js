@@ -82,7 +82,7 @@ var PreviewTemplate = ({ entry, getAsset }) => {
                 <span className="ReasonTitle">Archived Reason: </span>
                 <span
                   dangerouslySetInnerHTML={{
-                    __html: archivedReason,
+                    __html: markdownIt().renderInline(archivedReason),
                   }}
                 ></span>
               </div>

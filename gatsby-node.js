@@ -7,7 +7,6 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
 const Map = require('core-js/features/map');
-const { pathPrefix } = require('./site-config');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights

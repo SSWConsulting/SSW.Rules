@@ -199,7 +199,7 @@ exports.createPages = async ({ graphql, actions }) => {
         related: node.frontmatter.related ? node.frontmatter.related : [''],
         uri: node.frontmatter.uri,
         redirects: node.frontmatter.redirects,
-        file: `${pathPrefix}/${node.frontmatter.uri}/rule.md`,
+        file: `rules/${node.frontmatter.uri}/rule.md`,
         title: node.frontmatter.title,
       },
     });

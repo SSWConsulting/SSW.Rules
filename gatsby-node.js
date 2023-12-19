@@ -7,7 +7,6 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
 const Map = require('core-js/features/map');
-const { pathPrefix } = require('./site-config');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
@@ -199,7 +198,7 @@ exports.createPages = async ({ graphql, actions }) => {
         related: node.frontmatter.related ? node.frontmatter.related : [''],
         uri: node.frontmatter.uri,
         redirects: node.frontmatter.redirects,
-        file: `${pathPrefix}/${node.frontmatter.uri}/rule.md`,
+        file: `rules/${node.frontmatter.uri}/rule.md`,
         title: node.frontmatter.title,
       },
     });

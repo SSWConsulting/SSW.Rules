@@ -5393,7 +5393,7 @@ __metadata:
     react-pose: "npm:^4.0.10"
     sharp: "npm:^0.32.6"
     ssw.megamenu: "npm:3.2.3"
-    ssw.rules.widget: "npm:^2.0.0"
+    ssw.rules.widget: "npm:^2.0.1"
     svg-react-loader: "npm:^0.4.6"
     tailwindcss: "npm:^3.3.3"
     webpack-assets-manifest: "npm:5.1.0"
@@ -21686,9 +21686,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ssw.rules.widget@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "ssw.rules.widget@npm:2.0.0"
+"ssw.rules.widget@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "ssw.rules.widget@npm:2.0.1"
   dependencies:
     "@tanstack/react-query": "npm:^5.14.1"
     date-fns: "npm:^2.30.0"
@@ -21697,7 +21697,7 @@ __metadata:
     react-icons: "npm:^4.12.0"
     style-inject: "npm:^0.3.0"
     vite-plugin-css-injected-by-js: "npm:^3.3.0"
-  checksum: 31a4786e04cd18d7aeb96d9289711fcb38af07949ad6fc400e07c42838b243a1ff8ef9ae24d7971d4b85426c65a407c39c7cdf4a0cfab4b7ee6c633d2445a19a
+  checksum: 06c9701528856aae538dc55d5273ae0aec502af44d6f650bef8b19997da177be81cc79be3b284c66dd2c6d07d9115850a8beda2a030873027993ff1827629dcd
   languageName: node
   linkType: hard
 

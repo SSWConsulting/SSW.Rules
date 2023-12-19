@@ -20,6 +20,7 @@ var configJson = {
     search: false,
     media_folder: 'static/assets',
     public_folder: '/assets',
+    load_config_file: false,
     collections: [
       {
         name: 'rule',

@@ -6,14 +6,19 @@ param (
 $ErrorActionPreference = 'Stop'
 
 $Uri = $AzFunctionBaseUrl + '/api/UpdateLatestRules'
-$Headers = @{'x-functions-key' = $UpdateLatestRulesFunctionKey}
+$Headers = @{'x-functions-key' = $UpdateLatestRulesFunctionKey }
 
-# Send a POST request 
-Invoke-RestMethod -Uri $Uri -Method Post -Headers $Headers
+try {
+    $StatusCode = $null
+    Invoke-RestMethod -Uri $Uri -Method Post -Headers $Headers -StatusCodeVariable StatusCode
 
-$responseObject = ConvertFrom-Json -InputObject $ResponseBody
-if ($responseObject.message -eq "Latest rules updated successfully.") {
-    Write-Host "Latest rules updated successfully!"
-} else {
-    Write-Error "Error updating Latest rules: $responseObject.message"
+    if ($StatusCode -eq 200) {
+        Write-Host "Latest rules updated successfully!"
+    }
+    else {
+        Write-Error "Request failed with status code: $StatusCode"
+    }
+}
+catch {
+    Write-Error "Exception occurred: $_"
 }

@@ -93,7 +93,7 @@ const ProfileContent = (props) => {
         const allRules = props.data.allMarkdownRemark.nodes;
         const bookmarkedGuids =
           success.bookmarkedRules.size != 0
-            ? success.bookmarkedRules.map((r) => r.ruleGuid)
+            ? success.bookmarkedRules.map((r) => r.RuleGuid)
             : null;
         const bookmarkedRulesMap = allRules.filter((value) =>
           bookmarkedGuids.includes(value.frontmatter.guid)
@@ -177,7 +177,7 @@ const ProfileContent = (props) => {
     GetAllLikedDisliked(user.sub)
       .then((success) => {
         const allRules = props.data.allMarkdownRemark.nodes;
-        const reactedGuids = success.likesDislikedRules.map((r) => r.ruleGuid);
+        const reactedGuids = success.likesDislikedRules.map((r) => r.RuleGuid);
         const reactedRules = allRules.filter((value) =>
           reactedGuids.includes(value.frontmatter.guid)
         );
@@ -187,8 +187,8 @@ const ProfileContent = (props) => {
             excerpt: r.excerpt,
             htmlAst: r.htmlAst,
             type: success.likesDislikedRules
-              .filter((v) => v.ruleGuid == r.frontmatter.guid)
-              .map((r) => r.type),
+              .filter((v) => v.RuleGuid == r.frontmatter.guid)
+              .map((r) => r.Type),
           }))
           .filter((rr) => rr.type[0] == Filter.SuperLikes);
         setSuperLikedRules(superLikedRules);
@@ -200,8 +200,8 @@ const ProfileContent = (props) => {
             excerpt: r.excerpt,
             htmlAst: r.htmlAst,
             type: success.likesDislikedRules
-              .filter((v) => v.ruleGuid == r.frontmatter.guid)
-              .map((r) => r.type),
+              .filter((v) => v.RuleGuid == r.frontmatter.guid)
+              .map((r) => r.Type),
           }))
           .filter((rr) => rr.type[0] == Filter.Likes);
         setLikedRules(likedRules ? likedRules : []);
@@ -213,8 +213,8 @@ const ProfileContent = (props) => {
             excerpt: r.excerpt,
             htmlAst: r.htmlAst,
             type: success.likesDislikedRules
-              .filter((v) => v.ruleGuid == r.frontmatter.guid)
-              .map((r) => r.type),
+              .filter((v) => v.RuleGuid == r.frontmatter.guid)
+              .map((r) => r.Type),
           }))
           .filter((rr) => rr.type[0] == Filter.Dislikes);
         setDislikedRules(dislikedRules ? dislikedRules : []);
@@ -226,8 +226,8 @@ const ProfileContent = (props) => {
             excerpt: r.excerpt,
             htmlAst: r.htmlAst,
             type: success.likesDislikedRules
-              .filter((v) => v.ruleGuid == r.frontmatter.guid)
-              .map((r) => r.type),
+              .filter((v) => v.RuleGuid == r.frontmatter.guid)
+              .map((r) => r.Type),
           }))
           .filter((rr) => rr.type[0] == Filter.SuperDislikes);
         setSuperDislikedRules(superDislikedRules);

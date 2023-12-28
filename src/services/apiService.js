@@ -184,7 +184,7 @@ export async function GetUser(userId, token) {
 
   if (!response.ok) return null;
 
-  response.json();
+  return response.json();
 }
 
 export async function ConnectUserCommentsAccount(data, token) {
@@ -194,7 +194,7 @@ export async function ConnectUserCommentsAccount(data, token) {
       message: 'Data is empty or in the wrong format',
     };
   }
-  const response = await fetch(`${API_URL}/ConnectUserCommentsFunction`, {
+  const response = await fetch(`${API_URL}/ConnectUserToCommentsFunction`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

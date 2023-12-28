@@ -30,6 +30,7 @@ const CommentsNotConnected = ({ userCommentsConnected, setState, state }) => {
             setErrorMessage('Username does not exist');
           }
           const jwt = await getIdTokenClaims();
+
           ConnectUserCommentsAccount(
             {
               UserId: user.sub,

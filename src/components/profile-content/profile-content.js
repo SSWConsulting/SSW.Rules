@@ -120,7 +120,6 @@ const ProfileContent = (props) => {
         return post.thread.identifiers[0];
       }
     });
-
     const allRules = props.data.allMarkdownRemark.nodes;
 
     const commentedRulesMap = allRules.filter((value) =>
@@ -153,7 +152,7 @@ const ProfileContent = (props) => {
       if (!success.commentsConnected) {
         setCommentedRulesList([]);
       } else {
-        GetDisqusUserCommentsList(success.user.commentsUserId)
+        GetDisqusUserCommentsList(success.user.CommentsUserId)
           .then((success) => {
             if (success.code == DisqusError.AccessTooLow) {
               // eslint-disable-next-line no-console

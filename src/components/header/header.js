@@ -12,6 +12,8 @@ import {
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { MegaMenuLayout } from '../../dist';
+import classNames from 'classnames';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -40,74 +42,91 @@ const Header = ({ displayActions }) => {
   return (
     <AnimatedContainer>
       <header>
-        <div className="mt-4 mb-3 flex">
-          <div className="column">
-            <div className="flex items-center">
-              <a
-                href={parentSiteUrl}
-                className="ssw-logo unstyled cursor-pointer"
-              >
-                <SSWLogo aria-label="logo" width="113.5" height="75.5" />
-              </a>
-              <div className="my-4 leading-[1.2] ml-2 text-[2.5rem]">
-                <a href="/rules">Rules</a>
-              </div>
-            </div>
-            <p className={displayActions ? 'tagline-hidden' : 'tagline'}>
-              Secret ingredients to quality software
-            </p>
-          </div>
-          <div className="action-btn-container flex justify-items-end align-middle">
-            <Tooltip text="Try out RulesGPT" showDelay={3000} hideDelay={18000}>
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://rulesgpt.ssw.com.au"
-                className="action-btn-link-underlined"
-                onClick={() => {
-                  appInsights.trackEvent({
-                    name: 'RulesGPTButtonPressed',
-                  });
-                }}
-              >
-                <GPTIcon className="group group-hover:[&>circle]:fill-ssw-red" />
-              </a>
-            </Tooltip>
-
-            <Tooltip text="Create an SSW Rule">
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={`${pathPrefix}/admin/#/collections/rule/new`}
-                className="action-btn-link-underlined"
-              >
-                <FontAwesomeIcon
-                  icon={faPlusCircle}
-                  className="header-icon"
-                  size="2x"
-                />
-              </a>
-            </Tooltip>
-
-            <Tooltip text="SSW Rules wiki">
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki"
-                className="action-btn-link-underlined"
-              >
-                <FontAwesomeIcon
-                  icon={faQuestionCircle}
-                  className="header-icon"
-                  size="2x"
-                />
-              </a>
-            </Tooltip>
-            <SignIn />
-          </div>
-        </div>
+        <MegaMenuLayout
+          logoOverride={() => <Logo displayActions={displayActions} />}
+          sideActionsOverride={() => <ActionButtons />}
+        />
       </header>
     </AnimatedContainer>
+  );
+};
+
+const Logo = ({ displayActions }) => {
+  return (
+    <div className="column">
+      <div className="flex items-center">
+        <a href={parentSiteUrl} className="unstyled cursor-pointer">
+          <SSWLogo aria-label="logo" width="100" height="60" />
+        </a>
+        <div className="mt-2 mb-3 leading-5 ml-2 text-4xl">
+          <a href="/rules">Rules</a>
+        </div>
+      </div>
+      <p
+        className={classNames('text-xs text-ssw-black relative opacity-70', {
+          hidden: displayActions,
+        })}
+      >
+        Secret ingredients to quality software
+      </p>
+    </div>
+  );
+};
+
+Logo.propTypes = {
+  displayActions: PropTypes.bool.isRequired,
+};
+
+const ActionButtons = () => {
+  return (
+    <div className="action-btn-container flex justify-items-end align-middle">
+      <Tooltip text="Try out RulesGPT" showDelay={3000} hideDelay={18000}>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://rulesgpt.ssw.com.au"
+          className="action-btn-link-underlined"
+          onClick={() => {
+            appInsights.trackEvent({
+              name: 'RulesGPTButtonPressed',
+            });
+          }}
+        >
+          <GPTIcon className="group group-hover:[&>circle]:fill-ssw-red" />
+        </a>
+      </Tooltip>
+
+      <Tooltip text="Create an SSW Rule">
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${pathPrefix}/admin/#/collections/rule/new`}
+          className="action-btn-link-underlined"
+        >
+          <FontAwesomeIcon
+            icon={faPlusCircle}
+            className="header-icon"
+            size="2x"
+          />
+        </a>
+      </Tooltip>
+
+      <Tooltip text="SSW Rules wiki">
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki"
+          className="action-btn-link-underlined"
+        >
+          <FontAwesomeIcon
+            icon={faQuestionCircle}
+            className="header-icon"
+            size="2x"
+          />
+        </a>
+      </Tooltip>
+      <SignIn />
+    </div>
   );
 };
 

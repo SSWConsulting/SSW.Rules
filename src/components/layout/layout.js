@@ -5,12 +5,10 @@ import Head from '../head/head';
 import Header from '../header/header';
 import Footer from '../footer/footer';
 import '../../style.css';
-import { MegaMenuLayout } from '../../dist';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { Auth0Provider } from '@auth0/auth0-react';
 import '../../dist/style.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
-import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
 
 config.autoAddCss = false;
 const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
@@ -54,22 +52,7 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
                 crumbLabel == 'SSW Rules' ? 'Latest Rules' : crumbLabel
               }
             />
-            {/* <Header displayActions={displayActions} ruleUri={ruleUri} /> */}
-            <MegaMenuLayout
-              Logo={() => (
-                <div className="column">
-                  <div className="flex items-center">
-                    <SSWLogo aria-label="logo" width="100" height="60" />
-                    <div className="mt-2 mb-3 leading-[1.2] ml-2 text-4xl">
-                      <a href="/rules">Rules</a>
-                    </div>
-                  </div>
-                  <p className="text-xs text-ssw-black relative opacity-70">
-                    Secret ingredients to quality software
-                  </p>
-                </div>
-              )}
-            />
+            <Header displayActions={displayActions} ruleUri={ruleUri} />
             <main className="flex-1">{children}</main>
           </div>
           <Footer />

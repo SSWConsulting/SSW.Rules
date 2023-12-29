@@ -226,7 +226,6 @@ footer {
 
 .action-btn-container {
   margin-left: auto;
-  order: 2;
   display: flex;
   align-items: center;
 }

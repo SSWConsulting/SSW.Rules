@@ -45,6 +45,7 @@ const Header = ({ displayActions }) => {
         <MegaMenuLayout
           logoOverride={() => <Logo displayActions={displayActions} />}
           sideActionsOverride={() => <ActionButtons />}
+          hidePhone
         />
       </header>
     </AnimatedContainer>
@@ -79,7 +80,7 @@ Logo.propTypes = {
 
 const ActionButtons = () => {
   return (
-    <div className="action-btn-container flex justify-items-end align-middle">
+    <div className="action-btn-container max-sm:order-2 flex justify-items-end align-middle">
       <Tooltip text="Try out RulesGPT" showDelay={3000} hideDelay={18000}>
         <a
           target="_blank"

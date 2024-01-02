@@ -7,7 +7,6 @@ import Footer from '../footer/footer';
 import '../../style.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { Auth0Provider } from '@auth0/auth0-react';
-import '../../dist/style.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
 config.autoAddCss = false;

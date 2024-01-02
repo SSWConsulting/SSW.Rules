@@ -2,18 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
 import Tooltip from '../tooltip/tooltip';
-import SSWLogo from '-!svg-react-loader!../../images/SSWLogo.svg';
 import GPTIcon from '-!svg-react-loader!../../images/chatgpt_icon.svg';
 import SignIn from '../signin/signin';
-import { parentSiteUrl, pathPrefix } from '../../../site-config';
+import { pathPrefix } from '../../../site-config';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlusCircle,
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-import { MegaMenuLayout } from '../../dist';
-import classNames from 'classnames';
+import { MegaMenuLayout } from 'ssw.megamenu';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -43,39 +41,14 @@ const Header = ({ displayActions }) => {
     <AnimatedContainer>
       <header>
         <MegaMenuLayout
-          logoOverride={() => <Logo displayActions={displayActions} />}
+          title="Rules"
+          subtitle="Secret ingredients to quality software"
           sideActionsOverride={() => <ActionButtons />}
           hidePhone
         />
       </header>
     </AnimatedContainer>
   );
-};
-
-const Logo = ({ displayActions }) => {
-  return (
-    <div className="column">
-      <div className="flex items-center">
-        <a href={parentSiteUrl} className="unstyled cursor-pointer">
-          <SSWLogo aria-label="logo" width="100" height="60" />
-        </a>
-        <div className="mt-2 mb-3 leading-5 ml-2 text-4xl">
-          <a href="/rules">Rules</a>
-        </div>
-      </div>
-      <p
-        className={classNames('text-xs text-ssw-black relative opacity-70', {
-          hidden: displayActions,
-        })}
-      >
-        Secret ingredients to quality software
-      </p>
-    </div>
-  );
-};
-
-Logo.propTypes = {
-  displayActions: PropTypes.bool.isRequired,
 };
 
 const ActionButtons = () => {

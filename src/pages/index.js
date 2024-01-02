@@ -1,4 +1,4 @@
-import { Link, StaticQuery, graphql } from 'gatsby';
+import { Link, useStaticQuery, graphql } from 'gatsby';
 import {
   faArchive,
   faPause,
@@ -32,7 +32,7 @@ const Index = ({ data, location }) => {
               <Link to={'/latest-rules?size=50'} className="group unstyled">
                 <FontAwesomeIcon
                   icon={faBolt}
-                  size={30}
+                  size="lg"
                   className="group-hover:text-ssw-red transition ease-in-out delay-75 duration-150"
                 />{' '}
                 <span className="text-lg underline decoration-underline duration-150 group-hover:decoration-ssw-red group-hover:text-ssw-red transition ease-in-out delay-75">
@@ -106,88 +106,87 @@ Index.propTypes = {
   location: PropTypes.object,
 };
 
-const IndexWithQuery = (props) => (
-  <StaticQuery
-    query={graphql`
-      query HomepageQuery {
-        main: allMarkdownRemark(
-          filter: {
-            fileAbsolutePath: { regex: "/(categories)/" }
-            frontmatter: { type: { eq: "main" } }
-          }
-        ) {
-          nodes {
-            html
-            frontmatter {
-              type
-              title
-              index
-            }
-            parent {
-              ... on File {
-                name
-              }
-            }
-          }
+function IndexWithQuery(props) {
+  const data = useStaticQuery(graphql`
+    query HomepageQuery {
+      main: allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/(categories)/" }
+          frontmatter: { type: { eq: "main" } }
         }
-        topCategories: allMarkdownRemark(
-          filter: {
-            fileAbsolutePath: { regex: "/(categories)/" }
-            frontmatter: { type: { eq: "top-category" } }
+      ) {
+        nodes {
+          html
+          frontmatter {
+            type
+            title
+            index
           }
-        ) {
-          nodes {
-            html
-            frontmatter {
-              type
-              title
-              index
-            }
-            parent {
-              ... on File {
-                name
-                relativeDirectory
-              }
-            }
-          }
-        }
-        categories: allMarkdownRemark(
-          filter: {
-            fileAbsolutePath: { regex: "/(categories)/" }
-            frontmatter: { type: { eq: "category" } }
-          }
-        ) {
-          nodes {
-            html
-            frontmatter {
-              type
-              title
-              index
-              archivedreason
-            }
-            parent {
-              ... on File {
-                name
-                relativeDirectory
-              }
-            }
-          }
-        }
-        rules: allMarkdownRemark(
-          filter: { frontmatter: { type: { eq: "rule" } } }
-        ) {
-          nodes {
-            frontmatter {
-              title
-              uri
-              archivedreason
+          parent {
+            ... on File {
+              name
             }
           }
         }
       }
-    `}
-    render={(data) => <Index data={data} {...props} />}
-  />
-);
+      topCategories: allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/(categories)/" }
+          frontmatter: { type: { eq: "top-category" } }
+        }
+      ) {
+        nodes {
+          html
+          frontmatter {
+            type
+            title
+            index
+          }
+          parent {
+            ... on File {
+              name
+              relativeDirectory
+            }
+          }
+        }
+      }
+      categories: allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/(categories)/" }
+          frontmatter: { type: { eq: "category" } }
+        }
+      ) {
+        nodes {
+          html
+          frontmatter {
+            type
+            title
+            index
+            archivedreason
+          }
+          parent {
+            ... on File {
+              name
+              relativeDirectory
+            }
+          }
+        }
+      }
+      rules: allMarkdownRemark(
+        filter: { frontmatter: { type: { eq: "rule" } } }
+      ) {
+        nodes {
+          frontmatter {
+            title
+            uri
+            archivedreason
+          }
+        }
+      }
+    }
+  `);
+
+  return <Index data={data} {...props} />;
+}
 
 export default IndexWithQuery;

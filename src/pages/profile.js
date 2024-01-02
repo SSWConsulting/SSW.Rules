@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { StaticQuery, graphql } from 'gatsby';
+import { useStaticQuery, graphql } from 'gatsby';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import ProfileBadge from '../components/profile-badge/profile-badge';
 import ProfileContent from '../components/profile-content/profile-content';
@@ -143,29 +143,28 @@ Profile.propTypes = {
   gitHubUsername: PropTypes.string,
 };
 
-const ProfileWithQuery = (props) => (
-  <StaticQuery
-    query={graphql`
-      query ProfilePageQuery {
-        allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
-          nodes {
-            excerpt(format: HTML, pruneLength: 500)
-            frontmatter {
+function ProfileWithQuery(props) {
+  const data = useStaticQuery(graphql`
+    query ProfilePageQuery {
+      allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
+        nodes {
+          excerpt(format: HTML, pruneLength: 500)
+          frontmatter {
+            title
+            uri
+            guid
+            authors {
               title
-              uri
-              guid
-              authors {
-                title
-              }
             }
-            htmlAst
           }
+          htmlAst
         }
       }
-    `}
-    render={(data) => <Profile data={data} {...props} />}
-  />
-);
+    }
+  `);
+
+  return <Profile data={data} {...props} />;
+}
 
 ProfilePage.propTypes = {
   gitHubUsername: PropTypes.string,

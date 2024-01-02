@@ -78,20 +78,18 @@ export default function Category({ data }) {
                 </span>
               </h1>
 
-              <Tooltip text="Edit in GitHub">
-                <button className="mt-1 justify-self-end">
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${category.parent.relativePath}`}
-                  >
-                    <FontAwesomeIcon
-                      icon={faGithub}
-                      size="2x"
-                      className="category-icon bookmark-icon"
-                    />
-                  </a>
-                </button>
+              <Tooltip text="Edit in GitHub" className="mt-1 justify-self-end">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${category.parent.relativePath}`}
+                >
+                  <FontAwesomeIcon
+                    icon={faGithub}
+                    size="2x"
+                    className="category-icon bookmark-icon"
+                  />
+                </a>
               </Tooltip>
             </div>
 

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { StaticQuery, graphql } from 'gatsby';
+import { useStaticQuery, StaticQuery, graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -160,88 +160,87 @@ Archived.propTypes = {
   location: PropTypes.object.isRequired,
 };
 
-const ArchivedWithQuery = (props) => (
-  <StaticQuery
-    query={graphql`
-      query ArchiveQuery {
-        main: allMarkdownRemark(
-          filter: {
-            fileAbsolutePath: { regex: "/(categories)/" }
-            frontmatter: { type: { eq: "main" } }
-          }
-        ) {
-          nodes {
-            html
-            frontmatter {
-              type
-              title
-              index
-            }
-            parent {
-              ... on File {
-                name
-              }
-            }
-          }
+function ArchivedWithQuery(props) {
+  const data = useStaticQuery(graphql`
+    query ArchiveQuery {
+      main: allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/(categories)/" }
+          frontmatter: { type: { eq: "main" } }
         }
-        topCategories: allMarkdownRemark(
-          filter: {
-            fileAbsolutePath: { regex: "/(categories)/" }
-            frontmatter: { type: { eq: "top-category" } }
+      ) {
+        nodes {
+          html
+          frontmatter {
+            type
+            title
+            index
           }
-        ) {
-          nodes {
-            html
-            frontmatter {
-              type
-              title
-              index
-            }
-            parent {
-              ... on File {
-                name
-                relativeDirectory
-              }
-            }
-          }
-        }
-        categories: allMarkdownRemark(
-          filter: {
-            fileAbsolutePath: { regex: "/(categories)/" }
-            frontmatter: { type: { eq: "category" } }
-          }
-        ) {
-          nodes {
-            html
-            frontmatter {
-              type
-              title
-              archivedreason
-              index
-            }
-            parent {
-              ... on File {
-                name
-                relativeDirectory
-              }
-            }
-          }
-        }
-        rules: allMarkdownRemark(
-          filter: { frontmatter: { type: { eq: "rule" } } }
-        ) {
-          nodes {
-            frontmatter {
-              uri
-              archivedreason
-              title
+          parent {
+            ... on File {
+              name
             }
           }
         }
       }
-    `}
-    render={(data) => <Archived data={data} {...props} />}
-  />
-);
+      topCategories: allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/(categories)/" }
+          frontmatter: { type: { eq: "top-category" } }
+        }
+      ) {
+        nodes {
+          html
+          frontmatter {
+            type
+            title
+            index
+          }
+          parent {
+            ... on File {
+              name
+              relativeDirectory
+            }
+          }
+        }
+      }
+      categories: allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/(categories)/" }
+          frontmatter: { type: { eq: "category" } }
+        }
+      ) {
+        nodes {
+          html
+          frontmatter {
+            type
+            title
+            archivedreason
+            index
+          }
+          parent {
+            ... on File {
+              name
+              relativeDirectory
+            }
+          }
+        }
+      }
+      rules: allMarkdownRemark(
+        filter: { frontmatter: { type: { eq: "rule" } } }
+      ) {
+        nodes {
+          frontmatter {
+            uri
+            archivedreason
+            title
+          }
+        }
+      }
+    }
+  `);
+
+  return <Archived data={data} {...props} />;
+}
 
 export default ArchivedWithQuery;

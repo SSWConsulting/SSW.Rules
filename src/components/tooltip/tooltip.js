@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-const Tooltip = ({ children, text, showDelay, hideDelay }) => {
+const Tooltip = ({ children, text, showDelay, hideDelay, className = '' }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const Tooltip = ({ children, text, showDelay, hideDelay }) => {
 
   return (
     <button
-      className="group relative flex h-10 items-center justify-center"
+      className={`group relative flex h-10 items-center justify-center ${className}`}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
@@ -50,6 +50,7 @@ Tooltip.propTypes = {
   text: PropTypes.string.isRequired,
   showDelay: PropTypes.number,
   hideDelay: PropTypes.number,
+  className: PropTypes.string,
 };
 
 export default Tooltip;

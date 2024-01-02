@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StaticQuery, graphql } from 'gatsby';
+import { useStaticQuery, graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
@@ -272,90 +272,89 @@ Orphaned.propTypes = {
   location: PropTypes.object.isRequired,
 };
 
-const OrphanedWithQuery = (props) => (
-  <StaticQuery
-    query={graphql`
-      query OrphanedQuery {
-        main: allMarkdownRemark(
-          filter: {
-            fileAbsolutePath: { regex: "/(categories)/" }
-            frontmatter: { type: { eq: "main" } }
-          }
-        ) {
-          nodes {
-            html
-            frontmatter {
-              type
-              title
-              index
-            }
-            parent {
-              ... on File {
-                name
-              }
-            }
-          }
+function OrphanedWithQuery(props) {
+  const data = useStaticQuery(graphql`
+    query OrphanedQuery {
+      main: allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/(categories)/" }
+          frontmatter: { type: { eq: "main" } }
         }
-        topCategories: allMarkdownRemark(
-          filter: {
-            fileAbsolutePath: { regex: "/(categories)/" }
-            frontmatter: { type: { eq: "top-category" } }
+      ) {
+        nodes {
+          html
+          frontmatter {
+            type
+            title
+            index
           }
-        ) {
-          nodes {
-            html
-            frontmatter {
-              type
-              title
-              index
+          parent {
+            ... on File {
+              name
             }
-            parent {
-              ... on File {
-                name
-                relativeDirectory
-              }
-            }
-          }
-        }
-        categories: allMarkdownRemark(
-          filter: {
-            fileAbsolutePath: { regex: "/(categories)/" }
-            frontmatter: { type: { eq: "category" } }
-          }
-        ) {
-          nodes {
-            html
-            frontmatter {
-              type
-              title
-              archivedreason
-              index
-            }
-            parent {
-              ... on File {
-                name
-                relativeDirectory
-              }
-            }
-          }
-        }
-        rules: allMarkdownRemark(
-          filter: { frontmatter: { type: { eq: "rule" } } }
-        ) {
-          nodes {
-            frontmatter {
-              uri
-              archivedreason
-              title
-            }
-            html
-            excerpt(format: HTML, pruneLength: 500)
           }
         }
       }
-    `}
-    render={(data) => <Orphaned data={data} {...props} />}
-  />
-);
+      topCategories: allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/(categories)/" }
+          frontmatter: { type: { eq: "top-category" } }
+        }
+      ) {
+        nodes {
+          html
+          frontmatter {
+            type
+            title
+            index
+          }
+          parent {
+            ... on File {
+              name
+              relativeDirectory
+            }
+          }
+        }
+      }
+      categories: allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/(categories)/" }
+          frontmatter: { type: { eq: "category" } }
+        }
+      ) {
+        nodes {
+          html
+          frontmatter {
+            type
+            title
+            archivedreason
+            index
+          }
+          parent {
+            ... on File {
+              name
+              relativeDirectory
+            }
+          }
+        }
+      }
+      rules: allMarkdownRemark(
+        filter: { frontmatter: { type: { eq: "rule" } } }
+      ) {
+        nodes {
+          frontmatter {
+            uri
+            archivedreason
+            title
+          }
+          html
+          excerpt(format: HTML, pruneLength: 500)
+        }
+      }
+    }
+  `);
+
+  return <Orphaned data={data} {...props} />;
+}
 
 export default OrphanedWithQuery;

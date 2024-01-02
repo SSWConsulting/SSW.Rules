@@ -47,9 +47,10 @@ const Breadcrumbs = ({
 
   return (
     <div className="m-4 md:mx-2 md:ml-4 h-full flex">
-      <Link to={parentSiteUrl} className="mx-2 h-full">
+      {/* `parentSiteUrl` is absolute, `Link` only supports relative urls */}
+      <a href={parentSiteUrl} className="mx-2 h-full">
         <img alt="SSW Foursquare" src={Icon} className="w-4 mt-1" />
-      </Link>
+      </a>
       <div className="w-full">
         <ul className="flex flex-col md:flex-row align-middle breadcrumb">
           <li className="w-auto flex">

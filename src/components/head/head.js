@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { StaticQuery, graphql } from 'gatsby';
+import { useStaticQuery, graphql } from 'gatsby';
 import { Location } from '@reach/router';
 import schemaGenerator from '../../helpers/schemaGenerator';
 import { pathPrefix } from '../../../site-config';
@@ -195,34 +195,33 @@ Head.propTypes = {
   location: PropTypes.object.isRequired,
 };
 
-const HeadWithQuery = (props) => (
-  <StaticQuery
-    query={graphql`
-      query {
-        site {
-          siteMetadata {
-            siteTitle
-            siteTitleShort
-            siteDescription
-            siteUrl
-            parentSiteUrl
-            themeColor
-            social {
-              twitter
-              fbAppId
-            }
+function HeadWithQuery(props) {
+  const data = useStaticQuery(graphql`
+    query {
+      site {
+        siteMetadata {
+          siteTitle
+          siteTitleShort
+          siteDescription
+          siteUrl
+          parentSiteUrl
+          themeColor
+          social {
+            twitter
+            fbAppId
           }
         }
       }
-    `}
-    render={(data) => (
-      <Location>
-        {({ location }) => (
-          <Head {...data.site.siteMetadata} {...props} location={location} />
-        )}
-      </Location>
-    )}
-  />
-);
+    }
+  `);
+
+  return (
+    <Location>
+      {({ location }) => (
+        <Head {...data.site.siteMetadata} {...props} location={location} />
+      )}
+    </Location>
+  );
+}
 
 export default HeadWithQuery;

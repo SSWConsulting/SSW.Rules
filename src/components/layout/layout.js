@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { StaticQuery, graphql, navigate } from 'gatsby';
+import { useStaticQuery, graphql, navigate } from 'gatsby';
 import Head from '../head/head';
 import Header from '../header/header';
 import Footer from '../footer/footer';
@@ -71,20 +71,19 @@ Layout.propTypes = {
   crumbLabel: PropTypes.string,
 };
 
-const LayoutWithQuery = (props) => (
-  <StaticQuery
-    query={graphql`
-      query LayoutQuery {
-        site {
-          siteMetadata {
-            siteTitle
-          }
+function LayoutWithQuery(props) {
+  const data = useStaticQuery(graphql`
+    query LayoutQuery {
+      site {
+        siteMetadata {
+          siteTitle
         }
       }
-    `}
-    render={(data) => <Layout data={data} {...props} />}
-  />
-);
+    }
+  `);
+
+  return <Layout data={data} {...props} />;
+}
 
 LayoutWithQuery.propTypes = {
   children: PropTypes.node.isRequired,

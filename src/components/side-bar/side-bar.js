@@ -7,7 +7,6 @@ import React from 'react';
 import { RulesWidget } from 'ssw.rules.widget';
 import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
-import { pathPrefix } from '../../../site-config';
 
 const SideBar = ({ ruleTotalNumber, hideCount }) => {
   return (
@@ -34,14 +33,7 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
 
       <section id="widget">
         {/*TODO: Fix this - Currently removing to stop this from working until this is fixed  */}
-        <RulesWidget
-          githubToken={''}
-          appInsightsToken={
-            process.env.RULESWIDGET_APPINSIGHTS_INSTRUMENTATIONKEY
-          }
-          location={pathPrefix}
-          numberOfRules={10}
-        />
+        <RulesWidget />
       </section>
       <section>
         <h4>Why all these rules?</h4>

@@ -43,7 +43,7 @@ const Header = ({ displayActions }) => {
         <MegaMenuLayout
           title="Rules"
           subtitle="Secret ingredients to quality software"
-          sideActionsOverride={() => <ActionButtons />}
+          rightSideActionsOverride={() => <ActionButtons />}
           hidePhone
         />
       </header>

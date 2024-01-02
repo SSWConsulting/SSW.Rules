@@ -5,7 +5,7 @@ param (
 
 $ErrorActionPreference = 'Stop'
 
-$Uri = $AzFunctionBaseUrl + '/api/UpdateLatestRules'
+$Uri = $AzFunctionBaseUrl + '/UpdateLatestRules'
 $Headers = @{'x-functions-key' = $UpdateLatestRulesFunctionKey }
 
 try {

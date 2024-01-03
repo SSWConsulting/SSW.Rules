@@ -84,7 +84,11 @@ const Header = ({ displayActions }) => {
         <MegaMenuLayout
           title="Rules"
           menuBarItems={menuItems}
-          subtitle="Secret ingredients to quality software"
+          subtitle={
+            displayActions
+              ? undefined
+              : 'Secret ingredients to quality software'
+          }
           rightSideActionsOverride={() => <ActionButtons />}
           hidePhone
         />

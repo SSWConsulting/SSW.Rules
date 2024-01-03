@@ -12,6 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { MegaMenuLayout } from 'ssw.megamenu';
+import { graphql, useStaticQuery } from 'gatsby';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -37,11 +38,52 @@ const AnimatedContainer = posed.div({
   },
 });
 const Header = ({ displayActions }) => {
+  const menuGroups = useStaticQuery(graphql`
+    query {
+      allMegaMenuGroup {
+        edges {
+          node {
+            name
+            url
+            menuColumns {
+              menuColumnGroups {
+                name
+                menuItems {
+                  name
+                  url
+                  description
+                  iconImg
+                }
+              }
+            }
+            sidebarItems {
+              name
+              items {
+                name
+                url
+                description
+                widgetType
+                icon
+              }
+            }
+            viewAll {
+              name
+              url
+            }
+          }
+        }
+      }
+    }
+  `);
+
+  const menuItems = menuGroups.allMegaMenuGroup.edges.map((edge) => edge.node);
+
   return (
     <AnimatedContainer>
       <header>
         <MegaMenuLayout
           title="Rules"
+          menuBarItems={menuItems}
           subtitle="Secret ingredients to quality software"
           rightSideActionsOverride={() => <ActionButtons />}
           hidePhone

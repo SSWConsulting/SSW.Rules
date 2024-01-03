@@ -7,6 +7,8 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
 const Map = require('core-js/features/map');
+const axios = require('axios');
+const { createContentDigest } = require('gatsby-core-utils');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
@@ -233,4 +235,25 @@ exports.onPostBuild = async ({ store, pathPrefix }) => {
     ...new Map(rewrites.map((item) => [item.fromPath, item])).values(),
   ];
   await createRewriteMap.writeRewriteMapsFile(pluginData, allRewritesUnique);
+};
+
+exports.sourceNodes = async ({ actions, createNodeId }) => {
+  const { createNode } = actions;
+  const res = await axios.get('https://ssw.com.au/api/get-megamenu');
+  const menuData = res.data;
+
+  menuData?.menuGroups.forEach((group) => {
+    const node = {
+      id: createNodeId(`megamenugroup-${group.name}`),
+      parent: null,
+      children: [],
+      internal: {
+        type: 'MegaMenuGroup',
+        contentDigest: createContentDigest(group),
+      },
+      ...group,
+    };
+
+    createNode(node);
+  });
 };

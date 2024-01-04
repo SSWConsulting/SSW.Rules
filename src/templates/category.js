@@ -35,6 +35,7 @@ export default function Category({ data }) {
 
   const [selectedOption, setSelectedOption] = useState('all');
   const [showViewButton, setShowViewButton] = useState(false);
+  const [includeArchived, setIncludeArchived] = useState(false);
 
   useEffect(() => {
     setShowViewButton(true);
@@ -44,14 +45,18 @@ export default function Category({ data }) {
     setSelectedOption(e.target.value);
   };
 
+  const handleIncludeArchivedChange = () => {
+    setIncludeArchived(!includeArchived);
+  };
+
   const components = {
     greyBox: GreyBox,
   };
 
   var rules = data.rule.nodes
-    // .filter((r) => {
-    //   return !r.frontmatter.archivedreason;
-    // })
+    .filter((r) => {
+      return includeArchived || !r.frontmatter.archivedreason;
+    })
     .filter((r) => {
       return category.frontmatter.index.includes(r.frontmatter.uri);
     });
@@ -150,6 +155,17 @@ export default function Category({ data }) {
                   labelText="Gimme everything!"
                   icon={faBook}
                 />
+                <div>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={includeArchived}
+                      onChange={handleIncludeArchivedChange}
+                      className="form-checkbox h-5 w-5 text-ssw-red"
+                    />
+                    <span className="ml-2">Include Archived</span>
+                  </label>
+                </div>
               </div>
             )}
 

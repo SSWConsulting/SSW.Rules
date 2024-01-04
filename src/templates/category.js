@@ -49,9 +49,9 @@ export default function Category({ data }) {
   };
 
   var rules = data.rule.nodes
-    .filter((r) => {
-      return !r.frontmatter.archivedreason;
-    })
+    // .filter((r) => {
+    //   return !r.frontmatter.archivedreason;
+    // })
     .filter((r) => {
       return category.frontmatter.index.includes(r.frontmatter.uri);
     });

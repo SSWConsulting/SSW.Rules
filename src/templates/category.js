@@ -155,8 +155,8 @@ export default function Category({ data }) {
                   labelText="Gimme everything!"
                   icon={faBook}
                 />
-                <div>
-                  <label className="inline-flex items-center">
+                <div className="rule-category-checkbox">
+                  <label className="rule-category-checkbox-label">
                     <input
                       type="checkbox"
                       checked={includeArchived}
@@ -188,6 +188,11 @@ export default function Category({ data }) {
                                 state={{ category: category.parent.name }}
                               >
                                 {rule.frontmatter.title}
+                                {rule.frontmatter.archivedreason && (
+                                  <span className="rule-category-archived-badge ml-2">
+                                    Archived
+                                  </span>
+                                )}
                               </Link>
                             </h2>
                             <div className="rule-buttons category flex flex-col sm:flex-row">

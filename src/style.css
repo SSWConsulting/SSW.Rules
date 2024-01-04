@@ -24,6 +24,12 @@
   font-style: normal;
 }
 
+@layer base {
+  header nav {
+    @apply overflow-visible !important;
+  }
+}
+
 *, ::before, ::after {
   border-style: none;
 }

@@ -1,7 +1,7 @@
 const plugin = require('tailwindcss/plugin');
 
 module.exports = {
-  content: ['./src/**/*.js'],
+  content: ['./src/**/*.js', './node_modules/ssw.megamenu/**/*.js'],
   theme: {
     extend: {
       fontSize: {

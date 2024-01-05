@@ -5,10 +5,8 @@ import Head from '../head/head';
 import Header from '../header/header';
 import Footer from '../footer/footer';
 import '../../style.css';
-import { MenuBar } from 'ssw.megamenu';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { Auth0Provider } from '@auth0/auth0-react';
-import 'ssw.megamenu/dist/style.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
 config.autoAddCss = false;
@@ -54,7 +52,6 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
               }
             />
             <Header displayActions={displayActions} ruleUri={ruleUri} />
-            <MenuBar />
             <main className="flex-1">{children}</main>
           </div>
           <Footer />

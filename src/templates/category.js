@@ -161,7 +161,7 @@ export default function Category({ data }) {
                       type="checkbox"
                       checked={includeArchived}
                       onChange={handleIncludeArchivedChange}
-                      className="form-checkbox h-5 w-5 text-ssw-red"
+                      className="h-5 w-5 accent-ssw-red"
                     />
                     <span className="ml-2">Include Archived</span>
                   </label>

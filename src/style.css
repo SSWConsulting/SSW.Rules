@@ -825,24 +825,22 @@ blockquote p:after {
 
 .rule-category-checkbox {
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
 .rule-category-checkbox-label {
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 .rule-category-archived-badge {
   display: inline-block;
-  padding: 0.1rem 0.4rem; /* Adjusted padding */
-  background-color: #ff4d4f; /* Red background color */
-  color: #fff; /* White text color */
-  font-size: 0.8rem; /* Adjusted font size */
-  border-radius: 4px; /* Optional: Rounded corners */
-  vertical-align: middle; /* Align with the middle of the line height */
+  padding: 0.1rem 0.4rem;
+  background-color: #cc4141;
+  color: #fff;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  vertical-align: middle;
 }
 
 /* Single Rule

@@ -33,7 +33,7 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
 
       <section id="widget">
         {/*TODO: Fix this - Currently removing to stop this from working until this is fixed  */}
-        <RulesWidget />
+        <RulesWidget latestRulesUrl="" />
       </section>
       <section>
         <h4>Why all these rules?</h4>

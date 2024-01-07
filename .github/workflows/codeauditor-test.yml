@@ -10,8 +10,16 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    permissions: 
+      issues: write
     steps:
-      - name: 'SSW CodeAuditor - Check broken links and performance'
-        continue-on-error: true
-        run: 'docker container run --cap-add=SYS_ADMIN sswconsulting/codeauditor --token ${{ secrets.CODEAUDITOR_TOKEN }} --url https://www.ssw.com.au/rules/ --maxthread 200'
+      - uses: actions/checkout@v3
+      - name: CodeAuditor Workflow
+        uses: SSWConsulting/codeauditor-scan-site@1.0.0
+        with:
+          # Your CodeAuditor token
+          token: ${{ secrets.CODEAUDITOR_TOKEN }}
+          # Your Scan URL
+          url: https://www.ssw.com.au/rules/
+          # Your GitHub Token
+          GitHub_Token: ${{ github.token }}

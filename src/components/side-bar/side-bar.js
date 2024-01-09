@@ -4,7 +4,7 @@ import GavelIcon from '-!svg-react-loader!../../images/gavel.svg';
 import { NumericFormat } from 'react-number-format';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { RulesWidget } from 'ssw.rules.widget';
+// import { RulesWidget } from 'ssw.rules.widget';
 import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 

@@ -3,10 +3,7 @@ name: Playwright Tests
 on:
   pull_request:
     branches:
-      include:
       - release/*
-      exclude:
-        - main
 
 jobs:
   test:

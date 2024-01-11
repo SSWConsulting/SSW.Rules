@@ -4,7 +4,7 @@ import GavelIcon from '-!svg-react-loader!../../images/gavel.svg';
 import { NumericFormat } from 'react-number-format';
 import PropTypes from 'prop-types';
 import React from 'react';
-// import { RulesWidget } from 'ssw.rules.widget';
+import { RulesWidget } from 'ssw.rules.widget';
 import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 
@@ -33,7 +33,7 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
 
       <section id="widget">
         {/*TODO: Fix this - Currently removing to stop this from working until this is fixed  */}
-        {/* <RulesWidget /> */}
+        <RulesWidget />
       </section>
       <section>
         <h4>Why all these rules?</h4>

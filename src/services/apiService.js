@@ -184,7 +184,7 @@ export async function GetUser(userId, token) {
 
   if (!response.ok) return null;
 
-  response.json();
+  return response.json();
 }
 
 export async function ConnectUserCommentsAccount(data, token) {

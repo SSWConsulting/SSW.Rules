@@ -1,9 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
+import { graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import Tooltip from '../components/tooltip/tooltip';
 import RadioButton from '../components/radio-button/radio-button';
 import { Link } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -44,39 +43,7 @@ const Orphaned = ({ data }) => {
     setSelectedOption(e.target.value);
   };
 
-  /**
-   * Get all rules that don't have an associated category
-   * @param {Object} rules All rule nodes
-   * @param {Object} categories All category nodes
-   * @return {array} All rules without an associated category
-   */
-  const findOrphanedRules = (rules, categories) => {
-    const orphanedRules = [];
-
-    rules.nodes.forEach((node) => {
-      // Find any rules missing a category
-      var match = false;
-      if (!node.frontmatter.archivedreason) {
-        categories.nodes.forEach((catNode) => {
-          catNode.frontmatter.index.forEach((inCat) => {
-            if (node.frontmatter.uri == inCat) {
-              match = true;
-            }
-          });
-        });
-      } else {
-        match = true;
-      }
-      if (match == false) {
-        orphanedRules.push(node);
-      }
-    });
-
-    return orphanedRules;
-  };
-
-  const category = data.categories.nodes[0];
-  const rules = findOrphanedRules(data.rules, data.categories);
+  const rules = data.rules.nodes;
 
   return (
     <div>
@@ -258,41 +225,20 @@ Orphaned.propTypes = {
   location: PropTypes.object.isRequired,
 };
 
-function OrphanedWithQuery(props) {
-  const data = useStaticQuery(graphql`
-    query OrphanedQuery {
-      categories: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "category" } }
+export default Orphaned;
+
+export const query = graphql`
+  query ($index: [String]!) {
+    rules: allMarkdownRemark(filter: { frontmatter: { uri: { in: $index } } }) {
+      nodes {
+        frontmatter {
+          uri
+          archivedreason
+          title
         }
-      ) {
-        nodes {
-          frontmatter {
-            type
-            title
-            archivedreason
-            index
-          }
-        }
-      }
-      rules: allMarkdownRemark(
-        filter: { frontmatter: { type: { eq: "rule" } } }
-      ) {
-        nodes {
-          frontmatter {
-            uri
-            archivedreason
-            title
-          }
-          html
-          excerpt(format: HTML, pruneLength: 500)
-        }
+        html
+        excerpt(format: HTML, pruneLength: 500)
       }
     }
-  `);
-
-  return <Orphaned data={data} {...props} />;
-}
-
-export default OrphanedWithQuery;
+  }
+`;

@@ -153,9 +153,6 @@ function ProfileWithQuery(props) {
             title
             uri
             guid
-            authors {
-              title
-            }
           }
           htmlAst
         }

@@ -1,4 +1,3 @@
-const siteConfig = require('./site-config');
 const { createFilePath } = require('gatsby-source-filesystem');
 const appInsights = require('applicationinsights');
 const makePluginData = require('./src/helpers/plugin-data');
@@ -98,14 +97,10 @@ exports.createPages = async ({ graphql, actions }) => {
           }
           frontmatter {
             index
-            redirects
-            experts
-            consulting
           }
           parent {
             ... on File {
               name
-              relativeDirectory
             }
           }
         }
@@ -120,9 +115,9 @@ exports.createPages = async ({ graphql, actions }) => {
           frontmatter {
             uri
             title
-            archivedreason
             related
             redirects
+            archivedreason
           }
         }
       }
@@ -140,12 +135,30 @@ exports.createPages = async ({ graphql, actions }) => {
       context: {
         slug: node.fields.slug,
         index: node.frontmatter.index,
-        redirects: node.frontmatter.redirects,
       },
     });
   });
 
+  const orphanedRules = [];
+
   result.data.rules.nodes.forEach((node) => {
+    let match = false;
+    if (!node.frontmatter.archivedreason) {
+      result.data.categories.nodes.forEach((catNode) => {
+        catNode.frontmatter.index.forEach((inCat) => {
+          if (node.frontmatter.uri == inCat) {
+            match = true;
+          }
+        });
+      });
+    } else {
+      match = true;
+    }
+
+    if (match == false) {
+      orphanedRules.push(node.frontmatter.uri);
+    }
+
     // Create the page for the rule
     createPage({
       path: node.frontmatter.uri,
@@ -167,6 +180,15 @@ exports.createPages = async ({ graphql, actions }) => {
   //   matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
   //   component: profilePage,
   // });
+
+  const orphanedPage = require.resolve('./src/templates/orphaned.js');
+  createPage({
+    path: '/orphaned/',
+    component: orphanedPage,
+    context: {
+      index: orphanedRules,
+    },
+  });
 };
 
 exports.onPostBuild = async ({ store, pathPrefix }) => {

@@ -48,13 +48,14 @@ export default function Category({ data }) {
     greyBox: GreyBox,
   };
 
-  var rules = data.rule.nodes
-    .filter((r) => {
-      return !r.frontmatter.archivedreason;
-    })
-    .filter((r) => {
-      return category.frontmatter.index.includes(r.frontmatter.uri);
-    });
+  // var rules = data.rule.nodes
+  //   .filter((r) => {
+  //     return !r.frontmatter.archivedreason;
+  //   })
+  //   .filter((r) => {
+  //     return category.frontmatter.index.includes(r.frontmatter.uri);
+  //   });
+  let rules = data.rule.nodes;
 
   return (
     <div>
@@ -156,7 +157,7 @@ export default function Category({ data }) {
             <div className="category-rule p-0 sm:p-[2.2rem]">
               <ol className="rule-number list-none sm:list-decimal">
                 {category.frontmatter.index.map((r, i) => {
-                  var rule = rules.find((rr) => rr.frontmatter.uri == r);
+                  let rule = rules.find((rr) => rr.frontmatter.uri == r);
                   if (!rule) {
                     return;
                   }
@@ -330,7 +331,11 @@ export const query = graphql`
         }
       }
     }
-    rule: allMarkdownRemark(filter: { frontmatter: { uri: { in: $index } } }) {
+    rule: allMarkdownRemark(
+      filter: {
+        frontmatter: { archivedreason: { eq: null }, uri: { in: $index } }
+      }
+    ) {
       nodes {
         excerpt(format: HTML, pruneLength: 500)
         frontmatter {

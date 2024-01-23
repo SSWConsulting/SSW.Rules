@@ -17,7 +17,8 @@ const Head = ({
   imageUrl,
   location,
 }) => {
-  const isHomePage = location.pathname === '/';
+  const isHomePage =
+    location.pathname === '/' || location.pathname === '/rules/';
 
   const setFullTitle = () => {
     return isHomePage

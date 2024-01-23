@@ -170,16 +170,10 @@ function ArchivedWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
             index
-          }
-          parent {
-            ... on File {
-              name
-            }
           }
         }
       }
@@ -190,7 +184,6 @@ function ArchivedWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -211,7 +204,6 @@ function ArchivedWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -221,7 +213,6 @@ function ArchivedWithQuery(props) {
           parent {
             ... on File {
               name
-              relativeDirectory
             }
           }
         }

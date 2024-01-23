@@ -91,20 +91,6 @@ const Orphaned = ({ data }) => {
                   {' - '} {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
                 </span>
               </h1>
-
-              <Tooltip text="Edit in GitHub">
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${category.parent.relativePath}`}
-                >
-                  <FontAwesomeIcon
-                    icon={faGithub}
-                    size="2x"
-                    className="category-icon bookmark-icon"
-                  />
-                </a>
-              </Tooltip>
             </div>
 
             <div className="rule-category-top py-4 px-6 pt-5">
@@ -275,47 +261,6 @@ Orphaned.propTypes = {
 function OrphanedWithQuery(props) {
   const data = useStaticQuery(graphql`
     query OrphanedQuery {
-      main: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "main" } }
-        }
-      ) {
-        nodes {
-          html
-          frontmatter {
-            type
-            title
-            index
-          }
-          parent {
-            ... on File {
-              name
-            }
-          }
-        }
-      }
-      topCategories: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "top-category" } }
-        }
-      ) {
-        nodes {
-          html
-          frontmatter {
-            type
-            title
-            index
-          }
-          parent {
-            ... on File {
-              name
-              relativeDirectory
-            }
-          }
-        }
-      }
       categories: allMarkdownRemark(
         filter: {
           fileAbsolutePath: { regex: "/(categories)/" }
@@ -323,18 +268,11 @@ function OrphanedWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
             archivedreason
             index
-          }
-          parent {
-            ... on File {
-              name
-              relativeDirectory
-            }
           }
         }
       }

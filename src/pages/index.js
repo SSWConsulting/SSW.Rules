@@ -17,10 +17,6 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 config.autoAddCss = false;
 
 const Index = ({ data, location }) => {
-  const notArchivedRules = data.rules.nodes.filter(
-    (r) => !r.frontmatter.archivedreason
-  );
-
   return (
     <div className="w-full">
       <Breadcrumb isHomePage={true} />
@@ -54,7 +50,7 @@ const Index = ({ data, location }) => {
                         <TopCategory
                           topcategory={cat}
                           categories={data.categories}
-                          rules={notArchivedRules}
+                          rules={data.rules.nodes}
                         ></TopCategory>
                       </section>
                     );
@@ -122,11 +118,6 @@ function IndexWithQuery(props) {
             title
             index
           }
-          parent {
-            ... on File {
-              name
-            }
-          }
         }
       }
       topCategories: allMarkdownRemark(
@@ -162,7 +153,6 @@ function IndexWithQuery(props) {
             type
             title
             index
-            archivedreason
           }
           parent {
             ... on File {
@@ -173,7 +163,9 @@ function IndexWithQuery(props) {
         }
       }
       rules: allMarkdownRemark(
-        filter: { frontmatter: { type: { eq: "rule" } } }
+        filter: {
+          frontmatter: { archivedreason: { eq: null }, type: { eq: "rule" } }
+        }
       ) {
         nodes {
           frontmatter {

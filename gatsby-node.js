@@ -109,6 +109,7 @@ exports.createPages = async ({ graphql, actions }) => {
         filter: { frontmatter: { type: { in: ["rule"] } } }
       ) {
         nodes {
+          excerpt(format: HTML, pruneLength: 500)
           fields {
             slug
           }
@@ -118,7 +119,9 @@ exports.createPages = async ({ graphql, actions }) => {
             related
             redirects
             archivedreason
+            guid
           }
+          htmlAst
         }
       }
     }
@@ -126,15 +129,24 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const categoryTemplate = require.resolve('./src/templates/category.js');
   const ruleTemplate = require.resolve('./src/templates/rule.js');
-
   result.data.categories.nodes.forEach((node) => {
+    let indexedRule = [];
+    result.data.rules.nodes.forEach((rule) => {
+      if (
+        node.frontmatter.index.includes(rule.frontmatter.uri) &&
+        !rule.frontmatter.archivedreason
+      ) {
+        indexedRule.push(rule);
+      }
+    });
+
     // Create the page for the category
     createPage({
       path: node.parent.name,
       component: categoryTemplate,
       context: {
         slug: node.fields.slug,
-        index: node.frontmatter.index,
+        pageRules: indexedRule,
       },
     });
   });

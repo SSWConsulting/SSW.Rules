@@ -17,7 +17,7 @@ git commit-graph write --reachable --changed-paths
 $Uri = $AzFunctionBaseUrl + 'GetHistorySyncCommitHash'
 $Headers = @{'x-functions-key' = $GetHistorySyncCommitHashKey}
 $Response = Invoke-WebRequest -URI $Uri -Headers $Headers
-$startCommitHash = $Response.Content
+$startCommitHash = $Response.Content -replace '"', ''
 
 $filesProcessed = @{}
 $historyFileArray = @()

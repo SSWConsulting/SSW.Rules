@@ -7,6 +7,8 @@ import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import locale from 'date-fns/locale/en-AU';
 import { sanitizeName } from '../../helpers/sanitizeName';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock } from '@fortawesome/free-solid-svg-icons';
 
 const LatestRulesContent = ({
   filteredItems,
@@ -47,6 +49,8 @@ const LatestRulesContent = ({
 
   const FormatDate = ({ item }) => (
     <span className="block text-light-grey text-right">
+      <FontAwesomeIcon icon={faClock} size="sm" className="mr-1" />
+
       {filteredItems.filter === FilterOptions.RecentlyUpdated
         ? formatDistanceToNow(new Date(item.file.node.lastUpdated), {
             locale: {
@@ -114,7 +118,9 @@ const LatestRulesContent = ({
               <div
                 key={idx}
                 className={`cat-grid-container ${
-                  isShowAuthor ? 'lg:grid-cols-[2rem_auto_8.5rem_6.5rem]' : ''
+                  isShowAuthor
+                    ? 'lg:grid-cols-[2rem_auto_8.5rem_6.5rem]'
+                    : 'sm:grid-cols-[2rem_auto_auto]'
                 }`}
               >
                 <div className="cat-rule-num">{idx + 1}.</div>

@@ -94,6 +94,13 @@ module.exports = {
         excerpt_separator: '<!--endintro-->',
         plugins: [
           {
+            resolve: 'gatsby-remark-external-links',
+            options: {
+              target: '_blank',
+              rel: 'nofollow noopener noreferrer',
+            },
+          },
+          {
             resolve: '@raae/gatsby-remark-oembed',
             options: {
               // usePrefix defaults to false

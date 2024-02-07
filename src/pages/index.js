@@ -13,6 +13,7 @@ import React from 'react';
 import SideBar from '../components/side-bar/side-bar';
 import TopCategory from '../components/top-category/top-category';
 import { config } from '@fortawesome/fontawesome-svg-core';
+import SearchBar from '../components/search-bar/search-bar';
 
 config.autoAddCss = false;
 
@@ -27,6 +28,7 @@ const Index = ({ data, location }) => {
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
+            <SearchBar toSearch />
             <span className="flex items-center">
               <h1 className="flex-1 text-3xl">Categories</h1>
               <Link to={'/latest-rules?size=50'} className="group unstyled">

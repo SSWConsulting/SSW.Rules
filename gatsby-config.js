@@ -213,6 +213,8 @@ module.exports = {
                     `https://www.youtube-nocookie.com/embed/${videoId}`,
                 },
               ], //Optional: Override URL of a service provider, e.g to enable youtube-nocookie support
+              /* eslint-disable quotes */
+              sandbox: "'allow-same-origin allow-scripts allow-presentation'",
             },
           },
           'gatsby-remark-responsive-iframe',

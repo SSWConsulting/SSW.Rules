@@ -827,6 +827,26 @@ blockquote p:after {
   margin-bottom: 1rem;
 }
 
+.rule-category-checkbox {
+  display: flex;
+  justify-content: center;
+}
+
+.rule-category-checkbox-label {
+  display: flex;
+  align-items: center;
+}
+
+.rule-category-archived-badge {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  background-color: #cc4141;
+  color: #fff;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
 /* Single Rule
 -------------------------------------------------- */
 

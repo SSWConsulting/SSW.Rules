@@ -51,14 +51,15 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
 
   return (
     <div
-      className={`border border-solid w-full flex items-center pl-3 p-2 rounded shadow bg-gray-50 ${
+      className={`border border-solid border-gray-400 w-full flex items-center pl-3 p-2 rounded shadow ${
         isShow ? 'block' : 'hidden'
       }`}
     >
       <FontAwesomeIcon
         icon={faSearch}
-        size="lg"
+        size="1x"
         className="text-gray-400 mr-2"
+        aria-label="search"
       />
       <input
         value={query}
@@ -69,8 +70,8 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
           }
         }}
         type="text"
-        placeholder="I'm looking for..."
-        className="w-full outline-none bg-gray-50"
+        placeholder=""
+        className="w-full outline-none"
       />
     </div>
   );

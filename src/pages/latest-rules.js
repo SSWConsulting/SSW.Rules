@@ -133,10 +133,10 @@ const LatestRules = ({ data, location }) => {
   return (
     <div className="w-full">
       <Breadcrumb breadcrumbText="Latest Rules" />
-      <SearchBar toSearch />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
+            <SearchBar toSearch />
             <span className="flex">
               <h1 className="flex-1 text-3xl">Latest Rules</h1>
               <div className="flex items-center align-middle">

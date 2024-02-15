@@ -13,6 +13,7 @@ import {
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { MegaMenuLayout } from 'ssw.megamenu';
 import { graphql, useStaticQuery } from 'gatsby';
+import classNames from 'classnames';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -91,6 +92,11 @@ const Header = ({ displayActions }) => {
           }
           rightSideActionsOverride={() => <ActionButtons />}
           hidePhone
+          linkComponent={({ className, children, ...props }) => (
+            <a {...props} className={classNames('unstyled', className)}>
+              {children}
+            </a>
+          )}
         />
       </header>
     </AnimatedContainer>

@@ -14,11 +14,17 @@ module.exports = {
         '200px': '200px',
       },
       colors: {
+        ssw: {
+          red: '#cc4141',
+          light: {
+            red: '#d26e6e',
+          },
+          gray: '#797979',
+          black: '#333333',
+        },
         'tooltip-grey': '#9e9e9e',
-        'ssw-red': '#cc4141',
         'ssw-grey': '#eee',
         'light-grey': '#ccc',
-        'ssw-black': '#333',
         'real-black': '#000',
         underline: '#aaa',
       },

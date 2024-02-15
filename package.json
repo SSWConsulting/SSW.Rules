@@ -82,7 +82,7 @@
     "react-number-format": "^5.3.1",
     "react-pose": "^4.0.10",
     "sharp": "^0.32.6",
-    "ssw.megamenu": "4.0.1",
+    "ssw.megamenu": "4.2.2",
     "ssw.rules.widget": "^2.0.3",
     "svg-react-loader": "^0.4.6",
     "webpack-assets-manifest": "5.1.0"

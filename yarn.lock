@@ -5713,9 +5713,9 @@ __metadata:
     gatsby: "npm:5.13.3"
     gatsby-custom-md: "npm:^1.3.0"
     gatsby-plugin-algolia: "npm:^1.0.3"
-    gatsby-plugin-breadcrumb: "npm:^12.3.1"
-    gatsby-plugin-decap-cms: "npm:^4.0.0"
-    gatsby-plugin-disqus: "npm:^1.2.4"
+    gatsby-plugin-breadcrumb: "npm:^12.3.2"
+    gatsby-plugin-decap-cms: "npm:^4.0.4"
+    gatsby-plugin-disqus: "npm:^1.2.6"
     gatsby-plugin-fontawesome-css: "npm:^1.2.0"
     gatsby-plugin-google-gtag: "npm:^5.13.1"
     gatsby-plugin-google-tagmanager: "npm:^5.13.1"
@@ -12110,7 +12110,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gatsby-plugin-breadcrumb@npm:^12.3.1":
+"gatsby-plugin-breadcrumb@npm:^12.3.2":
   version: 12.3.2
   resolution: "gatsby-plugin-breadcrumb@npm:12.3.2"
   dependencies:
@@ -12123,9 +12123,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gatsby-plugin-decap-cms@npm:^4.0.0":
-  version: 4.0.3
-  resolution: "gatsby-plugin-decap-cms@npm:4.0.3"
+"gatsby-plugin-decap-cms@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "gatsby-plugin-decap-cms@npm:4.0.4"
   dependencies:
     "@babel/runtime": "npm:^7.20.13"
     "@soda/friendly-errors-webpack-plugin": "npm:1.8.1"
@@ -12136,11 +12136,11 @@ __metadata:
     lodash: "npm:^4.17.21"
     mini-css-extract-plugin: "npm:1.6.2"
     netlify-identity-widget: "npm:^1.9.2"
-  checksum: 32a7cc395487ff608b3bb90717523d4a6775e7e59aa8becb64558a60142459117216643aecc2e257ab06b768cbc70f3c4ab112fa31ba79be8eca04459f5bfa96
+  checksum: 552b866bcd898586c2a8e903cb6185ffda5c45cb391712288708aba963b928b9d5c5256697e3c2e8d2d28bccaddd78316d765e2556542d761de9cbb07793db92
   languageName: node
   linkType: hard
 
-"gatsby-plugin-disqus@npm:^1.2.4":
+"gatsby-plugin-disqus@npm:^1.2.6":
   version: 1.2.6
   resolution: "gatsby-plugin-disqus@npm:1.2.6"
   peerDependencies:

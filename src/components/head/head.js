@@ -24,8 +24,8 @@ const Head = ({
     return isHomePage
       ? `${siteTitle} | ${pageTitle}`
       : pageTitle
-      ? `${pageTitle} | ${siteTitle}`
-      : siteTitle;
+        ? `${pageTitle} | ${siteTitle}`
+        : siteTitle;
   };
 
   const pageTitleFull = setFullTitle();

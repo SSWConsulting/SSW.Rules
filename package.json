@@ -69,7 +69,7 @@
     "markdown-it": "^14.0.0",
     "markdown-it-container": "^4.0.0",
     "postcss": "^8.4.35",
-    "postcss-import": "^15.1.0",
+    "postcss-import": "^16.0.1",
     "postcss-nested": "^6.0.1",
     "preval.macro": "^5.0.0",
     "prop-types": "^15.8.1",

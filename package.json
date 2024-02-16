@@ -24,7 +24,7 @@
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@raae/gatsby-remark-oembed": "^0.3.3",
     "algoliasearch": "^4.22.1",
-    "applicationinsights": "^2.9.2",
+    "applicationinsights": "^2.9.3",
     "autoprefixer": "^10.4.17",
     "axios": "1.6.7",
     "babel-eslint": "^10.1.0",
@@ -82,7 +82,7 @@
     "react-number-format": "^5.3.1",
     "react-pose": "^4.0.10",
     "sharp": "^0.33.2",
-    "ssw.megamenu": "4.0.1",
+    "ssw.megamenu": "4.2.2",
     "ssw.rules.widget": "^2.0.3",
     "svg-react-loader": "^0.4.6",
     "webpack-assets-manifest": "5.1.0"

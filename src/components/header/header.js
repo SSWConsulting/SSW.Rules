@@ -4,7 +4,7 @@ import posed from 'react-pose';
 import Tooltip from '../tooltip/tooltip';
 import GPTIcon from '-!svg-react-loader!../../images/chatgpt_icon.svg';
 import SignIn from '../signin/signin';
-import { pathPrefix } from '../../../site-config';
+import { pathPrefix, siteUrl } from '../../../site-config';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlusCircle,
@@ -91,6 +91,8 @@ const Header = ({ displayActions }) => {
           }
           rightSideActionsOverride={() => <ActionButtons />}
           hidePhone
+          url="/rules"
+          searchUrl={`${siteUrl}`}
         />
       </header>
     </AnimatedContainer>

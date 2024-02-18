@@ -288,14 +288,14 @@ const ProfileContent = (props) => {
             props.filter == Filter.Bookmarks
               ? bookmarkedRules
               : props.filter == Filter.SuperLikes
-              ? superLikedRulesList
-              : props.filter == Filter.Likes
-              ? likedRulesList
-              : props.filter == Filter.Dislikes
-              ? dislikedRulesList
-              : props.filter == Filter.SuperDislikes
-              ? superDislikedRulesList
-              : commentedRulesList
+                ? superLikedRulesList
+                : props.filter == Filter.Likes
+                  ? likedRulesList
+                  : props.filter == Filter.Dislikes
+                    ? dislikedRulesList
+                    : props.filter == Filter.SuperDislikes
+                      ? superDislikedRulesList
+                      : commentedRulesList
           }
           viewStyle={viewStyle}
           setState={props.setState}
@@ -304,14 +304,14 @@ const ProfileContent = (props) => {
             props.filter == Filter.Bookmarks
               ? 'bookmark'
               : props.filter == Filter.Likes
-              ? 'agree'
-              : props.filter == Filter.Dislikes
-              ? 'disagree'
-              : props.filter == Filter.SuperDislikes
-              ? 'no way'
-              : props.filter == Filter.SuperLikes
-              ? 'love'
-              : 'comment'
+                ? 'agree'
+                : props.filter == Filter.Dislikes
+                  ? 'disagree'
+                  : props.filter == Filter.SuperDislikes
+                    ? 'no way'
+                    : props.filter == Filter.SuperLikes
+                      ? 'love'
+                      : 'comment'
           }
           onRemoveClick={onRemoveClick}
         />
@@ -397,12 +397,12 @@ const RuleList = ({
                 {type == 'bookmark'
                   ? 'No bookmarks? Use them to save rules for later!'
                   : type == 'love'
-                  ? 'Nothing here yet, show us the rules you love!'
-                  : type == 'agree'
-                  ? `There should be more here, don${"'"}t you agree?`
-                  : type == 'disagree'
-                  ? 'What a happy chap you are, no disagreements here!'
-                  : `Let us know what you don${"'"}t like, we are here to improve!`}
+                    ? 'Nothing here yet, show us the rules you love!'
+                    : type == 'agree'
+                      ? `There should be more here, don${"'"}t you agree?`
+                      : type == 'disagree'
+                        ? 'What a happy chap you are, no disagreements here!'
+                        : `Let us know what you don${"'"}t like, we are here to improve!`}
               </p>
             </div>
           </>

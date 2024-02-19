@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Jotform from 'react-jotform';
 import Popup from '../popup/popup';
 
@@ -15,3 +16,9 @@ const JobFormEmbed = ({ jotFormId, open, onClose }) => {
 };
 
 export default JobFormEmbed;
+
+JobFormEmbed.propTypes = {
+  jotFormId: PropTypes.string,
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
+};

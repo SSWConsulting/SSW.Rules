@@ -5425,10 +5425,8 @@ __metadata:
     query-string: "npm:^8.1.0"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-    react-google-recaptcha: "npm:^3.1.0"
     react-helmet: "npm:^6.0.0"
     react-jotform: "npm:^1.0.2"
-    react-modal: "npm:^3.16.1"
     react-number-format: "npm:^5.3.1"
     react-pose: "npm:^4.0.10"
     react-responsive-modal: "npm:^6.4.2"
@@ -19067,7 +19065,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15.8.1, prop-types@npm:^15.0.0, prop-types@npm:^15.5.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.4, prop-types@npm:^15.5.6, prop-types@npm:^15.5.7, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15.8.1, prop-types@npm:^15.0.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.4, prop-types@npm:^15.5.6, prop-types@npm:^15.5.7, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -19388,18 +19386,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-async-script@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "react-async-script@npm:1.2.0"
-  dependencies:
-    hoist-non-react-statics: "npm:^3.3.0"
-    prop-types: "npm:^15.5.0"
-  peerDependencies:
-    react: ">=16.4.1"
-  checksum: 89450912110c380abc08258ce17d2fb18d31d6b7179a74f6bc504c0761a4ca271edb671e402fa8e5ea4250b5c17fa953af80a9f1c4ebb26c9e81caee8476c903
-  languageName: node
-  linkType: hard
-
 "react-codemirror2@npm:^7.0.0":
   version: 7.3.0
   resolution: "react-codemirror2@npm:7.3.0"
@@ -19556,18 +19542,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-google-recaptcha@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "react-google-recaptcha@npm:3.1.0"
-  dependencies:
-    prop-types: "npm:^15.5.0"
-    react-async-script: "npm:^1.2.0"
-  peerDependencies:
-    react: ">=16.4.1"
-  checksum: 5ecaa6b88f238defd939012cb2671b4cbda59fe03f059158994b8c5215db482412e905eae6a67d23cef220d77cfe0430ab91ce7849d476515cda72f3a8a0a746
-  languageName: node
-  linkType: hard
-
 "react-helmet@npm:^6.0.0":
   version: 6.1.0
   resolution: "react-helmet@npm:6.1.0"
@@ -19685,7 +19659,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-modal@npm:^3.16.1, react-modal@npm:^3.8.1":
+"react-modal@npm:^3.8.1":
   version: 3.16.1
   resolution: "react-modal@npm:3.16.1"
   dependencies:

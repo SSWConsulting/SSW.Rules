@@ -21,8 +21,8 @@ const wrapPageElement = ({ element, props }) => {
         markdown
           ? markdown.frontmatter.title
           : isHomePage
-          ? siteConfig.homepageTitle
-          : siteConfig.breadcrumbDefault
+            ? siteConfig.homepageTitle
+            : siteConfig.breadcrumbDefault
       }
       displayActions={markdown ? true : false}
       ruleUri={markdown ? markdown.parent.relativePath : null}

@@ -178,10 +178,10 @@ const getLastDeployTime = () => {
   return days !== 0
     ? `${days} day(s)`
     : ' ' + hours !== 0
-    ? `${hours} hour(s)`
-    : ' ' + minutes > 1
-    ? `${minutes} minutes`
-    : '1 minute';
+      ? `${hours} hour(s)`
+      : ' ' + minutes > 1
+        ? `${minutes} minutes`
+        : '1 minute';
 };
 
 Footer.propTypes = {};

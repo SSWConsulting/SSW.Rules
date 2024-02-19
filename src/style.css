@@ -30,6 +30,10 @@
   }
 }
 
+@layer components {
+  @import 'react-responsive-modal/styles.css';
+}
+
 *, ::before, ::after {
   border-style: none;
 }

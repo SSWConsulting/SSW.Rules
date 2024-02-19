@@ -2047,6 +2047,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bedrock-layout/use-forwarded-ref@npm:^1.3.1":
+  version: 1.6.1
+  resolution: "@bedrock-layout/use-forwarded-ref@npm:1.6.1"
+  dependencies:
+    "@bedrock-layout/use-stateful-ref": "npm:^1.4.1"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+  checksum: b0ebbc2a1962665109983324460e5085afcdcc5ef4788bd43015f28ac2017bb6dc3d9f743c90e2ae92b69697f4829845227f582c979ac68368bcc0ce8b6f9a66
+  languageName: node
+  linkType: hard
+
+"@bedrock-layout/use-stateful-ref@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@bedrock-layout/use-stateful-ref@npm:1.4.1"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+  checksum: aee0878498bc30e9b67b62578fc1f540541131eb0ea61a5f0b67ee3c1cd8f22659fc7dba7d34678bb3d9346cf7c1544c927ca89b617e441d923d580e407a45e3
+  languageName: node
+  linkType: hard
+
 "@builder.io/partytown@npm:^0.7.5":
   version: 0.7.6
   resolution: "@builder.io/partytown@npm:0.7.6"

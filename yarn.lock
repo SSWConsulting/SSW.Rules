@@ -2027,6 +2027,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bedrock-layout/use-forwarded-ref@npm:^1.3.1":
+  version: 1.6.1
+  resolution: "@bedrock-layout/use-forwarded-ref@npm:1.6.1"
+  dependencies:
+    "@bedrock-layout/use-stateful-ref": "npm:^1.4.1"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+  checksum: b0ebbc2a1962665109983324460e5085afcdcc5ef4788bd43015f28ac2017bb6dc3d9f743c90e2ae92b69697f4829845227f582c979ac68368bcc0ce8b6f9a66
+  languageName: node
+  linkType: hard
+
+"@bedrock-layout/use-stateful-ref@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@bedrock-layout/use-stateful-ref@npm:1.4.1"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+  checksum: aee0878498bc30e9b67b62578fc1f540541131eb0ea61a5f0b67ee3c1cd8f22659fc7dba7d34678bb3d9346cf7c1544c927ca89b617e441d923d580e407a45e3
+  languageName: node
+  linkType: hard
+
 "@builder.io/partytown@npm:^0.7.5":
   version: 0.7.6
   resolution: "@builder.io/partytown@npm:0.7.6"
@@ -5754,11 +5774,11 @@ __metadata:
     query-string: "npm:^8.2.0"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-    react-google-recaptcha: "npm:^3.1.0"
     react-helmet: "npm:^6.1.0"
-    react-modal: "npm:^3.16.1"
+    react-jotform: "npm:^1.0.2"
     react-number-format: "npm:^5.3.1"
     react-pose: "npm:^4.0.10"
+    react-responsive-modal: "npm:^6.4.2"
     sharp: "npm:^0.33.2"
     ssw.megamenu: "npm:4.2.2"
     ssw.rules.widget: "npm:^2.0.3"
@@ -7109,6 +7129,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"body-scroll-lock@npm:^3.1.5":
+  version: 3.1.5
+  resolution: "body-scroll-lock@npm:3.1.5"
+  checksum: 657c948d64ffe17d2c89958f57c2c636203cf5216e3ba33ad76604bf1b5144fd8f4b5d832d09105f8782d5b8bc96f38780331ec55f3af5f27694dff38a0cc9d7
+  languageName: node
+  linkType: hard
+
 "boolbase@npm:^1.0.0, boolbase@npm:~1.0.0":
   version: 1.0.0
   resolution: "boolbase@npm:1.0.0"
@@ -7767,7 +7794,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.5.1":
+"classnames@npm:^2.3.1, classnames@npm:^2.5.1":
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
   checksum: afff4f77e62cea2d79c39962980bf316bacb0d7c49e13a21adaadb9221e1c6b9d3cdb829d8bb1b23c406f4e740507f37e1dcf506f7e3b7113d17c5bab787aa69
@@ -19332,7 +19359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15.8.1, prop-types@npm:^15.0.0, prop-types@npm:^15.5.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.4, prop-types@npm:^15.5.6, prop-types@npm:^15.5.7, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15.8.1, prop-types@npm:^15.0.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.4, prop-types@npm:^15.5.6, prop-types@npm:^15.5.7, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -19660,18 +19687,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-async-script@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "react-async-script@npm:1.2.0"
-  dependencies:
-    hoist-non-react-statics: "npm:^3.3.0"
-    prop-types: "npm:^15.5.0"
-  peerDependencies:
-    react: ">=16.4.1"
-  checksum: 89450912110c380abc08258ce17d2fb18d31d6b7179a74f6bc504c0761a4ca271edb671e402fa8e5ea4250b5c17fa953af80a9f1c4ebb26c9e81caee8476c903
-  languageName: node
-  linkType: hard
-
 "react-codemirror2@npm:^7.0.0":
   version: 7.3.0
   resolution: "react-codemirror2@npm:7.3.0"
@@ -19828,18 +19843,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-google-recaptcha@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "react-google-recaptcha@npm:3.1.0"
-  dependencies:
-    prop-types: "npm:^15.5.0"
-    react-async-script: "npm:^1.2.0"
-  peerDependencies:
-    react: ">=16.4.1"
-  checksum: 5ecaa6b88f238defd939012cb2671b4cbda59fe03f059158994b8c5215db482412e905eae6a67d23cef220d77cfe0430ab91ce7849d476515cda72f3a8a0a746
-  languageName: node
-  linkType: hard
-
 "react-helmet@npm:^6.1.0":
   version: 6.1.0
   resolution: "react-helmet@npm:6.1.0"
@@ -19916,6 +19919,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-jotform@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "react-jotform@npm:1.0.2"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: ff3a4509173dc9b54874746e359e089417b24be079d611333e3047159965bc57b81f9026b5f6137dcc17d665fb57637d96b64f79fcab341d691cdedb6acac349
+  languageName: node
+  linkType: hard
+
 "react-lifecycles-compat@npm:^3.0.0, react-lifecycles-compat@npm:^3.0.4":
   version: 3.0.4
   resolution: "react-lifecycles-compat@npm:3.0.4"
@@ -19947,7 +19960,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-modal@npm:^3.16.1, react-modal@npm:^3.8.1":
+"react-modal@npm:^3.8.1":
   version: 3.16.1
   resolution: "react-modal@npm:3.16.1"
   dependencies:
@@ -20051,6 +20064,20 @@ __metadata:
   version: 0.14.0
   resolution: "react-refresh@npm:0.14.0"
   checksum: b8ae07ad153357d77830928a7f1fc2df837aabefee907fa273ba04c7643f3b860e986f1d4b7ada9b721c8d79b8c24b5b911a314a1a2398b105f1b13d19ea2b8d
+  languageName: node
+  linkType: hard
+
+"react-responsive-modal@npm:^6.4.2":
+  version: 6.4.2
+  resolution: "react-responsive-modal@npm:6.4.2"
+  dependencies:
+    "@bedrock-layout/use-forwarded-ref": "npm:^1.3.1"
+    body-scroll-lock: "npm:^3.1.5"
+    classnames: "npm:^2.3.1"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+    react-dom: ^16.8.0 || ^17 || ^18
+  checksum: ba62b002f61bf8bedfad286fdc56d295c55e0d4e716d96784c06f295cadb8117c926151189524ce1868df2aa4ab0edea3dda50c8d4b1f9fd1ab7782c840a357c
   languageName: node
   linkType: hard
 

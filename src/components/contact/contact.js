@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ContactInfo from '../contact-info/contact-info';
-import ContactForm from '../contact-form/contact-form';
-import Modal from 'react-modal';
+import JotFormEmbed from '../job-form-embed/jobFormEmbed';
 
 const Contact = () => {
   const [displayContactForm, setDisplayContactForm] = useState(false);
@@ -12,13 +11,11 @@ const Contact = () => {
   return (
     <>
       <ContactInfo onClick={() => onContactButtonClick()} />
-      <Modal
-        isOpen={displayContactForm}
-        contentLabel="Contact Form"
-        className="modal"
-      >
-        <ContactForm onClose={() => setDisplayContactForm(false)} />
-      </Modal>
+      <JotFormEmbed
+        jotFormId="233468468973070"
+        open={displayContactForm}
+        onClose={onContactButtonClick}
+      />
     </>
   );
 };

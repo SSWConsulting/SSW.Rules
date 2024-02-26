@@ -12,7 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { MegaMenuLayout } from 'ssw.megamenu';
-import { graphql, useStaticQuery } from 'gatsby';
+import { graphql, useStaticQuery, navigate } from 'gatsby';
 import classNames from 'classnames';
 
 const appInsights = new ApplicationInsights({
@@ -99,6 +99,11 @@ const Header = ({ displayActions }) => {
           )}
           url="/rules"
           searchUrl={`${siteUrl}`}
+          callback={(searchTerm) => {
+            const pathPrefix =
+              process.env.NODE_ENV === 'development' ? '' : '/rules';
+            navigate(`${pathPrefix}/search?keyword=${searchTerm}`);
+          }}
         />
       </header>
     </AnimatedContainer>

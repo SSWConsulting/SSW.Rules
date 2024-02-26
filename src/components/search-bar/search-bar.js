@@ -4,6 +4,7 @@ import qs from 'query-string';
 import algoliasearch from 'algoliasearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { navigate } from 'gatsby';
 
 const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   const [query, setQuery] = useState('');
@@ -33,7 +34,7 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
     if (!val) return;
     if (toSearch) {
       const pathPrefix = process.env.NODE_ENV === 'development' ? '' : '/rules';
-      window.location.href = `${pathPrefix}/search?keyword=${val}`;
+      navigate(`${pathPrefix}/search?keyword=${val}`);
     } else {
       fetchSearch(val);
     }

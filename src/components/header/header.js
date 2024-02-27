@@ -100,9 +100,7 @@ const Header = ({ displayActions }) => {
           url="/rules"
           searchUrl={`${siteUrl}`}
           callback={(searchTerm) => {
-            const pathPrefix =
-              process.env.NODE_ENV === 'development' ? '' : '/rules';
-            navigate(`${pathPrefix}/search?keyword=${searchTerm}`);
+            navigate(`/search?keyword=${searchTerm}`);
           }}
         />
       </header>

@@ -33,7 +33,7 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
   const handlePressEnter = (val) => {
     if (!val) return;
     if (toSearch) {
-      navigate('/search?keyword=${val}');
+      navigate(`/search?keyword=${val}`);
     } else {
       fetchSearch(val);
     }

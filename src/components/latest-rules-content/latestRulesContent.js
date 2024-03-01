@@ -119,7 +119,7 @@ const LatestRulesContent = ({
                 key={idx}
                 className={`cat-grid-container ${
                   isShowAuthor
-                    ? 'lg:grid-cols-[2rem_auto_8.5rem_6.5rem]'
+                    ? 'lg:grid-cols-[2rem_auto_8.5rem_7.5rem]'
                     : 'sm:grid-cols-[2rem_auto_auto]'
                 }`}
               >

@@ -84,6 +84,7 @@ const UserRules = ({ data, location }) => {
     return name
       .normalize('NFD')
       .replace(' [SSW]', '')
+      .replace('ø', 'oe')
       .replace(/\p{Diacritic}/gu, '');
   };
 

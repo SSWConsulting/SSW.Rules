@@ -139,6 +139,9 @@ module.exports = {
               //linkImagesToOriginal: false,
               maxWidth: 1024,
               backgroundColor: 'transparent',
+              withWebp: {
+                quality: 100,
+              },
             },
           },
           {

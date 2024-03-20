@@ -33,7 +33,9 @@ export default function Category({ data }) {
   const linkRef = useRef();
   const category = data.markdownRemark;
 
-  const [selectedOption, setSelectedOption] = useState(localStorage.getItem('viewModeOption') || 'all');
+  const [selectedOption, setSelectedOption] = useState(
+    localStorage.getItem('viewModeOption') || 'all'
+  );
   const [showViewButton, setShowViewButton] = useState(false);
   const [includeArchived, setIncludeArchived] = useState(false);
 

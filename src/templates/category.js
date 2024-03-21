@@ -33,15 +33,21 @@ export default function Category({ data }) {
   const linkRef = useRef();
   const category = data.markdownRemark;
 
-  const [selectedOption, setSelectedOption] = useState(
-    localStorage.getItem('viewModeOption') || 'all'
-  );
+  const [selectedOption, setSelectedOption] = useState('all');
   const [showViewButton, setShowViewButton] = useState(false);
   const [includeArchived, setIncludeArchived] = useState(false);
 
   useEffect(() => {
     setShowViewButton(true);
+    setLocalOption()
   }, []);
+
+  const setLocalOption = () => {
+    if (typeof window !== 'undefined') {
+      const viewModeOption = localStorage.getItem('viewModeOption') || 'all'
+      setSelectedOption(viewModeOption)
+    }
+  }
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);

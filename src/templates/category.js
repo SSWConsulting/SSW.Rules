@@ -39,10 +39,19 @@ export default function Category({ data }) {
 
   useEffect(() => {
     setShowViewButton(true);
+    setLocalOption();
   }, []);
+
+  const setLocalOption = () => {
+    if (typeof window !== 'undefined') {
+      const viewModeOption = localStorage.getItem('viewModeOption') || 'all';
+      setSelectedOption(viewModeOption);
+    }
+  };
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
+    localStorage.setItem('viewModeOption', e.target.value);
   };
 
   const handleIncludeArchivedChange = () => {

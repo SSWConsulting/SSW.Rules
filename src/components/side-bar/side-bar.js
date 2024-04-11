@@ -68,7 +68,7 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
           </div>
           <h5>
             <a
-              href="https://ssw.com.au/people/adam-cogan"
+              href="https://www.ssw.com.au/people/adam-cogan"
               target="_blank"
               rel="noopener noreferrer"
             >

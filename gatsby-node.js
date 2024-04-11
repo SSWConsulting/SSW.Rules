@@ -239,7 +239,7 @@ exports.onPostBuild = async ({ store, pathPrefix }) => {
 
 exports.sourceNodes = async ({ actions, createNodeId }) => {
   const { createNode } = actions;
-  const res = await axios.get('https://ssw.com.au/api/get-megamenu');
+  const res = await axios.get('https://www.ssw.com.au/api/get-megamenu');
   const menuData = res.data;
 
   menuData?.menuGroups.forEach((group) => {

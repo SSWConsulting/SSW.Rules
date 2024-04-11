@@ -1,7 +1,7 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-const baseurl = 'https://ssw.com.au/rules';
+const baseurl = 'https://www.ssw.com.au/rules';
 
 test('should have history.json', async ({ request }) => {
   const response = await request.get(`${baseurl}/history.json`);
@@ -9,7 +9,7 @@ test('should have history.json', async ({ request }) => {
 });
 
 test('should have megadata', async ({ page }) => {
-  await page.goto('https://ssw.com.au/rules/latest-rules/?size=50');
+  await page.goto('https://www.ssw.com.au/rules/latest-rules/?size=50');
 
   let randomNum = Math.floor(Math.random() * 50);
 

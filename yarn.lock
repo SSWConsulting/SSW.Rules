@@ -5780,7 +5780,7 @@ __metadata:
     react-pose: "npm:^4.0.10"
     react-responsive-modal: "npm:^6.4.2"
     sharp: "npm:^0.33.2"
-    ssw.megamenu: "npm:4.5.1"
+    ssw.megamenu: "npm:4.5.6"
     ssw.rules.widget: "npm:^2.0.3"
     svg-react-loader: "npm:^0.4.6"
     tailwindcss: "npm:^3.4.1"
@@ -22243,9 +22243,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ssw.megamenu@npm:4.5.1":
-  version: 4.5.1
-  resolution: "ssw.megamenu@npm:4.5.1"
+"ssw.megamenu@npm:4.5.6":
+  version: 4.5.6
+  resolution: "ssw.megamenu@npm:4.5.6"
   dependencies:
     "@headlessui/react": "npm:^1.7.17"
     "@heroicons/react": "npm:^2.1.1"
@@ -22257,7 +22257,7 @@ __metadata:
   peerDependencies:
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: e9c3f80abc553b5c8ca3dac667803fe593f7b323c45c8c7924d96b7b184e27b2dcf8ddac81324f75b0b9616be4556e8df834a4471516b0df4fc87f0b040b6e4a
+  checksum: 477b8dd011c524575510cebf5458534a99ff69c0ec1ee8afe9806651c0fbe528c4c665a355107b179ba12ca223d5359bde21e5cfc924d35e3ad4ecd6ce4d0226
   languageName: node
   linkType: hard
 

@@ -12,31 +12,13 @@ This is a Gatsby generated site pulling data from:
 ## Getting Started
 
 ### Required Tools
-- Install nodejs via https://nodejs.org/en/ (required versions: ^8.10.0 or ^10.13.0 or >=11.10.1)
-- Install yarn via https://classic.yarnpkg.com/en/
+- Install nodejs version specified in `.nvmrc` (Ideally use `nvm` to use the right version)
+- Ensure corepack is enabled - `corepack enable` (this allows auto-install of the correct `yarn` version)
 
 ### Getting ready for development
 - Clone the repo from https://github.com/SSWConsulting/SSW.Rules
-- Run *yarn install* to install packages
-- Create environment files (.env.development and .env.production) and ask a member of the SSW.Rules team (@pierssinclairssw, @bradystroud) for the values of the following keys:
-
-```
-GA_MEASUREMENT_ID=#{GA_MEASUREMENT_ID}
-GOOGLE_ANALYTICS=#{GOOGLE_ANALYTICS}
-RECAPTCHA_KEY=#{RECAPTCHA_KEY}
-CONTACT_API=#{CONTACT_API}
-VERSION_DEPLOYED=#{VERSION_DEPLOYED}
-APPINSIGHTS_INSTRUMENTATIONKEY=#{APPINSIGHTS_INSTRUMENTATIONKEY}
-RULESWIDGET_APPINSIGHTS_INSTRUMENTATIONKEY=#{APPINSIGHTS_INSTRUMENTATIONKEY}
-CONTENT_BRANCH=#{CONTENT_BRANCH}
-API_BASE_URL=#{API_BASE_URL}
-AUTH0_DOMAIN=#{AUTH0_DOMAIN}
-AUTH0_CLIENT_ID=#{AUTH0_CLIENT_ID}
-AUTH0_REDIRECT_URI=#{AUTH0_REDIRECT_URI}
-DISQUS_FORUM=#{DISQUS_FORUM}
-GITHUB_API_PAT=#{GITHUB_API_PAT}
-DISQUS_API_KEY=#{DISQUS_API_KEY}
-```
+- Run `yarn install` to install packages
+- Create environment files (.env.development) based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
 
 > **Note**  
 > If you don't work at SSW or can't get on to the SSW.Rules team you can just add values to GITHUB_API_PAT and CONTENT_BRANCH  
@@ -49,7 +31,8 @@ DISQUS_API_KEY=#{DISQUS_API_KEY}
 1. Branch off main for your PBI
 2. Install the recommended extensions if using VS Code
 3. Do your work
-4. Run the site in development mode by *yarn develop* (.env.development is required for this step)
+4. Run the site in development mode by `yarn develop` (.env.development is required for this step) it takes a while to build all the rules
+   If you have issues, run `yarn clean` then `yarn develop`
 5. Commit code and push
 6. Raise a PR
 7. Get it merged!
@@ -70,8 +53,8 @@ DISQUS_API_KEY=#{DISQUS_API_KEY}
 
 ### Branches
 - Branching strategy is based off [Release Flow](https://docs.microsoft.com/en-us/azure/devops/learn/devops-at-microsoft/release-flow) 
-- **Main** is the main 'dev' branch
-- **Release/xx** is the 'production' one (where xx is the Sprint number)
+- `main` is the main 'dev' branch
+- `release/xx` is the 'production' one (where xx is the Sprint number)
 - Always create a new branch for your PBIs 
 - Always delete your branch once your PR has been merged
 

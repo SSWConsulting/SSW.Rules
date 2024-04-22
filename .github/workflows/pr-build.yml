@@ -8,13 +8,6 @@ on:
 
 jobs:
 
-  test:
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - run: echo "${{ vars.GOOGLE_ANALYTICS }}"
-      - run: echo "${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}"
-
   build:
     name: Build and upload artifacts
     uses: ./.github/workflows/template-build.yml

@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
+    environment: staging
     steps:
 
       - name: Checkout code
@@ -77,7 +77,7 @@ jobs:
         shell: pwsh
         run: |
           ./.azure/scripts/get-rule-history.ps1 `
-            -AzFunctionBaseUrl ${{ env.AzFunctionBaseUrl }} `
+            -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
             -GenerateHistoryFileFunctionKey ${{ secrets.GenerateHistoryFileFunctionKey }} `
             -outputFileName "history.json"
 

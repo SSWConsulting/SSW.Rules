@@ -26,7 +26,7 @@ jobs:
       - name: Check the result
         shell: bash
         run: |
-          mkdri arm
+          mkdir arm
           az bicep build --file infra/main.bicep --outdir arm
 
       - name: Archive artifacts

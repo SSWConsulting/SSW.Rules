@@ -51,7 +51,7 @@ jobs:
           files: .env.template
         env:
           GOOGLE_ANALYTICS: ${{ env.GOOGLE_ANALYTICS }}
-          VERSION_DEPLOYED: ${{ github.run_id }}
+          VERSION_DEPLOYED: ${{ github.ref }}-${{ github.run_number}}
           APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
           CONTENT_BRANCH: ${{ env.CONTENT_BRANCH }}
           API_BASE_URL: ${{ env.API_BASE_URL }}
@@ -74,6 +74,7 @@ jobs:
           cat .env.production
 
       - name: Get Rule History JSON
+        shell: pwsh
         run: |
           ./.azure/scripts/get-rule-history.ps1 `
             -AzFunctionBaseUrl ${{ env.AzFunctionBaseUrl }} `
@@ -81,6 +82,7 @@ jobs:
             -outputFileName "history.json"
 
       - name: Get History Commits of Each Contributor
+        shell: pwsh
         run: |
           ./.azure/scripts/create-commits-history.ps1 `
             -Token ${{ secrets.GITHUB_TOKEN }} `

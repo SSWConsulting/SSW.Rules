@@ -14,23 +14,3 @@ jobs:
     with:
       environment: staging
     secrets: inherit
-
-  build-infra:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            infra
-
-      - name: Check the result
-        shell: bash
-        run: |
-          mkdir arm
-          az bicep build --file infra/main.bicep --outdir arm
-
-      - name: Archive artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: infra
-          path: infra

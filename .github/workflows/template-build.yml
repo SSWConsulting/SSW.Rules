@@ -9,7 +9,8 @@ on:
         description: 'The environment to build for'
 
 jobs:
-  build:
+  build-code:
+    name: Build Gatsby site
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -99,3 +100,24 @@ jobs:
         with:
           name: build
           path: public
+
+  build-infra:
+    name: Build infra
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            infra
+
+      - name: Check the result
+        shell: bash
+        run: |
+          mkdir arm
+          az bicep build --file infra/main.bicep --outdir arm
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: infra
+          path: infra

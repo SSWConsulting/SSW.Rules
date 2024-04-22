@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     steps:
-      - run: echo "${{ env.GOOGLE_ANALYTICS }}"
+      - run: echo "${{ vars.GOOGLE_ANALYTICS }}"
       - run: echo "${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}"
 
   build:

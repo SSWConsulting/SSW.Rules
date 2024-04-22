@@ -7,11 +7,6 @@ on:
         type: string
         required: true
         description: 'The environment to build for'
-    secrets:
-      APPINSIGHTS_INSTRUMENTATIONKEY:
-      DISQUS_API_KEY:
-      GATSBY_ALGOLIA_SEARCH_KEY:
-      ALGOLIA_ADMIN_KEY:
 
 jobs:
   build:
@@ -30,21 +25,21 @@ jobs:
           tokenSuffix: '}'
           files: .env.template
         env:
-          GOOGLE_ANALYTICS: ${{ env.GOOGLE_ANALYTICS }}
+          GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
           VERSION_DEPLOYED: ${{ github.sha }}-${{ github.run_number}}
           APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
-          CONTENT_BRANCH: ${{ env.CONTENT_BRANCH }}
-          API_BASE_URL: ${{ env.AZFUNCTIONBASEURL }}
-          AUTH0_DOMAIN: ${{ env.AUTH0_DOMAIN }}
-          AUTH0_CLIENT_ID: ${{ env.AUTH0_CLIENT_ID }}
-          AUTH0_REDIRECT_URI: ${{ env.AUTH0_REDIRECT_URI }}
+          CONTENT_BRANCH: ${{ vars.CONTENT_BRANCH }}
+          API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}
+          AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
+          AUTH0_REDIRECT_URI: ${{ vars.AUTH0_REDIRECT_URI }}
           GITHUB_API_PAT: ${{ secrets.GITHUB_TOKEN }}
-          DISQUS_FORUM: ${{ env.DISQUS_FORUM }}
+          DISQUS_FORUM: ${{ vars.DISQUS_FORUM }}
           DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
-          GTM_CONTAINER_ID: ${{ env.GTM_CONTAINER_ID }}
+          GTM_CONTAINER_ID: ${{ vars.GTM_CONTAINER_ID }}
           GITHUB_ORG: ${{ github.repository_owner }}
           GITHUB_REPO: SSW.Rules.Content
-          GATSBY_ALGOLIA_APP_ID: ${{ env.GATSBY_ALGOLIA_APP_ID }}
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
           GATSBY_ALGOLIA_SEARCH_KEY: ${{ secrets.GATSBY_ALGOLIA_SEARCH_KEY }}
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
 

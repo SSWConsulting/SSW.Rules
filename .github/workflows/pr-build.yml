@@ -8,9 +8,34 @@ on:
 
 jobs:
 
-  build:
+  build-code:
     name: Build and upload artifacts
     uses: ./.github/workflows/template-build.yml
     with:
       environment: staging
     secrets: inherit
+
+  build-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            infra
+
+      - name: Run Bicep build
+        uses: aliencube/bicep-build-actions@v0.3
+        with:
+          files: infra/main.bicep
+
+      - name: Check the result
+        shell: bash
+        run: |
+          shopt -s globstar
+          ls -altR **/sample*.*
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: infra
+          path: infra

@@ -8,8 +8,15 @@ on:
 
 jobs:
 
+  test:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - run: echo "${{ env.AZFUNCTIONBASEURL }}"
+
   build:
     name: Build and upload artifacts
     uses: ./.github/workflows/template-build.yml
     with:
       environment: staging
+    secrets: inherit

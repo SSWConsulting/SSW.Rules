@@ -19,31 +19,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Cache Gatsby .cache
-        uses: actions/cache@v4
-        with:
-          path: .cache
-          key: gatsby_cache | ${{ runner.os }}
-          restore-keys: |
-            gatsby_cache | ${{ runner.os }}
-
-      - name: Cache Gatsby public
-        uses: actions/cache@v4
-        with:
-          path: public
-          key: gatsby_public | ${{ runner.os }}
-          restore-keys: |
-            gatsby_public | ${{ runner.os }}
-
-      - name: Use Node.
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
       - uses: cschleiden/replace-tokens@v1
         with:
           tokenPrefix: '#{'
@@ -72,6 +47,31 @@ jobs:
         run: |
           mv .env.template .env.production
           cat .env.production
+
+      - name: Cache Gatsby .cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: gatsby_cache | ${{ runner.os }}
+          restore-keys: |
+            gatsby_cache | ${{ runner.os }}
+
+      - name: Cache Gatsby public
+        uses: actions/cache@v4
+        with:
+          path: public
+          key: gatsby_public | ${{ runner.os }}
+          restore-keys: |
+            gatsby_public | ${{ runner.os }}
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --immutable
 
       - name: Get Rule History JSON
         shell: pwsh

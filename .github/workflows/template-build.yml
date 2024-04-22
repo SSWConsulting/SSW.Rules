@@ -7,6 +7,12 @@ on:
         type: string
         required: true
         description: 'The environment to build for'
+    secrets:
+      APPINSIGHTS_INSTRUMENTATIONKEY:
+      GITHUB_TOKEN:
+      DISQUS_API_KEY:
+      GATSBY_ALGOLIA_SEARCH_KEY:
+      ALGOLIA_ADMIN_KEY:
 
 jobs:
   build:

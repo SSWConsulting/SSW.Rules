@@ -23,16 +23,11 @@ jobs:
           sparse-checkout: |
             infra
 
-      - name: Run Bicep build
-        uses: aliencube/bicep-build-actions@v0.3
-        with:
-          files: infra/main.bicep
-
       - name: Check the result
         shell: bash
         run: |
-          shopt -s globstar
-          ls -altR **/sample*.*
+          mkdri arm
+          az bicep build --file infra/main.bicep --outdir arm
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4

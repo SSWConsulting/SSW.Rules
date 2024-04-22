@@ -1,0 +1,99 @@
+name: Template - Build site
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+        description: 'The environment to build for'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Cache Gatsby .cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: gatsby_cache | ${{ runner.os }}
+          restore-keys: |
+            gatsby_cache | ${{ runner.os }}
+
+      - name: Cache Gatsby public
+        uses: actions/cache@v4
+        with:
+          path: public
+          key: gatsby_public | ${{ runner.os }}
+          restore-keys: |
+            gatsby_public | ${{ runner.os }}
+
+      - name: Use Node.
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - uses: cschleiden/replace-tokens@v1
+        with:
+          tokenPrefix: '#{'
+          tokenSuffix: '}'
+          files: .env.template
+        env:
+          GOOGLE_ANALYTICS: ${{ env.GOOGLE_ANALYTICS }}
+          VERSION_DEPLOYED: ${{ github.run_id }}
+          APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+          CONTENT_BRANCH: ${{ env.CONTENT_BRANCH }}
+          API_BASE_URL: ${{ env.API_BASE_URL }}
+          AUTH0_DOMAIN: ${{ env.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ env.AUTH0_CLIENT_ID }}
+          AUTH0_REDIRECT_URI: ${{ env.AUTH0_REDIRECT_URI }}
+          GITHUB_API_PAT: ${{ secrets.GITHUB_TOKEN }}
+          DISQUS_FORUM: ${{ env.DISQUS_FORUM }}
+          DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
+          GTM_CONTAINER_ID: ${{ env.GTM_CONTAINER_ID }}
+          GITHUB_ORG: ${{ github.repository_owner }}
+          GITHUB_REPO: SSW.Rules.Content
+          GATSBY_ALGOLIA_APP_ID: ${{ env.GATSBY_ALGOLIA_APP_ID }}
+          GATSBY_ALGOLIA_SEARCH_KEY: ${{ secrets.GATSBY_ALGOLIA_SEARCH_KEY }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+
+      - name: Rename env file
+        run: |
+          mv .env.template .env.production
+          cat .env.production
+
+      - name: Get Rule History JSON
+        run: |
+          ./.azure/scripts/get-rule-history.ps1 `
+            -AzFunctionBaseUrl ${{ env.AzFunctionBaseUrl }} `
+            -GenerateHistoryFileFunctionKey ${{ secrets.GenerateHistoryFileFunctionKey }} `
+            -outputFileName "history.json"
+
+      - name: Get History Commits of Each Contributor
+        run: |
+          ./.azure/scripts/create-commits-history.ps1 `
+            -Token ${{ secrets.GITHUB_TOKEN }} `
+            -GithubOrg ${{ github.repository_owner }} `
+            -GithubRepo SSW.Rules.Content
+
+      - name: Build
+        run: yarn build
+        env:
+          GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: true
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: public

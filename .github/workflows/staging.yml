@@ -1,0 +1,26 @@
+name: Staging - build and deploy
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: staging
+
+jobs:
+
+  build:
+    name: Build and upload artifacts
+    uses: ./.github/workflows/template-build.yml
+    with:
+      environment: staging
+    secrets: inherit
+
+  deploy:
+    needs: build
+    name: Deploy to staging
+    uses: ./.github/workflows/template-deploy.yml
+    with:
+      environment: staging
+    secrets: inherit

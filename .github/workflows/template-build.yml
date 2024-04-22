@@ -11,11 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: staging
+    environment: ${{ inputs.environment }}
     steps:
-      - name: Setup Environment Variables
-        run: |
-          echo "Using environment: ${{ github.event.inputs.environment }}"
 
       - name: Checkout code
         uses: actions/checkout@v4

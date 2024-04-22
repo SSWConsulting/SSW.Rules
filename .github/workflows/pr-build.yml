@@ -13,6 +13,7 @@ jobs:
     environment: staging
     steps:
       - run: echo "${{ env.AZFUNCTIONBASEURL }}"
+      - run: echo "${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}"
 
   build:
     name: Build and upload artifacts

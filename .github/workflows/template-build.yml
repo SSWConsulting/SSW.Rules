@@ -1,0 +1,123 @@
+name: Template - Build site
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+        description: 'The environment to build for'
+
+jobs:
+  build-code:
+    name: Build Gatsby site
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: cschleiden/replace-tokens@v1
+        with:
+          tokenPrefix: '#{'
+          tokenSuffix: '}'
+          files: .env.template
+        env:
+          GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
+          VERSION_DEPLOYED: ${{ github.sha }}-${{ github.run_number}}
+          APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+          CONTENT_BRANCH: ${{ vars.CONTENT_BRANCH }}
+          API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}
+          AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
+          AUTH0_REDIRECT_URI: ${{ vars.AUTH0_REDIRECT_URI }}
+          GITHUB_API_PAT: ${{ secrets.GITHUB_TOKEN }}
+          DISQUS_FORUM: ${{ vars.DISQUS_FORUM }}
+          DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
+          GTM_CONTAINER_ID: ${{ vars.GTM_CONTAINER_ID }}
+          GITHUB_ORG: ${{ github.repository_owner }}
+          GITHUB_REPO: SSW.Rules.Content
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
+          GATSBY_ALGOLIA_SEARCH_KEY: ${{ secrets.GATSBY_ALGOLIA_SEARCH_KEY }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+
+      - name: Rename env file
+        run: |
+          mv .env.template .env.production
+          cat .env.production
+
+      - name: Cache Gatsby .cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: gatsby_cache | ${{ runner.os }}
+          restore-keys: |
+            gatsby_cache | ${{ runner.os }}
+
+      - name: Cache Gatsby public
+        uses: actions/cache@v4
+        with:
+          path: public
+          key: gatsby_public | ${{ runner.os }}
+          restore-keys: |
+            gatsby_public | ${{ runner.os }}
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Get Rule History JSON
+        shell: pwsh
+        run: |
+          ./.azure/scripts/get-rule-history.ps1 `
+            -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
+            -GenerateHistoryFileFunctionKey ${{ secrets.GenerateHistoryFileFunctionKey }} `
+            -outputFileName "history.json"
+
+      - name: Get History Commits of Each Contributor
+        shell: pwsh
+        run: |
+          ./.azure/scripts/create-commits-history.ps1 `
+            -Token ${{ secrets.GITHUB_TOKEN }} `
+            -GithubOrg ${{ github.repository_owner }} `
+            -GithubRepo SSW.Rules.Content
+
+      - name: Build
+        run: yarn build
+        env:
+          GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: true
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: public
+
+  build-infra:
+    name: Build infra
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            infra
+
+      - name: Check the result
+        shell: bash
+        run: |
+          mkdir arm
+          az bicep build --file infra/main.bicep --outdir arm
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: infra
+          path: infra

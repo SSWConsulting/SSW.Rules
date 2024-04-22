@@ -1,0 +1,16 @@
+name: PR - build
+
+on:
+  pull_request: 
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+
+  build-code:
+    name: Build and upload artifacts
+    uses: ./.github/workflows/template-build.yml
+    with:
+      environment: staging
+    secrets: inherit

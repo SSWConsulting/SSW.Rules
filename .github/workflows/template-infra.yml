@@ -1,0 +1,16 @@
+name: Template - deploy infra
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+        description: 'The environment to deploy to'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - run: echo "Deploying to ${{ github.event.inputs.environment }}"

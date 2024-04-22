@@ -18,17 +18,9 @@ jobs:
       environment: staging
     secrets: inherit
 
-  deploy-infra:
+  deploy:
     needs: build
-    name: Deploy to staging
-    uses: ./.github/workflows/template-infra.yml
-    with:
-      environment: staging
-    secrets: inherit
-
-  deploy-code:
-    needs: deploy-infra
-    name: Deploy to staging
+    name: Deploy infra to staging
     uses: ./.github/workflows/template-deploy.yml
     with:
       environment: staging

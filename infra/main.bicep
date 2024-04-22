@@ -3,8 +3,8 @@ param location string = resourceGroup().location
 
 @description('The name of the environment to deploy the resources into.')
 @allowed([
-  'stag'
-  'prod'
+  'staging'
+  'production'
 ])
 param environmentName string
 
@@ -23,7 +23,7 @@ param indexDocumentPath string = 'index.html'
 @description('The path to the web error document.')
 param errorDocument404Path string = 'error.html'
 
-var storageAccountName = substring('sarules${environmentName}${uniqueString(resourceGroup().id)}', 0, 24)
+var storageAccountName = substring('sarules${substring(environmentName, 0, 4)}${uniqueString(resourceGroup().id)}', 0, 24)
 
 resource contributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
   scope: subscription()
@@ -94,4 +94,5 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   }
 }
 
+output storageAccountName string = storageAccount.name
 output staticWebsiteUrl string = storageAccount.properties.primaryEndpoints.web

@@ -9,8 +9,76 @@ on:
         description: 'The environment to deploy to'
 
 jobs:
-  deploy:
+  deploy-infra:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    outputs:
+      storageAccountName: ${{ steps.deploy.outputs.storageAccountName }}
+      staticWebsiteUrl: ${{ steps.deploy.outputs.staticWebsiteUrl }}
     steps:
-      - run: echo "Deploying to ${{ inputs.environment }}"
+      - name: Download infra artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: infra
+          path: infra
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy infra
+        shell: pwsh
+        run: |
+            cd infra
+            az deployment group create `
+              --name ${{ github.sha }} `
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} `
+              --template-file infra/main.bicep `
+              --parameters `
+                environmentName=${{ inputs.environment }} `
+              --mode Incremental
+      
+      - name: Get deployment outputs
+        id: deploy
+        run: |
+          STORAGE_ACCOUNT_NAME=$(az deployment group show --name ${{ github.sha }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query properties.outputs.storageAccountName.value -o tsv)
+          echo "Storage Account Name: $STORAGE_ACCOUNT_NAME"
+          
+          STATIC_WEBSITE_URL=$(az storage account show --name $STORAGE_ACCOUNT_NAME --query primaryEndpoints.web -o tsv)
+          echo "Static Website URL: $STATIC_WEBSITE_URL"
+
+          echo "::set-output name=storageAccountName::$STORAGE_ACCOUNT_NAME"
+          echo "::set-output name=staticWebsiteUrl::$STATIC_WEBSITE_URL"
+
+  deploy:
+    needs: deploy-infra
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ inputs.environment }}
+      url: ${{ needs.deploy-infra.outputs.staticWebsiteUrl }}
+    steps:
+      - name: Download code artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: public
+          path: public
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      
+      #copy public folder to blob storage $web container
+      - name: Copy public folder to blob storage
+        run: |
+          az storage blob upload-batch `
+            --account-name ${{ needs.deploy-infra.outputs.storageAccountName }} `
+            --destination \$web `
+            --source public `
+            --overwrite `
+            --pattern "*"

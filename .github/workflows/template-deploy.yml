@@ -32,14 +32,13 @@ jobs:
       - name: Deploy infra
         shell: pwsh
         run: |
-            cd infra
-            az deployment group create `
-              --name ${{ github.sha }} `
-              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} `
-              --template-file infra/main.bicep `
-              --parameters `
-                environmentName=${{ inputs.environment }} `
-              --mode Incremental
+          az deployment group create `
+            --name ${{ github.sha }} `
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} `
+            --template-file infra/main.bicep `
+            --parameters `
+              environmentName=${{ inputs.environment }} `
+            --mode Incremental
       
       - name: Get deployment outputs
         id: deploy

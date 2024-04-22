@@ -51,10 +51,10 @@ jobs:
           files: .env.template
         env:
           GOOGLE_ANALYTICS: ${{ env.GOOGLE_ANALYTICS }}
-          VERSION_DEPLOYED: ${{ github.ref }}-${{ github.run_number}}
+          VERSION_DEPLOYED: ${{ github.sha }}-${{ github.run_number}}
           APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
           CONTENT_BRANCH: ${{ env.CONTENT_BRANCH }}
-          API_BASE_URL: ${{ env.API_BASE_URL }}
+          API_BASE_URL: ${{ env.AZFUNCTIONBASEURL }}
           AUTH0_DOMAIN: ${{ env.AUTH0_DOMAIN }}
           AUTH0_CLIENT_ID: ${{ env.AUTH0_CLIENT_ID }}
           AUTH0_REDIRECT_URI: ${{ env.AUTH0_REDIRECT_URI }}

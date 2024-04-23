@@ -60,8 +60,8 @@ jobs:
           STATIC_WEBSITE_URL=$(az storage account show --name $STORAGE_ACCOUNT_NAME --query primaryEndpoints.web -o tsv)
           echo "Static Website URL: $STATIC_WEBSITE_URL"
 
-          echo "storageAccountName=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
-          echo "staticWebsiteUrl=$STATIC_WEBSITE_URL" >> $GITHUB_ENV
+          echo "storageAccountName=$STORAGE_ACCOUNT_NAME" >> $GITHUB_OUTPUT
+          echo "staticWebsiteUrl=$STATIC_WEBSITE_URL" >> $GITHUB_OUTPUT
 
   deploy:
     needs: deploy-infra

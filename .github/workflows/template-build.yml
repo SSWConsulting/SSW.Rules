@@ -13,6 +13,8 @@ jobs:
     name: Build Gatsby site
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    env:
+      sha: ${{ github.sha }}
     steps:
 
       - name: Checkout code

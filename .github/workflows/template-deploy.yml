@@ -16,6 +16,8 @@ jobs:
   deploy-infra:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    env:
+      sha: ${{ github.sha }}
     outputs:
       storageAccountName: ${{ steps.deploy.outputs.storageAccountName }}
       staticWebsiteUrl: ${{ steps.deploy.outputs.staticWebsiteUrl }}

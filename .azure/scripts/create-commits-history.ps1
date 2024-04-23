@@ -11,7 +11,7 @@ git clone https://github.com/$GithubOrg/$GithubRepo.git
 cd SSW.Rules.Content/
 
 #Step 1: Fetch all contributors - Retrieve from GitHub
-$authors = gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login" | ConvertFrom-Json
+$authors = gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login"
 
 #Step 2: Get all commit info of each contributor
 function Get-Commits($author) {

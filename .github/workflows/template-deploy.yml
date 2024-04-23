@@ -36,7 +36,9 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Generate SHA
-        run: echo "sha=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+        run: echo "sha=${GITHUB_SHA:0:7})" >> $GITHUB_ENV
+        env:
+          GITHUB_SHA: ${{ github.sha }}
 
       - name: Deploy infra
         shell: pwsh

@@ -1,0 +1,28 @@
+name: Production - build and deploy
+
+on:
+  push:
+    branches:
+      - release/*
+  workflow_dispatch:
+  
+
+concurrency:
+  group: production
+
+jobs:
+
+  build:
+    name: Build and upload artifacts
+    uses: ./.github/workflows/template-build.yml
+    with:
+      environment: production
+    secrets: inherit
+
+  deploy:
+    needs: build
+    name: Deploy infra to production
+    uses: ./.github/workflows/template-deploy.yml
+    with:
+      environment: production
+    secrets: inherit

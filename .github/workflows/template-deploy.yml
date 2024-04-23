@@ -41,14 +41,13 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
 
       - name: Deploy infra
-        shell: pwsh
         run: |
-          az deployment group create `
-            --name ${{ env.sha }} `
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} `
-            --template-file infra/main.bicep `
-            --parameters `
-              environmentName=${{ inputs.environment }} `
+          az deployment group create \
+            --name ${{ env.sha }} \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --template-file infra/main.bicep \
+            --parameters \
+              environmentName=${{ inputs.environment }} \
             --mode Incremental
       
       - name: Get deployment outputs
@@ -86,9 +85,9 @@ jobs:
       #copy public folder to blob storage $web container
       - name: Copy public folder to blob storage
         run: |
-          az storage blob upload-batch `
-            --account-name ${{ needs.deploy-infra.outputs.storageAccountName }} `
-            --destination \$web `
-            --source public `
-            --overwrite `
+          az storage blob upload-batch \
+            --account-name ${{ needs.deploy-infra.outputs.storageAccountName }} \
+            --source public \
+            --destination $web \
+            --overwrite \
             --pattern "*"

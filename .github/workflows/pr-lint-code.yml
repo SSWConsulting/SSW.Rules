@@ -9,19 +9,18 @@ concurrency:
   group: ci-${{ github.event.number }}-${{ github.workflow }}
   cancel-in-progress: true
 
-defaults:
-  run:
-    shell: pwsh
-
 jobs:
   lint-code:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
 
-      - run: yarn install
+      - name: Install dependencies
+        run: yarn install --immutable
 
       - run: yarn lint --max-warnings 0

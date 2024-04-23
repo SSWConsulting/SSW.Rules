@@ -21,7 +21,7 @@ jobs:
 
   deploy:
     needs: build
-    name: Deploy infra to production
+    name: Deploy to production
     uses: ./.github/workflows/template-deploy.yml
     with:
       environment: production

@@ -5,8 +5,7 @@ param (
 )
 
 $ErrorActionPreference = 'Stop'
-
-git clone https://github.com/$GithubOrg/$GithubRepo.git
+$rootFolder = "./SSW.Rules.Content/rules"
 
 cd SSW.Rules.Content/
 
@@ -74,6 +73,8 @@ function Get-FileMetadata($currentFolder, $commits) {
 $commitInfo = @()
 
 foreach ($author in $authors) {
+    $index = [array]::IndexOf($authors, $author) + 1
+    Write-Host "($index/$($authors.Count)): Fetching commit data for $author"
     $commits = Get-Commits $author
     $userCommits = @{
         "user" = $author

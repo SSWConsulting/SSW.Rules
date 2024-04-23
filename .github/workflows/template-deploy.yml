@@ -88,6 +88,6 @@ jobs:
           az storage blob upload-batch \
             --account-name ${{ needs.deploy-infra.outputs.storageAccountName }} \
             --source public \
-            --destination $web \
+            --destination \$web \
             --overwrite \
             --pattern "*"

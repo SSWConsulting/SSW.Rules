@@ -12,12 +12,13 @@ jobs:
   get-content-commit-data:
     name: Get Rules contents commit data
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     steps:
 
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          sparse-checkout: |
+            .azure
 
       - name: Get Rule History JSON
         shell: pwsh
@@ -53,8 +54,7 @@ jobs:
       sha: ${{ github.sha }}
     steps:
 
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Download commit data artifact
         uses: actions/download-artifact@v4

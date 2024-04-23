@@ -81,13 +81,25 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      
-      #copy public folder to blob storage $web container
-      - name: Copy public folder to blob storage
+
+      # use az cli to get a sas url for the storage account
+      - name: Get sas url for blob storage
         run: |
-          az storage blob upload-batch \
+          sas=$(az storage account generate-sas \
             --account-name ${{ needs.deploy-infra.outputs.storageAccountName }} \
-            --source public \
-            --destination \$web \
-            --overwrite \
-            --pattern "*"
+            --expiry $(date -d "tomorrow" +%Y-%m-%d) \
+            --permissions acdlrw \
+            --resource-types sco \
+            --services b \
+            --https-only \
+            --full-uri \
+            --output tsv \
+          )
+          echo "::add-mask::$sas"
+          echo "DEPLOY_SAS_URL=$sas" >> $GITHUB_ENV
+        
+      - name: Deploy to Azure storage
+        uses: TravisSpomer/deploy-to-azure-storage@v1.5.0
+        with:
+          source-path: public
+          sas-url: ${{ env.DEPLOY_SAS_URL }}

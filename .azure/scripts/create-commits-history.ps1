@@ -19,9 +19,6 @@ $authors = (gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[
     }
 } | Where-Object { $_.name -ne $null } | Select-Object -ExpandProperty login
 
-Write-Host "Fetch all commit info"
-$allCommits = gh api repos/$GithubOrg/$GithubRepo/commits --paginate --jq ".[] | {sha: .sha, author: .author.login}"
-
 #Step 3: Get commit details for a given SHA
 function Get-CommitInfo($sha) {
     $commitDetails = git show --pretty=format:"%H%n%ad%n%n%ae" --date=iso-strict $sha
@@ -72,9 +69,9 @@ $commitInfo = @()
 
 foreach ($author in $authors) {
     $index = [array]::IndexOf($authors, $author) + 1
-    Write-Host "($index/$($authors.Count)): Fetching commit data for $author.name"
+    Write-Host "($index/$($authors.Count)): Fetching commit data for $($author.name)"
 
-    $commits = $allCommits | Where-Object { $_.author -eq $author.login } | ForEach-Object { $_.sha }
+    $commits = (gh api repos/$GithubOrg/$GithubRepo/commits?author=$($author.login) --paginate --jq ".[].sha")
     $userCommits = @{
         "user" = $author
 	    "authorName" = $author.name

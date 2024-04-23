@@ -9,19 +9,18 @@ $rootFolder = "./SSW.Rules.Content/rules"
 
 cd SSW.Rules.Content/
 
-#Step 1: Fetch all contributors - Retrieve from GitHub
-$authors = gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login"
-
-#Step 2: Get all commit info of each contributor
-function Get-Commits($author) {
-    try {
-        $response = gh api repos/$GithubOrg/$GithubRepo/commits?author=$author --paginate --jq ".[].sha"
-        return $response
-    } catch {
-        Write-Host "Failed to fetch commit data for $author. Status code: $($_.Exception.Response.StatusCode.value__)"
-        return @()
+Write-Host "Fetch all contributors"
+$authors = (gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login") | ForEach-Object {
+    $user = $_
+    $name = (gh api users/$user --jq ".name")
+    [PSCustomObject]@{
+        login = $user
+        name = $name
     }
-}
+} | Where-Object { $_.name -ne $null } | Select-Object -ExpandProperty login
+
+Write-Host "Fetch all commit info"
+$allCommits = gh api repos/$GithubOrg/$GithubRepo/commits --paginate --jq ".[] | {sha: .sha, author: .author.login}"
 
 #Step 3: Get commit details for a given SHA
 function Get-CommitInfo($sha) {
@@ -73,11 +72,12 @@ $commitInfo = @()
 
 foreach ($author in $authors) {
     $index = [array]::IndexOf($authors, $author) + 1
-    Write-Host "($index/$($authors.Count)): Fetching commit data for $author"
-    $commits = Get-Commits $author
+    Write-Host "($index/$($authors.Count)): Fetching commit data for $author.name"
+
+    $commits = $allCommits | Where-Object { $_.author -eq $author.login } | ForEach-Object { $_.sha }
     $userCommits = @{
         "user" = $author
-	    "authorName" = ""
+	    "authorName" = $author.name
         "commits" = @()
     }
 
@@ -105,7 +105,6 @@ foreach ($author in $authors) {
     }
 
     if ($userCommits["commits"].Count -gt 0) {
-        $userCommits["authorName"] = (gh api users/$author --jq ".name")
         $commitInfo += $userCommits
     }
 }

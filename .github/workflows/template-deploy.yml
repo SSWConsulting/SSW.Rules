@@ -8,6 +8,9 @@ on:
         required: true
         description: 'The environment to deploy to'
 
+permissions:
+  id-token: write
+
 jobs:
   deploy-infra:
     runs-on: ubuntu-latest

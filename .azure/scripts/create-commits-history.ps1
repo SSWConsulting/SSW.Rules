@@ -15,6 +15,9 @@ $authors = gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[]
 #Step 2: Get all commit info of each contributor
 function Get-Commits($author) {
     $url = "https://api.github.com/repos/$GithubOrg/$GithubRepo/commits?author=$author"
+    $headers = @{
+        "Authorization" = "Bearer $Token"
+    }
     try {
         $response = Invoke-RestMethod -Uri $url -Method Get -Headers $headers
         return $response
@@ -74,7 +77,7 @@ $commitInfo = @()
 
 foreach ($author in $authors) {
     $index = [array]::IndexOf($authors, $author) + 1
-    Write-Host "($index/$($authors.Count)): Fetching commit data for $author"
+    Write-Host "($index/($authors.Count)): Fetching commit data for $author"
     $commits = Get-Commits $author
     $userCommits = @{
         "user" = $author

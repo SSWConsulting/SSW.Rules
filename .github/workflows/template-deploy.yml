@@ -36,7 +36,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Generate SHA
-        run: echo "{sha}={$(git rev-parse --short ${{ github.sha }})}" >> $GITHUB_ENV
+        run: echo "sha=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
 
       - name: Deploy infra
         shell: pwsh
@@ -58,8 +58,8 @@ jobs:
           STATIC_WEBSITE_URL=$(az storage account show --name $STORAGE_ACCOUNT_NAME --query primaryEndpoints.web -o tsv)
           echo "Static Website URL: $STATIC_WEBSITE_URL"
 
-          echo "{storageAccountName}={$STORAGE_ACCOUNT_NAME}" >> $GITHUB_ENV
-          echo "{staticWebsiteUrl}={$STATIC_WEBSITE_URL}" >> $GITHUB_ENV
+          echo "storageAccountName=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
+          echo "staticWebsiteUrl=$STATIC_WEBSITE_URL" >> $GITHUB_ENV
 
   deploy:
     needs: deploy-infra

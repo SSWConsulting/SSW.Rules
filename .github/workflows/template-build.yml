@@ -20,6 +20,11 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Generate SHA
+        id: generate-sha
+        run: |
+            echo "::set-output name=sha::$(git rev-parse --short ${{ github.sha }})"
+
       - uses: cschleiden/replace-tokens@v1
         with:
           tokenPrefix: '#{'
@@ -27,7 +32,7 @@ jobs:
           files: .env.template
         env:
           GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
-          VERSION_DEPLOYED: ${{ github.sha }}-${{ github.run_number}}
+          VERSION_DEPLOYED: ${{ env.sha }}
           APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
           CONTENT_BRANCH: ${{ vars.CONTENT_BRANCH }}
           API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}

@@ -33,11 +33,16 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Generate SHA
+        id: generate-sha
+        run: |
+            echo "::set-output name=sha::$(git rev-parse --short ${{ github.sha }})"
+
       - name: Deploy infra
         shell: pwsh
         run: |
           az deployment group create `
-            --name ${{ github.sha }} `
+            --name ${{ env.sha }} `
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} `
             --template-file infra/main.bicep `
             --parameters `
@@ -47,7 +52,7 @@ jobs:
       - name: Get deployment outputs
         id: deploy
         run: |
-          STORAGE_ACCOUNT_NAME=$(az deployment group show --name ${{ github.sha }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query properties.outputs.storageAccountName.value -o tsv)
+          STORAGE_ACCOUNT_NAME=$(az deployment group show --name ${{ env.sha }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query properties.outputs.storageAccountName.value -o tsv)
           echo "Storage Account Name: $STORAGE_ACCOUNT_NAME"
           
           STATIC_WEBSITE_URL=$(az storage account show --name $STORAGE_ACCOUNT_NAME --query primaryEndpoints.web -o tsv)

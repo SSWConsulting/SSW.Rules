@@ -10,14 +10,7 @@ $rootFolder = "./SSW.Rules.Content/rules"
 cd SSW.Rules.Content/
 
 Write-Host "Fetch all contributors"
-$authors = (gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login") | ForEach-Object {
-    $user = $_
-    $name = (gh api users/$user --jq ".name")
-    [PSCustomObject]@{
-        login = $user
-        name = $name
-    }
-} | Where-Object { $_.name -ne $null } | Select-Object -ExpandProperty login
+$authors = (gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login")
 
 #Step 3: Get commit details for a given SHA
 function Get-CommitInfo($sha) {
@@ -69,12 +62,12 @@ $commitInfo = @()
 
 foreach ($author in $authors) {
     $index = [array]::IndexOf($authors, $author) + 1
-    Write-Host "($index/$($authors.Count)): Fetching commit data for $($author.name)"
+    Write-Host "($index/$($authors.Count)): Fetching commit data for $author"
 
-    $commits = (gh api repos/$GithubOrg/$GithubRepo/commits?author=$($author.login) --paginate --jq ".[].sha")
+    $commits = (gh api repos/$GithubOrg/$GithubRepo/commits?author=$author --paginate --jq ".[].sha")
     $userCommits = @{
         "user" = $author
-	    "authorName" = $author.name
+	    "authorName" = (gh api users/$author --jq ".name")
         "commits" = @()
     }
 

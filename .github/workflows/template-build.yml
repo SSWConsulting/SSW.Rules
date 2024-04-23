@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 1
 
       - name: Generate SHA
-        run: echo "sha=${GITHUB_SHA:0:7})" >> $GITHUB_ENV
+        run: echo "sha=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
         env:
           GITHUB_SHA: ${{ github.sha }}
 

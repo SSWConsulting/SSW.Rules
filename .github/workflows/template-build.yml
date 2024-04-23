@@ -17,8 +17,7 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: |
-            .azure
+          fetch-depth: 1
 
       - name: Make static directory
         run: mkdir static
@@ -46,6 +45,7 @@ jobs:
         with:
           name: commit-data
           path: static
+          retention-days: 1
 
 
   build-code:
@@ -58,6 +58,8 @@ jobs:
     steps:
 
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Download commit data artifact
         uses: actions/download-artifact@v4
@@ -137,6 +139,7 @@ jobs:
         with:
           name: build
           path: public
+          retention-days: 1
 
   build-infra:
     name: Build infra
@@ -158,3 +161,4 @@ jobs:
         with:
           name: infra
           path: infra
+          retention-days: 1

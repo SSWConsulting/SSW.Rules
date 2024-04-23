@@ -92,7 +92,6 @@ jobs:
             --resource-types sco \
             --services b \
             --https-only \
-            --full-uri \
             --output tsv \
           )
           echo "::add-mask::$sas"

@@ -16,12 +16,16 @@ jobs:
     steps:
 
       - uses: actions/checkout@v4
+        name: Checkout SSW.Rules
         with:
           fetch-depth: 1
 
       - uses: actions/checkout@v4
+        name: Checkout SSW.Rules.Content
         with:
           repository: SSWConsulting/SSW.Rules.Content
+          path: SSW.Rules.Content
+          ref: main
           fetch-depth: 0
 
       - name: Get Rule History JSON

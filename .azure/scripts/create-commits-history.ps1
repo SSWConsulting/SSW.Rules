@@ -9,8 +9,14 @@ $rootFolder = "./SSW.Rules.Content/rules"
 
 cd SSW.Rules.Content/
 
-Write-Host "Fetch all contributors"
-$authors = (gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login")
+#Step 1: Fetch all contributors - Retrieve from GitHub
+$authors = gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login"
+
+
+$headers = @{
+    "Authorization" = "Bearer $Token"
+}
+$allCommits = Invoke-RestMethod -Uri "https://api.github.com/repos/$GithubOrg/$GithubRepo/commits" -Method Get -Headers $headers
 
 #Step 3: Get commit details for a given SHA
 function Get-CommitInfo($sha) {
@@ -62,16 +68,16 @@ $commitInfo = @()
 
 foreach ($author in $authors) {
     $index = [array]::IndexOf($authors, $author) + 1
-    Write-Host "($index/$($authors.Count)): Fetching commit data for $author"
-
-    $commits = (gh api repos/$GithubOrg/$GithubRepo/commits?author=$author --paginate --jq ".[].sha")
+    Write-Host "($index/($authors.Count)): Fetching commit data for $author"
+    $commits = $allCommits | Where-Object { $_.commit.author.name -eq $author }
     $userCommits = @{
         "user" = $author
-	    "authorName" = (gh api users/$author --jq ".name")
+	    "authorName" = ""
         "commits" = @()
     }
 
-    foreach ($sha in $commits) {
+    foreach ($commit in $commits) {
+        $sha = $commit.sha
         $filesChangedList = Get-CommitDiffFiles $sha
         $commitDetails = Get-CommitInfo $sha
 
@@ -95,6 +101,7 @@ foreach ($author in $authors) {
     }
 
     if ($userCommits["commits"].Count -gt 0) {
+	    $userCommits["authorName"] = $commit.commit[0].author.name
         $commitInfo += $userCommits
     }
 }

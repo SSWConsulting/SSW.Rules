@@ -14,12 +14,8 @@ $authors = gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[]
 
 #Step 2: Get all commit info of each contributor
 function Get-Commits($author) {
-    $url = "https://api.github.com/repos/$GithubOrg/$GithubRepo/commits?author=$author"
-    $headers = @{
-        "Authorization" = "Bearer $Token"
-    }
     try {
-        $response = Invoke-RestMethod -Uri $url -Method Get -Headers $headers
+        $response = gh api repos/$GithubOrg/$GithubRepo/commits?author=$author --paginate --jq ".[].sha"
         return $response
     } catch {
         Write-Host "Failed to fetch commit data for $author. Status code: $($_.Exception.Response.StatusCode.value__)"
@@ -85,8 +81,7 @@ foreach ($author in $authors) {
         "commits" = @()
     }
 
-    foreach ($commit in $commits) {
-        $sha = $commit.sha
+    foreach ($sha in $commits) {
         $filesChangedList = Get-CommitDiffFiles $sha
         $commitDetails = Get-CommitInfo $sha
 
@@ -110,7 +105,7 @@ foreach ($author in $authors) {
     }
 
     if ($userCommits["commits"].Count -gt 0) {
-	    $userCommits["authorName"] = $commit.commit[0].author.name
+        $userCommits["authorName"] = (gh api users/$author --jq ".name")
         $commitInfo += $userCommits
     }
 }

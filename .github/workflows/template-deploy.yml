@@ -27,7 +27,7 @@ jobs:
           path: infra
 
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -35,8 +35,7 @@ jobs:
 
       - name: Generate SHA
         id: generate-sha
-        run: |
-            echo "::set-output name=sha::$(git rev-parse --short ${{ github.sha }})"
+        run: echo "{sha}={$(git rev-parse --short ${{ github.sha }})}" >> $GITHUB_OUTPUT
 
       - name: Deploy infra
         shell: pwsh
@@ -58,8 +57,8 @@ jobs:
           STATIC_WEBSITE_URL=$(az storage account show --name $STORAGE_ACCOUNT_NAME --query primaryEndpoints.web -o tsv)
           echo "Static Website URL: $STATIC_WEBSITE_URL"
 
-          echo "::set-output name=storageAccountName::$STORAGE_ACCOUNT_NAME"
-          echo "::set-output name=staticWebsiteUrl::$STATIC_WEBSITE_URL"
+          echo "{storageAccountName}={$STORAGE_ACCOUNT_NAME}" >> $GITHUB_OUTPUT
+          echo "{staticWebsiteUrl}={$STATIC_WEBSITE_URL}" >> $GITHUB_OUTPUT
 
   deploy:
     needs: deploy-infra
@@ -75,7 +74,7 @@ jobs:
           path: public
 
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}

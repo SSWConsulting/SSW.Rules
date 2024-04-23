@@ -22,8 +22,7 @@ jobs:
 
       - name: Generate SHA
         id: generate-sha
-        run: |
-            echo "::set-output name=sha::$(git rev-parse --short ${{ github.sha }})"
+        run: echo "{sha}={$(git rev-parse --short ${{ github.sha }})}" >> $GITHUB_OUTPUT
 
       - uses: cschleiden/replace-tokens@v1
         with:

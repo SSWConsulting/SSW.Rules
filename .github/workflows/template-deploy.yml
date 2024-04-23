@@ -16,6 +16,8 @@ jobs:
   deploy-infra:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    env:
+      sha: ${{ github.sha }}
     outputs:
       storageAccountName: ${{ steps.deploy.outputs.storageAccountName }}
       staticWebsiteUrl: ${{ steps.deploy.outputs.staticWebsiteUrl }}
@@ -27,17 +29,20 @@ jobs:
           path: infra
 
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Generate SHA
+        run: echo "sha=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+
       - name: Deploy infra
         shell: pwsh
         run: |
           az deployment group create `
-            --name ${{ github.sha }} `
+            --name ${{ env.sha }} `
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} `
             --template-file infra/main.bicep `
             --parameters `
@@ -47,14 +52,14 @@ jobs:
       - name: Get deployment outputs
         id: deploy
         run: |
-          STORAGE_ACCOUNT_NAME=$(az deployment group show --name ${{ github.sha }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query properties.outputs.storageAccountName.value -o tsv)
+          STORAGE_ACCOUNT_NAME=$(az deployment group show --name ${{ env.sha }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query properties.outputs.storageAccountName.value -o tsv)
           echo "Storage Account Name: $STORAGE_ACCOUNT_NAME"
           
           STATIC_WEBSITE_URL=$(az storage account show --name $STORAGE_ACCOUNT_NAME --query primaryEndpoints.web -o tsv)
           echo "Static Website URL: $STATIC_WEBSITE_URL"
 
-          echo "::set-output name=storageAccountName::$STORAGE_ACCOUNT_NAME"
-          echo "::set-output name=staticWebsiteUrl::$STATIC_WEBSITE_URL"
+          echo "storageAccountName=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
+          echo "staticWebsiteUrl=$STATIC_WEBSITE_URL" >> $GITHUB_ENV
 
   deploy:
     needs: deploy-infra
@@ -66,11 +71,11 @@ jobs:
       - name: Download code artifact
         uses: actions/download-artifact@v4
         with:
-          name: public
+          name: build
           path: public
 
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}

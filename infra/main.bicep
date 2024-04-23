@@ -21,7 +21,7 @@ param storageSku string = 'Standard_LRS'
 param indexDocumentPath string = 'index.html'
 
 @description('The path to the web error document.')
-param errorDocument404Path string = 'error.html'
+param errorDocument404Path string = '404.html'
 
 var storageAccountName = substring('sarules${substring(environmentName, 0, 4)}${uniqueString(resourceGroup().id)}', 0, 24)
 

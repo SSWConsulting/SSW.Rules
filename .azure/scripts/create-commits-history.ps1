@@ -77,7 +77,7 @@ $commitInfo = @()
 
 foreach ($author in $authors) {
     $index = [array]::IndexOf($authors, $author) + 1
-    Write-Host "($index/($authors.Count)): Fetching commit data for $author"
+    Write-Host "($index/$($authors.Count)): Fetching commit data for $author"
     $commits = Get-Commits $author
     $userCommits = @{
         "user" = $author

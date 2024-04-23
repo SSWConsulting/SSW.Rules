@@ -95,7 +95,7 @@ jobs:
             --output tsv \
           )
           echo "::add-mask::$sas"
-          echo "DEPLOY_SAS_URL=https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/$sas" >> $GITHUB_ENV
+          echo "DEPLOY_SAS_URL=https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/?$sas" >> $GITHUB_ENV
         
       - name: Deploy to Azure storage
         uses: TravisSpomer/deploy-to-azure-storage@v1.5.0

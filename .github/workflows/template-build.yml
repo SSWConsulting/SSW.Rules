@@ -20,6 +20,9 @@ jobs:
           sparse-checkout: |
             .azure
 
+      - name: Make static directory
+        run: mkdir static
+
       - name: Get Rule History JSON
         shell: pwsh
         run: |

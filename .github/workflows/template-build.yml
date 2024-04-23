@@ -19,9 +19,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Make static directory
-        run: mkdir static
-
       - name: Get Rule History JSON
         shell: pwsh
         run: |
@@ -44,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: commit-data
-          path: static
+          path: static/*.json
           retention-days: 1
 
 

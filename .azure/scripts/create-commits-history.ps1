@@ -1,24 +1,14 @@
 param (
-    [string]$Token,
-    [string]$GithubOrg,
-    [string]$GithubRepo
+    [string]$GithubOrg = "SSWConsulting",
+    [string]$GithubRepo = "SSW.Rules.Content"
 )
 
 $ErrorActionPreference = 'Stop'
 $rootFolder = "./SSW.Rules.Content/rules"
 
-cd SSW.Rules.Content/
-
-#Step 1: Fetch all contributors - Retrieve from GitHub
+Write-Host "Fetch all contributors"
 $authors = gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login"
 
-
-$headers = @{
-    "Authorization" = "Bearer $Token"
-}
-$allCommits = Invoke-RestMethod -Uri "https://api.github.com/repos/$GithubOrg/$GithubRepo/commits" -Method Get -Headers $headers
-
-#Step 3: Get commit details for a given SHA
 function Get-CommitInfo($sha) {
     $commitDetails = git show --pretty=format:"%H%n%ad%n%n%ae" --date=iso-strict $sha
     return $commitDetails
@@ -29,30 +19,47 @@ function Get-CommitDiffFiles($sha) {
     return $diff
 }
 
-function Get-FileMetadata($currentFolder, $commits) {
+Write-Host "Scan all the .md files"
+$utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
+$mdFiles = Get-ChildItem -Path $rootFolder -Filter "*.md" -Recurse
+$ruleLookupTable = @{}
+foreach ($file in $mdFiles) {
+    try {
+        $key = 'rules/'+$file.FullName.Replace((Resolve-Path -Path $rootFolder).Path, "")
+
+        $streamReader = New-Object System.IO.StreamReader -Arg $file.FullName, $utf8NoBomEncoding
+        $content = $streamReader.ReadToEnd()
+        $streamReader.Close()
+        $streamReader.Dispose()
+
+        $lines = $content -split "`n"
+        $titleLine = $lines | Where-Object { $_.StartsWith('title:') }
+        $title = $titleLine.Trim().Substring(7)
+        $uriLine = $lines | Where-Object { $_.Trim().StartsWith('uri:') }
+        $uri = $uriLine.Trim().Substring(5)
+
+        $ruleLookupTable[$key] = @{
+            uri = $uri
+            title = $title
+        }
+    } catch {
+        continue
+    }
+}
+
+function Get-FileMetadata($currentFolder, $filesChangedList) {
     $updatedCommits = @()
 
-    foreach ($commitPath in $commits) {
+    foreach ($fileChangedPath in $filesChangedList) {
         $updatedFilesChanged = @()
 
-        $fullPath = Join-Path $currentFolder $commitPath.Replace("rules/", "")
-
         try {
-            $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
-            $streamReader = New-Object System.IO.StreamReader -Arg $fullPath, $utf8NoBomEncoding
-            $content = $streamReader.ReadToEnd()
-            $streamReader.Close()
-
-            $lines = $content -split "`n"
-            $titleLine = $lines | Where-Object { $_.StartsWith('title:') }
-            $title = $titleLine.Trim().Substring(7)
-            $uriLine = $lines | Where-Object { $_.Trim().StartsWith('uri:') }
-            $uri = $uriLine.Trim().Substring(5)
+            $fileDetails = $ruleLookupTable[$fileChangedPath]
 
             $newFileChanged = @{
                 uri = $uri
                 title = $title
-                path = $commitPath
+                path = $fileChangedPath
             }
             $updatedFilesChanged += $newFileChanged
             $updatedCommits += @($updatedFilesChanged)
@@ -68,16 +75,23 @@ $commitInfo = @()
 
 foreach ($author in $authors) {
     $index = [array]::IndexOf($authors, $author) + 1
-    Write-Host "($index/($authors.Count)): Fetching commit data for $author"
-    $commits = $allCommits | Where-Object { $_.commit.author.name -eq $author }
+    Write-Host "($index/$($authors.Count)): Fetching commit data for $author"
     $userCommits = @{
         "user" = $author
-	    "authorName" = ""
+	    "authorName" = (gh api users/$author --jq ".name")
         "commits" = @()
     }
 
+    # get all commits for the author
+    $commits = gh api `
+        -H "Accept: application/vnd.github+json" `
+        -H "X-GitHub-Api-Version: 2022-11-28" `
+        /repos/$GithubOrg/$GithubRepo/commits?author=$author`&per_page=1000 `
+        --paginate --jq ".[] | { sha: .sha }" `
+        | ConvertFrom-Json
+
     foreach ($commit in $commits) {
-        $sha = $commit.sha
+        $sha = $commit
         $filesChangedList = Get-CommitDiffFiles $sha
         $commitDetails = Get-CommitInfo $sha
 
@@ -109,6 +123,6 @@ foreach ($author in $authors) {
 $jsonData = $commitInfo | ConvertTo-Json -Depth 100
 
 #Step 4: Save the commit information to JSON
-$file = [System.IO.Path]::Combine((Get-Location), "../static/commits.json")
+$file = [System.IO.Path]::Combine((Get-Location), "static/commits.json")
 $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
 [System.IO.File]::WriteAllText($file, $jsonData, $utf8NoBomEncoding)

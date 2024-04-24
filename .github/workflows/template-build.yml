@@ -10,7 +10,7 @@ on:
 
 jobs:
   get-content-commit-data:
-    name: Getnerate commit data
+    name: Generate commit data
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -210,7 +210,7 @@ jobs:
           azcopy sync \
           ${{ github.workspace }} \
           "https://sarulesstagbbfslamgwndh2.blob.core.windows.net/\$web/?$sas" \
-          --log-level warning \
+          --log-level ERROR \
           --compare-hash MD5 --put-md5 --delete-destination true
         env:
           AZCOPY_CONCURRENCY_VALUE: 64

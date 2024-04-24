@@ -99,7 +99,9 @@ jobs:
       # use azcopy to upload the files to blob storage
       - name: Upload files to Azure storage
         run: |
-          azcopy copy \
+          azcopy sync \
             ${{ github.workspace }}/public \
             ${{ env.DEPLOY_SAS_URL }} \
-            --recursive=true
+            --recursive=true \
+            --compare-hash --delete-destination=true \
+            --check-length=false

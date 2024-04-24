@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   deploy-infra:
+    name: Infra
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
@@ -63,6 +64,7 @@ jobs:
           echo "staticWebsiteUrl=$STATIC_WEBSITE_URL" >> $GITHUB_OUTPUT
 
   deploy:
+    name: Site
     needs: deploy-infra
     runs-on: ubuntu-latest
     environment: 
@@ -82,24 +84,10 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # - name: Get sas url for blob storage
-      #   run: |
-      #     sas=$(az storage account generate-sas \
-      #       --account-name ${{ needs.deploy-infra.outputs.storageAccountName }} \
-      #       --expiry $(date -d "tomorrow" +%Y-%m-%d) \
-      #       --permissions acdlrw \
-      #       --resource-types sco \
-      #       --services b \
-      #       --https-only \
-      #       --output tsv \
-      #     )
-      #     echo "::add-mask::$sas"
-      #     echo "DEPLOY_SAS_URL=https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web/?$sas" >> $GITHUB_ENV
-
       - name: Upload files to Azure storage
         run: |
             azcopy sync \
             ${{ github.workspace }} \
             "https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web" \
             --recursive \
-            --compare-hash
+            --compare-hash MD5 --put-md5 --delete-destination true

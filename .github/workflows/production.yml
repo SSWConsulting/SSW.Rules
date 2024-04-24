@@ -13,7 +13,7 @@ concurrency:
 jobs:
 
   build:
-    name: Build and upload artifacts
+    name: Build
     uses: ./.github/workflows/template-build.yml
     with:
       environment: production
@@ -21,7 +21,7 @@ jobs:
 
   deploy:
     needs: build
-    name: Deploy to production
+    name: Deploy
     uses: ./.github/workflows/template-deploy.yml
     with:
       environment: production

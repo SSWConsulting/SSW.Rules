@@ -3,6 +3,9 @@ name: Template - Build site
 on:
   workflow_call:
     inputs:
+      branch_name:
+        required: true
+        type: string
       environment:
         type: string
         required: true
@@ -19,6 +22,7 @@ jobs:
         name: Checkout SSW.Rules
         with:
           path: SSW.Rules
+          ref: ${{ inputs.branch_name }}
           sparse-checkout: |
             build-scripts
           fetch-depth: 1
@@ -69,6 +73,8 @@ jobs:
     steps:
 
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch_name }}
 
       - name: Download commit data artifact
         uses: actions/download-artifact@v4
@@ -155,6 +161,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.branch_name }}
           sparse-checkout: |
             infra
 

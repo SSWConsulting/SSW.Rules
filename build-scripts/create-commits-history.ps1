@@ -1,7 +1,8 @@
 param (
     [string]$Token,
     [string]$GithubOrg,
-    [string]$GithubRepo
+    [string]$GithubRepo,
+    [string]$outputFileName
 )
 
 $ErrorActionPreference = 'Stop'
@@ -148,6 +149,5 @@ foreach ($author in $authors) {
 $jsonData = $commitInfo | ConvertTo-Json -Depth 100
 
 #Step 4: Save the commit information to JSON
-$file = [System.IO.Path]::Combine((Get-Location), "../static/commits.json")
 $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
-[System.IO.File]::WriteAllText($file, $jsonData, $utf8NoBomEncoding)
+[System.IO.File]::WriteAllText($outputFileName, $jsonData, $utf8NoBomEncoding)

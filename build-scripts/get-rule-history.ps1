@@ -10,4 +10,4 @@ $ErrorActionPreference = 'Stop'
 $Uri = $AzFunctionBaseUrl + '/api/GenerateHistoryFileFunction'
 $Headers = @{'x-functions-key' = $GenerateHistoryFileFunctionKey}
 $Response = Invoke-WebRequest -URI $Uri -Headers $Headers
-$Response.Content | Out-File -FilePath ./static/$outputFileName
+$Response.Content | Out-File -FilePath $outputFileName

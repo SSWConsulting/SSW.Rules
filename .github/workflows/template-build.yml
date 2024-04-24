@@ -31,7 +31,7 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - run: mkdir SSW.Rules/static
+      - run: mkdir static
 
       - name: Get Rule History JSON
         shell: pwsh
@@ -39,7 +39,7 @@ jobs:
           ./SSW.Rules/build-scripts/get-rule-history.ps1 `
             -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
             -GenerateHistoryFileFunctionKey ${{ secrets.GenerateHistoryFileFunctionKey }} `
-            -outputFileName "history.json"
+            -outputFileName ${{ github.workspace }}/history.json
 
       - name: Get History Commits of Each Contributor
         shell: pwsh
@@ -48,6 +48,7 @@ jobs:
             -Token ${{ secrets.GITHUB_TOKEN }} `
             -GithubOrg ${{ github.repository_owner }} `
             -GithubRepo SSW.Rules.Content
+            -outputFileName ${{ github.workspace }}/commits.json
         env:
           GH_TOKEN: ${{ github.token }}
 
@@ -55,7 +56,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: commit-data
-          path: SSW.Rules/static/*.json
+          path: static
           retention-days: 1
 
   build-code:

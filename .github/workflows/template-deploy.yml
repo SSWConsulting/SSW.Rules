@@ -102,6 +102,6 @@ jobs:
           azcopy sync \
             ${{ github.workspace }} \
             ${{ env.DEPLOY_SAS_URL }} \
-            --recursive=true \
+            --recursive \
             --compare-hash --delete-destination=true \
             --check-length=false

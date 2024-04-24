@@ -102,4 +102,4 @@ jobs:
             ${{ github.workspace }} \
             "https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web" \
             --recursive \
-            --compare-hash --delete-destination=true
+            --compare-hash

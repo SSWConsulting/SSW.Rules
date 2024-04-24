@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: 
       name: ${{ inputs.environment }}
-      url: ${{ needs.deploy-infra.outputs.staticWebsiteUrl }}
+      url: ${{ needs.deploy-infra.outputs.staticWebsiteUrl }}/rules
     steps:
       - name: Download code artifact
         uses: actions/download-artifact@v4

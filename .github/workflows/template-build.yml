@@ -21,7 +21,6 @@ jobs:
           path: SSW.Rules
           sparse-checkout: |
             build-scripts
-            static
           fetch-depth: 1
 
       - uses: actions/checkout@v4
@@ -31,6 +30,8 @@ jobs:
           path: SSW.Rules.Content
           ref: main
           fetch-depth: 0
+
+      - run: mkdir SSW.Rules/static
 
       - name: Get Rule History JSON
         shell: pwsh

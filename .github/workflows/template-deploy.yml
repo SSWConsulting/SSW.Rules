@@ -73,7 +73,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build
-          path: public
+          path: rules
 
       - name: Azure Login
         uses: azure/login@v2
@@ -94,13 +94,13 @@ jobs:
             --output tsv \
           )
           echo "::add-mask::$sas"
-          echo "DEPLOY_SAS_URL=https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/$web/rules/?$sas" >> $GITHUB_ENV
+          echo "DEPLOY_SAS_URL=https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web/?$sas" >> $GITHUB_ENV
 
       # use azcopy to upload the files to blob storage
       - name: Upload files to Azure storage
         run: |
           azcopy sync \
-            ${{ github.workspace }}/public \
+            ${{ github.workspace }} \
             ${{ env.DEPLOY_SAS_URL }} \
             --recursive=true \
             --compare-hash --delete-destination=true \

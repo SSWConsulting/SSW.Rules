@@ -5,6 +5,7 @@ param (
 
 $ErrorActionPreference = 'Stop'
 $rootFolder = "./SSW.Rules.Content/rules"
+Push-Location -Path $rootFolder
 
 Write-Host "Fetch all contributors"
 $authors = gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login"
@@ -21,7 +22,7 @@ function Get-CommitDiffFiles($sha) {
 
 Write-Host "Scan all the .md files"
 $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
-$mdFiles = Get-ChildItem -Path $rootFolder -Filter "*.md" -Recurse
+$mdFiles = Get-ChildItem -Filter "*.md" -Recurse
 $ruleLookupTable = @{}
 foreach ($file in $mdFiles) {
     try {
@@ -119,6 +120,8 @@ foreach ($author in $authors) {
         $commitInfo += $userCommits
     }
 }
+
+Pop-Location
 
 $jsonData = $commitInfo | ConvertTo-Json -Depth 100
 

@@ -91,5 +91,5 @@ jobs:
             "https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web" \
             --recursive \
             --compare-hash MD5 --put-md5 --delete-destination true
-          env:
-            AZCOPY_AUTO_LOGIN_TYPE: AZCLI
+        env:
+          AZCOPY_AUTO_LOGIN_TYPE: AZCLI

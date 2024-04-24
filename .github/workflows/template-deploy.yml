@@ -82,7 +82,6 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # use az cli to get a sas url for the storage account
       - name: Get sas url for blob storage
         run: |
           sas=$(az storage account generate-sas \
@@ -95,10 +94,12 @@ jobs:
             --output tsv \
           )
           echo "::add-mask::$sas"
-          echo "DEPLOY_SAS_URL=https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/?$sas" >> $GITHUB_ENV
-        
-      - name: Deploy to Azure storage
-        uses: TravisSpomer/deploy-to-azure-storage@v1.5.0
-        with:
-          source-path: public
-          sas-url: ${{ env.DEPLOY_SAS_URL }}
+          echo "DEPLOY_SAS_URL=https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/$web/rules/?$sas" >> $GITHUB_ENV
+
+      # use azcopy to upload the files to blob storage
+      - name: Upload files to Azure storage
+        run: |
+          azcopy copy \
+            ${{ github.workspace }}/public \
+            ${{ env.DEPLOY_SAS_URL }} \
+            --recursive=true

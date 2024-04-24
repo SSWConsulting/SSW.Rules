@@ -35,7 +35,7 @@ jobs:
       - name: Get Rule History JSON
         shell: pwsh
         run: |
-          ./SSW.Rules/build-scripts/scripts/get-rule-history.ps1 `
+          ./SSW.Rules/build-scripts/get-rule-history.ps1 `
             -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
             -GenerateHistoryFileFunctionKey ${{ secrets.GenerateHistoryFileFunctionKey }} `
             -outputFileName "history.json"
@@ -43,7 +43,7 @@ jobs:
       - name: Get History Commits of Each Contributor
         shell: pwsh
         run: |
-          ./SSW.Rules/build-scripts/scripts/create-commits-history.ps1 `
+          ./SSW.Rules/build-scripts/create-commits-history.ps1 `
             -Token ${{ secrets.GITHUB_TOKEN }} `
             -GithubOrg ${{ github.repository_owner }} `
             -GithubRepo SSW.Rules.Content
@@ -198,6 +198,6 @@ jobs:
         run: |
             azcopy sync \
             ${{ github.workspace }} \
-            "https://sarulesstagbbfslamgwndh2.z8.web.core.windows.net/\$web" \
+            "https://sarulesstagbbfslamgwndh2.blob.core.windows.net/\$web" \
             --recursive \
             --compare-hash MD5 --put-md5 --delete-destination true

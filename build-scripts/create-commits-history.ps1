@@ -7,8 +7,6 @@ param (
 
 $ErrorActionPreference = 'Stop'
 
-git clone https://github.com/$GithubOrg/$GithubRepo.git
-
 cd SSW.Rules.Content/
 
 #Step 1: Fetch all contributors - Retrieve from GitHub

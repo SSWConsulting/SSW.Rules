@@ -39,7 +39,7 @@ jobs:
           ./SSW.Rules/build-scripts/get-rule-history.ps1 `
             -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
             -GenerateHistoryFileFunctionKey ${{ secrets.GenerateHistoryFileFunctionKey }} `
-            -outputFileName ${{ github.workspace }}/history.json
+            -outputFileName ${{ github.workspace }}/static/history.json
 
       - name: Get History Commits of Each Contributor
         shell: pwsh
@@ -48,7 +48,7 @@ jobs:
             -Token ${{ secrets.GITHUB_TOKEN }} `
             -GithubOrg ${{ github.repository_owner }} `
             -GithubRepo SSW.Rules.Content `
-            -outputFileName ${{ github.workspace }}/commits.json
+            -outputFileName ${{ github.workspace }}/static/commits.json
         env:
           GH_TOKEN: ${{ github.token }}
 
@@ -210,7 +210,7 @@ jobs:
           azcopy sync \
           ${{ github.workspace }} \
           "https://sarulesstagbbfslamgwndh2.blob.core.windows.net/\$web/?$sas" \
-          --log-level=ERROR \
+          --log-level="ERROR" --output-level=essential \
           --compare-hash=MD5 --put-md5 --delete-destination=true
         env:
           AZCOPY_CONCURRENCY_VALUE: 64

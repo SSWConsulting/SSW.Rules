@@ -98,7 +98,7 @@ jobs:
           azcopy sync \
           ${{ github.workspace }} \
           "https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web/?$sas" \
-          --log-level=ERROR \
+          --log-level="ERROR" --output-level=essential \
           --compare-hash=MD5 --put-md5 --delete-destination=true
         env:
           AZCOPY_CONCURRENCY_VALUE: 64

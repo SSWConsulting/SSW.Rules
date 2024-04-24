@@ -86,10 +86,16 @@ jobs:
 
       - name: Upload files to Azure storage
         run: |
-            azcopy sync \
-            ${{ github.workspace }} \
-            "https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web" \
-            --recursive \
-            --compare-hash MD5 --put-md5 --delete-destination true
-        env:
-          AZCOPY_AUTO_LOGIN_TYPE: AZCLI
+          sas=$(az storage account generate-sas \
+            --account-name ${{ needs.deploy-infra.outputs.storageAccountName }} \
+            --expiry $(date -d "tomorrow" +%Y-%m-%d) \
+            --permissions acdlrw \
+            --resource-types sco \
+            --services b \
+            --https-only \
+            --output tsv \
+          )
+          azcopy sync \
+          ${{ github.workspace }} \
+          "https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web/?$sas" \
+          --compare-hash MD5 --put-md5 --delete-destination true

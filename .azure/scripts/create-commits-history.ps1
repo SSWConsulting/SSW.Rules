@@ -11,11 +11,13 @@ Write-Host "Fetch all contributors"
 $authors = gh api repos/$GithubOrg/$GithubRepo/contributors --paginate --jq ".[].login"
 
 function Get-CommitInfo($sha) {
+    Write-Host "Get-CommitInfo $pwd"
     $commitDetails = git show --pretty=format:"%H%n%ad%n%n%ae" --date=iso-strict $sha
     return $commitDetails
 }
 
 function Get-CommitDiffFiles($sha) {
+    Write-Host "Get-CommitDiffFiles $pwd"
     $diff = git show --name-only --pretty="" $sha
     return $diff
 }
@@ -76,7 +78,7 @@ $commitInfo = @()
 
 foreach ($author in $authors) {
     $index = [array]::IndexOf($authors, $author) + 1
-    Write-Host "($index/$($authors.Count)): Fetching commit data for $author"
+    Write-Host "($index/$($authors.Count)): Fetching commit data for $author..." -NoNewline
     $userCommits = @{
         "user" = $author
 	    "authorName" = (gh api users/$author --jq ".name")
@@ -91,8 +93,9 @@ foreach ($author in $authors) {
         --paginate --jq ".[] | { sha: .sha }" `
         | ConvertFrom-Json
 
-    foreach ($commit in $commits) {
-        $sha = $commit
+    Write-Host "$($commits.Count) commits"
+
+    foreach ($sha in $commits) {
         $filesChangedList = Get-CommitDiffFiles $sha
         $commitDetails = Get-CommitInfo $sha
 

@@ -82,26 +82,25 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Get sas url for blob storage
-        run: |
-          sas=$(az storage account generate-sas \
-            --account-name ${{ needs.deploy-infra.outputs.storageAccountName }} \
-            --expiry $(date -d "tomorrow" +%Y-%m-%d) \
-            --permissions acdlrw \
-            --resource-types sco \
-            --services b \
-            --https-only \
-            --output tsv \
-          )
-          echo "::add-mask::$sas"
-          echo "DEPLOY_SAS_URL=https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web/?$sas" >> $GITHUB_ENV
+      # - name: Get sas url for blob storage
+      #   run: |
+      #     sas=$(az storage account generate-sas \
+      #       --account-name ${{ needs.deploy-infra.outputs.storageAccountName }} \
+      #       --expiry $(date -d "tomorrow" +%Y-%m-%d) \
+      #       --permissions acdlrw \
+      #       --resource-types sco \
+      #       --services b \
+      #       --https-only \
+      #       --output tsv \
+      #     )
+      #     echo "::add-mask::$sas"
+      #     echo "DEPLOY_SAS_URL=https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web/?$sas" >> $GITHUB_ENV
 
-      # use azcopy to upload the files to blob storage
       - name: Upload files to Azure storage
         run: |
-          azcopy sync \
+            azcopy sync \
             ${{ github.workspace }} \
-            ${{ env.DEPLOY_SAS_URL }} \
+            "https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web" \
             --recursive \
-            --compare-hash --delete-destination=true \
+            --delete-destination=true \
             --check-length=false

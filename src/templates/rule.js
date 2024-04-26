@@ -325,7 +325,7 @@ export const query = graphql`
         created(formatString: "DD MMM YYYY")
         archivedreason
         related
-        description
+        seoDescription
       }
       parent {
         ... on File {

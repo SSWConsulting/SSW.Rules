@@ -12,7 +12,7 @@ const Head = ({
   siteUrl,
   parentSiteUrl,
   pageTitle,
-  pageDescription,
+  seoDescription,
   themeColor,
   social,
   imageUrl,
@@ -47,13 +47,13 @@ const Head = ({
       <meta content={pageTitleFull} name="twitter:title" />
       <title>{pageTitleFull}</title>
 
-      <meta content={pageDescription || siteDescription} name="description" />
+      <meta content={seoDescription || siteDescription} name="description" />
       <meta
-        content={pageDescription || siteDescription}
+        content={seoDescription || siteDescription}
         property="og:description"
       />
       <meta
-        content={pageDescription || siteDescription}
+        content={seoDescription || siteDescription}
         name="twitter:description"
       />
 
@@ -205,7 +205,7 @@ Head.propTypes = {
   siteTitle: PropTypes.string,
   siteTitleShort: PropTypes.string,
   siteDescription: PropTypes.string,
-  pageDescription: PropTypes.string,
+  seoDescription: PropTypes.string,
   siteUrl: PropTypes.string,
   parentSiteUrl: PropTypes.string,
   themeColor: PropTypes.string,

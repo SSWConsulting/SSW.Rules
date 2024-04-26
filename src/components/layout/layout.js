@@ -15,7 +15,7 @@ const Layout = ({
   displayActions,
   ruleUri,
   crumbLabel,
-  pageDescription,
+  seoDescription,
 }) => {
   const node = useRef();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
@@ -56,7 +56,7 @@ const Layout = ({
               pageTitle={
                 crumbLabel == 'SSW Rules' ? 'Latest Rules' : crumbLabel
               }
-              pageDescription={pageDescription}
+              seoDescription={seoDescription}
             />
             <Header displayActions={displayActions} ruleUri={ruleUri} />
             <main className="flex-1">{children}</main>
@@ -76,7 +76,7 @@ Layout.propTypes = {
   pageTitle: PropTypes.string,
   crumbLocation: PropTypes.object,
   crumbLabel: PropTypes.string,
-  pageDescription: PropTypes.string,
+  seoDescription: PropTypes.string,
 };
 
 function LayoutWithQuery(props) {

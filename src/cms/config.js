@@ -40,6 +40,7 @@ var configJson = {
             default: 'rule',
           },
           { name: 'title', label: 'Title' },
+          { name: 'description', label: 'Description' },
           {
             name: 'uri',
             label: 'uri (a unique identifier for the url)',

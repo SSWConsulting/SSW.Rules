@@ -24,6 +24,7 @@ const wrapPageElement = ({ element, props }) => {
             ? siteConfig.homepageTitle
             : siteConfig.breadcrumbDefault
       }
+      pageDescription={markdown?.frontmatter?.description}
       displayActions={markdown ? true : false}
       ruleUri={markdown ? markdown.parent.relativePath : null}
     >

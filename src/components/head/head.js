@@ -12,6 +12,7 @@ const Head = ({
   siteUrl,
   parentSiteUrl,
   pageTitle,
+  pageDescription,
   themeColor,
   social,
   imageUrl,
@@ -46,9 +47,15 @@ const Head = ({
       <meta content={pageTitleFull} name="twitter:title" />
       <title>{pageTitleFull}</title>
 
-      <meta content={siteDescription} name="description" />
-      <meta content={siteDescription} property="og:description" />
-      <meta content={siteDescription} name="twitter:description" />
+      <meta content={pageDescription || siteDescription} name="description" />
+      <meta
+        content={pageDescription || siteDescription}
+        property="og:description"
+      />
+      <meta
+        content={pageDescription || siteDescription}
+        name="twitter:description"
+      />
 
       <meta content="yes" name="apple-mobile-web-app-capable" />
       <meta
@@ -198,6 +205,7 @@ Head.propTypes = {
   siteTitle: PropTypes.string,
   siteTitleShort: PropTypes.string,
   siteDescription: PropTypes.string,
+  pageDescription: PropTypes.string,
   siteUrl: PropTypes.string,
   parentSiteUrl: PropTypes.string,
   themeColor: PropTypes.string,

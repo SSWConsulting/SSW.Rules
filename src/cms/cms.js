@@ -13,6 +13,7 @@ const tipsControl = () => {
         target="_blank"
         href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Netlify-CMS-%F0%9F%90%9B----Failed-to-save"
         rel="noreferrer"
+        style={{ textDecoration: 'underline' }}
       >
         HOW TO FIX API ERROR 502
       </a>

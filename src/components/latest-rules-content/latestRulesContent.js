@@ -53,19 +53,19 @@ const LatestRulesContent = ({
 
       {filteredItems.filter === FilterOptions.RecentlyUpdated
         ? formatDistanceToNow(new Date(item.file.node.lastUpdated), {
-          locale: {
-            ...locale,
-            formatDistance,
-          },
-          addSuffix: true,
-        })
+            locale: {
+              ...locale,
+              formatDistance,
+            },
+            addSuffix: true,
+          })
         : formatDistanceToNow(new Date(item.file.node.created), {
-          locale: {
-            ...locale,
-            formatDistance,
-          },
-          addSuffix: true,
-        })}
+            locale: {
+              ...locale,
+              formatDistance,
+            },
+            addSuffix: true,
+          })}
     </span>
   );
 
@@ -118,10 +118,11 @@ const LatestRulesContent = ({
             return (
               <div
                 key={idx}
-                className={`cat-grid-container ${isShowAuthor
-                  ? 'lg:grid-cols-[2rem_auto_9.5rem_9.5rem_7.5rem]'
-                  : 'sm:grid-cols-[2rem_auto_auto]'
-                  }`}
+                className={`cat-grid-container ${
+                  isShowAuthor
+                    ? 'lg:grid-cols-[2rem_auto_9.5rem_9.5rem_7.5rem]'
+                    : 'sm:grid-cols-[2rem_auto_auto]'
+                }`}
               >
                 <div className="cat-rule-num">{idx + 1}.</div>
                 <div className={`text-left ${isShowAuthor ? 'mr-2 pr-1' : ''}`}>
@@ -135,14 +136,13 @@ const LatestRulesContent = ({
                       onClick={() => openUserRule(item.file.node.file)}
                       className="text-left cursor-pointer hover:text-ssw-red"
                     >
-                      {item.file.node.lastUpdatedBy ?
-                        (item.file.node.lastUpdatedBy
-                          .replace('[SSW]', '')
-                          .replace(/([a-z])([A-Z])/g, '$1 $2'))
-                        : (item.file.node.createdBy
-                          .replace('[SSW]', '')
-                          .replace(/([a-z])([A-Z])/g, '$1 $2'))}
-
+                      {item.file.node.lastUpdatedBy
+                        ? item.file.node.lastUpdatedBy
+                            .replace('[SSW]', '')
+                            .replace(/([a-z])([A-Z])/g, '$1 $2')
+                        : item.file.node.createdBy
+                            .replace('[SSW]', '')
+                            .replace(/([a-z])([A-Z])/g, '$1 $2')}
                     </button>
                   </div>
                 )}

@@ -17,8 +17,5 @@
 		"**/.DS_Store": true,
 		"**/node_modules": false,
         ".cache/": true,
-	},
-	"[javascript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	}
 }

@@ -114,7 +114,6 @@ const LatestRulesContent = ({
       >
         {!notFound ? (
           filteredItems.list.map((item, idx) => {
-            console.log(item);
             return (
               <div
                 key={idx}

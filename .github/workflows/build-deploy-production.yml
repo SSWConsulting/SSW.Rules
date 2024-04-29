@@ -1,0 +1,46 @@
+name: Production - build and deploy
+
+on:
+  push:
+    branches:
+      - release/*
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        required: false
+        type: string
+        description: 'The branch to build from (defaults to calculating what the latest release/* branch is)'
+
+concurrency:
+  group: production
+
+jobs:
+
+  find-latest-branch:
+    if: ${{ !inputs.branch_name }}
+    name: Find latest branch
+    runs-on: ubuntu-latest
+    outputs:
+      branch_name: ${{ steps.find_branch.outputs.branch_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find latest branch
+        id: find_branch
+        run: echo "branch_name=$(git ls-remote --heads origin | grep -oe 'refs/heads/release/.*' | sort -V | tail -n 1 | sed 's|refs/heads/||')" >> $GITHUB_OUTPUT
+
+  build:
+    name: Build
+    needs: find-latest-branch
+    uses: ./.github/workflows/template-build.yml
+    with:
+      branch_name: ${{ inputs.branch_name || needs.find-latest-branch.outputs.branch_name }}
+      environment: production
+    secrets: inherit
+
+  deploy:
+    needs: build
+    name: Deploy
+    uses: ./.github/workflows/template-deploy.yml
+    with:
+      environment: production
+    secrets: inherit

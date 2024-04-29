@@ -50,6 +50,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       experts: String
       consulting: String
       guid: String
+      seoDescription: String
     }
     type Author implements Node @dontInfer {
       title: String
@@ -123,6 +124,7 @@ exports.createPages = async ({ graphql, actions }) => {
             archivedreason
             related
             redirects
+            seoDescription
           }
         }
       }
@@ -202,6 +204,7 @@ exports.createPages = async ({ graphql, actions }) => {
         redirects: node.frontmatter.redirects,
         file: `rules/${node.frontmatter.uri}/rule.md`,
         title: node.frontmatter.title,
+        seoDescription: node.frontmatter.seoDescription,
       },
     });
   });

@@ -35,6 +35,11 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Record the latest SHA for the content repo
+        run: |
+          echo '### Content repo info! 🚀' >> $GITHUB_STEP_SUMMARY
+          echo "Latest SHA: $(git rev-parse HEAD)" >> $GITHUB_STEP_SUMMARY
+
       - run: mkdir static
 
       - name: Get Rule History JSON
@@ -68,8 +73,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: get-content-commit-data
     environment: ${{ inputs.environment }}
-    env:
-      sha: ${{ github.sha }}
     steps:
 
       - uses: actions/checkout@v4
@@ -85,11 +88,6 @@ jobs:
       - name: Move commit data
         run: mv commit-data/* static/
 
-      - name: Generate SHA
-        run: echo "sha=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-
       - uses: cschleiden/replace-tokens@v1
         with:
           tokenPrefix: '#{'
@@ -97,7 +95,8 @@ jobs:
           files: .env.template
         env:
           GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
-          VERSION_DEPLOYED: ${{ env.sha }}
+          DEPLOYMENT_URL: https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-production.yml
+          VERSION_DEPLOYED: ${{ github.run_number }}
           APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
           CONTENT_BRANCH: ${{ vars.CONTENT_BRANCH }}
           API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}

@@ -12,5 +12,6 @@ jobs:
     name: Build and upload artifacts
     uses: ./.github/workflows/template-build.yml
     with:
+      branch_name: ${{ github.ref }}
       environment: staging
     secrets: inherit

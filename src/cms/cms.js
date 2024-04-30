@@ -15,7 +15,7 @@ const tipsControl = () => {
         rel="noreferrer"
         style={{ textDecoration: 'underline' }}
       >
-        HOW TO FIX API ERROR 502
+        ❗How to fix API error 502❗
       </a>
     </div>
   );

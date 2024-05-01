@@ -21,7 +21,7 @@ param storageSku string = 'Standard_LRS'
 param indexDocumentPath string = 'index.html'
 
 @description('The path to the web error document.')
-param errorDocument404Path string = '404.html'
+param errorDocument404Path string = 'rules/404'
 
 var storageAccountName = substring('sarules${substring(environmentName, 0, 4)}${uniqueString(resourceGroup().id)}', 0, 24)
 
@@ -37,6 +37,16 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   kind: 'StorageV2'
   sku: {
     name: storageSku
+  }
+  properties: {
+    supportsHttpsTrafficOnly: true
+    minimumTlsVersion: 'TLS1_2'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+      ipRules: []
+      virtualNetworkRules: []
+    }
   }
 }
 

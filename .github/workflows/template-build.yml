@@ -144,14 +144,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Get number of CPU cores
-        uses: SimenB/github-actions-cpu-cores@v2
-        id: cpu-cores
-
       - name: Build
         run: yarn build
         env:
-          GATSBY_CPU_COUNT: ${{ steps.cpu-cores.outputs.count }}
           GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: true
 
       - name: Archive artifacts

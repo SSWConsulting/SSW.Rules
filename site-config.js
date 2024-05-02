@@ -1,4 +1,5 @@
 /*eslint quotes: ["warn", "backtick"]*/
+/** @type {import('gatsby').GatsbyConfig} */
 
 module.exports = {
   siteTitle: `SSW.Rules`,
@@ -17,5 +18,5 @@ module.exports = {
   parentSiteUrl: `https://www.ssw.com.au`,
   breadcrumbDefault: `SSW Rules`,
   homepageTitle: `Secret Ingredients to Quality Software`,
-  trailingSlash: 'never',
+  trailingSlash: `never`,
 };

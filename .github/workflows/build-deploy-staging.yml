@@ -5,11 +5,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      branch_name:
-        required: false
-        type: string
-        description: 'The branch to build from (defaults to github.ref_name)'
 
 concurrency:
   group: staging
@@ -20,7 +15,7 @@ jobs:
     name: Build
     uses: ./.github/workflows/template-build.yml
     with:
-      branch_name: ${{ inputs.branch_name || github.ref_name}}
+      branch_name: ${{ github.ref }}
       environment: staging
     secrets: inherit
 

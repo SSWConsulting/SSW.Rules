@@ -5739,6 +5739,7 @@ __metadata:
     gatsby-plugin-fontawesome-css: "npm:^1.2.0"
     gatsby-plugin-google-gtag: "npm:^5.13.1"
     gatsby-plugin-google-tagmanager: "npm:^5.13.1"
+    gatsby-plugin-meta-redirect: "npm:^1.1.1"
     gatsby-plugin-postcss: "npm:6.13.1"
     gatsby-plugin-react-helmet: "npm:^6.13.1"
     gatsby-plugin-sharp: "npm:^5.13.1"
@@ -11819,6 +11820,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fs-extra@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "fs-extra@npm:7.0.1"
+  dependencies:
+    graceful-fs: "npm:^4.1.2"
+    jsonfile: "npm:^4.0.0"
+    universalify: "npm:^0.1.0"
+  checksum: 1943bb2150007e3739921b8d13d4109abdc3cc481e53b97b7ea7f77eda1c3c642e27ae49eac3af074e3496ea02fde30f411ef410c760c70a38b92e656e5da784
+  languageName: node
+  linkType: hard
+
 "fs-extra@npm:^9.0.0":
   version: 9.1.0
   resolution: "fs-extra@npm:9.1.0"
@@ -12218,6 +12230,15 @@ __metadata:
     react: ^18.0.0 || ^0.0.0
     react-dom: ^18.0.0 || ^0.0.0
   checksum: f375ab868ff5c8acd32024b852bee6f3dc3a0b0849a9d67dad78efdfa55be12a60b7613aa49f51a796a41877ace36b3e6a92eae3295073fd12326857da36d78d
+  languageName: node
+  linkType: hard
+
+"gatsby-plugin-meta-redirect@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "gatsby-plugin-meta-redirect@npm:1.1.1"
+  dependencies:
+    fs-extra: "npm:^7.0.0"
+  checksum: 43350167cbf3afbe846bbbaa8fb51e4a79551b0b8698b2f62fe612adcc653bfeec7c678caf204a81a86f39cfd2ad5467b71b21fb1147483b57bf62fb96869b4c
   languageName: node
   linkType: hard
 

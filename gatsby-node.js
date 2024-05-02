@@ -1,12 +1,9 @@
 const siteConfig = require('./site-config');
 const { createFilePath } = require('gatsby-source-filesystem');
 const appInsights = require('applicationinsights');
-const makePluginData = require('./src/helpers/plugin-data');
-const createRewriteMap = require('./src/helpers/createRewriteMap');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
-const Map = require('core-js/features/map');
 const axios = require('axios');
 const { createContentDigest } = require('gatsby-core-utils');
 
@@ -86,7 +83,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
 };
 
 exports.createPages = async ({ graphql, actions }) => {
-  const { createPage } = actions;
+  const { createPage, createRedirect } = actions;
 
   const result = await graphql(`
     query {
@@ -99,6 +96,7 @@ exports.createPages = async ({ graphql, actions }) => {
           }
           frontmatter {
             index
+            uri
             redirects
             experts
             consulting
@@ -159,6 +157,8 @@ exports.createPages = async ({ graphql, actions }) => {
     });
 
     // Create the page for the category
+    // eslint-disable-next-line no-console
+    console.log('Creating Category: ' + node.parent.name);
     createPage({
       path: node.parent.name,
       component: categoryTemplate,
@@ -167,6 +167,16 @@ exports.createPages = async ({ graphql, actions }) => {
         index: node.frontmatter.index,
         redirects: node.frontmatter.redirects,
       },
+    });
+
+    node.frontmatter.redirects?.forEach((toPath) => {
+      // eslint-disable-next-line no-console
+      console.log(`\tRedirect: ${toPath} -> ${node.frontmatter.uri}`);
+      createRedirect({
+        fromPath: toPath,
+        toPath: node.frontmatter.uri,
+        isPermanent: true,
+      });
     });
   });
 
@@ -194,6 +204,8 @@ exports.createPages = async ({ graphql, actions }) => {
     }
 
     // Create the page for the rule
+    // eslint-disable-next-line no-console
+    console.log('Creating Rule: ' + node.frontmatter.title);
     createPage({
       path: node.frontmatter.uri,
       component: ruleTemplate,
@@ -207,6 +219,16 @@ exports.createPages = async ({ graphql, actions }) => {
         seoDescription: node.frontmatter.seoDescription,
       },
     });
+
+    node.frontmatter.redirects?.forEach((toPath) => {
+      // eslint-disable-next-line no-console
+      console.log(`\tRedirect: ${toPath} -> ${node.frontmatter.uri}`);
+      createRedirect({
+        fromPath: toPath,
+        toPath: node.frontmatter.uri,
+        isPermanent: true,
+      });
+    });
   });
 
   const profilePage = require.resolve('./src/pages/profile.js');
@@ -215,29 +237,6 @@ exports.createPages = async ({ graphql, actions }) => {
     matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
     component: profilePage,
   });
-};
-
-exports.onPostBuild = async ({ store, pathPrefix }) => {
-  const { pages } = store.getState();
-  const pluginData = makePluginData(store, assetsManifest, pathPrefix);
-  const rewrites = Array.from(pages.values())
-    .filter((page) => page.context.redirects)
-    .reduce((acc, page) => {
-      acc = acc.concat(
-        page.context.redirects.map((redirect) => {
-          return {
-            fromPath: pathPrefix + '/' + redirect,
-            toPath: pathPrefix + page.path,
-          };
-        })
-      );
-      return acc;
-    }, []);
-
-  const allRewritesUnique = [
-    ...new Map(rewrites.map((item) => [item.fromPath, item])).values(),
-  ];
-  await createRewriteMap.writeRewriteMapsFile(pluginData, allRewritesUnique);
 };
 
 exports.sourceNodes = async ({ actions, createNodeId }) => {

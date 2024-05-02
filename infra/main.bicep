@@ -41,12 +41,12 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   properties: {
     supportsHttpsTrafficOnly: true
     minimumTlsVersion: 'TLS1_2'
-    // networkAcls: {
-    //   bypass: 'AzureServices'
-    //   defaultAction: 'Deny'
-    //   ipRules: []
-    //   virtualNetworkRules: []
-    // }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Allow'
+      ipRules: []
+      virtualNetworkRules: []
+    }
   }
 }
 

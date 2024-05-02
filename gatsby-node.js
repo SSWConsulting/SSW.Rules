@@ -174,7 +174,7 @@ exports.createPages = async ({ graphql, actions }) => {
       console.log(`\tRedirect: ${toPath} -> ${node.frontmatter.uri}`);
       createRedirect({
         fromPath: toPath,
-        toPath: node.frontmatter.uri,
+        toPath: '/' + node.frontmatter.uri,
         isPermanent: true,
       });
     });
@@ -225,7 +225,7 @@ exports.createPages = async ({ graphql, actions }) => {
       console.log(`\tRedirect: ${toPath} -> ${node.frontmatter.uri}`);
       createRedirect({
         fromPath: toPath,
-        toPath: node.frontmatter.uri,
+        toPath: '/' + node.frontmatter.uri,
         isPermanent: true,
       });
     });

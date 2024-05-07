@@ -10,7 +10,13 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
 config.autoAddCss = false;
-const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
+const Layout = ({
+  children,
+  displayActions,
+  ruleUri,
+  crumbLabel,
+  seoDescription,
+}) => {
   const node = useRef();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
 
@@ -50,6 +56,7 @@ const Layout = ({ children, displayActions, ruleUri, crumbLabel }) => {
               pageTitle={
                 crumbLabel == 'SSW Rules' ? 'Latest Rules' : crumbLabel
               }
+              seoDescription={seoDescription}
             />
             <Header displayActions={displayActions} ruleUri={ruleUri} />
             <main className="flex-1">{children}</main>
@@ -69,6 +76,7 @@ Layout.propTypes = {
   pageTitle: PropTypes.string,
   crumbLocation: PropTypes.object,
   crumbLabel: PropTypes.string,
+  seoDescription: PropTypes.string,
 };
 
 function LayoutWithQuery(props) {

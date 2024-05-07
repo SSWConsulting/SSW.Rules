@@ -41,6 +41,7 @@ var configJson = {
           },
           { name: 'tips', label: 'Tips', widget: 'tips', default: '' },
           { name: 'title', label: 'Title' },
+          { name: 'seoDescription', label: 'Seo Description' },
           {
             name: 'uri',
             label: 'uri (a unique identifier for the url)',

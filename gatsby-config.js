@@ -231,5 +231,6 @@ module.exports = {
       },
     },
     'gatsby-plugin-fontawesome-css',
+    `gatsby-plugin-meta-redirect`, // make sure to put last in the array
   ],
 };

@@ -119,7 +119,7 @@ const LatestRulesContent = ({
                 key={idx}
                 className={`cat-grid-container ${
                   isShowAuthor
-                    ? 'lg:grid-cols-[2rem_auto_8.5rem_7.5rem]'
+                    ? 'lg:grid-cols-[2rem_auto_9.5rem_9.5rem_7.5rem]'
                     : 'sm:grid-cols-[2rem_auto_auto]'
                 }`}
               >
@@ -129,6 +129,22 @@ const LatestRulesContent = ({
                     {item.item.frontmatter.title}
                   </Link>
                 </div>
+                {isShowAuthor && (
+                  <div className="hidden lg:block">
+                    <button
+                      onClick={() => openUserRule(item.file.node.file)}
+                      className="text-left cursor-pointer hover:text-ssw-red"
+                    >
+                      {item.file.node.lastUpdatedBy
+                        ? item.file.node.lastUpdatedBy
+                            .replace('[SSW]', '')
+                            .replace(/([a-z])([A-Z])/g, '$1 $2')
+                        : item.file.node.createdBy
+                            .replace('[SSW]', '')
+                            .replace(/([a-z])([A-Z])/g, '$1 $2')}
+                    </button>
+                  </div>
+                )}
                 {isShowAuthor && (
                   <div className="hidden lg:block">
                     <button

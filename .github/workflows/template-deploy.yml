@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   deploy-infra:
+    name: Infra
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
@@ -63,17 +64,18 @@ jobs:
           echo "staticWebsiteUrl=$STATIC_WEBSITE_URL" >> $GITHUB_OUTPUT
 
   deploy:
+    name: Site
     needs: deploy-infra
     runs-on: ubuntu-latest
     environment: 
       name: ${{ inputs.environment }}
-      url: ${{ needs.deploy-infra.outputs.staticWebsiteUrl }}
+      url: ${{ needs.deploy-infra.outputs.staticWebsiteUrl }}/rules
     steps:
       - name: Download code artifact
         uses: actions/download-artifact@v4
         with:
           name: build
-          path: public
+          path: rules
 
       - name: Azure Login
         uses: azure/login@v2
@@ -82,8 +84,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # use az cli to get a sas url for the storage account
-      - name: Get sas url for blob storage
+      - name: Upload files to Azure storage
         run: |
           sas=$(az storage account generate-sas \
             --account-name ${{ needs.deploy-infra.outputs.storageAccountName }} \
@@ -94,11 +95,12 @@ jobs:
             --https-only \
             --output tsv \
           )
-          echo "::add-mask::$sas"
-          echo "DEPLOY_SAS_URL=https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/?$sas" >> $GITHUB_ENV
-        
-      - name: Deploy to Azure storage
-        uses: TravisSpomer/deploy-to-azure-storage@v1.5.0
-        with:
-          source-path: public
-          sas-url: ${{ env.DEPLOY_SAS_URL }}
+          azcopy sync \
+            ${{ github.workspace }} \
+            "https://${{ needs.deploy-infra.outputs.storageAccountName }}.blob.core.windows.net/\$web/?$sas" \
+            --log-level="ERROR" \
+            --compare-hash=MD5 --put-md5 --delete-destination=true
+        env:
+          AZCOPY_CONCURRENCY_VALUE: 256
+          AZCOPY_PARALLEL_STAT_FILES: true
+          AZCOPY_CONCURRENT_SCAN: 256

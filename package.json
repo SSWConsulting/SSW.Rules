@@ -26,7 +26,7 @@
     "algoliasearch": "^4.22.1",
     "applicationinsights": "^2.9.3",
     "autoprefixer": "^10.4.17",
-    "axios": "1.6.7",
+    "axios": "1.6.8",
     "babel-eslint": "^10.1.0",
     "classnames": "^2.5.1",
     "core-js": "^3.36.0",
@@ -43,6 +43,7 @@
     "gatsby-plugin-fontawesome-css": "^1.2.0",
     "gatsby-plugin-google-gtag": "^5.13.1",
     "gatsby-plugin-google-tagmanager": "^5.13.1",
+    "gatsby-plugin-meta-redirect": "^1.1.1",
     "gatsby-plugin-postcss": "6.13.1",
     "gatsby-plugin-react-helmet": "^6.13.1",
     "gatsby-plugin-sharp": "^5.13.1",
@@ -81,11 +82,11 @@
     "react-number-format": "^5.3.1",
     "react-pose": "^4.0.10",
     "react-responsive-modal": "^6.4.2",
-    "sharp": "^0.33.2",
+    "sharp": "^0.33.3",
     "ssw.megamenu": "4.5.6",
     "ssw.rules.widget": "^2.0.3",
     "svg-react-loader": "^0.4.6",
-    "webpack-assets-manifest": "5.1.0"
+    "webpack-assets-manifest": "5.2.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.23.10",

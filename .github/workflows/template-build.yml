@@ -3,29 +3,91 @@ name: Template - Build site
 on:
   workflow_call:
     inputs:
+      branch_name:
+        required: true
+        type: string
       environment:
         type: string
         required: true
         description: 'The environment to build for'
 
 jobs:
-  build-code:
-    name: Build Gatsby site
+  get-content-commit-data:
+    name: Generate commit data
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    env:
-      sha: ${{ github.sha }}
     steps:
 
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        name: Checkout SSW.Rules
         with:
+          path: SSW.Rules
+          ref: ${{ inputs.branch_name }}
+          sparse-checkout: |
+            build-scripts
           fetch-depth: 1
 
-      - name: Generate SHA
-        run: echo "sha=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+        name: Checkout SSW.Rules.Content
+        with:
+          repository: SSWConsulting/SSW.Rules.Content
+          path: SSW.Rules.Content
+          ref: main
+          fetch-depth: 0
+
+      - name: Record the latest SHA for the content repo
+        working-directory: SSW.Rules.Content
+        run: |
+          echo '### Content repo info! 🚀' >> $GITHUB_STEP_SUMMARY
+          echo "Latest SHA: [$(git rev-parse HEAD)](https://github.com/SSWConsulting/SSW.Rules.Content/commit/$(git rev-parse HEAD))" >> $GITHUB_STEP_SUMMARY
+
+      - run: mkdir static
+
+      - name: Get Rule History JSON
+        shell: pwsh
+        run: |
+          ./SSW.Rules/build-scripts/get-rule-history.ps1 `
+            -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
+            -GenerateHistoryFileFunctionKey ${{ secrets.GenerateHistoryFileFunctionKey }} `
+            -outputFileName ${{ github.workspace }}/static/history.json
+
+      - name: Get History Commits of Each Contributor
+        shell: pwsh
+        run: |
+          ./SSW.Rules/build-scripts/create-commits-history.ps1 `
+            -Token ${{ secrets.GITHUB_TOKEN }} `
+            -GithubOrg ${{ github.repository_owner }} `
+            -GithubRepo SSW.Rules.Content `
+            -outputFileName ${{ github.workspace }}/static/commits.json
         env:
-          GITHUB_SHA: ${{ github.sha }}
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: commit-data
+          path: static
+          retention-days: 1
+
+  build-code:
+    name: Gatsby
+    runs-on: ubuntu-latest
+    needs: get-content-commit-data
+    environment: ${{ inputs.environment }}
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch_name }}
+
+      - name: Download commit data artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: commit-data
+          path: commit-data
+
+      - name: Move commit data
+        run: mv commit-data/* static/
 
       - uses: cschleiden/replace-tokens@v1
         with:
@@ -34,7 +96,8 @@ jobs:
           files: .env.template
         env:
           GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
-          VERSION_DEPLOYED: ${{ env.sha }}
+          DEPLOYMENT_URL: https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-production.yml
+          VERSION_DEPLOYED: ${{ github.run_number }}
           APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
           CONTENT_BRANCH: ${{ vars.CONTENT_BRANCH }}
           API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}
@@ -81,22 +144,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Get Rule History JSON
-        shell: pwsh
-        run: |
-          ./.azure/scripts/get-rule-history.ps1 `
-            -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
-            -GenerateHistoryFileFunctionKey ${{ secrets.GenerateHistoryFileFunctionKey }} `
-            -outputFileName "history.json"
-
-      - name: Get History Commits of Each Contributor
-        shell: pwsh
-        run: |
-          ./.azure/scripts/create-commits-history.ps1 `
-            -Token ${{ secrets.GITHUB_TOKEN }} `
-            -GithubOrg ${{ github.repository_owner }} `
-            -GithubRepo SSW.Rules.Content
-
       - name: Build
         run: yarn build
         env:
@@ -109,11 +156,12 @@ jobs:
           path: public
 
   build-infra:
-    name: Build infra
+    name: Infra
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.branch_name }}
           sparse-checkout: |
             infra
 

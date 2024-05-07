@@ -39,6 +39,7 @@ var configJson = {
             widget: 'hidden',
             default: 'rule',
           },
+          { name: 'tips', label: 'Tips', widget: 'tips', default: '' },
           { name: 'title', label: 'Title' },
           { name: 'seoDescription', label: 'Seo Description' },
           {

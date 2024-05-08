@@ -5777,7 +5777,7 @@ __metadata:
     react-dom: "npm:^18.2.0"
     react-helmet: "npm:^6.1.0"
     react-jotform: "npm:^1.0.2"
-    react-number-format: "npm:^5.3.1"
+    react-number-format: "npm:^5.3.4"
     react-pose: "npm:^4.0.10"
     react-responsive-modal: "npm:^6.4.2"
     sharp: "npm:^0.33.3"
@@ -20016,15 +20016,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-number-format@npm:^5.3.1":
-  version: 5.3.1
-  resolution: "react-number-format@npm:5.3.1"
+"react-number-format@npm:^5.3.4":
+  version: 5.3.4
+  resolution: "react-number-format@npm:5.3.4"
   dependencies:
     prop-types: "npm:^15.7.2"
   peerDependencies:
     react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-  checksum: 9e37698ab3d8224fd6cf5a69845c0308720d04de8459757031de0304379cfd2c0c897834cc9f62869933c4702a97888ba51abeb6490b7282e237a4c19a5fab04
+  checksum: a9ab7ed90cfc74eb07c3dce1916c17f3f068db29f069c1cae361c8340b860ccf5a7e6cb9048f68dd698d7ed6fe0ad04d987670d50589d1f17b113f546c35d719
   languageName: node
   linkType: hard
 

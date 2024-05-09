@@ -1,0 +1,52 @@
+name: Update Rules History
+
+on:
+  workflow_call:
+    inputs:
+      branch_name:
+        required: true
+        type: string    
+      environment:
+        type: string
+        required: true
+        description: 'The environment to build for'
+
+jobs:
+  update-latest-rules-data:
+    name: Update latest rules data
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout SSW.Rules
+        with:
+          path: SSW.Rules
+          ref: ${{ inputs.branch_name }}
+          sparse-checkout: |
+            build-scripts
+          fetch-depth: 1
+
+      - uses: actions/checkout@v4
+        name: Checkout SSW.Rules.Content
+        with:
+          repository: SSWConsulting/SSW.Rules.Content
+          path: SSW.Rules.Content
+          ref: main
+          fetch-depth: 0
+
+      - name: Get Rule History Commits
+        shell: pwsh
+        run: |
+          ./SSW.Rules/build-scripts/update-rule-history.ps1 `
+            -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
+            -GetHistorySyncCommitHashKey ${{ secrets.GETHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
+            -UpdateRuleHistoryKey ${{ secrets.UPDATERULEHISTORYFUNCTIONKEY }} `
+            -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }}
+
+      - name: Update Latest Rules
+        shell: pwsh
+        run: |
+          ./SSW.Rules/build-scripts/update-latest-rules.ps1 `
+            -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
+            -UpdateLatestRulesFunctionKey ${{ secrets.UPDATELATESTRULESFUNCTIONKEY }}

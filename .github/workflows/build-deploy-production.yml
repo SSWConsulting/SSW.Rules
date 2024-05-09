@@ -13,7 +13,7 @@ jobs:
 
   syncHistory:
     name: Sync Rules History
-    uses: ./.github/workflows/update-rules-history.yml
+    uses: ./.github/workflows/template-update-rules-history.yml
     with:
       branch_name: ${{ github.ref }}
       environment: production

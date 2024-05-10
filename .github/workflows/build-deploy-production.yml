@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
 
-  syncHistory:
+  sync-history:
     name: Sync Rules History
     uses: ./.github/workflows/template-update-rules-history.yml
     with:
@@ -28,7 +28,9 @@ jobs:
     secrets: inherit
 
   deploy:
-    needs: build
+    needs:
+      - build
+      - sync-history
     name: Deploy
     uses: ./.github/workflows/template-deploy.yml
     with:

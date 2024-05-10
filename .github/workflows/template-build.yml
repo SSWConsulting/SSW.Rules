@@ -41,11 +41,27 @@ jobs:
           echo '### Content repo info! 🚀' >> $GITHUB_STEP_SUMMARY
           echo "Latest SHA: [$(git rev-parse HEAD)](https://github.com/SSWConsulting/SSW.Rules.Content/commit/$(git rev-parse HEAD))" >> $GITHUB_STEP_SUMMARY
 
-      - run: mkdir static
+
+      - name: Get Rule History Commits
+        shell: pwsh
+        run: |
+          ./SSW.Rules/build-scripts/update-rule-history.ps1 `
+            -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
+            -GetHistorySyncCommitHashKey ${{ secrets.GETHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
+            -UpdateRuleHistoryKey ${{ secrets.UPDATERULEHISTORYFUNCTIONKEY }} `
+            -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }}
+  
+      - name: Update Latest Rules
+        shell: pwsh
+        run: |
+          ./SSW.Rules/build-scripts/update-latest-rules.ps1 `
+            -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
+            -UpdateLatestRulesFunctionKey ${{ secrets.UPDATELATESTRULESFUNCTIONKEY }}
 
       - name: Get Rule History JSON
         shell: pwsh
         run: |
+          mkdir static
           ./SSW.Rules/build-scripts/get-rule-history.ps1 `
             -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
             -GenerateHistoryFileFunctionKey ${{ secrets.GenerateHistoryFileFunctionKey }} `

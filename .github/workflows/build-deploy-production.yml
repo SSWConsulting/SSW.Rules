@@ -11,14 +11,6 @@ concurrency:
 
 jobs:
 
-  sync-history:
-    name: Sync Rules History
-    uses: ./.github/workflows/template-update-rules-history.yml
-    with:
-      branch_name: ${{ github.ref }}
-      environment: production
-    secrets: inherit
-
   build:
     name: Build
     uses: ./.github/workflows/template-build.yml
@@ -30,7 +22,6 @@ jobs:
   deploy:
     needs:
       - build
-      - sync-history
     name: Deploy
     uses: ./.github/workflows/template-deploy.yml
     with:

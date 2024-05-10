@@ -14,7 +14,7 @@ cd SSW.Rules.Content/
 git commit-graph write --reachable --changed-paths
 
 #Step 1: GetHistorySyncCommitHash - Retrieve CommitHash from AzureFunction
-$Uri = $AzFunctionBaseUrl + '/GetHistorySyncCommitHash'
+$Uri = $AzFunctionBaseUrl + '/api/GetHistorySyncCommitHash'
 $Headers = @{'x-functions-key' = $GetHistorySyncCommitHashKey}
 $Response = Invoke-WebRequest -URI $Uri -Headers $Headers
 $startCommitHash = $Response.Content -replace '"', ''
@@ -67,14 +67,14 @@ $historyArray | Foreach-Object {
 $historyFileContents = ConvertTo-Json $historyFileArray
 
 #Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
-$Uri = $AzFunctionBaseUrl + '/UpdateRuleHistory'
+$Uri = $AzFunctionBaseUrl + '/api/UpdateRuleHistory'
 $Headers = @{'x-functions-key' = $UpdateRuleHistoryKey}
 $Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $historyFileContents -Headers $Headers -ContentType 'application/json; charset=utf-8'
 
 if(![string]::IsNullOrWhiteSpace($commitSyncHash))
 {
     #Step 4: UpdateHistorySyncCommitHash - Update Commit Hash with AzureFunction
-    $Uri = $AzFunctionBaseUrl + '/UpdateHistorySyncCommitHash'
+    $Uri = $AzFunctionBaseUrl + '/api/UpdateHistorySyncCommitHash'
     $Headers = @{'x-functions-key' = $UpdateHistorySyncCommitHashKey}
     $Body = @{
         commitHash  = $commitSyncHash

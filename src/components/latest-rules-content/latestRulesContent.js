@@ -74,12 +74,12 @@ const LatestRulesContent = ({
     return rule.slice(6, rule.length);
   };
 
-  const openUserRule = async (path) => {
-    const loginName = await fetchGithubName(path);
+  const openUserRule = async (path, state) => {
+    const loginName = await fetchGithubName(path, state);
     navigate(`/user/?author=${loginName}`);
   };
 
-  const fetchGithubName = async (path) => {
+  const fetchGithubName = async (path, state) => {
     const githubOwner = process.env.GITHUB_ORG;
     const githubRepo = process.env.GITHUB_REPO;
     const token = process.env.GITHUB_API_PAT;
@@ -99,8 +99,10 @@ const LatestRulesContent = ({
     }
 
     const data = await response.json();
-    const loginName = data[data.length - 1]?.author?.login;
-
+    const loginName =
+      state === 0
+        ? data[data.length - 1]?.author?.login
+        : data[0]?.author?.login; //When we're finding user's github who creates the rule, state = 0,  otherwise state = 1.
     return loginName;
   };
 
@@ -132,7 +134,7 @@ const LatestRulesContent = ({
                 {isShowAuthor && (
                   <div className="hidden lg:block">
                     <button
-                      onClick={() => openUserRule(item.file.node.file)}
+                      onClick={() => openUserRule(item.file.node.file, 1)}
                       className="text-left cursor-pointer hover:text-ssw-red"
                     >
                       {item.file.node.lastUpdatedBy
@@ -148,7 +150,7 @@ const LatestRulesContent = ({
                 {isShowAuthor && (
                   <div className="hidden lg:block">
                     <button
-                      onClick={() => openUserRule(item.file.node.file)}
+                      onClick={() => openUserRule(item.file.node.file, 0)}
                       className="text-left cursor-pointer hover:text-ssw-red"
                     >
                       {item.file.node.createdBy

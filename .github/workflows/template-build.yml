@@ -120,7 +120,7 @@ jobs:
           AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
           AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
           AUTH0_REDIRECT_URI: ${{ vars.AUTH0_REDIRECT_URI }}
-          GITHUB_API_PAT: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_API_PAT: ${{ secrets.CONTENT_GITHUB_TOKEN }}
           DISQUS_FORUM: ${{ vars.DISQUS_FORUM }}
           DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
           GTM_CONTAINER_ID: ${{ vars.GTM_CONTAINER_ID }}

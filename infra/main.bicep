@@ -67,6 +67,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
           ]
           allowedOrigins: [
             'https://ssw.com.au'
+            'https://www.ssw.com.au'
           ]
           exposedHeaders: [
             '*'

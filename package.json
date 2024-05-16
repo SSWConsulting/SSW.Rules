@@ -7,7 +7,7 @@
   "scripts": {
     "build:dir": "mkdirp ./public/icons/",
     "build:favicons": "node scripts/favicons",
-    "build": "yarn run build:dir && yarn run build:favicons && gatsby build --prefix-paths --log-pages && yarn updateRelativePath",
+    "build": "yarn run build:dir && yarn run build:favicons && GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true gatsby build --prefix-paths --log-pages && yarn updateRelativePath",
     "build:incremental": "gatsby build --prefix-paths --log-pages && yarn updateRelativePath",
     "devbuild": "gatsby clean && yarn run build:dir && yarn run build:favicons && gatsby build",
     "develop": "gatsby develop",

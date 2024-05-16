@@ -10,20 +10,27 @@ const wrapPageElement = ({ element, props }) => {
       ? props.data.markdownRemark
       : null;
 
-  const isHomePage = props.path === '/';
+  const getTitleFromPath = (path) => {
+    const titles = {
+      '/': siteConfig.homepageTitle,
+      '/orphaned/': 'Orphaned Rules',
+      '/archived/': 'Archived Rules',
+      '/profile/': 'Profile',
+    };
+
+    return titles[path] || siteConfig.breadcrumbDefault;
+  };
+
+  const pageTitle = markdown
+    ? markdown.frontmatter.title
+    : getTitleFromPath(props.path);
 
   return (
     //<Transition {...props}>
     <Layout
       {...props}
       crumbLocation={props.location}
-      crumbLabel={
-        markdown
-          ? markdown.frontmatter.title
-          : isHomePage
-            ? siteConfig.homepageTitle
-            : siteConfig.breadcrumbDefault
-      }
+      crumbLabel={pageTitle}
       seoDescription={markdown?.frontmatter?.seoDescription}
       displayActions={markdown ? true : false}
       ruleUri={markdown ? markdown.parent.relativePath : null}

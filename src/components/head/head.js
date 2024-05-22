@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { useStaticQuery, graphql } from 'gatsby';
 import { Location } from '@reach/router';
 import schemaGenerator from '../../helpers/schemaGenerator';
-import { pathPrefix } from '../../../site-config';
+import { pathPrefix, homepageTitle } from '../../../site-config';
 
 const Head = ({
   siteTitle,
@@ -18,8 +18,10 @@ const Head = ({
   imageUrl,
   location,
 }) => {
-  const generateTitle = (path, pageTitle = '') => {
+  const generateTitle = (path, pageTitle) => {
     const titles = {
+      '/latest-rules/': 'Latest Rules',
+      '/user/': 'User Rules',
       '/orphaned/': 'Orphaned Rules',
       '/archived/': 'Archived Rules',
       '/profile/': 'Profile',

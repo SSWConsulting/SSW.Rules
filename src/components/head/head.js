@@ -39,7 +39,10 @@ const Head = ({
     return `${siteTitle} | ${homepageTitle}`;
   };
 
-  const fullTitle = generateTitle(location.pathname, pageTitle);
+  const fullTitle = generateTitle(
+    location.pathname.replace('/rules', ''),
+    pageTitle
+  );
 
   const canonical = parentSiteUrl + (location.pathname || '');
 

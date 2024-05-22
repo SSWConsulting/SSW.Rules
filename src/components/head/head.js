@@ -18,18 +18,27 @@ const Head = ({
   imageUrl,
   location,
 }) => {
-  const isHomePage =
-    location.pathname === '/' || location.pathname === '/rules/';
+  const generateTitle = (path, pageTitle = '') => {
+    const titles = {
+      '/orphaned/': 'Orphaned Rules',
+      '/archived/': 'Archived Rules',
+      '/profile/': 'Profile',
+    };
 
-  const setFullTitle = () => {
-    return isHomePage
-      ? `${siteTitle} | ${pageTitle}`
-      : pageTitle
-        ? `${pageTitle} | ${siteTitle}`
-        : siteTitle;
+    if (pageTitle) {
+      return `${pageTitle} | ${siteTitle}`;
+    }
+
+    const titleFromPath = titles[path];
+    if (titleFromPath) {
+      return `${titleFromPath} | ${siteTitle}`;
+    }
+
+    return `${siteTitle} | ${homepageTitle}`;
   };
 
-  const pageTitleFull = setFullTitle();
+  const fullTitle = generateTitle(location.pathname, pageTitle);
+
   const canonical = parentSiteUrl + (location.pathname || '');
 
   return (
@@ -43,9 +52,9 @@ const Head = ({
       />
 
       <meta content={siteTitle} name="apple-mobile-web-app-title" />
-      <meta content={pageTitleFull} property="og:title" />
-      <meta content={pageTitleFull} name="twitter:title" />
-      <title>{pageTitleFull}</title>
+      <meta content={fullTitle} property="og:title" />
+      <meta content={fullTitle} name="twitter:title" />
+      <title>{fullTitle}</title>
 
       <meta content={seoDescription || siteDescription} name="description" />
       <meta
@@ -71,7 +80,7 @@ const Head = ({
       <meta content="summary_large_image" name="twitter:card" />
       <meta content={`@${social.twitter}`} name="twitter:site" />
       <meta content={`@${social.twitter}`} name="twitter:creator" />
-      <meta content={pageTitleFull} name="twitter:text:title" />
+      <meta content={fullTitle} name="twitter:text:title" />
       <meta content={canonical} property="og:url" />
       <meta content={canonical} name="twitter:url" />
       <link rel="canonical" href={canonical} />
@@ -193,7 +202,7 @@ const Head = ({
             siteUrl,
             pageTitle,
             siteTitle,
-            pageTitleFull,
+            pageTitleFull: fullTitle,
           })
         )}
       </script>

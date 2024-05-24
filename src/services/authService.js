@@ -1,7 +1,8 @@
 import { useAuth0 } from '@auth0/auth0-react';
 
 export const useAuthService = () => {
-  const { getIdTokenClaims, getAccessTokenSilently } = useAuth0();
+  const { getIdTokenClaims, getAccessTokenSilently, loginWithRedirect } =
+    useAuth0();
 
   const fetchIdToken = async () => {
     try {
@@ -11,9 +12,8 @@ export const useAuthService = () => {
 
       if (expiryTime - currentTime < 60000) {
         await getAccessTokenSilently({
-          audience: process.env.AUTH0_AUDIENCE,
+          audience: process.env.AUTH0_DOMAIN,
           scope: 'openid profile email offline_access',
-          grant_type: 'refresh_token',
           cacheMode: 'off',
         });
 
@@ -22,8 +22,17 @@ export const useAuthService = () => {
       }
       return claims.__raw;
     } catch (error) {
-      console.error('Error refreshing ID token:', error);
-      throw error;
+      if (window.confirm('Your session has expired. Please log in again')) {
+        const currentPage =
+          typeof window !== 'undefined'
+            ? window.location.pathname.split('/').pop()
+            : null;
+        await loginWithRedirect({
+          appState: {
+            targetUrl: currentPage,
+          },
+        });
+      }
     }
   };
 

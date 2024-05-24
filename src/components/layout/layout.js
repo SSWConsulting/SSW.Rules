@@ -42,7 +42,7 @@ const Layout = ({
         useRefreshTokens={true}
         cacheLocation="localstorage"
         scope="openid profile email offline_access"
-        audience={process.env.AUTH0_AUDIENCE}
+        audience={process.env.AUTH0_DOMAIN}
       >
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div

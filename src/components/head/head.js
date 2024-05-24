@@ -5,6 +5,7 @@ import { useStaticQuery, graphql } from 'gatsby';
 import { Location } from '@reach/router';
 import schemaGenerator from '../../helpers/schemaGenerator';
 import { pathPrefix, homepageTitle } from '../../../site-config';
+import titles from '../../helpers/config/pageTitles';
 
 const Head = ({
   siteTitle,
@@ -19,14 +20,6 @@ const Head = ({
   location,
 }) => {
   const generateTitle = (path, pageTitle) => {
-    const titles = {
-      '/latest-rules/': 'Latest Rules',
-      '/user/': 'User Rules',
-      '/orphaned/': 'Orphaned Rules',
-      '/archived/': 'Archived Rules',
-      '/profile/': 'Profile',
-    };
-
     if (pageTitle) {
       return `${pageTitle} | ${siteTitle}`;
     }

@@ -27,7 +27,7 @@ const Reaction = (props) => {
   const [currentReactionType, setCurrentReactionType] = useState(null);
 
   const { isAuthenticated, user, loginWithRedirect } = useAuth0();
-  const { refreshIdToken } = useAuthService();
+  const { fetchIdToken } = useAuthService();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -82,7 +82,7 @@ const Reaction = (props) => {
         ruleGuid: ruleId,
         userId: user.sub,
       };
-      const idToken = await refreshIdToken();
+      const idToken = await fetchIdToken();
       if (currentReactionType == type) {
         removePreviousReaction();
         setCurrentReactionType(null);

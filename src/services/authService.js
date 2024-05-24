@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 export const useAuthService = () => {
   const { getIdTokenClaims, getAccessTokenSilently } = useAuth0();
 
-  const refreshIdToken = async () => {
+  const fetchIdToken = async () => {
     try {
       const claims = await getIdTokenClaims();
       const expiryTime = claims.exp * 1000;
@@ -27,5 +27,5 @@ export const useAuthService = () => {
     }
   };
 
-  return { refreshIdToken };
+  return { fetchIdToken };
 };

@@ -38,10 +38,11 @@ const Layout = ({
         authorizationParams={{
           redirect_uri: process.env.AUTH0_REDIRECT_URI,
         }}
-        // redirectUri={process.env.AUTH0_REDIRECT_URI}
         onRedirectCallback={onRedirectCallback}
         useRefreshTokens={true}
         cacheLocation="localstorage"
+        scope="openid profile email offline_access"
+        audience={process.env.AUTH0_AUDIENCE}
       >
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div

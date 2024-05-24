@@ -8,6 +8,7 @@ import {
   ReactionType,
   RemoveReaction,
 } from '../../services/apiService';
+import { useAuthService } from '../../services/authService';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 const appInsights = new ApplicationInsights({
@@ -25,13 +26,8 @@ const Reaction = (props) => {
   const [change, setChange] = useState(0);
   const [currentReactionType, setCurrentReactionType] = useState(null);
 
-  const {
-    isAuthenticated,
-    user,
-    getIdTokenClaims,
-    loginWithRedirect,
-    getAccessTokenSilently,
-  } = useAuth0();
+  const { isAuthenticated, user, loginWithRedirect } = useAuth0();
+  const { refreshIdToken } = useAuthService();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -66,30 +62,6 @@ const Reaction = (props) => {
         });
     }
   }, [change, user]);
-
-  const refreshIdToken = async () => {
-    try {
-      const claims = await getIdTokenClaims();
-      const expiryTime = claims.exp * 1000;
-      const currentTime = new Date().getTime();
-
-      if (expiryTime - currentTime < 60000) {
-        const token = await getAccessTokenSilently({
-          audience: process.env.AUTH0_AUDIENCE,
-          scope: 'openid profile email offline_access',
-          grant_type: 'refresh_token',
-          cacheMode: 'off',
-        });
-
-        return claims.__raw;
-      } else {
-        return claims.__raw;
-      }
-    } catch (error) {
-      console.error('Error refreshing ID token:', error);
-      throw error;
-    }
-  };
 
   function removePreviousReaction() {
     if (currentReactionType == ReactionType.SuperLike) {

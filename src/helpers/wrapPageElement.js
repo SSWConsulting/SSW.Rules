@@ -2,7 +2,6 @@ import React from 'react';
 //import Transition from '../components/transition/transition.js';
 import PropTypes from 'prop-types';
 import Layout from '../components/layout/layout';
-import siteConfig from '../../site-config';
 
 const wrapPageElement = ({ element, props }) => {
   const markdown =
@@ -10,20 +9,7 @@ const wrapPageElement = ({ element, props }) => {
       ? props.data.markdownRemark
       : null;
 
-  const getTitleFromPath = (path) => {
-    const titles = {
-      '/': siteConfig.homepageTitle,
-      '/orphaned/': 'Orphaned Rules',
-      '/archived/': 'Archived Rules',
-      '/profile/': 'Profile',
-    };
-
-    return titles[path] || siteConfig.breadcrumbDefault;
-  };
-
-  const pageTitle = markdown
-    ? markdown.frontmatter.title
-    : getTitleFromPath(props.path);
+  const pageTitle = markdown ? markdown.frontmatter.title : '';
 
   return (
     //<Transition {...props}>

@@ -1,6 +1,14 @@
 /*eslint quotes: ["warn", "backtick"]*/
 /** @type {import('gatsby').GatsbyConfig} */
 
+const titles = {
+  '/latest-rules/': `Latest Rules`,
+  '/user/': `User Rules`,
+  '/orphaned/': `Orphaned Rules`,
+  '/archived/': `Archived Rules`,
+  '/profile/': `Profile`,
+};
+
 module.exports = {
   siteTitle: `SSW.Rules`,
   siteTitleShort: `SSW.Rules`,
@@ -19,4 +27,5 @@ module.exports = {
   breadcrumbDefault: `SSW Rules`,
   homepageTitle: `Secret Ingredients to Quality Software`,
   trailingSlash: `never`,
+  titles: titles,
 };

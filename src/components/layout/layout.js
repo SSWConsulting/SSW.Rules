@@ -52,12 +52,7 @@ const Layout = ({
           }}
         >
           <div className="flex flex-col min-h-screen main-container">
-            <Head
-              pageTitle={
-                crumbLabel == 'SSW Rules' ? 'Latest Rules' : crumbLabel
-              }
-              seoDescription={seoDescription}
-            />
+            <Head pageTitle={crumbLabel} seoDescription={seoDescription} />
             <Header displayActions={displayActions} ruleUri={ruleUri} />
             <main className="flex-1">{children}</main>
           </div>

@@ -2,11 +2,11 @@
 /** @type {import('gatsby').GatsbyConfig} */
 
 const titles = {
-  '/latest-rules/': 'Latest Rules',
-  '/user/': 'User Rules',
-  '/orphaned/': 'Orphaned Rules',
-  '/archived/': 'Archived Rules',
-  '/profile/': 'Profile',
+  '/latest-rules/': `Latest Rules`,
+  '/user/': `User Rules`,
+  '/orphaned/': `Orphaned Rules`,
+  '/archived/': `Archived Rules`,
+  '/profile/': `Profile`,
 };
 
 module.exports = {

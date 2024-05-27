@@ -41,7 +41,7 @@ const Layout = ({
         onRedirectCallback={onRedirectCallback}
         useRefreshTokens={true}
         cacheLocation="localstorage"
-        scope="openid profile email offline_access"
+        scope={process.env.AUTH0_SCOPE}
         audience={process.env.AUTH0_DOMAIN}
       >
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}

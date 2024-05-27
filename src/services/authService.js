@@ -13,7 +13,7 @@ export const useAuthService = () => {
       if (expiryTime - currentTime < 60000) {
         await getAccessTokenSilently({
           audience: process.env.AUTH0_DOMAIN,
-          scope: 'openid profile email offline_access',
+          scope: process.env.AUTH0_SCOPE,
           cacheMode: 'off',
         });
 

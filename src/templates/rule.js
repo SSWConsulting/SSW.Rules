@@ -25,6 +25,7 @@ import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
 import formatDistance from 'date-fns/formatDistance';
 import { format } from 'date-fns';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useAuthService } from '../services/authService';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 const appInsights = new ApplicationInsights({
@@ -41,20 +42,21 @@ const Rule = ({ data, location }) => {
   };
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
-  const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
+  const { fetchIdToken } = useAuthService();
   const [hiddenCount, setHiddenCount] = useState(0);
 
   const loadSecretContent = async (userOrgId) => {
     const hidden = document.getElementsByClassName('hidden');
     if (hidden.length != 0) {
-      const token = await getIdTokenClaims();
+      const token = await fetchIdToken();
       for (var hiddenBlock of hidden) {
         const contentID = hiddenBlock.textContent || hiddenBlock.innerText;
         const guid = contentID.substring(0, 36);
         const orgID = contentID.substring(37);
         if (parseInt(orgID) == parseInt(userOrgId)) {
           isAuthenticated && guid
-            ? await GetSecretContent(guid, token.__raw)
+            ? await GetSecretContent(guid, token)
                 .then((success) => {
                   GetGithubOrganisationName(orgID)
                     .then((nameSuccess) => {

@@ -7,6 +7,7 @@ import {
   BookmarkRule,
   RemoveBookmark,
 } from '../../services/apiService';
+import { useAuthService } from '../../services/authService';
 import PropTypes from 'prop-types';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
@@ -21,8 +22,8 @@ const Bookmark = (props) => {
   const [change, setChange] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
 
-  const { isAuthenticated, user, getIdTokenClaims, loginWithRedirect } =
-    useAuth0();
+  const { isAuthenticated, user, loginWithRedirect } = useAuth0();
+  const { fetchIdToken } = useAuthService();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -42,10 +43,10 @@ const Bookmark = (props) => {
   async function onClick() {
     if (isAuthenticated) {
       setBookmarked(!bookmarked);
-      const jwt = await getIdTokenClaims();
+      const jwt = await fetchIdToken();
       const data = { ruleGuid: ruleId, UserId: user.sub };
       !bookmarked
-        ? BookmarkRule(data, jwt.__raw)
+        ? BookmarkRule(data, jwt)
             .then(() => {
               setChange(change + 1);
             })
@@ -55,7 +56,7 @@ const Bookmark = (props) => {
                 severityLevel: 3,
               });
             })
-        : RemoveBookmark({ ruleGuid: ruleId, UserId: user.sub }, jwt.__raw)
+        : RemoveBookmark({ ruleGuid: ruleId, UserId: user.sub }, jwt)
             .then(() => {
               setChange(change + 1);
             })

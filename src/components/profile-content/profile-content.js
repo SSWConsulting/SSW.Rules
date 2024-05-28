@@ -13,6 +13,7 @@ import {
   GetUser,
   DisqusError,
 } from '../../services/apiService';
+import { useAuthService } from '../../services/authService';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import DisqusIcon from '-!svg-react-loader!../../images/disqusIcon.svg';
 
@@ -50,20 +51,21 @@ const ProfileContent = (props) => {
   const [disqusPrivacyEnabled, setDisqusPrivacyEnabled] = useState(false);
   const [change, setChange] = useState(0);
   const [viewStyle, setViewStyle] = useState('titleOnly');
-  const { user, getIdTokenClaims, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
+  const { fetchIdToken } = useAuthService();
 
   const handleOptionChange = (e) => {
     setViewStyle(e.target.value);
   };
 
   async function onRemoveClick(ruleGuid) {
-    const jwt = await getIdTokenClaims();
+    const jwt = await fetchIdToken();
     if (
       isAuthenticated &&
       window.confirm('Are you sure you want to remove this tag?')
     ) {
       props.filter == Filter.Bookmarks
-        ? RemoveBookmark({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
+        ? RemoveBookmark({ ruleGuid: ruleGuid, UserId: user.sub }, jwt)
             .then(() => {
               setChange(change + 1);
               props.setState(props.state + 1);
@@ -74,7 +76,7 @@ const ProfileContent = (props) => {
                 severityLevel: 3,
               });
             })
-        : RemoveReaction({ ruleGuid: ruleGuid, UserId: user.sub }, jwt.__raw)
+        : RemoveReaction({ ruleGuid: ruleGuid, UserId: user.sub }, jwt)
             .then(() => {
               setChange(change + 1);
             })
@@ -139,8 +141,8 @@ const ProfileContent = (props) => {
   }
 
   async function getUserComments() {
-    const jwt = await getIdTokenClaims();
-    GetUser(user.sub, jwt.__raw).then((success) => {
+    const jwt = await fetchIdToken();
+    GetUser(user.sub, jwt).then((success) => {
       if (!success) {
         appInsights.trackException({
           error: new Error('Error getting user'),
@@ -350,11 +352,12 @@ const RuleList = ({
   const components = {
     greyBox: GreyBox,
   };
-  const { user, getIdTokenClaims } = useAuth0();
+  const { user } = useAuth0();
+  const { fetchIdToken } = useAuthService();
 
   async function RemoveDisqusUser() {
-    const jwt = await getIdTokenClaims();
-    RemoveUserCommentsAccount({ UserId: user.sub }, jwt.__raw)
+    const jwt = await fetchIdToken();
+    RemoveUserCommentsAccount({ UserId: user.sub }, jwt)
       .then(() => {
         setState(state + 1);
       })

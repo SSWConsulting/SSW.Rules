@@ -8,7 +8,6 @@ import {
   ReactionType,
   RemoveReaction,
 } from '../../services/apiService';
-import { useAuthService } from '../../services/authService';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 const appInsights = new ApplicationInsights({
@@ -26,8 +25,8 @@ const Reaction = (props) => {
   const [change, setChange] = useState(0);
   const [currentReactionType, setCurrentReactionType] = useState(null);
 
-  const { isAuthenticated, user, loginWithRedirect } = useAuth0();
-  const { fetchIdToken } = useAuthService();
+  const { isAuthenticated, user, getIdTokenClaims, loginWithRedirect } =
+    useAuth0();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -82,11 +81,11 @@ const Reaction = (props) => {
         ruleGuid: ruleId,
         userId: user.sub,
       };
-      const idToken = await fetchIdToken();
+      const jwt = await getIdTokenClaims();
       if (currentReactionType == type) {
         removePreviousReaction();
         setCurrentReactionType(null);
-        RemoveReaction(data, idToken)
+        RemoveReaction(data, jwt.__raw)
           .then(() => {
             setChange(change + 1);
           })
@@ -110,7 +109,7 @@ const Reaction = (props) => {
           removePreviousReaction();
         }
         setCurrentReactionType(type);
-        PostReactionForUser(data, idToken)
+        PostReactionForUser(data, jwt.__raw)
           .then(() => {
             setChange(change + 1);
           })

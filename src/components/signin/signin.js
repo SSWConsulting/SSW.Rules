@@ -6,7 +6,6 @@ import {
   GetGithubOrganisations,
   setUserOrganisation,
 } from '../../services/apiService';
-import { useAuthService } from '../../services/authService';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 const appInsights = new ApplicationInsights({
@@ -16,8 +15,8 @@ const appInsights = new ApplicationInsights({
 });
 
 const SignIn = () => {
-  const { isAuthenticated, loginWithRedirect, user } = useAuth0();
-  const { fetchIdToken } = useAuthService();
+  const { isAuthenticated, loginWithRedirect, user, getIdTokenClaims } =
+    useAuth0();
 
   useEffect(() => {
     isAuthenticated ? setUserOrg() : null;
@@ -27,13 +26,13 @@ const SignIn = () => {
     isAuthenticated
       ? await GetGithubOrganisations(user.nickname)
           .then(async (success) => {
-            const jwt = await fetchIdToken();
+            const jwt = await getIdTokenClaims();
             success.forEach(async (org) => {
               const data = {
                 OrganisationId: org.id.toString(),
                 UserId: user.sub,
               };
-              await setUserOrganisation(data, jwt).catch((err) => {
+              await setUserOrganisation(data, jwt.__raw).catch((err) => {
                 console.error('error: ' + err);
               });
             });

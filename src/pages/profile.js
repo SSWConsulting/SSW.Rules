@@ -10,7 +10,6 @@ import GitHubIcon from '-!svg-react-loader!../images/github.svg';
 import DisqusIcon from '-!svg-react-loader!../images/disqusIcon.svg';
 import { useAuth0 } from '@auth0/auth0-react';
 import { GetUser } from '../services/apiService';
-import { useAuthService } from '../services/authService';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 const appInsights = new ApplicationInsights({
@@ -22,8 +21,8 @@ const appInsights = new ApplicationInsights({
 const Profile = ({ data, gitHubUsername }) => {
   const [selectedFilter, setSelectedFilter] = useState(4);
   const [state, setState] = useState(0);
-  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
-  const { fetchIdToken } = useAuthService();
+  const { user, isAuthenticated, loginWithRedirect, getIdTokenClaims } =
+    useAuth0();
   const [commentsConnected, setCommentsConnected] = useState(false);
   const [bookmarkedRulesCount, setBookmarkedRulesCount] = useState();
   const [superLikedRulesCount, setSuperLikedRulesCount] = useState();
@@ -33,8 +32,8 @@ const Profile = ({ data, gitHubUsername }) => {
   const [commentedRulesCount, setCommentedRulesCount] = useState();
 
   async function CheckUser() {
-    const jwt = await fetchIdToken();
-    GetUser(user.sub, jwt)
+    const jwt = await getIdTokenClaims();
+    GetUser(user.sub, jwt.__raw)
       .then((success) => {
         setCommentsConnected(success.commentsConnected);
       })

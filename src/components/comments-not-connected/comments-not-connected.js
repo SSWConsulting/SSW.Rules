@@ -6,7 +6,6 @@ import {
   ConnectUserCommentsAccount,
   DisqusError,
 } from '../../services/apiService';
-import { useAuthService } from '../../services/authService';
 import DisqusIcon from '-!svg-react-loader!../../images/disqusIcon.svg';
 
 import { useAuth0 } from '@auth0/auth0-react';
@@ -21,8 +20,7 @@ const CommentsNotConnected = ({ userCommentsConnected, setState, state }) => {
   const [disqusUsername, setDisqusUsername] = useState();
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const { user } = useAuth0();
-  const { fetchIdToken } = useAuthService();
+  const { user, getIdTokenClaims } = useAuth0();
 
   function connectAccounts() {
     if (disqusUsername) {
@@ -31,13 +29,13 @@ const CommentsNotConnected = ({ userCommentsConnected, setState, state }) => {
           if (success.code == DisqusError.InvalidArg) {
             setErrorMessage('Username does not exist');
           }
-          const jwt = await fetchIdToken();
+          const jwt = await getIdTokenClaims();
           ConnectUserCommentsAccount(
             {
               UserId: user.sub,
               CommentsUserId: success.response.id,
             },
-            jwt
+            jwt.__raw
           )
             .then((response) => {
               setState(state + 1);

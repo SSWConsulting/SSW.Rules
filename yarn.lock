@@ -5721,7 +5721,7 @@ __metadata:
     axios: "npm:1.6.8"
     babel-eslint: "npm:^10.1.0"
     classnames: "npm:^2.5.1"
-    core-js: "npm:^3.36.0"
+    core-js: "npm:^3.37.1"
     date-fns: "npm:^2.30.0"
     decap-cms-app: "npm:3.1.1"
     directory-named-webpack-plugin: "npm:^4.1.0"
@@ -8490,10 +8490,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.36.0":
-  version: 3.36.0
-  resolution: "core-js@npm:3.36.0"
-  checksum: 62dcb41ba79ead581e4c5b2740ae18bfe6ee230e853893736d16edb01b580574d8645ff6c5513d1c75d59620f8451aee45c119d3c4f5ebc66cff5f003a816864
+"core-js@npm:^3.37.1":
+  version: 3.37.1
+  resolution: "core-js@npm:3.37.1"
+  checksum: 440eb51a7a39128a320225fe349f870a3641b96c9ecd26470227db730ef8c161ea298eaea621db66ec0ff622a85299efb4e23afebf889c0a1748616102307675
   languageName: node
   linkType: hard
 

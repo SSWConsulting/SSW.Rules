@@ -1,8 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 
 export const useAuthService = () => {
-  const { getIdTokenClaims, getAccessTokenSilently, loginWithRedirect } =
-    useAuth0();
+  const { getIdTokenClaims, getAccessTokenSilently } = useAuth0();
 
   const fetchIdToken = async () => {
     try {
@@ -22,17 +21,8 @@ export const useAuthService = () => {
       }
       return claims.__raw;
     } catch (error) {
-      if (window.confirm('Your session has expired. Please log in again')) {
-        const currentPage =
-          typeof window !== 'undefined'
-            ? window.location.pathname.split('/').pop()
-            : null;
-        await loginWithRedirect({
-          appState: {
-            targetUrl: currentPage,
-          },
-        });
-      }
+      // eslint-disable-next-line no-console
+      console.log('Failed to fetch id token', error);
     }
   };
 

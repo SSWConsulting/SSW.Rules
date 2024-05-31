@@ -43,6 +43,7 @@ const Layout = ({
         cacheLocation="localstorage"
         scope={process.env.AUTH0_SCOPE}
         audience={process.env.AUTH0_DOMAIN}
+        useRefreshTokensFallback={true}
       >
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div

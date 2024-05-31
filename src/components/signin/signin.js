@@ -21,7 +21,7 @@ const SignIn = () => {
 
   useEffect(() => {
     isAuthenticated ? setUserOrg() : null;
-  });
+  }, []);
 
   const setUserOrg = async () => {
     isAuthenticated

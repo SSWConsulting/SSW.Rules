@@ -21,6 +21,7 @@ export const useAuthService = () => {
       }
       return claims.__raw;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log('Failed to fetch id token', error);
     }
   };

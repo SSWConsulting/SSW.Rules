@@ -88,6 +88,10 @@ const UserRules = ({ data, location }) => {
       .replace(/\p{Diacritic}/gu, '');
   };
 
+  const createProfileSlug = (name) => {
+    return name.replaceAll(' ', '-').toLowerCase();
+  };
+
   const fetchPageData = async (action) => {
     try {
       const searchData = await fetchGithubData(action);
@@ -271,13 +275,24 @@ const UserRules = ({ data, location }) => {
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
-            <span className="flex">
+            <div className="flex items-center justify-between">
               {authorName && (
-                <h2 className="flex-1 text-ssw-red">
-                  {authorName}&#39;s Rules
-                </h2>
+                <>
+                  <span className="flex">
+                    <h2 className="flex-1 text-ssw-red">
+                      {authorName}&#39;s Rules
+                    </h2>
+                  </span>
+                  <a
+                    href={`https://ssw.com.au/people/${createProfileSlug(authorName)}/`}
+                    className="underline unstyled mt-2 hover:text-ssw-red hidden sm:inline"
+                  >
+                    View people profile
+                  </a>
+                </>
               )}
-            </span>
+            </div>
+
             <hr className="mt-0" />
             <span className="flex">
               <h3 className="flex-1 text-ssw-red">

@@ -33,6 +33,7 @@ const UserRules = ({ data, location }) => {
   const [tempCursor, setTempCursor] = useState('');
   const [hasNext, setHasNext] = useState(false);
   const [authorName, setAuthorName] = useState('');
+  const [showProfileLink, setShowProfileLink] = useState(false);
 
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
@@ -78,6 +79,10 @@ const UserRules = ({ data, location }) => {
 
     const normalizedName = normalizeName(name);
     setAuthorName(normalizedName);
+
+    if (name.includes('SSW')) {
+      setShowProfileLink(true);
+    }
   };
 
   const normalizeName = (name) => {
@@ -283,12 +288,15 @@ const UserRules = ({ data, location }) => {
                       {authorName}&#39;s Rules
                     </h2>
                   </span>
-                  <a
-                    href={`https://ssw.com.au/people/${createProfileSlug(authorName)}/`}
-                    className="underline unstyled mt-2 hover:text-ssw-red hidden sm:inline"
-                  >
-                    View people profile
-                  </a>
+
+                  {showProfileLink && (
+                    <a
+                      href={`https://ssw.com.au/people/${createProfileSlug(authorName)}/`}
+                      className="underline unstyled mt-2 hover:text-ssw-red hidden sm:inline"
+                    >
+                      View people profile
+                    </a>
+                  )}
                 </>
               )}
             </div>

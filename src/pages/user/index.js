@@ -80,6 +80,7 @@ const UserRules = ({ data, location }) => {
     const normalizedName = normalizeName(name);
     setAuthorName(normalizedName);
 
+    // HACK - https://github.com/SSWConsulting/SSW.Rules/issues/1361
     if (name.includes('SSW')) {
       setShowProfileLink(true);
     }

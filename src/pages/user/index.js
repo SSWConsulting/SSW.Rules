@@ -33,6 +33,7 @@ const UserRules = ({ data, location }) => {
   const [tempCursor, setTempCursor] = useState('');
   const [hasNext, setHasNext] = useState(false);
   const [authorName, setAuthorName] = useState('');
+  const [showProfileLink, setShowProfileLink] = useState(false);
 
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
@@ -78,6 +79,11 @@ const UserRules = ({ data, location }) => {
 
     const normalizedName = normalizeName(name);
     setAuthorName(normalizedName);
+
+    // HACK - https://github.com/SSWConsulting/SSW.Rules/issues/1361
+    if (name.includes('SSW')) {
+      setShowProfileLink(true);
+    }
   };
 
   const normalizeName = (name) => {
@@ -86,6 +92,10 @@ const UserRules = ({ data, location }) => {
       .replace(' [SSW]', '')
       .replace('ø', 'oe')
       .replace(/\p{Diacritic}/gu, '');
+  };
+
+  const createProfileSlug = (name) => {
+    return name.replaceAll(' ', '-').toLowerCase();
   };
 
   const fetchPageData = async (action) => {
@@ -271,13 +281,27 @@ const UserRules = ({ data, location }) => {
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
-            <span className="flex">
+            <div className="flex items-center justify-between">
               {authorName && (
-                <h2 className="flex-1 text-ssw-red">
-                  {authorName}&#39;s Rules
-                </h2>
+                <>
+                  <span className="flex">
+                    <h2 className="flex-1 text-ssw-red">
+                      {authorName}&#39;s Rules
+                    </h2>
+                  </span>
+
+                  {showProfileLink && (
+                    <a
+                      href={`https://ssw.com.au/people/${createProfileSlug(authorName)}/`}
+                      className="underline unstyled mt-2 hover:text-ssw-red hidden sm:inline"
+                    >
+                      View people profile
+                    </a>
+                  )}
+                </>
               )}
-            </span>
+            </div>
+
             <hr className="mt-0" />
             <span className="flex">
               <h3 className="flex-1 text-ssw-red">

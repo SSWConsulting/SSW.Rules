@@ -316,6 +316,10 @@ button:focus {
   background-color: #888;
 }
 
+.bg-ssw-slate {
+  background-color: #777;
+}
+
 .bg-grey-translucent {
   background-color: rgba(102, 102, 102, 0.1);
 }
@@ -2385,7 +2389,11 @@ html {
   padding: 8px 15px;
   text-align: center;
   vertical-align: middle;
-  touch-action: manipulation;
+  touch-action: manipulation;  
+}
+
+.normalcase {
+  text-transform: none
 }
 
 .btn-red{

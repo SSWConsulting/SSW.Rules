@@ -10,15 +10,16 @@ on:
         type: string
         required: true
         description: 'The environment to build for'
-      commit_data:
+      should_generate_commit_data:
         type: string
+        description: 'Generate commit data for rules history. You might want to skip this on large rules changes.'
         required: false
         default: 'yes'
 
 jobs:
   get-content-commit-data:
     name: Generate commit data
-    if: ${{ inputs.commit_data == 'yes' }}
+    if: ${{ inputs.should_generate_commit_data == 'yes' }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:

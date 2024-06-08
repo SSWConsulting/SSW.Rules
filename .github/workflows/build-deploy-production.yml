@@ -6,7 +6,7 @@ on:
       - release/*
   workflow_dispatch:
     inputs:
-      commit_data:
+      should_generate_commit_data:
         description: 'Generate commit data'
         required: true
         default: 'yes'
@@ -26,7 +26,7 @@ jobs:
     with:
       branch_name: ${{ github.ref }}
       environment: production
-      commit_data: ${{ github.event.inputs.commit_data }}
+      should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data }}
     secrets: inherit
 
   deploy:

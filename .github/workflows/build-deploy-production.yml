@@ -8,7 +8,6 @@ on:
     inputs:
       should_generate_commit_data:
         description: 'Generate commit data'
-        required: true
         default: 'yes'
         type: choice
         options:

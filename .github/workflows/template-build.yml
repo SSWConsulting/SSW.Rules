@@ -10,10 +10,15 @@ on:
         type: string
         required: true
         description: 'The environment to build for'
+      commit_data:
+        type: string
+        required: false
+        default: 'yes'
 
 jobs:
   get-content-commit-data:
     name: Generate commit data
+    if: ${{ inputs.commit_data == 'yes' }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:

@@ -5,6 +5,15 @@ on:
     branches:
       - release/*
   workflow_dispatch:
+    inputs:
+      commit_data:
+        description: 'Generate commit data'
+        required: true
+        default: 'yes'
+        type: choice
+        options:
+          - yes
+          - no
 
 concurrency:
   group: production
@@ -17,6 +26,7 @@ jobs:
     with:
       branch_name: ${{ github.ref }}
       environment: production
+      commit_data: ${{ github.event.inputs.commit_data }}
     secrets: inherit
 
   deploy:

@@ -58,7 +58,6 @@ jobs:
             -SkipGenerateHistory ${{ inputs.should_generate_commit_data == 'yes' }}
   
       - name: Update Latest Rules
-        if: ${{ inputs.should_generate_commit_data == 'yes' }}
         shell: pwsh
         run: |
           ./SSW.Rules/build-scripts/update-latest-rules.ps1 `
@@ -75,7 +74,6 @@ jobs:
             -outputFileName ${{ github.workspace }}/static/history.json
 
       - name: Get History Commits of Each Contributor
-        if: ${{ inputs.should_generate_commit_data == 'yes' }}
         shell: pwsh
         run: |
           ./SSW.Rules/build-scripts/create-commits-history.ps1 `

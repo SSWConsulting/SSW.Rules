@@ -117,6 +117,12 @@ foreach ($author in $authors) {
 
     foreach ($commit in $commits) {
         $sha = $commit.sha
+        $filesChangedCount = git whatchanged --oneline --name-status $sha -1 | tail -n +2 | wc -l
+
+        if ($filesChangedCount -gt 100) { # Skip commits with more than 100 files changed - these ruin data
+            continue
+        }
+
         $filesChangedList = Get-CommitDiffFiles $sha
         $commitDetails = Get-CommitInfo $sha
 

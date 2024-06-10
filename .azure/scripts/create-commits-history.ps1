@@ -119,7 +119,7 @@ foreach ($author in $authors) {
         $sha = $commit.sha
         $filesChangedCount = git whatchanged --oneline --name-status $sha -1 | tail -n +2 | wc -l
 
-        if ($filesChangedCount -gt 100) { # Skip commits with more than 100 files changed - these ruin data
+        if ($filesChangedCount -gt 100) { # Skip commits with more than 100 files changed - these ruin data https://github.com/SSWConsulting/SSW.Rules/issues/1367
             continue
         }
 

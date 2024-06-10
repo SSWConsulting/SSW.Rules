@@ -19,7 +19,12 @@ git commit-graph write --reachable --changed-paths
 #Step 1: GetHistorySyncCommitHash - Retrieve CommitHash from AzureFunction
 $Uri = $AzFunctionBaseUrl + 'GetHistorySyncCommitHash'
 $Headers = @{'x-functions-key' = $GetHistorySyncCommitHashKey}
-$Response = Invoke-WebRequest -URI $Uri -Headers $Headers
+try {
+    $Response = Invoke-WebRequest -URI $Uri -Headers $Headers
+} catch {
+    Write-Error "Failed to get response Azure Function $Uri: $_"
+    exit 1
+}
 $startCommitHash = $Response.Content -replace '"', ''
 
 $filesProcessed = @{}
@@ -70,12 +75,15 @@ $historyArray | Foreach-Object {
 }
 
 if (!$SkipGenerateHistory) {
-    $historyFileContents = ConvertTo-Json $historyFileArray
-
     #Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
+    $historyFileContents = ConvertTo-Json $historyFileArray
     $Uri = $AzFunctionBaseUrl + 'UpdateRuleHistory'
     $Headers = @{'x-functions-key' = $UpdateRuleHistoryKey}
-    $Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $historyFileContents -Headers $Headers -ContentType 'application/json; charset=utf-8'
+    try {
+        $Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $historyFileContents -Headers $Headers -ContentType 'application/json; charset=utf-8'
+    } catch {
+        Write-Error "Failed to update rule history $Uri: $_"
+    }
 }
 
 if(![string]::IsNullOrWhiteSpace($commitSyncHash))
@@ -86,7 +94,11 @@ if(![string]::IsNullOrWhiteSpace($commitSyncHash))
     $Body = @{
         commitHash  = $commitSyncHash
     }
-    $Result = Invoke-WebRequest -Uri $Uri -Method Post -Body $Body -Headers $Headers
+    try {
+        $Result = Invoke-WebRequest -Uri $Uri -Method Post -Body $JsonBody -Headers $Headers
+    } catch {
+        Write-Error "Failed to update history sync commit hash at $Uri: $_"
+    }
 }
 
 if (!$SkipGenerateHistory) {

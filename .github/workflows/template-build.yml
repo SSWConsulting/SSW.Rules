@@ -54,7 +54,7 @@ jobs:
             -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
             -GetHistorySyncCommitHashKey ${{ secrets.GETHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
             -UpdateRuleHistoryKey ${{ secrets.UPDATERULEHISTORYFUNCTIONKEY }} `
-            -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }}
+            -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
             -SkipGenerateHistory ${{ inputs.should_generate_commit_data == 'yes' }}
   
       - name: Update Latest Rules

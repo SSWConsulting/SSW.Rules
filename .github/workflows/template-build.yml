@@ -10,6 +10,11 @@ on:
         type: string
         required: true
         description: 'The environment to build for'
+      should_generate_commit_data:
+        type: string
+        description: 'Generate commit data for rules history. You might want to skip this on large rules changes.'
+        required: false
+        default: 'yes'
 
 jobs:
   get-content-commit-data:
@@ -49,9 +54,11 @@ jobs:
             -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
             -GetHistorySyncCommitHashKey ${{ secrets.GETHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
             -UpdateRuleHistoryKey ${{ secrets.UPDATERULEHISTORYFUNCTIONKEY }} `
-            -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }}
+            -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
+            -SkipGenerateHistory ${{ inputs.should_generate_commit_data == 'yes' }}
   
       - name: Update Latest Rules
+        if: ${{ inputs.should_generate_commit_data == 'yes' }}
         shell: pwsh
         run: |
           ./SSW.Rules/build-scripts/update-latest-rules.ps1 `
@@ -68,6 +75,7 @@ jobs:
             -outputFileName ${{ github.workspace }}/static/history.json
 
       - name: Get History Commits of Each Contributor
+        if: ${{ inputs.should_generate_commit_data == 'yes' }}
         shell: pwsh
         run: |
           ./SSW.Rules/build-scripts/create-commits-history.ps1 `

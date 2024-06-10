@@ -3,7 +3,10 @@ param (
     [string]$GetHistorySyncCommitHashKey,
     [string]$UpdateRuleHistoryKey,
     [string]$UpdateHistorySyncCommitHashKey,
-    [string]$endCommitHash = "HEAD"
+    [string]$endCommitHash = "HEAD",
+    [bool]$SkipGenerateHistory = $false 
+    # Do this if your PR is giant 
+    # https://github.com/SSWConsulting/SSW.Rules/issues/1367
 )
 
 $ErrorActionPreference = 'Stop'
@@ -38,38 +41,42 @@ $historyArray | Foreach-Object {
         $commitSyncHash = $userDetails[1]
     }
 
-    $lastUpdated = $userDetails[2]
-    $lastUpdatedBy = $userDetails[3]
-    $lastUpdatedByEmail = $userDetails[4]
-    
-    $fileArray | Where-Object {$_ -Match "^*.md" } | Foreach-Object {
-        if(!$filesProcessed.ContainsKey($_))
-        {
-            $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae" --date=iso-strict -- $_
-            $createdDetails = $createdRecord -split "<LINE>"
+    if (!$SkipGenerateHistory) {
+        $lastUpdated = $userDetails[2]
+        $lastUpdatedBy = $userDetails[3]
+        $lastUpdatedByEmail = $userDetails[4]
+        
+        $fileArray | Where-Object {$_ -Match "^*.md" } | Foreach-Object {
+            if(!$filesProcessed.ContainsKey($_))
+            {
+                $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae" --date=iso-strict -- $_
+                $createdDetails = $createdRecord -split "<LINE>"
 
-            $filesProcessed.Add($_, 0)
-            $historyFileArray += @{
-                file = $($_)
-                lastUpdated = $lastUpdated
-                lastUpdatedBy = $lastUpdatedBy
-                lastUpdatedByEmail = $lastUpdatedByEmail
-                created = $createdDetails[0]
-                createdBy = $createdDetails[1]
-                createdByEmail = $createdDetails[2]
+                $filesProcessed.Add($_, 0)
+                $historyFileArray += @{
+                    file = $($_)
+                    lastUpdated = $lastUpdated
+                    lastUpdatedBy = $lastUpdatedBy
+                    lastUpdatedByEmail = $lastUpdatedByEmail
+                    created = $createdDetails[0]
+                    createdBy = $createdDetails[1]
+                    createdByEmail = $createdDetails[2]
+                }
+
+                echo $_
             }
-
-            echo $_
         }
     }
 }
 
-$historyFileContents = ConvertTo-Json $historyFileArray
+if (!$SkipGenerateHistory) {
+    $historyFileContents = ConvertTo-Json $historyFileArray
 
-#Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
-$Uri = $AzFunctionBaseUrl + 'UpdateRuleHistory'
-$Headers = @{'x-functions-key' = $UpdateRuleHistoryKey}
-$Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $historyFileContents -Headers $Headers -ContentType 'application/json; charset=utf-8'
+    #Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
+    $Uri = $AzFunctionBaseUrl + 'UpdateRuleHistory'
+    $Headers = @{'x-functions-key' = $UpdateRuleHistoryKey}
+    $Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $historyFileContents -Headers $Headers -ContentType 'application/json; charset=utf-8'
+}
 
 if(![string]::IsNullOrWhiteSpace($commitSyncHash))
 {
@@ -82,5 +89,7 @@ if(![string]::IsNullOrWhiteSpace($commitSyncHash))
     $Result = Invoke-WebRequest -Uri $Uri -Method Post -Body $Body -Headers $Headers
 }
 
-echo $historyFileContents
+if (!$SkipGenerateHistory) {
+    echo $historyFileContents
+}
 echo $commitSyncHash

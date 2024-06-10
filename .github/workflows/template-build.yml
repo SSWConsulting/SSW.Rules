@@ -48,7 +48,6 @@ jobs:
 
 
       - name: Get Rule History Commits
-        if: ${{ inputs.should_generate_commit_data == 'yes' }}
         shell: pwsh
         run: |
           ./SSW.Rules/build-scripts/update-rule-history.ps1 `
@@ -56,6 +55,7 @@ jobs:
             -GetHistorySyncCommitHashKey ${{ secrets.GETHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
             -UpdateRuleHistoryKey ${{ secrets.UPDATERULEHISTORYFUNCTIONKEY }} `
             -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }}
+            -SkipGenerateHistory ${{ inputs.should_generate_commit_data == 'yes' }}
   
       - name: Update Latest Rules
         if: ${{ inputs.should_generate_commit_data == 'yes' }}

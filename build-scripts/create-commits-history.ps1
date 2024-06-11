@@ -75,6 +75,14 @@ function Get-FileMetadata($currentFolder, $commits) {
     foreach ($commitPath in $commits) {
         $updatedFilesChanged = @()
 
+        $sha = $commit.sha
+        $filesChangedCount = git whatchanged --oneline --name-status $sha -1 | tail -n +2 | wc -l
+
+        if ($filesChangedCount -gt 100) { # Skip commits with more than 100 files changed - these ruin data
+            echo "Skipping commit with more than 100 files changed: $sha"
+            continue
+        }
+
         $fullPath = Join-Path $currentFolder $commitPath.Replace("rules/", "")
 
         try {
@@ -116,6 +124,13 @@ foreach ($author in $authors) {
 
     foreach ($commit in $commits) {
         $sha = $commit.sha
+        $filesChangedCount = git whatchanged --oneline --name-status $sha -1 | tail -n +2 | wc -l
+
+        if ($filesChangedCount -gt 100) { # Skip commits with more than 100 files changed - these ruin data
+            echo "Skipping commit with more than 100 files changed: $sha"
+            continue
+        }
+
         $filesChangedList = Get-CommitDiffFiles $sha
         $commitDetails = Get-CommitInfo $sha
 

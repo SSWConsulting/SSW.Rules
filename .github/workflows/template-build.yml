@@ -50,12 +50,13 @@ jobs:
       - name: Get Rule History Commits
         shell: pwsh
         run: |
+          echo ${{ inputs.should_generate_commit_data }} `
           ./SSW.Rules/build-scripts/update-rule-history.ps1 `
             -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
             -GetHistorySyncCommitHashKey ${{ secrets.GETHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
             -UpdateRuleHistoryKey ${{ secrets.UPDATERULEHISTORYFUNCTIONKEY }} `
             -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
-            -SkipGenerateHistory ${{ inputs.should_generate_commit_data == 'no' }}
+            -SkipGenerateHistory ${{ inputs.should_generate_commit_data == 'false' }}
   
       - name: Update Latest Rules
         shell: pwsh

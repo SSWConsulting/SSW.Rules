@@ -22,7 +22,7 @@ jobs:
     with:
       branch_name: ${{ github.ref }}
       environment: staging
-      should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data }}
+      should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data == 'true' }}
     secrets: inherit
 
   deploy:

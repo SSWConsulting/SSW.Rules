@@ -7,12 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       should_generate_commit_data:
+        type: boolean
         description: 'Generate commit data'
-        default: 'yes'
-        type: choice
-        options:
-          - yes
-          - no
+        default: true
 
 concurrency:
   group: production
@@ -25,7 +22,7 @@ jobs:
     with:
       branch_name: ${{ github.ref }}
       environment: production
-      should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data }}
+      should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data == 'true' }}
     secrets: inherit
 
   deploy:

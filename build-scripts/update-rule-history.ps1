@@ -12,6 +12,8 @@ param (
 
 if ($SkipGenerateHistoryString -eq "true") {
     $SkipGenerateHistory = $true
+} else {
+    $SkipGenerateHistory = $false
 }
 
 if ($SkipGenerateHistory) {

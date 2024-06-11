@@ -55,7 +55,7 @@ jobs:
             -GetHistorySyncCommitHashKey ${{ secrets.GETHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
             -UpdateRuleHistoryKey ${{ secrets.UPDATERULEHISTORYFUNCTIONKEY }} `
             -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
-            -SkipGenerateHistory ${{ inputs.should_generate_commit_data }}
+            -ShouldGenerateHistory ${{ inputs.should_generate_commit_data }}
   
       - name: Update Latest Rules
         shell: pwsh

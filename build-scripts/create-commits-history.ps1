@@ -76,8 +76,10 @@ function Get-FileMetadata($currentFolder, $commits) {
         $updatedFilesChanged = @()
 
         $sha = $commit.sha
-        $filesChangedCount = git whatchanged --oneline --name-status $sha -1 | tail -n +2 | wc -l
+        $filesChangedCount = git diff-tree --no-commit-id --name-only -r 97984dc06217234905cd4da64ece47f9e0483455 | wc -l
 
+        echo $filesChangedCount
+        echo ($filesChangedCount -gt 100)
         if ($filesChangedCount -gt 100) { # Skip commits with more than 100 files changed - these ruin data
             echo "Skipping commit with more than 100 files changed: $sha"
             continue
@@ -124,7 +126,7 @@ foreach ($author in $authors) {
 
     foreach ($commit in $commits) {
         $sha = $commit.sha
-        $filesChangedCount = git whatchanged --oneline --name-status $sha -1 | tail -n +2 | wc -l
+        $filesChangedCount = git diff-tree --no-commit-id --name-only -r 97984dc06217234905cd4da64ece47f9e0483455 | wc -l
 
         if ($filesChangedCount -gt 100) { # Skip commits with more than 100 files changed - these ruin data
             echo "Skipping commit with more than 100 files changed: $sha"

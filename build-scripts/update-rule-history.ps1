@@ -4,10 +4,15 @@ param (
     [string]$UpdateRuleHistoryKey,
     [string]$UpdateHistorySyncCommitHashKey,
     [string]$endCommitHash = "HEAD",
-    [bool]$SkipGenerateHistory = $false
+    [string]$SkipGenerateHistoryString = "false"
     # Do this if your PR is giant 
     # https://github.com/SSWConsulting/SSW.Rules/issues/1367
 )
+
+
+if ($SkipGenerateHistoryString -eq "true") {
+    $SkipGenerateHistory = $true
+}
 
 if ($SkipGenerateHistory) {
     echo "Skipping history generation"

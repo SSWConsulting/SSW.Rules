@@ -7,12 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       should_generate_commit_data:
+        type: boolean
         description: 'Generate commit data'
-        default: 'yes'
-        type: choice
-        options:
-          - yes
-          - no
+        default: true
 
 concurrency:
   group: production

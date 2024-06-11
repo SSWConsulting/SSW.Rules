@@ -11,10 +11,10 @@ on:
         required: true
         description: 'The environment to build for'
       should_generate_commit_data:
-        type: string
+        type: boolean
         description: 'Generate commit data for rules history. You might want to skip this on large rules changes.'
         required: false
-        default: 'yes'
+        default: true
 
 jobs:
   get-content-commit-data:
@@ -50,13 +50,12 @@ jobs:
       - name: Get Rule History Commits
         shell: pwsh
         run: |
-          echo ${{ inputs.should_generate_commit_data }}
           ./SSW.Rules/build-scripts/update-rule-history.ps1 `
             -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
             -GetHistorySyncCommitHashKey ${{ secrets.GETHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
             -UpdateRuleHistoryKey ${{ secrets.UPDATERULEHISTORYFUNCTIONKEY }} `
             -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
-            -SkipGenerateHistoryString ${{ inputs.should_generate_commit_data == 'false' }}
+            -SkipGenerateHistory ${{ inputs.should_generate_commit_data }}
   
       - name: Update Latest Rules
         shell: pwsh

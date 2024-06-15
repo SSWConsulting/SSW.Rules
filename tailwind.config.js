@@ -13,6 +13,9 @@ module.exports = {
       minWidth: {
         '200px': '200px',
       },
+      backgroundColor: {
+        'ssw-slate-gray': '#777',
+      },
       colors: {
         ssw: {
           red: '#cc4141',

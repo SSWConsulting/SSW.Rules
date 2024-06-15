@@ -2392,9 +2392,6 @@ html {
   touch-action: manipulation;  
 }
 
-.normalcase {
-  text-transform: none
-}
 
 .btn-red{
 @apply bg-ssw-red;

@@ -26,7 +26,7 @@ const Contact = () => {
   return (
     <div className="flex items-center justify-center">
       <button
-        className="btn btn-red text-sm normalcase"
+        className="btn btn-red text-sm normal-case"
         onClick={() => onContactButtonClick()}
       >
         Book a FREE Initial Meeting

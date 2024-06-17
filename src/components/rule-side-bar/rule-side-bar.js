@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Acknowledgements from '../acknowledgements/acknowledgements';
 import Categories from '../sidebar-categories/sidebar-categories';
 import RelatedRules from '../related-rules/related-rules';
 import PropTypes from 'prop-types';
 import Tooltip from '../tooltip/tooltip';
+import JotFormEmbed from '../job-form-embed/jobFormEmbed';
 
 const tooltipData = {
   Authors: {
@@ -14,6 +15,29 @@ const tooltipData = {
     text: 'How to add a category',
     link: 'https://github.com/SSWConsulting/SSW.Rules.Content/wiki/Creating-Editing-categories',
   },
+};
+
+const Contact = () => {
+  const [displayContactForm, setDisplayContactForm] = useState(false);
+
+  const onContactButtonClick = () => {
+    setDisplayContactForm(!displayContactForm);
+  };
+  return (
+    <div className="flex items-center justify-center">
+      <button
+        className="btn btn-red text-sm normal-case"
+        onClick={() => onContactButtonClick()}
+      >
+        Book a FREE Initial Meeting
+      </button>
+      <JotFormEmbed
+        jotFormId="233468468973070"
+        open={displayContactForm}
+        onClose={onContactButtonClick}
+      />
+    </div>
+  );
 };
 
 const SidebarHeader = ({ sectionTitle }) => {
@@ -67,6 +91,9 @@ const RuleSideBar = ({
           />
         </>
       )}
+
+      <SidebarHeader sectionTitle="Need Help?" />
+      <Contact />
     </div>
   );
 };

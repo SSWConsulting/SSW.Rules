@@ -15,7 +15,7 @@ var configJson = {
     site_url: 'https://www.ssw.com.au/rules',
     publish_mode: 'editorial_workflow',
     logo_url:
-      'https://www.ssw.com.au/ssw/logo/SSWRules/Downloads/SSW%20Rules.png',
+      'https://assets.tina.io/8a7b77f2-cde8-44e7-a592-ebeb7e9dc437/company-logos/downloads/images/SSW%20Rules.png',
     show_preview_links: false,
     search: false,
     media_folder: 'static/assets',

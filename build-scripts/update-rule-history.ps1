@@ -4,7 +4,7 @@ param (
     [string]$UpdateRuleHistoryKey,
     [string]$UpdateHistorySyncCommitHashKey,
     [string]$endCommitHash = "HEAD",
-    [string]$ShouldGenerateHistory = $false
+    [string]$ShouldGenerateHistory = $true
     # Do this if your PR is giant 
     # https://github.com/SSWConsulting/SSW.Rules/issues/1367
 )
@@ -48,7 +48,7 @@ $historyArray | Foreach-Object {
         $commitSyncHash = $userDetails[1]
     }
 
-    if ($SkipGenerateHistory) {
+    if ($ShouldGenerateHistory) {
         $lastUpdated = $userDetails[2]
         $lastUpdatedBy = $userDetails[3]
         $lastUpdatedByEmail = $userDetails[4]
@@ -77,7 +77,7 @@ $historyArray | Foreach-Object {
 }
 
 
-if ($SkipGenerateHistory) {
+if ($ShouldGenerateHistory) {
     #Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
     $historyFileContents = ConvertTo-Json $historyFileArray
     $Uri = $AzFunctionBaseUrl + '/api/UpdateRuleHistory'
@@ -96,7 +96,7 @@ if(![string]::IsNullOrWhiteSpace($commitSyncHash))
     $Result = Invoke-WebRequest -Uri $Uri -Method Post -Body $Body -Headers $Headers
 }
 
-if ($SkipGenerateHistory) {
+if ($ShouldGenerateHistory) {
     echo $historyFileContents
 }
 

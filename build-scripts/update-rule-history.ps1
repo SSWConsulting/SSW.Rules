@@ -56,7 +56,7 @@ $historyArray | Foreach-Object {
         $fileArray | Where-Object {$_ -Match "^*.md" } | Foreach-Object {
             if(!$filesProcessed.ContainsKey($_))
             {
-                $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae" --date=iso-strict -- $_
+                $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae<LINE>" --date=iso-strict -- $_
                 $createdDetails = $createdRecord -split "<LINE>"
 
                 $filesProcessed.Add($_, 0)
@@ -65,9 +65,9 @@ $historyArray | Foreach-Object {
                     lastUpdated = $lastUpdated
                     lastUpdatedBy = $lastUpdatedBy
                     lastUpdatedByEmail = $lastUpdatedByEmail
-                    created = $createdDetails[0]
-                    createdBy = $createdDetails[1]
-                    createdByEmail = $createdDetails[2]
+                    created = $createdDetails[0] ?? $lastUpdated
+                    createdBy = $createdDetails[1] ?? $lastUpdatedBy
+                    createdByEmail = $createdDetails[2] ?? $lastUpdatedByEmail
                 }
 
                 echo $_

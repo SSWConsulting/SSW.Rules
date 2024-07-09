@@ -11,9 +11,6 @@ on:
         description: 'Generate commit data'
         default: true
 
-concurrency:
-  group: staging
-
 jobs:
 
   build:
@@ -26,6 +23,9 @@ jobs:
     secrets: inherit
 
   deploy:
+    concurrency:
+      group: staging-deploy
+      cancel-in-progress: false
     needs: build
     name: Deploy
     uses: ./.github/workflows/template-deploy.yml

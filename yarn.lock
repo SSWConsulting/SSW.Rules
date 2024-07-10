@@ -2430,6 +2430,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@giscus/react@npm:^1.0.0":
+  version: 1.1.2
+  resolution: "@giscus/react@npm:1.1.2"
+  peerDependencies:
+    react: ^16 || ^17 || ^18
+    react-dom: ^16 || ^17 || ^18
+  checksum: 63d0cb7324c0953f7e87420c97324f3732adc4a08547db33d922e611647419b8ac7ea7053f248e56f638ce21b7df6bd6aa78c71cdb426910d320238604835a10
+  languageName: node
+  linkType: hard
+
 "@graphql-codegen/add@npm:^3.2.3":
   version: 3.2.3
   resolution: "@graphql-codegen/add@npm:3.2.3"
@@ -5711,6 +5721,7 @@ __metadata:
     "@fortawesome/free-brands-svg-icons": "npm:^6.5.1"
     "@fortawesome/free-solid-svg-icons": "npm:^6.5.1"
     "@fortawesome/react-fontawesome": "npm:^0.2.0"
+    "@giscus/react": "npm:^1.0.0"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@playwright/test": "npm:^1.41.2"
     "@raae/gatsby-remark-oembed": "npm:^0.3.3"

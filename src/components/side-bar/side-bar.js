@@ -18,13 +18,13 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
               <GavelIcon className="gavel-icon" />
             </div>
             <div className="col-span-2">
-              <h2>
+              <div className="text-3xl font-semibold text-ssw-red">
                 <NumericFormat
                   value={ruleTotalNumber}
                   displayType={'text'}
                   thousandSeparator={true}
                 />
-              </h2>
+              </div>
               <p>SSW Rules</p>
             </div>
           </div>
@@ -66,7 +66,7 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
               alt="Adam Cogan"
             />
           </div>
-          <h5>
+          <div className="text-xl">
             <a
               href="https://www.ssw.com.au/people/adam-cogan"
               target="_blank"
@@ -74,8 +74,8 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
             >
               Adam Cogan
             </a>
-          </h5>
-          <h6>Chief Software Architect at SSW</h6>
+          </div>
+          <div className="text-base">Chief Software Architect at SSW</div>
         </div>
       </section>
       <section>

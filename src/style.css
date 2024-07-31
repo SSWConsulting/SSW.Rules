@@ -64,25 +64,39 @@ header {
 }
 
 h1 {
-  @apply text-4xl;
+  @apply text-5xl;
   @apply mb-2;
   @apply text-ssw-red;
 }
 
 h2 {
-  @apply text-3xl;
+  @apply text-4xl;
   @apply mb-2;
-  @apply text-ssw-red;
+  @apply text-black;
 }
 
 h3 {
-  @apply text-2xl;
+  @apply text-3xl;
   @apply mb-2;
+  @apply text-black;
 }
 
 h4 {
+  @apply text-2xl;
+  @apply mb-2;
+  @apply text-black;
+}
+
+h5 {
+  @apply text-xl;
+  @apply mb-2;
+  @apply text-black;
+}
+
+h6 {
   @apply text-lg;
   @apply mb-2;
+  @apply text-black;
 }
 
 a, a:visited {
@@ -542,7 +556,7 @@ pre {
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-bottom: 1rem !important;
   margin-top: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.2;
 }
 
@@ -620,7 +634,6 @@ b, strong {
 }
 
 .rule-content h1 a, .rule-content h1 a:visited, .rule-content h2 a, .rule-content h2 a:visited, .rule-content h3 a, .rule-content h3 a:visited, .rule-content h4 a, .rule-content h4 a:visited, .rule-content h5 a, .rule-content h5 a:visited, .rule-content h6 a, .rule-content h6 a:visited {
-  @apply text-ssw-red; 
   text-decoration-color: #cc4141 !important;
   -webkit-text-decoration-color: #cc4141;
 }
@@ -854,42 +867,12 @@ blockquote p:after {
 /* Single Rule
 -------------------------------------------------- */
 
-.rule-content h1, .rule-content .h1 {
-  font-size: 2.5rem;
-}
-
   .rule-header-container h1 {
     margin-top: 1rem;
   }
 
-.rule-content h2, .rule-content .h2 {
-  font-size: 2rem;
-}
-
-.rule-content h3, .rule-content .h3 {
-  font-size: 1.75rem;
-}
-
-.rule-content h4, .rule-content .h4 {
-  font-size: 1.5rem;
-}
-.rule-content h5, .rule-content .h5 {
-  font-size: 1.25rem;
-}
-.rule-content h6, .rule-content .h6 {
-  font-size: 1rem;
-}
-
 .rule-content h2, .rule-content h3, .rule-content h4, .rule-content h5, .rule-content h6, .rule-content .h1, .rule-content .h2, .rule-content .h3, .rule-content .h4, .rule-content .h5, .rule-content .h6 {
   margin-top: 2rem;
-}
-
-.rule-content h1, .rule-content h2, .rule-content h3 {
-  @apply text-ssw-red; 
-}
-
-.rule-content h4, .rule-content h5, .rule-content h6 {
-  @apply text-real-black;
 }
 
 .rule-content a,

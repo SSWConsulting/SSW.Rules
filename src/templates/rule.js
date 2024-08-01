@@ -150,7 +150,7 @@ const Rule = ({ data, location }) => {
               <section className="rule-content mb-0">
                 <div className="rule-header-container justify-between display:flex flex-col md:flex-row">
                   <div>
-                    <h1 className="font-bold">{rule.frontmatter.title}</h1>
+                    <h1 className="font-semibold">{rule.frontmatter.title}</h1>
                     {data.history && data.history.nodes[0] && (
                       <small className="history">
                         <span className="opacity-60">Last updated by</span>{' '}

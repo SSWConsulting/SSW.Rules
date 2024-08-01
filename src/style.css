@@ -560,6 +560,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   line-height: 1.2;
 }
 
+h2 strong, h3 strong, h4 strong, h5 strong, h6 strong {
+  @apply text-ssw-red;
+}
+
 hr {
   margin-top: 1rem;
   margin-bottom: 1rem;

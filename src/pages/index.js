@@ -30,9 +30,7 @@ const Index = ({ data, location }) => {
           <div className="w-full lg:w-3/4 px-4">
             <SearchBar toSearch />
             <span className="flex items-center">
-              <h1 className="flex-1 text-3xl font-semibold text-ssw-red">
-                Categories
-              </h1>
+              <h1 className="flex-1 text-3xl font-semibold">Categories</h1>
               <Link to={'/latest-rules?size=50'} className="group unstyled">
                 <FontAwesomeIcon
                   icon={faBolt}

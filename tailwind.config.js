@@ -5,6 +5,12 @@ module.exports = {
   theme: {
     extend: {
       fontSize: {
+        '4xl': '2.5rem',
+        '3xl': '2rem',
+        '2xl': '1.5rem',
+        xl: '1.25rem',
+        lg: '1.125rem',
+        base: '1rem',
         xs: '0.8rem',
       },
       padding: {
@@ -34,10 +40,16 @@ module.exports = {
       backgroundPosition: {
         '10px': '10px',
       },
+      margin: {
+        heading: '1rem',
+      },
+      lineHeight: {
+        heading: '1.2',
+      },
     },
   },
   plugins: [
-    plugin(function ({ addUtilities }) {
+    plugin(function ({ addUtilities, theme }) {
       addUtilities({
         '.hide-scrollbar': {
           'max-height': '44rem',
@@ -48,6 +60,39 @@ module.exports = {
           'mask-image':
             'linear-gradient(to bottom, transparent, black 8px, black calc(100% - 10px), transparent), linear-gradient(black, black)',
           'mask-size': '100% 100%, 0 100%',
+        },
+        'h1, h2, h3, h4, h5, h6': {
+          marginBottom: theme('margin.heading'),
+          marginTop: theme('margin.heading'),
+          fontWeight: theme('fontWeight.semibold'),
+          lineHeight: theme('lineHeight.heading'),
+        },
+        h1: {
+          fontSize: theme('fontSize.4xl'),
+          color: theme('colors.ssw.red'),
+        },
+        h2: {
+          fontSize: theme('fontSize.3xl'),
+          color: theme('colors.ssw.black'),
+        },
+        h3: {
+          fontSize: theme('fontSize.2xl'),
+          color: theme('colors.ssw.black'),
+        },
+        h4: {
+          fontSize: theme('fontSize.xl'),
+          color: theme('colors.ssw.black'),
+        },
+        h5: {
+          fontSize: theme('fontSize.lg'),
+          color: theme('colors.ssw.black'),
+        },
+        h6: {
+          fontSize: theme('fontSize.base'),
+          color: theme('colors.ssw.black'),
+        },
+        'h2 strong, h3 strong, h4 strong, h5 strong, h6 strong': {
+          color: theme('colors.ssw.red'),
         },
       });
     }),

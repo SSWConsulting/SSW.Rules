@@ -63,42 +63,6 @@ header {
   display: none
 }
 
-h1 {
-  @apply text-5xl;
-  @apply mb-2;
-  @apply text-ssw-red;
-}
-
-h2 {
-  @apply text-4xl;
-  @apply mb-2;
-  @apply text-black;
-}
-
-h3 {
-  @apply text-3xl;
-  @apply mb-2;
-  @apply text-black;
-}
-
-h4 {
-  @apply text-2xl;
-  @apply mb-2;
-  @apply text-black;
-}
-
-h5 {
-  @apply text-xl;
-  @apply mb-2;
-  @apply text-black;
-}
-
-h6 {
-  @apply text-lg;
-  @apply mb-2;
-  @apply text-black;
-}
-
 a, a:visited {
   &:not(.unstyled) {
     @apply text-black;
@@ -553,17 +517,6 @@ pre {
   padding-left: 1.5rem;
 }
 
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  margin-bottom: 1rem !important;
-  margin-top: 1rem;
-  @apply font-semibold;
-  line-height: 1.2;
-}
-
-h2 strong, h3 strong, h4 strong, h5 strong, h6 strong {
-  @apply text-ssw-red;
-}
-
 hr {
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -605,8 +558,8 @@ ol ol, ol li ol {
 
 .rule-content {
   @apply text-ssw-black;
-  font-weight: normal;
-  font-size: 1rem;
+  @apply text-base;
+  @apply font-normal;
   word-break: break-word;
   margin-bottom: 2rem;
   padding: 1rem 1.5rem;

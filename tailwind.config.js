@@ -93,6 +93,7 @@ module.exports = {
         },
         'h2 strong, h3 strong, h4 strong, h5 strong, h6 strong': {
           color: theme('colors.ssw.red'),
+          fontWeight: theme('fontWeight.semibold'),
         },
       });
     }),

@@ -95,6 +95,14 @@ module.exports = {
           color: theme('colors.ssw.red'),
           fontWeight: theme('fontWeight.semibold'),
         },
+        '.greybox > h1:first-child, .greybox > h2:first-child, .greybox > h3:first-child, .greybox > h4:first-child':
+          {
+            marginTop: '0',
+          },
+        '.greybox > h1:last-child, .greybox > h2:last-child, .greybox > h3:last-child, .greybox > h4:last-child':
+          {
+            marginBottom: '0',
+          },
       });
     }),
   ],

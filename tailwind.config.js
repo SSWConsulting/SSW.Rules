@@ -95,11 +95,51 @@ module.exports = {
           color: theme('colors.ssw.red'),
           fontWeight: theme('fontWeight.semibold'),
         },
-        '.greybox > h1:first-child, .greybox > h2:first-child, .greybox > h3:first-child, .greybox > h4:first-child':
+        '.greybox > h1:first-child, .greybox > h2:first-child, .greybox > h3:first-child, .greybox > h4:first-child, .greybox > h5:first-child, .greybox > h6:first-child':
           {
             marginTop: '0',
           },
-        '.greybox > h1:last-child, .greybox > h2:last-child, .greybox > h3:last-child, .greybox > h4:last-child':
+        '.greybox > h1:last-child, .greybox > h2:last-child, .greybox > h3:last-child, .greybox > h4:last-child, .greybox > h5:last-child, .greybox > h6:last-child':
+          {
+            marginBottom: '0',
+          },
+        '.info > h1:first-child, .info > h2:first-child, .info > h3:first-child, .info > h4:first-child, .info > h5:first-child, .info > h6:first-child':
+          {
+            marginTop: '0',
+          },
+        '.info > h1:last-child, .info > h2:last-child, .info > h3:last-child, .info > h4:last-child, .info > h5:last-child, .info > h6:last-child':
+          {
+            marginBottom: '0',
+          },
+        '.hightlight > h1:first-child, .hightlight > h2:first-child, .hightlight > h3:first-child, .hightlight > h4:first-child, .hightlight > h5:first-child, .hightlight > h6:first-child':
+          {
+            marginTop: '0',
+          },
+        '.hightlight > h1:last-child, .hightlight > h2:last-child, .hightlight > h3:last-child, .hightlight > h4:last-child, .hightlight > h5:last-child, .hightlight > h6:last-child':
+          {
+            marginBottom: '0',
+          },
+        '.china > h1:first-child, .china > h2:first-child, .china > h3:first-child, .china > h4:first-child, .china > h5:first-child, .china > h6:first-child':
+          {
+            marginTop: '0',
+          },
+        '.china > h1:last-child, .china > h2:last-child, .china > h3:last-child, .china > h4:last-child, .china > h5:last-child, .china > h6:last-child':
+          {
+            marginBottom: '0',
+          },
+        '.codeauditor > h1:first-child, .codeauditor > h2:first-child, .codeauditor > h3:first-child, .codeauditor > h4:first-child, .codeauditor > h5:first-child, .codeauditor > h6:first-child':
+          {
+            marginTop: '0',
+          },
+        '.codeauditor > h1:last-child, .codeauditor > h2:last-child, .codeauditor > h3:last-child, .codeauditor > h4:last-child, .codeauditor > h5:last-child, .codeauditor > h6:last-child':
+          {
+            marginBottom: '0',
+          },
+        '.todo > h1:first-child, .todo > h2:first-child, .todo > h3:first-child, .todo > h4:first-child, .todo > h5:first-child, .todo > h6:first-child':
+          {
+            marginTop: '0',
+          },
+        '.todo > h1:last-child, .todo > h2:last-child, .todo > h3:last-child, .todo > h4:last-child, .todo > h5:last-child, .todo > h6:last-child':
           {
             marginBottom: '0',
           },

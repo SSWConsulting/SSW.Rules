@@ -111,11 +111,11 @@ module.exports = {
           {
             marginBottom: '0',
           },
-        '.hightlight > h1:first-child, .hightlight > h2:first-child, .hightlight > h3:first-child, .hightlight > h4:first-child, .hightlight > h5:first-child, .hightlight > h6:first-child':
+        '.highlight > h1:first-child, .highlight > h2:first-child, .highlight > h3:first-child, .highlight > h4:first-child, .highlight > h5:first-child, .highlight > h6:first-child':
           {
             marginTop: '0',
           },
-        '.hightlight > h1:last-child, .hightlight > h2:last-child, .hightlight > h3:last-child, .hightlight > h4:last-child, .hightlight > h5:last-child, .hightlight > h6:last-child':
+        '.highlight > h1:last-child, .highlight > h2:last-child, .highlight > h3:last-child, .highlight > h4:last-child, .highlight > h5:last-child, .highlight > h6:last-child':
           {
             marginBottom: '0',
           },

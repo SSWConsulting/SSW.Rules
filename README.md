@@ -80,3 +80,16 @@ Merging changes to **main** on this repo will trigger:
 
 ![image](https://github.com/user-attachments/assets/537ff78a-7e3c-4080-9038-e8ab0c90cab8)
 **Figure: Sample of the Example Rule**
+
+### Updating and Syncing a Rule from Rules.Content
+Sometimes you might have to update a rule markdown file to test your latest feature, such as changing the background color of a greybox.
+To update specific markdown components, follow these steps:
+1. Access the `sample-content` branch:
+- Visit [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.Content)
+- Switch to the `sample-content` branch.
+2. Edit the Rule:
+- Locate the rule you want to modify in the `sample-content` branch.
+3. Test Your Changes Locally:
+- Open your local instance of SSW.Rules, usually in VS Code.
+- Build the project using the following commands: `yarn clean` and then `yarn dev`
+- Open your local instance in your browser and navigate to the edited rule to see your changes.

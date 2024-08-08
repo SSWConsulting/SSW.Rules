@@ -50,7 +50,76 @@ module.exports = {
   },
   plugins: [
     plugin(function ({ addUtilities, theme }) {
+      const headingStyles = {
+        marginBottom: theme('margin.heading'),
+        marginTop: theme('margin.heading'),
+        fontWeight: theme('fontWeight.semibold'),
+        lineHeight: theme('lineHeight.heading'),
+      };
+
+      const zeroMarginStyles = {
+        marginTop: '0',
+        marginBottom: '0',
+      };
+
+      const headingSizes = {
+        h1: theme('fontSize.4xl'),
+        h2: theme('fontSize.3xl'),
+        h3: theme('fontSize.2xl'),
+        h4: theme('fontSize.xl'),
+        h5: theme('fontSize.lg'),
+        h6: theme('fontSize.base'),
+      };
+
+      const headingColors = {
+        h1: theme('colors.ssw.red'),
+        h2: theme('colors.ssw.black'),
+        h3: theme('colors.ssw.black'),
+        h4: theme('colors.ssw.black'),
+        h5: theme('colors.ssw.black'),
+        h6: theme('colors.ssw.black'),
+      };
+
+      const commonUtilities = {};
+
+      Object.keys(headingSizes).forEach((tag) => {
+        commonUtilities[tag] = {
+          ...headingStyles,
+          fontSize: headingSizes[tag],
+          color: headingColors[tag],
+        };
+        commonUtilities[`${tag} strong`] = {
+          color: theme('colors.ssw.red'),
+          fontWeight: theme('fontWeight.semibold'),
+        };
+      });
+
+      const containers = [
+        '.greybox',
+        '.info',
+        '.highlight',
+        '.china',
+        '.codeauditor',
+        '.todo',
+      ];
+
+      containers.forEach((container) => {
+        commonUtilities[`${container} > h1:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h1:last-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h2:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h2:last-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h3:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h3:last-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h4:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h4:last-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h5:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h5:last-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h6:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h6:last-child`] = zeroMarginStyles;
+      });
+
       addUtilities({
+        ...commonUtilities,
         '.hide-scrollbar': {
           'max-height': '44rem',
           'scrollbar-width': 'none',
@@ -61,88 +130,6 @@ module.exports = {
             'linear-gradient(to bottom, transparent, black 8px, black calc(100% - 10px), transparent), linear-gradient(black, black)',
           'mask-size': '100% 100%, 0 100%',
         },
-        'h1, h2, h3, h4, h5, h6': {
-          marginBottom: theme('margin.heading'),
-          marginTop: theme('margin.heading'),
-          fontWeight: theme('fontWeight.semibold'),
-          lineHeight: theme('lineHeight.heading'),
-        },
-        h1: {
-          fontSize: theme('fontSize.4xl'),
-          color: theme('colors.ssw.red'),
-        },
-        h2: {
-          fontSize: theme('fontSize.3xl'),
-          color: theme('colors.ssw.black'),
-        },
-        h3: {
-          fontSize: theme('fontSize.2xl'),
-          color: theme('colors.ssw.black'),
-        },
-        h4: {
-          fontSize: theme('fontSize.xl'),
-          color: theme('colors.ssw.black'),
-        },
-        h5: {
-          fontSize: theme('fontSize.lg'),
-          color: theme('colors.ssw.black'),
-        },
-        h6: {
-          fontSize: theme('fontSize.base'),
-          color: theme('colors.ssw.black'),
-        },
-        'h2 strong, h3 strong, h4 strong, h5 strong, h6 strong': {
-          color: theme('colors.ssw.red'),
-          fontWeight: theme('fontWeight.semibold'),
-        },
-        '.greybox > h1:first-child, .greybox > h2:first-child, .greybox > h3:first-child, .greybox > h4:first-child, .greybox > h5:first-child, .greybox > h6:first-child':
-          {
-            marginTop: '0',
-          },
-        '.greybox > h1:last-child, .greybox > h2:last-child, .greybox > h3:last-child, .greybox > h4:last-child, .greybox > h5:last-child, .greybox > h6:last-child':
-          {
-            marginBottom: '0',
-          },
-        '.info > h1:first-child, .info > h2:first-child, .info > h3:first-child, .info > h4:first-child, .info > h5:first-child, .info > h6:first-child':
-          {
-            marginTop: '0',
-          },
-        '.info > h1:last-child, .info > h2:last-child, .info > h3:last-child, .info > h4:last-child, .info > h5:last-child, .info > h6:last-child':
-          {
-            marginBottom: '0',
-          },
-        '.highlight > h1:first-child, .highlight > h2:first-child, .highlight > h3:first-child, .highlight > h4:first-child, .highlight > h5:first-child, .highlight > h6:first-child':
-          {
-            marginTop: '0',
-          },
-        '.highlight > h1:last-child, .highlight > h2:last-child, .highlight > h3:last-child, .highlight > h4:last-child, .highlight > h5:last-child, .highlight > h6:last-child':
-          {
-            marginBottom: '0',
-          },
-        '.china > h1:first-child, .china > h2:first-child, .china > h3:first-child, .china > h4:first-child, .china > h5:first-child, .china > h6:first-child':
-          {
-            marginTop: '0',
-          },
-        '.china > h1:last-child, .china > h2:last-child, .china > h3:last-child, .china > h4:last-child, .china > h5:last-child, .china > h6:last-child':
-          {
-            marginBottom: '0',
-          },
-        '.codeauditor > h1:first-child, .codeauditor > h2:first-child, .codeauditor > h3:first-child, .codeauditor > h4:first-child, .codeauditor > h5:first-child, .codeauditor > h6:first-child':
-          {
-            marginTop: '0',
-          },
-        '.codeauditor > h1:last-child, .codeauditor > h2:last-child, .codeauditor > h3:last-child, .codeauditor > h4:last-child, .codeauditor > h5:last-child, .codeauditor > h6:last-child':
-          {
-            marginBottom: '0',
-          },
-        '.todo > h1:first-child, .todo > h2:first-child, .todo > h3:first-child, .todo > h4:first-child, .todo > h5:first-child, .todo > h6:first-child':
-          {
-            marginTop: '0',
-          },
-        '.todo > h1:last-child, .todo > h2:last-child, .todo > h3:last-child, .todo > h4:last-child, .todo > h5:last-child, .todo > h6:last-child':
-          {
-            marginBottom: '0',
-          },
       });
     }),
   ],

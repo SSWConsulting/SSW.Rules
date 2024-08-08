@@ -31,8 +31,8 @@ This is a Gatsby generated site pulling data from:
 1. Branch off main for your PBI
 2. Install the recommended extensions if using VS Code
 3. Do your work
-4. Run the site in development mode by `yarn develop` (.env.development is required for this step) it takes a while to build all the rules
-   If you have issues, run `yarn clean` then `yarn develop`
+4. Run the site in development mode by `yarn dev` (.env.development is required for this step) it takes a while to build all the rules
+   If you have issues, run `yarn clean` then `yarn dev`
 5. Commit code and push
 6. Raise a PR
 7. Get it merged!

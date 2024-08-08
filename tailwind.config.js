@@ -50,7 +50,76 @@ module.exports = {
   },
   plugins: [
     plugin(function ({ addUtilities, theme }) {
+      const headingStyles = {
+        marginBottom: theme('margin.heading'),
+        marginTop: theme('margin.heading'),
+        fontWeight: theme('fontWeight.semibold'),
+        lineHeight: theme('lineHeight.heading'),
+      };
+
+      const zeroMarginStyles = {
+        marginTop: '0',
+        marginBottom: '0',
+      };
+
+      const headingSizes = {
+        h1: theme('fontSize.4xl'),
+        h2: theme('fontSize.3xl'),
+        h3: theme('fontSize.2xl'),
+        h4: theme('fontSize.xl'),
+        h5: theme('fontSize.lg'),
+        h6: theme('fontSize.base'),
+      };
+
+      const headingColors = {
+        h1: theme('colors.ssw.red'),
+        h2: theme('colors.ssw.black'),
+        h3: theme('colors.ssw.black'),
+        h4: theme('colors.ssw.black'),
+        h5: theme('colors.ssw.black'),
+        h6: theme('colors.ssw.black'),
+      };
+
+      const commonUtilities = {};
+
+      Object.keys(headingSizes).forEach((tag) => {
+        commonUtilities[tag] = {
+          ...headingStyles,
+          fontSize: headingSizes[tag],
+          color: headingColors[tag],
+        };
+        commonUtilities[`${tag} strong`] = {
+          color: theme('colors.ssw.red'),
+          fontWeight: theme('fontWeight.semibold'),
+        };
+      });
+
+      const containers = [
+        '.greybox',
+        '.info',
+        '.highlight',
+        '.china',
+        '.codeauditor',
+        '.todo',
+      ];
+
+      containers.forEach((container) => {
+        commonUtilities[`${container} > h1:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h1:last-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h2:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h2:last-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h3:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h3:last-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h4:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h4:last-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h5:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h5:last-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h6:first-child`] = zeroMarginStyles;
+        commonUtilities[`${container} > h6:last-child`] = zeroMarginStyles;
+      });
+
       addUtilities({
+        ...commonUtilities,
         '.hide-scrollbar': {
           'max-height': '44rem',
           'scrollbar-width': 'none',
@@ -60,40 +129,6 @@ module.exports = {
           'mask-image':
             'linear-gradient(to bottom, transparent, black 8px, black calc(100% - 10px), transparent), linear-gradient(black, black)',
           'mask-size': '100% 100%, 0 100%',
-        },
-        'h1, h2, h3, h4, h5, h6': {
-          marginBottom: theme('margin.heading'),
-          marginTop: theme('margin.heading'),
-          fontWeight: theme('fontWeight.semibold'),
-          lineHeight: theme('lineHeight.heading'),
-        },
-        h1: {
-          fontSize: theme('fontSize.4xl'),
-          color: theme('colors.ssw.red'),
-        },
-        h2: {
-          fontSize: theme('fontSize.3xl'),
-          color: theme('colors.ssw.black'),
-        },
-        h3: {
-          fontSize: theme('fontSize.2xl'),
-          color: theme('colors.ssw.black'),
-        },
-        h4: {
-          fontSize: theme('fontSize.xl'),
-          color: theme('colors.ssw.black'),
-        },
-        h5: {
-          fontSize: theme('fontSize.lg'),
-          color: theme('colors.ssw.black'),
-        },
-        h6: {
-          fontSize: theme('fontSize.base'),
-          color: theme('colors.ssw.black'),
-        },
-        'h2 strong, h3 strong, h4 strong, h5 strong, h6 strong': {
-          color: theme('colors.ssw.red'),
-          fontWeight: theme('fontWeight.semibold'),
         },
       });
     }),

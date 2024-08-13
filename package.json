@@ -32,7 +32,7 @@
     "classnames": "^2.5.1",
     "core-js": "^3.38.0",
     "date-fns": "^2.30.0",
-    "decap-cms-app": "3.1.11",
+    "decap-cms-app": "3.2.1",
     "directory-named-webpack-plugin": "^4.1.0",
     "favicons": "^6.2.2",
     "gatsby": "5.13.7",

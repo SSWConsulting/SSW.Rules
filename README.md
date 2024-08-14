@@ -71,7 +71,7 @@ This is a Gatsby generated site pulling data from:
 > Rules repository lives here: https://github.com/SSWConsulting/SSW.Rules.Content
 
 Merging changes to **main** on this repo will trigger:
-- a build/release of the **main** branch in Staging [(https://staging.ssw.com.au/rules/)](https://tfs365.com/rules or check the [latest staging workflow](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-staging.yml) for the url).
+- a build/release of the **main** branch in Staging [https://staging.ssw.com.au/rules/](https://tfs365.com/rules) or check the [latest staging workflow](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-staging.yml) for the url).
 - a build/release of the **release** branch Production (https://www.ssw.com.au/rules)
 
 ### Example Rule

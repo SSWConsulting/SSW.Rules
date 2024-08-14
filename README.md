@@ -60,7 +60,7 @@ This is a Gatsby generated site pulling data from:
 
 ### Builds
 - Changes made to http://github.com/SSWConsulting/SSW.Rules.Content (i.e. rule changes) trigger builds that deploy:
-  - **main** to the **staging** site: https://tfs365.com/rules or check the [latest staging workflow](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-staging.yml) for the url
+  - **main** to the **staging** - check the [latest staging workflow](https://github.com/SSWConsulting/SSW.Rules/deployments/staging) for the url
   - latest **release/xx** to the **production** site: https://www.ssw.com.au/rules
   
 - Branching off **main** to **release/xx**, or making changes to **release/xx** will build and deploy to the **production** site: https://www.ssw.com.au/rules
@@ -71,7 +71,7 @@ This is a Gatsby generated site pulling data from:
 > Rules repository lives here: https://github.com/SSWConsulting/SSW.Rules.Content
 
 Merging changes to **main** on this repo will trigger:
-- a build/release of the **main** branch in Staging [https://staging.ssw.com.au/rules/](https://tfs365.com/rules) or check the [latest staging workflow](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-staging.yml) for the url).
+- a build/release of the **main** branch in Staging - check the [latest staging workflow](https://github.com/SSWConsulting/SSW.Rules/deployments/staging) for the url
 - a build/release of the **release** branch Production (https://www.ssw.com.au/rules)
 
 ### Example Rule

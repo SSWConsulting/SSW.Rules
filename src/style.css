@@ -361,15 +361,6 @@ div.youtube-playlist li {
   justify-content: space-between
 }
 
-/*.blockquote {
-  font-style: italic;
-  padding: .5rem 1rem;
-  background-color: #eee;
-  border-left: 4px solid #cc4141;
-  border-radius: 0 .25rem .25rem 0;
-  margin: 1rem 0;
-}*/
-
 .rule-title {
   font-weight: bold;;
   padding: .5rem 1rem;
@@ -378,11 +369,6 @@ div.youtube-playlist li {
   border-radius: 0 .25rem .25rem 0;
   margin: 1rem 0;
   @apply text-ssw-black;
-}
-
-.blockquote p {
-  margin-top: .5rem;
-  margin-bottom: .5rem;
 }
 
 pre {
@@ -476,14 +462,7 @@ pre {
   margin-bottom: 20px;
   border: 1px #cc4141 solid;
 }
-
-.greybox {
-  padding: 1rem 1.5rem;
-  background-color: #eee;
-  width: 100%;
-  margin-bottom: .5rem;
-}
-
+  
 .rule-content .no-border img {
   border: none;
   outline: none;
@@ -499,10 +478,6 @@ pre {
   margin: 0.5rem 0 6px;
   line-height: initial;
   position: relative;
-}
-
-.greybox p:last-child, .greybox ul:last-child, .highlight p:last-child, .info p:last-child, .china p:last-child, .codeauditor p:last-child, .todo p:last-child, blockquote p:last-child{
-  margin-bottom:0;
 }
 
 .custom-control-inline {
@@ -685,6 +660,10 @@ blockquote p:first-child:before {
 
 blockquote p:after {
   content: no-close-quote;
+}
+
+blockquote :last-child {
+  margin-bottom:0;
 }
 
 /* Bootstrap correction 
@@ -872,21 +851,6 @@ blockquote p:after {
 .rule-content figure{display:table}
 .rule-content figcaption{caption-side:bottom}
 
-.rule-content figure.greybox {
-  display: block;
-}
-
-.rule-content figure.greybox div {
-  padding: .5rem;
-  margin: 0;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-}
-
-.rule-content figure.greybox div p:last-child {
-  margin-bottom: 0;
-}
-
 .rule-content ul, .rule-content ol, .rule-category-top ul, .rule-category-top ol {
   margin-bottom: 1rem;
   padding-inline-start: 2rem;
@@ -1072,59 +1036,69 @@ div.bad-example {
   text-decoration: none;
 }
 
-.rule-content .highlight, .rule-content p.highlight, .rule-content div.highlight {
-  display: table;
+/* BOXES */
+
+.greybox, .highlight, .todo, .info, .china, .codeauditor {
   padding: 1rem;
-  margin: 0 0 1rem;
+  width: 100%;
+  margin: .5rem 0;
+  display: inline-block;
+}
+
+.greybox {
+  background-color: #eee;
+}
+
+.highlight {
   background-color: yellow;
   border: 1px solid #ccc;
 }
 
-.rule-content .todo, .rule-content p.todo, .rule-content div.todo {
+.todo {
   color: red;
   font-weight: bold;
-  padding: 1rem;
-  display: table;
-  margin: 1rem 0;
   border: 1px solid red;
 }
-
-.rule-content .info:before {
-  content: "\f05a ";
-  font-family: FontAwesome;
-  font-size: 2.5rem;
-  @apply text-ssw-red; 
-  float: left;
-  line-height: normal;
-  margin-right: 1rem;
-}
-
-.rule-content .codeauditor:before {
-  content: "\f121 ";
-  font-family: FontAwesome;
-  font-size: 2.5rem;
-  @apply text-ssw-red; 
-  float: left;
-  line-height: normal;
-  margin-right: 1rem;
-}
-
-.rule-content .info, .rule-content .china, .rule-content .codeauditor {
-  display: block;
-  padding: 1rem;
-  margin: 1rem 0;
-  max-width: 100%;
-  min-height: 4.5rem;
+  
+.info, .china, .codeauditor {
   border: 1px solid #ccc;
+  display: flex;
+}
+  
+.greybox :first-child, .highlight :first-child, .info :first-child, .china :first-child, .codeauditor :first-child, .todo :first-child, blockquote :first-child {
+  margin-top:0;
 }
 
-.rule-content .china:before {
-  content: url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/china-flag-icon.png);
+.greybox :last-child, .highlight :last-child, .info :last-child, .china :last-child, .codeauditor :last-child, .todo :last-child {
+  margin-bottom:0;
+}
+
+.info:before, .codeauditor:before, .china:before {
   margin-right: 1rem;
-  padding-top: 0.15rem;
-  float: left;
 }
 
+.info:before, .codeauditor:before {
+  line-height: initial;
+  font-family: FontAwesome;
+  font-size: 2.5rem;
+  @apply text-ssw-red; 
+}
+  
+.info:before {
+  content: "\f05a ";
+}
+
+.codeauditor:before {
+  content: "\f121 ";
+}
+
+.china:before {
+  content: url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/china-flag-icon.png);
+  padding-top: 0.25rem;
+}
+
+/* END BOXES */
+  
 .secret-content-heading h4 {
   bottom: 0;
   margin-bottom: 1rem;
@@ -1144,7 +1118,7 @@ div.bad-example {
   line-height: normal;
 }
 
-.rule-content .secret-content {
+.secret-content {
   padding: 10px;
   margin: 0 0 20px;
   border: 1px dashed #999999;

@@ -16,18 +16,17 @@ This is a Gatsby generated site pulling data from:
 - Run `yarn install` to install packages
 - Create environment files (.env.development) based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
 
-> **Note**  
-> If you don't work at SSW or can't get on to the SSW.Rules team you can just add values to GITHUB_API_PAT and CONTENT_BRANCH  
-> For `GITHUB_API_PAT`, create a [PAT on GitHub](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (remove angle brackets <>)  
-> Set `CONTENT_BRANCH` to `sample-content-with-guid` (its a smaller version of the main content branch which will build much quicker 🙂)
-> Sometimes you might want to use `main` or create your own branch if you are testing something.
-
+> **Notes:**  
+> * If you don't work at SSW or can't get on to the SSW.Rules team you can just add values to GITHUB_API_PAT and CONTENT_BRANCH  
+> * For `GITHUB_API_PAT`, create a [PAT on GitHub](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (remove angle brackets <>)  
+> * Set `CONTENT_BRANCH` to `sample-content-with-guid` (it's a smaller version of the main content branch which will build much quicker 🙂)
+> * Sometimes you might want to use `main` or create your own branch if you are testing something.
 
 ### Development
 1. Branch off main for your PBI
 2. Install the recommended extensions if using VS Code
 3. Do your work
-4. Run the site in development mode by `yarn dev` (.env.development is required for this step) it takes a while to build all the rules
+4. Run the site in development mode by `yarn dev` (.env.development is required for this step) it takes a while to build all the rules    
    If you have issues, run `yarn clean` then `yarn dev`
 5. Commit code and push
 6. Raise a PR
@@ -45,7 +44,7 @@ This is a Gatsby generated site pulling data from:
 - Pushed to Production.
 - Use @Mention (**OR** Send email) to notify Product Owner/PBI stakeholder that PBI is done (be sure to include screenshots/done video as proof) 
 
-> <As per rule: [Done - Do you go beyond 'Done' and follow a 'Definition of Done'](https://rules.ssw.com.au/done-do-you-go-beyond-done-and-follow-a-definition-of-done)?>
+As per rule: [Done - Do you go beyond 'Done' and follow a 'Definition of Done'?](https://www.ssw.com.au/rules/done-do-you-go-beyond-done-and-follow-a-definition-of-done)
 
 ### Branches
 - Branching strategy is based off [Release Flow](https://docs.microsoft.com/en-us/azure/devops/learn/devops-at-microsoft/release-flow) 

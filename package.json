@@ -27,7 +27,7 @@
     "algoliasearch": "^4.24.0",
     "applicationinsights": "^3.2.1",
     "autoprefixer": "^10.4.20",
-    "axios": "1.7.3",
+    "axios": "1.7.4",
     "babel-eslint": "^10.1.0",
     "classnames": "^2.5.1",
     "core-js": "^3.38.0",

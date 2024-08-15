@@ -57,11 +57,6 @@ module.exports = {
         lineHeight: theme('lineHeight.heading'),
       };
 
-      const zeroMarginStyles = {
-        marginTop: '0',
-        marginBottom: '0',
-      };
-
       const headingSizes = {
         h1: theme('fontSize.4xl'),
         h2: theme('fontSize.3xl'),

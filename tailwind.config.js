@@ -57,11 +57,6 @@ module.exports = {
         lineHeight: theme('lineHeight.heading'),
       };
 
-      const zeroMarginStyles = {
-        marginTop: '0',
-        marginBottom: '0',
-      };
-
       const headingSizes = {
         h1: theme('fontSize.4xl'),
         h2: theme('fontSize.3xl'),
@@ -92,30 +87,6 @@ module.exports = {
           color: theme('colors.ssw.red'),
           fontWeight: theme('fontWeight.semibold'),
         };
-      });
-
-      const containers = [
-        '.greybox',
-        '.info',
-        '.highlight',
-        '.china',
-        '.codeauditor',
-        '.todo',
-      ];
-
-      containers.forEach((container) => {
-        commonUtilities[`${container} > h1:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h1:last-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h2:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h2:last-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h3:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h3:last-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h4:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h4:last-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h5:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h5:last-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h6:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h6:last-child`] = zeroMarginStyles;
       });
 
       addUtilities({

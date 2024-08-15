@@ -94,30 +94,6 @@ module.exports = {
         };
       });
 
-      const containers = [
-        '.greybox',
-        '.info',
-        '.highlight',
-        '.china',
-        '.codeauditor',
-        '.todo',
-      ];
-
-      containers.forEach((container) => {
-        commonUtilities[`${container} > h1:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h1:last-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h2:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h2:last-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h3:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h3:last-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h4:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h4:last-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h5:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h5:last-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h6:first-child`] = zeroMarginStyles;
-        commonUtilities[`${container} > h6:last-child`] = zeroMarginStyles;
-      });
-
       addUtilities({
         ...commonUtilities,
         '.hide-scrollbar': {

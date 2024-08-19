@@ -25,7 +25,7 @@ module.exports = {
   },
   parentSiteUrl: `https://www.ssw.com.au`,
   breadcrumbDefault: `SSW Rules`,
-  homepageTitle: `Secret Ingredients to Quality Software`,
+  homepageTitle: `Secret Ingredients to Quality Software (Open Source on GitHub)`,
   trailingSlash: `never`,
   titles: titles,
 };

@@ -1066,11 +1066,11 @@ div.bad-example {
 }
 
 .info > *, .china > *, .codeauditor > * {
-  padding-left: 3rem;
+  padding-left: 2.5rem;
 }
 
 .info > ol, .china > ol, .codeauditor > ol, .info > ul, .china > ul, .codeauditor > ul  {
-  padding-left: 5rem;
+  padding-left: 4rem;
 }
   
 .greybox :first-child, .highlight :first-child, .info :first-child, .china :first-child, .codeauditor :first-child, .todo :first-child, blockquote :first-child {
@@ -1082,14 +1082,13 @@ div.bad-example {
 }
 
 .info:before, .codeauditor:before, .china:before {
-  margin-right: 1rem;
   overlay: auto;
 }
 
 .info:before, .codeauditor:before {
   line-height: initial;
   font-family: FontAwesome;
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   @apply text-ssw-red; 
 }
   
@@ -1102,8 +1101,12 @@ div.bad-example {
 }
 
 .china:before {
-  content: url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/china-flag-icon.png);
-  padding-top: 0.25rem;
+  content: '';
+  display: inline-block;
+  background: url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/china-flag-icon.png) no-repeat;
+  width: 1.75rem;
+  height: 1.5rem;
+  background-size: contain;
 }
 
 /* END BOXES */

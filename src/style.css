@@ -839,10 +839,6 @@ blockquote :last-child {
   content: none !important;
 }
 
-.history a {
-  padding-left: 0.4rem;
-}
-
 .history a:after {
   font-family: FontAwesome;
   content: '\f1da' !important;

@@ -838,6 +838,10 @@ blockquote :last-child {
 .suggestion a:after {
   content: none !important;
 }
+  
+.history a {
+  display: inline-block;
+}
 
 .history a:after {
   font-family: FontAwesome;

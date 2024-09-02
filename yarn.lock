@@ -6658,7 +6658,7 @@ __metadata:
     algoliasearch: "npm:^4.24.0"
     applicationinsights: "npm:^3.2.1"
     autoprefixer: "npm:^10.4.20"
-    axios: "npm:1.7.3"
+    axios: "npm:1.7.7"
     babel-eslint: "npm:^10.1.0"
     classnames: "npm:^2.5.1"
     core-js: "npm:^3.38.0"
@@ -7702,14 +7702,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.7.3":
-  version: 1.7.3
-  resolution: "axios@npm:1.7.3"
+"axios@npm:1.7.7":
+  version: 1.7.7
+  resolution: "axios@npm:1.7.7"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: a18cbe559203efa05fb1fec2d1898e23bf6329bd2575784ee32aa11b5bbe1d54b9f472c49a261294125519cf62aa4fe5ef6e647bb7482eafc15bffe15ab314ce
+  checksum: 4499efc89e86b0b49ffddc018798de05fab26e3bf57913818266be73279a6418c3ce8f9e934c7d2d707ab8c095e837fc6c90608fb7715b94d357720b5f568af7
   languageName: node
   linkType: hard
 

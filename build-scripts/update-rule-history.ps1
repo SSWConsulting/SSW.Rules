@@ -59,9 +59,35 @@ $historyArray | Foreach-Object {
                 $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae<LINE>" --date=iso-strict -- $_
                 $createdDetails = $createdRecord -split "<LINE>"
 
+                # Read and parse Markdown file to set title, uri, and archived status
+                $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
+                $streamReader = New-Object System.IO.StreamReader -Arg $_, $utf8NoBomEncoding
+                $content = $streamReader.ReadToEnd()
+                $streamReader.Close()
+
+                $lines = $content -split "`n"
+                $title = ""
+                $uri = ""
+                $isArchived = $false
+
+                $titleLine = $lines | Where-Object { $_.StartsWith('title:') }
+                $title = $titleLine.Substring(6).Trim()
+
+                $uriLine = $lines | Where-Object { $_.Trim().StartsWith('uri:') }
+                $uri = $uriLine.Substring(4).Trim()
+
+                $archivedReasonLine = $lines | Where-Object { $_.Replace(' ', '').StartsWith('archivedreason:') }
+                if ($archivedReasonLine) {
+                    $archivedReason = $archivedReasonLine.Trim().Substring(15).Trim()
+                    $isArchived = $archivedReason -ne 'null' -and $archivedReason -ne ''
+                }
+
                 $filesProcessed.Add($_, 0)
                 $historyFileArray += @{
                     file = $($_)
+                    title = $title
+                    uri = $uri
+                    isArchived = $isArchived
                     lastUpdated = $lastUpdated
                     lastUpdatedBy = $lastUpdatedBy
                     lastUpdatedByEmail = $lastUpdatedByEmail

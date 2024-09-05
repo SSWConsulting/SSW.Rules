@@ -38,6 +38,8 @@ $historyChangeEntry = $listOfCommits -join "<LINE>"
 $historyArray = $historyChangeEntry -split "<HISTORY_ENTRY>"
 
 $commitSyncHash = "";
+$rulesContentFolder = ./SSW.Rules.Content/rules
+
 $historyArray | Foreach-Object {
     $historyEntry = $_ -split "<FILES_CHANGED>"
     $userDetails = $historyEntry[0] -split "<LINE>"
@@ -56,12 +58,13 @@ $historyArray | Foreach-Object {
         $fileArray | Where-Object {$_ -Match "^*.md" } | Foreach-Object {
             if(!$filesProcessed.ContainsKey($_))
             {
+                $fullPath = Join-Path $rulesContentFolder $_
                 $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae<LINE>" --date=iso-strict -- $_
                 $createdDetails = $createdRecord -split "<LINE>"
 
                 # Read and parse Markdown file to set title, uri, and archived status
                 $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
-                $streamReader = New-Object System.IO.StreamReader -Arg $_, $utf8NoBomEncoding
+                $streamReader = New-Object System.IO.StreamReader -Arg $fullPath, $utf8NoBomEncoding
                 $content = $streamReader.ReadToEnd()
                 $streamReader.Close()
 

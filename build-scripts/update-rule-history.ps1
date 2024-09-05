@@ -38,7 +38,7 @@ $historyChangeEntry = $listOfCommits -join "<LINE>"
 $historyArray = $historyChangeEntry -split "<HISTORY_ENTRY>"
 
 $commitSyncHash = "";
-$rulesContentFolder = ./SSW.Rules.Content/rules
+$rulesContentFolder = "./SSW.Rules.Content/rules"
 
 $historyArray | Foreach-Object {
     $historyEntry = $_ -split "<FILES_CHANGED>"

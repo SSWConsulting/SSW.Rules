@@ -114,7 +114,6 @@ $historyArray | Foreach-Object {
 
 if ($ShouldGenerateHistory) {
     #Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
-    Write-Host ""
     $historyFileContents = ConvertTo-Json $historyFileArray
     $Uri = $AzFunctionBaseUrl + '/api/UpdateRuleHistory'
     $Headers = @{'x-functions-key' = $UpdateRuleHistoryKey}

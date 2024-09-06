@@ -104,7 +104,7 @@ $historyArray | Foreach-Object {
                     echo $_
                 }
                 catch {
-                    continue
+                    Write-Output "Error processing file $_"
                 }
             }
         }
@@ -114,6 +114,7 @@ $historyArray | Foreach-Object {
 
 if ($ShouldGenerateHistory) {
     #Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
+    Write-Host ""
     $historyFileContents = ConvertTo-Json $historyFileArray
     $Uri = $AzFunctionBaseUrl + '/api/UpdateRuleHistory'
     $Headers = @{'x-functions-key' = $UpdateRuleHistoryKey}

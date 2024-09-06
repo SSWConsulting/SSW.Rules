@@ -1,0 +1,23 @@
+name: Staging - build and deploy
+
+on:
+  push:
+    branches:
+      - 1438-fix-widget-data
+  workflow_dispatch:
+    inputs:
+      should_generate_commit_data:
+        type: boolean
+        description: 'Generate commit data'
+        default: true
+
+jobs:
+
+  build:
+    name: Build
+    uses: ./.github/workflows/template-build.yml
+    with:
+      branch_name: ${{ github.ref }}
+      environment: staging
+      should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data == 'true' }}
+    secrets: inherit

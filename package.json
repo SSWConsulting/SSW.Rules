@@ -96,7 +96,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@playwright/test": "^1.46.0",
+    "@playwright/test": "^1.47.0",
     "@types/node": "^20.14.14",
     "eslint": "^8.57.0",
     "eslint-plugin-jsx-a11y": "^6.9.0",

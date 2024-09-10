@@ -121,7 +121,7 @@ jobs:
           DEPLOYMENT_URL: https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-production.yml
           VERSION_DEPLOYED: ${{ github.run_number }}
           APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
-          CONTENT_BRANCH: ${{ vars.CONTENT_BRANCH }}
+          CONTENT_BRANCH: baba-fix-workflow-failure
           API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}
           AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
           AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}

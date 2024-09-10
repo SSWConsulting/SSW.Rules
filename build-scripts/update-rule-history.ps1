@@ -10,9 +10,9 @@ param (
 )
 
 if ($ShouldGenerateHistory -eq $false) {
-    echo "Skipping history generation"
+    Write-Output "Skipping history generation"
 } else {
-    echo "Generating history"
+    Write-Output "Generating history"
 }
 
 
@@ -101,7 +101,7 @@ $historyArray | Foreach-Object {
                         createdByEmail = $createdDetails[2] ?? $lastUpdatedByEmail
                     }
 
-                    echo $_
+                    Write-Output $_
                 }
                 catch {
                     Write-Output "Error processing file $_"
@@ -128,11 +128,11 @@ if(![string]::IsNullOrWhiteSpace($commitSyncHash))
     $Body = @{
         commitHash  = $commitSyncHash
     }
-    $Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $Body -Headers $Headers
+    $Result = Invoke-WebRequest -Uri $Uri -Method Post -Body $Body -Headers $Headers
 }
 
 if ($ShouldGenerateHistory) {
-    Write-Output $historyFileContents
+    echo $historyFileContents
 }
 
-Write-Output $commitSyncHash
+echo $commitSyncHash

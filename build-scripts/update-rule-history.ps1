@@ -10,9 +10,9 @@ param (
 )
 
 if ($ShouldGenerateHistory -eq $false) {
-    echo "Skipping history generation"
+    Write-Output "Skipping history generation"
 } else {
-    echo "Generating history"
+    Write-Output "Generating history"
 }
 
 
@@ -38,6 +38,8 @@ $historyChangeEntry = $listOfCommits -join "<LINE>"
 $historyArray = $historyChangeEntry -split "<HISTORY_ENTRY>"
 
 $commitSyncHash = "";
+$rulesContentFolder = "./SSW.Rules.Content/"
+
 $historyArray | Foreach-Object {
     $historyEntry = $_ -split "<FILES_CHANGED>"
     $userDetails = $historyEntry[0] -split "<LINE>"
@@ -56,21 +58,54 @@ $historyArray | Foreach-Object {
         $fileArray | Where-Object {$_ -Match "^*.md" } | Foreach-Object {
             if(!$filesProcessed.ContainsKey($_))
             {
-                $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae<LINE>" --date=iso-strict -- $_
-                $createdDetails = $createdRecord -split "<LINE>"
+                try {
+                    $fullPath = Join-Path $rulesContentFolder $_
+                    $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae<LINE>" --date=iso-strict -- $_
+                    $createdDetails = $createdRecord -split "<LINE>"
+    
+                    # Read and parse Markdown file to set title, uri, and archived status
+                    $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
+                    $streamReader = New-Object System.IO.StreamReader -Arg $fullPath, $utf8NoBomEncoding
+                    $content = $streamReader.ReadToEnd()
+                    $streamReader.Close()
+    
+                    $lines = $content -split "`n"
+                    $title = ""
+                    $uri = ""
+                    $isArchived = $false
+    
+                    $titleLine = $lines | Where-Object { $_.StartsWith('title:') }
+                    $title = $titleLine.Substring(6).Trim()
+    
+                    $uriLine = $lines | Where-Object { $_.Trim().StartsWith('uri:') }
+                    $uri = $uriLine.Substring(4).Trim()
+    
+                    $archivedReasonLine = $lines | Where-Object { $_.Replace(' ', '').StartsWith('archivedreason:') }
+                    if ($archivedReasonLine) {
+                        $archivedReason = $archivedReasonLine.Trim().Substring(15).Trim()
+                        $isArchived = $archivedReason -ne 'null' -and $archivedReason -ne ''
+                    }
 
-                $filesProcessed.Add($_, 0)
-                $historyFileArray += @{
-                    file = $($_)
-                    lastUpdated = $lastUpdated
-                    lastUpdatedBy = $lastUpdatedBy
-                    lastUpdatedByEmail = $lastUpdatedByEmail
-                    created = $createdDetails[0] ?? $lastUpdated
-                    createdBy = $createdDetails[1] ?? $lastUpdatedBy
-                    createdByEmail = $createdDetails[2] ?? $lastUpdatedByEmail
+                    $filesProcessed.Add($_, 0)
+
+                    $historyFileArray += @{
+                        file = $($_)
+                        title = $title
+                        uri = $uri
+                        isArchived = $isArchived
+                        lastUpdated = $lastUpdated
+                        lastUpdatedBy = $lastUpdatedBy
+                        lastUpdatedByEmail = $lastUpdatedByEmail
+                        created = $createdDetails[0] ?? $lastUpdated
+                        createdBy = $createdDetails[1] ?? $lastUpdatedBy
+                        createdByEmail = $createdDetails[2] ?? $lastUpdatedByEmail
+                    }
+
+                    Write-Output $_
                 }
-
-                echo $_
+                catch {
+                    Write-Output "Error processing file $_"
+                }
             }
         }
     }

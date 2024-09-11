@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
     inputs:
+      content_branch:
+        type: string
+        description: 'Branch to deploy'
+        default: 'main'
       should_generate_commit_data:
         type: boolean
         description: 'Generate commit data'
@@ -20,6 +24,7 @@ jobs:
       branch_name: ${{ github.ref }}
       environment: staging
       should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data == 'true' }}
+      content_branch: ${{ inputs.content_branch }}
     secrets: inherit
 
   deploy:

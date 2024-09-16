@@ -1063,6 +1063,7 @@ div.bad-example {
   
 .info, .china, .codeauditor {
   border: 1px solid #ccc;
+  min-height: 4.5rem;
 }
 
 .info > *, .china > *, .codeauditor > * {
@@ -1083,22 +1084,23 @@ div.bad-example {
 
 .info:before, .codeauditor:before, .china:before {
   margin-right: 1rem;
-  overlay: auto;
+  position: fixed;
 }
 
 .info:before, .codeauditor:before {
   line-height: initial;
   font-family: FontAwesome;
-  font-size: 2.5rem;
   @apply text-ssw-red; 
 }
   
 .info:before {
   content: "\f05a ";
+  font-size: 2.5rem;
 }
 
 .codeauditor:before {
   content: "\f121 ";
+  font-size: 2rem;
 }
 
 .china:before {

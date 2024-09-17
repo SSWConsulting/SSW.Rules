@@ -1074,7 +1074,7 @@ div.bad-example {
   padding-left: 5rem;
 }
   
-.greybox :first-child, .highlight :first-child, .info :first-child, .china :first-child, .codeauditor :first-child, .todo :first-child, blockquote :first-child {
+.greybox > :first-child, .highlight > :first-child, .info > :first-child, .china > :first-child, .codeauditor > :first-child, .todo > :first-child, blockquote > :first-child {
   margin-top:0;
 }
 

@@ -838,9 +838,9 @@ blockquote :last-child {
 .suggestion a:after {
   content: none !important;
 }
-
+  
 .history a {
-  padding-left: 0.4rem;
+  display: inline-block;
 }
 
 .history a:after {
@@ -1063,6 +1063,7 @@ div.bad-example {
   
 .info, .china, .codeauditor {
   border: 1px solid #ccc;
+  min-height: 4.5rem;
 }
 
 .info > *, .china > *, .codeauditor > * {
@@ -1073,7 +1074,7 @@ div.bad-example {
   padding-left: 4rem;
 }
   
-.greybox :first-child, .highlight :first-child, .info :first-child, .china :first-child, .codeauditor :first-child, .todo :first-child, blockquote :first-child {
+.greybox > :first-child, .highlight > :first-child, .info > :first-child, .china > :first-child, .codeauditor > :first-child, .todo > :first-child, blockquote > :first-child {
   margin-top:0;
 }
 
@@ -1083,6 +1084,8 @@ div.bad-example {
 
 .info:before, .codeauditor:before, .china:before {
   overlay: auto;
+  margin-right: 1rem;
+  position: fixed;
 }
 
 .info:before, .codeauditor:before {
@@ -1094,10 +1097,12 @@ div.bad-example {
   
 .info:before {
   content: "\f05a ";
+  font-size: 2.5rem;
 }
 
 .codeauditor:before {
   content: "\f121 ";
+  font-size: 2rem;
 }
 
 .china:before {

@@ -159,7 +159,7 @@ const Rule = ({ data, location }) => {
                             data.history.nodes[0].lastUpdatedBy
                           )}
                         </strong>{' '}
-                        <span className="opacity-60">
+                        <span className="opacity-60 pr-1">
                           {formatDistance(
                             new Date(data.history.nodes[0].lastUpdated),
                             new Date()

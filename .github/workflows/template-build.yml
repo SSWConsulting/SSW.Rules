@@ -56,13 +56,6 @@ jobs:
             -UpdateRuleHistoryKey ${{ secrets.UPDATERULEHISTORYFUNCTIONKEY }} `
             -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
             -ShouldGenerateHistory ${{ inputs.should_generate_commit_data }}
-  
-      - name: Update Latest Rules
-        shell: pwsh
-        run: |
-          ./SSW.Rules/build-scripts/update-latest-rules.ps1 `
-            -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
-            -UpdateLatestRulesFunctionKey ${{ secrets.UPDATELATESTRULESFUNCTIONKEY }}
 
       - name: Get Rule History JSON
         shell: pwsh

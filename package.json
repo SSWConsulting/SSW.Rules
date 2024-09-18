@@ -87,6 +87,7 @@
     "ssw.megamenu": "4.6.2",
     "ssw.rules.widget": "^2.0.5",
     "svg-react-loader": "^0.4.6",
+    "tinacms": "^2.2.3",
     "webpack-assets-manifest": "5.2.1"
   },
   "devDependencies": {
@@ -97,7 +98,8 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@playwright/test": "^1.47.1",
-    "@types/node": "^20.16.5",
+    "@tinacms/cli": "^1.6.3",
+    "@types/node": "^22.5.5",
     "eslint": "^8.57.1",
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-prettier": "5.2.1",

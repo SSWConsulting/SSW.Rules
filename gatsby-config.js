@@ -26,6 +26,7 @@ module.exports = {
         includeInDevelopment: true,
       },
     },
+    // TODO: Remove when Decap is no longer relevant
     // {
     //   resolve: 'gatsby-plugin-decap-cms',
     //   options: {
@@ -80,13 +81,13 @@ module.exports = {
         path: `${__dirname}/static/history.json`,
       },
     },
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'content',
-        path: `${__dirname}/content`,
-      },
-    },
+    // {
+    //   resolve: 'gatsby-source-filesystem',
+    //   options: {
+    //     name: 'content',
+    //     path: `${__dirname}/content`,
+    //   },
+    // },
     'gatsby-plugin-sharp',
     {
       resolve: 'gatsby-transformer-remark',

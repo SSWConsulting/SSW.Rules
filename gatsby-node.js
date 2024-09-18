@@ -6,6 +6,7 @@ const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
 const axios = require('axios');
 const { createContentDigest } = require('gatsby-core-utils');
+const express = require('express');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
@@ -21,6 +22,11 @@ if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
 }
 
 let assetsManifest = {};
+
+//Required as per https://tina.io/docs/frameworks/gatsby/#allowing-static-adminindexhtml-file-in-dev-mode
+exports.onCreateDevServer = ({ app }) => {
+  app.use('/admin', express.static('public/admin'));
+};
 
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;

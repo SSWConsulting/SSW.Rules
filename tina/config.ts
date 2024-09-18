@@ -8,6 +8,9 @@ const branch =
   'main';
 
 export default defineConfig({
+  // Required as per https://tina.io/docs/frameworks/gatsby/#workaround-for-graphql-mismatch-issue
+  client: { skip: true },
+
   branch,
 
   // Get this from tina.io

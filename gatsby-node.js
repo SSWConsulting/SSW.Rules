@@ -23,11 +23,6 @@ if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
 
 let assetsManifest = {};
 
-//Required as per https://tina.io/docs/frameworks/gatsby/#allowing-static-adminindexhtml-file-in-dev-mode
-exports.onCreateDevServer = ({ app }) => {
-  app.use('/admin', express.static('public/admin'));
-};
-
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
   if (node.internal.type === 'MarkdownRemark') {
@@ -264,4 +259,9 @@ exports.sourceNodes = async ({ actions, createNodeId }) => {
 
     createNode(node);
   });
+};
+
+//Required as per https://tina.io/docs/frameworks/gatsby/#allowing-static-adminindexhtml-file-in-dev-mode
+exports.onCreateDevServer = ({ app }) => {
+  app.use('/admin', express.static('public/admin'));
 };

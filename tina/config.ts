@@ -1,4 +1,5 @@
 import { defineConfig } from 'tinacms';
+import { Rules } from './collections/rules';
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
@@ -51,6 +52,7 @@ export default defineConfig({
           },
         ],
       },
+      Rules,
     ],
   },
 });

@@ -17,7 +17,7 @@ export default defineConfig({
 
   branch,
 
-  localContentPath: '../../fork/SSW.Rules.Content',
+  localContentPath: `../${process.env.LOCAL_CONTENT_RELATIVE_PATH}`,
 
   build: {
     outputFolder: 'admin',

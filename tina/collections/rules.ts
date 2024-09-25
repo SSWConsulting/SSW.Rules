@@ -2,7 +2,7 @@ import { Collection } from "tinacms";
 
 export const Rules: Collection = {
   label: 'Rules',
-  name: 'rule',
+  name: 'rules',
   path: '/rules',
   format: 'md',
   fields: [

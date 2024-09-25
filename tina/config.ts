@@ -9,6 +9,9 @@ const branch =
   process.env.HEAD ||
   'main';
 
+const localContentPath =
+  process.env.LOCAL_CONTENT_RELATIVE_PATH || '../../SSW.Rules.Content';
+
 export default defineConfig({
   // Required as per https://tina.io/docs/frameworks/gatsby/#workaround-for-graphql-mismatch-issue
   client: { skip: true },
@@ -17,7 +20,7 @@ export default defineConfig({
 
   branch,
 
-  localContentPath: `../${process.env.LOCAL_CONTENT_RELATIVE_PATH}`,
+  localContentPath,
 
   build: {
     outputFolder: 'admin',
@@ -31,28 +34,6 @@ export default defineConfig({
   },
   // See docs on content modeling for more info on how to setup new content models: https://tina.io/docs/schema/
   schema: {
-    collections: [
-      {
-        name: 'post',
-        label: 'Posts',
-        path: '/posts',
-        fields: [
-          {
-            type: 'string',
-            name: 'title',
-            label: 'Title',
-            isTitle: true,
-            required: true,
-          },
-          {
-            type: 'rich-text',
-            name: 'body',
-            label: 'Body',
-            isBody: true,
-          },
-        ],
-      },
-      Rules,
-    ],
+    collections: [Rules],
   },
 });

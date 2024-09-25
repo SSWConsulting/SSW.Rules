@@ -81,13 +81,14 @@ module.exports = {
         path: `${__dirname}/static/history.json`,
       },
     },
-    // {
-    //   resolve: 'gatsby-source-filesystem',
-    //   options: {
-    //     name: 'content',
-    //     path: `${__dirname}/content`,
-    //   },
-    // },
+    // TODO: Keep an eye on this, it might be required
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'content',
+        path: `${__dirname}/content`,
+      },
+    },
     'gatsby-plugin-sharp',
     {
       resolve: 'gatsby-transformer-remark',

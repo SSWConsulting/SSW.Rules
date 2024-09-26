@@ -45,7 +45,7 @@ jobs:
           fetch-depth: 0
 
       - name: Record the latest SHA for the content repo
-        working-directory: SSW.Rules.Contenta
+        working-directory: SSW.Rules.Content
         run: |
           echo '### Content repo info! 🚀' >> $GITHUB_STEP_SUMMARY
           echo "Latest SHA: [$(git rev-parse HEAD)](https://github.com/SSWConsulting/SSW.Rules.Content/commit/$(git rev-parse HEAD))" >> $GITHUB_STEP_SUMMARY

@@ -8,6 +8,10 @@ param location string = resourceGroup().location
 ])
 param environmentName string
 
+@description('An override value for the storage account name')
+param customStorageAccountNames string = ''
+
+
 @allowed([
   'Standard_LRS'
   'Standard_GRS'
@@ -23,7 +27,9 @@ param indexDocumentPath string = 'index.html'
 @description('The path to the web error document.')
 param errorDocument404Path string = 'rules/404/index.html'
 
-var storageAccountName = substring('sarules${substring(environmentName, 0, 4)}${uniqueString(resourceGroup().id)}', 0, 24)
+var storageAccountName = substring('sarules${customStorageAccountNames}${substring(environmentName, 0, 4)}${uniqueString(resourceGroup().id)}', 0, 24)
+
+
 
 resource contributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
   scope: subscription()

@@ -7,6 +7,10 @@ on:
         type: string
         required: true
         description: 'The environment to deploy to'
+      storageAccountName:
+        type: string
+        required: false
+        description: 'A custom appendage for the storage account name'
 
 permissions:
   id-token: write
@@ -48,6 +52,7 @@ jobs:
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --template-file infra/main.bicep \
             --parameters \
+              storageAccountName=${{ inputs.storageAccountName }} \
               environmentName=${{ inputs.environment }} \
             --mode Incremental
       

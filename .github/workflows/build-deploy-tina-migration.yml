@@ -19,7 +19,7 @@ jobs:
     uses: ./.github/workflows/template-build.yml
     with:
       branch_name: tina/main
-      environment: tinacms
+      environment: staging
       customStorageAccountNames: 'tina'
       should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data == 'true' }}
     secrets: inherit

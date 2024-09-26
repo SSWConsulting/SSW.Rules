@@ -20,7 +20,6 @@ jobs:
     with:
       branch_name: tina/main
       environment: staging
-      customStorageAccountNames: 'tina'
       should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data == 'true' }}
     secrets: inherit
 
@@ -33,5 +32,5 @@ jobs:
     uses: ./.github/workflows/template-deploy.yml
     with:
       environment: staging
-      
+      storageAccountName: 'tina'
     secrets: inherit

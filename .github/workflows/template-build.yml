@@ -10,6 +10,10 @@ on:
         type: string
         required: true
         description: 'The environment to build for'
+      customStorageAccountNames: 
+        type: string
+        required: false
+        description: 'Custom storage account names for the environment' 
       should_generate_commit_data:
         type: boolean
         description: 'Generate commit data for rules history. You might want to skip this on large rules changes.'

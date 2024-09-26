@@ -7,7 +7,7 @@
   "scripts": {
     "build:dir": "mkdirp ./public/icons/",
     "build:favicons": "node scripts/favicons",
-    "build": "yarn run build:dir && yarn run build:favicons && gatsby build --prefix-paths --log-pages && yarn updateRelativePath",
+    "build": "tinacms build && yarn run build:dir && yarn run build:favicons && gatsby build --prefix-paths --log-pages && yarn updateRelativePath",
     "build:incremental": "gatsby build --prefix-paths --log-pages && yarn updateRelativePath",
     "devbuild": "gatsby clean && yarn run build:dir && yarn run build:favicons && gatsby build",
     "cleandev": "tinacms dev -c \"gatsby clean && gatsby develop\"",

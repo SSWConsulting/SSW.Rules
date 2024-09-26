@@ -3,7 +3,7 @@ name: Tina Migration - build and deploy
 on:
   push:
     branches:
-      - tina-migration
+    - tina/main
   workflow_dispatch:
     inputs:
       should_generate_commit_data:
@@ -18,7 +18,7 @@ jobs:
     name: Build
     uses: ./.github/workflows/template-build.yml
     with:
-      branch_name: tina-migration
+      branch_name: tina/main
       environment: tinacms
       should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data == 'true' }}
     secrets: inherit

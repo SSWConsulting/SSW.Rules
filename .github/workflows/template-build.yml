@@ -10,6 +10,10 @@ on:
         type: string
         required: true
         description: 'The environment to build for'
+      customStorageAccountNames: 
+        type: string
+        required: false
+        description: 'Custom storage account names for the environment' 
       should_generate_commit_data:
         type: boolean
         description: 'Generate commit data for rules history. You might want to skip this on large rules changes.'
@@ -41,7 +45,7 @@ jobs:
           fetch-depth: 0
 
       - name: Record the latest SHA for the content repo
-        working-directory: SSW.Rules.Content
+        working-directory: SSW.Rules.Contenta
         run: |
           echo '### Content repo info! 🚀' >> $GITHUB_STEP_SUMMARY
           echo "Latest SHA: [$(git rev-parse HEAD)](https://github.com/SSWConsulting/SSW.Rules.Content/commit/$(git rev-parse HEAD))" >> $GITHUB_STEP_SUMMARY

@@ -20,7 +20,7 @@ jobs:
     with:
       branch_name: tina/main
       environment: staging
-      should_generate_commit_data: ${{ 'false' }}
+      should_generate_commit_data: false 
     secrets: inherit
 
   deploy:

@@ -7,7 +7,7 @@ on:
         type: string
         required: true
         description: 'The environment to deploy to'
-      storageAccountName:
+      customStorageAccountName:
         type: string
         required: false
         description: 'A custom appendage for the storage account name'
@@ -52,7 +52,7 @@ jobs:
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --template-file infra/main.bicep \
             --parameters \
-              storageAccountName=${{ inputs.storageAccountName }} \
+              storageAccountName=${{ inputs.customStorageAccountName }} \
               environmentName=${{ inputs.environment }} \
             --mode Incremental
       
@@ -80,7 +80,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build
-          path: rules
+        path: rules
 
       - name: Azure Login
         uses: azure/login@v2

@@ -9,7 +9,7 @@ param location string = resourceGroup().location
 param environmentName string
 
 @description('An override value for the storage account name')
-param customStorageAccountNames string = ''
+param customStorageAccountName string = ''
 
 
 @allowed([
@@ -27,7 +27,7 @@ param indexDocumentPath string = 'index.html'
 @description('The path to the web error document.')
 param errorDocument404Path string = 'rules/404/index.html'
 
-var storageAccountName = substring('sarules${customStorageAccountNames}${substring(environmentName, 0, 4)}${uniqueString(resourceGroup().id)}', 0, 24)
+var storageAccountName = substring('sarules${customStorageAccountName}${substring(environmentName, 0, 4)}${uniqueString(resourceGroup().id)}', 0, 24)
 
 
 

@@ -32,5 +32,5 @@ jobs:
     uses: ./.github/workflows/template-deploy.yml
     with:
       environment: staging
-      storageAccountName: 'tina'
+      storageAccountName: tina
     secrets: inherit

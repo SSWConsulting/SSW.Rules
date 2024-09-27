@@ -7,7 +7,7 @@ const branch =
   process.env.GITHUB_BRANCH ||
   process.env.VERCEL_GIT_COMMIT_REF ||
   process.env.HEAD ||
-  'main';
+  'tina/sample-content';
 
 const localContentPath = process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined;
 const clientId = process.env.TINA_CLIENT_ID;

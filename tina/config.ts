@@ -10,12 +10,14 @@ const branch =
   'main';
 
 const localContentPath = process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined;
+const clientId = process.env.TINA_CLIENT_ID;
+const token = process.env.TINA_TOKEN;
 
 export default defineConfig({
   // Required as per https://tina.io/docs/frameworks/gatsby/#workaround-for-graphql-mismatch-issue
   client: { skip: true },
-  clientId: process.env.TINA_CLIENT_ID,
-  token: process.env.TINA_TOKEN,
+  clientId,
+  token,
 
   branch,
 

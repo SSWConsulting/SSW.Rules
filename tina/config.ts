@@ -9,8 +9,7 @@ const branch =
   process.env.HEAD ||
   'main';
 
-const localContentPath =
-  process.env.LOCAL_CONTENT_RELATIVE_PATH || '../../SSW.Rules.Content';
+const localContentPath = process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined;
 
 export default defineConfig({
   // Required as per https://tina.io/docs/frameworks/gatsby/#workaround-for-graphql-mismatch-issue

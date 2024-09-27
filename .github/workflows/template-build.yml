@@ -133,9 +133,10 @@ jobs:
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
 
       - name: Rename env file
+        # TinaCMS requires the .env file to be named .env
         run: |
-          mv .env.template .env.production
-          cat .env.production
+          mv .env.template .env
+          cat .env
 
       - name: Cache Gatsby .cache
         uses: actions/cache@v4

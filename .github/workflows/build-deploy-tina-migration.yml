@@ -18,7 +18,7 @@ jobs:
     name: Build
     uses: ./.github/workflows/template-build.yml
     with:
-      branch_name: tina/main
+      branch_name: ${{ github.ref }}
       environment: staging
       should_generate_commit_data: false 
     secrets: inherit

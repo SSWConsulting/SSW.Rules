@@ -90,9 +90,14 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
+
+
+var storageAccountPerms = empty(customStorageAccountNames) ? guid(resourceGroup().id, managedIdentity.id, contributorRoleDefinition.id) : guid(resourceGroup().id, managedIdentity.id, contributorRoleDefinition.id)
+
+
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   scope: storageAccount
-  name: guid(resourceGroup().id, managedIdentity.id, contributorRoleDefinition.id, storageAccount.id)
+  name: storageAccountPerms
   properties: {
     roleDefinitionId: contributorRoleDefinition.id
     principalId: managedIdentity.properties.principalId

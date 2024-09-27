@@ -108,7 +108,7 @@ jobs:
         with:
           tokenPrefix: '#{'
           tokenSuffix: '}'
-          files: .env.template
+          files: .env.template*
         env:
           GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
           DEPLOYMENT_URL: https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-production.yml
@@ -133,9 +133,14 @@ jobs:
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
 
       - name: Rename env file
-        # TinaCMS requires the .env file to be named .env
         run: |
-          mv .env.template .env
+          mv .env.template .env.production
+          cat .env.production
+
+      # TinaCMS requires the .env file to be named .env
+      - name: Rename env tina file
+        run: |
+          mv .env.template_tina .env
           cat .env
 
       - name: Cache Gatsby .cache

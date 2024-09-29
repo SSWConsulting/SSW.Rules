@@ -161,7 +161,9 @@ jobs:
         run: yarn install --immutable
 
       - name: Build
-        run: yarn build
+        run: |
+          export NODE_OPTIONS="--max_old_space_size=4096"
+          yarn build
         env:
           GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: true
         timeout-minutes: 60

@@ -16,6 +16,14 @@ This is a Gatsby generated site pulling data from:
 - Run `yarn install` to install packages
 - Create environment files (.env.development) based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
 
+### TinaCMS - Getting ready for development
+Working with a separate content repo in TinaCMS requires that you have a copy of the Repo locally for development purposes.
+
+- Clone the Content Repo from https://github.com/SSWConsulting/SSW.Rules.Content
+  - This should be next to your Rules Repo, not inside of it
+- Checkout the `tina/sample-content` branch in SSW.Rules so that you don't get all rules.
+- Update your `.env` with your actual `LOCAL_CONTENT_RELATIVE_PATH` if it is different to what is there 
+
 > **Notes:**  
 > * If you don't work at SSW or can't get on to the SSW.Rules team you can just add values to GITHUB_API_PAT and CONTENT_BRANCH  
 > * For `GITHUB_API_PAT`, create a [PAT on GitHub](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (remove angle brackets <>)  
@@ -32,6 +40,11 @@ This is a Gatsby generated site pulling data from:
 6. Raise a PR
 7. Get it merged!
 
+### TinaCMS - Development
+1. Branch off `tina/main` for your PBI
+2. ... As above
+8. If you have changes to the `tina/config.ts`, you must create a new branch with those same changes in Rules.Content (branching from `tina/sample-content`) 
+
 ![recommended extensions notification](_docs/img/vs-code-recommended-extensions.png)
 **Figure: VS Code recommended extensions notification**
 
@@ -44,12 +57,23 @@ This is a Gatsby generated site pulling data from:
 - Pushed to Production.
 - Use @Mention (**OR** Send email) to notify Product Owner/PBI stakeholder that PBI is done (be sure to include screenshots/done video as proof) 
 
+### TinaCMS - Definition of Done
+- As above
+- Branches should be squash-merged to `tina/main`
+- Pushed to `staging`
+- Include your Done Video :)
+
 As per rule: [Done - Do you go beyond 'Done' and follow a 'Definition of Done'?](https://www.ssw.com.au/rules/done-do-you-go-beyond-done-and-follow-a-definition-of-done)
 
 ### Branches
 - Branching strategy is based off [Release Flow](https://docs.microsoft.com/en-us/azure/devops/learn/devops-at-microsoft/release-flow) 
 - `main` is the main 'dev' branch
 - `release/xx` is the 'production' one (where xx is the Sprint number)
+- Always create a new branch for your PBIs 
+- Always delete your branch once your PR has been merged
+
+### TinaCMS - Branches
+- `tina/main` is the main 'dev' branch
 - Always create a new branch for your PBIs 
 - Always delete your branch once your PR has been merged
 

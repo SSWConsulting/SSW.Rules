@@ -60,6 +60,9 @@ Working with a separate content repo in TinaCMS requires that you have a copy of
 ### TinaCMS - Definition of Done
 - As above
 - Branches should be squash-merged to `tina/main`
+- Any updates to the TinaCMS + Gatsby Documentation should be in a Pull Request
+  - https://tina.io/docs/frameworks/gatsby/
+- Any TinaCMS bugs should be created as Issues in the TinaCMS repository and linked in the PR https://github.com/tinacms/tinacms
 - Pushed to `staging`
 - Include your Done Video :)
 

@@ -1067,7 +1067,7 @@ div.bad-example {
 }
 
 .info > *, .china > *, .codeauditor > * {
-  padding-left: 2.5rem;
+  padding-left: 3rem;
 }
 
 .info > ol, .china > ol, .codeauditor > ol, .info > ul, .china > ul, .codeauditor > ul  {
@@ -1084,7 +1084,6 @@ div.bad-example {
 
 .info:before, .codeauditor:before, .china:before {
   overlay: auto;
-  margin-right: 1rem;
   position: fixed;
 }
 

@@ -469,13 +469,11 @@ pre {
   background: none;
 }
 
-.good figcaption, .bad figcaption, .ok figcaption,
-.good p, .bad p, .ok p {
+.good figcaption, .bad figcaption, .ok figcaption, .good p, .bad p, .ok p {
   font-weight: bold;  
   caption-side: bottom;
-  padding-left: 1.2rem;
+  padding-left: 1.35rem;
   font-weight: 700;
-  margin: 0.5rem 0 6px;
   line-height: initial;
   position: relative;
 }
@@ -876,7 +874,6 @@ blockquote :last-child {
   max-width: 100%;
   width: auto !important;
   border: 10px solid #eee;
-  outline: 1px solid #ccc;
   background-color: #eee;
 }
 
@@ -896,7 +893,7 @@ blockquote :last-child {
   width: 16px;
   position: absolute;
   left: 0px;
-  top:2px;
+  top:3px;
 }
 
 .rule-content figure figcaption.bad-example:before {
@@ -913,7 +910,6 @@ blockquote :last-child {
   content: "\f11a ";
   font-family: FontAwesome;
   font-style: normal;
-  font-weight: normal;
   text-decoration: inherit;
   color: #777;
 }
@@ -934,7 +930,7 @@ blockquote :last-child {
 .good-example figure figcaption::before,
 .bad-example figure figcaption::before,
 .ok-example figure figcaption::before {
-  padding-left: 1.5rem;
+  padding-left: 1.35rem;
 }
 
 .good-example figure figcaption::after,
@@ -946,7 +942,7 @@ div.good-example .custom-block-heading::after {
   width: 16px;
   position: absolute;
   left: 0px;
-  top:2px;
+  top:3px;
 }
 
 .bad-example figure figcaption::after,
@@ -958,7 +954,7 @@ div.bad-example .custom-block-heading::after {
   width: 16px;
   position: absolute;
   left: 0px;
-  top:2px;
+  top:3px;
 }
 
 .ok-example figure figcaption::after,
@@ -968,12 +964,11 @@ div.ok-example .custom-block-heading::after {
   content: "\f11a ";
   font-family: FontAwesome;
   font-style: normal;
-  font-weight: normal;
   text-decoration: inherit;
   color: #777;
   position: absolute;
   left: 0px;
-  top:2px;
+  top:3px;
 }
 
 div.ok-example .custom-block-heading,
@@ -983,7 +978,6 @@ div.greybox .custom-block-heading{
   caption-side: bottom;
   display: table-caption;
   font-weight: 700;
-  margin: 0.5rem 0.5rem 6px;
   line-height: initial;
   position: relative;
 }
@@ -1017,10 +1011,12 @@ div.bad-example {
 }
 
 .rule-content video, .rule-content iframe:not(.utterances-frame) {
-  background-color: #f5f5f5;
-  padding: 4px;
+  background-color: #eee;
+  padding: 5px;
   margin-bottom: 1rem;
 }
+
+  .gatsby-resp-iframe-wrapper {margin-bottom:.5rem;}
 
 .rule-content video pre, .rule-content iframe pre {
   display: block;
@@ -2547,7 +2543,7 @@ margin-bottom: 1em;
 -------------------------------------------------- */
 
 .email-template {
-  margin: 1rem 0 .25rem;
+  margin: 1rem 0 .5rem;
   background-color: #eee;
   display: inline-block;
   width: 100%;

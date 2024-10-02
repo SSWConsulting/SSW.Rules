@@ -1,32 +1,32 @@
+import { graphql } from 'gatsby';
 import {
   GetGithubOrganisationName,
   GetOrganisations,
   GetSecretContent,
 } from '../services/apiService';
-import { graphql } from 'gatsby';
 /* eslint-disable jsx-a11y/anchor-has-content */
-import React, { useLayoutEffect, useState } from 'react';
 import {
   faExclamationTriangle,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import { pathPrefix } from '../../site-config.js';
 import markdownIt from 'markdown-it';
+import React, { useLayoutEffect, useState } from 'react';
+import { pathPrefix } from '../../site-config.js';
 
+import { useAuth0 } from '@auth0/auth0-react';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { format } from 'date-fns';
+import formatDistance from 'date-fns/formatDistance';
+import PropTypes from 'prop-types';
+import ReactDOMServer from 'react-dom/server';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Comments from '../components/comments/comments';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
-import ReactDOMServer from 'react-dom/server';
 import Reaction from '../components/reaction/reaction';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
-import formatDistance from 'date-fns/formatDistance';
-import { format } from 'date-fns';
-import { useAuth0 } from '@auth0/auth0-react';
 import { useAuthService } from '../services/authService';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -36,10 +36,12 @@ const appInsights = new ApplicationInsights({
 
 appInsights.loadAppInsights();
 
-const Rule = ({ data, location }) => {
+const Rule = ({ data, location, pageContext }) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
+
+  console.log('data', pageContext);
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
   const { user, isAuthenticated } = useAuth0();

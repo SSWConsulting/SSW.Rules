@@ -125,6 +125,7 @@ exports.createPages = async ({ graphql, actions }) => {
             redirects
             seoDescription
           }
+          rawMarkdownBody
         }
       }
     }
@@ -203,6 +204,11 @@ exports.createPages = async ({ graphql, actions }) => {
           ' is missing a category'
       );
     }
+    const bodySchema = require('./tina/collections/rules');
+
+    const { parseMDX } = require('@tinacms/mdx');
+
+    const md = node.rawMarkdownBody;
 
     // Create the page for the rule
     // eslint-disable-next-line no-console
@@ -211,6 +217,7 @@ exports.createPages = async ({ graphql, actions }) => {
       path: node.frontmatter.uri,
       component: ruleTemplate,
       context: {
+        mdx: parseMDX(md, bodySchema),
         slug: node.fields.slug,
         related: node.frontmatter.related ? node.frontmatter.related : [''],
         uri: node.frontmatter.uri,

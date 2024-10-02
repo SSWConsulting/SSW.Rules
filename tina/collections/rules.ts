@@ -1,4 +1,36 @@
-import { Collection } from "tinacms";
+import { Collection, TinaField } from "tinacms";
+
+
+
+export const bodySchema: TinaField<false> = {
+  type: 'rich-text' as const,
+  name: 'body',
+  label: 'Body',
+  isBody: true,
+  templates: [
+    {
+    name: "greybox",
+    label: "Grey Box",
+    match: {
+      start: "::: greybox",
+      end: ":::"
+    },
+    fields: [
+      
+      {
+        //this is a stub
+        name: 'content',
+        label: 'Content',
+        type: 'string',
+        ui: {
+          component: 'textarea',
+        }
+      }
+    ]
+    }
+  ]
+};
+
 
 export const Rules: Collection = {
   label: 'Rules',
@@ -68,11 +100,6 @@ export const Rules: Collection = {
       name: 'seoDescription',
       label: 'SEO Description',
     },
-    {
-      type: 'rich-text',
-      name: 'body',
-      label: 'Body',
-      isBody: true,
-    },
-  ],
+    bodySchema
+  ]
 };

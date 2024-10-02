@@ -144,21 +144,21 @@ jobs:
           mv .env.template_tina .env
           cat .env
 
-      - name: Cache Gatsby .cache
-        uses: actions/cache@v4
-        with:
-          path: .cache
-          key: gatsby_cache | ${{ runner.os }}
-          restore-keys: |
-            gatsby_cache | ${{ runner.os }}
+      # - name: Cache Gatsby .cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: .cache
+      #     key: gatsby_cache | ${{ runner.os }}
+      #     restore-keys: |
+      #       gatsby_cache | ${{ runner.os }}
 
-      - name: Cache Gatsby public
-        uses: actions/cache@v4
-        with:
-          path: public
-          key: gatsby_public | ${{ runner.os }}
-          restore-keys: |
-            gatsby_public | ${{ runner.os }}
+      # - name: Cache Gatsby public
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: public
+      #     key: gatsby_public | ${{ runner.os }}
+      #     restore-keys: |
+      #       gatsby_public | ${{ runner.os }}
 
       - name: Use Node
         uses: actions/setup-node@v4

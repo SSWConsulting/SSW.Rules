@@ -14,7 +14,7 @@ This is a Gatsby generated site pulling data from:
 ### Getting ready for development
 - Clone the repo from https://github.com/SSWConsulting/SSW.Rules
 - Run `yarn install` to install packages
-- Create environment files (.env.development) based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
+- Create environment files (`.env.development`) based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
 
 > **Notes:**  
 > * If you don't work at SSW or can't get on to the SSW.Rules team you can just add values to GITHUB_API_PAT and CONTENT_BRANCH  
@@ -26,7 +26,7 @@ This is a Gatsby generated site pulling data from:
 1. Branch off main for your PBI
 2. Install the recommended extensions if using VS Code
 3. Do your work
-4. Run the site in development mode by `yarn dev` (.env.development is required for this step) it takes a while to build all the rules    
+4. Run the site in development mode by `yarn dev` (`.env.development` is required for this step) it takes a while to build all the rules    
    If you have issues, run `yarn clean` then `yarn dev`
 5. Commit code and push
 6. Raise a PR

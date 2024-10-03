@@ -25,7 +25,7 @@ let assetsManifest = {};
 
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
-  if (node.internal.type === 'MarkdownRemark') {
+  if (node.internal.type === 'Mdx') {
     const slug = createFilePath({ node, getNode, basePath: '' });
     createNodeField({
       node,
@@ -34,6 +34,7 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     });
   }
 };
+
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
   const typeDefs = `
@@ -88,7 +89,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const result = await graphql(`
     query {
-      categories: allMarkdownRemark(
+      categories: allMdx(
         filter: { frontmatter: { type: { eq: "category" } } }
       ) {
         nodes {
@@ -108,11 +109,12 @@ exports.createPages = async ({ graphql, actions }) => {
               relativeDirectory
             }
           }
+          internal {
+            contentFilePath
+          }
         }
       }
-      rules: allMarkdownRemark(
-        filter: { frontmatter: { type: { in: ["rule"] } } }
-      ) {
+      rules: allMdx(filter: { frontmatter: { type: { in: ["rule"] } } }) {
         nodes {
           fields {
             slug
@@ -125,13 +127,13 @@ exports.createPages = async ({ graphql, actions }) => {
             redirects
             seoDescription
           }
+          internal {
+            contentFilePath
+          }
         }
       }
     }
   `);
-
-  const categoryTemplate = require.resolve('./src/templates/category.js');
-  const ruleTemplate = require.resolve('./src/templates/rule.js');
 
   result.data.categories.nodes.forEach((node) => {
     // Find any categories that can't resolve a rule
@@ -162,7 +164,7 @@ exports.createPages = async ({ graphql, actions }) => {
     console.log('Creating Category: ' + node.parent.name);
     createPage({
       path: node.parent.name,
-      component: categoryTemplate,
+      component: `${node}?__contentFilePath=${node.internal.contentFilePath}`,
       context: {
         slug: node.fields.slug,
         index: node.frontmatter.index,
@@ -209,7 +211,7 @@ exports.createPages = async ({ graphql, actions }) => {
     console.log('Creating Rule: ' + node.frontmatter.title);
     createPage({
       path: node.frontmatter.uri,
-      component: ruleTemplate,
+      component: `${node}?__contentFilePath=${node.internal.contentFilePath}`,
       context: {
         slug: node.fields.slug,
         related: node.frontmatter.related ? node.frontmatter.related : [''],

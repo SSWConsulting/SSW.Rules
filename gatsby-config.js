@@ -91,10 +91,11 @@ module.exports = {
     },
     'gatsby-plugin-sharp',
     {
-      resolve: 'gatsby-transformer-remark',
+      resolve: 'gatsby-plugin-mdx',
       options: {
+        extensions: ['.mdx', '.md'],
         excerpt_separator: '<!--endintro-->',
-        plugins: [
+        gatsbyRemarkPlugins: [
           {
             resolve: '@raae/gatsby-remark-oembed',
             options: {

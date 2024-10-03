@@ -204,7 +204,7 @@ exports.createPages = async ({ graphql, actions }) => {
           ' is missing a category'
       );
     }
-    const bodySchema = require('./tina/collections/rules');
+    const bodySchema = require('./schemas/bodySchema.json');
 
     const { parseMDX } = require('@tinacms/mdx');
 
@@ -217,7 +217,7 @@ exports.createPages = async ({ graphql, actions }) => {
       path: node.frontmatter.uri,
       component: ruleTemplate,
       context: {
-        mdx: parseMDX(md, bodySchema),
+        mdx: parseMDX(md.replace('!', ''), bodySchema),
         slug: node.fields.slug,
         related: node.frontmatter.related ? node.frontmatter.related : [''],
         uri: node.frontmatter.uri,

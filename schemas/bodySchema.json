@@ -1,0 +1,27 @@
+{
+    "type": "rich-text",
+    "name": "body",
+    "label": "Body",
+    "isBody": true,
+    "templates": [
+      {
+      "name": "GreyBox",
+      "label": "Grey Box",
+      "match": {
+        "start": "::: greybox",
+        "end": ":::"
+      },
+    "fields": [
+        
+        {
+          "name": "content",
+          "label": "Content",
+          "type": "string",
+          "ui": {
+            "component": "textarea"
+          }
+        }
+      ]
+      }
+    ]
+  }

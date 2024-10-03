@@ -1,5 +1,6 @@
 const siteConfig = require('./site-config');
 const path = require('path');
+require('ts-node').register();
 
 require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`,
@@ -11,6 +12,7 @@ module.exports = {
     ...siteConfig,
   },
   plugins: [
+    'gatsby-plugin-typescript',
     {
       resolve: 'gatsby-plugin-algolia',
       options: {

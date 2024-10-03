@@ -1,3 +1,7 @@
+import ProfilePage from './src/pages/profile.js';
+import categoryTemplate from './src/templates/category';
+import ruleTemplate from './src/templates/rule';
+
 const siteConfig = require('./site-config');
 const { createFilePath } = require('gatsby-source-filesystem');
 const appInsights = require('applicationinsights');
@@ -7,6 +11,7 @@ const path = require('path');
 const axios = require('axios');
 const { createContentDigest } = require('gatsby-core-utils');
 const express = require('express');
+const GatsbyNode = require('./gatsby-node');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
@@ -130,9 +135,8 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     }
   `);
-
-  const categoryTemplate = require.resolve('./src/templates/category.js');
-  const ruleTemplate = require.resolve('./src/templates/rule.js');
+  //const categoryTemplate = require.resolve('./src/templates/category.js');
+  //const ruleTemplate = require.resolve('./src/templates/rule.js');
 
   result.data.categories.nodes.forEach((node) => {
     // Find any categories that can't resolve a rule
@@ -204,7 +208,8 @@ exports.createPages = async ({ graphql, actions }) => {
           ' is missing a category'
       );
     }
-    const bodySchema = require('./tina/collections/rules');
+
+    const { bodySchema } = require('./tina/collections/rules');
 
     const { parseMDX } = require('@tinacms/mdx');
 
@@ -238,12 +243,11 @@ exports.createPages = async ({ graphql, actions }) => {
       });
     });
   });
-
-  const profilePage = require.resolve('./src/pages/profile.js');
+  // const ProfilePage = require.resolve('./src/pages/profile.js');
   createPage({
     path: `${siteConfig.pathPrefix}/people/`,
     matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
-    component: profilePage,
+    component: ProfilePage,
   });
 };
 

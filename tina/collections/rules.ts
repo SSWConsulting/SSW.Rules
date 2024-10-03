@@ -1,4 +1,4 @@
-import { Collection, TinaField } from "tinacms";
+import { Collection, TinaField } from "tinacms";import { useTina } from 'tinacms/dist/react'
 
 
 

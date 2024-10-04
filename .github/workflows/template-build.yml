@@ -132,6 +132,7 @@ jobs:
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
           TINA_CLIENT_ID: ${{ secrets.TINA_CLIENT_ID }}
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+          TINA_BASE_PATH: ${{ vars.TINA_BASE_PATH }}
 
       - name: Rename env file
         run: |

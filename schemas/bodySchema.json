@@ -79,6 +79,25 @@
                 }
               }
             ]
-            }
+            },
+            {
+              "name": "tildes",
+              "label": "Custom Markdown",
+              "match": {
+                "start": "~~",
+                "end": "~~"
+              },
+            "fields": [
+                
+                {
+                  "name": "content",
+                  "label": "Content",
+                  "type": "string",
+                  "ui": {
+                    "component": "textarea"
+                  }
+                }
+              ]
+              }
     ]
   }

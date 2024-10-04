@@ -208,16 +208,18 @@ exports.createPages = async ({ graphql, actions }) => {
 
     const { parseMDX } = require('@tinacms/mdx');
 
-    const md = node.rawMarkdownBody;
+    let md = node.rawMarkdownBody;
 
     // Create the page for the rule
     // eslint-disable-next-line no-console
+
+    md = md.replace(`<!--endintro-->`, '');
     console.log('Creating Rule: ' + node.frontmatter.title);
     createPage({
       path: node.frontmatter.uri,
       component: ruleTemplate,
       context: {
-        mdx: parseMDX(md.replace('!', ''), bodySchema),
+        mdx: parseMDX(md, bodySchema),
         slug: node.fields.slug,
         related: node.frontmatter.related ? node.frontmatter.related : [''],
         uri: node.frontmatter.uri,

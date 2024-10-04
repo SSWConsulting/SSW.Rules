@@ -2,7 +2,7 @@ import { defineConfig } from 'tinacms';
 import { Rules } from './collections/rules';
 
 // Your hosting provider likely exposes this as an environment variable
-const branch = 'tina/sample-content';
+const branch = 'tina/sample-content-stripped';
 
 const localContentPath = process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined;
 const clientId = process.env.TINA_CLIENT_ID;

@@ -5,10 +5,10 @@
     "isBody": true,
     "templates": [
       {
-      "name": "GreyBox",
-      "label": "Grey Box",
+      "name": "custommarkdown",
+      "label": "Custom Markdown",
       "match": {
-        "start": "::: greybox",
+        "start": ":::",
         "end": ":::"
       },
     "fields": [
@@ -22,6 +22,63 @@
           }
         }
       ]
-      }
+      },
+      {
+        "name": "curlybraces",
+        "label": "Custom Markdown",
+        "match": {
+          "start": "{{",
+          "end": "}}"
+        },
+      "fields": [
+          
+          {
+            "name": "content",
+            "label": "Content",
+            "type": "string",
+            "ui": {
+              "component": "textarea"
+            }
+          }
+        ]
+        },
+        {
+          "name": "endintro",
+          "label": "Custom Markdown",
+          "match": {
+            "start": "<!--",
+            "end": "-->"
+          },
+        "fields": [
+            
+            {
+              "name": "content",
+              "label": "Content",
+              "type": "string",
+              "ui": {
+                "component": "textarea"
+              }
+            }
+          ]
+          },
+          {
+            "name": "backticks",
+            "label": "Custom Markdown",
+            "match": {
+              "start": "```",
+              "end": "```"
+            },
+          "fields": [
+              
+              {
+                "name": "content",
+                "label": "Content",
+                "type": "string",
+                "ui": {
+                  "component": "textarea"
+                }
+              }
+            ]
+            }
     ]
   }

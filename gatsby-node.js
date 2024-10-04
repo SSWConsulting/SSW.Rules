@@ -38,7 +38,7 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
   const typeDefs = `
-    type MarkdownRemark implements Node @infer {
+    type Mdx implements Node @infer {
       frontmatter: Frontmatter
     }
     type Frontmatter @infer {
@@ -135,6 +135,9 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
 
+  const categoryTemplate = require.resolve('./src/templates/category.js');
+  const ruleTemplate = require.resolve('./src/templates/rule.js');
+
   result.data.categories.nodes.forEach((node) => {
     // Find any categories that can't resolve a rule
     node.frontmatter.index.forEach((inCat) => {
@@ -164,7 +167,7 @@ exports.createPages = async ({ graphql, actions }) => {
     console.log('Creating Category: ' + node.parent.name);
     createPage({
       path: node.parent.name,
-      component: `${node}?__contentFilePath=${node.internal.contentFilePath}`,
+      component: `${categoryTemplate}?__contentFilePath=${node.internal.contentFilePath}`,
       context: {
         slug: node.fields.slug,
         index: node.frontmatter.index,
@@ -211,7 +214,7 @@ exports.createPages = async ({ graphql, actions }) => {
     console.log('Creating Rule: ' + node.frontmatter.title);
     createPage({
       path: node.frontmatter.uri,
-      component: `${node}?__contentFilePath=${node.internal.contentFilePath}`,
+      component: `${ruleTemplate}?__contentFilePath=${node.internal.contentFilePath}`,
       context: {
         slug: node.fields.slug,
         related: node.frontmatter.related ? node.frontmatter.related : [''],

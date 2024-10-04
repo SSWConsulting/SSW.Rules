@@ -208,7 +208,13 @@ exports.createPages = async ({ graphql, actions }) => {
 
     const { parseMDX } = require('@tinacms/mdx');
 
-    const md = node.rawMarkdownBody;
+    let md = node.rawMarkdownBody;
+
+    md = replaceGreyboxReact(md);
+
+    console.log('replaced greybox', md);
+
+    md = md.replace('!', '');
 
     // Create the page for the rule
     // eslint-disable-next-line no-console
@@ -271,4 +277,47 @@ exports.sourceNodes = async ({ actions, createNodeId }) => {
 //Required as per https://tina.io/docs/frameworks/gatsby/#allowing-static-adminindexhtml-file-in-dev-mode
 exports.onCreateDevServer = ({ app }) => {
   app.use('/admin', express.static('public/admin'));
+};
+
+//IMPORTANT: we should replace the elements that can be nested first, otherwise the regex won't work
+const replaceGreyboxReact = (md) => {
+  const nonGreedyPattern = /::: greybox([\s\S]*?):::/;
+  const greedyPattern = /::: greybox(.*):::/;
+  return replaceAllOccurrences(nonGreedyPattern, greedyPattern, md, 'GreyBox');
+};
+const replaceOccurrences = (pattern, text, wrapper) => {
+  while ((match = text.match(pattern))) {
+    text = text.replace(match[0], `<${wrapper}>${match[1]}</${wrapper}>`);
+  }
+  return text;
+};
+const replaceAllOccurrences = (pattern, greedyPattern, text, wrapper) => {
+  return replaceOccurrences(
+    greedyPattern,
+    replaceOccurrences(pattern, text, wrapper),
+    wrapper
+  );
+};
+
+const testRegex = () => {
+  // testing a sigle occurrence
+  const test1 = '::: greybox this is a paragraph:::';
+  // testing two occurrences
+  const test2 =
+    '::: greybox this is a paragraph::::::e greybox this is a paragraph:::';
+  // testing an occurrence nested in another wrapper
+  const test3 =
+    '::: info::: greybox this is a paragraph:::::: greybox this is a paragraph::::::';
+
+  const wrapper = 'h1';
+  console.log(
+    replaceAllOccurrences(nonGreedyPattern, greedyPattern, test1, wrapper) ===
+      `<${wrapper}> this is a paragraph</${wrapper}>` &&
+      replaceAllOccurrences(nonGreedyPattern, greedyPattern, test2, wrapper) ===
+        `<${wrapper}> this is a paragraph</${wrapper}><${wrapper}> this is a paragraph</${wrapper}>` &&
+      replaceAllOccurrences(nonGreedyPattern, greedyPattern, test3, wrapper) ===
+        `::: info<${wrapper}> this is a paragraph</${wrapper}><${wrapper}> this is a paragraph</${wrapper}>:::`
+      ? 'All tests passed'
+      : 'Some tests failed'
+  );
 };

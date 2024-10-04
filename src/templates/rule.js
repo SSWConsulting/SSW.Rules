@@ -38,6 +38,12 @@ const appInsights = new ApplicationInsights({
 
 appInsights.loadAppInsights();
 
+const components = {
+  GreyBox: (props) => {
+    return <h1 id="greybox test">TODO: Replace with greybox component</h1>;
+  },
+};
+
 const Rule = ({ data, location, pageContext }) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -260,7 +266,7 @@ const Rule = ({ data, location, pageContext }) => {
                     </div>
                   )}
                 <hr />
-                <TinaMarkdown content={mdx} components={{ GreyBox }} />
+                <TinaMarkdown content={mdx} components={components} />
                 {/* <div dangerouslySetInnerHTML={{ __html: rule.html }} /> */}
                 <section
                   id="more"
@@ -388,7 +394,3 @@ export const query = graphql`
     }
   }
 `;
-
-const GreyBox = ({ content }) => {
-  return <div id="greybox test">{content}</div>;
-};

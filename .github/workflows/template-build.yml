@@ -116,6 +116,7 @@ jobs:
           APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
           #TODO: https://github.com/SSWConsulting/SSW.Rules/issues/1528
           CONTENT_BRANCH: ${{ vars.TINACMS_CONTENT_BRANCH }}
+          TINA_CONTENT_BRANCH: ${{ vars.TINACMS_CONTENT_BRANCH }}
           API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}
           AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
           AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
@@ -132,6 +133,7 @@ jobs:
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
           TINA_CLIENT_ID: ${{ secrets.TINA_CLIENT_ID }}
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+          TINA_BASE_PATH: ${{ vars.TINA_BASE_PATH }}
 
       - name: Rename env file
         run: |

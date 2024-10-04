@@ -19,6 +19,7 @@ export default defineConfig({
   localContentPath,
 
   build: {
+    basePath: 'rules',
     outputFolder: 'admin',
     publicFolder: 'static',
   },

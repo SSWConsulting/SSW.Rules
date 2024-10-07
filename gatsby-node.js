@@ -7,6 +7,7 @@ const path = require('path');
 const axios = require('axios');
 const { createContentDigest } = require('gatsby-core-utils');
 const express = require('express');
+const formatRuleMarkdown = require('./src/services/ruleFormatter');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
@@ -208,37 +209,40 @@ exports.createPages = async ({ graphql, actions }) => {
 
     const { parseMDX } = require('@tinacms/mdx');
 
-    let md = node.rawMarkdownBody;
-    md = md.replace(`<!--endintro-->`, '');
-    md = md.replace(/> -/g, '\\> \\-');
-    md = md.replace(/>  -/g, '\\>  \\-');
-    md = md.replace(/~~/g, '\\~\\~');
-    md = md.replace(/{/g, '\\{');
-    md = md.replace(/}/g, '\\}');
-    md = md.replace(/!/g, '\\!');
-    md = md.replace(/> */, '\\> \\*');
-    md = md.replace(/\r\n  ([0-9]+)./g, (match, capture) => {
-      return `\r\n${capture}.`;
-    });
-    md = md.replace(/> \*/, '\\> \\*');
+    //let md = node.rawMarkdownBody;
 
-    md = md.replace(/\r\n  \*/g, '\r\n*');
-    md = md.replace(/\r\n   \*/g, '\r\n*');
+    const md = formatRuleMarkdown(node.rawMarkdownBody);
+    console.log('md', md);
+    // md = md.replace(`<!--endintro-->`, '');
+    // md = md.replace(/> -/g, '\\> \\-');
+    // md = md.replace(/>  -/g, '\\>  \\-');
+    // md = md.replace(/~~/g, '\\~\\~');
+    // md = md.replace(/{/g, '\\{');
+    // md = md.replace(/}/g, '\\}');
+    // md = md.replace(/!/g, '\\!');
+    // md = md.replace(/> */, '\\> \\*');
+    // md = md.replace(/\r\n  ([0-9]+)./g, (match, capture) => {
+    //   return `\r\n${capture}.`;
+    // });
+    // md = md.replace(/> \*/, '\\> \\*');
 
-    md = md.replace(/\r\n     ([0-9]+)./g, (match, capture) => {
-      return `\r\n${capture}.`;
-    });
+    // md = md.replace(/\r\n  \*/g, '\r\n*');
+    // md = md.replace(/\r\n   \*/g, '\r\n*');
 
-    md = md.replace(/\r\n    ([0-9]+)./g, (match, capture) => {
-      return `\r\n${capture}.`;
-    });
-    md = md.replace(/\r\n   -/g, '\r\n-');
-    md = md.replace(/\r\n  -/g, '\r\n-');
+    // md = md.replace(/\r\n     ([0-9]+)./g, (match, capture) => {
+    //   return `\r\n${capture}.`;
+    // });
 
-    const matches = md.matchAll(/-{2,}/g);
-    for (let match of matches) {
-      md = md.replace(match[0], `\\${match[0].split('').join('\\')}`);
-    }
+    // md = md.replace(/\r\n    ([0-9]+)./g, (match, capture) => {
+    //   return `\r\n${capture}.`;
+    // });
+    // md = md.replace(/\r\n   -/g, '\r\n-');
+    // md = md.replace(/\r\n  -/g, '\r\n-');
+
+    // const matches = md.matchAll(/-{2,}/g);
+    // for (let match of matches) {
+    //   md = md.replace(match[0], `\\${match[0].split('').join('\\')}`);
+    // }
 
     // Create the page for the rule
     // eslint-disable-next-line no-console

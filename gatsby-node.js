@@ -209,11 +209,40 @@ exports.createPages = async ({ graphql, actions }) => {
     const { parseMDX } = require('@tinacms/mdx');
 
     let md = node.rawMarkdownBody;
+    md = md.replace(`<!--endintro-->`, '');
+    md = md.replace(/> -/g, '\\> \\-');
+    md = md.replace(/>  -/g, '\\>  \\-');
+    md = md.replace(/~~/g, '\\~\\~');
+    md = md.replace(/{/g, '\\{');
+    md = md.replace(/}/g, '\\}');
+    md = md.replace(/!/g, '\\!');
+    md = md.replace(/> */, '\\> \\*');
+    md = md.replace(/\r\n  ([0-9]+)./g, (match, capture) => {
+      return `\r\n${capture}.`;
+    });
+    md = md.replace(/> \*/, '\\> \\*');
+
+    md = md.replace(/\r\n  \*/g, '\r\n*');
+    md = md.replace(/\r\n   \*/g, '\r\n*');
+
+    md = md.replace(/\r\n     ([0-9]+)./g, (match, capture) => {
+      return `\r\n${capture}.`;
+    });
+
+    md = md.replace(/\r\n    ([0-9]+)./g, (match, capture) => {
+      return `\r\n${capture}.`;
+    });
+    md = md.replace(/\r\n   -/g, '\r\n-');
+    md = md.replace(/\r\n  -/g, '\r\n-');
+
+    const matches = md.matchAll(/-{2,}/g);
+    for (let match of matches) {
+      md = md.replace(match[0], `\\${match[0].split('').join('\\')}`);
+    }
 
     // Create the page for the rule
     // eslint-disable-next-line no-console
 
-    md = md.replace(`<!--endintro-->`, '');
     console.log('Creating Rule: ' + node.frontmatter.title);
     createPage({
       path: node.frontmatter.uri,
@@ -273,4 +302,21 @@ exports.sourceNodes = async ({ actions, createNodeId }) => {
 //Required as per https://tina.io/docs/frameworks/gatsby/#allowing-static-adminindexhtml-file-in-dev-mode
 exports.onCreateDevServer = ({ app }) => {
   app.use('/admin', express.static('public/admin'));
+};
+
+const nonGreedyPattern = /~~([\s\S]*?)~~/;
+//const greedyPattern = /::: greybox(.*):::/;
+
+const replaceOccurrences = (pattern, text, wrapper) => {
+  while ((match = text.match(pattern))) {
+    text = text.replace(match[0], `<${wrapper}>${match[1]}</${wrapper}>`);
+  }
+  return text;
+};
+const replaceAllOccurrences = (pattern, greedyPattern, text, wrapper) => {
+  return replaceOccurrences(
+    greedyPattern,
+    replaceOccurrences(pattern, text, wrapper),
+    wrapper
+  );
 };

@@ -2,5 +2,6 @@
     "type": "rich-text",
     "name": "body",
     "label": "Body",
-    "isBody": true
+    "isBody": true,
+    "description": "Rule content. This is where the magic happens. TODO – link to instructions ex. https://github.com/SSWConsulting/SSW.Rules.Content/wiki/How-to-Edit-Rules#how-to-edit-rules-using-netlify-cms"
   }

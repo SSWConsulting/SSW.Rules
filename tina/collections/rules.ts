@@ -104,12 +104,8 @@ export const Rules: Collection = {
       name: 'seoDescription',
       label: 'SEO Description',
       description: 'A summary of the page content, used for SEO purposes. This can be generated automatically with AI.',
+
     },
-    {
-      type: 'rich-text',
-      name: 'body',
-      label: 'Body',
-      isBody: true,
-    },
+    bodySchema as TinaField<false>
   ],
 };

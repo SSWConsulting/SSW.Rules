@@ -10,6 +10,8 @@ export const Rules: Collection = {
   defaultItem: () => {
     return {
       guid: generateGuid(),
+      //TODO – remove the "created" field, as it may no longer be used
+      //TECH DEBT – this may be outdated. See https://github.com/SSWConsulting/SSW.Rules/issues/1543.
       created: new Date().toISOString(),
       filename: 'rule',
     }
@@ -73,6 +75,8 @@ export const Rules: Collection = {
       label: 'Redirects',
       list: true,
     },
+      //TODO – remove the "created" field, as it may no longer be used
+      //TECH DEBT – this may be outdated. See https://github.com/SSWConsulting/SSW.Rules/issues/1543.
     {
       type: 'datetime',
       name: 'created',

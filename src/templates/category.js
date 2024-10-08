@@ -1,4 +1,6 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import MD from 'gatsby-custom-md';
+
 import {
   faArrowCircleRight,
   faBook,

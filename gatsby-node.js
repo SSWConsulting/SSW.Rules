@@ -8,6 +8,9 @@ const axios = require('axios');
 const { createContentDigest } = require('gatsby-core-utils');
 const express = require('express');
 const formatRuleMarkdown = require('./src/services/ruleFormatter');
+const { parseMDX } = require('@tinacms/mdx');
+const bodySchema = require('./schemas/bodySchema.json');
+const { rule } = require('postcss');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
@@ -151,6 +154,13 @@ exports.createPages = async ({ graphql, actions }) => {
             }
           });
         }
+        // console.log('rulenode', rulenode);
+        if (typeof rulenode.rawMarkdownBody === 'string') {
+          console.log('mdbody type', typeof rulenode.rawMarkdownBody);
+          const md = formatRuleMarkdown(rulenode.rawMarkdownBody);
+          rulenode.rawMarkdownBody = parseMDX(md, bodySchema);
+          console.log('new rulenode value', rulenode);
+        }
       });
 
       if (match == false) {
@@ -162,10 +172,12 @@ exports.createPages = async ({ graphql, actions }) => {
     // Create the page for the category
     // eslint-disable-next-line no-console
     console.log('Creating Category: ' + node.parent.name);
+
     createPage({
       path: node.parent.name,
       component: categoryTemplate,
       context: {
+        rules: result.data.rules,
         slug: node.fields.slug,
         index: node.frontmatter.index,
         redirects: node.frontmatter.redirects,
@@ -205,18 +217,17 @@ exports.createPages = async ({ graphql, actions }) => {
           ' is missing a category'
       );
     }
-    const bodySchema = require('./schemas/bodySchema.json');
 
-    const { parseMDX } = require('@tinacms/mdx');
+    // console.log('node.rawMarkdownBody', typeof node.rawMarkdownBody);
 
-    const md = formatRuleMarkdown(node.rawMarkdownBody);
+    // const md = formatRuleMarkdown(node.rawMarkdownBody);
 
     console.log('Creating Rule: ' + node.frontmatter.title);
     createPage({
       path: node.frontmatter.uri,
       component: ruleTemplate,
       context: {
-        mdx: parseMDX(md, bodySchema),
+        mdx: node.rawMarkdownBody,
         slug: node.fields.slug,
         related: node.frontmatter.related ? node.frontmatter.related : [''],
         uri: node.frontmatter.uri,

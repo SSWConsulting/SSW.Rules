@@ -3,5 +3,5 @@
     "name": "body",
     "label": "Body",
     "isBody": true,
-    "description": "Rule content. This is where the magic happens. TODO – link to instructions ex. https://github.com/SSWConsulting/SSW.Rules.Content/wiki/How-to-Edit-Rules#how-to-edit-rules-using-netlify-cms"
+    "description": "Rule content. This is where the magic happens. TODO – should be linked to edit instructions once they're created, see https://github.com/SSWConsulting/SSW.Rules/issues/1544."
   }

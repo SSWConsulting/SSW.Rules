@@ -22,6 +22,10 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import RadioButton from '../components/radio-button/radio-button';
 import Tooltip from '../components/tooltip/tooltip';
 
+const components = {
+  greyBox: GreyBox,
+};
+
 const appInsights = new ApplicationInsights({
   config: {
     instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,

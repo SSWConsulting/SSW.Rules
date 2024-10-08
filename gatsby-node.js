@@ -9,7 +9,7 @@ const { createContentDigest } = require('gatsby-core-utils');
 const express = require('express');
 const formatRuleMarkdown = require('./src/services/ruleFormatter');
 const { parseMDX } = require('@tinacms/mdx');
-const bodySchema = require('./schemas/bodySchema.json');
+const bodySchema = require('./tina/collections/schemas/bodySchema.json');
 const { rule } = require('postcss');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
@@ -215,11 +215,6 @@ exports.createPages = async ({ graphql, actions }) => {
       );
     }
 
-    // console.log('node.rawMarkdownBody', typeof node.rawMarkdownBody);
-
-    // const md = formatRuleMarkdown(node.rawMarkdownBody);
-
-    console.log('Creating Rule: ' + node.frontmatter.title);
     createPage({
       path: node.frontmatter.uri,
       component: ruleTemplate,

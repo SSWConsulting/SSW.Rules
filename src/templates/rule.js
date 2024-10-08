@@ -99,13 +99,6 @@ const Rule = ({ data, location, pageContext }) => {
         <div className="secret-content-heading">
           <h4>{props.orgName + ' Only: \n'}</h4>
         </div>
-        {/* <div
-          style={{
-            wordWrap: 'break-word',
-            width: 'auto',
-          }}
-          dangerouslySetInnerHTML={{ __html: props.content }} //Is this a good idea? JS injection ect
-        /> */}
       </>
     );
   };
@@ -260,8 +253,7 @@ const Rule = ({ data, location, pageContext }) => {
                     </div>
                   )}
                 <hr />
-                <TinaMarkdown content={mdx} components={{ GreyBox }} />
-                {/* <div dangerouslySetInnerHTML={{ __html: rule.html }} /> */}
+                <TinaMarkdown content={mdx} />
                 <section
                   id="more"
                   className="mt-12 flex flex-wrap pt-6 pb-6 lg:pb-12 text-center -mb-6"
@@ -388,7 +380,3 @@ export const query = graphql`
     }
   }
 `;
-
-const GreyBox = ({ content }) => {
-  return <div id="greybox test">{content}</div>;
-};

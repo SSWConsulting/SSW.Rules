@@ -1,29 +1,9 @@
 module.exports = function (md) {
   md = md.replace('<!--endintro-->', '');
 
-  // unindent lists to fix parser breaking
-  md = unindentLists(md);
-
   // escape the characters that Tina's martkdown parser can't handle
   md = escapeInvalidChars(md);
 
-  return md;
-};
-
-const unindentLists = (md) => {
-  md = md.replace(/\r\n {3}-/g, '\r\n-');
-  md = md.replace(/\r\n {2}-/g, '\r\n-');
-  md = md.replace(/\r\n {2}([0-9]+)./g, (match, capture) => {
-    return `\r\n${capture}.`;
-  });
-  md = md.replace(/\r\n {5}([0-9]+)./g, (match, capture) => {
-    return `\r\n${capture}.`;
-  });
-  md = md.replace(/\r\n {2}\*/g, '\r\n*');
-  md = md.replace(/\r\n {3}\*/g, '\r\n*');
-  md = md.replace(/\r\n {4}([0-9]+)./g, (match, capture) => {
-    return `\r\n${capture}.`;
-  });
   return md;
 };
 

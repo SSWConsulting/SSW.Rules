@@ -1,5 +1,6 @@
-import { Collection } from "tinacms";
-import { generateGuid } from "../../src/helpers/generateGuid";
+import { Collection, TinaField } from "tinacms";
+import bodySchema from "./schemas/bodySchema.json";
+
 
 export const Rules: Collection = {
   label: 'Rules',
@@ -108,7 +109,6 @@ export const Rules: Collection = {
       type: 'rich-text',
       name: 'body',
       label: 'Body',
-      description: 'Rule content. This is where the magic happens.',
       isBody: true,
     },
   ],

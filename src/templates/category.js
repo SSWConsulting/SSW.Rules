@@ -1,6 +1,8 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import MD from 'gatsby-custom-md';
 
+import GreyBox from '../components/greybox/greybox';
+
 import {
   faArrowCircleRight,
   faBook,
@@ -345,6 +347,7 @@ Category.propTypes = {
 export const query = graphql`
   query ($slug: String!, $index: [String]!) {
     markdownRemark(fields: { slug: { eq: $slug } }) {
+      htmlAst
       frontmatter {
         title
         archivedreason

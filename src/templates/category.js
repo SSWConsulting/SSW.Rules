@@ -1,25 +1,32 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { graphql, Link } from 'gatsby';
-import PropTypes from 'prop-types';
-import MD from 'gatsby-custom-md';
-import GreyBox from '../components/greybox/greybox';
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import RadioButton from '../components/radio-button/radio-button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import Bookmark from '../components/bookmark/bookmark';
-import Tooltip from '../components/tooltip/tooltip';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import MD from 'gatsby-custom-md';
+
+import GreyBox from '../components/greybox/greybox';
+
 import {
   faArrowCircleRight,
-  faPencilAlt,
-  faExclamationTriangle,
-  faQuoteLeft,
-  faFileLines,
   faBook,
+  faExclamationTriangle,
+  faFileLines,
+  faPencilAlt,
+  faQuoteLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import { pathPrefix } from '../../site-config';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { graphql, Link } from 'gatsby';
 import markdownIt from 'markdown-it';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import { pathPrefix } from '../../site-config';
+import Bookmark from '../components/bookmark/bookmark';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import RadioButton from '../components/radio-button/radio-button';
+import Tooltip from '../components/tooltip/tooltip';
+
+const components = {
+  greyBox: GreyBox,
+};
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -29,7 +36,8 @@ const appInsights = new ApplicationInsights({
 
 appInsights.loadAppInsights();
 
-export default function Category({ data }) {
+export default function Category({ data, pageContext }) {
+  console.log('pageContext', pageContext);
   const linkRef = useRef();
   const category = data.markdownRemark;
 
@@ -58,11 +66,7 @@ export default function Category({ data }) {
     setIncludeArchived(!includeArchived);
   };
 
-  const components = {
-    greyBox: GreyBox,
-  };
-
-  var rules = data.rule.nodes
+  var rules = pageContext.rules.nodes
     .filter((r) => {
       return includeArchived || !r.frontmatter.archivedreason;
     })
@@ -265,7 +269,7 @@ export default function Category({ data }) {
                           className={`rule-content mb-4
                             ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                         >
-                          <MD components={components} htmlAst={rule.htmlAst} />
+                          <TinaMarkdown content={rule.rawMarkdownBody} />
                         </section>
 
                         <section
@@ -363,6 +367,7 @@ export const query = graphql`
     rule: allMarkdownRemark(filter: { frontmatter: { uri: { in: $index } } }) {
       nodes {
         excerpt(format: HTML, pruneLength: 500)
+        rawMarkdownBody
         frontmatter {
           uri
           archivedreason
@@ -371,7 +376,6 @@ export const query = graphql`
           consulting
           experts
         }
-        htmlAst
       }
     }
   }

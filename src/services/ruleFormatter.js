@@ -1,5 +1,5 @@
 module.exports = function (md) {
-  md = md.replace(`<!--endintro-->`, '');
+  md = md.replace('<!--endintro-->', '');
 
   // unindent lists to fix parser breaking
   md = unindentLists(md);
@@ -11,17 +11,17 @@ module.exports = function (md) {
 };
 
 const unindentLists = (md) => {
-  md = md.replace(/\r\n   -/g, '\r\n-');
-  md = md.replace(/\r\n  -/g, '\r\n-');
-  md = md.replace(/\r\n  ([0-9]+)./g, (match, capture) => {
+  md = md.replace(/\r\n {3}-/g, '\r\n-');
+  md = md.replace(/\r\n {2}-/g, '\r\n-');
+  md = md.replace(/\r\n {2}([0-9]+)./g, (match, capture) => {
     return `\r\n${capture}.`;
   });
-  md = md.replace(/\r\n     ([0-9]+)./g, (match, capture) => {
+  md = md.replace(/\r\n {5}([0-9]+)./g, (match, capture) => {
     return `\r\n${capture}.`;
   });
-  md = md.replace(/\r\n  \*/g, '\r\n*');
-  md = md.replace(/\r\n   \*/g, '\r\n*');
-  md = md.replace(/\r\n    ([0-9]+)./g, (match, capture) => {
+  md = md.replace(/\r\n {2}\*/g, '\r\n*');
+  md = md.replace(/\r\n {3}\*/g, '\r\n*');
+  md = md.replace(/\r\n {4}([0-9]+)./g, (match, capture) => {
     return `\r\n${capture}.`;
   });
   return md;
@@ -29,7 +29,7 @@ const unindentLists = (md) => {
 
 const escapeInvalidChars = (md) => {
   md = md.replace(/> -/g, '\\> \\-');
-  md = md.replace(/>  -/g, '\\>  \\-');
+  md = md.replace(/> {2}-/g, '\\>  \\-');
   md = md.replace(/> */, '\\> \\*');
   md = md.replace(/> \*/, '\\> \\*');
   md = md.replace(/~~/g, '\\~\\~');

@@ -154,12 +154,9 @@ exports.createPages = async ({ graphql, actions }) => {
             }
           });
         }
-        // console.log('rulenode', rulenode);
         if (typeof rulenode.rawMarkdownBody === 'string') {
-          console.log('mdbody type', typeof rulenode.rawMarkdownBody);
           const md = formatRuleMarkdown(rulenode.rawMarkdownBody);
           rulenode.rawMarkdownBody = parseMDX(md, bodySchema);
-          console.log('new rulenode value', rulenode);
         }
       });
 

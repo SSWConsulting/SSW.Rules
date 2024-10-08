@@ -215,7 +215,6 @@ exports.createPages = async ({ graphql, actions }) => {
       );
     }
 
-    console.log('Creating Rule: ' + node.frontmatter.title);
     createPage({
       path: node.frontmatter.uri,
       component: ruleTemplate,

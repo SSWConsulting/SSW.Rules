@@ -25,6 +25,14 @@ let assetsManifest = {};
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
   if (node.internal.type === 'MarkdownRemark') {
+    // TODO: Workaround - The issue is being tracked on the Gatsby side - https://github.com/gatsbyjs/gatsby/issues/39136
+    const trimmedContent = node.internal.content
+      .split('\n')
+      .map((line) => (line.trim() === '' ? '' : line))
+      .join('\n');
+
+    node.internal.content = trimmedContent;
+
     const slug = createFilePath({ node, getNode, basePath: '' });
     createNodeField({
       node,
@@ -33,6 +41,7 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     });
   }
 };
+
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
   const typeDefs = `

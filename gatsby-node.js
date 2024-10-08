@@ -279,20 +279,3 @@ exports.sourceNodes = async ({ actions, createNodeId }) => {
 exports.onCreateDevServer = ({ app }) => {
   app.use('/admin', express.static('public/admin'));
 };
-
-const nonGreedyPattern = /~~([\s\S]*?)~~/;
-//const greedyPattern = /::: greybox(.*):::/;
-
-const replaceOccurrences = (pattern, text, wrapper) => {
-  while ((match = text.match(pattern))) {
-    text = text.replace(match[0], `<${wrapper}>${match[1]}</${wrapper}>`);
-  }
-  return text;
-};
-const replaceAllOccurrences = (pattern, greedyPattern, text, wrapper) => {
-  return replaceOccurrences(
-    greedyPattern,
-    replaceOccurrences(pattern, text, wrapper),
-    wrapper
-  );
-};

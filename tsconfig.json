@@ -2,7 +2,8 @@
     "compilerOptions": {
       "target": "ES6",                          // Specify ECMAScript target version
       "module": "commonjs",                     // Specify module code generation
-      "strict": false,                           // Enable all strict type-checking options
+      "strict": false,       // Enable all strict type-checking options
+      "jsx": "react",                    
       "esModuleInterop": true,                  // Enable compatibility with ES modules
       "resolveJsonModule": true,                // Allow importing JSON files
       "skipLibCheck": true,                     // Skip type checking of declaration files

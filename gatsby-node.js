@@ -241,7 +241,7 @@ exports.createPages = async ({ graphql, actions }) => {
   createPage({
     path: `${siteConfig.pathPrefix}/people/`,
     matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
-    component: profilePage,
+    component: `${profilePage}?__contentFilePath=${node.fiels.slug}`,
   });
 };
 

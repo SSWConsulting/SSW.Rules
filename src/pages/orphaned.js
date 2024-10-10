@@ -1,24 +1,23 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
-import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import Tooltip from '../components/tooltip/tooltip';
-import RadioButton from '../components/radio-button/radio-button';
-import { Link } from 'gatsby';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowCircleRight,
-  faPencilAlt,
-  faExclamationTriangle,
-  faQuoteLeft,
-  faFileLines,
   faBook,
+  faExclamationTriangle,
+  faFileLines,
+  faPencilAlt,
+  faQuoteLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import Bookmark from '../components/bookmark/bookmark';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { graphql, Link, useStaticQuery } from 'gatsby';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
 import { pathPrefix } from '../../site-config';
+import Bookmark from '../components/bookmark/bookmark';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import RadioButton from '../components/radio-button/radio-button';
+import Tooltip from '../components/tooltip/tooltip';
 
 config.autoAddCss = false;
 
@@ -275,7 +274,7 @@ Orphaned.propTypes = {
 function OrphanedWithQuery(props) {
   const data = useStaticQuery(graphql`
     query OrphanedQuery {
-      main: allMarkdownRemark(
+      main: allMdx(
         filter: {
           fileAbsolutePath: { regex: "/(categories)/" }
           frontmatter: { type: { eq: "main" } }
@@ -295,7 +294,7 @@ function OrphanedWithQuery(props) {
           }
         }
       }
-      topCategories: allMarkdownRemark(
+      topCategories: allMdx(
         filter: {
           fileAbsolutePath: { regex: "/(categories)/" }
           frontmatter: { type: { eq: "top-category" } }
@@ -316,7 +315,7 @@ function OrphanedWithQuery(props) {
           }
         }
       }
-      categories: allMarkdownRemark(
+      categories: allMdx(
         filter: {
           fileAbsolutePath: { regex: "/(categories)/" }
           frontmatter: { type: { eq: "category" } }
@@ -338,9 +337,7 @@ function OrphanedWithQuery(props) {
           }
         }
       }
-      rules: allMarkdownRemark(
-        filter: { frontmatter: { type: { eq: "rule" } } }
-      ) {
+      rules: allMdx(filter: { frontmatter: { type: { eq: "rule" } } }) {
         nodes {
           frontmatter {
             uri

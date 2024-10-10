@@ -1,17 +1,17 @@
 /* eslint-disable no-console */
-import React, { useEffect, useState } from 'react';
+import DisqusIcon from '-!svg-react-loader!../images/disqusIcon.svg';
+import GitHubIcon from '-!svg-react-loader!../images/github.svg';
+import { useAuth0 } from '@auth0/auth0-react';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { graphql, useStaticQuery } from 'gatsby';
 import PropTypes from 'prop-types';
-import { useStaticQuery, graphql } from 'gatsby';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import ProfileBadge from '../components/profile-badge/profile-badge';
 import ProfileContent from '../components/profile-content/profile-content';
 import ProfileFilterMenu from '../components/profile-filter-menu/profile-filter-menu';
-import GitHubIcon from '-!svg-react-loader!../images/github.svg';
-import DisqusIcon from '-!svg-react-loader!../images/disqusIcon.svg';
-import { useAuth0 } from '@auth0/auth0-react';
 import { GetUser } from '../services/apiService';
 import { useAuthService } from '../services/authService';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -147,7 +147,7 @@ Profile.propTypes = {
 function ProfileWithQuery(props) {
   const data = useStaticQuery(graphql`
     query ProfilePageQuery {
-      allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
+      allMdx(filter: { frontmatter: { type: { eq: "rule" } } }) {
         nodes {
           excerpt(format: HTML, pruneLength: 500)
           frontmatter {

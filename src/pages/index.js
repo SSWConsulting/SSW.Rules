@@ -1,19 +1,19 @@
-import { Link, useStaticQuery, graphql } from 'gatsby';
 import {
   faArchive,
-  faPause,
   faBolt,
   faFrownOpen,
+  faPause,
 } from '@fortawesome/free-solid-svg-icons';
+import { graphql, Link, useStaticQuery } from 'gatsby';
 
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import { config } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import SearchBar from '../components/search-bar/search-bar';
 import SideBar from '../components/side-bar/side-bar';
 import TopCategory from '../components/top-category/top-category';
-import { config } from '@fortawesome/fontawesome-svg-core';
-import SearchBar from '../components/search-bar/search-bar';
 
 config.autoAddCss = false;
 
@@ -111,7 +111,7 @@ Index.propTypes = {
 function IndexWithQuery(props) {
   const data = useStaticQuery(graphql`
     query HomepageQuery {
-      main: allMarkdownRemark(
+      main: allMdx(
         filter: {
           fileAbsolutePath: { regex: "/(categories)/" }
           frontmatter: { type: { eq: "main" } }
@@ -131,7 +131,7 @@ function IndexWithQuery(props) {
           }
         }
       }
-      topCategories: allMarkdownRemark(
+      topCategories: allMdx(
         filter: {
           fileAbsolutePath: { regex: "/(categories)/" }
           frontmatter: { type: { eq: "top-category" } }
@@ -152,7 +152,7 @@ function IndexWithQuery(props) {
           }
         }
       }
-      categories: allMarkdownRemark(
+      categories: allMdx(
         filter: {
           fileAbsolutePath: { regex: "/(categories)/" }
           frontmatter: { type: { eq: "category" } }
@@ -174,9 +174,7 @@ function IndexWithQuery(props) {
           }
         }
       }
-      rules: allMarkdownRemark(
-        filter: { frontmatter: { type: { eq: "rule" } } }
-      ) {
+      rules: allMdx(filter: { frontmatter: { type: { eq: "rule" } } }) {
         nodes {
           frontmatter {
             title

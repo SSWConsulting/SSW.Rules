@@ -1,7 +1,7 @@
 const indexName = 'Rules';
 
 const pageQuery = `{
-    pages: allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
+    pages: allMdx(filter: { frontmatter: { type: { eq: "rule" } } }) {
         nodes {
             id
             excerpt(format: PLAIN, pruneLength: 500)

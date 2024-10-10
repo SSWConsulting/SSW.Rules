@@ -281,7 +281,6 @@ function OrphanedWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -301,7 +300,6 @@ function OrphanedWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -322,7 +320,6 @@ function OrphanedWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -344,7 +341,6 @@ function OrphanedWithQuery(props) {
             archivedreason
             title
           }
-          html
           excerpt(format: HTML, pruneLength: 500)
         }
       }

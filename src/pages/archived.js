@@ -171,7 +171,6 @@ function ArchivedWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -191,7 +190,6 @@ function ArchivedWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -212,7 +210,6 @@ function ArchivedWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title

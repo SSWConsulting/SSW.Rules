@@ -118,7 +118,6 @@ function IndexWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -138,7 +137,6 @@ function IndexWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -159,7 +157,6 @@ function IndexWithQuery(props) {
         }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title

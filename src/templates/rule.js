@@ -313,7 +313,6 @@ export const query = graphql`
       fields {
         slug
       }
-      html
       frontmatter {
         uri
         title

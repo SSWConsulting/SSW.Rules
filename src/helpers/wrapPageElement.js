@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import Layout from '../components/layout/layout';
 
 const wrapPageElement = ({ element, props }) => {
-  const markdown =
-    props && props.data && props.data.markdownRemark
-      ? props.data.markdownRemark
-      : null;
+  const markdown = null;
+  // props && props.data && props.data.markdownRemark
+  //   ? props.data.markdownRemark
+  //   : null;
 
   const pageTitle = markdown ? markdown.frontmatter.title : '';
 

@@ -308,32 +308,7 @@ Rule.propTypes = {
 export default Rule;
 
 export const query = graphql`
-  query ($slug: String!, $uri: String!, $related: [String]!, $file: String!) {
-    markdownRemark(fields: { slug: { eq: $slug } }) {
-      fields {
-        slug
-      }
-      frontmatter {
-        uri
-        title
-        guid
-        authors {
-          title
-          url
-          img
-          noimage
-        }
-        created(formatString: "DD MMM YYYY")
-        archivedreason
-        related
-        seoDescription
-      }
-      parent {
-        ... on File {
-          relativePath
-        }
-      }
-    }
+  query ($uri: String!, $related: [String]!, $file: String!) {
     categories: allMdx(filter: { frontmatter: { index: { glob: $uri } } }) {
       nodes {
         frontmatter {

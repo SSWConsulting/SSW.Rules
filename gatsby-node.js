@@ -135,7 +135,7 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
 
-  const categoryTemplate = require.resolve('./src/templates/category.js');
+  // const categoryTemplate = require.resolve('./src/templates/category.js');
   const ruleTemplate = require.resolve('./src/templates/rule.js');
 
   result.data.categories.nodes.forEach((node) => {
@@ -165,15 +165,15 @@ exports.createPages = async ({ graphql, actions }) => {
     // Create the page for the category
     // eslint-disable-next-line no-console
     console.log('Creating Category: ' + node.parent.name);
-    createPage({
-      path: node.parent.name,
-      component: `${categoryTemplate}?__contentFilePath=${node.internal.contentFilePath}`,
-      context: {
-        slug: node.fields.slug,
-        index: node.frontmatter.index,
-        redirects: node.frontmatter.redirects,
-      },
-    });
+    // createPage({
+    //   path: node.parent.name,
+    //   component: `${categoryTemplate}?__contentFilePath=${node.internal.contentFilePath}`,
+    //   context: {
+    //     slug: node.fields.slug,
+    //     index: node.frontmatter.index,
+    //     redirects: node.frontmatter.redirects,
+    //   },
+    // });
 
     node.frontmatter.redirects?.forEach((toPath) => {
       // eslint-disable-next-line no-console
@@ -237,12 +237,12 @@ exports.createPages = async ({ graphql, actions }) => {
     });
   });
 
-  const profilePage = require.resolve('./src/pages/profile.js');
-  createPage({
-    path: `${siteConfig.pathPrefix}/people/`,
-    matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
-    component: `${profilePage}?__contentFilePath=${node.fiels.slug}`,
-  });
+  // const profilePage = require.resolve('./src/pages/profile.js');
+  // createPage({
+  //   path: `${siteConfig.pathPrefix}/people/`,
+  //   matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
+  //   component: `${profilePage}?__contentFilePath=${node.fiels.slug}`,
+  // });
 };
 
 exports.sourceNodes = async ({ actions, createNodeId }) => {

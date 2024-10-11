@@ -589,6 +589,13 @@ h6.top-category-header .number {
   letter-spacing: initial;
 }
 
+@media (max-width: 640px) {
+  h6.top-category-header .number {
+    padding: 0;
+    position: static;
+  }
+}
+
 h6.top-category-header {
   margin: 0 !important;
 }

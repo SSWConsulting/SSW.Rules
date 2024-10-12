@@ -7,7 +7,7 @@ const path = require('path');
 const axios = require('axios');
 const { createContentDigest } = require('gatsby-core-utils');
 
-if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   // Log build time stats to appInsights
   appInsights
     .setup()
@@ -16,7 +16,7 @@ if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
 } else {
   // eslint-disable-next-line no-console
   console.warn(
-    'Missing APPINSIGHTS_INSTRUMENTATIONKEY, this build will not be logged to Application Insights'
+    'Missing APPLICATIONINSIGHTS_CONNECTION_STRING, this build will not be logged to Application Insights'
   );
 }
 

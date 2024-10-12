@@ -113,7 +113,7 @@ jobs:
           GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
           DEPLOYMENT_URL: https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-production.yml
           VERSION_DEPLOYED: ${{ github.run_number }}
-          APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+          APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
           CONTENT_BRANCH: ${{ vars.CONTENT_BRANCH }}
           API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}
           AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}

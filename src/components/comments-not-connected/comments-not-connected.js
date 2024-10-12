@@ -13,7 +13,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 const appInsights = new ApplicationInsights({
   config: {
-    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
   },
 });
 

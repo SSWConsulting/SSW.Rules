@@ -110,7 +110,6 @@ export default function Category({ data, pageContext }) {
 
             <div className="rule-category-top py-4 px-6 pt-5">
               <TinaMarkdown content={pageContext.intro}></TinaMarkdown>
-              {/* <MD components={components} htmlAst={category.htmlAst} /> */}
 
               {category.frontmatter.archivedreason &&
                 category.frontmatter.archivedreason.length > 0 && (

@@ -24,7 +24,7 @@
     "@auth0/auth0-react": "^2.2.4",
     "@microsoft/applicationinsights-web": "^3.3.3",
     "@raae/gatsby-remark-oembed": "^0.3.3",
-    "algoliasearch": "^4.24.0",
+    "algoliasearch": "^5.8.1",
     "applicationinsights": "^3.3.0",
     "autoprefixer": "^10.4.20",
     "axios": "1.7.7",

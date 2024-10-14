@@ -173,7 +173,9 @@ exports.createPages = async ({ graphql, actions }) => {
     // Create the page for the category
     // eslint-disable-next-line no-console
     console.log('Creating Category: ' + node.parent.name);
-    let md = node.body;
+
+    node.body = formatRuleMarkdown(node.body, bodySchema);
+    node.body = parseMDX(node.body, bodySchema);
 
     createPage({
       path: node.frontmatter.uri,
@@ -181,6 +183,7 @@ exports.createPages = async ({ graphql, actions }) => {
       context: {
         rules: result.data.rules,
         slug: node.fields.slug,
+        intro: node.body,
         // index: node.frontmatter.index,
         redirects: node.frontmatter.redirects,
       },
@@ -246,7 +249,7 @@ exports.createPages = async ({ graphql, actions }) => {
     });
   });
 
-  // const profilePage = require.resolve('./src/pages/profile.js');
+  const profilePage = require.resolve('./src/pages/profile.js');
   // createPage({
   //   path: `${siteConfig.pathPrefix}/people/`,
   //   matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,

@@ -32,6 +32,9 @@ const appInsights = new ApplicationInsights({
 appInsights.loadAppInsights();
 
 export default function Category({ data, pageContext }) {
+  console.log('data', data);
+  console.log('pageContext', pageContext);
+
   const linkRef = useRef();
   const category = data.mdx;
 
@@ -106,6 +109,7 @@ export default function Category({ data, pageContext }) {
             </div>
 
             <div className="rule-category-top py-4 px-6 pt-5">
+              <TinaMarkdown content={pageContext.intro}></TinaMarkdown>
               {/* <MD components={components} htmlAst={category.htmlAst} /> */}
 
               {category.frontmatter.archivedreason &&

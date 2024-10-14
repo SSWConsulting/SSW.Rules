@@ -11,6 +11,7 @@ import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 const SideBar = ({ ruleTotalNumber, hideCount }) => {
   return (
     <div>
+      {/* TODO: https://github.com/SSWConsulting/SSW.Rules/issues/1553 */}
       <section className="rules-counter">
         {!hideCount && (
           <div className="grid grid-cols-6">
@@ -30,7 +31,6 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
           </div>
         )}
       </section>
-
       <section id="widget">
         {/*TODO: Fix this - Currently removing to stop this from working until this is fixed  */}
         <RulesWidget />

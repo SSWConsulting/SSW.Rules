@@ -32,8 +32,6 @@ const appInsights = new ApplicationInsights({
 appInsights.loadAppInsights();
 
 export default function Category({ data, pageContext }) {
-  console.log('pageContext', pageContext);
-  console.log('data', data);
   const linkRef = useRef();
   const category = data.mdx;
 

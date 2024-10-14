@@ -11,7 +11,7 @@ import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 const appInsights = new ApplicationInsights({
   config: {
-    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
   },
 });
 

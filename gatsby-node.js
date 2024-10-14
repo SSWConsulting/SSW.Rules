@@ -101,6 +101,7 @@ exports.createPages = async ({ graphql, actions }) => {
             slug
           }
           frontmatter {
+            index
             uri
             redirects
             experts
@@ -143,35 +144,36 @@ exports.createPages = async ({ graphql, actions }) => {
   console.log(result.data);
   result.data.categories.nodes.forEach((node) => {
     // Find any categories that can't resolve a rule
-    // node.frontmatter.index.forEach((inCat) => {
-    //   var match = false;
+    node.frontmatter.index.forEach((inCat) => {
+      var match = false;
 
-    //   result.data.rules.nodes.forEach((rulenode) => {
-    //     if (rulenode.frontmatter.uri == inCat) {
-    //       match = true;
-    //     }
-    //     if (rulenode.frontmatter.redirects) {
-    //       rulenode.frontmatter.redirects.forEach((redirect) => {
-    //         if (redirect == inCat) {
-    //           match = true;
-    //         }
-    //       });
-    //     }
-    //     if (typeof rulenode.body === 'string') {
-    //       const md = formatRuleMarkdown(rulenode.rawMarkdownBody);
-    //       rulenode.body = parseMDX(md, bodySchema);
-    //     }
-    //   });
+      result.data.rules.nodes.forEach((rulenode) => {
+        if (rulenode.frontmatter.uri == inCat) {
+          match = true;
+        }
+        if (rulenode.frontmatter.redirects) {
+          rulenode.frontmatter.redirects.forEach((redirect) => {
+            if (redirect == inCat) {
+              match = true;
+            }
+          });
+        }
+        if (typeof rulenode.body === 'string') {
+          const md = formatRuleMarkdown(rulenode.body);
+          rulenode.body = parseMDX(md, bodySchema);
+        }
+      });
 
-    //   if (match == false) {
-    //     // eslint-disable-next-line no-console
-    //     console.log(node.parent.name + ' cannot find rule ' + inCat);
-    //   }
-    // });
+      if (match == false) {
+        // eslint-disable-next-line no-console
+        console.log(node.parent.name + ' cannot find rule ' + inCat);
+      }
+    });
 
     // Create the page for the category
     // eslint-disable-next-line no-console
     console.log('Creating Category: ' + node.parent.name);
+    let md = node.body;
 
     createPage({
       path: node.frontmatter.uri,
@@ -222,7 +224,7 @@ exports.createPages = async ({ graphql, actions }) => {
       path: node.frontmatter.uri,
       component: ruleTemplate,
       context: {
-        mdx: parseMDX(formatRuleMarkdown(node.body), bodySchema),
+        mdx: node.body,
         slug: node.fields.slug,
         related: node.frontmatter.related ? node.frontmatter.related : [''],
         uri: node.frontmatter.uri,

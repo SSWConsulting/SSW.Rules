@@ -1,25 +1,32 @@
-// import { faGithub } from '@fortawesome/free-brands-svg-icons';
-// import {
-//   faArrowCircleRight,
-//   faBook,
-//   faExclamationTriangle,
-//   faFileLines,
-//   faPencilAlt,
-//   faQuoteLeft,
-// } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-// import { graphql, Link } from 'gatsby';
-// import MD from 'gatsby-custom-md';
-// import markdownIt from 'markdown-it';
-// import PropTypes from 'prop-types';
-// import React, { useEffect, useRef, useState } from 'react';
-// import { pathPrefix } from '../../site-config';
-// import Bookmark from '../components/bookmark/bookmark';
-// import Breadcrumb from '../components/breadcrumb/breadcrumb';
-// import GreyBox from '../components/greybox/greybox';
-// import RadioButton from '../components/radio-button/radio-button';
-// import Tooltip from '../components/tooltip/tooltip';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import MD from 'gatsby-custom-md';
+
+import GreyBox from '../components/greybox/greybox';
+
+import {
+  faArrowCircleRight,
+  faBook,
+  faExclamationTriangle,
+  faFileLines,
+  faPencilAlt,
+  faQuoteLeft,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { graphql, Link } from 'gatsby';
+import markdownIt from 'markdown-it';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import { pathPrefix } from '../../site-config';
+import Bookmark from '../components/bookmark/bookmark';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import RadioButton from '../components/radio-button/radio-button';
+import Tooltip from '../components/tooltip/tooltip';
+
+const components = {
+  greyBox: GreyBox,
+};
 
 // const appInsights = new ApplicationInsights({
 //   config: {
@@ -29,9 +36,10 @@
 
 // appInsights.loadAppInsights();
 
-// export default function Category({ data }) {
-//   const linkRef = useRef();
-//   const category = data.markdownRemark;
+export default function Category({ data, pageContext }) {
+  console.log('pageContext', pageContext);
+  const linkRef = useRef();
+  const category = data.markdownRemark;
 
 //   const [selectedOption, setSelectedOption] = useState('all');
 //   const [showViewButton, setShowViewButton] = useState(false);
@@ -58,17 +66,13 @@
 //     setIncludeArchived(!includeArchived);
 //   };
 
-//   const components = {
-//     greyBox: GreyBox,
-//   };
-
-//   var rules = data.rule.nodes
-//     .filter((r) => {
-//       return includeArchived || !r.frontmatter.archivedreason;
-//     })
-//     .filter((r) => {
-//       return category.frontmatter.index.includes(r.frontmatter.uri);
-//     });
+  var rules = pageContext.rules.nodes
+    .filter((r) => {
+      return includeArchived || !r.frontmatter.archivedreason;
+    })
+    .filter((r) => {
+      return category.frontmatter.index.includes(r.frontmatter.uri);
+    });
 
 //   return (
 //     <div>
@@ -261,12 +265,12 @@
 //                           </div>
 //                         </section>
 
-//                         <section
-//                           className={`rule-content mb-4
-//                             ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
-//                         >
-//                           <MD components={components} htmlAst={rule.htmlAst} />
-//                         </section>
+                        <section
+                          className={`rule-content mb-4
+                            ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
+                        >
+                          <TinaMarkdown content={rule.rawMarkdownBody} />
+                        </section>
 
 //                         <section
 //                           className={`rule-content mb-4
@@ -340,19 +344,39 @@
 //   pageContext: PropTypes.object.isRequired,
 // };
 
-// export const query = graphql`
-//   query ($slug: String!, $index: [String]!) {
-//     rule: allMdx(filter: { frontmatter: { uri: { in: $index } } }) {
-//       nodes {
-//         frontmatter {
-//           uri
-//           archivedreason
-//           title
-//           guid
-//           consulting
-//           experts
-//         }
-//       }
-//     }
-//   }
-// `;
+export const query = graphql`
+  query ($slug: String!, $index: [String]!) {
+    markdownRemark(fields: { slug: { eq: $slug } }) {
+      htmlAst
+      frontmatter {
+        title
+        archivedreason
+        index
+        uri
+        guid
+        consulting
+        experts
+      }
+      parent {
+        ... on File {
+          relativePath
+          name
+        }
+      }
+    }
+    rule: allMarkdownRemark(filter: { frontmatter: { uri: { in: $index } } }) {
+      nodes {
+        excerpt(format: HTML, pruneLength: 500)
+        rawMarkdownBody
+        frontmatter {
+          uri
+          archivedreason
+          title
+          guid
+          consulting
+          experts
+        }
+      }
+    }
+  }
+`;

@@ -7,6 +7,10 @@ const path = require('path');
 const axios = require('axios');
 const { createContentDigest } = require('gatsby-core-utils');
 const express = require('express');
+const formatRuleMarkdown = require('./src/services/ruleFormatter');
+const { parseMDX } = require('@tinacms/mdx');
+const bodySchema = require('./tina/collections/schemas/bodySchema.json');
+const { rule } = require('postcss');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights
@@ -126,9 +130,7 @@ exports.createPages = async ({ graphql, actions }) => {
             redirects
             seoDescription
           }
-          internal {
-            contentFilePath
-          }
+          rawMarkdownBody
         }
       }
     }
@@ -139,52 +141,57 @@ exports.createPages = async ({ graphql, actions }) => {
   console.log(result);
   console.log(result.data);
   result.data.categories.nodes.forEach((node) => {
+    // Find any categories that can't resolve a rule
+    node.frontmatter.index.forEach((inCat) => {
+      var match = false;
+
+      result.data.rules.nodes.forEach((rulenode) => {
+        if (rulenode.frontmatter.uri == inCat) {
+          match = true;
+        }
+        if (rulenode.frontmatter.redirects) {
+          rulenode.frontmatter.redirects.forEach((redirect) => {
+            if (redirect == inCat) {
+              match = true;
+            }
+          });
+        }
+        if (typeof rulenode.rawMarkdownBody === 'string') {
+          const md = formatRuleMarkdown(rulenode.rawMarkdownBody);
+          rulenode.rawMarkdownBody = parseMDX(md, bodySchema);
+        }
+      });
+
+      if (match == false) {
+        // eslint-disable-next-line no-console
+        console.log(node.parent.name + ' cannot find rule ' + inCat);
+      }
+    });
+
+    // Create the page for the category
+    // eslint-disable-next-line no-console
+    console.log('Creating Category: ' + node.parent.name);
+
     createPage({
       path: node.frontmatter.uri,
       component: categoryTemplate,
+      context: {
+        rules: result.data.rules,
+        slug: node.fields.slug,
+        index: node.frontmatter.index,
+        redirects: node.frontmatter.redirects,
+      },
     });
-    console.log('node', node);
-    //   // Find any categories that can't resolve a rule
-    //   node.frontmatter.index.forEach((inCat) => {
-    //     var match = false;
-    //     result.data.rules.nodes.forEach((rulenode) => {
-    //       if (rulenode.frontmatter.uri == inCat) {
-    //         match = true;
-    //       }
-    //       if (rulenode.frontmatter.redirects) {
-    //         rulenode.frontmatter.redirects.forEach((redirect) => {
-    //           if (redirect == inCat) {
-    //             match = true;
-    //           }
-    //         });
-    //       }
-    //     });
-    //     if (match == false) {
-    //       // eslint-disable-next-line no-console
-    //       console.log(node.parent.name + ' cannot find rule ' + inCat);
-    //     }
-    //   });
-    //   // Create the page for the category
-    //   // eslint-disable-next-line no-console
-    //   console.log('Creating Category: ' + node.parent.name);
-    // createPage({
-    //   path: node.parent.name,
-    //   component: `${categoryTemplate}?__contentFilePath=${node.internal.contentFilePath}`,
-    //   context: {
-    //     slug: node.fields.slug,
-    //     index: node.frontmatter.index,
-    //     redirects: node.frontmatter.redirects,
-    //   },
-    // });
-    //   node.frontmatter.redirects?.forEach((toPath) => {
-    //     // eslint-disable-next-line no-console
-    //     console.log(`\tRedirect: ${toPath} -> ${node.frontmatter.uri}`);
-    //     createRedirect({
-    //       fromPath: toPath,
-    //       toPath: '/' + node.frontmatter.uri,
-    //       isPermanent: true,
-    //     });
-    //   });
+
+    node.frontmatter.redirects?.forEach((toPath) => {
+      // eslint-disable-next-line no-console
+      console.log(`\tRedirect: ${toPath} -> ${node.frontmatter.uri}`);
+      createRedirect({
+        fromPath: toPath,
+        toPath: '/' + node.frontmatter.uri,
+        isPermanent: true,
+      });
+    });
   });
 
   result.data.rules.nodes.forEach((node) => {
@@ -209,37 +216,32 @@ exports.createPages = async ({ graphql, actions }) => {
           ' is missing a category'
       );
     }
+
     createPage({
       path: node.frontmatter.uri,
-      component: `${ruleTemplate}?__contentFilePath=${node.internal.contentFilePath}`,
+      component: ruleTemplate,
+      context: {
+        mdx: node.rawMarkdownBody,
+        slug: node.fields.slug,
+        related: node.frontmatter.related ? node.frontmatter.related : [''],
+        uri: node.frontmatter.uri,
+        redirects: node.frontmatter.redirects,
+        file: `rules/${node.frontmatter.uri}/rule.md`,
+        title: node.frontmatter.title,
+        seoDescription: node.frontmatter.seoDescription,
+      },
     });
-    // Create the page for the rule
-    // eslint-disable-next-line no-console
-    // console.log('Creating Rule: ' + node.frontmatter.title);
-    // createPage({
-    //   path: node.frontmatter.uri,
-    //   component: `${ruleTemplate}?__contentFilePath=${node.internal.contentFilePath}`,
-    //   context: {
-    //     slug: node.fields.slug,
-    //     related: node.frontmatter.related ? node.frontmatter.related : [''],
-    //     uri: node.frontmatter.uri,
-    //     redirects: node.frontmatter.redirects,
-    //     file: `rules/${node.frontmatter.uri}/rule.md`,
-    //     title: node.frontmatter.title,
-    //     seoDescription: node.frontmatter.seoDescription,
-    //   },
-    // });
 
-    //   node.frontmatter.redirects?.forEach((toPath) => {
-    //     // eslint-disable-next-line no-console
-    //     console.log(`\tRedirect: ${toPath} -> ${node.frontmatter.uri}`);
-    //     createRedirect({
-    //       fromPath: toPath,
-    //       toPath: '/' + node.frontmatter.uri,
-    //       isPermanent: true,
-    //     });
+    node.frontmatter.redirects?.forEach((toPath) => {
+      // eslint-disable-next-line no-console
+      console.log(`\tRedirect: ${toPath} -> ${node.frontmatter.uri}`);
+      createRedirect({
+        fromPath: toPath,
+        toPath: '/' + node.frontmatter.uri,
+        isPermanent: true,
+      });
+    });
   });
-  // });
 
   // const profilePage = require.resolve('./src/pages/profile.js');
   // createPage({

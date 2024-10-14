@@ -11,7 +11,7 @@
       "args": ["develop"],
       "stopOnEntry": false,
       "runtimeArgs": ["--nolazy"],
-      "sourceMaps": false
+      "sourceMaps": true
     },
     {
       "type": "chrome",

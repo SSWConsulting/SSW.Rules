@@ -17,7 +17,7 @@ appInsights.loadAppInsights();
 appInsights.addTelemetryInitializer((item) => {
   item.tags['ai.cloud.role'] = 'SSW.Rules-StaticClientPage';
 });
-appInsights.trackPageView();
+appInsights.trackPageView(); // Manually call trackPageView to establish the current user/session/pageview
 
 // Page Transitions
 export const wrapPageElement = wrapPageElementWithTransition;

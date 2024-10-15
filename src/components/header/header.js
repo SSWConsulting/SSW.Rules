@@ -18,6 +18,11 @@ import classNames from 'classnames';
 const appInsights = new ApplicationInsights({
   config: {
     connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+    extensionConfig: {
+      ['AppInsightsCfgSyncPlugin']: {
+        cfgUrl: '',
+      },
+    },
   },
 });
 

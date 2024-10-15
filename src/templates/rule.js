@@ -31,6 +31,11 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 const appInsights = new ApplicationInsights({
   config: {
     connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+    extensionConfig: {
+      ['AppInsightsCfgSyncPlugin']: {
+        cfgUrl: '',
+      },
+    },
   },
 });
 

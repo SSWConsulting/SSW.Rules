@@ -14,6 +14,11 @@ import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 const appInsights = new ApplicationInsights({
   config: {
     connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+    extensionConfig: {
+      ['AppInsightsCfgSyncPlugin']: {
+        cfgUrl: '',
+      },
+    },
   },
 });
 

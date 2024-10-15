@@ -1,7 +1,6 @@
 import { Collection, TinaField } from "tinacms";
 import bodySchema from "./schemas/bodySchema.json";
 
-
 export const Rules: Collection = {
   label: 'Rules',
   name: 'rules',

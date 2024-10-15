@@ -224,17 +224,17 @@ exports.createPages = async ({ graphql, actions }) => {
   result.data.rules.nodes.forEach((node) => {
     // Find any rules missing a category
     var match = false;
-    // if (!node.frontmatter.archivedreason) {
-    //   result.data.categories.nodes.forEach((catNode) => {
-    //     catNode.frontmatter.index.forEach((inCat) => {
-    //       if (node.frontmatter.uri == inCat) {
-    //         match = true;
-    //       }
-    //     });
-    //   });
-    // } else {
-    //   match = true;
-    // }
+    if (!node.frontmatter.archivedreason) {
+      result.data.categories.nodes.forEach((catNode) => {
+        catNode.frontmatter.index.forEach((inCat) => {
+          if (node.frontmatter.uri == inCat) {
+            match = true;
+          }
+        });
+      });
+    } else {
+      match = true;
+    }
     if (match == false) {
       // eslint-disable-next-line no-console
       console.log(

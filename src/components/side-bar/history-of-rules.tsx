@@ -66,7 +66,7 @@ export const historyOfRulesBlock: Template = {
               label: 'Help improve our Rules',
           }
       },
-      previewSrc: '/img/blocks/history-of-rules.png'
+      previewSrc: '/rules/img/blocks/history-of-rules.png'
   },
   fields: [
       {

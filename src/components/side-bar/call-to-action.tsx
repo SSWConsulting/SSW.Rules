@@ -41,7 +41,7 @@ export const callToActionBlock: Template = {
   label: 'Call to Action',
   name: 'callToAction',
   ui: {
-      previewSrc: '/img/blocks/call-to-action.png'
+      previewSrc: '/rules/img/blocks/call-to-action.png'
   },
   fields: [
       {

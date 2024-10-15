@@ -158,8 +158,6 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const categoryTemplate = require.resolve('./src/templates/category.js');
   const ruleTemplate = require.resolve('./src/templates/rule.js');
-  console.log(result);
-  console.log(result.data);
   result.data.categories.nodes.forEach((node) => {
     // Find any categories that can't resolve a rule
     node.frontmatter.index.forEach((inCat) => {

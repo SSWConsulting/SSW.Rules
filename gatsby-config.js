@@ -95,10 +95,6 @@ module.exports = {
       options: {
         extensions: ['.mdx', '.md'],
         gatsbyRemarkPlugins: [
-          {
-            resolve: 'gatsby-remark-my-plugin',
-            options: {},
-          },
           // {
           //   resolve: '@raae/gatsby-remark-oembed',
           //   options: {
@@ -136,7 +132,6 @@ module.exports = {
           // {
           //   resolve: 'gatsby-remark-relative-images-v2',
           // },
-
           // {
           //   resolve: 'gatsby-remark-images',
           //   options: {
@@ -166,7 +161,6 @@ module.exports = {
           //   },
           // },
           // 'gatsby-remark-fenced-divs',
-
           // // causes the block tokenizer error
           // // {
           // //   resolve: 'gatsby-remark-custom-blocks',

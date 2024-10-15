@@ -1,8 +1,0 @@
-{
-    "name": "gatsby-remark-my-plugin",
-    "version": "1.0.0",
-    "main": "index.js",
-    "keywords": [],
-    "author": "Your Name",
-    "license": "MIT"
-  }

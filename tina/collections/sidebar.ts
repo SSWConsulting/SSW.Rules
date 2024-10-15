@@ -7,7 +7,7 @@ const ruleCountBlock: Template = {
         defaultItem: {
             label: 'SSW Rules'
         },
-        previewSrc: '/img/blocks/rule-count.png'
+        previewSrc: '/rules/blocks/rule-count.png'
     }, 
     fields: [
         {
@@ -26,7 +26,7 @@ const latestRulesBlock: Template = {
         defaultItem: {
             label: 'Latest Rules'
         },
-        previewSrc: '/img/blocks/latest-rules.png'
+        previewSrc: '/rules/blocks/latest-rules.png'
     },
     fields: [
         {
@@ -48,7 +48,7 @@ const historyOfRulesBlock: Template = {
                 label: 'Help improve our Rules',
             }
         },
-        previewSrc: '/img/blocks/history-of-rules.png'
+        previewSrc: '/rules/blocks/history-of-rules.png'
     },
     fields: [
         {
@@ -114,7 +114,7 @@ const callToActionBlock: Template = {
     label: 'Call to Action',
     name: 'callToAction',
     ui: {
-        previewSrc: '/img/blocks/call-to-action.png'
+        previewSrc: '/rules/blocks/call-to-action.png'
     },
     fields: [
         {

@@ -6,11 +6,11 @@ const ruleCountBlock = {
     label: 'Rule Count',
     name: 'ruleCount',
     ui: {
-      defaultItem: {
-        label: 'SSW Rules',
-      },
-      previewSrc: '/img/blocks/rule-count.png',
-    },
+        defaultItem: {
+            label: 'SSW Rules'
+        },
+        previewSrc: '/rules/blocks/rule-count.png'
+    }, 
     fields: [
       {
         type: 'string',
@@ -28,7 +28,7 @@ const latestRulesBlock: Template = {
         defaultItem: {
             label: 'Latest Rules'
         },
-        previewSrc: '/img/blocks/latest-rules.png'
+        previewSrc: '/rules/blocks/latest-rules.png'
     },
     fields: [
         {
@@ -37,6 +37,120 @@ const latestRulesBlock: Template = {
             label: 'Label',
             required: true
         }
+    ]
+}
+
+const historyOfRulesBlock: Template = {
+    label: 'History of Rules',
+    name: 'historyOfRules',
+    ui: {
+        defaultItem: {
+            label: 'History of Rules',
+            improveOurRulesQuoteBlock: {
+                label: 'Help improve our Rules',
+            }
+        },
+        previewSrc: '/rules/blocks/history-of-rules.png'
+    },
+    fields: [
+        {
+            type: 'string',
+            name: 'label',
+            label: 'Label',
+            required: true
+        },
+        {
+            type: 'rich-text',
+            name: 'blurb',
+            label: 'Blurb',
+            required: true
+        },
+        {
+            type: 'object',
+            name: 'improveOurRulesQuoteBlock',
+            label: 'Improve Our Rules',
+            fields: [
+                {
+                    type: 'string',
+                    name: 'label',
+                    label: 'Label',
+                    required: true
+                },
+                {
+                    type: 'rich-text',
+                    name: 'quote',
+                    label: 'Quote',
+                    required: true
+                },
+                {
+                    type: 'image',
+                    name: 'quoteAuthorImage',
+                    label: 'Quote Author Image',
+                    required: true
+                },
+                {
+                    type: 'string',
+                    name: 'quoteAuthorName',
+                    label: 'Quote Author Name',
+                    required: true
+                },
+                {
+                    type: 'string',
+                    name: 'quoteAuthorUrl',
+                    label: 'Quote Author Url',
+                    description: 'URL to the quote author\'s website/People Page',
+                    required: true
+                },
+                {
+                    type: 'string',
+                    name: 'quoteAuthorTitle',
+                    label: 'Quote Author Title',
+                    required: true
+                }
+            ]
+        }
+    ]
+}
+
+const callToActionBlock: Template = {
+    label: 'Call to Action',
+    name: 'callToAction',
+    ui: {
+        previewSrc: '/rules/blocks/call-to-action.png'
+    },
+    fields: [
+        {
+            type: 'string',
+            name: 'label',
+            label: 'Label',
+            required: true
+        },
+       {
+            type: 'rich-text',
+            name: 'blurb',
+            label: 'Blurb',
+            required: true,
+            templates: [
+                {
+                    name: 'button',
+                    label: 'Button',
+                    fields: [
+                        {
+                            type: 'string',
+                            name: 'label',
+                            label: 'Label',
+                            required: true
+                        },
+                        {
+                            type: 'string',
+                            name: 'url',
+                            label: 'URL',
+                            required: true
+                        }
+                    ]
+                }
+            ]
+       }
     ]
 }
 

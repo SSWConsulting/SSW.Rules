@@ -4,6 +4,7 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowCircleRight,
   faBook,
+  faExclamationTriangle,
   faFileLines,
   faPencilAlt,
   faQuoteLeft,
@@ -13,12 +14,14 @@ import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { graphql, Link } from 'gatsby';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
-import { pathPrefix } from '../../site-config';
+import { pathPrefix } from '../../site-config.js';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+
 import RadioButton from '../components/radio-button/radio-button';
 import Tooltip from '../components/tooltip/tooltip';
+
+import { TinaMarkdown } from 'tinacms/dist/rich-text';
 const components = {
   greyBox: GreyBox,
 };
@@ -32,6 +35,7 @@ const appInsights = new ApplicationInsights({
 appInsights.loadAppInsights();
 
 export default function Category({ data, pageContext }) {
+  console.log('data', data);
   console.log('data', data);
   console.log('pageContext', pageContext);
 
@@ -273,9 +277,7 @@ export default function Category({ data, pageContext }) {
                           className={`rule-content mb-4
                           ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
                         >
-                          <div
-                            dangerouslySetInnerHTML={{ __html: rule.excerpt }}
-                          />
+                          <TinaMarkdown content={rule.fields.excerpt} />
                           <p className="pt-5 pb-0 font-bold">
                             <Link
                               ref={linkRef}
@@ -351,7 +353,6 @@ export const query = graphql`
         uri
         guid
         consulting
-        experts
       }
       parent {
         ... on File {
@@ -368,7 +369,6 @@ export const query = graphql`
           title
           guid
           consulting
-          experts
         }
       }
     }

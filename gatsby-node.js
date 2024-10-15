@@ -36,6 +36,23 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       name: 'slug',
       value: slug,
     });
+    if (node.frontmatter.type === 'rule') {
+      console.log('rule found');
+      const separator = '<!--endintro-->';
+      const excerpt =
+        node.body.indexOf(separator) === -1
+          ? ''
+          : node.body.split(separator)[0];
+
+      const excerptValue = parseMDX(formatRuleMarkdown(excerpt), bodySchema);
+
+      console.log('excerptValue', excerptValue);
+      createNodeField({
+        node,
+        name: 'excerpt',
+        value: JSON.stringify(excerptValue),
+      });
+    }
   }
 };
 
@@ -123,6 +140,7 @@ exports.createPages = async ({ graphql, actions }) => {
         nodes {
           fields {
             slug
+            excerpt
           }
           frontmatter {
             uri
@@ -161,6 +179,9 @@ exports.createPages = async ({ graphql, actions }) => {
         if (typeof rulenode.body === 'string') {
           const md = formatRuleMarkdown(rulenode.body);
           rulenode.body = parseMDX(md, bodySchema);
+        }
+        if (typeof rulenode.fields.excerpt === 'string') {
+          rulenode.fields.excerpt = JSON.parse(rulenode.fields.excerpt);
         }
       });
 
@@ -247,14 +268,13 @@ exports.createPages = async ({ graphql, actions }) => {
         isPermanent: true,
       });
     });
+    const profilePage = require.resolve('./src/pages/profile.js');
+    createPage({
+      path: `${siteConfig.pathPrefix}/people/`,
+      matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
+      component: `${profilePage}?__contentFilePath=${node.fields.slug}`,
+    });
   });
-
-  const profilePage = require.resolve('./src/pages/profile.js');
-  // createPage({
-  //   path: `${siteConfig.pathPrefix}/people/`,
-  //   matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
-  //   component: `${profilePage}?__contentFilePath=${node.fiels.slug}`,
-  // });
 };
 
 exports.sourceNodes = async ({ actions, createNodeId }) => {

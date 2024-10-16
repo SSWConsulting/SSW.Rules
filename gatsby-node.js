@@ -36,6 +36,13 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       name: 'slug',
       value: slug,
     });
+    createNodeField({
+      node,
+      name: 'tinaMarkdown',
+      value: JSON.stringify(
+        parseMDX(formatRuleMarkdown(node.body), bodySchema)
+      ),
+    });
     if (node.frontmatter.type === 'rule') {
       console.log('rule found');
       const separator = '<!--endintro-->';
@@ -45,7 +52,6 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
           : node.body.split(separator)[0];
 
       const excerptValue = parseMDX(formatRuleMarkdown(excerpt), bodySchema);
-
       console.log('excerptValue', excerptValue);
       createNodeField({
         node,

@@ -7,24 +7,24 @@ import {
   GetSecretContent,
 } from '../services/apiService';
 /* eslint-disable jsx-a11y/anchor-has-content */
+import { useAuth0 } from '@auth0/auth0-react';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faExclamationTriangle,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import markdownIt from 'markdown-it';
-import React, { useLayoutEffect, useState } from 'react';
-import { pathPrefix } from '../../site-config.js';
-
-import { useAuth0 } from '@auth0/auth0-react';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { format } from 'date-fns';
 import formatDistance from 'date-fns/formatDistance';
+import markdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
+import React, { useLayoutEffect, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
+import { pathPrefix } from '../../site-config.js';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import Comments from '../components/comments/comments';
 import Reaction from '../components/reaction/reaction';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
 import { useAuthService } from '../services/authService';
@@ -261,21 +261,21 @@ const Rule = ({ data, location, pageContext }) => {
                 </section>
               </section>
 
-              {/* <div className="lg:hidden md:w-1/1 px-4">
-                  <RuleSideBar
-                    categories={categories}
-                    location={location}
-                    rule={rule}
-                    relatedRules={data.relatedRules}
-                    relatedRulesFromRedirects={data.relatedRulesFromRedirects}
-                  />
-                </div> */}
+              <div className="lg:hidden md:w-1/1 px-4">
+                <RuleSideBar
+                  categories={categories}
+                  location={location}
+                  rule={rule}
+                  relatedRules={data.relatedRules}
+                  relatedRulesFromRedirects={data.relatedRulesFromRedirects}
+                />
+              </div>
 
-              {/* <Comments
-                  ruleGuid={rule.frontmatter.guid}
-                  title={rule.frontmatter.title}
-                  uri={rule.frontmatter.uri}
-                /> */}
+              <Comments
+                ruleGuid={rule.frontmatter.guid}
+                title={rule.frontmatter.title}
+                uri={rule.frontmatter.uri}
+              />
             </div>
           </div>
 

@@ -9,13 +9,7 @@ import {
 } from '../../services/apiService';
 import { useAuthService } from '../../services/authService';
 import PropTypes from 'prop-types';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-  },
-});
+import useAppInsights from '../../hooks/useAppInsights';
 
 const Bookmark = (props) => {
   const { ruleId } = props;
@@ -25,6 +19,8 @@ const Bookmark = (props) => {
   const { isAuthenticated, user, loginWithRedirect } = useAuth0();
   const { fetchIdToken } = useAuthService();
 
+  const { trackException } = useAppInsights();
+
   useEffect(() => {
     if (isAuthenticated) {
       GetBookmarksForUser(user.sub, ruleId)
@@ -32,10 +28,7 @@ const Bookmark = (props) => {
           setBookmarked(success.bookmarkStatus);
         })
         .catch((err) => {
-          appInsights.trackException({
-            error: new Error(err),
-            severityLevel: 3,
-          });
+          trackException(err, 3);
         });
     }
   }, [user, change]);
@@ -51,20 +44,14 @@ const Bookmark = (props) => {
               setChange(change + 1);
             })
             .catch((err) => {
-              appInsights.trackException({
-                error: new Error(err),
-                severityLevel: 3,
-              });
+              trackException(err, 3);
             })
         : RemoveBookmark({ ruleGuid: ruleId, UserId: user.sub }, jwt)
             .then(() => {
               setChange(change + 1);
             })
             .catch((err) => {
-              appInsights.trackException({
-                error: new Error(err),
-                severityLevel: 3,
-              });
+              trackException(err, 3);
             });
     } else {
       if (window.confirm('Sign in to bookmark this rule')) {

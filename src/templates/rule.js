@@ -12,8 +12,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { pathPrefix } from '../../site-config.js';
 import markdownIt from 'markdown-it';
-
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Comments from '../components/comments/comments';
@@ -27,14 +25,7 @@ import { format } from 'date-fns';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAuthService } from '../services/authService';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-  },
-});
-
-appInsights.loadAppInsights();
+import useAppInsights from '../hooks/useAppInsights.js';
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
@@ -45,6 +36,7 @@ const Rule = ({ data, location }) => {
   const { user, isAuthenticated } = useAuth0();
   const { fetchIdToken } = useAuthService();
   const [hiddenCount, setHiddenCount] = useState(0);
+  const { trackException, trackEvent } = useAppInsights();
 
   const loadSecretContent = async (userOrgId) => {
     const hidden = document.getElementsByClassName('hidden');
@@ -70,17 +62,11 @@ const Rule = ({ data, location }) => {
                       hiddenBlock.className = 'secret-content';
                     })
                     .catch((err) => {
-                      appInsights.trackException({
-                        error: new Error(err),
-                        severityLevel: 3,
-                      });
+                      trackException(err, 3);
                     });
                 })
                 .catch((err) => {
-                  appInsights.trackException({
-                    error: new Error(err),
-                    severityLevel: 3,
-                  });
+                  trackException(err, 3);
                 })
             : null;
         }
@@ -119,10 +105,7 @@ const Rule = ({ data, location }) => {
             );
           })
           .catch((err) => {
-            appInsights.trackException({
-              error: new Error(err),
-              severityLevel: 3,
-            });
+            trackException(err, 3);
           })
       : null;
   }, [user, isAuthenticated, hiddenCount]);
@@ -190,9 +173,7 @@ const Rule = ({ data, location }) => {
                         href={`${pathPrefix}/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
                         className="tooltip tooltip-button"
                         onClick={() => {
-                          appInsights.trackEvent({
-                            name: 'EditMode-NetlifyCMS',
-                          });
+                          trackEvent('EditMode-NetlifyCMS');
                         }}
                       >
                         <FontAwesomeIcon
@@ -216,9 +197,7 @@ const Rule = ({ data, location }) => {
                         href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.parent.relativePath}`}
                         className="tooltip tooltip-button"
                         onClick={() => {
-                          appInsights.trackEvent({
-                            name: 'EditMode-GitHub',
-                          });
+                          trackEvent('EditMode-GitHub');
                         }}
                       >
                         <FontAwesomeIcon

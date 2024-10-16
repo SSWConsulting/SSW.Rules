@@ -2,16 +2,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import PlaceHolderImage from '../../images/ssw-employee-profile-placeholder-sketch.jpg';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-  },
-});
-appInsights.loadAppInsights();
+import useAppInsights from '../../hooks/useAppInsights';
 
 const Acknowledgements = ({ authors, location }) => {
+  const { trackTrace } = useAppInsights();
+
   function ProfileBadge(props) {
     const author = props.author;
     return (
@@ -29,12 +24,8 @@ const Acknowledgements = ({ authors, location }) => {
 
   function ProfileImg({ author }) {
     const { noimage, img, title, url } = author;
-
     if (!title) {
-      appInsights.trackTrace({
-        message: `Profile title is missing at ${location.href}`,
-        severityLevel: 2,
-      });
+      trackTrace(`Profile title is missing at ${location.href}`, 2);
     }
 
     const getImgSource = () => {

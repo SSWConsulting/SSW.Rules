@@ -7,22 +7,12 @@ import {
   setUserOrganisation,
 } from '../../services/apiService';
 import { useAuthService } from '../../services/authService';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-    extensionConfig: {
-      ['AppInsightsCfgSyncPlugin']: {
-        cfgUrl: '',
-      },
-    },
-  },
-});
+import useAppInsights from '../../hooks/useAppInsights';
 
 const SignIn = () => {
   const { isAuthenticated, loginWithRedirect, user } = useAuth0();
   const { fetchIdToken } = useAuthService();
+  const { trackException } = useAppInsights();
 
   useEffect(() => {
     isAuthenticated ? setUserOrg() : null;
@@ -44,10 +34,7 @@ const SignIn = () => {
             });
           })
           .catch((err) => {
-            appInsights.trackException({
-              error: new Error(err),
-              severityLevel: 3,
-            });
+            trackException(err, 3);
           })
       : null;
   };

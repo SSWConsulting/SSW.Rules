@@ -7,7 +7,6 @@ import Tooltip from '../components/tooltip/tooltip';
 import RadioButton from '../components/radio-button/radio-button';
 import { Link } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowCircleRight,
@@ -19,27 +18,17 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Bookmark from '../components/bookmark/bookmark';
 import { pathPrefix } from '../../site-config';
+import useAppInsights from '../hooks/useAppInsights';
 
 config.autoAddCss = false;
-
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-    extensionConfig: {
-      ['AppInsightsCfgSyncPlugin']: {
-        cfgUrl: '',
-      },
-    },
-  },
-});
-
-appInsights.loadAppInsights();
 
 const Orphaned = ({ data }) => {
   const linkRef = useRef();
 
   const [selectedOption, setSelectedOption] = useState('all');
   const [showViewButton, setShowViewButton] = useState(false);
+
+  const { trackEvent } = useAppInsights();
 
   useEffect(() => {
     setShowViewButton(true);
@@ -187,9 +176,7 @@ const Orphaned = ({ data }) => {
                                   href={`${pathPrefix}/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
                                   className="tooltip tooltip-button"
                                   onClick={() => {
-                                    appInsights.trackEvent({
-                                      name: 'EditMode-NetlifyCMS',
-                                    });
+                                    trackEvent('EditMode-NetlifyCMS');
                                   }}
                                 >
                                   <FontAwesomeIcon
@@ -213,9 +200,7 @@ const Orphaned = ({ data }) => {
                                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
                                   className="tooltip tooltip-button"
                                   onClick={() => {
-                                    appInsights.trackEvent({
-                                      name: 'EditMode-GitHub',
-                                    });
+                                    trackEvent('EditMode-NetlifyCMS');
                                   }}
                                 >
                                   <FontAwesomeIcon

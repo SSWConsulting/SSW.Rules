@@ -1,29 +1,17 @@
 import React, { useRef } from 'react';
 import { Link } from 'gatsby';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
 } from '@fortawesome/free-solid-svg-icons';
-
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-    extensionConfig: {
-      ['AppInsightsCfgSyncPlugin']: {
-        cfgUrl: '',
-      },
-    },
-  },
-});
-
-appInsights.loadAppInsights();
+import useAppInsights from '../../hooks/useAppInsights';
 
 const Categories = ({ categories, location, rule }) => {
   const cat = location.state ? location.state.category : null;
   const linkRef = useRef();
+  const { trackEvent } = useAppInsights();
 
   return (
     <>
@@ -47,9 +35,7 @@ const Categories = ({ categories, location, rule }) => {
                         to={`/${category.frontmatter.index[indexCat - 1]}`}
                         state={{ category: cat }}
                         onClick={() => {
-                          appInsights.trackEvent({
-                            name: 'PreviousButtonPressed',
-                          });
+                          trackEvent('PreviousButtonPressed');
                         }}
                       >
                         <FontAwesomeIcon icon={faAngleDoubleLeft} />
@@ -79,9 +65,7 @@ const Categories = ({ categories, location, rule }) => {
                         to={`/${category.frontmatter.index[indexCat + 1]}`}
                         state={{ category: cat }}
                         onClick={() => {
-                          appInsights.trackEvent({
-                            name: 'NextButtonPressed',
-                          });
+                          trackEvent('NextButtonPressed');
                         }}
                       >
                         <FontAwesomeIcon icon={faAngleDoubleRight} />

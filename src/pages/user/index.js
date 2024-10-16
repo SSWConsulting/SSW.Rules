@@ -7,17 +7,7 @@ import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
 import { FilterOptions } from '@/components/filter/filter';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-    extensionConfig: {
-      ['AppInsightsCfgSyncPlugin']: {
-        cfgUrl: '',
-      },
-    },
-  },
-});
+import useAppInsights from '../../hooks/useAppInsights';
 
 const ActionTypes = {
   BEFORE: 'before',
@@ -39,6 +29,7 @@ const UserRules = ({ data, location }) => {
   const [hasNext, setHasNext] = useState(false);
   const [authorName, setAuthorName] = useState('');
   const [showProfileLink, setShowProfileLink] = useState(false);
+  const { trackException } = useAppInsights();
 
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
@@ -112,10 +103,7 @@ const UserRules = ({ data, location }) => {
       updateFilteredItems(filteredRules);
     } catch (err) {
       setNotFound(true);
-      appInsights.trackException({
-        error: new Error(err),
-        severityLevel: 3,
-      });
+      trackException(err, 3);
     }
   };
 

@@ -21,7 +21,6 @@ import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Filter } from '../profile-filter-menu/profile-filter-menu';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 import CommentsNotConnected from '../comments-not-connected/comments-not-connected';
 import DisableDisqusPrivacy from '../disable-disqus-privacy/disable-disqus-privacy';
@@ -33,17 +32,7 @@ import {
   faFileLines,
   faBook,
 } from '@fortawesome/free-solid-svg-icons';
-
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-    extensionConfig: {
-      ['AppInsightsCfgSyncPlugin']: {
-        cfgUrl: '',
-      },
-    },
-  },
-});
+import useAppInsights from '../../hooks/useAppInsights';
 
 const ProfileContent = (props) => {
   const [bookmarkedRules, setBookmarkedRules] = useState([]);
@@ -58,7 +47,7 @@ const ProfileContent = (props) => {
   const [viewStyle, setViewStyle] = useState('titleOnly');
   const { user, isAuthenticated } = useAuth0();
   const { fetchIdToken } = useAuthService();
-
+  const { trackException } = useAppInsights();
   const handleOptionChange = (e) => {
     setViewStyle(e.target.value);
   };
@@ -76,20 +65,14 @@ const ProfileContent = (props) => {
               props.setState(props.state + 1);
             })
             .catch((err) => {
-              appInsights.trackException({
-                error: new Error(err),
-                severityLevel: 3,
-              });
+              trackException(err, 3);
             })
         : RemoveReaction({ ruleGuid: ruleGuid, UserId: user.sub }, jwt)
             .then(() => {
               setChange(change + 1);
             })
             .catch((err) => {
-              appInsights.trackException({
-                error: new Error(err),
-                severityLevel: 3,
-              });
+              trackException(err, 3);
             });
     }
   }
@@ -114,10 +97,7 @@ const ProfileContent = (props) => {
         props.setBookmarkedRulesCount(bookmarkedRulesSpread.length);
       })
       .catch((err) => {
-        appInsights.trackException({
-          error: new Error(err),
-          severityLevel: 3,
-        });
+        trackException(err, 3);
       });
   }
 
@@ -149,10 +129,7 @@ const ProfileContent = (props) => {
     const jwt = await fetchIdToken();
     GetUser(user.sub, jwt).then((success) => {
       if (!success) {
-        appInsights.trackException({
-          error: new Error('Error getting user'),
-          severityLevel: 3,
-        });
+        trackException(err, 3);
         return;
       }
 
@@ -171,10 +148,7 @@ const ProfileContent = (props) => {
             }
           })
           .catch((err) => {
-            appInsights.trackException({
-              error: new Error(err),
-              severityLevel: 3,
-            });
+            trackException(err, 3);
           });
       }
     });
@@ -241,10 +215,7 @@ const ProfileContent = (props) => {
         props.setSuperDislikedRulesCount(superDislikedRules.length);
       })
       .catch((err) => {
-        appInsights.trackException({
-          error: new Error(err),
-          severityLevel: 3,
-        });
+        trackException(err, 3);
       });
   }
 
@@ -367,10 +338,7 @@ const RuleList = ({
         setState(state + 1);
       })
       .catch((err) => {
-        appInsights.trackException({
-          error: new Error(err),
-          severityLevel: 3,
-        });
+        trackException(err, 3);
       });
   }
 

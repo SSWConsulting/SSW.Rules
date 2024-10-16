@@ -10,23 +10,10 @@ import {
   faPlusCircle,
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { MegaMenuLayout } from 'ssw.megamenu';
 import { graphql, useStaticQuery, navigate } from 'gatsby';
 import classNames from 'classnames';
-
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-    extensionConfig: {
-      ['AppInsightsCfgSyncPlugin']: {
-        cfgUrl: '',
-      },
-    },
-  },
-});
-
-appInsights.loadAppInsights();
+import useAppInsights from '../../hooks/useAppInsights';
 
 // Example of a component-specific page transition
 const AnimatedContainer = posed.div({
@@ -114,6 +101,8 @@ const Header = ({ displayActions }) => {
 };
 
 const ActionButtons = () => {
+  const { trackEvent } = useAppInsights();
+
   return (
     <div className="action-btn-container max-sm:order-2 flex justify-items-end align-middle">
       <Tooltip text="Try out RulesGPT" showDelay={3000} hideDelay={18000}>
@@ -123,9 +112,7 @@ const ActionButtons = () => {
           href="https://rulesgpt.ssw.com.au"
           className="action-btn-link-underlined"
           onClick={() => {
-            appInsights.trackEvent({
-              name: 'RulesGPTButtonPressed',
-            });
+            trackEvent('RulesGPTButtonPressed');
           }}
         >
           <GPTIcon className="group group-hover:[&>circle]:fill-ssw-red" />

@@ -11,18 +11,7 @@ import DisqusIcon from '-!svg-react-loader!../images/disqusIcon.svg';
 import { useAuth0 } from '@auth0/auth0-react';
 import { GetUser } from '../services/apiService';
 import { useAuthService } from '../services/authService';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-    extensionConfig: {
-      ['AppInsightsCfgSyncPlugin']: {
-        cfgUrl: '',
-      },
-    },
-  },
-});
+import useAppInsights from '../hooks/useAppInsights';
 
 const Profile = ({ data, gitHubUsername }) => {
   const [selectedFilter, setSelectedFilter] = useState(4);
@@ -36,6 +25,7 @@ const Profile = ({ data, gitHubUsername }) => {
   const [dislikedRulesCount, setDislikedRulesCount] = useState();
   const [superDislikedRulesCount, setSuperDislikedRulesCount] = useState();
   const [commentedRulesCount, setCommentedRulesCount] = useState();
+  const { trackException } = useAppInsights();
 
   async function CheckUser() {
     const jwt = await fetchIdToken();
@@ -44,10 +34,7 @@ const Profile = ({ data, gitHubUsername }) => {
         setCommentsConnected(success.commentsConnected);
       })
       .catch((err) => {
-        appInsights.trackException({
-          error: new Error(err),
-          severityLevel: 3,
-        });
+        trackException(err, 3);
       });
   }
 

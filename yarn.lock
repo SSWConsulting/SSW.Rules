@@ -6817,6 +6817,7 @@ __metadata:
     query-string: "npm:^8.2.0"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
+    react-github-btn: "npm:^1.4.0"
     react-helmet: "npm:^6.1.0"
     react-jotform: "npm:^1.0.2"
     react-number-format: "npm:^5.4.2"
@@ -14579,6 +14580,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"github-buttons@npm:^2.22.0":
+  version: 2.29.1
+  resolution: "github-buttons@npm:2.29.1"
+  checksum: f403cce395b09acab1bc3c2d08549d1130f77a56338d7c7be84cd101774eeb681b0f9a050c6e263dc585c60f3a3cf406be762afe2400449ad842e41732a3f897
+  languageName: node
+  linkType: hard
+
 "github-from-package@npm:0.0.0":
   version: 0.0.0
   resolution: "github-from-package@npm:0.0.0"
@@ -21857,6 +21865,17 @@ __metadata:
     react: ">= 16.3"
     react-dom: ">= 16.3"
   checksum: bb7453add14732066e1136fa865721a9b75c52d096cf03b3a419b7f87770fbe220a601b1ecd1c097c737a6371ab9f72ad5af3579cbf9b5a61943562b1965da0f
+  languageName: node
+  linkType: hard
+
+"react-github-btn@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "react-github-btn@npm:1.4.0"
+  dependencies:
+    github-buttons: "npm:^2.22.0"
+  peerDependencies:
+    react: ">=16.3.0"
+  checksum: ce21b1081e8985fce93f19deb3ab3e20b36e80508fcd9346eb617728b2e242bea845434296a9b8acbc339259551d58e43d840dbe9ec03c21a7094a7a9038986e
   languageName: node
   linkType: hard
 

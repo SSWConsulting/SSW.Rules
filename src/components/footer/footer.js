@@ -13,6 +13,7 @@ import {
   faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
 import { pathPrefix } from '../../../site-config';
+import GitHubButton from 'react-github-btn';
 
 const buildTimestamp = preval`module.exports = new Date().getTime();`;
 
@@ -20,15 +21,38 @@ const Footer = () => {
   return (
     <>
       <div className="py-2 text-center bg-grey-translucent text-sm">
-        <section className="main-container">
-          We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
-          source. Powered by{' '}
-          <a
-            className="action-button-label footer-greybar-link"
+        <section className="main-container flex items-center justify-center">
+          <span className="mr-2">
+            We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
+            source. Loving SSW Rules? ⭐ us on{' '}
+            <a
+              href="https://github.com/SSWConsulting/SSW.Rules"
+              target="_blank"
+              rel="noreferrer"
+              className="action-button-label footer-greybar-link"
+            >
+              GitHub
+            </a>{' '}
+          </span>
+          <GitHubButton
             href="https://github.com/SSWConsulting/SSW.Rules"
+            data-size="large"
+            data-show-count="true"
+            aria-label="Star SSWConsulting/SSW.Rules on GitHub"
           >
-            GitHub <FontAwesomeIcon icon={faGithub} />
-          </a>
+            Star
+          </GitHubButton>
+        </section>
+        <section className="main-container flex items-center justify-center mt-2">
+          <span className="ml-2">
+            Stand by... we are migrating this site to{' '}
+            <a
+              className="action-button-label footer-greybar-link"
+              href="https://tina.io"
+            >
+              TinaCMS 🦙
+            </a>
+          </span>
         </section>
       </div>
       <footer className="bg-black py-6 md:py-4 lg:py-2">

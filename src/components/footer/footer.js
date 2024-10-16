@@ -13,6 +13,7 @@ import {
   faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
 import { pathPrefix } from '../../../site-config';
+import GitHubButton from 'react-github-btn';
 
 const buildTimestamp = preval`module.exports = new Date().getTime();`;
 
@@ -22,12 +23,22 @@ const Footer = () => {
       <div className="py-2 text-center bg-grey-translucent text-sm">
         <section className="main-container">
           We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
-          source. Powered by{' '}
+          source. Loving SSW Rules?{' '}
+          <GitHubButton
+            href="https://github.com/SSWConsulting/SSW.Rules"
+            data-icon="octicon-star"
+            data-size="large"
+            data-show-count="true"
+            aria-label="Star SSWConsulting/SSW.Rules on GitHub"
+          >
+            Star us on GitHub
+          </GitHubButton>{' '}
+          Stand by... we are migrating this site to{' '}
           <a
             className="action-button-label footer-greybar-link"
-            href="https://github.com/SSWConsulting/SSW.Rules"
+            href="https://tina.io"
           >
-            GitHub <FontAwesomeIcon icon={faGithub} />
+            TinaCMS
           </a>
         </section>
       </div>

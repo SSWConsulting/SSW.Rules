@@ -56,17 +56,17 @@ module.exports = {
         patterns: ['rules/**/*', 'categories/**/*'],
       },
     },
-    // {
-    //   resolve: 'gatsby-source-git',
-    //   options: {
-    //     name: 'categories',
-    //     remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
-    //     // Optionally supply a branch. If none supplied, you'll get the default branch.
-    //     branch: process.env.CONTENT_BRANCH,
-    //     // Tailor which files get imported eg. import the docs folder from a codebase.
-    //     patterns: ['assets/**'],
-    //   },
-    // },
+    {
+      resolve: 'gatsby-source-git',
+      options: {
+        name: 'categories',
+        remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
+        // Optionally supply a branch. If none supplied, you'll get the default branch.
+        branch: process.env.CONTENT_BRANCH,
+        // Tailor which files get imported eg. import the docs folder from a codebase.
+        patterns: ['assets/**'],
+      },
+    },
     {
       resolve: 'gatsby-source-filesystem',
       options: {

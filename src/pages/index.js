@@ -10,10 +10,10 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import SideBar from '../components/side-bar/side-bar';
 import TopCategory from '../components/top-category/top-category';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import SearchBar from '../components/search-bar/search-bar';
+import SidebarWithQuery from '../components/side-bar/side-bar';
 
 config.autoAddCss = false;
 
@@ -92,10 +92,7 @@ const Index = ({ data, location }) => {
           </div>
 
           <div className="w-full lg:w-1/4 px-4" id="sidebar">
-            <SideBar
-              ruleTotalNumber={data.rules.nodes.length}
-              location={location}
-            />
+            <SidebarWithQuery />
           </div>
         </div>
       </div>

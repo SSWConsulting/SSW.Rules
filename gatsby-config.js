@@ -50,21 +50,16 @@ module.exports = {
       options: {
         name: 'categories',
         remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
+        local: process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined,
         // Optionally supply a branch. If none supplied, you'll get the default branch.
         branch: process.env.CONTENT_BRANCH,
         // Tailor which files get imported eg. import the docs folder from a codebase.
-        patterns: ['categories/**/*', 'rules/**/*'],
-      },
-    },
-    {
-      resolve: 'gatsby-source-git',
-      options: {
-        name: 'categories',
-        remote: 'https://github.com/SSWConsulting/SSW.Rules.Content.git',
-        // Optionally supply a branch. If none supplied, you'll get the default branch.
-        branch: process.env.CONTENT_BRANCH,
-        // Tailor which files get imported eg. import the docs folder from a codebase.
-        patterns: ['assets/**'],
+        patterns: [
+          'categories/**/*',
+          'rules/**/*',
+          'assets/**',
+          'sidebar.json',
+        ],
       },
     },
     {

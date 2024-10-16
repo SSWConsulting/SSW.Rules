@@ -10,7 +10,6 @@ const express = require('express');
 const formatRuleMarkdown = require('./src/services/ruleFormatter');
 const { parseMDX } = require('@tinacms/mdx');
 const bodySchema = require('./tina/collections/schemas/bodySchema.json');
-const { rule } = require('postcss');
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   // Log build time stats to appInsights

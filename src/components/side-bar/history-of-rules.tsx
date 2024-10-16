@@ -2,9 +2,11 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { Template } from 'tinacms';
+import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import { parseMDX } from '@tinacms/mdx';
 
-export const HistoryOfRulesBlock = ({ label, improveOurRulesQuoteBlock }) => {
-  // TODO: Migrate to use Rich-text and add TinaCMS params
+export const HistoryOfRulesBlock = ({ label, blurb, improveOurRulesQuoteBlock }) => {
+
   return (
     <section id="history-of-rules">
       <section id="why-all-these-rules">

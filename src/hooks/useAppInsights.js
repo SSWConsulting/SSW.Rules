@@ -8,6 +8,8 @@ export default function useAppInsights() {
       config: {
         connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
         extensionConfig: {
+          // below config was added to avoid "https://js.monitor.azure.com/scripts/b/ai.config.1.cfg.json" errors
+          // issue - https://github.com/microsoft/ApplicationInsights-JS/issues/2341
           ['AppInsightsCfgSyncPlugin']: {
             cfgUrl: '',
           },

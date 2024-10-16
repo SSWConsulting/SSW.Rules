@@ -7,6 +7,11 @@ export default function useAppInsights() {
     new ApplicationInsights({
       config: {
         connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+        extensionConfig: {
+          ['AppInsightsCfgSyncPlugin']: {
+            cfgUrl: '',
+          },
+        },
       },
     });
 

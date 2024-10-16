@@ -1,13 +1,13 @@
-import Filter, { FilterOptions } from '../components/filter/filter';
 import React, { useEffect, useState } from 'react';
+import Filter, { FilterOptions } from '../components/filter/filter';
 
-import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import SideBar from '../components/side-bar/side-bar';
-import SearchBar from '../components/search-bar/search-bar';
 import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import LatestRulesContent from '../components/latest-rules-content/latestRulesContent';
+import SearchBar from '../components/search-bar/search-bar';
+import SideBar from '../components/side-bar/side-bar';
 import { sanitizeName } from '../helpers/sanitizeName';
 
 const LatestRules = ({ data, location }) => {
@@ -18,7 +18,7 @@ const LatestRules = ({ data, location }) => {
 
   const filterTitle = 'Results';
   const history = data.allHistoryJson.edges;
-  const rules = data.allMarkdownRemark.nodes;
+  const rules = data.allMdx.nodes;
   const userRules = data.allCommitsJson.edges;
 
   const queryStringSearch = qs.parse(location?.search, {
@@ -176,7 +176,7 @@ export const pageQuery = graphql`
         }
       }
     }
-    allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
+    allMdx(filter: { frontmatter: { type: { eq: "rule" } } }) {
       nodes {
         frontmatter {
           title

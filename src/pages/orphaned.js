@@ -1,24 +1,24 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
-import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import Tooltip from '../components/tooltip/tooltip';
-import RadioButton from '../components/radio-button/radio-button';
-import { Link } from 'gatsby';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowCircleRight,
-  faPencilAlt,
-  faExclamationTriangle,
-  faQuoteLeft,
-  faFileLines,
   faBook,
+  faExclamationTriangle,
+  faFileLines,
+  faPencilAlt,
+  faQuoteLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import Bookmark from '../components/bookmark/bookmark';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { graphql, Link, useStaticQuery } from 'gatsby';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import { pathPrefix } from '../../site-config';
+import Bookmark from '../components/bookmark/bookmark';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import RadioButton from '../components/radio-button/radio-button';
+import Tooltip from '../components/tooltip/tooltip';
 
 config.autoAddCss = false;
 
@@ -32,7 +32,7 @@ appInsights.loadAppInsights();
 
 const Orphaned = ({ data }) => {
   const linkRef = useRef();
-
+  console.log('data', data);
   const [selectedOption, setSelectedOption] = useState('all');
   const [showViewButton, setShowViewButton] = useState(false);
 
@@ -61,13 +61,18 @@ const Orphaned = ({ data }) => {
           catNode.frontmatter.index.forEach((inCat) => {
             if (node.frontmatter.uri == inCat) {
               match = true;
+              console.log(
+                `rule \"${node.frontmatter.uri}\" found in category \"${catNode.frontmatter.title}\"`
+              );
             }
           });
         });
       } else {
         match = true;
+        console.log('archived rule', node.frontmatter.uri);
       }
       if (match == false) {
+        console.log('orphaned rule', node.frontmatter.uri);
         orphanedRules.push(node);
       }
     });
@@ -231,18 +236,24 @@ const Orphaned = ({ data }) => {
                           className={`rule-content mb-4
                             ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                         >
-                          <div
-                            dangerouslySetInnerHTML={{ __html: rule.html }}
+                          <TinaMarkdown
+                            content={JSON.parse(rule.fields.tinaMarkdown)}
                           />
+                          {/* <div
+                            dangerouslySetInnerHTML={{ __html: rule.html }}
+                          /> */}
                         </section>
 
                         <section
                           className={`rule-content mb-4
                           ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
                         >
-                          <div
-                            dangerouslySetInnerHTML={{ __html: rule.excerpt }}
+                          <TinaMarkdown
+                            content={JSON.parse(rule.fields.excerpt)}
                           />
+                          {/* <div
+                            dangerouslySetInnerHTML={{ __html: rule.excerpt }}
+                          /> */}
                           <p className="pt-5 pb-0 font-bold">
                             <Link
                               ref={linkRef}
@@ -275,18 +286,15 @@ Orphaned.propTypes = {
 function OrphanedWithQuery(props) {
   const data = useStaticQuery(graphql`
     query OrphanedQuery {
-      main: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "main" } }
-        }
-      ) {
+      main: allMdx(filter: { frontmatter: { type: { eq: "main" } } }) {
         nodes {
-          html
           frontmatter {
             type
             title
             index
+          }
+          fields {
+            tinaMarkdown
           }
           parent {
             ... on File {
@@ -295,14 +303,10 @@ function OrphanedWithQuery(props) {
           }
         }
       }
-      topCategories: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "top-category" } }
-        }
+      topCategories: allMdx(
+        filter: { frontmatter: { type: { eq: "top-category" } } }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -316,14 +320,10 @@ function OrphanedWithQuery(props) {
           }
         }
       }
-      categories: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "category" } }
-        }
+      categories: allMdx(
+        filter: { frontmatter: { type: { eq: "category" } } }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -338,17 +338,17 @@ function OrphanedWithQuery(props) {
           }
         }
       }
-      rules: allMarkdownRemark(
-        filter: { frontmatter: { type: { eq: "rule" } } }
-      ) {
+      rules: allMdx(filter: { frontmatter: { type: { eq: "rule" } } }) {
         nodes {
           frontmatter {
             uri
             archivedreason
             title
           }
-          html
-          excerpt(format: HTML, pruneLength: 500)
+          fields {
+            excerpt
+            tinaMarkdown
+          }
         }
       }
     }

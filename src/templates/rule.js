@@ -7,22 +7,21 @@ import {
   GetSecretContent,
 } from '../services/apiService';
 /* eslint-disable jsx-a11y/anchor-has-content */
+import { useAuth0 } from '@auth0/auth0-react';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faExclamationTriangle,
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import markdownIt from 'markdown-it';
-import React, { useLayoutEffect, useState } from 'react';
-import { pathPrefix } from '../../site-config.js';
-
-import { useAuth0 } from '@auth0/auth0-react';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { format } from 'date-fns';
 import formatDistance from 'date-fns/formatDistance';
+import markdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
+import React, { useLayoutEffect, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
+import { pathPrefix } from '../../site-config.js';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Comments from '../components/comments/comments';
@@ -43,8 +42,7 @@ const Rule = ({ data, location, pageContext }) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
   const { mdx } = pageContext;
-  console.log('data', pageContext);
-  const rule = data.markdownRemark;
+  const rule = data.mdx;
   const categories = data.categories.nodes;
   const { user, isAuthenticated } = useAuth0();
   const { fetchIdToken } = useAuthService();
@@ -106,7 +104,6 @@ const Rule = ({ data, location, pageContext }) => {
     content: PropTypes.string,
     orgName: PropTypes.string,
   };
-
   useLayoutEffect(() => {
     isAuthenticated
       ? GetOrganisations(user.sub)
@@ -306,11 +303,10 @@ export default Rule;
 
 export const query = graphql`
   query ($slug: String!, $uri: String!, $related: [String]!, $file: String!) {
-    markdownRemark(fields: { slug: { eq: $slug } }) {
+    mdx(fields: { slug: { eq: $slug } }) {
       fields {
         slug
       }
-      html
       frontmatter {
         uri
         title
@@ -332,9 +328,7 @@ export const query = graphql`
         }
       }
     }
-    categories: allMarkdownRemark(
-      filter: { frontmatter: { index: { glob: $uri } } }
-    ) {
+    categories: allMdx(filter: { frontmatter: { index: { glob: $uri } } }) {
       nodes {
         frontmatter {
           title
@@ -347,9 +341,7 @@ export const query = graphql`
         }
       }
     }
-    relatedRules: allMarkdownRemark(
-      filter: { frontmatter: { uri: { in: $related } } }
-    ) {
+    relatedRules: allMdx(filter: { frontmatter: { uri: { in: $related } } }) {
       nodes {
         frontmatter {
           title
@@ -357,7 +349,7 @@ export const query = graphql`
         }
       }
     }
-    relatedRulesFromRedirects: allMarkdownRemark(
+    relatedRulesFromRedirects: allMdx(
       filter: { frontmatter: { redirects: { in: $related } } }
     ) {
       nodes {

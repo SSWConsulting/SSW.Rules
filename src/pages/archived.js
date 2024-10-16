@@ -1,14 +1,15 @@
-import React, { useRef } from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
-import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
+import {
+  faArchive,
+  faExclamationTriangle,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { graphql, Link, useStaticQuery } from 'gatsby';
+import PropTypes from 'prop-types';
+import React, { useRef } from 'react';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import SideBar from '../components/side-bar/side-bar';
-import { Link } from 'gatsby';
 import TopCategoryHeader from '../components/topcategory-header/topcategory-header';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArchive } from '@fortawesome/free-solid-svg-icons';
 
 config.autoAddCss = false;
 
@@ -163,14 +164,8 @@ Archived.propTypes = {
 function ArchivedWithQuery(props) {
   const data = useStaticQuery(graphql`
     query ArchiveQuery {
-      main: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "main" } }
-        }
-      ) {
+      main: allMdx(filter: { frontmatter: { type: { eq: "main" } } }) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -183,14 +178,10 @@ function ArchivedWithQuery(props) {
           }
         }
       }
-      topCategories: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "top-category" } }
-        }
+      topCategories: allMdx(
+        filter: { frontmatter: { type: { eq: "top-category" } } }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -204,14 +195,10 @@ function ArchivedWithQuery(props) {
           }
         }
       }
-      categories: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "category" } }
-        }
+      categories: allMdx(
+        filter: { frontmatter: { type: { eq: "category" } } }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -226,9 +213,7 @@ function ArchivedWithQuery(props) {
           }
         }
       }
-      rules: allMarkdownRemark(
-        filter: { frontmatter: { type: { eq: "rule" } } }
-      ) {
+      rules: allMdx(filter: { frontmatter: { type: { eq: "rule" } } }) {
         nodes {
           frontmatter {
             uri

@@ -1,19 +1,18 @@
-import { Link, useStaticQuery, graphql } from 'gatsby';
+import { config } from '@fortawesome/fontawesome-svg-core';
 import {
   faArchive,
-  faPause,
   faBolt,
   faFrownOpen,
+  faPause,
 } from '@fortawesome/free-solid-svg-icons';
-
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { graphql, Link, useStaticQuery } from 'gatsby';
 import PropTypes from 'prop-types';
 import React from 'react';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import SearchBar from '../components/search-bar/search-bar';
 import SideBar from '../components/side-bar/side-bar';
 import TopCategory from '../components/top-category/top-category';
-import { config } from '@fortawesome/fontawesome-svg-core';
-import SearchBar from '../components/search-bar/search-bar';
 
 config.autoAddCss = false;
 
@@ -111,14 +110,8 @@ Index.propTypes = {
 function IndexWithQuery(props) {
   const data = useStaticQuery(graphql`
     query HomepageQuery {
-      main: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "main" } }
-        }
-      ) {
+      main: allMdx(filter: { frontmatter: { type: { eq: "main" } } }) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -131,14 +124,10 @@ function IndexWithQuery(props) {
           }
         }
       }
-      topCategories: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "top-category" } }
-        }
+      topCategories: allMdx(
+        filter: { frontmatter: { type: { eq: "top-category" } } }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -152,14 +141,10 @@ function IndexWithQuery(props) {
           }
         }
       }
-      categories: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/(categories)/" }
-          frontmatter: { type: { eq: "category" } }
-        }
+      categories: allMdx(
+        filter: { frontmatter: { type: { eq: "category" } } }
       ) {
         nodes {
-          html
           frontmatter {
             type
             title
@@ -174,9 +159,7 @@ function IndexWithQuery(props) {
           }
         }
       }
-      rules: allMarkdownRemark(
-        filter: { frontmatter: { type: { eq: "rule" } } }
-      ) {
+      rules: allMdx(filter: { frontmatter: { type: { eq: "rule" } } }) {
         nodes {
           frontmatter {
             title

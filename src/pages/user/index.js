@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-import LatestRulesContent from '@/components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '@/components/breadcrumb/breadcrumb';
+import { FilterOptions } from '@/components/filter/filter';
+import LatestRulesContent from '@/components/latest-rules-content/latestRulesContent';
 import SideBar from '@/components/side-bar/side-bar';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
-import { FilterOptions } from '@/components/filter/filter';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 const appInsights = new ApplicationInsights({
   config: {
     instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
@@ -36,7 +36,7 @@ const UserRules = ({ data, location }) => {
   const [showProfileLink, setShowProfileLink] = useState(false);
 
   const filterTitle = 'Results';
-  const rules = data.allMarkdownRemark.nodes;
+  const rules = data.allMdx.nodes;
 
   // eslint-disable-next-line no-undef
   const uniqueRuleTitles = new Set();
@@ -358,7 +358,7 @@ const UserRules = ({ data, location }) => {
 
 export const pageQuery = graphql`
   query latestRulesQuery {
-    allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
+    allMdx(filter: { frontmatter: { type: { eq: "rule" } } }) {
       nodes {
         frontmatter {
           title

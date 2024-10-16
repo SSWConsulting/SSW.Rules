@@ -9,13 +9,7 @@ import {
   RemoveReaction,
 } from '../../services/apiService';
 import { useAuthService } from '../../services/authService';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-  },
-});
+import useAppInsights from '../../hooks/useAppInsights';
 
 const Reaction = (props) => {
   const { ruleId } = props;
@@ -29,6 +23,8 @@ const Reaction = (props) => {
   const { isAuthenticated, user, loginWithRedirect } = useAuth0();
   const { fetchIdToken } = useAuthService();
 
+  const { trackException } = useAppInsights();
+
   useEffect(() => {
     if (isAuthenticated) {
       GetReactionForUser(ruleId, user.sub)
@@ -40,10 +36,7 @@ const Reaction = (props) => {
           setCurrentReactionType(success.userStatus);
         })
         .catch((err) => {
-          appInsights.trackException({
-            error: new Error(err),
-            severityLevel: 3,
-          });
+          trackException(err, 3);
         });
     } else {
       setCurrentReactionType(null);
@@ -55,10 +48,7 @@ const Reaction = (props) => {
           setSuperDisikesCount(success.superDislikeCount ?? 0);
         })
         .catch((err) => {
-          appInsights.trackException({
-            error: new Error(err),
-            severityLevel: 3,
-          });
+          trackException(err, 3);
         });
     }
   }, [change, user]);
@@ -91,10 +81,7 @@ const Reaction = (props) => {
             setChange(change + 1);
           })
           .catch((err) => {
-            appInsights.trackException({
-              error: new Error(err),
-              severityLevel: 3,
-            });
+            trackException(err, 3);
           });
       } else {
         if (type == ReactionType.SuperLike) {
@@ -115,10 +102,7 @@ const Reaction = (props) => {
             setChange(change + 1);
           })
           .catch((err) => {
-            appInsights.trackException({
-              error: new Error(err),
-              severityLevel: 3,
-            });
+            trackException(err, 3);
           });
       }
     } else {

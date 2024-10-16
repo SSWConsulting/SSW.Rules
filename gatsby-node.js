@@ -44,15 +44,12 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       ),
     });
     if (node.frontmatter.type === 'rule') {
-      console.log('rule found');
       const separator = '<!--endintro-->';
       const excerpt =
         node.body.indexOf(separator) === -1
           ? ''
           : node.body.split(separator)[0];
-
       const excerptValue = parseMDX(formatRuleMarkdown(excerpt), bodySchema);
-      console.log('excerptValue', excerptValue);
       createNodeField({
         node,
         name: 'excerpt',

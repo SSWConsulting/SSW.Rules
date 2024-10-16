@@ -50,7 +50,7 @@ const Footer = () => {
               className="action-button-label footer-greybar-link"
               href="https://tina.io"
             >
-              TinaCMS 🦙
+              🦙 TinaCMS
             </a>
           </span>
         </section>

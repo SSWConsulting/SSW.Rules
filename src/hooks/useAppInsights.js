@@ -7,20 +7,25 @@ export default function useAppInsights() {
     new ApplicationInsights({
       config: {
         connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-        extensionConfig: {
-          // below config was added to avoid "https://js.monitor.azure.com/scripts/b/ai.config.1.cfg.json" errors
-          // issue - https://github.com/microsoft/ApplicationInsights-JS/issues/2341
-          ['AppInsightsCfgSyncPlugin']: {
-            cfgUrl: '',
-          },
-        },
       },
     });
 
   if (ai) {
     ai.loadAppInsights();
-    ai.addTelemetryInitializer((item) => {
-      item.tags['ai.cloud.role'] = 'SSW.Rules-StaticClientPage';
+    ai.addTelemetryInitializer((envelope) => {
+      // this filtering was added to ignore this dependency "https://js.monitor.azure.com/scripts/b/ai.config.1.cfg.json" errors
+      // issue - https://github.com/microsoft/ApplicationInsights-JS/issues/2341
+      if (
+        envelope.baseData &&
+        envelope.baseData.name &&
+        envelope.baseData.name.includes(
+          'https://js.monitor.azure.com/scripts/b/ai.config.1.cfg.json'
+        )
+      ) {
+        return false;
+      }
+
+      envelope.tags['ai.cloud.role'] = 'SSW.Rules-StaticClientPage';
     });
   }
 

@@ -18,7 +18,6 @@ import Comments from '../components/comments/comments';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
-import Reaction from '../components/reaction/reaction';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
 import formatDistance from 'date-fns/formatDistance';
 import { format } from 'date-fns';
@@ -26,6 +25,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useAuthService } from '../services/authService';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import useAppInsights from '../hooks/useAppInsights.js';
+import Discussion from '../components/discussion/discussion.js';
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
@@ -239,11 +239,7 @@ const Rule = ({ data, location }) => {
                 <section
                   id="more"
                   className="mt-12 flex flex-wrap pt-6 pb-6 lg:pb-12 text-center -mb-6"
-                >
-                  <div className="likes w-full">
-                    <Reaction ruleId={rule.frontmatter.guid} />
-                  </div>
-                </section>
+                ></section>
               </section>
 
               <div className="lg:hidden md:w-1/1 px-4">
@@ -255,6 +251,8 @@ const Rule = ({ data, location }) => {
                   relatedRulesFromRedirects={data.relatedRulesFromRedirects}
                 />
               </div>
+
+              <Discussion ruleGuid={rule.frontmatter.guid} />
 
               <Comments
                 ruleGuid={rule.frontmatter.guid}

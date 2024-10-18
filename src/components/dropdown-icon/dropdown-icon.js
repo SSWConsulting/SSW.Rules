@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
 import DropdownBadge from '../dropdown-badge/dropdown-badge';
 import DropdownCard from '../dropdown-card/dropdown-card';
 
-const DropdownIcon = ({ displayActions }) => {
+const DropdownIcon = () => {
   const [open, setOpen] = useState(false);
 
   const drop = useRef(null);
@@ -21,15 +20,9 @@ const DropdownIcon = ({ displayActions }) => {
   return (
     <div className="dropdown" ref={drop}>
       <DropdownBadge onClick={() => setOpen((open) => !open)} />
-      {open && (
-        <DropdownCard setOpen={setOpen} displayActions={displayActions} />
-      )}
+      {open && <DropdownCard />}
     </div>
   );
-};
-
-DropdownIcon.propTypes = {
-  displayActions: PropTypes.bool,
 };
 
 export default DropdownIcon;

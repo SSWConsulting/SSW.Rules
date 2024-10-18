@@ -6,7 +6,6 @@ const titles = {
   '/user/': `User Rules`,
   '/orphaned/': `Orphaned Rules`,
   '/archived/': `Archived Rules`,
-  '/profile/': `Profile`,
 };
 
 module.exports = {

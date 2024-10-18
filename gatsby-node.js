@@ -239,13 +239,6 @@ exports.createPages = async ({ graphql, actions }) => {
       });
     });
   });
-
-  const profilePage = require.resolve('./src/pages/profile.js');
-  createPage({
-    path: `${siteConfig.pathPrefix}/people/`,
-    matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
-    component: profilePage,
-  });
 };
 
 exports.sourceNodes = async ({ actions, createNodeId }) => {

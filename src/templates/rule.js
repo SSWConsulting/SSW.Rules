@@ -26,6 +26,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useAuthService } from '../services/authService';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import useAppInsights from '../hooks/useAppInsights.js';
+import Discussion from '../components/discussion/discussion.js';
 
 const Rule = ({ data, location }) => {
   const capitalizeFirstLetter = (string) => {
@@ -255,6 +256,8 @@ const Rule = ({ data, location }) => {
                   relatedRulesFromRedirects={data.relatedRulesFromRedirects}
                 />
               </div>
+
+              <Discussion ruleGuid={rule.frontmatter.guid} />
 
               <Comments
                 ruleGuid={rule.frontmatter.guid}

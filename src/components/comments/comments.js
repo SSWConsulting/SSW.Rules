@@ -8,7 +8,7 @@ const Comments = (props) => {
     title: props.title,
   };
   return (
-    <div className="disqus-box">
+    <div className="discussion-box">
       <Disqus config={disqusConfig} />
     </div>
   );

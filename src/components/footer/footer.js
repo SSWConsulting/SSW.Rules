@@ -24,14 +24,14 @@ const Footer = () => {
         <section className="main-container flex items-center justify-center">
           <span className="mr-2">
             We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
-            source. Loving SSW Rules? ⭐ us on{' '}
+            source. Loving SSW Rules?{' '}
             <a
               href="https://github.com/SSWConsulting/SSW.Rules"
               target="_blank"
               rel="noreferrer"
               className="action-button-label footer-greybar-link"
             >
-              GitHub
+              Star us on GitHub
             </a>{' '}
           </span>
           <GitHubButton

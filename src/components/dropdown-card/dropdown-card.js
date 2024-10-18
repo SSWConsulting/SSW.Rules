@@ -1,10 +1,9 @@
 import React from 'react';
-import { navigate } from 'gatsby';
 import PropTypes from 'prop-types';
 import { useAuth0 } from '@auth0/auth0-react';
 import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
 
-const DropdownCard = ({ setOpen }) => {
+const DropdownCard = () => {
   const { logout, user } = useAuth0();
   return (
     <>

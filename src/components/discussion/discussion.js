@@ -7,7 +7,7 @@ const Discussion = (props) => {
     <div className="discussion-box">
       <Giscus
         id="comments"
-        repo="SSWConsulting/SSW.Rules"
+        repo="SSWConsulting/SSW.Rules.Content"
         repoId={process.env.GISCUS_REPO_ID}
         category="General"
         categoryId={process.env.GISCUS_CATEGORY_ID}

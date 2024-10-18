@@ -1221,66 +1221,6 @@ div.bad-example {
   @apply text-ssw-red; 
 }
 
-.reaction-grid {
-  grid-template-columns: auto 2.5rem 2.2rem 0.7rem 2.2rem 2.2rem 0.7rem 2.2rem 2.2rem 0.7rem 2.2rem 2.7rem auto;
-  display: grid;
-  grid-template-rows: 2rem;
-  padding-bottom: 1rem;
-}
-
-.agree-btn-container:after, .agree-btn-container-pressed:after  {
-  content: '\f004';
-  font-family: FontAwesome;
-  font-size: 1.7rem;
-  padding-left: 0.5rem;
-}
-
-.agree-btn-container-pressed:after, .somewhat-disagree-btn-container-pressed:after, .disagree-btn-container-pressed:after, .somewhat-agree-btn-container-pressed:after  {
-  @apply text-ssw-red; 
-}
-
-.agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after, .somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after, .disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after, .somewhat-agree-btn-container:hover:after, .somewhat-agree-btn-container-pressed:hover:after {
-  @apply text-ssw-red; 
-  font-size: 1.8rem;
-  transition: font-size 0.2s;
-}
-
-.somewhat-agree-btn-container:after, .somewhat-agree-btn-container-pressed:after  {
-  content: '\f164';
-  font-family: FontAwesome;
-  font-size: 1.7rem;
-}
-
-.somewhat-disagree-btn-container:after, .somewhat-disagree-btn-container-pressed:after {
-  content: '\f165';
-  font-family: FontAwesome;
-  font-size: 1.7rem;
-  align-self: center;
-}
-
-.disagree-btn-container:after, .disagree-btn-container-pressed:after {
-  content: '\f05e';
-  font-family: FontAwesome;
-  font-size: 1.7rem;
-  padding-left: 0.1rem;
-}
-
-.agree-grid-item {
-  grid-column: 2;
-}
-
-.somewhat-agree-grid-item {
-  grid-column: 5;
-}
-
-.somewhat-disagree-grid-item {
-  grid-column: 8;
-}
-
-.disagree-grid-item { 
-  grid-column: 11;
-}
-
 .rule-header-container {
   display: flex;
 }
@@ -1342,7 +1282,7 @@ div.bad-example {
   margin-top: 0;
 }
 
-.tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
+.tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
   position: relative;
   margin: 2px 0;
   height: 2.5rem;
@@ -1435,12 +1375,6 @@ div.bad-example {
   bottom: 105%;
 }
 
-.react-tooltip .tooltiptext {
-  margin-left: -53px !important;
-  bottom: 90%;
-  width: 80px;
-}
-
 .disqus-tooltip .tooltiptext {
   margin-left: 0 !important;
   bottom: 2.5rem;
@@ -1473,7 +1407,7 @@ div.bad-example {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .disqus-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext, .forgot-username-tooltip:hover .tooltiptext{
+.tooltip:hover .tooltiptext, .disqus-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext, .forgot-username-tooltip:hover .tooltiptext{
   visibility: visible;
   opacity: 1;
   padding: 0.3rem !important;
@@ -1629,9 +1563,6 @@ div.bad-example {
 @media screen and (max-width: 600px) {
   .rule-content {
     padding: 1rem;
-  }
-  .reaction-grid {
-    grid-template-columns: auto 2rem 0.5rem 1.5rem 2.2rem 0.5rem 1.5rem 2.2rem 0.5rem 1.5rem 2.3rem 1rem auto;
   }
   .profile-image {
     visibility: hidden;

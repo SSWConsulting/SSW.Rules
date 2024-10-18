@@ -1519,26 +1519,6 @@ div.bad-example {
   margin: 0.15rem 0.2rem 0 0;
 }
 
-.dropdown-user-btn-container:before {
-  content: "\f007";
-  font-family: FontAwesome;
-  font-size: 1.5rem !important;
-  margin: 0rem 1rem;
-}
-
-.dropdown-user-btn-container {
-  color: #666666;
-  display: flex;
-  align-items: center;
-  margin-left: 0;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.dropdown-user-btn-container:hover {
-  @apply text-ssw-red !important;
-}
-
 .dropdown-signout-btn-container:before {
   content: "\f08b";
   font-family: FontAwesome;

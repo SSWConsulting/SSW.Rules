@@ -68,6 +68,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     type Frontmatter @infer {
       archivedreason: String   
       authors: [Author]
+      index: [String]
       related: [String]
       redirects: [String]
       experts: String

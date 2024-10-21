@@ -207,7 +207,7 @@ exports.createPages = async ({ graphql, actions }) => {
         rules: result.data.rules,
         slug: node.fields.slug,
         intro: node.body,
-        // index: node.frontmatter.index,
+        index: node.frontmatter.index,
         redirects: node.frontmatter.redirects,
       },
     });

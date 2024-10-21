@@ -9,9 +9,9 @@ const Discussion = (props) => {
         id="comments"
         repo="SSWConsulting/SSW.Rules.Content"
         repoId={process.env.GISCUS_REPO_ID}
-        category="General"
         categoryId={process.env.GISCUS_CATEGORY_ID}
         mapping="specific"
+        strict="1"
         term={props.ruleGuid}
         reactionsEnabled="1"
         emitMetadata="0"

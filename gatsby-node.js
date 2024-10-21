@@ -1,3 +1,4 @@
+const siteConfig = require('./site-config');
 const { createFilePath } = require('gatsby-source-filesystem');
 const appInsights = require('applicationinsights');
 const WebpackAssetsManifest = require('webpack-assets-manifest');

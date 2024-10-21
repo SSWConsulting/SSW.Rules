@@ -6202,12 +6202,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.16.5":
-  version: 20.16.5
-  resolution: "@types/node@npm:20.16.5"
+"@types/node@npm:^22.7.7":
+  version: 22.7.7
+  resolution: "@types/node@npm:22.7.7"
   dependencies:
     undici-types: "npm:~6.19.2"
-  checksum: 6af7994129815010bcbc4cf8221865559c8116ff43e74a6549525c2108267596fc2d18aff5d5ecfe089fb60a119f975631343e2c65c52bfa0955ed9dc56733d6
+  checksum: 07268a1e990ad9d9b1865092881317ea679a46eb6706d83a8874eec75fdddae6cfd6452e4e68b651561183e2a8f8548276f3155744bc402c2545978c19b70d65
   languageName: node
   linkType: hard
 
@@ -6756,7 +6756,7 @@ __metadata:
     "@microsoft/applicationinsights-web": "npm:^3.3.3"
     "@playwright/test": "npm:^1.47.1"
     "@raae/gatsby-remark-oembed": "npm:^0.3.3"
-    "@types/node": "npm:^20.16.5"
+    "@types/node": "npm:^22.7.7"
     algoliasearch: "npm:^4.24.0"
     applicationinsights: "npm:^3.3.0"
     autoprefixer: "npm:^10.4.20"

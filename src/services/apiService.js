@@ -1,6 +1,67 @@
+/* Reactions */
+
 const API_URL = process.env.API_BASE_URL + '/api';
 const GITHUB_API_PAT = process.env.GITHUB_API_PAT;
 const DISQUS_API_KEY = process.env.DISQUS_API_KEY;
+
+export async function GetReactionForUser(ruleId, userId) {
+  var query = userId
+    ? `${API_URL}/GetReactionsFunction?rule_guid=${ruleId}&user_id=${userId}`
+    : `${API_URL}/GetReactionsFunction?rule_guid=${ruleId}`;
+  const response = await fetch(query);
+  return await response.json();
+}
+
+export async function GetAllLikedDisliked(userId) {
+  var query = `${API_URL}/GetAllReactionsFunction?&user_id=${userId}`;
+  const response = await fetch(query);
+  return await response.json();
+}
+
+export async function PostReactionForUser(data, token) {
+  const isEmpty = Object.values(data).some((x) => x == null);
+  if (!data || isEmpty) {
+    return {
+      error: true,
+      message: 'Data is empty or in the wrong format',
+    };
+  }
+
+  const response = await fetch(`${API_URL}/ReactFunction`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+
+export const ReactionType = {
+  SuperLike: 3,
+  Like: 2,
+  DisLike: 1,
+  SuperDisLike: 0,
+};
+
+export async function RemoveReaction(data, token) {
+  if (!data || Object.values(data).some((x) => !x)) {
+    return {
+      error: true,
+      message: 'Data is empty or in the wrong format',
+    };
+  }
+  const response = await fetch(`${API_URL}/RemoveReactionFunction`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
 
 /* Bookmarks */
 

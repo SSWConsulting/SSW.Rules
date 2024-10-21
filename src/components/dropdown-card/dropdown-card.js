@@ -20,6 +20,15 @@ const DropdownCard = () => {
         </div>
         <hr />
         <button
+          className="dropdown-user-btn-container"
+          onClick={() => {
+            setOpen(false);
+            navigate('/profile');
+          }}
+        >
+          Your Profile
+        </button>
+        <button
           className="dropdown-signout-btn-container"
           onClick={() => {
             logout({ returnTo: process.env.AUTH0_REDIRECT_URI });

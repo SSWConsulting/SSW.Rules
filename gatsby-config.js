@@ -95,6 +95,7 @@ module.exports = {
       options: {
         extensions: ['.mdx', '.md'],
         gatsbyRemarkPlugins: [
+          // TODO: Remove when we can confirm these plugins are not needed
           // {
           //   resolve: '@raae/gatsby-remark-oembed',
           //   options: {

@@ -134,7 +134,7 @@ const UserRules = ({ data, location }) => {
 
     const query = `
         {
-          search( query: "repo:${githubOwner}/${githubRepo} is:pr base:${process.env.CONTENT_BRANCH} is:merged sort:updated-desc author:${queryStringRulesAuthor}"
+          search( query: "repo:${githubOwner}/${githubRepo} is:pr base:${'main-with-tina-lock'} is:merged sort:updated-desc author:${queryStringRulesAuthor}"
           type: ISSUE
           first: ${resultPerPage}
           ${cursorQuery}

@@ -97,7 +97,7 @@ export default function Category({ data, pageContext }) {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${category.parent.relativePath}`}
+                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${'main-with-tina-lock'}/${category.parent.relativePath}`}
                 >
                   <FontAwesomeIcon
                     icon={faGithub}
@@ -240,7 +240,7 @@ export default function Category({ data, pageContext }) {
                                 <a
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
+                                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${'main-with-tina-lock'}/rules/${rule.frontmatter.uri}/rule.md`}
                                   className="tooltip tooltip-button"
                                   onClick={() => {
                                     appInsights.trackEvent({

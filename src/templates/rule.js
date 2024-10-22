@@ -168,7 +168,7 @@ const Rule = ({ data, location, pageContext }) => {
                             new Date(data.history.nodes[0].lastUpdated),
                             'dd MMM yyyy'
                           )}`}
-                          href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
+                          href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${'main-with-tina-lock'}/rules/${rule.frontmatter.uri}/rule.md`}
                         >
                           See history
                         </a>
@@ -207,7 +207,7 @@ const Rule = ({ data, location, pageContext }) => {
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${rule.parent.relativePath}`}
+                        href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${'main-with-tina-lock'}/${rule.parent.relativePath}`}
                         className="tooltip tooltip-button"
                         onClick={() => {
                           appInsights.trackEvent({

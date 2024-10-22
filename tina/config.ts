@@ -3,7 +3,7 @@ import { Rules } from './collections/rules';
 import { Sidebar } from './collections/sidebar';
 
 // Your hosting provider likely exposes this as an environment variable
-const branch = process.env.TINA_CONTENT_BRANCH ?? 'main';
+const branch = 'main-with-tina-lock';
 const localContentPath = process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined;
 const clientId = process.env.TINA_CLIENT_ID;
 const token = process.env.TINA_TOKEN;

@@ -1,8 +1,6 @@
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import MD from 'gatsby-custom-md';
-
 import GreyBox from '../components/greybox/greybox';
 
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowCircleRight,
   faBook,
@@ -14,16 +12,16 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { graphql, Link } from 'gatsby';
-import markdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
-import { pathPrefix } from '../../site-config';
+import { pathPrefix } from '../../site-config.js';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
+
 import RadioButton from '../components/radio-button/radio-button';
 import Tooltip from '../components/tooltip/tooltip';
 
+import { TinaMarkdown } from 'tinacms/dist/rich-text';
 const components = {
   greyBox: GreyBox,
 };
@@ -37,9 +35,8 @@ const appInsights = new ApplicationInsights({
 appInsights.loadAppInsights();
 
 export default function Category({ data, pageContext }) {
-  console.log('pageContext', pageContext);
   const linkRef = useRef();
-  const category = data.markdownRemark;
+  const category = data.mdx;
 
   const [selectedOption, setSelectedOption] = useState('all');
   const [showViewButton, setShowViewButton] = useState(false);
@@ -100,7 +97,7 @@ export default function Category({ data, pageContext }) {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/${category.parent.relativePath}`}
+                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${'main-with-tina-lock'}/${category.parent.relativePath}`}
                 >
                   <FontAwesomeIcon
                     icon={faGithub}
@@ -112,7 +109,7 @@ export default function Category({ data, pageContext }) {
             </div>
 
             <div className="rule-category-top py-4 px-6 pt-5">
-              <MD components={components} htmlAst={category.htmlAst} />
+              <TinaMarkdown content={pageContext.intro}></TinaMarkdown>
 
               {category.frontmatter.archivedreason &&
                 category.frontmatter.archivedreason.length > 0 && (
@@ -243,7 +240,7 @@ export default function Category({ data, pageContext }) {
                                 <a
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
+                                  href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${'main-with-tina-lock'}/rules/${rule.frontmatter.uri}/rule.md`}
                                   className="tooltip tooltip-button"
                                   onClick={() => {
                                     appInsights.trackEvent({
@@ -269,16 +266,14 @@ export default function Category({ data, pageContext }) {
                           className={`rule-content mb-4
                             ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                         >
-                          <TinaMarkdown content={rule.rawMarkdownBody} />
+                          <TinaMarkdown content={rule.body} />
                         </section>
 
                         <section
                           className={`rule-content mb-4
                           ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
                         >
-                          <div
-                            dangerouslySetInnerHTML={{ __html: rule.excerpt }}
-                          />
+                          <TinaMarkdown content={rule.fields.excerpt} />
                           <p className="pt-5 pb-0 font-bold">
                             <Link
                               ref={linkRef}
@@ -345,9 +340,8 @@ Category.propTypes = {
 };
 
 export const query = graphql`
-  query ($slug: String!, $index: [String]!) {
-    markdownRemark(fields: { slug: { eq: $slug } }) {
-      htmlAst
+  query ($slug: String!, $index: [String!]) {
+    mdx(fields: { slug: { eq: $slug } }) {
       frontmatter {
         title
         archivedreason
@@ -355,7 +349,6 @@ export const query = graphql`
         uri
         guid
         consulting
-        experts
       }
       parent {
         ... on File {
@@ -364,17 +357,14 @@ export const query = graphql`
         }
       }
     }
-    rule: allMarkdownRemark(filter: { frontmatter: { uri: { in: $index } } }) {
+    rule: allMdx(filter: { frontmatter: { uri: { in: $index } } }) {
       nodes {
-        excerpt(format: HTML, pruneLength: 500)
-        rawMarkdownBody
         frontmatter {
           uri
           archivedreason
           title
           guid
           consulting
-          experts
         }
       }
     }

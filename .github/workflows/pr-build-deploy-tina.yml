@@ -1,0 +1,30 @@
+name: PR - Build and Deploy Tina
+
+
+on: 
+    pull_request:
+        branches:
+            - tina/main
+    workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/template-build-mdx.yml
+    with:
+      branch_name: tina/call-mdx
+      environment: staging
+      should_generate_commit_data: false 
+    secrets: inherit
+
+  deploy:
+    concurrency:
+      group: tina-deploy
+      cancel-in-progress: false
+    needs: build
+    name: Deploy
+    uses: ./.github/workflows/template-deploy-mdx.yml
+    with:
+      environment: staging
+      storageAccountName: tinamdx
+    secrets: inherit

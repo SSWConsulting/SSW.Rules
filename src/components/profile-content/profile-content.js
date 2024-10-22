@@ -1,38 +1,38 @@
 /* eslint-disable no-undef */
 /* eslint-disable quotes */
-import React, { useEffect, useState, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'gatsby';
-import {
-  GetBookmarksForUser,
-  GetAllLikedDisliked,
-  RemoveBookmark,
-  RemoveReaction,
-  GetDisqusUserCommentsList,
-  RemoveUserCommentsAccount,
-  GetUser,
-  DisqusError,
-} from '../../services/apiService';
-import { useAuthService } from '../../services/authService';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import DisqusIcon from '-!svg-react-loader!../../images/disqusIcon.svg';
+import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  DisqusError,
+  GetAllLikedDisliked,
+  GetBookmarksForUser,
+  GetDisqusUserCommentsList,
+  GetUser,
+  RemoveBookmark,
+  RemoveReaction,
+  RemoveUserCommentsAccount,
+} from '../../services/apiService';
+import { useAuthService } from '../../services/authService';
 
+import { useAuth0 } from '@auth0/auth0-react';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import MD from 'gatsby-custom-md';
 import GreyBox from '../greybox/greybox';
-import { useAuth0 } from '@auth0/auth0-react';
 import { Filter } from '../profile-filter-menu/profile-filter-menu';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
+import {
+  faArrowCircleRight,
+  faBook,
+  faFileLines,
+  faQuoteLeft,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CommentsNotConnected from '../comments-not-connected/comments-not-connected';
 import DisableDisqusPrivacy from '../disable-disqus-privacy/disable-disqus-privacy';
 import RadioButton from '../radio-button/radio-button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faArrowCircleRight,
-  faQuoteLeft,
-  faFileLines,
-  faBook,
-} from '@fortawesome/free-solid-svg-icons';
 
 const appInsights = new ApplicationInsights({
   config: {
@@ -92,7 +92,7 @@ const ProfileContent = (props) => {
   function getBookmarkList() {
     GetBookmarksForUser(user.sub)
       .then((success) => {
-        const allRules = props.data.allMarkdownRemark.nodes;
+        const allRules = props.data.allMdx.nodes;
         const bookmarkedGuids =
           success.bookmarkedRules.size != 0
             ? success.bookmarkedRules.map((r) => r.ruleGuid)
@@ -123,7 +123,7 @@ const ProfileContent = (props) => {
       }
     });
 
-    const allRules = props.data.allMarkdownRemark.nodes;
+    const allRules = props.data.allMdx.nodes;
 
     const commentedRulesMap = allRules.filter((value) =>
       commentedRuleGuids.includes(value.frontmatter.guid)
@@ -178,7 +178,7 @@ const ProfileContent = (props) => {
   function getLikesDislikesLists() {
     GetAllLikedDisliked(user.sub)
       .then((success) => {
-        const allRules = props.data.allMarkdownRemark.nodes;
+        const allRules = props.data.allMdx.nodes;
         const reactedGuids = success.likesDislikedRules.map((r) => r.ruleGuid);
         const reactedRules = allRules.filter((value) =>
           reactedGuids.includes(value.frontmatter.guid)

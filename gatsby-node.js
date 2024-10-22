@@ -29,24 +29,47 @@ let assetsManifest = {};
 
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
-  if (node.internal.type === 'MarkdownRemark') {
+  if (node.internal.type === 'Mdx') {
     const slug = createFilePath({ node, getNode, basePath: '' });
     createNodeField({
       node,
       name: 'slug',
       value: slug,
     });
+    createNodeField({
+      node,
+      name: 'tinaMarkdown',
+      value: JSON.stringify(
+        parseMDX(formatRuleMarkdown(node.body), bodySchema)
+      ),
+    });
+    if (node.frontmatter.type === 'rule') {
+      const separator = '<!--endintro-->';
+      const excerpt =
+        node.body.indexOf(separator) === -1
+          ? ''
+          : node.body.split(separator)[0];
+      const excerptValue = parseMDX(formatRuleMarkdown(excerpt), bodySchema);
+      createNodeField({
+        node,
+        name: 'excerpt',
+        value: JSON.stringify(excerptValue),
+      });
+    }
   }
 };
+
 exports.createSchemaCustomization = ({ actions }) => {
+  console.log('createSchemaCustomization ran');
   const { createTypes } = actions;
   const typeDefs = `
-    type MarkdownRemark implements Node @infer {
+    type Mdx implements Node @infer {
       frontmatter: Frontmatter
     }
     type Frontmatter @infer {
       archivedreason: String   
       authors: [Author]
+      index: [String]
       related: [String]
       redirects: [String]
       experts: String
@@ -92,7 +115,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const result = await graphql(`
     query {
-      categories: allMarkdownRemark(
+      categories: allMdx(
         filter: { frontmatter: { type: { eq: "category" } } }
       ) {
         nodes {
@@ -112,14 +135,17 @@ exports.createPages = async ({ graphql, actions }) => {
               relativeDirectory
             }
           }
+          internal {
+            contentFilePath
+          }
+          body
         }
       }
-      rules: allMarkdownRemark(
-        filter: { frontmatter: { type: { in: ["rule"] } } }
-      ) {
+      rules: allMdx(filter: { frontmatter: { type: { in: ["rule"] } } }) {
         nodes {
           fields {
             slug
+            excerpt
           }
           frontmatter {
             uri
@@ -129,15 +155,14 @@ exports.createPages = async ({ graphql, actions }) => {
             redirects
             seoDescription
           }
-          rawMarkdownBody
+          body
         }
       }
     }
   `);
 
-  const categoryTemplate = require.resolve('./src/templates/category.js');
-  const ruleTemplate = require.resolve('./src/templates/rule.js');
-
+  // const categoryTemplate = require.resolve('./src/templates/category.js');
+  // const ruleTemplate = require.resolve('./src/templates/rule.js');
   result.data.categories.nodes.forEach((node) => {
     // Find any categories that can't resolve a rule
     node.frontmatter.index.forEach((inCat) => {
@@ -154,9 +179,12 @@ exports.createPages = async ({ graphql, actions }) => {
             }
           });
         }
-        if (typeof rulenode.rawMarkdownBody === 'string') {
-          const md = formatRuleMarkdown(rulenode.rawMarkdownBody);
-          rulenode.rawMarkdownBody = parseMDX(md, bodySchema);
+        if (typeof rulenode.body === 'string') {
+          const md = formatRuleMarkdown(rulenode.body);
+          rulenode.body = parseMDX(md, bodySchema);
+        }
+        if (typeof rulenode.fields.excerpt === 'string') {
+          rulenode.fields.excerpt = JSON.parse(rulenode.fields.excerpt);
         }
       });
 
@@ -170,16 +198,20 @@ exports.createPages = async ({ graphql, actions }) => {
     // eslint-disable-next-line no-console
     console.log('Creating Category: ' + node.parent.name);
 
-    createPage({
-      path: node.parent.name,
-      component: categoryTemplate,
-      context: {
-        rules: result.data.rules,
-        slug: node.fields.slug,
-        index: node.frontmatter.index,
-        redirects: node.frontmatter.redirects,
-      },
-    });
+    node.body = formatRuleMarkdown(node.body, bodySchema);
+    node.body = parseMDX(node.body, bodySchema);
+
+    // createPage({
+    //   path: node.frontmatter.uri,
+    //   component: categoryTemplate,
+    //   context: {
+    //     rules: result.data.rules,
+    //     slug: node.fields.slug,
+    //     intro: node.body,
+    //     index: node.frontmatter.index,
+    //     redirects: node.frontmatter.redirects,
+    //   },
+    // });
 
     node.frontmatter.redirects?.forEach((toPath) => {
       // eslint-disable-next-line no-console
@@ -191,8 +223,9 @@ exports.createPages = async ({ graphql, actions }) => {
       });
     });
   });
-
+  console.log('starting to create rule pages');
   result.data.rules.nodes.forEach((node) => {
+    console.log('iterating through nodes');
     // Find any rules missing a category
     var match = false;
     if (!node.frontmatter.archivedreason) {
@@ -206,6 +239,7 @@ exports.createPages = async ({ graphql, actions }) => {
     } else {
       match = true;
     }
+
     if (match == false) {
       // eslint-disable-next-line no-console
       console.log(
@@ -214,21 +248,21 @@ exports.createPages = async ({ graphql, actions }) => {
           ' is missing a category'
       );
     }
-
-    createPage({
-      path: node.frontmatter.uri,
-      component: ruleTemplate,
-      context: {
-        mdx: node.rawMarkdownBody,
-        slug: node.fields.slug,
-        related: node.frontmatter.related ? node.frontmatter.related : [''],
-        uri: node.frontmatter.uri,
-        redirects: node.frontmatter.redirects,
-        file: `rules/${node.frontmatter.uri}/rule.md`,
-        title: node.frontmatter.title,
-        seoDescription: node.frontmatter.seoDescription,
-      },
-    });
+    // console.log('creating rule pages');
+    // createPage({
+    //   path: node.frontmatter.uri,
+    //   component: ruleTemplate,
+    //   context: {
+    //     mdx: node.body,
+    //     slug: node.fields.slug,
+    //     related: node.frontmatter.related ? node.frontmatter.related : [''],
+    //     uri: node.frontmatter.uri,
+    //     redirects: node.frontmatter.redirects,
+    //     file: `rules/${node.frontmatter.uri}/rule.md`,
+    //     title: node.frontmatter.title,
+    //     seoDescription: node.frontmatter.seoDescription,
+    //   },
+    // });
 
     node.frontmatter.redirects?.forEach((toPath) => {
       // eslint-disable-next-line no-console
@@ -239,13 +273,12 @@ exports.createPages = async ({ graphql, actions }) => {
         isPermanent: true,
       });
     });
-  });
-
-  const profilePage = require.resolve('./src/pages/profile.js');
-  createPage({
-    path: `${siteConfig.pathPrefix}/people/`,
-    matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
-    component: profilePage,
+    // const profilePage = require.resolve('./src/pages/profile.js');
+    // createPage({
+    //   path: `${siteConfig.pathPrefix}/people/`,
+    //   matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
+    //   component: `${profilePage}?__contentFilePath=${node.fields.slug}`,
+    // });
   });
 };
 

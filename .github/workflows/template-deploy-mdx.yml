@@ -1,4 +1,4 @@
-name: Template - deploy site
+name: Template - deploy site (MDX)
 
 on:
   workflow_call:

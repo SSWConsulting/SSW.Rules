@@ -1,4 +1,4 @@
-name: Template - Build site
+name: Template - Build site (MDX)
 
 on:
   workflow_call:

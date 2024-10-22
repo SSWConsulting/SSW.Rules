@@ -222,8 +222,9 @@ exports.createPages = async ({ graphql, actions }) => {
       });
     });
   });
-
+  console.log("starting to create rule pages")
   result.data.rules.nodes.forEach((node) => {
+    console.log("iterating through nodes")
     // Find any rules missing a category
     var match = false;
     if (!node.frontmatter.archivedreason) {

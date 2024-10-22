@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build
-    uses: ./.github/workflows/mdx-test/template-build.yml
+    uses: ./.github/workflows/template-build-mdx.yml
     with:
       branch_name: tina/call-mdx
       environment: staging
@@ -22,7 +22,7 @@ jobs:
       cancel-in-progress: false
     needs: build
     name: Deploy
-    uses: ./.github/workflows/mdx-test/template-deploy.yml
+    uses: ./.github/workflows/template-deploy-mdx.yml
     with:
       environment: staging
       storageAccountName: tinamdx

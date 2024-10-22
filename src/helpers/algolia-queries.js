@@ -4,7 +4,7 @@ const pageQuery = `{
     pages: allMdx(filter: { frontmatter: { type: { eq: "rule" } } }) {
         nodes {
             id
-            excerpt(format: PLAIN, pruneLength: 500)
+            excerpt
             frontmatter {
                 title
                 authors {

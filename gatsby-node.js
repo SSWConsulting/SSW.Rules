@@ -237,6 +237,7 @@ exports.createPages = async ({ graphql, actions }) => {
     } else {
       match = true;
     }
+
     if (match == false) {
       // eslint-disable-next-line no-console
       console.log(
@@ -245,21 +246,21 @@ exports.createPages = async ({ graphql, actions }) => {
           ' is missing a category'
       );
     }
-
-    createPage({
-      path: node.frontmatter.uri,
-      component: ruleTemplate,
-      context: {
-        mdx: node.body,
-        slug: node.fields.slug,
-        related: node.frontmatter.related ? node.frontmatter.related : [''],
-        uri: node.frontmatter.uri,
-        redirects: node.frontmatter.redirects,
-        file: `rules/${node.frontmatter.uri}/rule.md`,
-        title: node.frontmatter.title,
-        seoDescription: node.frontmatter.seoDescription,
-      },
-    });
+    // console.log('creating rule pages');
+    // createPage({
+    //   path: node.frontmatter.uri,
+    //   component: ruleTemplate,
+    //   context: {
+    //     mdx: node.body,
+    //     slug: node.fields.slug,
+    //     related: node.frontmatter.related ? node.frontmatter.related : [''],
+    //     uri: node.frontmatter.uri,
+    //     redirects: node.frontmatter.redirects,
+    //     file: `rules/${node.frontmatter.uri}/rule.md`,
+    //     title: node.frontmatter.title,
+    //     seoDescription: node.frontmatter.seoDescription,
+    //   },
+    // });
 
     node.frontmatter.redirects?.forEach((toPath) => {
       // eslint-disable-next-line no-console

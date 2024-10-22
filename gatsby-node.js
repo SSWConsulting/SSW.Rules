@@ -161,8 +161,8 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
 
-  const categoryTemplate = require.resolve('./src/templates/category.js');
-  const ruleTemplate = require.resolve('./src/templates/rule.js');
+  // const categoryTemplate = require.resolve('./src/templates/category.js');
+  // const ruleTemplate = require.resolve('./src/templates/rule.js');
   result.data.categories.nodes.forEach((node) => {
     // Find any categories that can't resolve a rule
     node.frontmatter.index.forEach((inCat) => {
@@ -201,17 +201,17 @@ exports.createPages = async ({ graphql, actions }) => {
     node.body = formatRuleMarkdown(node.body, bodySchema);
     node.body = parseMDX(node.body, bodySchema);
 
-    createPage({
-      path: node.frontmatter.uri,
-      component: categoryTemplate,
-      context: {
-        rules: result.data.rules,
-        slug: node.fields.slug,
-        intro: node.body,
-        index: node.frontmatter.index,
-        redirects: node.frontmatter.redirects,
-      },
-    });
+    // createPage({
+    //   path: node.frontmatter.uri,
+    //   component: categoryTemplate,
+    //   context: {
+    //     rules: result.data.rules,
+    //     slug: node.fields.slug,
+    //     intro: node.body,
+    //     index: node.frontmatter.index,
+    //     redirects: node.frontmatter.redirects,
+    //   },
+    // });
 
     node.frontmatter.redirects?.forEach((toPath) => {
       // eslint-disable-next-line no-console

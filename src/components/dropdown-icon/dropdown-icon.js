@@ -7,7 +7,7 @@ const DropdownIcon = () => {
 
   const drop = useRef(null);
   function handleClick(e) {
-    if (!e.target.closest(`.${drop.current.className}`) && open) {
+    if (!e.target.closest(`.${drop.current?.className}`) && open) {
       setOpen(false);
     }
   }

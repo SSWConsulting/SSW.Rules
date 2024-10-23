@@ -25,7 +25,7 @@
     "@giscus/react": "^3.0.0",
     "@microsoft/applicationinsights-web": "^3.3.3",
     "@raae/gatsby-remark-oembed": "^0.3.3",
-    "algoliasearch": "^4.24.0",
+    "algoliasearch": "^5.10.1",
     "applicationinsights": "^3.3.0",
     "autoprefixer": "^10.4.20",
     "axios": "1.7.7",

@@ -816,7 +816,7 @@ blockquote :last-child {
 }
 
 .rule-content a:hover,
-.rule-category a:hover:not(.github-link, .disqus-link, .get-username-btn::after) {
+.rule-category a:hover:not(.github-link) {
   text-decoration:underline;
   @apply text-ssw-red; 
 }
@@ -1282,7 +1282,7 @@ div.bad-example {
   margin-top: 0;
 }
 
-.tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
+.tooltip, .info-tooltip {
   position: relative;
   margin: 2px 0;
   height: 2.5rem;
@@ -1338,22 +1338,8 @@ div.bad-example {
   margin-left: -58px;
 }
 
-.disqus-tooltip {
-  margin: auto 1rem auto auto;
-  height: 3rem;
-}
-
 .info-tooltip {
   margin: 1.85rem auto 0 0;
-}
-
-.forgot-username-tooltip {
-  margin: 1.85rem auto 0 0;
-  text-decoration: none;
-}
-
-.forgot-username-tooltip a {
-  text-decoration: none;
 }
 
 .tooltiptext {
@@ -1375,23 +1361,10 @@ div.bad-example {
   bottom: 105%;
 }
 
-.disqus-tooltip .tooltiptext {
-  margin-left: 0 !important;
-  bottom: 2.5rem;
-  left: -1.6rem;
-  width: 5rem;
-}
-
 .info-tooltip .tooltiptext {
   left: 65%;
   margin-left: -79px;
   margin-bottom: 0.7rem;
-  width: 10rem;
-}
-
-.forgot-username-tooltip .tooltiptext{
-  right: -4.4rem;
-  margin-bottom: 1rem;
   width: 10rem;
 }
 
@@ -1407,7 +1380,7 @@ div.bad-example {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .disqus-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext, .forgot-username-tooltip:hover .tooltiptext{
+.tooltip:hover .tooltiptext, .info-tooltip:hover .tooltiptext{
   visibility: visible;
   opacity: 1;
   padding: 0.3rem !important;
@@ -1453,26 +1426,6 @@ div.bad-example {
   margin: 0.15rem 0.2rem 0 0;
 }
 
-.dropdown-user-btn-container:before {
-  content: "\f007";
-  font-family: FontAwesome;
-  font-size: 1.5rem !important;
-  margin: 0rem 1rem;
-}
-
-.dropdown-user-btn-container {
-  color: #666666;
-  display: flex;
-  align-items: center;
-  margin-left: 0;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.dropdown-user-btn-container:hover {
-  @apply text-ssw-red !important;
-}
-
 .dropdown-signout-btn-container:before {
   content: "\f08b";
   font-family: FontAwesome;
@@ -1511,20 +1464,6 @@ div.bad-example {
   z-index: 21;
 }
 
-/* Profile Page
--------------------------------------------------- */
-
-.no-content-message {
-  text-align: center;
-  margin: 2rem auto;
-}
-
-.profile-header {
-  background-color: #f5f5f5;
-  padding: 3rem;
-  height: auto;
-}
-
 .grid-container {
   display: grid;
   grid-template-columns: 8rem auto auto;
@@ -1544,43 +1483,11 @@ div.bad-example {
   height: 6.25rem;
 }
 
-.profile-github-icon {
-  margin: 0.2rem 0.25rem 0 0;
-}
-
-.profile-disqus-icon {
-  margin: 0.1rem 0.1rem 0 -0.15rem;
-  height: 1.3rem;
-  width: 1.3rem;
-  fill: #CC4141;
-}
-
-.profile-image {
-  grid-row-start: 1;
-  grid-row-end: 3;
-}
-
 @media screen and (max-width: 600px) {
   .rule-content {
     padding: 1rem;
   }
-  .profile-image {
-    visibility: hidden;
-    grid-column: 1;
-    height: 0
-  }
-  .profile-bookmark-icon, .profile-like-icon, .profile-dislike-icon{
-    display: none !important;
-  }
-  .profile-large-name {
-    grid-column: 1;
-  }
-  .profile-github-icon {
-    margin: 0.2rem 0 0 0;
-    height: 1rem;
-    width: 1.8rem;
-  }
-  .github-link, .disqus-link {
+  .github-link {
     grid-column: 1 !important;
     padding-top: 0.75rem;
   }
@@ -1591,9 +1498,6 @@ div.bad-example {
     justify-content: center;
   }
   .rule-content-title {
-    padding: 0 !important;
-  }
-  .remove-item {
     padding: 0 !important;
   }
 }
@@ -1607,32 +1511,9 @@ div.bad-example {
   .radio-button-3 {
     grid-column: unset !important;
   }
-  .profile-large-name {
-    font-size: 1.75rem !important;
-  }
-}
-@media screen and (max-width: 800px) {
-  .filter-menu {
-    grid-template-columns: auto !important;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0 !important;
-    top: 2rem !important;
-  }
-  .menu-item {
-    grid-column: 1 !important;
-  }
-  .profile-header {
-    height: auto;
-  }
 }
 
-.profile-large-name {
-  font-size: 1.75rem;
-  grid-row: 1;
-}
-
-.github-link, .disqus-link {
+.github-link {
   width: fit-content;
   font-size: 14;
   @apply text-ssw-red !important;
@@ -1644,21 +1525,8 @@ div.bad-example {
   grid-column: 2;
 }
 
-.disqus-link {
-  grid-row: 3;
-  grid-column: 2;
-}
-
-.github-link:hover, .disqus-link:hover {
+.github-link:hover {
   opacity: 0.8;
-}
-
-.filter-menu {
-  top: 3rem;
-  position: relative;
-  display: grid;
-  grid-template-columns: auto auto auto auto auto auto auto; 
-  column-gap: 1rem;
 }
 
 .radio-button-1 {
@@ -1669,50 +1537,6 @@ div.bad-example {
 }
 .radio-button-3 {
   grid-column: 4;
-}
-
-.menu-item {
- padding: 0 0.5rem 0.5rem;
- text-align: center;
- position: relative;
- display: flex;
- margin: auto;
- white-space: nowrap;
-}
-
-.menu-item:hover {
-  padding: 0 0.5rem 0.25rem;
-  border-bottom: 0.25rem solid #CC4141;
-  cursor: pointer;
-}
-
-.menu-item:hover .agree-title:after, .menu-item:hover .love-title:after, .menu-item:hover .disagree-title:after, .menu-item:hover .comments-title:after, .menu-item:hover .super-disagree-title:after, .menu-item:hover .filter-menu-bookmark-icon {
-  @apply text-ssw-red; 
-}
-
-.bookmarks-item:after, .love-title:after, .love-title-pressed:after, .agree-title:after, .agree-title-pressed:after, .super-disagree-title:after, .super-disagree-title-pressed:after, .disagree-title:after, .disagree-title-pressed:after, .comments-title:after, .comments-title-pressed:after  {
-  padding-left: 0.5rem;
-  font-family: FontAwesome;
-}
-
-.love-title:after, .love-title-pressed:after {
-  content: '\f004';
-}
-
-.agree-title:after, .agree-title-pressed:after {
-  content: '\f164';
-} 
-
-.disagree-title:after, .disagree-title-pressed:after {
-  content: '\f165';
-}
-
-.super-disagree-title:after, .super-disagree-title-pressed:after {
-  content: '\f05e';
-}
-
-.love-title-pressed:after, .agree-title-pressed:after, .disagree-title-pressed:after, .super-disagree-title-pressed:after {
-  @apply text-ssw-red; 
 }
 
 .heading-container {
@@ -1727,34 +1551,6 @@ div.bad-example {
   background: none;
   border-left: none;
   margin: 0.5rem 0.8rem;
-}
-
-.profile-bookmark-icon, .profile-like-icon, .profile-dislike-icon  {
-  height: 2rem;
-  font-size: 1.8rem !important;
-  margin: auto auto auto 0;
-}
-
-.filter-menu-bookmark-icon, .filter-menu-bookmark-icon-pressed {
-  margin: auto;
-  margin-right: -0.5rem;
-  height: 1rem;
-  width: 1.8rem;
-}
-
-.filter-menu-bookmark-icon-pressed {
-  @apply text-ssw-red; 
-}
-
-.filter-menu-disqus-icon, .filter-menu-disqus-icon-pressed {
-  margin: auto;
-  margin-right: -0.5rem;
-  height: 1.5rem;
-  width: 1.5rem;
-}
-
-.filter-menu-disqus-icon-pressed {
-  @apply text-ssw-red; 
 }
 
 .rule-heading-love:after {
@@ -1786,119 +1582,9 @@ div.bad-example {
   margin-left: 1rem;
 }
 
-.remove-item, .disqus-comment-link {
-  margin-left: auto;
-  right: 3rem;
-  margin: auto 1rem auto auto;
-  font-size: 1.8rem !important;
-}
-
-.disqus-comment-link {
-  cursor: pointer;
-}
-
-.disqus-comment-link svg {
-  height: 50px;
-}
-
-.remove-item {
-  width: 1.6rem;
-}
-
-.remove-item:after {
-  content: '\f057';
-  font-family: FontAwesome;
-  color: #ddd;
-}
-
-.remove-item:hover:after {
-  @apply text-ssw-red !important;
-}
-
 .gavel-icon {
   height: 50px;
   margin-top: 10px;
-}
-
-.no-tagged-message:before {
-  font-family: FontAwesome;
-  content: '\f00d';
-  margin-right: 0.5rem;
-}
-
-.username-input-box, .username-input-box-error {
-  border: 0.1rem solid rgb(136, 136, 136);
-  border-radius: 5px;
-  margin-top: 2rem;
-  width: 15rem;
-  height: 28px;
-  padding-left: .7rem;
-  margin-right: .3rem;
-  /* text-align: center; */
-}
-
-.username-input-box-error {
-  border-color: #CC4141;
-}
-
-.connect-acc-button {
-  margin-left: 1.5rem;
-  background-color: #CC4141;
-  color: white;
-  position: relative;
-  /* height: 20px; */
-  box-sizing: border-box;
-  padding: 2px 10px 2px 8px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 2rem;
-  margin-bottom: 1.8rem;
-  height: 28px;
-  font-size: 1rem !important;
-}
-
-.disconnect-acc-button {
-  margin: 0 4.2rem 1rem auto;
-  cursor: pointer;
-  display: flex;
-  vertical-align: middle;
-  font-size: 1rem;
-  color: #666;
-}
-
-.disconnect-acc-button:before {
-  display: inline-block;
-  font-family: FontAwesome;
-  content: '\f00d';
-  text-decoration: none !important;
-  margin: auto;
-  font-size: 1.1rem;
-  margin-top: -0.02rem;
-  padding-right: 0.4rem;
-}
-
-.disconnect-acc-button svg {
-  height: 1.6rem;
-  width: 1.6rem;
-  margin-left: .3rem;
-}
-
-.disconnect-acc-button:hover {
-  @apply text-ssw-red; 
-}
-
-.connect-acc-container {
-  text-align: center;
-  margin: 2rem auto;
-  display: grid;
-  grid-template-columns: 6rem auto;
-}
-
-.disqus-large-icon {
-  height: 6rem;
-  width: 6rem;
-  margin: 1rem 0 1.8rem 12rem;
-  color: #575B5D;
 }
 
 .disqus-profile-link {
@@ -1923,18 +1609,6 @@ div.bad-example {
 .privacy-toggle-caption {
   font-weight: bold;
   margin: auto 10.51rem 3rem;
-}
-
-.get-username-btn::after {
-  font-family: FontAwesome;
-  content: '\f059';
-  font-size: 1.4rem;
-  margin: 0.5rem auto;
-  vertical-align: middle;
-}
-
-.get-username-btn:hover:after {
-  @apply text-ssw-red; 
 }
 
 .form {
@@ -1966,15 +1640,6 @@ div.bad-example {
 @media screen and (max-width: 1000px) {
   .warning-box {
     width: unset;
-  }
-  .connect-acc-container {
-    text-align: center;
-    grid-template-rows: auto auto;
-    grid-template-columns: unset;
-  }
-  .disqus-large-icon {
-    grid-row: 1;
-    margin: auto;
   }
   .form {
     text-align: center;

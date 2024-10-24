@@ -816,7 +816,7 @@ blockquote :last-child {
 }
 
 .rule-content a:hover,
-.rule-category a:hover:not(.github-link, .get-username-btn::after) {
+.rule-category a:hover:not(.github-link) {
   text-decoration:underline;
   @apply text-ssw-red; 
 }
@@ -1282,7 +1282,7 @@ div.bad-example {
   margin-top: 0;
 }
 
-.tooltip, .info-tooltip, .forgot-username-tooltip {
+.tooltip, .info-tooltip {
   position: relative;
   margin: 2px 0;
   height: 2.5rem;
@@ -1342,15 +1342,6 @@ div.bad-example {
   margin: 1.85rem auto 0 0;
 }
 
-.forgot-username-tooltip {
-  margin: 1.85rem auto 0 0;
-  text-decoration: none;
-}
-
-.forgot-username-tooltip a {
-  text-decoration: none;
-}
-
 .tooltiptext {
   visibility: hidden;
   width: 100px;
@@ -1377,12 +1368,6 @@ div.bad-example {
   width: 10rem;
 }
 
-.forgot-username-tooltip .tooltiptext{
-  right: -4.4rem;
-  margin-bottom: 1rem;
-  width: 10rem;
-}
-
 .tooltiptext::after {
   content: "";
   position: absolute;
@@ -1395,7 +1380,7 @@ div.bad-example {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .info-tooltip:hover .tooltiptext, .forgot-username-tooltip:hover .tooltiptext{
+.tooltip:hover .tooltiptext, .info-tooltip:hover .tooltiptext{
   visibility: visible;
   opacity: 1;
   padding: 0.3rem !important;
@@ -1602,51 +1587,6 @@ div.bad-example {
   margin-top: 10px;
 }
 
-.username-input-box, .username-input-box-error {
-  border: 0.1rem solid rgb(136, 136, 136);
-  border-radius: 5px;
-  margin-top: 2rem;
-  width: 15rem;
-  height: 28px;
-  padding-left: .7rem;
-  margin-right: .3rem;
-  /* text-align: center; */
-}
-
-.username-input-box-error {
-  border-color: #CC4141;
-}
-
-.connect-acc-button {
-  margin-left: 1.5rem;
-  background-color: #CC4141;
-  color: white;
-  position: relative;
-  /* height: 20px; */
-  box-sizing: border-box;
-  padding: 2px 10px 2px 8px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 2rem;
-  margin-bottom: 1.8rem;
-  height: 28px;
-  font-size: 1rem !important;
-}
-
-.connect-acc-container {
-  text-align: center;
-  margin: 2rem auto;
-  display: grid;
-  grid-template-columns: 6rem auto;
-}
-
-.disqus-large-icon {
-  height: 6rem;
-  width: 6rem;
-  margin: 1rem 0 1.8rem 12rem;
-  color: #575B5D;
-}
-
 .disqus-profile-link {
   @apply text-ssw-red !important;
 }
@@ -1669,18 +1609,6 @@ div.bad-example {
 .privacy-toggle-caption {
   font-weight: bold;
   margin: auto 10.51rem 3rem;
-}
-
-.get-username-btn::after {
-  font-family: FontAwesome;
-  content: '\f059';
-  font-size: 1.4rem;
-  margin: 0.5rem auto;
-  vertical-align: middle;
-}
-
-.get-username-btn:hover:after {
-  @apply text-ssw-red; 
 }
 
 .form {
@@ -1712,15 +1640,6 @@ div.bad-example {
 @media screen and (max-width: 1000px) {
   .warning-box {
     width: unset;
-  }
-  .connect-acc-container {
-    text-align: center;
-    grid-template-rows: auto auto;
-    grid-template-columns: unset;
-  }
-  .disqus-large-icon {
-    grid-row: 1;
-    margin: auto;
   }
   .form {
     text-align: center;

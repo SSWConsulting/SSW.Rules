@@ -1,6 +1,5 @@
 const API_URL = process.env.API_BASE_URL + '/api';
 const GITHUB_API_PAT = process.env.GITHUB_API_PAT;
-const DISQUS_API_KEY = process.env.DISQUS_API_KEY;
 
 /* Bookmarks */
 
@@ -110,74 +109,3 @@ export async function GetSecretContent(Id, token) {
   });
   return response.json();
 }
-
-/* User */
-
-export async function GetUser(userId, token) {
-  const response = await fetch(`${API_URL}/GetUserFunction?user_id=${userId}`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) return null;
-
-  return response.json();
-}
-
-export async function ConnectUserCommentsAccount(data, token) {
-  if (!data || Object.values(data).some((x) => !x)) {
-    return {
-      error: true,
-      message: 'Data is empty or in the wrong format',
-    };
-  }
-  const response = await fetch(`${API_URL}/ConnectUserCommentsFunction`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
-  return response.status;
-}
-
-export async function RemoveUserCommentsAccount(data, token) {
-  if (!data || Object.values(data).some((x) => !x)) {
-    return {
-      error: true,
-      message: 'Data is empty or in the wrong format',
-    };
-  }
-  await fetch(`${API_URL}/RemoveUserCommentsAccountFunction`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
-}
-
-export async function GetDisqusUser(commentsUsername) {
-  const response = await fetch(
-    `https://disqus.com/api/3.0/users/details.json?user=username:${commentsUsername}&api_key=${DISQUS_API_KEY}`
-  );
-  return response.json();
-}
-
-/* Comments */
-export async function GetDisqusUserCommentsList(commentsUserId) {
-  const response = await fetch(
-    `https://disqus.com/api/3.0/users/listPosts.json?user=${commentsUserId}&api_key=${DISQUS_API_KEY}&related=thread`
-  );
-  return response.json();
-}
-
-export const DisqusError = {
-  Success: 0,
-  AccessTooLow: 12,
-  InvalidArg: 2,
-};

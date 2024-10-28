@@ -103,7 +103,7 @@
     "eslint": "^8.57.1",
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-prettier": "5.2.1",
-    "eslint-plugin-react": "^7.36.1",
+    "eslint-plugin-react": "^7.37.2",
     "mkdirp": "^3.0.1",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.12"

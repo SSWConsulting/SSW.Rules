@@ -93,7 +93,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.1",
-    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-react": "^7.25.9",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",

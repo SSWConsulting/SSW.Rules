@@ -44,12 +44,12 @@ const Footer = () => {
         </section>
         <section className="main-container flex items-center justify-center mt-2">
           <span className="ml-2">
-            Stand by... we are migrating this site to{' '}
+            Stand by... we&apos;re migrating this site to{' '}
             <a
               className="action-button-label footer-greybar-link"
               href="https://tina.io"
             >
-              🦙 TinaCMS
+              TinaCMS
             </a>
           </span>
         </section>

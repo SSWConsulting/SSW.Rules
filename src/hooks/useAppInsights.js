@@ -21,11 +21,13 @@ export default function useAppInsights() {
     ai.loadAppInsights();
     ai.addTelemetryInitializer((item) => {
       item.tags['ai.cloud.role'] = 'SSW.Rules-StaticClientPage';
+
       if (
         item.baseData?.target?.includes('analytics.google.com') &&
         item.baseData?.responseCode == 0
       ) {
-        return false; // Exclude Google Analytics logs with responseCode=0
+        // mark these as successful requests as per this comment - https://github.com/SSWConsulting/SSW.Rules/issues/1589#issuecomment-2437107468
+        item.baseData.success = true;
       }
     });
   }

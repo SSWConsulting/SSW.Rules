@@ -6863,7 +6863,7 @@ __metadata:
     ssw.megamenu: "npm:4.6.2"
     ssw.rules.widget: "npm:^2.0.5"
     svg-react-loader: "npm:^0.4.6"
-    tailwindcss: "npm:^3.4.12"
+    tailwindcss: "npm:^3.4.14"
     webpack-assets-manifest: "npm:5.2.1"
   languageName: unknown
   linkType: soft
@@ -25161,9 +25161,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^3.4.12":
-  version: 3.4.12
-  resolution: "tailwindcss@npm:3.4.12"
+"tailwindcss@npm:^3.4.14":
+  version: 3.4.14
+  resolution: "tailwindcss@npm:3.4.14"
   dependencies:
     "@alloc/quick-lru": "npm:^5.2.0"
     arg: "npm:^5.0.2"
@@ -25190,7 +25190,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 9ed1449d3b98ce54c6c3a6c3354121a14b39d8dba28815ea1b0fc5a0b32422a744545ba357690468912a1a781593bc7da3d4e56367abed284a300ae1fb0ab42b
+  checksum: f6c23f8a3293ce3b2511bca1e50008ac94bd8562cb09fec32fe4f8e8a4f54d9e9fc10e567b7f974abdd4b33e550564a2616d4e793c736955432f28448141ce45
   languageName: node
   linkType: hard
 

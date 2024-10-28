@@ -106,7 +106,7 @@
     "eslint-plugin-react": "^7.36.1",
     "mkdirp": "^3.0.1",
     "prettier": "^3.3.3",
-    "tailwindcss": "^3.4.12"
+    "tailwindcss": "^3.4.14"
   },
   "resolutions": {
     "webpack": "5.89.0"

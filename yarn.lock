@@ -6823,7 +6823,7 @@ __metadata:
     gatsby-plugin-sharp: "npm:^5.13.1"
     gatsby-plugin-sitemap: "npm:^6.13.1"
     gatsby-remark-autolink-headers: "npm:^6.13.1"
-    gatsby-remark-copy-linked-files: "npm:^6.13.1"
+    gatsby-remark-copy-linked-files: "npm:^6.13.2"
     gatsby-remark-custom-blocks: "npm:^3.15.0"
     gatsby-remark-draw: "npm:^1.0.16"
     gatsby-remark-embed-video: "npm:^3.2.1"
@@ -8886,7 +8886,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cheerio@npm:1.0.0-rc.12, cheerio@npm:^1.0.0-rc.10, cheerio@npm:^1.0.0-rc.2":
+"cheerio@npm:1.0.0-rc.12, cheerio@npm:^1.0.0-rc.2":
   version: 1.0.0-rc.12
   resolution: "cheerio@npm:1.0.0-rc.12"
   dependencies:
@@ -13871,12 +13871,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gatsby-remark-copy-linked-files@npm:^6.13.1":
-  version: 6.13.1
-  resolution: "gatsby-remark-copy-linked-files@npm:6.13.1"
+"gatsby-remark-copy-linked-files@npm:^6.13.2":
+  version: 6.13.2
+  resolution: "gatsby-remark-copy-linked-files@npm:6.13.2"
   dependencies:
     "@babel/runtime": "npm:^7.20.13"
-    cheerio: "npm:^1.0.0-rc.10"
+    cheerio: "npm:1.0.0-rc.12"
     fs-extra: "npm:^11.1.1"
     is-relative-url: "npm:^3.0.0"
     lodash: "npm:^4.17.21"
@@ -13885,7 +13885,7 @@ __metadata:
     unist-util-visit: "npm:^2.0.3"
   peerDependencies:
     gatsby: ^5.0.0-next
-  checksum: 50087cdd0324cdf4d2aba6525d5c279fc6598d72253ce6773d2d3e83e42ee942e5431b5d46e5e2bced1ace9748ce67e84cc864054788bf43e6f2c343787b1b21
+  checksum: 5e4477bcadac9c6571825682f136f15d88abf005cf605b08456ccfdd13d0d57cd036d4f0c05c3acdec6656cab499199829d437ce6aae0f754834da42faa81c22
   languageName: node
   linkType: hard
 

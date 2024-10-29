@@ -4,7 +4,7 @@ import {
   GetSecretContent,
 } from '../services/apiService';
 import { graphql } from 'gatsby';
-/* eslint-disable jsx-a11y/anchor-has-content */
+
 import React, { useLayoutEffect, useState } from 'react';
 import {
   faExclamationTriangle,

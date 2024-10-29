@@ -34,7 +34,6 @@ const UserRules = ({ data, location }) => {
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
 
-  // eslint-disable-next-line no-undef
   const uniqueRuleTitles = new Set();
 
   const queryStringSearch = qs.parse(location?.search, {

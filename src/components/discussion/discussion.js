@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 const Discussion = (props) => {
   return (
     <div className="discussion-box">
+      <h3>Giscus comments</h3>
       <Giscus
         id="comments"
         repo="SSWConsulting/SSW.Rules.Content"

@@ -1666,6 +1666,10 @@ div.bad-example {
   padding: 1rem 1.5rem;
 }
 
+.discussion-box h3 {
+  color: #cc4141;
+}
+
 /* 404 page
 -------------------------------------------------- */
 

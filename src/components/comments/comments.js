@@ -9,7 +9,7 @@ const Comments = (props) => {
   };
   return (
     <div className="discussion-box">
-      <h3>Disqus comments</h3>
+      <h3>⏳ Disqus comments</h3>
       <Disqus config={disqusConfig} />
     </div>
   );

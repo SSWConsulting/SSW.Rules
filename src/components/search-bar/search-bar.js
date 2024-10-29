@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import qs from 'query-string';
-import algoliasearch from 'algoliasearch';
+import { algoliasearch } from 'algoliasearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { navigate } from 'gatsby';
@@ -16,7 +16,7 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
       process.env.GATSBY_ALGOLIA_APP_ID,
       process.env.GATSBY_ALGOLIA_SEARCH_KEY
     );
-    return client.initIndex('Rules');
+    return client;
   }, []);
 
   useEffect(() => {
@@ -30,19 +30,22 @@ const SearchBar = ({ setIsLoaded, toSearch, setSearchResult, location }) => {
     fetchSearch(queryString);
   }, [queryString]);
 
-  const handlePressEnter = (val) => {
-    if (!val) return;
+  const handlePressEnter = (query) => {
+    if (!query) return;
     if (toSearch) {
-      navigate(`/search?keyword=${val}`);
+      navigate(`/search?keyword=${query}`);
     } else {
-      fetchSearch(val);
+      fetchSearch(query);
     }
   };
 
-  const fetchSearch = async (val) => {
-    if (!val) return [];
+  const fetchSearch = async (query) => {
+    if (!query) return [];
     setIsLoaded(false);
-    const results = await searchClient.search(val);
+    const results = await searchClient.searchSingleIndex({
+      indexName: 'Rules',
+      searchParams: { query: query },
+    });
     const rawResults = results.hits;
 
     setSearchResult(rawResults);

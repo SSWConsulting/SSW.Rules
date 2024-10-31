@@ -1,0 +1,38 @@
+name: Staging (custom content bra) - build and deploy
+
+on:
+  # push:
+  #   branches:
+  #     - main
+
+  pull_request:
+    branches:
+      - white-space-test
+  workflow_dispatch:
+    inputs:
+      should_generate_commit_data:
+        type: boolean
+        description: 'Generate commit data'
+        default: true
+
+jobs:
+
+  build:
+    name: Build
+    uses: ./.github/workflows/template-build-override-branch.yml
+    with:
+      branch_name: ${{ github.ref }}
+      environment: staging
+      should_generate_commit_data: ${{ github.event.inputs.should_generate_commit_data == 'true' }}
+    secrets: inherit
+
+  deploy:
+    concurrency:
+      group: staging-deploy
+      cancel-in-progress: false
+    needs: build
+    name: Deploy
+    uses: ./.github/workflows/template-deploy.yml
+    with:
+      environment: staging
+    secrets: inherit

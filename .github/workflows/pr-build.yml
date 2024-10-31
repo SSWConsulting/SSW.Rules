@@ -1,17 +1,17 @@
-name: PR - build
+# name: PR - build
 
-on:
-  pull_request: 
-    branches:
-      - main
-  workflow_dispatch:
+# on:
+#   pull_request: 
+#     branches:
+#       - main
+#   workflow_dispatch:
 
-jobs:
+# jobs:
 
-  build-code:
-    name: Build and upload artifacts
-    uses: ./.github/workflows/template-build.yml
-    with:
-      branch_name: ${{ github.ref }}
-      environment: staging
-    secrets: inherit
+#   build-code:
+#     name: Build and upload artifacts
+#     uses: ./.github/workflows/template-build.yml
+#     with:
+#       branch_name: ${{ github.ref }}
+#       environment: staging
+    # secrets: inherit

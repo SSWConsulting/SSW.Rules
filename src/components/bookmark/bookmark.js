@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import BookmarkIcon from '-!svg-react-loader!../../images/bookmarkIcon.svg';
 import { useAuth0 } from '@auth0/auth0-react';

@@ -2708,6 +2708,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/inter@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@fontsource/inter@npm:5.1.0"
+  checksum: 48c740b8a311908ca9527bf598e759bdfad6429f730450cc4904877915537e857a322db3ff7ade0bf731a3853ab34e611638d560529774a7e94ca2237735c86b
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-common-types@npm:6.6.0":
   version: 6.6.0
   resolution: "@fortawesome/fontawesome-common-types@npm:6.6.0"
@@ -6784,6 +6791,7 @@ __metadata:
     "@auth0/auth0-react": "npm:^2.2.4"
     "@babel/eslint-parser": "npm:^7.25.1"
     "@babel/preset-react": "npm:^7.24.7"
+    "@fontsource/inter": "npm:^5.1.0"
     "@fortawesome/fontawesome-svg-core": "npm:^6.6.0"
     "@fortawesome/free-brands-svg-icons": "npm:^6.6.0"
     "@fortawesome/free-solid-svg-icons": "npm:^6.6.0"

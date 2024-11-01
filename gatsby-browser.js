@@ -1,4 +1,5 @@
 import wrapPageElementWithTransition from './src/helpers/wrapPageElement.js';
+import '@fontsource/inter';
 
 require('gatsby-remark-vscode/styles.css');
 

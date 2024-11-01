@@ -23,7 +23,8 @@ export default function useAppInsights() {
       item.tags['ai.cloud.role'] = 'SSW.Rules-StaticClientPage';
 
       if (
-        item.baseData?.target?.includes('analytics.google.com') &&
+        (item.baseData?.target?.includes('analytics.google.com') ||
+          item.baseData?.target?.includes('www.google-analytics.com')) &&
         item.baseData?.responseCode == 0
       ) {
         // mark these as successful requests as per this comment - https://github.com/SSWConsulting/SSW.Rules/issues/1589#issuecomment-2437107468

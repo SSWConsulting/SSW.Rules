@@ -114,7 +114,7 @@ jobs:
           DEPLOYMENT_URL: https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-production.yml
           VERSION_DEPLOYED: ${{ github.run_number }}
           APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-          CONTENT_BRANCH: tina/cut-content-stripped
+          CONTENT_BRANCH: whitespacetestbranch
           API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}
           AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
           AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}

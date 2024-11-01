@@ -6,13 +6,16 @@ on:
       branch_name:
         required: true
         type: string
+      contnent_branch_name:
+        required: true
+        type: string
       environment:
         type: string
         required: true
-        description: 'The environment to build for'
+        description: "The environment to build for"
       should_generate_commit_data:
         type: boolean
-        description: 'Generate commit data for rules history. You might want to skip this on large rules changes.'
+        description: "Generate commit data for rules history. You might want to skip this on large rules changes."
         required: false
         default: true
 
@@ -22,7 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-
       - uses: actions/checkout@v4
         name: Checkout SSW.Rules
         with:
@@ -37,7 +39,7 @@ jobs:
         with:
           repository: SSWConsulting/SSW.Rules.Content
           path: SSW.Rules.Content
-          ref: main
+          ref: ${{ inputs.contnent_branch_name }}
           fetch-depth: 0
 
       - name: Record the latest SHA for the content repo
@@ -45,7 +47,6 @@ jobs:
         run: |
           echo '### Content repo info! 🚀' >> $GITHUB_STEP_SUMMARY
           echo "Latest SHA: [$(git rev-parse HEAD)](https://github.com/SSWConsulting/SSW.Rules.Content/commit/$(git rev-parse HEAD))" >> $GITHUB_STEP_SUMMARY
-
 
       - name: Get Rule History Commits
         shell: pwsh
@@ -90,7 +91,6 @@ jobs:
     needs: get-content-commit-data
     environment: ${{ inputs.environment }}
     steps:
-
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch_name }}
@@ -106,15 +106,15 @@ jobs:
 
       - uses: cschleiden/replace-tokens@v1
         with:
-          tokenPrefix: '#{'
-          tokenSuffix: '}'
+          tokenPrefix: "#{"
+          tokenSuffix: "}"
           files: .env.template
         env:
           GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
           DEPLOYMENT_URL: https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-production.yml
           VERSION_DEPLOYED: ${{ github.run_number }}
           APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-          CONTENT_BRANCH: ${{ vars.CONTENT_BRANCH }}
+          CONTENT_BRANCH: ${{ inputs.contnent_branch_name }}
           API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}
           AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
           AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
@@ -157,7 +157,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Install dependencies
         run: yarn install --immutable

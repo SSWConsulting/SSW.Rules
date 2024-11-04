@@ -5461,14 +5461,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.47.1":
-  version: 1.47.1
-  resolution: "@playwright/test@npm:1.47.1"
+"@playwright/test@npm:^1.48.2":
+  version: 1.48.2
+  resolution: "@playwright/test@npm:1.48.2"
   dependencies:
-    playwright: "npm:1.47.1"
+    playwright: "npm:1.48.2"
   bin:
     playwright: cli.js
-  checksum: aad45a586d832779ec0d47b740f1b5a96a48c06cb3e844151956e692c1037ed2140b7b90563584a5fe6efc55ca460682e0f55c647a54808c2157269baa5ae1da
+  checksum: 68bab3bee8d716111e9a166785e6c3c406b6a184fc46d03b5468fcbb92b6242e5628f6a75f9d286e2491ec0e9e59af67542a1f114b6659d790b5a1f41e4d305b
   languageName: node
   linkType: hard
 
@@ -6798,7 +6798,7 @@ __metadata:
     "@fortawesome/react-fontawesome": "npm:^0.2.2"
     "@giscus/react": "npm:^3.0.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.3"
-    "@playwright/test": "npm:^1.47.1"
+    "@playwright/test": "npm:^1.48.2"
     "@raae/gatsby-remark-oembed": "npm:^0.3.3"
     "@types/node": "npm:^20.16.5"
     algoliasearch: "npm:^4.24.0"
@@ -20566,27 +20566,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.47.1":
-  version: 1.47.1
-  resolution: "playwright-core@npm:1.47.1"
+"playwright-core@npm:1.48.2":
+  version: 1.48.2
+  resolution: "playwright-core@npm:1.48.2"
   bin:
     playwright-core: cli.js
-  checksum: c20f8f4fef2ce81fbe429d747fcb8a61564950b33e8d28ea51965fbfd7ddf0dcc4689efda056eed2666a5f511353a46570f18704962ccac62587c5351efa6396
+  checksum: 511da53d9df01fec5e5798915c68e7d1574890a504d1aae05430bf538d0080efa8db86e3dafdcd450f084ce7622f6bbede23ca52e798bfc4c3b3ea8da52a51f5
   languageName: node
   linkType: hard
 
-"playwright@npm:1.47.1":
-  version: 1.47.1
-  resolution: "playwright@npm:1.47.1"
+"playwright@npm:1.48.2":
+  version: 1.48.2
+  resolution: "playwright@npm:1.48.2"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.47.1"
+    playwright-core: "npm:1.48.2"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 45351f9c785c16000a39125b38e27e7ccf8b66fc63384cf8a77d8c6f8c7fdc7b2770a99802ab7ea5447a23630325e781852b08c08ed181f34cb595b60ae1f646
+  checksum: ecde4ee4767556868b24d7700f3502692a3cb14c8ef127052b51b48833ffcce80942954fb188a9b72505122b48b1b625d1bb486721e1c4f2e980215328ba1ad5
   languageName: node
   linkType: hard
 

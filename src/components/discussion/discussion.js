@@ -8,7 +8,7 @@ const Discussion = (props) => {
       <h3>✨ Giscus comments</h3>
       <Giscus
         id="comments"
-        repo="SSWConsulting/SSW.Rules.Content"
+        repo={process.env.GISCUS_REPO_NAME}
         repoId={process.env.GISCUS_REPO_ID}
         categoryId={process.env.GISCUS_CATEGORY_ID}
         mapping="specific"

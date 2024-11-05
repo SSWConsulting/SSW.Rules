@@ -12,6 +12,7 @@ module.exports = {
   siteTitle: `SSW.Rules`,
   siteTitleShort: `SSW.Rules`,
   siteDescription: `Secret Ingredients to Quality Software | SSW Rules provides best practices for developing secure, reliable, and efficient .NET, Azure, CRM, Angular, React, Dynamics, and AI applications. Learn more today!`,
+  homePageDescription: `Explore SSW Rules – a trusted library of best practices for software development and project management designed to foster growth and boost productivity!`,
   siteUrl: `https://www.ssw.com.au/rules`,
   // Relative URL to website home
   siteUrlRelative: `/`,

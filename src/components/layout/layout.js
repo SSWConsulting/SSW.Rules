@@ -21,7 +21,7 @@ const Layout = ({
 }) => {
   const isHomePage =
     location?.href &&
-    location?.href.match(/https:\/\/www\.ssw\.com\.au\/rules\/{0,1}/);
+    location?.href.match(/^https:\/\/www\.ssw\.com\.au\/rules\/{0,1}$/);
   const description = isHomePage
     ? data?.site?.siteMetadata.homePageDescription
     : seoDescription;

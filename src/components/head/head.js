@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
-import { useStaticQuery, graphql } from 'gatsby';
 import { Location } from '@reach/router';
+import { graphql, useStaticQuery } from 'gatsby';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import { homepageTitle, pathPrefix, titles } from '../../../site-config';
 import schemaGenerator from '../../helpers/schemaGenerator';
-import { pathPrefix, homepageTitle, titles } from '../../../site-config';
 
 const Head = ({
   siteTitle,
@@ -52,7 +52,7 @@ const Head = ({
       <meta content={fullTitle} property="og:title" />
       <meta content={fullTitle} name="twitter:title" />
       <title>{fullTitle}</title>
-
+      {seoDescription && <meta content="nosnippet" name="googlebot" />}
       <meta content={seoDescription || siteDescription} name="description" />
       <meta
         content={seoDescription || siteDescription}

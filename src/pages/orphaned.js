@@ -144,7 +144,7 @@ const Orphaned = ({ data }) => {
                 />
               </div>
             )}
-            <div className="category-rule">
+            <div data-nosnippet className="category-rule">
               <ol className="rule-number">
                 {rules.map((rule, i) => {
                   if (!rule) {

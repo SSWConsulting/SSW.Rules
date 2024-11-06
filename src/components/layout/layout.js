@@ -82,6 +82,9 @@ Layout.propTypes = {
   crumbLocation: PropTypes.object,
   crumbLabel: PropTypes.string,
   seoDescription: PropTypes.string,
+  location: {
+    href: PropTypes.string,
+  },
 };
 
 function LayoutWithQuery(props) {

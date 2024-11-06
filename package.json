@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
-    "@fontsource/inter": "^5.1.0",
+    "@fontsource-variable/inter": "^5.1.0",
     "@giscus/react": "^3.0.0",
     "@microsoft/applicationinsights-web": "^3.3.3",
     "@raae/gatsby-remark-oembed": "^0.3.3",

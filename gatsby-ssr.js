@@ -1,4 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
 import * as React from 'react';
 import wrapPageElementWithTransition from './src/helpers/wrapPageElement.js';
 import '@fontsource-variable/inter';

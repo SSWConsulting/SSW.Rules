@@ -16,7 +16,7 @@ const Discussion = (props) => {
         term={props.ruleGuid}
         reactionsEnabled="1"
         emitMetadata="0"
-        inputPosition="bottom"
+        inputPosition="top"
         theme="light"
         lang="en"
         loading="lazy"

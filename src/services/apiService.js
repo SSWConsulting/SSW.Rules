@@ -1,5 +1,4 @@
 const API_URL = process.env.API_BASE_URL + '/api';
-const GITHUB_API_PAT = process.env.GITHUB_API_PAT;
 
 /* Bookmarks */
 

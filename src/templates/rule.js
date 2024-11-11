@@ -1,11 +1,6 @@
-import {
-  GetGithubOrganisationName,
-  GetOrganisations,
-  GetSecretContent,
-} from '../services/apiService';
 import { graphql } from 'gatsby';
 /* eslint-disable jsx-a11y/anchor-has-content */
-import React, { useLayoutEffect, useState } from 'react';
+import React from 'react';
 import {
   faExclamationTriangle,
   faPencilAlt,
@@ -17,12 +12,9 @@ import Breadcrumb from '../components/breadcrumb/breadcrumb';
 import Comments from '../components/comments/comments';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import ReactDOMServer from 'react-dom/server';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
 import formatDistance from 'date-fns/formatDistance';
 import { format } from 'date-fns';
-import { useAuth0 } from '@auth0/auth0-react';
-import { useAuthService } from '../services/authService';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import useAppInsights from '../hooks/useAppInsights.js';
 import Discussion from '../components/discussion/discussion.js';
@@ -33,82 +25,7 @@ const Rule = ({ data, location }) => {
   };
   const rule = data.markdownRemark;
   const categories = data.categories.nodes;
-  const { user, isAuthenticated } = useAuth0();
-  const { fetchIdToken } = useAuthService();
-  const [hiddenCount, setHiddenCount] = useState(0);
-  const { trackException, trackEvent } = useAppInsights();
-
-  const loadSecretContent = async (userOrgId) => {
-    const hidden = document.getElementsByClassName('hidden');
-    if (hidden.length != 0) {
-      const token = await fetchIdToken();
-      for (var hiddenBlock of hidden) {
-        const contentID = hiddenBlock.textContent || hiddenBlock.innerText;
-        const guid = contentID.substring(0, 36);
-        const orgID = contentID.substring(37);
-        if (parseInt(orgID) == parseInt(userOrgId)) {
-          isAuthenticated && guid
-            ? await GetSecretContent(guid, token)
-                .then((success) => {
-                  GetGithubOrganisationName(orgID)
-                    .then((nameSuccess) => {
-                      hiddenBlock.innerHTML =
-                        ReactDOMServer.renderToStaticMarkup(
-                          <SecretContent
-                            content={success.content.content}
-                            orgName={nameSuccess?.login ?? 'Your Organisation'}
-                          />
-                        );
-                      hiddenBlock.className = 'secret-content';
-                    })
-                    .catch((err) => {
-                      trackException(err, 3);
-                    });
-                })
-                .catch((err) => {
-                  trackException(err, 3);
-                })
-            : null;
-        }
-        setHiddenCount(document.getElementsByClassName('hidden').length);
-      }
-    }
-  };
-
-  const SecretContent = (props) => {
-    return (
-      <>
-        <div className="secret-content-heading">
-          <h4>{props.orgName + ' Only: \n'}</h4>
-        </div>
-        <div
-          style={{
-            wordWrap: 'break-word',
-            width: 'auto',
-          }}
-          dangerouslySetInnerHTML={{ __html: props.content }} //Is this a good idea? JS injection ect
-        />
-      </>
-    );
-  };
-  SecretContent.propTypes = {
-    content: PropTypes.string,
-    orgName: PropTypes.string,
-  };
-
-  useLayoutEffect(() => {
-    isAuthenticated
-      ? GetOrganisations(user.sub)
-          .then((success) => {
-            success.organisations.forEach((org) =>
-              loadSecretContent(org.organisationId)
-            );
-          })
-          .catch((err) => {
-            trackException(err, 3);
-          })
-      : null;
-  }, [user, isAuthenticated, hiddenCount]);
+  const { trackEvent } = useAppInsights();
 
   return (
     <div>

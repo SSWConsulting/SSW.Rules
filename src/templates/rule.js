@@ -9,7 +9,6 @@ import { pathPrefix } from '../../site-config.js';
 import markdownIt from 'markdown-it';
 import Bookmark from '../components/bookmark/bookmark';
 import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import Comments from '../components/comments/comments';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import RuleSideBar from '../components/rule-side-bar/rule-side-bar';
@@ -170,12 +169,6 @@ const Rule = ({ data, location }) => {
               </div>
 
               <Discussion ruleGuid={rule.frontmatter.guid} />
-
-              <Comments
-                ruleGuid={rule.frontmatter.guid}
-                title={rule.frontmatter.title}
-                uri={rule.frontmatter.uri}
-              />
             </div>
           </div>
 

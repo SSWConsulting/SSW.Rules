@@ -6822,7 +6822,6 @@ __metadata:
     gatsby-plugin-breadcrumb: "npm:^12.3.2"
     gatsby-plugin-client-side-redirect: "npm:^1.1.0"
     gatsby-plugin-decap-cms: "npm:^4.0.4"
-    gatsby-plugin-disqus: "npm:^1.2.6"
     gatsby-plugin-fontawesome-css: "npm:^1.2.0"
     gatsby-plugin-google-gtag: "npm:^5.13.1"
     gatsby-plugin-google-tagmanager: "npm:^5.13.1"
@@ -13675,16 +13674,6 @@ __metadata:
     mini-css-extract-plugin: "npm:1.6.2"
     netlify-identity-widget: "npm:^1.9.2"
   checksum: 552b866bcd898586c2a8e903cb6185ffda5c45cb391712288708aba963b928b9d5c5256697e3c2e8d2d28bccaddd78316d765e2556542d761de9cbb07793db92
-  languageName: node
-  linkType: hard
-
-"gatsby-plugin-disqus@npm:^1.2.6":
-  version: 1.2.6
-  resolution: "gatsby-plugin-disqus@npm:1.2.6"
-  peerDependencies:
-    react: ^16.0.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
-  checksum: baf2d97dd3b9f7063fa40d5c95ea5afd636bcb63f7619b830de4394ffe37745e2212177485f43cb8cd42734ccd81e11b27e5c0b86861dd6d84a155552e76ed58
   languageName: node
   linkType: hard
 

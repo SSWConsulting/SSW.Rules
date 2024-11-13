@@ -1587,10 +1587,6 @@ div.bad-example {
   margin-top: 10px;
 }
 
-.disqus-profile-link {
-  @apply text-ssw-red !important;
-}
-
 .error-text {
   @apply text-ssw-red; 
 }

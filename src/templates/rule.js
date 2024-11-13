@@ -170,12 +170,6 @@ const Rule = ({ data, location }) => {
               </div>
 
               <Discussion ruleGuid={rule.frontmatter.guid} />
-
-              <Comments
-                ruleGuid={rule.frontmatter.guid}
-                title={rule.frontmatter.title}
-                uri={rule.frontmatter.uri}
-              />
             </div>
           </div>
 

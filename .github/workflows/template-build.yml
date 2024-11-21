@@ -110,6 +110,7 @@ jobs:
           tokenSuffix: '}'
           files: .env.template
         env:
+          SITE_URL: ${{ vars.SITE_URL }}
           GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
           DEPLOYMENT_URL: https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-production.yml
           VERSION_DEPLOYED: ${{ github.run_number }}

@@ -56,11 +56,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
 }
 
-var stagingOrigins = [
+var stagingAllowedOrigins = [
   '*'
 ]
 
-var productionOrigins = [
+var productionAllowedOrigins = [
   'https://ssw.com.au'
   'https://www.ssw.com.au'
 ]
@@ -80,7 +80,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
             'HEAD'
             'OPTIONS'
           ]
-          allowedOrigins: environmentName == 'staging' ? stagingOrigins : productionOrigins
+          allowedOrigins: environmentName == 'staging' ? stagingAllowedOrigins : productionAllowedOrigins
           exposedHeaders: [
             '*'
           ]

@@ -1796,6 +1796,10 @@ html {
   text-decoration: none;
 }
 
+#sidebar #widget .see-more-container a {
+  text-decoration: underline;
+}
+
 #sidebar h4 {
   font-weight: 600;
   text-transform: uppercase;
@@ -1805,10 +1809,6 @@ html {
 #sidebar a {
   text-decoration:underline; 
   transition: color 0.25s ease;
-}
-
-#widget a {
-  text-decoration: none;
 }
 
 #sidebar a:hover {

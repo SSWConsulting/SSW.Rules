@@ -56,6 +56,17 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
 }
 
+// it is added so we can test changes in local development without CORS errors
+// because local environment is configured to use most of the staging resources
+var stagingOrigins = [
+  '*'
+]
+
+var productionOrigins = [
+  'https://ssw.com.au'
+  'https://www.ssw.com.au'
+]
+
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
   name: 'default'
   parent: storageAccount
@@ -71,10 +82,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
             'HEAD'
             'OPTIONS'
           ]
-          allowedOrigins: [
-            'https://ssw.com.au'
-            'https://www.ssw.com.au'
-          ]
+          allowedOrigins: environmentName == 'staging' ? stagingOrigins : productionOrigins
           exposedHeaders: [
             '*'
           ]

@@ -56,8 +56,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
 }
 
-// it is added so we can test changes in local development without CORS errors
-// because local environment is configured to use most of the staging resources
 var stagingOrigins = [
   '*'
 ]

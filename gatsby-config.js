@@ -225,7 +225,7 @@ module.exports = {
       },
     },
     'gatsby-plugin-fontawesome-css',
-    'gatsby-plugin-offline',
+    'gatsby-plugin-remove-serviceworker', // this was added to remove gatsby-plugin-offline as per docs - https://www.gatsbyjs.com/plugins/gatsby-plugin-offline/#remove
     `gatsby-plugin-client-side-redirect`, // make sure to put last in the array
   ],
 };

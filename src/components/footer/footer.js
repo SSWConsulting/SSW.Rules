@@ -19,11 +19,14 @@ const buildTimestamp = preval`module.exports = new Date().getTime();`;
 const Footer = () => {
   return (
     <>
-      <div className="py-2 text-center bg-grey-translucent text-sm">
+      <div className="py-4 text-center bg-grey-translucent text-sm">
         <section className="main-container flex items-center justify-center gap-4	flex-wrap">
-          <span className="mr-2">
+          <span>
             We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
-            source. Loving SSW Rules?{' '}
+            source.
+          </span>
+          <span>
+            Loving SSW Rules?{' '}
             <a
               href="https://github.com/SSWConsulting/SSW.Rules"
               target="_blank"
@@ -31,7 +34,7 @@ const Footer = () => {
               className="action-button-label footer-greybar-link"
             >
               Star us on GitHub
-            </a>{' '}
+            </a>{' '}.
           </span>
           <GitHubButton
             href="https://github.com/SSWConsulting/SSW.Rules"
@@ -42,8 +45,8 @@ const Footer = () => {
             Star
           </GitHubButton>
         </section>
-        <section className="main-container flex items-center justify-center mt-2">
-          <span className="ml-2">
+        <section className="main-container flex items-center justify-center mt-4">
+          <span>
             Stand by... we&apos;re migrating this site to{' '}
             <a
               className="action-button-label footer-greybar-link"

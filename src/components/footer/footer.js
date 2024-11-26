@@ -20,7 +20,7 @@ const Footer = () => {
   return (
     <>
       <div className="py-2 text-center bg-grey-translucent text-sm">
-        <section className="main-container flex items-center justify-center">
+        <section className="main-container flex items-center justify-center gap-4	flex-wrap">
           <span className="mr-2">
             We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
             source. Loving SSW Rules?{' '}

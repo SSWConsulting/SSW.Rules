@@ -19,8 +19,8 @@ const buildTimestamp = preval`module.exports = new Date().getTime();`;
 const Footer = () => {
   return (
     <>
-      <div className="py-4 text-center bg-grey-translucent text-sm">
-        <section className="main-container flex items-center justify-center gap-4	flex-wrap">
+      <div className="p-4 text-center bg-grey-translucent text-sm">
+        <section className="main-container flex items-center justify-center gap-2	flex-wrap">
           <span>
             We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
             source.

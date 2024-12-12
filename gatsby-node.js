@@ -1,3 +1,4 @@
+const siteConfig = require('./site-config');
 const { createFilePath } = require('gatsby-source-filesystem');
 const appInsights = require('applicationinsights');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
@@ -236,6 +237,13 @@ exports.createPages = async ({ graphql, actions }) => {
         toPath: '/' + node.frontmatter.uri,
         isPermanent: true,
       });
+    });
+
+    const profilePage = require.resolve('./src/pages/profile.js');
+    createPage({
+      path: `${siteConfig.pathPrefix}/people/`,
+      matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
+      component: profilePage,
     });
   });
 };

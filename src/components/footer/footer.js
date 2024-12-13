@@ -1,8 +1,3 @@
-import React from 'react';
-import preval from 'preval.macro';
-import moment from 'moment';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
   faInstagram,
@@ -11,8 +6,13 @@ import {
   faTiktok,
   faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
-import { pathPrefix } from '../../../site-config';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import moment from 'moment';
+import preval from 'preval.macro';
+import React from 'react';
 import GitHubButton from 'react-github-btn';
+import { pathPrefix } from '../../../site-config';
 
 const buildTimestamp = preval`module.exports = new Date().getTime();`;
 
@@ -33,8 +33,8 @@ const Footer = () => {
               rel="noreferrer"
               className="action-button-label footer-greybar-link"
             >
-              Star us on GitHub
-            </a>{' '}.
+              Star us on GitHub.
+            </a>{' '}
           </span>
           <GitHubButton
             href="https://github.com/SSWConsulting/SSW.Rules"

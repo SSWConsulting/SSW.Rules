@@ -31,10 +31,7 @@ const ProfileContent = (props) => {
 
   async function onRemoveClick(ruleGuid) {
     const jwt = await fetchIdToken();
-    if (
-      isAuthenticated &&
-      window.confirm('Are you sure you want to remove this tag?')
-    ) {
+    if (isAuthenticated) {
       if (props.filter == Filter.Bookmarks) {
         RemoveBookmark({ ruleGuid: ruleGuid, UserId: user.sub }, jwt)
           .then(() => {
@@ -134,7 +131,6 @@ ProfileContent.propTypes = {
 
 const RuleList = ({ rules, viewStyle, type, onRemoveClick, state }) => {
   const linkRef = useRef();
-  const iconClass = type.replace(/\s+/g, '-');
   const components = {
     greyBox: GreyBox,
   };
@@ -158,53 +154,56 @@ const RuleList = ({ rules, viewStyle, type, onRemoveClick, state }) => {
           <ol className="rule-number">
             {rules.map((rule) => {
               return (
-                <li key={rule.guid}>
-                  <section className="rule-content-title pl-2 pb-4">
-                    <div className="heading-container">
-                      <h2 className={`rule-heading-${iconClass}`}>
-                        <Link ref={linkRef} to={`/${rule.uri}`}>
-                          {rule.title}
-                        </Link>
-                      </h2>
-                      {type == 'bookmark' ? (
-                        <>
-                          <button
-                            className="remove-item"
-                            onClick={() => onRemoveClick(rule.guid)}
-                          >
-                            <BookmarkIcon
-                              className="profile-bookmark-icon"
-                              color="#cc4141"
-                            />
-                          </button>
-                        </>
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  </section>
-                  <section
-                    className={`rule-content px-4 mb-4 pb-4
+                <div key={rule.guid} className="mb-3">
+                  <li key={rule.guid}>
+                    <section className="rule-content-title sm:pl-2">
+                      <div className="rule-header-container justify-between">
+                        <h2 className="flex flex-col justify-center">
+                          <Link ref={linkRef} to={`/${rule.uri}`}>
+                            {rule.title}
+                          </Link>
+                        </h2>
+                        {type == 'bookmark' ? (
+                          <div className="profile-rule-buttons flex flex-col justify-center">
+                            <button
+                              className="tooltip"
+                              onClick={() => onRemoveClick(rule.guid)}
+                            >
+                              <BookmarkIcon className="bookmark-icon-pressed" />
+                              <span className="tooltiptext">
+                                Remove Bookmark
+                              </span>
+                            </button>
+                          </div>
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                    </section>
+                    <section
+                      className={`rule-content px-4 mb-4 pb-4
                             ${viewStyle === 'blurb' ? 'visible' : 'hidden'}`}
-                  >
-                    <div dangerouslySetInnerHTML={{ __html: rule.excerpt }} />
-                    <p className="pt-5 pb-0">
-                      <Link
-                        ref={linkRef}
-                        to={`/${rule.uri}`}
-                        title={`Read more about ${rule.title}`}
-                      >
-                        <FontAwesomeIcon icon={faArrowCircleRight} /> Read more
-                      </Link>
-                    </p>
-                  </section>
-                  <section
-                    className={`rule-content px-4 mb-4
+                    >
+                      <div dangerouslySetInnerHTML={{ __html: rule.excerpt }} />
+                      <p className="pt-5 pb-0">
+                        <Link
+                          ref={linkRef}
+                          to={`/${rule.uri}`}
+                          title={`Read more about ${rule.title}`}
+                        >
+                          <FontAwesomeIcon icon={faArrowCircleRight} /> Read
+                          more
+                        </Link>
+                      </p>
+                    </section>
+                    <section
+                      className={`rule-content px-4 mb-4
                             ${viewStyle === 'all' ? 'visible' : 'hidden'}`}
-                  >
-                    <MD components={components} htmlAst={rule.htmlAst} />
-                  </section>
-                </li>
+                    >
+                      <MD components={components} htmlAst={rule.htmlAst} />
+                    </section>
+                  </li>
+                </div>
               );
             })}
           </ol>

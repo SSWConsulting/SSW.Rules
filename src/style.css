@@ -1295,7 +1295,7 @@ div.bad-example {
   display: flex;
 }
 
-.rule-buttons .tooltiptext {
+.rule-buttons .tooltiptext, .profile-rule-buttons .tooltip .tooltiptext {
   left: -20px;
   margin-bottom: 1rem;
 }
@@ -1533,9 +1533,6 @@ div.bad-example {
     grid-column: 1;
     height: 0
   }
-  .profile-bookmark-icon {
-    display: none !important;
-  }
   .profile-large-name {
     grid-column: 1;
   }
@@ -1656,27 +1653,6 @@ div.bad-example {
 .bookmarks-item:after {
   padding-left: 0.5rem;
   font-family: FontAwesome;
-}
-
-.heading-container {
-  display: flex;
-  justify-content: space-between;
-  background: #f5f5f5;
-  border-left: 2px solid #cc4141; 
-  width: 100%;
-}
-
-.heading-container h2 {
-  padding: 0 0 0 0.7rem;
-  background: none;
-  border-left: none;
-  margin: 0.5rem 0.8rem;
-}
-
-.profile-bookmark-icon {
-  height: 2rem;
-  font-size: 1.8rem !important;
-  margin: auto auto auto 0;
 }
 
 .filter-menu-bookmark-icon, .filter-menu-bookmark-icon-pressed {

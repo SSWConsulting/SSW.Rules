@@ -1418,64 +1418,38 @@ div.bad-example {
   font-size: 1.18rem !important;
 }
 
-.dropdown-github-btn-container:before {
+.dropdown-btn {
+  color: #666666;
+  display: flex;
+  align-items: center;
+  margin-left: 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.dropdown-btn:hower {
+  @apply text-ssw-red !important;
+}
+
+.dropdown-icon:before {
+  font-size: 1.5rem !important;
+  width: 22px !important;
+  margin: 0rem 1rem;
+}
+
+.dropdown-github-icon:before {
   content: "\f09b";
   font-family: FontAwesome;
-  font-size: 1.5rem !important;
-  margin: 0rem 1rem;
 }
 
-.dropdown-github-btn-container {
-  color: #666666;
-  display: flex;
-  align-items: center;
-  margin-left: 0;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.dropdown-github-btn-container:hover {
-  @apply text-ssw-red !important;
-}
-
-.dropdown-user-btn-container:before {
+.dropdown-user-icon:before {
   content: "\f007";
   font-family: FontAwesome;
-  font-size: 1.5rem !important;
-  margin: 0rem 1rem;
 }
 
-.dropdown-user-btn-container {
-  color: #666666;
-  display: flex;
-  align-items: center;
-  margin-left: 0;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.dropdown-user-btn-container:hover {
-  @apply text-ssw-red !important;
-}
-
-.dropdown-signout-btn-container:before {
+.dropdown-signout-icon:before {
   content: "\f08b";
   font-family: FontAwesome;
-  font-size: 1.5rem !important;
-  margin: 0 1rem;
-}
-
-.dropdown-signout-btn-container {
-  color: #666666;
-  display: flex;
-  align-items: center;
-  margin-left: 0;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.dropdown-signout-btn-container:hover {
-  @apply text-ssw-red !important;
 }
 
 .dropdown-badge {

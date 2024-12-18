@@ -10,7 +10,7 @@ const DropdownCard = ({ setOpen }) => {
       <div className="dropdown-list">
         <p className="dropdown-username">@{user.nickname}</p>
         <button
-          className="dropdown-github-btn-container"
+          className="dropdown-btn dropdown-icon dropdown-github-icon"
           onClick={() => {
             setOpen(false);
             window.open(`https://www.github.com/${user.nickname}`);
@@ -19,7 +19,7 @@ const DropdownCard = ({ setOpen }) => {
           GitHub Profile
         </button>
         <button
-          className="dropdown-user-btn-container"
+          className="dropdown-btn dropdown-icon dropdown-user-icon"
           onClick={() => {
             setOpen(false);
             navigate('/profile');
@@ -29,7 +29,7 @@ const DropdownCard = ({ setOpen }) => {
         </button>
         <hr />
         <button
-          className="dropdown-signout-btn-container"
+          className="dropdown-btn dropdown-icon dropdown-signout-icon"
           onClick={() => {
             logout({ returnTo: process.env.AUTH0_REDIRECT_URI });
           }}

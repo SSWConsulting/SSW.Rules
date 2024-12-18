@@ -35,7 +35,7 @@ const Profile = ({ data }) => {
                   rel="noreferrer"
                 >
                   <GitHubIcon className="profile-github-icon" />
-                  GitHub account
+                  GitHub Profile
                 </a>
               </div>
               <ProfileFilterMenu

@@ -1572,7 +1572,7 @@ div.bad-example {
     grid-column: 1 !important;
   }
   .profile-header {
-    height: auto;
+    padding: 2rem;
   }
 }
 

@@ -1,25 +1,23 @@
-import React from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { navigate } from 'gatsby';
 import PropTypes from 'prop-types';
-import { useAuth0 } from '@auth0/auth0-react';
-import GitHubIcon from '-!svg-react-loader!../../images/github.svg';
+import React from 'react';
 
 const DropdownCard = ({ setOpen }) => {
   const { logout, user } = useAuth0();
   return (
     <>
       <div className="dropdown-list">
-        <div className="dropdown-userinfo-container">
-          <p className="dropdown-username">@{user.nickname}</p>
-          <a
-            className="github-link"
-            href={`https://www.github.com/${user.nickname}`}
-          >
-            <GitHubIcon className="dropdown-github-icon" />
-            Manage GitHub Account
-          </a>
-        </div>
-        <hr />
+        <p className="dropdown-username">@{user.nickname}</p>
+        <button
+          className="dropdown-github-btn-container"
+          onClick={() => {
+            setOpen(false);
+            window.open(`https://www.github.com/${user.nickname}`);
+          }}
+        >
+          GitHub Profile
+        </button>
         <button
           className="dropdown-user-btn-container"
           onClick={() => {
@@ -27,8 +25,9 @@ const DropdownCard = ({ setOpen }) => {
             navigate('/profile');
           }}
         >
-          Your Profile
+          SSW.Rules Profile
         </button>
+        <hr />
         <button
           className="dropdown-signout-btn-container"
           onClick={() => {

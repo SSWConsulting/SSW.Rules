@@ -1410,20 +1410,32 @@ div.bad-example {
   right: -2rem;
 }
 
-.dropdown-userinfo-container {
-  margin: 1rem 1rem !important;
-}
-
 .dropdown-username {
+  margin: 1rem 1rem !important;
   font-weight: bold;
   color: black;
   word-wrap: break-word;
   font-size: 1.18rem !important;
-  padding-bottom: 0.7rem;
 }
 
-.dropdown-github-icon {
-  margin: 0.15rem 0.2rem 0 0;
+.dropdown-github-btn-container:before {
+  content: "\f09b";
+  font-family: FontAwesome;
+  font-size: 1.5rem !important;
+  margin: 0rem 1rem;
+}
+
+.dropdown-github-btn-container {
+  color: #666666;
+  display: flex;
+  align-items: center;
+  margin-left: 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.dropdown-github-btn-container:hover {
+  @apply text-ssw-red !important;
 }
 
 .dropdown-user-btn-container:before {

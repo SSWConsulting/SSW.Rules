@@ -1295,7 +1295,7 @@ div.bad-example {
   display: flex;
 }
 
-.rule-buttons .tooltiptext {
+.rule-buttons .tooltiptext, .profile-rule-buttons .tooltip .tooltiptext {
   left: -20px;
   margin-bottom: 1rem;
 }
@@ -1410,40 +1410,46 @@ div.bad-example {
   right: -2rem;
 }
 
-.dropdown-userinfo-container {
-  margin: 1rem 1rem !important;
-}
-
 .dropdown-username {
+  margin: 1rem 1rem !important;
   font-weight: bold;
   color: black;
   word-wrap: break-word;
   font-size: 1.18rem !important;
-  padding-bottom: 0.7rem;
 }
 
-.dropdown-github-icon {
-  margin: 0.15rem 0.2rem 0 0;
-}
-
-.dropdown-signout-btn-container:before {
-  content: "\f08b";
-  font-family: FontAwesome;
-  font-size: 1.5rem !important;
-  margin: 0 1rem;
-}
-
-.dropdown-signout-btn-container {
+.dropdown-btn {
   color: #666666;
   display: flex;
   align-items: center;
   margin-left: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
-.dropdown-signout-btn-container:hover {
+.dropdown-btn:hower {
   @apply text-ssw-red !important;
+}
+
+.dropdown-icon:before {
+  font-size: 1.5rem !important;
+  width: 22px !important;
+  margin: 0rem 1rem;
+}
+
+.dropdown-github-icon:before {
+  content: "\f09b";
+  font-family: FontAwesome;
+}
+
+.dropdown-user-icon:before {
+  content: "\f007";
+  font-family: FontAwesome;
+}
+
+.dropdown-signout-icon:before {
+  content: "\f08b";
+  font-family: FontAwesome;
 }
 
 .dropdown-badge {
@@ -1471,6 +1477,17 @@ div.bad-example {
   color: #333333;
 }
 
+.no-content-message {
+  text-align: center;
+  margin: 2rem auto;
+}
+
+.profile-header {
+  background-color: #f5f5f5;
+  padding: 3rem;
+  height: auto;
+}
+
 .profile-container-img:hover {
   opacity: 0.8;
   cursor: pointer;
@@ -1483,9 +1500,31 @@ div.bad-example {
   height: 6.25rem;
 }
 
+.profile-github-icon {
+  margin: 0.2rem 0.25rem 0 0;
+}
+
+.profile-image {
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
 @media screen and (max-width: 600px) {
   .rule-content {
     padding: 1rem;
+  }
+  .profile-image {
+    visibility: hidden;
+    grid-column: 1;
+    height: 0
+  }
+  .profile-large-name {
+    grid-column: 1;
+  }
+  .profile-github-icon {
+    margin: 0.2rem 0 0 0;
+    height: 1rem;
+    width: 1.8rem;
   }
   .github-link {
     grid-column: 1 !important;
@@ -1497,10 +1536,15 @@ div.bad-example {
     justify-items: center;
     justify-content: center;
   }
+  .profile-container-responsive {
+    justify-items: start;
+    justify-content: start;
+  }
   .rule-content-title {
     padding: 0 !important;
   }
 }
+
 @media screen and (max-width: 1024px) {
   .radio-button-1 {
     grid-column: unset !important;
@@ -1511,6 +1555,30 @@ div.bad-example {
   .radio-button-3 {
     grid-column: unset !important;
   }
+  .profile-large-name {
+    font-size: 1.75rem !important;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .filter-menu {
+    grid-template-columns: auto !important;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0 !important;
+    top: 2rem !important;
+  }
+  .menu-item {
+    grid-column: 1 !important;
+  }
+  .profile-header {
+    padding: 2rem;
+  }
+}
+
+.profile-large-name {
+  font-size: 1.75rem;
+  grid-row: 1;
 }
 
 .github-link {
@@ -1529,6 +1597,15 @@ div.bad-example {
   opacity: 0.8;
 }
 
+.filter-menu {
+  top: 3rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto; 
+  column-gap: 1rem;
+  justify-content: start;
+}
+
 .radio-button-1 {
   grid-column: 2;
 }
@@ -1539,18 +1616,39 @@ div.bad-example {
   grid-column: 4;
 }
 
-.heading-container {
-  display: inline-flex;
-  background: #f5f5f5;
-  border-left: 2px solid #cc4141; 
-  width: 100%;
+.menu-item {
+  padding: 0 0.5rem 0.5rem;
+  text-align: center;
+  position: relative;
+  display: flex;
+  margin: auto;
+  white-space: nowrap;
+}
+ 
+.menu-item:hover {
+  padding: 0 0.5rem 0.25rem;
+  border-bottom: 0.25rem solid #CC4141;
+  cursor: pointer;
+}
+ 
+.menu-item:hover .filter-menu-bookmark-icon {
+  @apply text-ssw-red; 
+}
+ 
+.bookmarks-item:after {
+  padding-left: 0.5rem;
+  font-family: FontAwesome;
 }
 
-.heading-container h2 {
-  padding: 0 0 0 0.7rem;
-  background: none;
-  border-left: none;
-  margin: 0.5rem 0.8rem;
+.filter-menu-bookmark-icon, .filter-menu-bookmark-icon-pressed {
+  margin: auto;
+  margin-right: -0.5rem;
+  height: 1rem;
+  width: 1.8rem;
+}
+
+.filter-menu-bookmark-icon-pressed {
+  @apply text-ssw-red; 
 }
 
 .rule-heading-love:after {
@@ -1585,6 +1683,12 @@ div.bad-example {
 .gavel-icon {
   height: 50px;
   margin-top: 10px;
+}
+
+.no-tagged-message:before {
+  font-family: FontAwesome;
+  content: '\f00d';
+  margin-right: 0.5rem;
 }
 
 .error-text {

@@ -99,7 +99,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@playwright/test": "^1.47.1",
+    "@playwright/test": "^1.49.1",
     "@types/node": "^20.16.5",
     "eslint": "^8.57.1",
     "eslint-plugin-jsx-a11y": "^6.10.0",

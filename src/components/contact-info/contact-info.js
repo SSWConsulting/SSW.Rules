@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 const ContactInfo = ({ onClick }) => {
   return (
     <div className="contact">
-      <div className="text-3xl font-semibold text-ssw-red">
+      <h3 className="text-ssw-red">
         Interested in what we can do for you?
-      </div>
-      <p>Contact an Account Manager to discuss your project</p>
+      </h3>
+      <p>Contact an Account Manager to discuss your project.</p>
       <button className="btn btn-red" onClick={() => onClick()}>
         Book a Free Initial Meeting
       </button>

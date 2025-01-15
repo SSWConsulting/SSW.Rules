@@ -1143,7 +1143,7 @@ div.bad-example {
 
 .break-line {
   margin: 0rem 1.5rem;
-  border: 1px solid #f5f5f5;
+  border-top: 1px solid #f5f5f5;
 }
 
 .acknowledgements h5, .tags h5, .likes h5 {

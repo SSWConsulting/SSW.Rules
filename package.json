@@ -87,7 +87,7 @@
     "react-pose": "^4.0.10",
     "react-responsive-modal": "^6.4.2",
     "sharp": "^0.33.5",
-    "ssw.megamenu": "4.9.2",
+    "ssw.megamenu": "4.9.4",
     "ssw.rules.widget": "^2.0.8",
     "svg-react-loader": "^0.4.6",
     "webpack-assets-manifest": "5.2.1"

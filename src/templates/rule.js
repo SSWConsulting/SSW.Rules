@@ -164,7 +164,7 @@ const Rule = ({ data, location }) => {
                 />
               </div>
 
-              <section className="ml-2 mr-2 break-line"></section>
+              <hr className="mx-6 my-0" />
 
               <Discussion ruleGuid={rule.frontmatter.guid} />
             </div>

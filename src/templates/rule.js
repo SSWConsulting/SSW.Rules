@@ -164,7 +164,7 @@ const Rule = ({ data, location }) => {
                 />
               </div>
 
-              <hr className="mx-6 my-0" />
+              <hr />
 
               <Discussion ruleGuid={rule.frontmatter.guid} />
             </div>

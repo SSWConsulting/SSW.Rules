@@ -152,6 +152,8 @@ const Rule = ({ data, location }) => {
                   )}
                 <hr />
                 <div dangerouslySetInnerHTML={{ __html: rule.html }} />
+
+                <hr />
               </section>
 
               <div className="lg:hidden md:w-1/1 px-4">
@@ -163,8 +165,6 @@ const Rule = ({ data, location }) => {
                   relatedRulesFromRedirects={data.relatedRulesFromRedirects}
                 />
               </div>
-
-              <hr className="mx-6 my-0" />
 
               <Discussion ruleGuid={rule.frontmatter.guid} />
             </div>

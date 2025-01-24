@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const Discussion = (props) => {
   return (
-    <div className="discussion-box">
+    <div className="discussion-box mb-20 px-6 pb-4">
       <Giscus
         id="comments"
         repo={process.env.GISCUS_REPO_NAME}

@@ -191,7 +191,7 @@ const UserRules = ({ data, location }) => {
         extractedFiles.push({
           file: {
             node: {
-              path: path.path.replace('rule.md', ''),
+              path: getRulePath(path.path),
               lastUpdated: updatedTime,
             },
           },
@@ -201,6 +201,15 @@ const UserRules = ({ data, location }) => {
 
     return extractedFiles;
   };
+
+  function getRulePath(path) {
+    const lastSlashIndex = path.lastIndexOf('/');
+    if (!path.includes('categories') && path.lastIndexOf('/') !== -1) {
+      return path.substring(0, lastSlashIndex + 1);
+    } else {
+      return path;
+    }
+  }
 
   const filterUniqueRules = (extractedFiles) => {
     const filteredRules = extractedFiles

@@ -204,7 +204,11 @@ const UserRules = ({ data, location }) => {
 
   const getRulePath = (path) => {
     const lastSlashIndex = path.lastIndexOf('/');
-    if (!path.includes('categories') && path.lastIndexOf('/') !== -1) {
+    if (
+      path.includes('.md') &&
+      !path.includes('categories') &&
+      path.lastIndexOf('/') !== -1
+    ) {
       return path.substring(0, lastSlashIndex + 1);
     } else {
       return path;

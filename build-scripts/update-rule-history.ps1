@@ -9,10 +9,12 @@ param (
     # https://github.com/SSWConsulting/SSW.Rules/issues/1367
 )
 
-if ($ShouldGenerateHistory -eq $false) {
-    Write-Output "Skipping history generation"
-} else {
+$ShouldGenerateHistory = [System.Convert]::ToBoolean($ShouldGenerateHistory)
+
+if ($ShouldGenerateHistory) {
     Write-Output "Generating history"
+} else {
+    Write-Output "Skipping history generation"
 }
 
 
@@ -51,6 +53,7 @@ $historyArray | Foreach-Object {
     }
 
     if ($ShouldGenerateHistory) {
+        Write-Output "Processing commit $userDetails[1]"
         $lastUpdated = $userDetails[2]
         $lastUpdatedBy = $userDetails[3]
         $lastUpdatedByEmail = $userDetails[4]
@@ -132,7 +135,7 @@ if(![string]::IsNullOrWhiteSpace($commitSyncHash))
 }
 
 if ($ShouldGenerateHistory) {
-    echo $historyFileContents
+    Write-Output $historyFileContents
 }
 
-echo $commitSyncHash
+Write-Output $commitSyncHash

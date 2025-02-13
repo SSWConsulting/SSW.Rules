@@ -4,17 +4,13 @@ param (
     [string]$UpdateRuleHistoryKey,
     [string]$UpdateHistorySyncCommitHashKey,
     [string]$endCommitHash = "HEAD",
-    [string]$ShouldGenerateHistory = "true"  # Accepts string input
+    [string]$ShouldGenerateHistoryString = "true"  # Accepts string input
     # Do this if your PR is giant 
     # https://github.com/SSWConsulting/SSW.Rules/issues/1367
 )
 
 # Create a new boolean variable from the string input
-$IsHistoryGenerationEnabled = [string]::Equals($ShouldGenerateHistory, "true", [System.StringComparison]::OrdinalIgnoreCase)
-
-Write-Output "ShouldGenerateHistory raw value: '$ShouldGenerateHistory'"
-Write-Output "IsHistoryGenerationEnabled value: '$IsHistoryGenerationEnabled'"
-Write-Output "IsHistoryGenerationEnabled type: $($IsHistoryGenerationEnabled.GetType().Name)"
+$IsHistoryGenerationEnabled = [string]::Equals($ShouldGenerateHistoryString, "true", [System.StringComparison]::OrdinalIgnoreCase)
 
 if ($IsHistoryGenerationEnabled) {
     Write-Output "Generating history"

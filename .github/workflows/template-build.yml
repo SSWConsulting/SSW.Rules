@@ -13,8 +13,7 @@ on:
       should_generate_commit_data:
         type: boolean
         description: 'Generate commit data for rules history. You might want to skip this on large rules changes.'
-        required: false
-        default: true
+        required: true
 
 jobs:
   get-content-commit-data:
@@ -22,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-
       - uses: actions/checkout@v4
         name: Checkout SSW.Rules
         with:

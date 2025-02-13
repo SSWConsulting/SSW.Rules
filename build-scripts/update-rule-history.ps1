@@ -4,7 +4,7 @@ param (
     [string]$UpdateRuleHistoryKey,
     [string]$UpdateHistorySyncCommitHashKey,
     [string]$endCommitHash = "HEAD",
-    [string]$ShouldGenerateHistory = $true
+    [bool]$ShouldGenerateHistory = $true
     # Do this if your PR is giant 
     # https://github.com/SSWConsulting/SSW.Rules/issues/1367
 )

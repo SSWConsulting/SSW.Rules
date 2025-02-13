@@ -4,12 +4,15 @@ param (
     [string]$UpdateRuleHistoryKey,
     [string]$UpdateHistorySyncCommitHashKey,
     [string]$endCommitHash = "HEAD",
-    [bool]$ShouldGenerateHistory = $true
+    [string]$ShouldGenerateHistory = "true"
     # Do this if your PR is giant 
     # https://github.com/SSWConsulting/SSW.Rules/issues/1367
 )
 
-$ShouldGenerateHistory = [System.Convert]::ToBoolean($ShouldGenerateHistory)
+$ShouldGenerateHistory = $ShouldGenerateHistory -ieq "true"
+
+Write-Output "ShouldGenerateHistory raw value: '$ShouldGenerateHistory'"
+Write-Output "ShouldGenerateHistory type: $($ShouldGenerateHistory.GetType().Name)"
 
 if ($ShouldGenerateHistory) {
     Write-Output "Generating history"

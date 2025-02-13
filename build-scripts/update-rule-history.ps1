@@ -9,7 +9,7 @@ param (
     # https://github.com/SSWConsulting/SSW.Rules/issues/1367
 )
 
-$ShouldGenerateHistory = $ShouldGenerateHistory -ieq "true"
+$ShouldGenerateHistory = [bool]($ShouldGenerateHistory -ieq "true")
 
 Write-Output "ShouldGenerateHistory raw value: '$ShouldGenerateHistory'"
 Write-Output "ShouldGenerateHistory type: $($ShouldGenerateHistory.GetType().Name)"

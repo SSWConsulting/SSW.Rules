@@ -4,17 +4,19 @@ param (
     [string]$UpdateRuleHistoryKey,
     [string]$UpdateHistorySyncCommitHashKey,
     [string]$endCommitHash = "HEAD",
-    [string]$ShouldGenerateHistory = "true"
+    [string]$ShouldGenerateHistory = "true"  # Accepts string input
     # Do this if your PR is giant 
     # https://github.com/SSWConsulting/SSW.Rules/issues/1367
 )
 
-$ShouldGenerateHistory = [bool]($ShouldGenerateHistory -ieq "true")
+# Create a new boolean variable from the string input
+$IsHistoryGenerationEnabled = [string]::Equals($ShouldGenerateHistory, "true", [System.StringComparison]::OrdinalIgnoreCase)
 
 Write-Output "ShouldGenerateHistory raw value: '$ShouldGenerateHistory'"
-Write-Output "ShouldGenerateHistory type: $($ShouldGenerateHistory.GetType().Name)"
+Write-Output "IsHistoryGenerationEnabled value: '$IsHistoryGenerationEnabled'"
+Write-Output "IsHistoryGenerationEnabled type: $($IsHistoryGenerationEnabled.GetType().Name)"
 
-if ($ShouldGenerateHistory) {
+if ($IsHistoryGenerationEnabled) {
     Write-Output "Generating history"
 } else {
     Write-Output "Skipping history generation"
@@ -55,7 +57,7 @@ $historyArray | Foreach-Object {
         $commitSyncHash = $userDetails[1]
     }
 
-    if ($ShouldGenerateHistory) {
+    if ($IsHistoryGenerationEnabled) {
         Write-Output "Processing commit $userDetails[1]"
         $lastUpdated = $userDetails[2]
         $lastUpdatedBy = $userDetails[3]
@@ -118,7 +120,7 @@ $historyArray | Foreach-Object {
 }
 
 
-if ($ShouldGenerateHistory) {
+if ($IsHistoryGenerationEnabled) {
     #Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
     $historyFileContents = ConvertTo-Json $historyFileArray
     $Uri = $AzFunctionBaseUrl + '/api/UpdateRuleHistory'
@@ -137,7 +139,7 @@ if(![string]::IsNullOrWhiteSpace($commitSyncHash))
     $Result = Invoke-WebRequest -Uri $Uri -Method Post -Body $Body -Headers $Headers
 }
 
-if ($ShouldGenerateHistory) {
+if ($IsHistoryGenerationEnabled) {
     Write-Output $historyFileContents
 }
 

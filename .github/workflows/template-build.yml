@@ -21,10 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-      - name: Log should_generate_commit_data
-        run: |
-          echo "should_generate_commit_data: ${{ inputs.should_generate_commit_data }}"
-
       - uses: actions/checkout@v4
         name: Checkout SSW.Rules
         with:

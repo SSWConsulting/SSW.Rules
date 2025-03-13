@@ -16,7 +16,7 @@ const Discussion = (props) => {
         reactionsEnabled="1"
         emitMetadata="0"
         inputPosition="top"
-        theme="light"
+        theme="https://cdn.statically.io/gh/SSWConsulting/SSW.Rules/main/static/giscus-theme.css"
         lang="en"
         loading="lazy"
         async

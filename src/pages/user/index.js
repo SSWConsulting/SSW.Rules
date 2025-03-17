@@ -7,12 +7,7 @@ import { graphql } from 'gatsby';
 import { objectOf } from 'prop-types';
 import qs from 'query-string';
 import { FilterOptions } from '@/components/filter/filter';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-const appInsights = new ApplicationInsights({
-  config: {
-    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
-  },
-});
+import useAppInsights from '../../hooks/useAppInsights';
 
 const ActionTypes = {
   BEFORE: 'before',
@@ -34,6 +29,7 @@ const UserRules = ({ data, location }) => {
   const [hasNext, setHasNext] = useState(false);
   const [authorName, setAuthorName] = useState('');
   const [showProfileLink, setShowProfileLink] = useState(false);
+  const { trackException } = useAppInsights();
 
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
@@ -107,10 +103,7 @@ const UserRules = ({ data, location }) => {
       updateFilteredItems(filteredRules);
     } catch (err) {
       setNotFound(true);
-      appInsights.trackException({
-        error: new Error(err),
-        severityLevel: 3,
-      });
+      trackException(err, 3);
     }
   };
 
@@ -198,7 +191,7 @@ const UserRules = ({ data, location }) => {
         extractedFiles.push({
           file: {
             node: {
-              path: path.path.replace('rule.md', ''),
+              path: getRulePath(path.path),
               lastUpdated: updatedTime,
             },
           },
@@ -207,6 +200,19 @@ const UserRules = ({ data, location }) => {
     }
 
     return extractedFiles;
+  };
+
+  const getRulePath = (path) => {
+    const lastSlashIndex = path.lastIndexOf('/');
+    if (
+      path.includes('.md') &&
+      !path.includes('categories') &&
+      lastSlashIndex !== -1
+    ) {
+      return path.substring(0, lastSlashIndex + 1);
+    } else {
+      return path;
+    }
   };
 
   const filterUniqueRules = (extractedFiles) => {

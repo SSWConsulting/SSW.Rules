@@ -39,7 +39,7 @@
 }
  
 html {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
+  font-family: "Inter Variable", sans-serif
 }
 
 body {
@@ -469,13 +469,11 @@ pre {
   background: none;
 }
 
-.good figcaption, .bad figcaption, .ok figcaption,
-.good p, .bad p, .ok p {
+.good figcaption, .bad figcaption, .ok figcaption, .good p, .bad p, .ok p {
   font-weight: bold;  
   caption-side: bottom;
-  padding-left: 1.2rem;
+  padding-left: 1.35rem;
   font-weight: 700;
-  margin: 0.5rem 0 6px;
   line-height: initial;
   position: relative;
 }
@@ -825,7 +823,7 @@ blockquote :last-child {
 }
 
 .rule-content a:hover,
-.rule-category a:hover:not(.github-link, .disqus-link, .get-username-btn::after) {
+.rule-category a:hover:not(.github-link) {
   text-decoration:underline;
   @apply text-ssw-red; 
 }
@@ -883,7 +881,6 @@ blockquote :last-child {
   max-width: 100%;
   width: auto !important;
   border: 10px solid #eee;
-  outline: 1px solid #ccc;
   background-color: #eee;
 }
 
@@ -903,7 +900,7 @@ blockquote :last-child {
   width: 16px;
   position: absolute;
   left: 0px;
-  top:2px;
+  top:3px;
 }
 
 .rule-content figure figcaption.bad-example:before {
@@ -920,7 +917,6 @@ blockquote :last-child {
   content: "\f11a ";
   font-family: FontAwesome;
   font-style: normal;
-  font-weight: normal;
   text-decoration: inherit;
   color: #777;
 }
@@ -941,7 +937,7 @@ blockquote :last-child {
 .good-example figure figcaption::before,
 .bad-example figure figcaption::before,
 .ok-example figure figcaption::before {
-  padding-left: 1.5rem;
+  padding-left: 1.35rem;
 }
 
 .good-example figure figcaption::after,
@@ -953,7 +949,7 @@ div.good-example .custom-block-heading::after {
   width: 16px;
   position: absolute;
   left: 0px;
-  top:2px;
+  top:3px;
 }
 
 .bad-example figure figcaption::after,
@@ -965,7 +961,7 @@ div.bad-example .custom-block-heading::after {
   width: 16px;
   position: absolute;
   left: 0px;
-  top:2px;
+  top:3px;
 }
 
 .ok-example figure figcaption::after,
@@ -975,12 +971,11 @@ div.ok-example .custom-block-heading::after {
   content: "\f11a ";
   font-family: FontAwesome;
   font-style: normal;
-  font-weight: normal;
   text-decoration: inherit;
   color: #777;
   position: absolute;
   left: 0px;
-  top:2px;
+  top:3px;
 }
 
 div.ok-example .custom-block-heading,
@@ -990,7 +985,6 @@ div.greybox .custom-block-heading{
   caption-side: bottom;
   display: table-caption;
   font-weight: 700;
-  margin: 0.5rem 0.5rem 6px;
   line-height: initial;
   position: relative;
 }
@@ -1024,10 +1018,12 @@ div.bad-example {
 }
 
 .rule-content video, .rule-content iframe:not(.utterances-frame) {
-  background-color: #f5f5f5;
-  padding: 4px;
+  background-color: #eee;
+  padding: 5px;
   margin-bottom: 1rem;
 }
+
+  .gatsby-resp-iframe-wrapper {margin-bottom:.5rem;}
 
 .rule-content video pre, .rule-content iframe pre {
   display: block;
@@ -1070,6 +1066,7 @@ div.bad-example {
   
 .info, .china, .codeauditor {
   border: 1px solid #ccc;
+  min-height: 4.5rem;
 }
 
 .info > *, .china > *, .codeauditor > * {
@@ -1077,10 +1074,10 @@ div.bad-example {
 }
 
 .info > ol, .china > ol, .codeauditor > ol, .info > ul, .china > ul, .codeauditor > ul  {
-  padding-left: 5rem;
+  padding-left: 4rem;
 }
   
-.greybox :first-child, .highlight :first-child, .info :first-child, .china :first-child, .codeauditor :first-child, .todo :first-child, blockquote :first-child {
+.greybox > :first-child, .highlight > :first-child, .info > :first-child, .china > :first-child, .codeauditor > :first-child, .todo > :first-child, blockquote > :first-child {
   margin-top:0;
 }
 
@@ -1089,28 +1086,34 @@ div.bad-example {
 }
 
 .info:before, .codeauditor:before, .china:before {
-  margin-right: 1rem;
   overlay: auto;
+  position: fixed;
 }
 
 .info:before, .codeauditor:before {
   line-height: initial;
   font-family: FontAwesome;
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   @apply text-ssw-red; 
 }
   
 .info:before {
   content: "\f05a ";
+  font-size: 2.5rem;
 }
 
 .codeauditor:before {
   content: "\f121 ";
+  font-size: 2rem;
 }
 
 .china:before {
-  content: url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/china-flag-icon.png);
-  padding-top: 0.25rem;
+  content: '';
+  display: inline-block;
+  background: url(https://github.com/SSWConsulting/SSW.Rules/raw/main/static/assets/china-flag-icon.png) no-repeat;
+  width: 1.75rem;
+  height: 1.5rem;
+  background-size: contain;
 }
 
 /* END BOXES */
@@ -1145,23 +1148,9 @@ div.bad-example {
   box-shadow: 0 5px 40px rgba(0, 0, 0, 0.25);
 }
 
-#more {
-  /* overflow: auto; */
-  text-align: center;
-  border-top: 1px solid #f5f5f5;
-}
-
 .acknowledgements h5, .tags h5, .likes h5 {
   margin-top: 2rem!important;
   margin-bottom: 0.5rem!important;
-}
-
-#more .acknowledgements .avatar img {
-  max-width: 75px;
-}
-
-#more .acknowledgements .avatar a, #more .acknowledgements .avatar a:hover {
-  border-bottom: none;
 }
 
 .info-btn-container {
@@ -1225,66 +1214,6 @@ div.bad-example {
   @apply text-ssw-red; 
 }
 
-.reaction-grid {
-  grid-template-columns: auto 2.5rem 2.2rem 0.7rem 2.2rem 2.2rem 0.7rem 2.2rem 2.2rem 0.7rem 2.2rem 2.7rem auto;
-  display: grid;
-  grid-template-rows: 2rem;
-  padding-bottom: 1rem;
-}
-
-.agree-btn-container:after, .agree-btn-container-pressed:after  {
-  content: '\f004';
-  font-family: FontAwesome;
-  font-size: 1.7rem;
-  padding-left: 0.5rem;
-}
-
-.agree-btn-container-pressed:after, .somewhat-disagree-btn-container-pressed:after, .disagree-btn-container-pressed:after, .somewhat-agree-btn-container-pressed:after  {
-  @apply text-ssw-red; 
-}
-
-.agree-btn-container:hover:after, .agree-btn-container-pressed:hover:after, .somewhat-disagree-btn-container:hover:after, .somewhat-disagree-btn-container-pressed:hover:after, .disagree-btn-container:hover:after, .disagree-btn-container-pressed:hover:after, .somewhat-agree-btn-container:hover:after, .somewhat-agree-btn-container-pressed:hover:after {
-  @apply text-ssw-red; 
-  font-size: 1.8rem;
-  transition: font-size 0.2s;
-}
-
-.somewhat-agree-btn-container:after, .somewhat-agree-btn-container-pressed:after  {
-  content: '\f164';
-  font-family: FontAwesome;
-  font-size: 1.7rem;
-}
-
-.somewhat-disagree-btn-container:after, .somewhat-disagree-btn-container-pressed:after {
-  content: '\f165';
-  font-family: FontAwesome;
-  font-size: 1.7rem;
-  align-self: center;
-}
-
-.disagree-btn-container:after, .disagree-btn-container-pressed:after {
-  content: '\f05e';
-  font-family: FontAwesome;
-  font-size: 1.7rem;
-  padding-left: 0.1rem;
-}
-
-.agree-grid-item {
-  grid-column: 2;
-}
-
-.somewhat-agree-grid-item {
-  grid-column: 5;
-}
-
-.somewhat-disagree-grid-item {
-  grid-column: 8;
-}
-
-.disagree-grid-item { 
-  grid-column: 11;
-}
-
 .rule-header-container {
   display: flex;
 }
@@ -1346,7 +1275,7 @@ div.bad-example {
   margin-top: 0;
 }
 
-.tooltip, .react-tooltip, .disqus-tooltip, .info-tooltip, .forgot-username-tooltip {
+.tooltip, .info-tooltip {
   position: relative;
   margin: 2px 0;
   height: 2.5rem;
@@ -1359,7 +1288,7 @@ div.bad-example {
   display: flex;
 }
 
-.rule-buttons .tooltiptext {
+.rule-buttons .tooltiptext, .profile-rule-buttons .tooltip .tooltiptext {
   left: -20px;
   margin-bottom: 1rem;
 }
@@ -1402,22 +1331,8 @@ div.bad-example {
   margin-left: -58px;
 }
 
-.disqus-tooltip {
-  margin: auto 1rem auto auto;
-  height: 3rem;
-}
-
 .info-tooltip {
   margin: 1.85rem auto 0 0;
-}
-
-.forgot-username-tooltip {
-  margin: 1.85rem auto 0 0;
-  text-decoration: none;
-}
-
-.forgot-username-tooltip a {
-  text-decoration: none;
 }
 
 .tooltiptext {
@@ -1439,29 +1354,10 @@ div.bad-example {
   bottom: 105%;
 }
 
-.react-tooltip .tooltiptext {
-  margin-left: -53px !important;
-  bottom: 90%;
-  width: 80px;
-}
-
-.disqus-tooltip .tooltiptext {
-  margin-left: 0 !important;
-  bottom: 2.5rem;
-  left: -1.6rem;
-  width: 5rem;
-}
-
 .info-tooltip .tooltiptext {
   left: 65%;
   margin-left: -79px;
   margin-bottom: 0.7rem;
-  width: 10rem;
-}
-
-.forgot-username-tooltip .tooltiptext{
-  right: -4.4rem;
-  margin-bottom: 1rem;
   width: 10rem;
 }
 
@@ -1477,7 +1373,7 @@ div.bad-example {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext, .react-tooltip:hover .tooltiptext, .disqus-tooltip:hover .tooltip, .info-tooltip:hover .tooltiptext, .forgot-username-tooltip:hover .tooltiptext{
+.tooltip:hover .tooltiptext, .info-tooltip:hover .tooltiptext{
   visibility: visible;
   opacity: 1;
   padding: 0.3rem !important;
@@ -1507,30 +1403,15 @@ div.bad-example {
   right: -2rem;
 }
 
-.dropdown-userinfo-container {
-  margin: 1rem 1rem !important;
-}
-
 .dropdown-username {
+  margin: 1rem 1rem !important;
   font-weight: bold;
   color: black;
   word-wrap: break-word;
   font-size: 1.18rem !important;
-  padding-bottom: 0.7rem;
 }
 
-.dropdown-github-icon {
-  margin: 0.15rem 0.2rem 0 0;
-}
-
-.dropdown-user-btn-container:before {
-  content: "\f007";
-  font-family: FontAwesome;
-  font-size: 1.5rem !important;
-  margin: 0rem 1rem;
-}
-
-.dropdown-user-btn-container {
+.dropdown-btn {
   color: #666666;
   display: flex;
   align-items: center;
@@ -1539,28 +1420,29 @@ div.bad-example {
   font-size: 0.9rem;
 }
 
-.dropdown-user-btn-container:hover {
+.dropdown-btn:hower {
   @apply text-ssw-red !important;
 }
 
-.dropdown-signout-btn-container:before {
+.dropdown-icon:before {
+  font-size: 1.5rem !important;
+  width: 22px !important;
+  margin: 0rem 1rem;
+}
+
+.dropdown-github-icon:before {
+  content: "\f09b";
+  font-family: FontAwesome;
+}
+
+.dropdown-user-icon:before {
+  content: "\f007";
+  font-family: FontAwesome;
+}
+
+.dropdown-signout-icon:before {
   content: "\f08b";
   font-family: FontAwesome;
-  font-size: 1.5rem !important;
-  margin: 0 1rem;
-}
-
-.dropdown-signout-btn-container {
-  color: #666666;
-  display: flex;
-  align-items: center;
-  margin-left: 0;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.dropdown-signout-btn-container:hover {
-  @apply text-ssw-red !important;
 }
 
 .dropdown-badge {
@@ -1581,8 +1463,12 @@ div.bad-example {
   z-index: 21;
 }
 
-/* Profile Page
--------------------------------------------------- */
+.grid-container {
+  display: grid;
+  grid-template-columns: 8rem auto auto;
+  grid-template-rows: 3rem 1.6rem auto;
+  color: #333333;
+}
 
 .no-content-message {
   text-align: center;
@@ -1593,13 +1479,6 @@ div.bad-example {
   background-color: #f5f5f5;
   padding: 3rem;
   height: auto;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: 8rem auto auto;
-  grid-template-rows: 3rem 1.6rem auto;
-  color: #333333;
 }
 
 .profile-container-img:hover {
@@ -1618,13 +1497,6 @@ div.bad-example {
   margin: 0.2rem 0.25rem 0 0;
 }
 
-.profile-disqus-icon {
-  margin: 0.1rem 0.1rem 0 -0.15rem;
-  height: 1.3rem;
-  width: 1.3rem;
-  fill: #CC4141;
-}
-
 .profile-image {
   grid-row-start: 1;
   grid-row-end: 3;
@@ -1634,16 +1506,10 @@ div.bad-example {
   .rule-content {
     padding: 1rem;
   }
-  .reaction-grid {
-    grid-template-columns: auto 2rem 0.5rem 1.5rem 2.2rem 0.5rem 1.5rem 2.2rem 0.5rem 1.5rem 2.3rem 1rem auto;
-  }
   .profile-image {
     visibility: hidden;
     grid-column: 1;
     height: 0
-  }
-  .profile-bookmark-icon, .profile-like-icon, .profile-dislike-icon{
-    display: none !important;
   }
   .profile-large-name {
     grid-column: 1;
@@ -1653,7 +1519,7 @@ div.bad-example {
     height: 1rem;
     width: 1.8rem;
   }
-  .github-link, .disqus-link {
+  .github-link {
     grid-column: 1 !important;
     padding-top: 0.75rem;
   }
@@ -1663,13 +1529,15 @@ div.bad-example {
     justify-items: center;
     justify-content: center;
   }
+  .profile-container-responsive {
+    justify-items: start;
+    justify-content: start;
+  }
   .rule-content-title {
     padding: 0 !important;
   }
-  .remove-item {
-    padding: 0 !important;
-  }
 }
+
 @media screen and (max-width: 1024px) {
   .radio-button-1 {
     grid-column: unset !important;
@@ -1684,6 +1552,7 @@ div.bad-example {
     font-size: 1.75rem !important;
   }
 }
+
 @media screen and (max-width: 800px) {
   .filter-menu {
     grid-template-columns: auto !important;
@@ -1696,7 +1565,7 @@ div.bad-example {
     grid-column: 1 !important;
   }
   .profile-header {
-    height: auto;
+    padding: 2rem;
   }
 }
 
@@ -1705,7 +1574,7 @@ div.bad-example {
   grid-row: 1;
 }
 
-.github-link, .disqus-link {
+.github-link {
   width: fit-content;
   font-size: 14;
   @apply text-ssw-red !important;
@@ -1717,12 +1586,7 @@ div.bad-example {
   grid-column: 2;
 }
 
-.disqus-link {
-  grid-row: 3;
-  grid-column: 2;
-}
-
-.github-link:hover, .disqus-link:hover {
+.github-link:hover {
   opacity: 0.8;
 }
 
@@ -1730,8 +1594,9 @@ div.bad-example {
   top: 3rem;
   position: relative;
   display: grid;
-  grid-template-columns: auto auto auto auto auto auto auto; 
+  grid-template-columns: auto; 
   column-gap: 1rem;
+  justify-content: start;
 }
 
 .radio-button-1 {
@@ -1745,67 +1610,27 @@ div.bad-example {
 }
 
 .menu-item {
- padding: 0 0.5rem 0.5rem;
- text-align: center;
- position: relative;
- display: flex;
- margin: auto;
- white-space: nowrap;
+  padding: 0 0.5rem 0.5rem;
+  text-align: center;
+  position: relative;
+  display: flex;
+  margin: auto;
+  white-space: nowrap;
 }
-
+ 
 .menu-item:hover {
   padding: 0 0.5rem 0.25rem;
   border-bottom: 0.25rem solid #CC4141;
   cursor: pointer;
 }
-
-.menu-item:hover .agree-title:after, .menu-item:hover .love-title:after, .menu-item:hover .disagree-title:after, .menu-item:hover .comments-title:after, .menu-item:hover .super-disagree-title:after, .menu-item:hover .filter-menu-bookmark-icon {
+ 
+.menu-item:hover .filter-menu-bookmark-icon {
   @apply text-ssw-red; 
 }
-
-.bookmarks-item:after, .love-title:after, .love-title-pressed:after, .agree-title:after, .agree-title-pressed:after, .super-disagree-title:after, .super-disagree-title-pressed:after, .disagree-title:after, .disagree-title-pressed:after, .comments-title:after, .comments-title-pressed:after  {
+ 
+.bookmarks-item:after {
   padding-left: 0.5rem;
   font-family: FontAwesome;
-}
-
-.love-title:after, .love-title-pressed:after {
-  content: '\f004';
-}
-
-.agree-title:after, .agree-title-pressed:after {
-  content: '\f164';
-} 
-
-.disagree-title:after, .disagree-title-pressed:after {
-  content: '\f165';
-}
-
-.super-disagree-title:after, .super-disagree-title-pressed:after {
-  content: '\f05e';
-}
-
-.love-title-pressed:after, .agree-title-pressed:after, .disagree-title-pressed:after, .super-disagree-title-pressed:after {
-  @apply text-ssw-red; 
-}
-
-.heading-container {
-  display: inline-flex;
-  background: #f5f5f5;
-  border-left: 2px solid #cc4141; 
-  width: 100%;
-}
-
-.heading-container h2 {
-  padding: 0 0 0 0.7rem;
-  background: none;
-  border-left: none;
-  margin: 0.5rem 0.8rem;
-}
-
-.profile-bookmark-icon, .profile-like-icon, .profile-dislike-icon  {
-  height: 2rem;
-  font-size: 1.8rem !important;
-  margin: auto auto auto 0;
 }
 
 .filter-menu-bookmark-icon, .filter-menu-bookmark-icon-pressed {
@@ -1816,17 +1641,6 @@ div.bad-example {
 }
 
 .filter-menu-bookmark-icon-pressed {
-  @apply text-ssw-red; 
-}
-
-.filter-menu-disqus-icon, .filter-menu-disqus-icon-pressed {
-  margin: auto;
-  margin-right: -0.5rem;
-  height: 1.5rem;
-  width: 1.5rem;
-}
-
-.filter-menu-disqus-icon-pressed {
   @apply text-ssw-red; 
 }
 
@@ -1859,35 +1673,6 @@ div.bad-example {
   margin-left: 1rem;
 }
 
-.remove-item, .disqus-comment-link {
-  margin-left: auto;
-  right: 3rem;
-  margin: auto 1rem auto auto;
-  font-size: 1.8rem !important;
-}
-
-.disqus-comment-link {
-  cursor: pointer;
-}
-
-.disqus-comment-link svg {
-  height: 50px;
-}
-
-.remove-item {
-  width: 1.6rem;
-}
-
-.remove-item:after {
-  content: '\f057';
-  font-family: FontAwesome;
-  color: #ddd;
-}
-
-.remove-item:hover:after {
-  @apply text-ssw-red !important;
-}
-
 .gavel-icon {
   height: 50px;
   margin-top: 10px;
@@ -1897,85 +1682,6 @@ div.bad-example {
   font-family: FontAwesome;
   content: '\f00d';
   margin-right: 0.5rem;
-}
-
-.username-input-box, .username-input-box-error {
-  border: 0.1rem solid rgb(136, 136, 136);
-  border-radius: 5px;
-  margin-top: 2rem;
-  width: 15rem;
-  height: 28px;
-  padding-left: .7rem;
-  margin-right: .3rem;
-  /* text-align: center; */
-}
-
-.username-input-box-error {
-  border-color: #CC4141;
-}
-
-.connect-acc-button {
-  margin-left: 1.5rem;
-  background-color: #CC4141;
-  color: white;
-  position: relative;
-  /* height: 20px; */
-  box-sizing: border-box;
-  padding: 2px 10px 2px 8px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 2rem;
-  margin-bottom: 1.8rem;
-  height: 28px;
-  font-size: 1rem !important;
-}
-
-.disconnect-acc-button {
-  margin: 0 4.2rem 1rem auto;
-  cursor: pointer;
-  display: flex;
-  vertical-align: middle;
-  font-size: 1rem;
-  color: #666;
-}
-
-.disconnect-acc-button:before {
-  display: inline-block;
-  font-family: FontAwesome;
-  content: '\f00d';
-  text-decoration: none !important;
-  margin: auto;
-  font-size: 1.1rem;
-  margin-top: -0.02rem;
-  padding-right: 0.4rem;
-}
-
-.disconnect-acc-button svg {
-  height: 1.6rem;
-  width: 1.6rem;
-  margin-left: .3rem;
-}
-
-.disconnect-acc-button:hover {
-  @apply text-ssw-red; 
-}
-
-.connect-acc-container {
-  text-align: center;
-  margin: 2rem auto;
-  display: grid;
-  grid-template-columns: 6rem auto;
-}
-
-.disqus-large-icon {
-  height: 6rem;
-  width: 6rem;
-  margin: 1rem 0 1.8rem 12rem;
-  color: #575B5D;
-}
-
-.disqus-profile-link {
-  @apply text-ssw-red !important;
 }
 
 .error-text {
@@ -1996,18 +1702,6 @@ div.bad-example {
 .privacy-toggle-caption {
   font-weight: bold;
   margin: auto 10.51rem 3rem;
-}
-
-.get-username-btn::after {
-  font-family: FontAwesome;
-  content: '\f059';
-  font-size: 1.4rem;
-  margin: 0.5rem auto;
-  vertical-align: middle;
-}
-
-.get-username-btn:hover:after {
-  @apply text-ssw-red; 
 }
 
 .form {
@@ -2040,15 +1734,6 @@ div.bad-example {
   .warning-box {
     width: unset;
   }
-  .connect-acc-container {
-    text-align: center;
-    grid-template-rows: auto auto;
-    grid-template-columns: unset;
-  }
-  .disqus-large-icon {
-    grid-row: 1;
-    margin: auto;
-  }
   .form {
     text-align: center;
     grid-row: 2;
@@ -2059,19 +1744,6 @@ div.bad-example {
   .privacy-toggle-caption {
     margin: 0 0 3rem;
   }
-}
-
-/* Comments
--------------------------------------------------- */
-
-.comment-seperator {
-  margin: 3rem 0rem 1.5rem;
-  border-top: 1px solid #f5f5f5
-}
-
-.disqus-box {
-  margin-bottom: 5rem;
-  padding: 1rem 1.5rem;
 }
 
 /* 404 page
@@ -2204,6 +1876,10 @@ html {
   text-decoration: none;
 }
 
+#sidebar #widget .see-more-container a {
+  text-decoration: underline;
+}
+
 #sidebar h4 {
   font-weight: 600;
   text-transform: uppercase;
@@ -2213,10 +1889,6 @@ html {
 #sidebar a {
   text-decoration:underline; 
   transition: color 0.25s ease;
-}
-
-#widget a {
-  text-decoration: none;
 }
 
 #sidebar a:hover {
@@ -2547,7 +2219,7 @@ margin-bottom: 1em;
 -------------------------------------------------- */
 
 .email-template {
-  margin: 1rem 0 .25rem;
+  margin: 1rem 0 .5rem;
   background-color: #eee;
   display: inline-block;
   width: 100%;

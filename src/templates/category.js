@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import Bookmark from '../components/bookmark/bookmark';
 import Tooltip from '../components/tooltip/tooltip';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import {
   faArrowCircleRight,
   faPencilAlt,
@@ -20,14 +19,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { pathPrefix } from '../../site-config';
 import markdownIt from 'markdown-it';
-
-const appInsights = new ApplicationInsights({
-  config: {
-    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
-  },
-});
-
-appInsights.loadAppInsights();
+import useAppInsights from '../hooks/useAppInsights';
 
 export default function Category({ data }) {
   const linkRef = useRef();
@@ -36,6 +28,8 @@ export default function Category({ data }) {
   const [selectedOption, setSelectedOption] = useState('all');
   const [showViewButton, setShowViewButton] = useState(false);
   const [includeArchived, setIncludeArchived] = useState(false);
+
+  const { trackEvent } = useAppInsights();
 
   useEffect(() => {
     setShowViewButton(true);
@@ -216,9 +210,7 @@ export default function Category({ data }) {
                                   href={`${pathPrefix}/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
                                   className="tooltip tooltip-button"
                                   onClick={() => {
-                                    appInsights.trackEvent({
-                                      name: 'EditMode-NetlifyCMS',
-                                    });
+                                    trackEvent('EditMode-NetlifyCMS');
                                   }}
                                 >
                                   <FontAwesomeIcon
@@ -242,9 +234,7 @@ export default function Category({ data }) {
                                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
                                   className="tooltip tooltip-button"
                                   onClick={() => {
-                                    appInsights.trackEvent({
-                                      name: 'EditMode-GitHub',
-                                    });
+                                    trackEvent('EditMode-GitHub');
                                   }}
                                 >
                                   <FontAwesomeIcon

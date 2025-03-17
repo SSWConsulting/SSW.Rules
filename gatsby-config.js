@@ -39,12 +39,6 @@ module.exports = {
     'gatsby-transformer-json',
     'gatsby-plugin-postcss',
     {
-      resolve: 'gatsby-plugin-disqus',
-      options: {
-        shortname: process.env.DISQUS_FORUM,
-      },
-    },
-    {
       resolve: 'gatsby-source-git',
       options: {
         name: 'categories',
@@ -231,6 +225,7 @@ module.exports = {
       },
     },
     'gatsby-plugin-fontawesome-css',
+    'gatsby-plugin-remove-serviceworker', // this was added to remove gatsby-plugin-offline as per docs - https://www.gatsbyjs.com/plugins/gatsby-plugin-offline/#remove
     `gatsby-plugin-client-side-redirect`, // make sure to put last in the array
   ],
 };

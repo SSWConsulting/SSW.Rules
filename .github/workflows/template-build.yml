@@ -13,8 +13,7 @@ on:
       should_generate_commit_data:
         type: boolean
         description: 'Generate commit data for rules history. You might want to skip this on large rules changes.'
-        required: false
-        default: true
+        required: true
 
 jobs:
   get-content-commit-data:
@@ -22,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-
       - uses: actions/checkout@v4
         name: Checkout SSW.Rules
         with:
@@ -56,13 +54,6 @@ jobs:
             -UpdateRuleHistoryKey ${{ secrets.UPDATERULEHISTORYFUNCTIONKEY }} `
             -UpdateHistorySyncCommitHashKey ${{ secrets.UPDATEHISTORYSYNCCOMMITHASHFUNCTIONKEY }} `
             -ShouldGenerateHistory ${{ inputs.should_generate_commit_data }}
-  
-      - name: Update Latest Rules
-        shell: pwsh
-        run: |
-          ./SSW.Rules/build-scripts/update-latest-rules.ps1 `
-            -AzFunctionBaseUrl ${{ vars.AzFunctionBaseUrl }} `
-            -UpdateLatestRulesFunctionKey ${{ secrets.UPDATELATESTRULESFUNCTIONKEY }}
 
       - name: Get Rule History JSON
         shell: pwsh
@@ -117,10 +108,11 @@ jobs:
           tokenSuffix: '}'
           files: .env.template
         env:
+          SITE_URL: ${{ vars.SITE_URL }}
           GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
           DEPLOYMENT_URL: https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-production.yml
           VERSION_DEPLOYED: ${{ github.run_number }}
-          APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+          APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
           CONTENT_BRANCH: ${{ vars.CONTENT_BRANCH }}
           API_BASE_URL: ${{ vars.AZFUNCTIONBASEURL }}
           AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
@@ -128,14 +120,15 @@ jobs:
           AUTH0_REDIRECT_URI: ${{ vars.AUTH0_REDIRECT_URI }}
           AUTH0_SCOPE: ${{ vars.AUTH0_SCOPE }}
           GITHUB_API_PAT: ${{ secrets.CONTENT_GITHUB_TOKEN }}
-          DISQUS_FORUM: ${{ vars.DISQUS_FORUM }}
-          DISQUS_API_KEY: ${{ secrets.DISQUS_API_KEY }}
           GTM_CONTAINER_ID: ${{ vars.GTM_CONTAINER_ID }}
           GITHUB_ORG: ${{ github.repository_owner }}
           GITHUB_REPO: SSW.Rules.Content
           GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
           GATSBY_ALGOLIA_SEARCH_KEY: ${{ secrets.GATSBY_ALGOLIA_SEARCH_KEY }}
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          GISCUS_REPO_NAME: ${{ secrets.GISCUS_REPO_NAME }}
+          GISCUS_REPO_ID: ${{ secrets.GISCUS_REPO_ID }}
+          GISCUS_CATEGORY_ID: ${{ secrets.GISCUS_CATEGORY_ID }}
 
       - name: Rename env file
         run: |

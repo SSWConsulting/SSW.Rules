@@ -1,22 +1,30 @@
-import React, { useRef, useState } from 'react';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import { graphql, navigate, useStaticQuery } from 'gatsby';
 import PropTypes from 'prop-types';
-import { useStaticQuery, graphql, navigate } from 'gatsby';
+import React, { useRef, useState } from 'react';
+import '../../style.css';
+import Footer from '../footer/footer';
 import Head from '../head/head';
 import Header from '../header/header';
-import Footer from '../footer/footer';
-import '../../style.css';
-import { config } from '@fortawesome/fontawesome-svg-core';
-import { Auth0Provider } from '@auth0/auth0-react';
-import '@fortawesome/fontawesome-svg-core/styles.css';
 
 config.autoAddCss = false;
 const Layout = ({
+  data,
   children,
   displayActions,
   ruleUri,
   crumbLabel,
   seoDescription,
+  location,
 }) => {
+  const isHomePage =
+    location?.href &&
+    location?.href.match(/^https:\/\/www\.ssw\.com\.au\/rules\/{0,1}$/);
+  const description = isHomePage
+    ? data?.site?.siteMetadata.homePageDescription
+    : seoDescription;
   const node = useRef();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
 
@@ -54,7 +62,7 @@ const Layout = ({
           }}
         >
           <div className="flex flex-col min-h-screen main-container">
-            <Head pageTitle={crumbLabel} seoDescription={seoDescription} />
+            <Head pageTitle={crumbLabel} seoDescription={description} />
             <Header displayActions={displayActions} ruleUri={ruleUri} />
             <main className="flex-1">{children}</main>
           </div>
@@ -74,6 +82,9 @@ Layout.propTypes = {
   crumbLocation: PropTypes.object,
   crumbLabel: PropTypes.string,
   seoDescription: PropTypes.string,
+  location: {
+    href: PropTypes.string,
+  },
 };
 
 function LayoutWithQuery(props) {
@@ -82,6 +93,7 @@ function LayoutWithQuery(props) {
       site {
         siteMetadata {
           siteTitle
+          homePageDescription
         }
       }
     }

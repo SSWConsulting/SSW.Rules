@@ -1,40 +1,33 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
-import PropTypes from 'prop-types';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import Breadcrumb from '../components/breadcrumb/breadcrumb';
-import Tooltip from '../components/tooltip/tooltip';
-import RadioButton from '../components/radio-button/radio-button';
-import { Link } from 'gatsby';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowCircleRight,
-  faPencilAlt,
-  faExclamationTriangle,
-  faQuoteLeft,
-  faFileLines,
   faBook,
+  faExclamationTriangle,
+  faFileLines,
+  faPencilAlt,
+  faQuoteLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import Bookmark from '../components/bookmark/bookmark';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { graphql, Link, useStaticQuery } from 'gatsby';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
 import { pathPrefix } from '../../site-config';
+import Bookmark from '../components/bookmark/bookmark';
+import Breadcrumb from '../components/breadcrumb/breadcrumb';
+import RadioButton from '../components/radio-button/radio-button';
+import Tooltip from '../components/tooltip/tooltip';
+import useAppInsights from '../hooks/useAppInsights';
 
 config.autoAddCss = false;
-
-const appInsights = new ApplicationInsights({
-  config: {
-    instrumentationKey: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
-  },
-});
-
-appInsights.loadAppInsights();
 
 const Orphaned = ({ data }) => {
   const linkRef = useRef();
 
   const [selectedOption, setSelectedOption] = useState('all');
   const [showViewButton, setShowViewButton] = useState(false);
+
+  const { trackEvent } = useAppInsights();
 
   useEffect(() => {
     setShowViewButton(true);
@@ -84,7 +77,7 @@ const Orphaned = ({ data }) => {
       <div className="w-full">
         <div className="rule-category rounded">
           <section className="mb-20 rounded pb-2">
-            <div className="cat-title-grid-container">
+            <div className="cat-title-grid-container" data-nosnippet>
               <h1 className="text-ssw-black font-medium text-3xl">
                 Orphaned Rules
                 <span className="rule-count">
@@ -151,7 +144,7 @@ const Orphaned = ({ data }) => {
                 />
               </div>
             )}
-            <div className="category-rule">
+            <div data-nosnippet className="category-rule">
               <ol className="rule-number">
                 {rules.map((rule, i) => {
                   if (!rule) {
@@ -182,9 +175,7 @@ const Orphaned = ({ data }) => {
                                   href={`${pathPrefix}/admin/#/collections/rule/entries/${rule.frontmatter.uri}/rule`}
                                   className="tooltip tooltip-button"
                                   onClick={() => {
-                                    appInsights.trackEvent({
-                                      name: 'EditMode-NetlifyCMS',
-                                    });
+                                    trackEvent('EditMode-NetlifyCMS');
                                   }}
                                 >
                                   <FontAwesomeIcon
@@ -208,9 +199,7 @@ const Orphaned = ({ data }) => {
                                   href={`https://github.com/SSWConsulting/SSW.Rules.Content/tree/${process.env.CONTENT_BRANCH}/rules/${rule.frontmatter.uri}/rule.md`}
                                   className="tooltip tooltip-button"
                                   onClick={() => {
-                                    appInsights.trackEvent({
-                                      name: 'EditMode-GitHub',
-                                    });
+                                    trackEvent('EditMode-NetlifyCMS');
                                   }}
                                 >
                                   <FontAwesomeIcon

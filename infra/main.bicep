@@ -8,6 +8,10 @@ param location string = resourceGroup().location
 ])
 param environmentName string
 
+@description('An override value for the storage account name')
+param customStorageAccountNames string = ''
+
+
 @allowed([
   'Standard_LRS'
   'Standard_GRS'
@@ -23,7 +27,9 @@ param indexDocumentPath string = 'index.html'
 @description('The path to the web error document.')
 param errorDocument404Path string = 'rules/404/index.html'
 
-var storageAccountName = substring('sarules${substring(environmentName, 0, 4)}${uniqueString(resourceGroup().id)}', 0, 24)
+var storageAccountName = substring('sarules${customStorageAccountNames}${substring(environmentName, 0, 4)}${uniqueString(resourceGroup().id)}', 0, 24)
+
+
 
 resource contributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
   scope: subscription()
@@ -50,6 +56,15 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
 }
 
+var stagingAllowedOrigins = [
+  '*'
+]
+
+var productionAllowedOrigins = [
+  'https://ssw.com.au'
+  'https://www.ssw.com.au'
+]
+
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
   name: 'default'
   parent: storageAccount
@@ -65,10 +80,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
             'HEAD'
             'OPTIONS'
           ]
-          allowedOrigins: [
-            'https://ssw.com.au'
-            'https://www.ssw.com.au'
-          ]
+          allowedOrigins: environmentName == 'staging' ? stagingAllowedOrigins : productionAllowedOrigins
           exposedHeaders: [
             '*'
           ]

@@ -1,17 +1,17 @@
-import React from 'react';
-import preval from 'preval.macro';
-import moment from 'moment';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
-  faGithub,
   faInstagram,
   faLinkedin,
   faTwitter,
   faTiktok,
   faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import moment from 'moment';
+import preval from 'preval.macro';
+import React from 'react';
+import GitHubButton from 'react-github-btn';
 import { pathPrefix } from '../../../site-config';
 
 const buildTimestamp = preval`module.exports = new Date().getTime();`;
@@ -19,16 +19,42 @@ const buildTimestamp = preval`module.exports = new Date().getTime();`;
 const Footer = () => {
   return (
     <>
-      <div className="py-2 text-center bg-grey-translucent text-sm">
-        <section className="main-container">
-          We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
-          source. Powered by{' '}
-          <a
-            className="action-button-label footer-greybar-link"
+      <div className="p-4 text-center bg-grey-translucent text-sm">
+        <section className="main-container flex items-center justify-center gap-2	flex-wrap">
+          <span>
+            We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
+            source.
+          </span>
+          <span>
+            Loving SSW Rules?{' '}
+            <a
+              href="https://github.com/SSWConsulting/SSW.Rules"
+              target="_blank"
+              rel="noreferrer"
+              className="action-button-label footer-greybar-link"
+            >
+              Star us on GitHub.
+            </a>{' '}
+          </span>
+          <GitHubButton
             href="https://github.com/SSWConsulting/SSW.Rules"
+            data-size="large"
+            data-show-count="true"
+            aria-label="Star SSWConsulting/SSW.Rules on GitHub"
           >
-            GitHub <FontAwesomeIcon icon={faGithub} />
-          </a>
+            Star
+          </GitHubButton>
+        </section>
+        <section className="main-container flex items-center justify-center mt-4">
+          <span>
+            Stand by... we&apos;re migrating this site to{' '}
+            <a
+              className="action-button-label footer-greybar-link"
+              href="https://tina.io"
+            >
+              TinaCMS
+            </a>
+          </span>
         </section>
       </div>
       <footer className="bg-black py-6 md:py-4 lg:py-2">

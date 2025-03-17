@@ -7,7 +7,7 @@ const path = require('path');
 const axios = require('axios');
 const { createContentDigest } = require('gatsby-core-utils');
 
-if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   // Log build time stats to appInsights
   appInsights
     .setup()
@@ -16,7 +16,7 @@ if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
 } else {
   // eslint-disable-next-line no-console
   console.warn(
-    'Missing APPINSIGHTS_INSTRUMENTATIONKEY, this build will not be logged to Application Insights'
+    'Missing APPLICATIONINSIGHTS_CONNECTION_STRING, this build will not be logged to Application Insights'
   );
 }
 
@@ -25,6 +25,14 @@ let assetsManifest = {};
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
   if (node.internal.type === 'MarkdownRemark') {
+    // TODO: Workaround - The issue is being tracked on the Gatsby side - https://github.com/gatsbyjs/gatsby/issues/39136
+    const trimmedContent = node.internal.content
+      .split('\n')
+      .map((line) => (line.trim() === '' ? '' : line))
+      .join('\n');
+
+    node.internal.content = trimmedContent;
+
     const slug = createFilePath({ node, getNode, basePath: '' });
     createNodeField({
       node,
@@ -33,6 +41,7 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     });
   }
 };
+
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
   const typeDefs = `
@@ -229,13 +238,13 @@ exports.createPages = async ({ graphql, actions }) => {
         isPermanent: true,
       });
     });
-  });
 
-  const profilePage = require.resolve('./src/pages/profile.js');
-  createPage({
-    path: `${siteConfig.pathPrefix}/people/`,
-    matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
-    component: profilePage,
+    const profilePage = require.resolve('./src/pages/profile.js');
+    createPage({
+      path: `${siteConfig.pathPrefix}/people/`,
+      matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
+      component: profilePage,
+    });
   });
 };
 

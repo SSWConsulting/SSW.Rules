@@ -63,6 +63,7 @@ var stagingAllowedOrigins = [
 var productionAllowedOrigins = [
   'https://ssw.com.au'
   'https://www.ssw.com.au'
+  'https://giscus.app'
 ]
 
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {

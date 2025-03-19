@@ -63,6 +63,7 @@ var stagingAllowedOrigins = [
 var productionAllowedOrigins = [
   'https://ssw.com.au'
   'https://www.ssw.com.au'
+  // TODO: Remove below origin after GitHub fixes issue for upvote feature - https://github.com/SSWConsulting/SSW.Rules/issues/1686
   'https://giscus.app'
 ]
 

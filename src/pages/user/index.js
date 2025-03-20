@@ -8,6 +8,7 @@ import { objectOf } from 'prop-types';
 import qs from 'query-string';
 import { FilterOptions } from '@/components/filter/filter';
 import useAppInsights from '../../hooks/useAppInsights';
+import { getViewDataFromCRM } from '../../services/crmApi';
 
 const ActionTypes = {
   BEFORE: 'before',
@@ -45,6 +46,13 @@ const UserRules = ({ data, location }) => {
 
   useEffect(() => {
     fetchGithubName();
+    const fetchCrmData = async () => {
+      const crmDataResult = await getViewDataFromCRM();
+      // eslint-disable-next-line no-console
+      console.log(crmDataResult);
+    };
+
+    fetchCrmData();
   }, []);
 
   useEffect(() => {

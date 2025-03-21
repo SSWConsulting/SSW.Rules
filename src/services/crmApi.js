@@ -1,15 +1,15 @@
-import axios from 'axios';
-import queryString from 'query-string';
+const axios = require('axios');
+const qs = require('qs');
 
 const APP_ID = process.env.CRM_APP_ID;
-const APP_SECRET: string = process.env.CRM_APP_SECRET || '';
+const APP_SECRET = process.env.CRM_APP_SECRET || '';
 const SCOPE = process.env.CRM_SCOPE;
 const TENANT = process.env.CRM_TENANT;
 const TENANT_ID = process.env.CRM_TENANT_ID;
 const TOKEN_ENDPOINT = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`;
 const CRM_URL = `https://${TENANT}/api/data/v9.1`;
 
-export const getViewDataFromCRM = async () => {
+const getViewDataFromCRM = async () => {
   const accessToken = await getToken();
 
   axios.defaults.headers.get['Authorization'] = `Bearer ${accessToken}`;
@@ -42,13 +42,13 @@ const getToken = async () => {
 
   const responsePost = await axios.post(
     TOKEN_ENDPOINT,
-    queryString.stringify(tokenPostData)
+    qs.stringify(tokenPostData)
   );
 
   return responsePost.data.access_token;
 };
 
-const getEmployees = async (sites, current: boolean) => {
+const getEmployees = async (sites, current) => {
   const viewId = current
     ? process.env.CRM_VIEW_CURRENT
     : process.env.CRM_VIEW_PAST;
@@ -62,7 +62,7 @@ const getEmployees = async (sites, current: boolean) => {
   return employees;
 };
 
-const convertToSimpleFormat = (data, sites, current: boolean) => {
+const convertToSimpleFormat = (data, sites, current) => {
   return data.map((user) => {
     return {
       userId: user.systemuserid,
@@ -85,3 +85,5 @@ const convertToSimpleFormat = (data, sites, current: boolean) => {
     };
   });
 };
+
+module.exports = { getViewDataFromCRM };

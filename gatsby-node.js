@@ -6,6 +6,7 @@ const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
 const axios = require('axios');
 const { createContentDigest } = require('gatsby-core-utils');
+const { getViewDataFromCRM } = require('./src/services/crmApi');
 
 if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   // Log build time stats to appInsights
@@ -79,6 +80,9 @@ exports.onCreateWebpackConfig = ({ actions }) => {
     ],
     resolve: {
       modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+      fallback: {
+        buffer: require.resolve('buffer/'),
+      },
       plugins: [
         new DirectoryNamedWebpackPlugin({
           exclude: /node_modules/,
@@ -133,6 +137,24 @@ exports.createPages = async ({ graphql, actions }) => {
             redirects
             seoDescription
           }
+        }
+      }
+      allCrmData: allCrmDataCollection {
+        nodes {
+          id
+          isActive
+          nickname
+          location
+          jobTitle
+          role
+          skypeUsername
+          twitterUsername
+          gitHubUrl
+          youTubePlayListId
+          blogUrl
+          facebookUrl
+          linkedInUrl
+          fullName
         }
       }
     }
@@ -266,5 +288,45 @@ exports.sourceNodes = async ({ actions, createNodeId }) => {
     };
 
     createNode(node);
+  });
+
+  const crmDataResult = await getViewDataFromCRM();
+  crmDataResult.map((user) => {
+    const userNode = {
+      id: user.userId,
+      parent: '__SOURCE__',
+      internal: {
+        type: 'CrmDataCollection',
+      },
+      children: [],
+
+      slug: user.fullName
+        ? user.fullName.replace(' ', '-')
+        : `${user.firstName}-${user.lastName}`,
+      fullName: user.fullName
+        ? user.fullName
+        : `${user.firstName} ${user.lastName}`,
+      location: user.defaultSite ? user.defaultSite : 'Others',
+      jobTitle: user.jobTitle.replace(/(SSW)(?! TV)/g, '') || '',
+      role: user.role || '',
+      isActive: user.isActive,
+      nickname: user.nickname || '',
+      blogUrl: user.blogUrl || '',
+      facebookUrl: user.facebookUrl || '',
+      skypeUsername: user.skypeUsername || '',
+      linkedInUrl: user.linkedInUrl || '',
+      twitterUsername: user.twitterUsername || '',
+      gitHubUrl: user.gitHubUrl || '',
+    };
+
+    // Get content digest of node. (Required field)
+    const contentDigest = crypto
+      .createHash('md5')
+      .update(JSON.stringify(userNode))
+      .digest('hex');
+    userNode.internal.contentDigest = contentDigest;
+
+    // Create node with the gatsby createNode() API
+    createNode(userNode);
   });
 };

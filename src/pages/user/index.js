@@ -8,7 +8,6 @@ import { objectOf } from 'prop-types';
 import qs from 'query-string';
 import { FilterOptions } from '@/components/filter/filter';
 import useAppInsights from '../../hooks/useAppInsights';
-import { getViewDataFromCRM } from '../../services/crmApi';
 
 const ActionTypes = {
   BEFORE: 'before',
@@ -35,6 +34,10 @@ const UserRules = ({ data, location }) => {
   const filterTitle = 'Results';
   const rules = data.allMarkdownRemark.nodes;
 
+  const allCrmData = data.allCrmData.nodes;
+  // eslint-disable-next-line no-console
+  console.log(allCrmData);
+
   // eslint-disable-next-line no-undef
   const uniqueRuleTitles = new Set();
 
@@ -46,13 +49,6 @@ const UserRules = ({ data, location }) => {
 
   useEffect(() => {
     fetchGithubName();
-    const fetchCrmData = async () => {
-      const crmDataResult = await getViewDataFromCRM();
-      // eslint-disable-next-line no-console
-      console.log(crmDataResult);
-    };
-
-    fetchCrmData();
   }, []);
 
   useEffect(() => {
@@ -384,6 +380,24 @@ export const pageQuery = graphql`
         fields {
           slug
         }
+      }
+    }
+    allCrmData: allCrmDataCollection {
+      nodes {
+        id
+        isActive
+        nickname
+        location
+        jobTitle
+        role
+        skypeUsername
+        twitterUsername
+        gitHubUrl
+        youTubePlayListId
+        blogUrl
+        facebookUrl
+        linkedInUrl
+        fullName
       }
     }
   }

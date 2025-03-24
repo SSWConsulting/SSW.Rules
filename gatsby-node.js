@@ -5,7 +5,6 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
 const axios = require('axios');
-const { createContentDigest } = require('gatsby-core-utils');
 const { getViewDataFromCRM } = require('./src/services/crmApi');
 
 if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
@@ -139,24 +138,6 @@ exports.createPages = async ({ graphql, actions }) => {
           }
         }
       }
-      allCrmData: allCrmDataCollection {
-        nodes {
-          id
-          isActive
-          nickname
-          location
-          jobTitle
-          role
-          skypeUsername
-          twitterUsername
-          gitHubUrl
-          youTubePlayListId
-          blogUrl
-          facebookUrl
-          linkedInUrl
-          fullName
-        }
-      }
     }
   `);
 
@@ -270,7 +251,11 @@ exports.createPages = async ({ graphql, actions }) => {
   });
 };
 
-exports.sourceNodes = async ({ actions, createNodeId }) => {
+exports.sourceNodes = async ({
+  actions,
+  createNodeId,
+  createContentDigest,
+}) => {
   const { createNode } = actions;
   const res = await axios.get('https://www.ssw.com.au/api/get-megamenu');
   const menuData = res.data;
@@ -295,17 +280,13 @@ exports.sourceNodes = async ({ actions, createNodeId }) => {
     const userNode = {
       id: user.userId,
       parent: '__SOURCE__',
+      children: [],
       internal: {
         type: 'CrmDataCollection',
+        contentDigest: createContentDigest(user),
       },
-      children: [],
-
-      slug: user.fullName
-        ? user.fullName.replace(' ', '-')
-        : `${user.firstName}-${user.lastName}`,
-      fullName: user.fullName
-        ? user.fullName
-        : `${user.firstName} ${user.lastName}`,
+      slug: user.fullName?.replace(' ', '-').toLowerCase(),
+      fullName: user.fullName,
       location: user.defaultSite ? user.defaultSite : 'Others',
       jobTitle: user.jobTitle.replace(/(SSW)(?! TV)/g, '') || '',
       role: user.role || '',
@@ -318,13 +299,6 @@ exports.sourceNodes = async ({ actions, createNodeId }) => {
       twitterUsername: user.twitterUsername || '',
       gitHubUrl: user.gitHubUrl || '',
     };
-
-    // Get content digest of node. (Required field)
-    const contentDigest = crypto
-      .createHash('md5')
-      .update(JSON.stringify(userNode))
-      .digest('hex');
-    userNode.internal.contentDigest = contentDigest;
 
     // Create node with the gatsby createNode() API
     createNode(userNode);

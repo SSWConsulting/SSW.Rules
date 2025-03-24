@@ -129,6 +129,7 @@ jobs:
           GISCUS_REPO_NAME: ${{ secrets.GISCUS_REPO_NAME }}
           GISCUS_REPO_ID: ${{ secrets.GISCUS_REPO_ID }}
           GISCUS_CATEGORY_ID: ${{ secrets.GISCUS_CATEGORY_ID }}
+          GISCUS_THEME_URL: ${{ secrets.GISCUS_THEME_URL }}
 
       - name: Rename env file
         run: |
@@ -164,7 +165,7 @@ jobs:
         run: yarn build
         env:
           GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: true
-        timeout-minutes: 60
+        timeout-minutes: 30
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4

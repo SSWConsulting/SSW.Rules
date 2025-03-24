@@ -90,3 +90,9 @@ To update specific markdown components, follow these steps:
    - Open your local instance of SSW.Rules, usually in VS Code
    - Build the project using the following commands: `yarn clean` and then `yarn dev`
    - Open your local instance in your browser and navigate to the edited rule to see your changes
+
+### Gatsby Build Timeout
+
+The Gatsby build step in GitHub Actions has a 30-minute timeout to prevent it from running indefinitely. This is due to intermittent issues with external dependencies.
+
+For more details on the Gatsby build issue, refer to the [Gatsby issue](https://github.com/gatsbyjs/gatsby/issues/38989).

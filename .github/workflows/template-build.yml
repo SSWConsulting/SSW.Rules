@@ -130,6 +130,13 @@ jobs:
           GISCUS_REPO_ID: ${{ secrets.GISCUS_REPO_ID }}
           GISCUS_CATEGORY_ID: ${{ secrets.GISCUS_CATEGORY_ID }}
           GISCUS_THEME_URL: ${{ secrets.GISCUS_THEME_URL }}
+          CRM_APP_ID: ${{ secrets.CRM_APP_ID }}
+          CRM_TENANT: ${{ secrets.CRM_TENANT }}
+          CRM_TENANT_ID: ${{ secrets.CRM_TENANT_ID }}
+          CRM_APP_SECRET: ${{ secrets.CRM_APP_SECRET }}
+          CRM_SCOPE: ${{ secrets.CRM_SCOPE }}
+          CRM_VIEW_CURRENT: ${{ secrets.CRM_VIEW_CURRENT }}
+          CRM_VIEW_PAST: ${{ secrets.CRM_VIEW_PAST }}
 
       - name: Rename env file
         run: |

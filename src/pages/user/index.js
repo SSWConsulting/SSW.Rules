@@ -353,20 +353,8 @@ function UserRulesWithQuery(props) {
       }
       crmData: allCrmDataCollection {
         nodes {
-          id
           fullName
           slug
-          isActive
-          nickname
-          location
-          jobTitle
-          role
-          skypeUsername
-          twitterUsername
-          gitHubUrl
-          blogUrl
-          facebookUrl
-          linkedInUrl
         }
       }
     }

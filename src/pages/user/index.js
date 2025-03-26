@@ -42,8 +42,10 @@ const UserRules = ({ data, location }) => {
   const normalizeName = (name) => {
     return name
       .normalize('NFD')
-      .replace('ø', 'oe')
-      .replace(/\p{Diacritic}/gu, '');
+      .replace(/\s*[({[].*?[})\]]/g, '') // Remove anything inside (), [], {} and the (),[],{} themselves
+      .replace(/ø/g, 'oe') // replace all 'ø' with 'oe'
+      .replace(/\p{Diacritic}/gu, '')
+      .trim();
   };
 
   useEffect(() => {
@@ -224,8 +226,8 @@ const UserRules = ({ data, location }) => {
     });
 
     const acknowledgmentsList = mergedList.filter((ruleItem) => {
-      const authorList = ruleItem.item.frontmatter.authors?.flatMap(
-        (author) => author.title
+      const authorList = ruleItem.item.frontmatter.authors?.flatMap((author) =>
+        normalizeName(author.title)
       );
 
       return authorList.includes(author.fullName);

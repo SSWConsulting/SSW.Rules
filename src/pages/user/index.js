@@ -355,6 +355,7 @@ function UserRulesWithQuery(props) {
         nodes {
           fullName
           slug
+          gitHubUrl
         }
       }
     }

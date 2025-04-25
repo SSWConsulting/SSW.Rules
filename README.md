@@ -14,12 +14,12 @@ This is a Gatsby generated site pulling data from:
 ### Getting ready for development
 - Clone the repo from https://github.com/SSWConsulting/SSW.Rules
 - Run `yarn install` to install packages
-- Create environment files (.env.development) based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
+- Create environment files `.env.development` based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
+- For `GITHUB_API_PAT`, create a [PAT on GitHub](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+- Set `CONTENT_BRANCH` to `small-content` (it's a smaller version of the main content branch which will build much quicker 🙂)
 
 > **Notes:**  
 > * If you don't work at SSW or can't get on to the SSW.Rules team you can just add values to GITHUB_API_PAT and CONTENT_BRANCH  
-> * For `GITHUB_API_PAT`, create a [PAT on GitHub](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (remove angle brackets <>)  
-> * Set `CONTENT_BRANCH` to `small-content` (it's a smaller version of the main content branch which will build much quicker 🙂)
 > * Sometimes you might want to use `main` or create your own branch if you are testing something.
 
 ### Development

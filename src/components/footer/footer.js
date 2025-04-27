@@ -1,8 +1,3 @@
-import React from 'react';
-import preval from 'preval.macro';
-import moment from 'moment';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
   faInstagram,
@@ -11,26 +6,34 @@ import {
   faTiktok,
   faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
-import { pathPrefix } from '../../../site-config';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import moment from 'moment';
+import preval from 'preval.macro';
+import React from 'react';
 import GitHubButton from 'react-github-btn';
+import { pathPrefix } from '../../../site-config';
 
 const buildTimestamp = preval`module.exports = new Date().getTime();`;
 
 const Footer = () => {
   return (
     <>
-      <div className="py-2 text-center bg-grey-translucent text-sm">
-        <section className="main-container flex items-center justify-center">
-          <span className="mr-2">
+      <div className="p-4 text-center bg-grey-translucent text-sm">
+        <section className="main-container flex items-center justify-center gap-2	flex-wrap">
+          <span>
             We <FontAwesomeIcon icon={faHeart} className="text-ssw-red" /> open
-            source. Loving SSW Rules?{' '}
+            source.
+          </span>
+          <span>
+            Loving SSW Rules?{' '}
             <a
               href="https://github.com/SSWConsulting/SSW.Rules"
               target="_blank"
               rel="noreferrer"
               className="action-button-label footer-greybar-link"
             >
-              Star us on GitHub
+              Star us on GitHub.
             </a>{' '}
           </span>
           <GitHubButton
@@ -42,8 +45,8 @@ const Footer = () => {
             Star
           </GitHubButton>
         </section>
-        <section className="main-container flex items-center justify-center mt-2">
-          <span className="ml-2">
+        <section className="main-container flex items-center justify-center mt-4">
+          <span>
             Stand by... we&apos;re migrating this site to{' '}
             <a
               className="action-button-label footer-greybar-link"

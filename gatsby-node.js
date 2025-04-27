@@ -1,10 +1,11 @@
+const siteConfig = require('./site-config');
 const { createFilePath } = require('gatsby-source-filesystem');
 const appInsights = require('applicationinsights');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin');
 const path = require('path');
 const axios = require('axios');
-const { createContentDigest } = require('gatsby-core-utils');
+const { getViewDataFromCRM } = require('./src/services/crmApi');
 
 if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   // Log build time stats to appInsights
@@ -78,6 +79,9 @@ exports.onCreateWebpackConfig = ({ actions }) => {
     ],
     resolve: {
       modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+      fallback: {
+        buffer: require.resolve('buffer/'),
+      },
       plugins: [
         new DirectoryNamedWebpackPlugin({
           exclude: /node_modules/,
@@ -237,10 +241,21 @@ exports.createPages = async ({ graphql, actions }) => {
         isPermanent: true,
       });
     });
+
+    const profilePage = require.resolve('./src/pages/profile.js');
+    createPage({
+      path: `${siteConfig.pathPrefix}/people/`,
+      matchPath: `${siteConfig.pathPrefix}/people/:gitHubUsername`,
+      component: profilePage,
+    });
   });
 };
 
-exports.sourceNodes = async ({ actions, createNodeId }) => {
+exports.sourceNodes = async ({
+  actions,
+  createNodeId,
+  createContentDigest,
+}) => {
   const { createNode } = actions;
   const res = await axios.get('https://www.ssw.com.au/api/get-megamenu');
   const menuData = res.data;
@@ -258,5 +273,34 @@ exports.sourceNodes = async ({ actions, createNodeId }) => {
     };
 
     createNode(node);
+  });
+
+  const crmDataResult = await getViewDataFromCRM();
+  crmDataResult.map((user) => {
+    const userNode = {
+      id: user.userId,
+      parent: '__SOURCE__',
+      children: [],
+      internal: {
+        type: 'CrmDataCollection',
+        contentDigest: createContentDigest(user),
+      },
+      slug: user.fullName?.replace(' ', '-').toLowerCase(),
+      fullName: user.fullName,
+      location: user.defaultSite ? user.defaultSite : 'Others',
+      jobTitle: user.jobTitle.replace(/(SSW)(?! TV)/g, '') || '',
+      role: user.role || '',
+      isActive: user.isActive,
+      nickname: user.nickname || '',
+      blogUrl: user.blogUrl || '',
+      facebookUrl: user.facebookUrl || '',
+      skypeUsername: user.skypeUsername || '',
+      linkedInUrl: user.linkedInUrl || '',
+      twitterUsername: user.twitterUsername || '',
+      gitHubUrl: user.gitHubUrl || '',
+    };
+
+    // Create node with the gatsby createNode() API
+    createNode(userNode);
   });
 };

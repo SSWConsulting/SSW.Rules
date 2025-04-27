@@ -1,6 +1,5 @@
 import {
   faArchive,
-  faBolt,
   faFrownOpen,
   faPause,
 } from '@fortawesome/free-solid-svg-icons';
@@ -29,19 +28,7 @@ const Index = ({ data, location }) => {
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
             <SearchBar toSearch />
-            <span className="flex items-center">
-              <h1 className="flex-1 text-3xl font-semibold">Categories</h1>
-              <Link to={'/latest-rules?size=50'} className="group unstyled">
-                <FontAwesomeIcon
-                  icon={faBolt}
-                  size="lg"
-                  className="group-hover:text-ssw-red transition ease-in-out delay-75 duration-150"
-                />{' '}
-                <span className="text-lg underline decoration-underline duration-150 group-hover:decoration-ssw-red group-hover:text-ssw-red transition ease-in-out delay-75">
-                  Latest Rules
-                </span>
-              </Link>
-            </span>
+            <h1 className="flex-1 text-3xl font-semibold">Categories</h1>
             <div className="rule-index no-gutters rounded mb-12">
               {data.main.nodes.map((element) => {
                 return element.frontmatter.index.map((category, i) => {

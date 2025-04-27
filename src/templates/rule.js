@@ -152,10 +152,8 @@ const Rule = ({ data, location }) => {
                   )}
                 <hr />
                 <div dangerouslySetInnerHTML={{ __html: rule.html }} />
-                <section
-                  id="more"
-                  className="mt-12 flex flex-wrap pt-6 pb-6 lg:pb-12 text-center -mb-6"
-                ></section>
+
+                <hr />
               </section>
 
               <div className="lg:hidden md:w-1/1 px-4">

@@ -56,6 +56,17 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
 }
 
+var stagingAllowedOrigins = [
+  '*'
+]
+
+var productionAllowedOrigins = [
+  'https://ssw.com.au'
+  'https://www.ssw.com.au'
+  // TODO: Remove below origin after GitHub fixes issue for upvote feature - https://github.com/SSWConsulting/SSW.Rules/issues/1686
+  'https://giscus.app'
+]
+
 resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
   name: 'default'
   parent: storageAccount
@@ -71,10 +82,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
             'HEAD'
             'OPTIONS'
           ]
-          allowedOrigins: [
-            'https://ssw.com.au'
-            'https://www.ssw.com.au'
-          ]
+          allowedOrigins: environmentName == 'staging' ? stagingAllowedOrigins : productionAllowedOrigins
           exposedHeaders: [
             '*'
           ]

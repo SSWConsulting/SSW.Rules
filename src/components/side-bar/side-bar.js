@@ -32,8 +32,7 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
       </section>
 
       <section id="widget">
-        {/*TODO: Fix this - Currently removing to stop this from working until this is fixed  */}
-        <RulesWidget />
+        <RulesWidget location={process.env.SITE_URL} numberOfRules={5} />
       </section>
       <section>
         <h4>Why all these rules?</h4>
@@ -66,7 +65,7 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
               alt="Adam Cogan"
             />
           </div>
-          <div className="text-xl">
+          <h5>
             <a
               href="https://www.ssw.com.au/people/adam-cogan"
               target="_blank"
@@ -74,8 +73,8 @@ const SideBar = ({ ruleTotalNumber, hideCount }) => {
             >
               Adam Cogan
             </a>
-          </div>
-          <div className="text-base">Chief Software Architect at SSW</div>
+          </h5>
+          <p>Chief Software Architect at SSW</p>
         </div>
       </section>
       <section>

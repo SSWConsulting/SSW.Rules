@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-
 import LatestRulesContent from '@/components/latest-rules-content/latestRulesContent';
 import Breadcrumb from '@/components/breadcrumb/breadcrumb';
 import SideBar from '@/components/side-bar/side-bar';
-import { graphql } from 'gatsby';
-import { objectOf } from 'prop-types';
+import { graphql, useStaticQuery } from 'gatsby';
 import qs from 'query-string';
 import { FilterOptions } from '@/components/filter/filter';
 import useAppInsights from '../../hooks/useAppInsights';
+import PropTypes from 'prop-types';
 
 const ActionTypes = {
   BEFORE: 'before',
@@ -18,6 +17,7 @@ const UserRules = ({ data, location }) => {
   const [notFound, setNotFound] = useState(false);
   const [noAuthorRules, setNoAuthorRules] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ list: [], filter: {} });
+  const [author, setAuthor] = useState({});
   const [authorRules, setAuthorRules] = useState({
     list: [],
     filter: {},
@@ -27,72 +27,46 @@ const UserRules = ({ data, location }) => {
   const [nextPageCursor, setNextPageCursor] = useState('');
   const [tempCursor, setTempCursor] = useState('');
   const [hasNext, setHasNext] = useState(false);
-  const [authorName, setAuthorName] = useState('');
-  const [showProfileLink, setShowProfileLink] = useState(false);
   const { trackException } = useAppInsights();
 
   const filterTitle = 'Results';
-  const rules = data.allMarkdownRemark.nodes;
-
+  const rules = data.rules.nodes;
   // eslint-disable-next-line no-undef
   const uniqueRuleTitles = new Set();
 
   const queryStringSearch = qs.parse(location?.search, {
     parseNumbers: true,
   });
-
   const queryStringRulesAuthor = queryStringSearch.author || '';
-
-  useEffect(() => {
-    fetchGithubName();
-  }, []);
-
-  useEffect(() => {
-    if (authorName) {
-      fetchPageData();
-    }
-  }, [authorName]);
-
-  const fetchGithubName = async () => {
-    const token = process.env.GITHUB_API_PAT;
-    const response = await fetch(
-      `https://api.github.com/users/${queryStringRulesAuthor}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: token ? `bearer ${token}` : '',
-        },
-      }
-    );
-
-    const { name } = await response.json();
-
-    if (!name) {
-      setNotFound(true);
-      setNoAuthorRules(true);
-      return;
-    }
-
-    const normalizedName = normalizeName(name);
-    setAuthorName(normalizedName);
-
-    // HACK - https://github.com/SSWConsulting/SSW.Rules/issues/1361
-    if (name.includes('SSW')) {
-      setShowProfileLink(true);
-    }
-  };
 
   const normalizeName = (name) => {
     return name
       .normalize('NFD')
-      .replace(' [SSW]', '')
-      .replace('ø', 'oe')
-      .replace(/\p{Diacritic}/gu, '');
+      .replace(/\s*[({[].*?[})\]]/g, '') // Remove anything inside (), [], {} and the (),[],{} themselves
+      .replace(/ø/g, 'oe') // replace all 'ø' with 'oe'
+      .replace(/\p{Diacritic}/gu, '')
+      .trim();
   };
 
-  const createProfileSlug = (name) => {
-    return name.replaceAll(' ', '-').toLowerCase();
-  };
+  useEffect(() => {
+    const author = data.crmData.nodes.find(
+      (user) =>
+        user.gitHubUrl && user.gitHubUrl.includes(queryStringRulesAuthor)
+    );
+    if (author && author.fullName) {
+      author.fullName = normalizeName(author.fullName);
+      setAuthor(author);
+    } else {
+      setNotFound(true);
+      setNoAuthorRules(true);
+    }
+  });
+
+  useEffect(() => {
+    if (author.fullName) {
+      fetchPageData();
+    }
+  }, [author]);
 
   const fetchPageData = async (action) => {
     try {
@@ -191,7 +165,7 @@ const UserRules = ({ data, location }) => {
         extractedFiles.push({
           file: {
             node: {
-              path: path.path.replace('rule.md', ''),
+              path: getRulePath(path.path),
               lastUpdated: updatedTime,
             },
           },
@@ -200,6 +174,19 @@ const UserRules = ({ data, location }) => {
     }
 
     return extractedFiles;
+  };
+
+  const getRulePath = (path) => {
+    const lastSlashIndex = path.lastIndexOf('/');
+    if (
+      path.includes('.md') &&
+      !path.includes('categories') &&
+      lastSlashIndex !== -1
+    ) {
+      return path.substring(0, lastSlashIndex + 1);
+    } else {
+      return path;
+    }
   };
 
   const filterUniqueRules = (extractedFiles) => {
@@ -239,11 +226,11 @@ const UserRules = ({ data, location }) => {
     });
 
     const acknowledgmentsList = mergedList.filter((ruleItem) => {
-      const authorList = ruleItem.item.frontmatter.authors?.flatMap(
-        (author) => author.title
+      const authorList = ruleItem.item.frontmatter.authors?.flatMap((author) =>
+        normalizeName(author.title)
       );
 
-      return authorList.includes(authorName);
+      return authorList.includes(author.fullName);
     });
 
     setNotFound(mergedList.length === 0);
@@ -269,38 +256,32 @@ const UserRules = ({ data, location }) => {
   return (
     <div className="w-full">
       <Breadcrumb
-        breadcrumbText={authorName ? `${authorName}'s Rules` : 'User Rules'}
+        breadcrumbText={
+          author.fullName ? `${author.fullName}'s Rules` : 'User Rules'
+        }
       />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">
-            <div className="flex items-center justify-between">
-              {authorName && (
-                <>
-                  <span className="flex">
-                    <h2 className="flex-1 text-ssw-red">
-                      {authorName}&#39;s Rules
-                    </h2>
-                  </span>
+            {author.fullName && (
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                <h2 className="text-ssw-red">{author.fullName}&#39;s Rules</h2>
 
-                  {showProfileLink && (
-                    <a
-                      href={`https://ssw.com.au/people/${createProfileSlug(authorName)}/`}
-                      className="underline unstyled mt-2 hover:text-ssw-red hidden sm:inline"
-                    >
-                      View people profile
-                    </a>
-                  )}
-                </>
-              )}
-            </div>
+                <a
+                  href={`https://ssw.com.au/people/${author.slug}/`}
+                  className="underline unstyled hover:text-ssw-red"
+                >
+                  View people profile
+                </a>
+              </div>
+            )}
 
-            <hr className="mt-0" />
-            <span className="flex">
-              <h3 className="flex-1 text-ssw-red">
-                Last Modified ({filteredItems.list.length})
-              </h3>
-            </span>
+            <hr className="mt-1 sm:mt-0" />
+
+            <h3 className="text-ssw-red">
+              Last Modified ({filteredItems.list.length})
+            </h3>
+
             <div className="rule-index archive no-gutters rounded mb-12">
               <LatestRulesContent
                 filteredItems={filteredItems}
@@ -311,11 +292,10 @@ const UserRules = ({ data, location }) => {
               />
             </div>
 
-            <span className="flex">
-              <h3 className="flex-1 text-ssw-red">
-                Acknowledged ({authorRules.list.length})
-              </h3>
-            </span>
+            <h3 className="text-ssw-red">
+              Acknowledged ({authorRules.list.length})
+            </h3>
+
             <div className="rule-index archive no-gutters rounded mb-12">
               <LatestRulesContent
                 filteredItems={authorRules}
@@ -349,28 +329,41 @@ const UserRules = ({ data, location }) => {
   );
 };
 
-export const pageQuery = graphql`
-  query latestRulesQuery {
-    allMarkdownRemark(filter: { frontmatter: { type: { eq: "rule" } } }) {
-      nodes {
-        frontmatter {
-          title
-          archivedreason
-          authors {
+UserRules.propTypes = {
+  data: PropTypes.object.isRequired,
+  location: PropTypes.object,
+};
+
+function UserRulesWithQuery(props) {
+  const data = useStaticQuery(graphql`
+    query LatestRulesQuery {
+      rules: allMarkdownRemark(
+        filter: { frontmatter: { type: { eq: "rule" } } }
+      ) {
+        nodes {
+          frontmatter {
             title
+            archivedreason
+            authors {
+              title
+            }
+          }
+          fields {
+            slug
           }
         }
-        fields {
+      }
+      crmData: allCrmDataCollection {
+        nodes {
+          fullName
           slug
+          gitHubUrl
         }
       }
     }
-  }
-`;
+  `);
 
-export default UserRules;
+  return <UserRules data={data} {...props} />;
+}
 
-UserRules.propTypes = {
-  data: objectOf(Object),
-  location: objectOf(Object),
-};
+export default UserRulesWithQuery;

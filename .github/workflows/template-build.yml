@@ -13,8 +13,7 @@ on:
       should_generate_commit_data:
         type: boolean
         description: 'Generate commit data for rules history. You might want to skip this on large rules changes.'
-        required: false
-        default: true
+        required: true
 
 jobs:
   get-content-commit-data:
@@ -22,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-
       - uses: actions/checkout@v4
         name: Checkout SSW.Rules
         with:
@@ -110,6 +108,7 @@ jobs:
           tokenSuffix: '}'
           files: .env.template
         env:
+          SITE_URL: ${{ vars.SITE_URL }}
           GOOGLE_ANALYTICS: ${{ vars.GOOGLE_ANALYTICS }}
           DEPLOYMENT_URL: https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-deploy-production.yml
           VERSION_DEPLOYED: ${{ github.run_number }}
@@ -130,6 +129,14 @@ jobs:
           GISCUS_REPO_NAME: ${{ secrets.GISCUS_REPO_NAME }}
           GISCUS_REPO_ID: ${{ secrets.GISCUS_REPO_ID }}
           GISCUS_CATEGORY_ID: ${{ secrets.GISCUS_CATEGORY_ID }}
+          GISCUS_THEME_URL: ${{ secrets.GISCUS_THEME_URL }}
+          CRM_APP_ID: ${{ secrets.CRM_APP_ID }}
+          CRM_TENANT: ${{ secrets.CRM_TENANT }}
+          CRM_TENANT_ID: ${{ secrets.CRM_TENANT_ID }}
+          CRM_APP_SECRET: ${{ secrets.CRM_APP_SECRET }}
+          CRM_SCOPE: ${{ secrets.CRM_SCOPE }}
+          CRM_VIEW_CURRENT: ${{ secrets.CRM_VIEW_CURRENT }}
+          CRM_VIEW_PAST: ${{ secrets.CRM_VIEW_PAST }}
 
       - name: Rename env file
         run: |
@@ -165,7 +172,7 @@ jobs:
         run: yarn build
         env:
           GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: true
-        timeout-minutes: 60
+        timeout-minutes: 30
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4

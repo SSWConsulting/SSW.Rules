@@ -16,7 +16,8 @@ const Discussion = (props) => {
         reactionsEnabled="1"
         emitMetadata="0"
         inputPosition="top"
-        theme="light"
+        // TODO: Change theme value to "light" after GitHub fixes issue for upvote feature - https://github.com/SSWConsulting/SSW.Rules/issues/1686
+        theme={process.env.GISCUS_THEME_URL}
         lang="en"
         loading="lazy"
         async

@@ -14,12 +14,12 @@ This is a Gatsby generated site pulling data from:
 ### Getting ready for development
 - Clone the repo from https://github.com/SSWConsulting/SSW.Rules
 - Run `yarn install` to install packages
-- Create environment files (.env.development) based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
+- Create environment files `.env.development` based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
+- For `GITHUB_API_PAT`, create a [PAT on GitHub](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+- Set `CONTENT_BRANCH` to `small-content` (it's a smaller version of the main content branch which will build much quicker 🙂)
 
 > **Notes:**  
 > * If you don't work at SSW or can't get on to the SSW.Rules team you can just add values to GITHUB_API_PAT and CONTENT_BRANCH  
-> * For `GITHUB_API_PAT`, create a [PAT on GitHub](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) (remove angle brackets <>)  
-> * Set `CONTENT_BRANCH` to `sample-content-with-guid` (it's a smaller version of the main content branch which will build much quicker 🙂)
 > * Sometimes you might want to use `main` or create your own branch if you are testing something.
 
 ### Development
@@ -81,12 +81,18 @@ Sometimes you might have to update a rule markdown file to test your latest feat
 
 To update specific markdown components, follow these steps:
 
-1. Access the `sample-content` branch:
+1. Access the `small-content` branch:
    - Visit [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.Content)
-   - Switch to the `sample-content` branch
+   - Switch to the `small-content` branch
 2. Edit the Rule:
-   - Locate the rule you want to modify in the `sample-content` branch
+   - Locate the rule you want to modify in the `small-content` branch
 3. Test Your Changes Locally:
    - Open your local instance of SSW.Rules, usually in VS Code
    - Build the project using the following commands: `yarn clean` and then `yarn dev`
    - Open your local instance in your browser and navigate to the edited rule to see your changes
+
+### Gatsby Build Timeout
+
+The Gatsby build step in GitHub Actions has a 30-minute timeout to prevent it from running indefinitely. This is due to intermittent issues with external dependencies.
+
+For more details on the Gatsby build issue, refer to the [Gatsby issue](https://github.com/gatsbyjs/gatsby/issues/38989).

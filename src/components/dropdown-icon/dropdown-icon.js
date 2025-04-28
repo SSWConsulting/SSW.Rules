@@ -20,7 +20,7 @@ const DropdownIcon = () => {
   return (
     <div className="dropdown" ref={drop}>
       <DropdownBadge onClick={() => setOpen((open) => !open)} />
-      {open && <DropdownCard />}
+      {open && <DropdownCard setOpen={setOpen} />}
     </div>
   );
 };

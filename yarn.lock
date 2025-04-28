@@ -6808,7 +6808,7 @@ __metadata:
     babel-eslint: "npm:^10.1.0"
     buffer: "npm:^6.0.3"
     classnames: "npm:^2.5.1"
-    core-js: "npm:^3.38.1"
+    core-js: "npm:^3.41.0"
     date-fns: "npm:^4.1.0"
     decap-cms-app: "npm:3.3.3"
     directory-named-webpack-plugin: "npm:^4.1.0"
@@ -9626,10 +9626,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.38.1":
-  version: 3.38.1
-  resolution: "core-js@npm:3.38.1"
-  checksum: 7df063b6f13a54e46515817ac3e235c6c598a4d3de65cd188a061fc250642be313b895fb9fb2f36e1e31890a1bb4ef61d82666a340413f540b7ce3c65689739b
+"core-js@npm:^3.41.0":
+  version: 3.41.0
+  resolution: "core-js@npm:3.41.0"
+  checksum: a29ed0b7fe81acf49d04ce5c17a1947166b1c15197327a5d12f95bbe84b46d60c3c13de701d808f41da06fa316285f3f55ce5903abc8d5642afc1eac4457afc8
   languageName: node
   linkType: hard
 

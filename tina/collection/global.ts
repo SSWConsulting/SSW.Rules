@@ -1,7 +1,6 @@
 import type { Collection } from 'tinacms';
 import { ColorPickerInput } from '../fields/color';
 import { iconSchema } from '../fields/icon';
-import { icon } from 'mermaid/dist/rendering-util/rendering-elements/shapes/icon.js';
 import { emailBlockSchema } from '@/components/blocks/email-template';
 
 const Global: Collection = {

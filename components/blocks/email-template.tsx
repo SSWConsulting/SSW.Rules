@@ -3,27 +3,29 @@ import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import React from 'react';
 
 export function EmailTemplate({ data }: { data: any }) {
+  const fields = [
+    { label: "To", value: data.to },
+    { label: "Cc", value: data.cc },
+    { label: "Bcc", value: data.bcc },
+    { label: "Subject", value: data.subject },
+  ].filter((field) => field.value?.trim());
+
   return (
     <div className="bg-gray-100 p-6 rounded-md space-y-4">
       <div className="space-y-3">
-        {[
-          { label: 'To', value: data.to },
-          { label: 'Cc', value: data.cc },
-          { label: 'Bcc', value: data.bcc },
-          { label: 'Subject', value: data.subject },
-        ].map(({ label, value }) => (
+        {fields.map(({ label, value }) => (
           <div key={label} className="flex items-start text-right">
             <div className="w-24 pt-2 pr-2">{label}:</div>
             <div className="flex-1">
               <div className="bg-white border px-3 py-2 rounded text-sm min-h-[40px] flex items-center">
-                {value || <span className="text-gray-400 italic">Empty</span>}
+                {value}
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 pl-24">
         <div className="bg-white border p-4 rounded">
           <div className="prose prose-sm">
             <TinaMarkdown content={data.body} />

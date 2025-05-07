@@ -1,46 +1,87 @@
-import React from 'react';
-import { Collection } from "tinacms";
+import React from "react";
+import { Collection, Form, TinaCMS } from "tinacms";
 
 const Rule: Collection = {
-    name: 'rule',
-    label: 'Rule',
-    path: 'content/rule',
-    format: 'mdx',
-    fields: [
+  name: "rule",
+  label: "Rule",
+  path: "content/rule",
+  format: "mdx",
+  // ui: {
+  //   beforeSubmit: async ({
+  //     form,
+  //     cms,
+  //     values,
+  //   }: {
+  //     form: Form;
+  //     cms: TinaCMS;
+  //     values: Record<string, any>;
+  //   }) => {
+  //     const updatedCategories = values.categories.map((cat: any) => ({
+  //       ...cat,
+  //       categoryName: cat.category.split("/").pop().replace(".md", ""),
+  //     }));
+  //     return {
+  //       ...values,
+  //       categories: updatedCategories,
+  //     };
+  //   },
+  // },
+  fields: [
+    {
+      type: "string",
+      label: "Title",
+      name: "title",
+      isTitle: true,
+      required: true,
+    },
+    {
+      label: "Categories",
+      name: "categories",
+      type: "object",
+      list: true,
+      required: true,
+      ui: {
+        itemProps: (item) => {
+          // TODO : fetch category name through local json file
+          return {
+            label: item.categoryName,
+          };
+        },
+      },
+      fields: [
         {
-            type: 'string',
-            label: 'Title',
-            name: 'title',
-            isTitle: true,
-            required: true,
+          type: "string",
+          label: "Category name",
+          name: "categoryName",
         },
         {
-            label: 'Category',
-            name: 'category',
-            type: 'reference',
-            collections: ['category'],
-            ui:{
-                optionComponent: (props: any) => {
-                    if (props && props.title) {
-                      return (
-                        <div className="flex items-center text-base">
-                          {props.title}
-                        </div>
-                      );
-                    } else {
-                      return <div>No Categories...</div>;
-                    }
-                  },
+          label: "Choose a category",
+          name: "category",
+          type: "reference",
+          collections: ["category"],
+          ui: {
+            optionComponent: (props: any) => {
+              if (props && props.title) {
+                return (
+                  <div className="flex items-center text-base">
+                    {props.title}
+                  </div>
+                );
+              } else {
+                return <div>No Categories...</div>;
+              }
             },
-            required:true
+          },
         },
-        {
-          type: 'rich-text',
-          label: 'Rule Content',
-          name: 'content',
-          required: true,
-        },
-    ]
-}
+      ],
+    },
+    {
+      type: "rich-text",
+      label: "Rule Content",
+      name: "content",
+      required: true,
+    },
+  ],
+};
 
 export default Rule;

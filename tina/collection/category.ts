@@ -5,6 +5,16 @@ const Category: Collection = {
     label: 'Category',
     path: 'content/category',
     format: 'md',
+    ui: {
+        filename: {
+            readonly: true,
+            slugify: (values) => {
+                return `${values?.title
+                    ?.toLowerCase()
+                    .replace(/ /g, '-')}`
+            },
+        },
+    },
     fields: [
         {
             type: 'string',

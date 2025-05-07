@@ -6,26 +6,34 @@ const Rule: Collection = {
   label: "Rule",
   path: "content/rule",
   format: "mdx",
-  // ui: {
-  //   beforeSubmit: async ({
-  //     form,
-  //     cms,
-  //     values,
-  //   }: {
-  //     form: Form;
-  //     cms: TinaCMS;
-  //     values: Record<string, any>;
-  //   }) => {
-  //     const updatedCategories = values.categories.map((cat: any) => ({
-  //       ...cat,
-  //       categoryName: cat.category.split("/").pop().replace(".md", ""),
-  //     }));
-  //     return {
-  //       ...values,
-  //       categories: updatedCategories,
-  //     };
-  //   },
-  // },
+  ui: {
+    filename: {
+      readonly: true,
+      slugify: (values) => {
+          return `${values?.title
+              ?.toLowerCase()
+              .replace(/ /g, '-')}`
+      },
+  },
+    // beforeSubmit: async ({
+    //   form,
+    //   cms,
+    //   values,
+    // }: {
+    //   form: Form;
+    //   cms: TinaCMS;
+    //   values: Record<string, any>;
+    // }) => {
+    //   const updatedCategories = values.categories.map((cat: any) => ({
+    //     ...cat,
+    //     categoryName: cat.category.split("/").pop().replace(".md", ""),
+    //   }));
+    //   return {
+    //     ...values,
+    //     categories: updatedCategories,
+    //   };
+    // },
+  },
   fields: [
     {
       type: "string",

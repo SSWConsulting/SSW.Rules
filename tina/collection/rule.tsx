@@ -58,7 +58,7 @@ const Rule: Collection = {
           label: "Choose a category",
           name: "category",
           type: "reference",
-          collections: ["category"],
+          collections: ["categories"],
           ui: {
             optionComponent: (props: any) => {
               if (props && props.title) {

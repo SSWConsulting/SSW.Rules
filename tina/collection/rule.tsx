@@ -1,4 +1,4 @@
-import { emailEmbedTemplate } from "@/components/embeds/emailEmbed";
+import { embedTemplates } from "@/components/embeds";
 import React from "react";
 import { Collection, Form, TinaCMS } from "tinacms";
 
@@ -91,7 +91,7 @@ const Rule: Collection = {
       label: "Rule Content",
       name: "content",
       required: true,
-      templates: [emailEmbedTemplate],
+      templates: embedTemplates,
     },
   ],
 };

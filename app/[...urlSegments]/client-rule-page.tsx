@@ -1,5 +1,6 @@
 "use client";
 
+import { EmailEmbed } from "@/components/embeds/emailEmbed";
 import { RuleQueryProps } from "@/models/RuleQueryProps";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
@@ -24,10 +25,10 @@ export default function ClientRulePage(props: ClientRulePageProps) {
       <h1 className="font-bold mb-4" data-tina-field={tinaField(rule, "title")}>
         {rule.title}
       </h1>
-      <TinaMarkdown
-        data-tina-field={tinaField(rule, "content")}
-        content={rule.content}
-      />
+      <br />
+      <TinaMarkdown data-tina-field={tinaField(rule,'content')} content={rule.content} components={{
+        emailEmbed: (props) => <EmailEmbed data={props} />
+      }} />
     </>
   );
 }

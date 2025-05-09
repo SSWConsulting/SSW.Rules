@@ -1,7 +1,6 @@
 import type { Collection } from 'tinacms';
 import { ColorPickerInput } from '../fields/color';
 import { iconSchema } from '../fields/icon';
-import { emailBlockSchema } from '@/components/blocks/email-template';
 
 const Global: Collection = {
   label: 'Global',
@@ -12,16 +11,6 @@ const Global: Collection = {
     global: true,
   },
   fields: [
-    {
-      name: 'blocks',
-      label: 'Blocks',
-      type: 'object',
-      list: true,
-      ui: {
-        visualSelector: true,
-      },
-      templates: [emailBlockSchema],
-    },
     {
       type: 'object',
       label: 'Header',

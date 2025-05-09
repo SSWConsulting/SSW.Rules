@@ -1,5 +1,13 @@
 import { Collection } from "tinacms";
 
+export function generateGuid() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 const Category: Collection = {
   name: "categories",
   label: "Categories",
@@ -24,11 +32,11 @@ const Category: Collection = {
           list: true,
           ui: {
             itemProps: (item) => {
-              const name = item.index?.split("/");
+              const name = item.category?.split("/");
               return {
                 label: name
                   ? name[name.length - 1].split(".")[0]
-                  : "Choose Category",
+                  : "Category is not selected",
               };
             },
           },
@@ -36,7 +44,7 @@ const Category: Collection = {
             {
               type: "reference",
               label: "Category",
-              name: "index",
+              name: "category",
               collections: ["categories"],
               ui: {
                 optionComponent: (props: { name: string }, _internalSys) => {

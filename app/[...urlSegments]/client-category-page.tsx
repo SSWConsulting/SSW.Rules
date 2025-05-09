@@ -22,10 +22,7 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
 
   return (
     <>
-      <h1>
-        <b>{category.title}</b>
-      </h1>
-      <br />
+      <h1 className="font-bold mb-4"> {category.title} </h1>
       <ul className="list-disc pl-5">
         {rules &&
           rules.map((rule) => {

@@ -21,11 +21,13 @@ export default function ClientRulePage(props: ClientRulePageProps) {
 
   return (
     <>
-      <h1 data-tina-field={tinaField(rule,'title')}>
-        <b>{rule.title}</b>
+      <h1 className="font-bold mb-4" data-tina-field={tinaField(rule, "title")}>
+        {rule.title}
       </h1>
-      <br />
-      <TinaMarkdown data-tina-field={tinaField(rule,'content')} content={rule.content} />
+      <TinaMarkdown
+        data-tina-field={tinaField(rule, "content")}
+        content={rule.content}
+      />
     </>
   );
 }

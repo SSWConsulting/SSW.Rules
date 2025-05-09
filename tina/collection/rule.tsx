@@ -13,7 +13,7 @@ const Rule: Collection = {
     filename: {
       readonly: true,
       slugify: (values) => {
-        return `${values?.title?.toLowerCase().replace(/ /g, "-")}`;
+        return `${values?.title?.toLowerCase().replace(/ /g, "-").replace('?','')}`;
       },
     },
     // TODO: make this work

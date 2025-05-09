@@ -2,7 +2,6 @@ import React from "react";
 import Layout from "@/components/layout/layout";
 import { Section } from "@/components/layout/section";
 import client from "@/tina/__generated__/client";
-import { EmailTemplate } from "@/components/blocks/email-template";
 import ClientCategoryPage from "./client-category-page";
 import ClientRulePage from "./client-rule-page";
 import { notFound } from "next/navigation";

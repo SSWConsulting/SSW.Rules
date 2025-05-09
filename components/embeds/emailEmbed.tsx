@@ -68,3 +68,7 @@ export const emailEmbedTemplate: Template = {
     { name: 'body', label: 'Body', type: 'rich-text' },
   ],
 };
+
+export const emailEmbedComponent = {
+  emailEmbed: (props: any) => <EmailEmbed data={props} />,
+};

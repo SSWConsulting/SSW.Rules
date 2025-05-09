@@ -1,21 +1,31 @@
 "use client";
 
-import { Rule } from "@/tina/__generated__/types";
+import { RuleQueryProps } from "@/models/RuleQueryProps";
+import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 export interface ClientRulePageProps {
-  rule: Rule;
+  ruleQueryProps: RuleQueryProps;
 }
 
 export default function ClientRulePage(props: ClientRulePageProps) {
-  const { rule } = props;
+  const { ruleQueryProps } = props;
+
+  const ruleData = useTina({
+    query: ruleQueryProps.query,
+    variables: ruleQueryProps.variables,
+    data: ruleQueryProps.data,
+  }).data;
+
+  const rule = ruleData.rule;
+
   return (
     <>
-      <h1>
+      <h1 data-tina-field={tinaField(rule,'title')}>
         <b>{rule.title}</b>
       </h1>
       <br />
-      <TinaMarkdown content={rule.content} />
+      <TinaMarkdown data-tina-field={tinaField(rule,'content')} content={rule.content} />
     </>
   );
 }

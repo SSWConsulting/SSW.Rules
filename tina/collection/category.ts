@@ -6,6 +6,9 @@ const Category: Collection = {
     path: 'content/category',
     format: 'md',
     ui: {
+        router: ({ document }) => {
+            return document._sys.filename;
+        },
         filename: {
             readonly: true,
             slugify: (values) => {

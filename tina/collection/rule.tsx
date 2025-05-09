@@ -7,14 +7,16 @@ const Rule: Collection = {
   path: "content/rule",
   format: "mdx",
   ui: {
+    router: ({ document }) => {
+      return document._sys.filename;
+    },
     filename: {
       readonly: true,
       slugify: (values) => {
-          return `${values?.title
-              ?.toLowerCase()
-              .replace(/ /g, '-')}`
+        return `${values?.title?.toLowerCase().replace(/ /g, "-")}`;
       },
-  },
+    },
+    // TODO: make this work
     // beforeSubmit: async ({
     //   form,
     //   cms,
@@ -50,7 +52,7 @@ const Rule: Collection = {
       required: true,
       ui: {
         itemProps: (item) => {
-          // TODO : fetch category name through local json file
+          // TODO : find a way to fetch category name through local json file and remove categoryName field
           return {
             label: item.categoryName,
           };

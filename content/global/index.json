@@ -15,20 +15,12 @@
       "color": "orange",
       "style": "float"
     },
-    "name": "Tina Starter",
+    "name": "Tina Starter - Rules V3 Migration",
     "color": "default",
     "nav": [
       {
         "href": "/",
         "label": "Home"
-      },
-      {
-        "href": "/about",
-        "label": "About"
-      },
-      {
-        "href": "/posts",
-        "label": "Blog"
       }
     ]
   },

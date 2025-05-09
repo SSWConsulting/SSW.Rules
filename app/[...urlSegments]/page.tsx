@@ -17,13 +17,12 @@ export default async function Page({
   const resolvedParams = await params;
   const filepath = resolvedParams.urlSegments.join("/");
 
-  //TODO: type variables
-  let category: any = null;
-  let categoryRules: any = null;
-  let rule: any = null;
+  let categoryQueryProps;
+  let categoryRules;
+  let ruleQueryProps;
 
   try {
-    category = await client.queries.category({
+    categoryQueryProps = await client.queries.category({
       relativePath: filepath + ".md",
     });
 
@@ -33,14 +32,14 @@ export default async function Page({
       ?.filter((rule: any) => {
         return rule.node.categories.some((cat: any) => {
           return (
-            category.data.category._sys.filename === cat.category._sys.filename
+            categoryQueryProps.data.category._sys.filename === cat.category._sys.filename
           );
         });
       })
       .map((rule: any) => rule.node);
   } catch (error) {
     try {
-      rule = await client.queries.rule({
+      ruleQueryProps = await client.queries.rule({
         relativePath: filepath + ".mdx",
       });
     } catch (error) {
@@ -57,10 +56,10 @@ export default async function Page({
   return (
     <Layout>
       <Section>
-        {category != null ? (
-          <ClientCategoryPage category={category} rules={categoryRules} />
+        {categoryQueryProps != null ? (
+          <ClientCategoryPage categoryQueryProps={categoryQueryProps} rules={categoryRules} />
         ) : (
-          <ClientRulePage rule={rule.data.rule} />
+          <ClientRulePage ruleQueryProps={ruleQueryProps} />
         )}
         {/* {blocks.map((block, index) => {
           switch (block?.__typename) {

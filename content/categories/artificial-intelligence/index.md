@@ -6,4 +6,3 @@ index:
       content/categories/artificial-intelligence/rules-to-better-chatgpt-prompt-engineering.md
 _template: top_category
 ---
-

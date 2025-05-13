@@ -17,6 +17,13 @@ const Category: Collection = {
     {
       name: "top_category",
       label: "Top Level Category",
+      ui: {
+        defaultItem: () => {
+          return {
+            filename: "index",
+          };
+        },
+      },
       fields: [
         {
           type: "string",
@@ -102,6 +109,35 @@ const Category: Collection = {
           name: "redirects",
           label: "Redirects",
           list: true,
+        },
+        {
+          type: "object",
+          label: "Rules",
+          name: "index",
+          list: true,
+          ui: {
+            itemProps: (item) => {
+              const name = item.rule?.split("/");
+              return {
+                label: name
+                  ? name[name.length - 1].split(".")[0]
+                  : "Rule is not selected",
+              };
+            },
+          },
+          fields: [
+            {
+              type: "reference",
+              label: "Rule",
+              name: "rule",
+              collections: ["rules"],
+              ui: {
+                optionComponent: (props: { name: string }, _internalSys) => {
+                  return _internalSys.path;
+                },
+              },
+            },
+          ],
         },
         {
           type: "rich-text",

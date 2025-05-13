@@ -1,31 +1,22 @@
 import React from "react";
 import { Collection, Form, TinaCMS } from "tinacms";
+import { generateGuid } from "./category";
 
 const Rule: Collection = {
-  name: "rule",
-  label: "Rule",
-  path: "content/rule",
-  format: "mdx",
-  // ui: {
-  //   beforeSubmit: async ({
-  //     form,
-  //     cms,
-  //     values,
-  //   }: {
-  //     form: Form;
-  //     cms: TinaCMS;
-  //     values: Record<string, any>;
-  //   }) => {
-  //     const updatedCategories = values.categories.map((cat: any) => ({
-  //       ...cat,
-  //       categoryName: cat.category.split("/").pop().replace(".md", ""),
-  //     }));
-  //     return {
-  //       ...values,
-  //       categories: updatedCategories,
-  //     };
-  //   },
-  // },
+  name: "rules",
+  label: "Rules",
+  path: "content/rules",
+  format: "md",
+  defaultItem: () => {
+    return {
+      guid: generateGuid(),
+    };
+  },
+  ui: {
+    filename: {
+      readonly: true,
+    },
+  },
   fields: [
     {
       type: "string",

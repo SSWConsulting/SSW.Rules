@@ -1,7 +1,6 @@
 import { embedTemplates } from "@/components/embeds";
 import React from "react";
 import { Collection, Form, TinaCMS } from "tinacms";
-import { generateGuid } from "./category";
 
 const Rule: Collection = {
   name: "rule",

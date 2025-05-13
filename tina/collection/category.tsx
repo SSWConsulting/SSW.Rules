@@ -13,17 +13,16 @@ const Category: Collection = {
   label: "Categories",
   path: "content/categories",
   format: "md",
+  ui: {
+    filename: {
+      description:
+        "If you are adding top level category the create index.md file, otherwise create category with category name",
+    },
+  },
   templates: [
     {
       name: "top_category",
       label: "Top Level Category",
-      ui: {
-        defaultItem: () => {
-          return {
-            filename: "index",
-          };
-        },
-      },
       fields: [
         {
           type: "string",
@@ -130,7 +129,7 @@ const Category: Collection = {
               type: "reference",
               label: "Rule",
               name: "rule",
-              collections: ["rules"],
+              collections: ["rule"],
               ui: {
                 optionComponent: (props: { name: string }, _internalSys) => {
                   return _internalSys.path;

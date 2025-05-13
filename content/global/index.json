@@ -1,13 +1,5 @@
 {
   "blocks": [
-    {
-      "to": "XXX",
-      "cc": "YYY",
-      "bcc": "ZZZ",
-      "subject": "{{ Email Subject }}",
-      "body": "## Hi XXX\n\n{{ EMAIL CONTENT }}\n\n* Task A\n* Task B\n* [Tina](https://tina.io/)\n\n1. This is the first item\n2. This is the second item\n",
-      "_template": "emailTemplate"
-    }
   ],
   "header": {
     "icon": {
@@ -15,20 +7,12 @@
       "color": "orange",
       "style": "float"
     },
-    "name": "Tina Starter",
+    "name": "Tina Starter - Rules V3 Migration",
     "color": "default",
     "nav": [
       {
         "href": "/",
         "label": "Home"
-      },
-      {
-        "href": "/about",
-        "label": "About"
-      },
-      {
-        "href": "/posts",
-        "label": "Blog"
       }
     ]
   },

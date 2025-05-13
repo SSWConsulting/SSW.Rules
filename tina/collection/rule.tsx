@@ -1,21 +1,45 @@
+import { embedTemplates } from "@/components/embeds";
 import React from "react";
 import { Collection, Form, TinaCMS } from "tinacms";
 import { generateGuid } from "./category";
 
 const Rule: Collection = {
-  name: "rules",
-  label: "Rules",
-  path: "content/rules",
-  format: "md",
-  defaultItem: () => {
-    return {
-      guid: generateGuid(),
-    };
-  },
+  name: "rule",
+  label: "Rule",
+  path: "content/rule",
+  format: "mdx",
   ui: {
+    router: ({ document }) => {
+      return document._sys.filename;
+    },
     filename: {
       readonly: true,
+      slugify: (values) => {
+        return `${values?.title
+          ?.toLowerCase()
+          .replace(/ /g, "-")
+          .replace("?", "")}`;
+      },
     },
+    // TODO: make this work
+    // beforeSubmit: async ({
+    //   form,
+    //   cms,
+    //   values,
+    // }: {
+    //   form: Form;
+    //   cms: TinaCMS;
+    //   values: Record<string, any>;
+    // }) => {
+    //   const updatedCategories = values.categories.map((cat: any) => ({
+    //     ...cat,
+    //     categoryName: cat.category.split("/").pop().replace(".md", ""),
+    //   }));
+    //   return {
+    //     ...values,
+    //     categories: updatedCategories,
+    //   };
+    // },
   },
   fields: [
     {
@@ -33,7 +57,7 @@ const Rule: Collection = {
       required: true,
       ui: {
         itemProps: (item) => {
-          // TODO : fetch category name through local json file
+          // TODO : find a way to fetch category name through local json file and remove categoryName field
           return {
             label: item.categoryName,
           };
@@ -71,6 +95,7 @@ const Rule: Collection = {
       label: "Rule Content",
       name: "content",
       required: true,
+      templates: embedTemplates,
     },
   ],
 };

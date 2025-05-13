@@ -13,7 +13,7 @@ export function FigureEmbed({ data }: { data: FigureEmbedProps }) {
   let prefix = "";
   switch (preset) {
     case "default":
-      prefix = "Figure - ";
+      prefix = "Figure: ";
       break;
     case "badExample":
       prefix = "❌ Figure: Bad example - ";

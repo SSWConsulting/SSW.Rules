@@ -119,3 +119,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+ul li::before {
+  content: "\25A0";
+  display: inline-block;
+  width: 1rem;
+  margin-left: -1rem;
+  color: rgb(204 65 65 / var(--tw-text-opacity));
+  --tw-text-opacity: 1;
+  position: absolute;
+}

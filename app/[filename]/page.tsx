@@ -8,40 +8,65 @@ import { notFound } from "next/navigation";
 
 export const revalidate = 300;
 
-const getCategoryData = async (filepath: string) => {
-  const tinaProps = await client.queries.categoryConnection();
-  const categories =
-    tinaProps.data.categoryConnection.edges?.map((edge: any) => edge.node) ||
-    [];
+const getCategoryData = async (filename: string) => {
+  try {
+    const tinaProps = await client.queries.categoryConnection();
+    const categories =
+      tinaProps.data.categoryConnection.edges?.map((edge: any) => edge.node) ||
+      [];
+    const category = categories.find((cat: any) => {
+      return cat._sys.filename === filename;
+    });
 
-  const category = categories.find((cat: any) => {
-    return cat._sys.filename === filepath;
-  });
-
-  return {
-    data: category,
-    query: tinaProps.query,
-    variables: tinaProps.variables,
-  };
+    return {
+      data: category,
+      query: tinaProps.query,
+      variables: tinaProps.variables,
+    };
+  } catch (error) {
+    console.error("Error fetching category data:", error);
+    return null;
+  }
 };
 
-const getRuleData = async (filepath: string) => {
-  const tinaProps = await client.queries.rule({
-    relativePath: filepath + ".mdx",
-  });
+const getRuleData = async (filename: string) => {
+  try {
+    const tinaProps = await client.queries.rule({
+      relativePath: filename + ".mdx",
+    });
 
-  return {
-    data: tinaProps.data,
-    query: tinaProps.query,
-    variables: tinaProps.variables,
-  };
+    return {
+      data: tinaProps.data,
+      query: tinaProps.query,
+      variables: tinaProps.variables,
+    };
+  } catch (error) {
+    console.error("Error fetching rule data:", error);
+    return null;
+  }
 };
 
 export async function generateStaticParams() {
-  const categoryConnection = await client.queries.categoryConnection();
-  return categoryConnection.data.categoryConnection.edges?.map((page) => ({
-    filename: page?.node?._sys.filename,
-  }));
+  try {
+    const [categoryConnection, ruleConnection] = await Promise.all([
+      client.queries.categoryConnection(),
+      client.queries.ruleConnection(),
+    ]);
+
+    const rules =
+      ruleConnection.data.ruleConnection.edges?.map((page) => ({
+        filename: page?.node?._sys.filename,
+      })) || [];
+    const categories =
+      categoryConnection.data.categoryConnection.edges?.map((page) => ({
+        filename: page?.node?._sys.filename,
+      })) || [];
+
+    return [...rules, ...categories];
+  } catch (error) {
+    console.error("Error fetching static params:", error);
+    return [];
+  }
 }
 
 export default async function Page({
@@ -50,26 +75,28 @@ export default async function Page({
   params: Promise<{ filename: string }>;
 }) {
   const { filename } = await params;
+
   const category = await getCategoryData(filename);
-
-  let rule;
-  if (!category?.data) {
-    rule = await getRuleData(filename);
-  }
-
-  if (!category?.data && !rule?.data) {
-    notFound();
-  }
-
-  return (
-    <Layout>
-      <Section>
-        {category?.data != null ? (
+  if (category?.data) {
+    return (
+      <Layout>
+        <Section>
           <ClientCategoryPage categoryQueryProps={category} />
-        ) : (
+        </Section>
+      </Layout>
+    );
+  }
+
+  const rule = await getRuleData(filename);
+  if (rule?.data) {
+    return (
+      <Layout>
+        <Section>
           <ClientRulePage ruleQueryProps={rule} />
-        )}
-      </Section>
-    </Layout>
-  );
+        </Section>
+      </Layout>
+    );
+  }
+
+  notFound();
 }

@@ -3,14 +3,14 @@
 import {
   InstantSearch,
   SearchBox,
-  Hits,
-  connectStateResults,
-} from 'react-instantsearch-dom';
-import {algoliasearch} from 'algoliasearch';
+  useInstantSearch,
+} from 'react-instantsearch-hooks-web';
+import { algoliasearch } from 'algoliasearch';
+import { useState, useCallback, useEffect } from 'react';
 
 const baseClient = algoliasearch(
-  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
-  process.env.NEXT_PUBLIC_ALGOLIA_API_KEY as string
+  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!,
+  process.env.NEXT_PUBLIC_ALGOLIA_API_KEY!
 );
 
 const searchClient = {
@@ -25,7 +25,6 @@ const searchClient = {
           nbPages: 0,
           hitsPerPage: 20,
           exhaustiveNbHits: false,
-          exhaustive: { nbHits: false },
           query: '',
           params: '',
           processingTimeMS: 0,
@@ -36,21 +35,53 @@ const searchClient = {
   },
 };
 
-const Hit = ({ hit }: { hit: any }) => (
-  <div className="py-2 border-b">{hit.frontmatter?.title}</div>
-);
+type Hit = {
+  objectID: string;
+  frontmatter: { title: string; [k: string]: any };
+};
 
-const Results = connectStateResults(({ searchState }) =>
-  searchState?.query ? <Hits hitComponent={Hit} /> : null
-);
+type Props = {
+  onResults?: (hits: Hit[]) => void;
+};
 
-export default function SearchBar() {
+function ResultsCollector({
+  submitted,
+  reset,
+  onResults,
+}: {
+  submitted: boolean;
+  reset: () => void;
+  onResults?: (hits: Hit[]) => void;
+}) {
+  const { results, status } = useInstantSearch();
+
+  useEffect(() => {
+    if (submitted && status === 'idle') {
+      onResults?.((results?.hits ?? []) as Hit[]);
+      reset();
+    }
+  }, [submitted, status, results, reset, onResults]);
+
+  return null;
+}
+
+export default function SearchBar({ onResults }: Props) {
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = useCallback(() => {
+    setSubmitted(true);
+  }, []);
+
   return (
     <div className="p-4">
       <InstantSearch searchClient={searchClient} indexName="index-json">
         <div className="max-w-xl mx-auto">
-          <SearchBox searchAsYouType={false} />
-          <Results />
+          <SearchBox searchAsYouType={false} onSubmit={handleSubmit} />
+          <ResultsCollector
+            submitted={submitted}
+            reset={() => setSubmitted(false)}
+            onResults={onResults}
+          />
         </div>
       </InstantSearch>
     </div>

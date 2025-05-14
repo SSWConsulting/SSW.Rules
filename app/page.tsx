@@ -1,9 +1,8 @@
-import React from "react";
-import Layout from "@/components/layout/layout";
-import { Section } from "@/components/layout/section";
-import HomeClientPage from "./client-page";
-import client from "@/tina/__generated__/client";
-import SearchBar from "@/components/SearchBar";
+import React from 'react';
+import { Section } from '@/components/layout/section';
+import client from '@/tina/__generated__/client';
+import PageContent from '@/components/PageContent';
+import Layout from '@/components/layout/layout';
 
 export const revalidate = 300;
 
@@ -14,12 +13,13 @@ export default async function Home() {
       (edge: any) => edge.node
     ) || [];
 
-  return (
-    <Layout>
+  const layout = await Layout({
+    children: (
       <Section>
-      	<SearchBar />
-        <HomeClientPage categories={categories} />
+        <PageContent categories={categories} />
       </Section>
-    </Layout>
-  );
+    )
+  });
+
+  return layout;
 }

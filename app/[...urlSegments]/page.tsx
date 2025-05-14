@@ -2,9 +2,9 @@ import React from "react";
 import Layout from "@/components/layout/layout";
 import { Section } from "@/components/layout/section";
 import client from "@/tina/__generated__/client";
-import ClientCategoryPage from "./client-category-page";
-import ClientRulePage from "./client-rule-page";
 import { notFound } from "next/navigation";
+import ClientCategoryPage from "../[filename]/client-category-page";
+import ClientRulePage from "../[filename]/client-rule-page";
 
 export const revalidate = 300;
 
@@ -66,7 +66,7 @@ export default async function Page({
     <Layout>
       <Section>
         {categoryQueryProps != null ? (
-          <ClientCategoryPage categoryQueryProps={categoryQueryProps} rules={categoryRules} />
+          <ClientCategoryPage categoryQueryProps={categoryQueryProps} />
         ) : (
           <ClientRulePage ruleQueryProps={ruleQueryProps} />
         )}

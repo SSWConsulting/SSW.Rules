@@ -2,33 +2,32 @@
 
 import { useTina } from "tinacms/dist/react";
 import { CategoryQueryProps } from "@/models/CategoryQueryProps";
-import { Rule } from "@/tina/__generated__/types";
+import { Category, Rule } from "@/tina/__generated__/types";
 
 export interface ClientCategoryPageProps {
-  categoryQueryProps: CategoryQueryProps;
-  rules: Rule[];
+  categoryQueryProps: any;
 }
 
 export default function ClientCategoryPage(props: ClientCategoryPageProps) {
-  const { categoryQueryProps, rules } = props;
+  const { categoryQueryProps } = props;
 
   const categoryData = useTina({
-    query: categoryQueryProps.query,
-    variables: categoryQueryProps.variables,
-    data: categoryQueryProps.data,
+    query: categoryQueryProps?.props?.query,
+    variables: categoryQueryProps?.props?.variables,
+    data: categoryQueryProps?.props?.data,
   }).data;
 
-  const category = categoryData.category;
+  const category = categoryData;
 
   return (
     <>
       <h1 className="font-bold mb-4"> {category.title} </h1>
       <ul className="list-disc pl-5">
-        {rules &&
-          rules.map((rule) => {
+        {category.index &&
+          category.index.map((x) => {
             return (
-              <li key={rule._sys.filename}>
-                <a href={`/${rule._sys.filename}`}>{rule.title}</a>
+              <li key={x.rule._sys.filename}>
+                <a href={`/${x.rule._sys.filename}`}>{x.rule.title}</a>
               </li>
             );
           })}

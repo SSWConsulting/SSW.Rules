@@ -7,14 +7,16 @@ import client from "@/tina/__generated__/client";
 export const revalidate = 300;
 
 export default async function Home() {
-
-const categoriesConnectionData = await client.queries.categoryConnection({});
-const categories = categoriesConnectionData.data.categoryConnection.edges?.map((edge: any) => edge.node)||[];
+  const categoriesConnectionData = await client.queries.categoryConnection({});
+  const categories =
+    categoriesConnectionData.data.categoryConnection.edges?.map(
+      (edge: any) => edge.node
+    ) || [];
 
   return (
     <Layout>
       <Section>
-      <HomeClientPage categories={categories} />
+        <HomeClientPage categories={categories} />
       </Section>
     </Layout>
   );

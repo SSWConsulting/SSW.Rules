@@ -12,13 +12,18 @@ export default function HomeClientPage(props: HomeClientPageProps) {
   return (
     <>
       <h1 className="font-bold mb-4">Categories</h1>
-      <ul className="list-disc pl-5">
-        {categories.map((category) => (
-          <li key={category._sys.filename}>
-            <a href={`/${category._sys.filename}`}>{category.title}</a>
-          </li>
-        ))}
-      </ul>
+
+      {categories.map((category) =>
+        category.__typename === "CategoryTop_category" ? (
+          <h3 className="font-bold">{category.title}</h3>
+        ) : (
+          <ul className="list-disc pl-5">
+            <li key={category._sys.filename}>
+              <a href={`/${category._sys.filename}`}>{category.title}</a>
+            </li>
+          </ul>
+        )
+      )}
     </>
   );
 }

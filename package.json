@@ -35,6 +35,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "dotenv": "^16.5.0",
+    "fast-glob": "^3.3.3",
     "gray-matter": "^4.0.3",
     "instantsearch.js": "^4.78.3",
     "lucide-react": "^0.484.0",
@@ -56,5 +58,6 @@
     "tw-animate-css": "^1.2.4",
     "usehooks-ts": "^3.1.1"
   },
-  "packageManager": "pnpm@10.10.0"
+  "packageManager": "pnpm@10.10.0",
+  "type": "module"
 }

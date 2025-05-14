@@ -35,6 +35,12 @@ importers:
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3

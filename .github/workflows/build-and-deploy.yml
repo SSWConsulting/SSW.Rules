@@ -7,7 +7,7 @@ name: Deploy Next.js site to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: [main]
+    branches: [main, add-search-bar]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -28,6 +28,12 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+
+    env:
+      NEXT_PUBLIC_ALGOLIA_APP_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
+      NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
+      NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -95,6 +101,9 @@ jobs:
 
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+
+      - name: Run Algolia sync script
+        run: node scripts/update_algolia_index.js  
 
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} build

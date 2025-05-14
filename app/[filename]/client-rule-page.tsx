@@ -5,16 +5,16 @@ import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 export interface ClientRulePageProps {
-  ruleQueryProps: any;
+  ruleQueryProps;
 }
 
 export default function ClientRulePage(props: ClientRulePageProps) {
   const { ruleQueryProps } = props;
 
   const ruleData = useTina({
-    query: ruleQueryProps?.props.query,
-    variables: ruleQueryProps?.props.variables,
-    data: ruleQueryProps?.props.data,
+    query: ruleQueryProps?.query,
+    variables: ruleQueryProps?.variables,
+    data: ruleQueryProps?.data,
   }).data;
 
   const rule = ruleData;

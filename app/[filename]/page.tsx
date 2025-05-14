@@ -19,11 +19,9 @@ const getCategoryData = async (filepath: string) => {
   });
 
   return {
-    props: {
-      data: category,
-      query: tinaProps.query,
-      variables: tinaProps.variables,
-    },
+    data: category,
+    query: tinaProps.query,
+    variables: tinaProps.variables,
   };
 };
 
@@ -33,11 +31,9 @@ const getRuleData = async (filepath: string) => {
   });
 
   return {
-    props: {
-      data: tinaProps.data,
-      query: tinaProps.query,
-      variables: tinaProps.variables,
-    },
+    data: tinaProps.data,
+    query: tinaProps.query,
+    variables: tinaProps.variables,
   };
 };
 
@@ -57,18 +53,18 @@ export default async function Page({
   const category = await getCategoryData(filename);
 
   let rule;
-  if (!category?.props?.data) {
+  if (!category?.data) {
     rule = await getRuleData(filename);
   }
 
-  if (!category?.props?.data && !rule?.props?.data) {
+  if (!category?.data && !rule?.data) {
     notFound();
   }
 
   return (
     <Layout>
       <Section>
-        {category?.props?.data != null ? (
+        {category?.data != null ? (
           <ClientCategoryPage categoryQueryProps={category} />
         ) : (
           <ClientRulePage ruleQueryProps={rule} />

@@ -4,16 +4,16 @@ import { useTina } from "tinacms/dist/react";
 import Link from "next/link";
 
 export interface ClientCategoryPageProps {
-  categoryQueryProps: any;
+  categoryQueryProps;
 }
 
 export default function ClientCategoryPage(props: ClientCategoryPageProps) {
   const { categoryQueryProps } = props;
 
   const categoryData = useTina({
-    query: categoryQueryProps?.props?.query,
-    variables: categoryQueryProps?.props?.variables,
-    data: categoryQueryProps?.props?.data,
+    query: categoryQueryProps?.query,
+    variables: categoryQueryProps?.variables,
+    data: categoryQueryProps?.data,
   }).data;
 
   const category = categoryData;

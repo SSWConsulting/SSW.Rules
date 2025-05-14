@@ -17,15 +17,15 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     data: ruleQueryProps?.data,
   }).data;
 
-  const rule = ruleData;
+  const rule = ruleData?.rule;
 
   return (
     <>
       <h1 className="font-bold mb-4" data-tina-field={tinaField(rule, "title")}>
-        {rule.rule?.title}
+        {rule?.title}
       </h1>
       <div data-tina-field={tinaField(rule, "content")}>
-        <TinaMarkdown content={rule.rule.content} components={embedComponents} />
+        <TinaMarkdown content={rule.content} components={embedComponents} />
       </div>
     </>
   );

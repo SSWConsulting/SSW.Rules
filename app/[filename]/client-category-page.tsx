@@ -1,8 +1,7 @@
 "use client";
 
 import { useTina } from "tinacms/dist/react";
-import { CategoryQueryProps } from "@/models/CategoryQueryProps";
-import { Category, Rule } from "@/tina/__generated__/types";
+import Link from "next/link";
 
 export interface ClientCategoryPageProps {
   categoryQueryProps: any;
@@ -27,7 +26,7 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
           category.index.map((x) => {
             return (
               <li key={x.rule._sys.filename}>
-                <a href={`/${x.rule._sys.filename}`}>{x.rule.title}</a>
+                <Link href={`/${x.rule._sys.filename}`}>{x.rule.title}</Link>
               </li>
             );
           })}

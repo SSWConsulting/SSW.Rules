@@ -1,6 +1,7 @@
 "use client";
 
 import { Category } from "@/tina/__generated__/types";
+import Link from "next/link";
 
 export interface HomeClientPageProps {
   categories: Category[];
@@ -19,7 +20,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
         ) : (
           <ul className="list-disc pl-5">
             <li key={category._sys.filename}>
-              <a href={`/${category._sys.filename}`}>{category.title}</a>
+              <Link href={`/${category._sys.filename}`}>{category.title}</Link>
             </li>
           </ul>
         )

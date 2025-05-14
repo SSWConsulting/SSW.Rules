@@ -1,7 +1,6 @@
 "use client";
 
 import { embedComponents } from "@/components/embeds";
-import { RuleQueryProps } from "@/models/RuleQueryProps";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 

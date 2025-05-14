@@ -70,6 +70,11 @@ jobs:
         with:
           version: 10.10.0
 
+      - name: Enable Corepack and install PNPM
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:

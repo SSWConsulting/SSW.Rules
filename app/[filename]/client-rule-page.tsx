@@ -24,12 +24,9 @@ export default function ClientRulePage(props: ClientRulePageProps) {
       <h1 className="font-bold mb-4" data-tina-field={tinaField(rule, "title")}>
         {rule.rule?.title}
       </h1>
-      <br />
-      <TinaMarkdown
-        data-tina-field={tinaField(rule, "content")}
-        content={rule.rule?.content}
-        components={embedComponents}
-      />
+      <div data-tina-field={tinaField(rule, "content")}>
+        <TinaMarkdown content={rule.rule.content} components={embedComponents} />
+      </div>
     </>
   );
 }

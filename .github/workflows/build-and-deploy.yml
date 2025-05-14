@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 jobs:
@@ -19,49 +19,44 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      NEXT_PUBLIC_ALGOLIA_APP_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
+      NEXT_PUBLIC_ALGOLIA_APP_ID:    ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
       NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
-      NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+      NEXT_PUBLIC_ALGOLIA_INDEX_NAME:${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      # 1 – Node (no pnpm cache yet)
+      - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc
-          cache: pnpm
+          node-version-file: .nvmrc      # “22” in your repo
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
+      # 2 – Install pnpm and add it to PATH (+ cache)
+      - uses: pnpm/action-setup@v4
         with:
-          version: 10.10.0
-          run_install: false
+          version: 10.10.0               # keep in sync with packageManager
+          cache: true                    # enables pnpm store cache
+          run_install: false             # we control install step
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      # 3 – Install dependencies
+      - run: pnpm install --frozen-lockfile
 
-      - name: Sync Algolia index
-        run: pnpm exec node scripts/update_algolia_index.js
+      # 4 – Algolia sync
+      - run: pnpm exec node scripts/update_algolia_index.js
 
-      - name: Create .nojekyll
-        run: touch public/.nojekyll
+      # 5 – Static build for GitHub Pages
+      - run: pnpm build
+        env:
+          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+          NEXT_PUBLIC_TINA_BRANCH:    ${{ github.ref_name }}
+          TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+      - run: touch public/.nojekyll
+      - uses: actions/configure-pages@v5
         with:
           static_site_generator: next
 
-      - name: Build Next.js site
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH: ${{ github.ref_name }}
-          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
 
@@ -70,8 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deploy
         uses: actions/deploy-pages@v4

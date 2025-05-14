@@ -48,47 +48,47 @@ const Rule: Collection = {
       isTitle: true,
       required: true,
     },
-    {
-      label: "Categories",
-      name: "categories",
-      type: "object",
-      list: true,
-      required: true,
-      ui: {
-        itemProps: (item) => {
-          // TODO : find a way to fetch category name through local json file and remove categoryName field
-          return {
-            label: item.categoryName,
-          };
-        },
-      },
-      fields: [
-        {
-          type: "string",
-          label: "Category name",
-          name: "categoryName",
-        },
-        {
-          label: "Choose a category",
-          name: "category",
-          type: "reference",
-          collections: ["categories"],
-          ui: {
-            optionComponent: (props: any) => {
-              if (props && props.title) {
-                return (
-                  <div className="flex items-center text-base">
-                    {props.title}
-                  </div>
-                );
-              } else {
-                return <div>No Categories...</div>;
-              }
-            },
-          },
-        },
-      ],
-    },
+    // {
+    //   label: "Categories",
+    //   name: "categories",
+    //   type: "object",
+    //   list: true,
+    //   required: true,
+    //   ui: {
+    //     itemProps: (item) => {
+    //       // TODO : find a way to fetch category name through local json file and remove categoryName field
+    //       return {
+    //         label: item.categoryName,
+    //       };
+    //     },
+    //   },
+    //   fields: [
+    //     {
+    //       type: "string",
+    //       label: "Category name",
+    //       name: "categoryName",
+    //     },
+    //     {
+    //       label: "Choose a category",
+    //       name: "category",
+    //       type: "reference",
+    //       collections: ["category"],
+    //       ui: {
+    //         optionComponent: (props: any) => {
+    //           if (props && props.title) {
+    //             return (
+    //               <div className="flex items-center text-base">
+    //                 {props.title}
+    //               </div>
+    //             );
+    //           } else {
+    //             return <div>No Categories...</div>;
+    //           }
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
     {
       type: "rich-text",
       label: "Rule Content",

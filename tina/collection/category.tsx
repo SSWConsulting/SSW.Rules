@@ -9,7 +9,7 @@ export function generateGuid() {
 }
 
 const Category: Collection = {
-  name: "categories",
+  name: "category",
   label: "Categories",
   path: "content/categories",
   format: "md",
@@ -51,7 +51,7 @@ const Category: Collection = {
               type: "reference",
               label: "Category",
               name: "category",
-              collections: ["categories"],
+              collections: ["category"],
               ui: {
                 optionComponent: (props: { name: string }, _internalSys) => {
                   return _internalSys.path;

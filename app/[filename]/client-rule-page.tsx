@@ -1,29 +1,28 @@
 "use client";
 
 import { embedComponents } from "@/components/embeds";
-import { RuleQueryProps } from "@/models/RuleQueryProps";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 export interface ClientRulePageProps {
-  ruleQueryProps: RuleQueryProps;
+  ruleQueryProps;
 }
 
 export default function ClientRulePage(props: ClientRulePageProps) {
   const { ruleQueryProps } = props;
 
   const ruleData = useTina({
-    query: ruleQueryProps.query,
-    variables: ruleQueryProps.variables,
-    data: ruleQueryProps.data,
+    query: ruleQueryProps?.query,
+    variables: ruleQueryProps?.variables,
+    data: ruleQueryProps?.data,
   }).data;
 
-  const rule = ruleData.rule;
+  const rule = ruleData?.rule;
 
   return (
     <>
       <h1 className="font-bold mb-4" data-tina-field={tinaField(rule, "title")}>
-        {rule.title}
+        {rule?.title}
       </h1>
       <div data-tina-field={tinaField(rule, "content")}>
         <TinaMarkdown content={rule.content} components={{

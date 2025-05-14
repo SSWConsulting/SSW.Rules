@@ -13,12 +13,22 @@ export default async function Page({
 }: {
   params: Promise<{ urlSegments: string[] }>;
 }) {
-  const resolvedParams = await params;
-  const filepath = resolvedParams.urlSegments.join("/");
+  const segments = (await params).urlSegments ?? [];
 
-  let categoryQueryProps;
-  let categoryRules;
-  let ruleQueryProps;
+  if (
+    segments.length === 0 ||
+    segments[0].startsWith("_next") ||
+    segments[0] === ".well-known" ||
+    segments[0].includes(".")
+  ) {
+    notFound();
+  }
+
+  const filepath = segments.join("/");
+
+  let categoryQueryProps: any = null;
+  let categoryRules: any[] | undefined;
+  let ruleQueryProps: any = null;
 
   try {
     categoryQueryProps = await client.queries.category({

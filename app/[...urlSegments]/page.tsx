@@ -62,8 +62,8 @@ export default async function Page({
   // });
   // const blocks = data.global.blocks ?? [];
 
-  return (
-    <Layout>
+  const layout = await Layout({
+    children: (
       <Section>
         {categoryQueryProps != null ? (
           <ClientCategoryPage categoryQueryProps={categoryQueryProps} />
@@ -79,8 +79,10 @@ export default async function Page({
           }
         })} */}
       </Section>
-    </Layout>
-  );
+    ),
+  });
+
+  return layout;
 }
 
 //TODO: retrieve data with tina client when collections are set up

@@ -45,27 +45,19 @@ const searchClient: SearchClient = {
   },
 };
 
-export default function SearchBar() {
-  const [submitted, setSubmitted] = useState(false);
-  const router = useRouter();
-
-  const ResultsNavigator = () => {
-    const { results, status } = useInstantSearch();
-    useEffect(() => {
-      if (submitted && status === 'idle') {
-        router.push(
-          `/rules/search?keyword=${encodeURIComponent(results?.query ?? '')}`
-        );
-        setSubmitted(false);
-      }
-    }, [submitted, status, results, router]);
-    return null;
-  };
+export default function RulesSearchClient({ keyword }: { keyword: string }) {
+  const Hit = ({ hit }: { hit: any }) => (
+    <div className="py-2 border-b">{hit.frontmatter?.title}</div>
+  );
 
   return (
-    <InstantSearch searchClient={searchClient} indexName="index-json">
-      <SearchBox searchAsYouType={false} onSubmit={() => setSubmitted(true)} />
-      <ResultsNavigator />
+    <InstantSearch
+      searchClient={searchClient}
+      indexName="index-json"
+      initialUiState={{ 'index-json': { query: keyword } }}
+    >
+      <SearchBox searchAsYouType={false} />
+      <Hits hitComponent={Hit} />
     </InstantSearch>
   );
 }

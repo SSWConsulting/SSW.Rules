@@ -36,6 +36,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "gray-matter": "^4.0.3",
+    "instantsearch.js": "^4.78.3",
     "lucide-react": "^0.484.0",
     "mermaid": "^11.4.1",
     "motion": "^12.6.3",

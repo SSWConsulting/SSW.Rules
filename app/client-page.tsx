@@ -14,12 +14,14 @@ export default function HomeClientPage(props: HomeClientPageProps) {
     <>
       <h1 className="font-bold mb-4">Categories</h1>
 
-      {categories.map((category) =>
+      {categories.map((category, index) =>
         category.__typename === "CategoryTop_category" ? (
-          <h3 className="font-bold">{category.title}</h3>
+          <h3 key={index} className="font-bold">
+            {category.title}
+          </h3>
         ) : (
-          <ul className="list-disc pl-5">
-            <li key={category._sys.filename}>
+          <ul key={index} className="list-disc pl-5">
+            <li>
               <Link href={`/${category._sys.filename}`}>{category.title}</Link>
             </li>
           </ul>

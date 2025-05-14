@@ -1,9 +1,11 @@
 ---
 title: Rules to Better Communication
 guid: 471816bf-f0df-4835-bf4d-66a90f6f1adc
-experts:
-redirects:
-consulting:
+consulting: null
+experts: null
+redirects: null
+index:
+  - rule: content/rule/do-you-keep-your-inbox-as-a-task-list-only.mdx
 _template: category
 ---
 

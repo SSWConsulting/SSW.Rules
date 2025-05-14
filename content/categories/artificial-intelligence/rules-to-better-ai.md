@@ -1,10 +1,13 @@
 ---
 title: Rules to Better AI Use
 guid: 9e0c432c-4925-4075-a824-5230e0e71354
-consulting: "https://www.ssw.com.au/consulting/gpt"
+consulting: 'https://www.ssw.com.au/consulting/gpt'
 experts: null
 redirects:
   - rules-to-better-gpt
+index:
+  - rule: content/rule/do-you-keep-your-inbox-as-a-task-list-only.mdx
+  - rule: content/rule/do-you-know-the-8-steps-to-scrum.mdx
 _template: category
 ---
 

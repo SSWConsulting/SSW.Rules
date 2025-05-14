@@ -21,7 +21,7 @@ jobs:
     env:
       NEXT_PUBLIC_ALGOLIA_APP_ID:    ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
       NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
-      NEXT_PUBLIC_ALGOLIA_INDEX_NAME:${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+      NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
 
     steps:
       - uses: actions/checkout@v4

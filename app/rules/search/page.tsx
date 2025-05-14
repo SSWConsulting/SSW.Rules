@@ -1,9 +1,24 @@
-import RulesSearchClient from "@/components/RulesSearchClient";
+import React from 'react';
+import Layout from '@/components/layout/layout';
+import { Section } from '@/components/layout/section';
+import RulesSearchClient from '@/components/RulesSearchClient';
 
-export default function RulesSearchPage({
+export const revalidate = 300;
+
+export default async function RulesSearchPage({
   searchParams,
 }: {
   searchParams: { keyword?: string };
 }) {
-  return <RulesSearchClient keyword={searchParams.keyword ?? ''} />;
+
+      const { keyword = '' } = await searchParams;
+  const layout = await Layout({
+    children: (
+      <Section>
+        <RulesSearchClient keyword={keyword} />
+      </Section>
+    )
+  });
+
+  return layout;
 }

@@ -8,15 +8,17 @@ import SearchBar from "@/components/SearchBar";
 export const revalidate = 300;
 
 export default async function Home() {
-
-const categoriesConnectionData = await client.queries.categoryConnection({});
-const categories = categoriesConnectionData.data.categoryConnection.edges?.map((edge: any) => edge.node)||[];
+  const categoriesConnectionData = await client.queries.categoryConnection({});
+  const categories =
+    categoriesConnectionData.data.categoryConnection.edges?.map(
+      (edge: any) => edge.node
+    ) || [];
 
   return (
     <Layout>
       <Section>
-      <SearchBar />
-      <HomeClientPage categories={categories} />
+      	<SearchBar />
+        <HomeClientPage categories={categories} />
       </Section>
     </Layout>
   );

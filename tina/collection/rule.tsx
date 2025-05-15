@@ -1,5 +1,5 @@
 import { embedTemplates } from "@/components/embeds";
-import { Collection } from "tinacms";
+import { Collection, Form, TinaCMS } from "tinacms";
 
 const Rule: Collection = {
   name: "rule",
@@ -20,6 +20,27 @@ const Rule: Collection = {
           .replace("?", "")}`;
       },
     },
+    beforeSubmit: async ({
+      form,
+      cms,
+      values,
+    }: {
+      form: Form
+      cms: TinaCMS
+      values: Record<string, any>
+    }) => {
+      if (form.crudType === 'create') {
+        return {
+          ...values,
+          created: new Date().toISOString(),
+        }
+      }
+
+      return {
+        ...values,
+        lastUpdated: new Date().toISOString(),
+      }
+    },
   },
   fields: [
     {
@@ -35,6 +56,22 @@ const Rule: Collection = {
       name: "content",
       required: true,
       templates: embedTemplates,
+    },
+    {
+      type: 'datetime',
+      name: 'created',
+      label: 'Created',
+      ui: {
+        component: 'hidden',
+      },
+    },
+    {
+      type: 'datetime',
+      name: 'lastUpdated',
+      label: 'Last Updated',
+      ui: {
+        component: 'hidden',
+      },
     },
   ],
 };

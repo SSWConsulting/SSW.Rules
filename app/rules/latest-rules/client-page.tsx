@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import client from '@/tina/__generated__/client';
 import SearchBar from '@/components/SearchBar';
+import Link from 'next/link';
+import SortDropdown from '@/components/SortDropdown';
 
 const sortOptions = [
   { value: 'Updated', label: 'Recently Updated', field: 'lastUpdated' },
@@ -50,25 +52,11 @@ export default function ClientLatestRulesPage({ size }: { size: number }) {
   return (
     <div>
       <SearchBar />
-
-      <div className="sort-dropdown mb-4">
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          className="sort-select p-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 transition ease-in-out duration-200"
-        >
-          {sortOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
+      <SortDropdown options={sortOptions} selectedValue={sortOption} onChange={setSortOption} />
       <div>
         {displayedRules.map((rule: any) => (
           <div key={rule.id} className="py-2 border-b">
-            <h3>{rule.title}</h3>
+            <Link href={`/${rule._sys.filename}`}>{rule.title}</Link>
           </div>
         ))}
       </div>

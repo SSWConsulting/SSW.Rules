@@ -15,8 +15,20 @@ const Category: Collection = {
   format: "md",
   ui: {
     filename: {
+      readonly: true,
+      slugify: (values) => {
+        if (values?._template === "top_category") {
+          return "index";
+        } else {
+          return `${values?.title
+            ?.toLowerCase()
+            .trim()
+            .replace(/ /g, "-")
+            .replace("?", "")}`;
+        }
+      },
       description:
-        "If you are adding top level category the create index.md file, otherwise create category with category name",
+        'If it is the top level category, then the filename will be "index", otherwise the title will be used to create filename',
     },
   },
   templates: [

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { searchClient } from '@/lib/algoliaClient';
 import SearchNavigator from './SearchNavigator';
 
-const Hit = ({ hit }: { hit: any }) => <div className='py-2 border-b'>{hit.frontmatter?.title}</div>;
+const Hit = ({ hit }: { hit: any }) => <div className='py-2 border-b'>{hit.title}</div>;
 const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!;
 
 export default function RulesSearchClient({ keyword }: { keyword: string }) {

@@ -8,6 +8,7 @@ redirects:
 index:
   - rule: content/rule/do-you-keep-your-inbox-as-a-task-list-only.mdx
   - rule: content/rule/do-you-know-the-8-steps-to-scrum.mdx
+  - rule: content/rule/do-you-know-the-5-agile-steps.mdx
 _template: category
 ---
 

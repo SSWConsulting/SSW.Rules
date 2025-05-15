@@ -26,14 +26,17 @@ const files = await fg('**/*.mdx', { cwd: ROOT_DIR, absolute: true });
 // TODO: refine the file sent to Algolia if needed
 // Right now, it looks like this:
 // {
-//  "slug": "getting-started---do-you-know-the-scrum-guide",
+//  "slug": "getting-started-do-you-know-the-scrum-guide",
 //  "title": "Getting Started - Do you know the Scrum guide?",
 //  "content": "",
-//  "objectID": "getting-started---do-you-know-the-scrum-guide"
+//  "objectID": "getting-started-do-you-know-the-scrum-guide"
 // }
 const objects = files.map(fp => {
   const { data: frontmatter, content } = matter(fs.readFileSync(fp, 'utf-8'));
-  const slug = path.relative(ROOT_DIR, fp).replace(/\\/g, '/').replace(/\.mdx$/, '');
+
+  const rawSlug = path.relative(ROOT_DIR, fp).replace(/\\/g, '/').replace(/\.mdx$/, '');
+  const slug = rawSlug.replace(/-+/g, '-');
+
   return { objectID: slug, slug, ...frontmatter, content };
 });
 

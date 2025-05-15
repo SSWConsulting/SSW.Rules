@@ -58,7 +58,7 @@ const Rule: Collection = {
       templates: embedTemplates,
     },
     {
-      type: 'string',
+      type: 'datetime',
       name: 'created',
       label: 'Created',
       ui: {
@@ -66,7 +66,7 @@ const Rule: Collection = {
       },
     },
     {
-      type: 'string',
+      type: 'datetime',
       name: 'lastUpdated',
       label: 'Last Updated',
       ui: {

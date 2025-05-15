@@ -15,6 +15,7 @@ const Rule: Collection = {
       slugify: (values) => {
         return `${values?.title
           ?.toLowerCase()
+          .trim()
           .replace(/ /g, "-")
           .replace("?", "")}`;
       },

@@ -38,5 +38,5 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ]
+, "scripts/convert-mdx-to-json.js"  ]
 }

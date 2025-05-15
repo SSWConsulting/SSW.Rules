@@ -40,6 +40,8 @@ const nextConfig: NextConfig = {
         source: '/admin',
         destination: '/admin/index.html',
       },
+      { source: '/_next/:path*', destination: '/_next/:path*' },
+      { source: '/.well-known/:path*', destination: '/.well-known/:path*' },
     ];
   },
 };

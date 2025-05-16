@@ -1,6 +1,6 @@
 ---
 title: Rules to Better Email
-guid: 00604896-93e8-4ed1-93c4-cb2780083801
+guid: dc786727-fb29-4328-9ebd-e4896de69b7a
 index:
   - rule: content/rule/do-you-keep-your-inbox-as-a-task-list-only.mdx
 _template: category

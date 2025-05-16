@@ -1,7 +1,7 @@
 ---
 title: Communication
 index:
-  - category: content/categories/communication/Rules-to-Better-Email.md
+  - category: content/categories/communication/rules-to-better-email.md
   - category: content/categories/communication/rules-to-better-calendars.md
   - category: content/categories/communication/rules-to-better-communication.md
 _template: top_category

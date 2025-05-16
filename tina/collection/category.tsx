@@ -15,6 +15,13 @@ const Category: Collection = {
   format: "md",
   ui: {
     filename: {
+      readonly: true,
+      slugify: (values) => {
+        return `${values?.title
+          ?.toLowerCase()
+          .replace(/ /g, "-")
+          .replace("?", "")}`;
+      },
       description:
         "If you are adding top level category the create index.md file, otherwise create category with category name",
     },

@@ -10,6 +10,7 @@ export interface HomeClientPageProps {
 export default function HomeClientPage(props: HomeClientPageProps) {
   const { categories } = props;
 
+  console.log("categories", categories);
   return (
     <>
       <h1 className="font-bold mb-4">Categories</h1>

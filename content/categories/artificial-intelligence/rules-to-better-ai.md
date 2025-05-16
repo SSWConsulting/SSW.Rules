@@ -6,6 +6,7 @@ experts: null
 redirects:
   - rules-to-better-gpt
 index:
+  - rule: content/rule/sample-rule.mdx
   - rule: content/rule/do-you-know-the-8-steps-to-scrum.mdx
 _template: category
 ---

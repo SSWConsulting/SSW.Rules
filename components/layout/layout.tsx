@@ -24,7 +24,7 @@ export default async function Layout({ children, rawPageData }: LayoutProps) {
   return (
     <LayoutProvider globalSettings={globalData.global} pageData={rawPageData}>
       <Header />
-      <main className="overflow-x-hidden pt-20 bg-[#FAFAFA]">
+      <main className="overflow-x-hidden pt-20">
         {children}
       </main>
       <Footer />

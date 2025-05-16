@@ -1,0 +1,63 @@
+---
+title: Sample Rule
+---
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+
+#### Heading 4
+
+##### Heading 5
+
+###### Heading 6
+
+This text contains[ a link](https://www.ssw.com.au/rules/rule/) to another page
+
+> this is a block quote
+
+* bullet list1
+* bullet list2
+* bullet list3
+
+1. numbered list 1
+2. numbered list 2
+3. numbered list 3
+
+`code --test`
+
+```javascript
+function codeBlock() {
+  return "javascript";
+}
+```
+
+<emailEmbed
+  to="XXX"
+  cc="YYY"
+  bcc="ZZZ"
+  subject="Email Subject"
+  body={<>
+    ## Hi XXX
+    
+    EMAIL CONTENT
+  </>}
+  figureEmbed={{
+    preset: "badExample",
+    figure: "Bad email",
+    shouldDisplay: true
+  }}
+/>
+
+<imageEmbed
+  alt="Image"
+  size="small"
+  showBorder={false}
+  figureEmbed={{
+    preset: "goodExample",
+    figure: "Cool llama",
+    shouldDisplay: true
+  }}
+  src="/uploads/authors/llamantha.png"
+/>

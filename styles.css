@@ -115,10 +115,42 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
+  a {
+    @apply underline hover:cursor-pointer hover:text-[#CC4141];
+  }
+
+  h1 {
+    @apply text-4xl font-bold my-4;
+  }
+
+  h2, h3, h4, h5, h6 {
+    @apply mt-8 text-[#333] leading-[1.2] mb-4 font-semibold;
+  }
+
+  h2 { @apply text-3xl; }
+  h3 { @apply text-2xl; }
+  h4 { @apply text-xl; }
+  h5 { @apply text-lg; }
+  h6 { @apply text-base; }
+
+  ul, ol {
+    @apply mb-4 ps-8 m-0 p-0;
+  }
+
+  ul {
+    @apply list-none;
+  }
+
+  ol {
+    @apply list-decimal;
+  }
 }
+
 
 ul li::before {
   content: "\25A0";

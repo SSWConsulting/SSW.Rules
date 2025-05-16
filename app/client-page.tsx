@@ -20,7 +20,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
             {category.title}
           </h3>
         ) : (
-          <ul key={index} className="list-disc pl-5">
+          <ul key={index}>
             <li>
               <Link href={`/${category._sys.filename}`}>{category.title}</Link>
             </li>

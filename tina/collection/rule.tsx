@@ -33,6 +33,7 @@ const Rule: Collection = {
       label: "Rule Content",
       name: "content",
       required: true,
+      isBody: true,
       templates: embedTemplates,
     },
   ],

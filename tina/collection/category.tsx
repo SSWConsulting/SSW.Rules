@@ -11,7 +11,7 @@ export function generateGuid() {
 const Category: Collection = {
   name: "category",
   label: "Categories",
-  path: "content/categories",
+  path: "categories",
   format: "md",
   ui: {
     filename: {
@@ -130,9 +130,7 @@ const Category: Collection = {
             itemProps: (item) => {
               const name = item.rule?.split("/");
               return {
-                label: name
-                  ? name[name.length - 1].split(".")[0]
-                  : "Rule is not selected",
+                label: name ? name[1] : "Rule is not selected",
               };
             },
           },
@@ -144,7 +142,7 @@ const Category: Collection = {
               collections: ["rule"],
               ui: {
                 optionComponent: (props: { name: string }, _internalSys) => {
-                  return _internalSys.path;
+                  return _internalSys.title;
                 },
               },
             },

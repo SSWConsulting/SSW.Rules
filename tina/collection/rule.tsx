@@ -56,6 +56,7 @@ const Rule: Collection = {
       name: "content",
       required: true,
       templates: embedTemplates,
+      isBody: true
     },
     {
       type: 'datetime',

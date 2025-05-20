@@ -30,7 +30,6 @@ const getCategoryData = async (filename: string) => {
 };
 
 const getRuleData = async (filename: string) => {
-  console.log("Fetching rule data for filename:", filename);
   try {
     const tinaProps = await client.queries.rule({
       relativePath: filename + "/rule.md",
@@ -77,7 +76,6 @@ export default async function Page({
   params: Promise<{ filename: string }>;
 }) {
   const { filename } = await params;
-  console.log("Fetching data for filename:", filename);
 
   const category = await getCategoryData(filename);
   if (category?.data) {

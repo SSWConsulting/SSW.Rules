@@ -7,7 +7,7 @@ A POC that will validate the compatibility between Rules and Tina – using Next
 
 **2. Clone this repo to your local, make sure both repos are inside same folder**
 
-**3. Create `.env` file and copy environment variables from Keeper(search for record "SSW.Rules.PoC Environment Variables")**
+**3. Create `.env` file and copy environment variables from Keeper (search for record "SSW.Rules.PoC Environment Variables")**
 
 **4. Run `pnpm install`**
 

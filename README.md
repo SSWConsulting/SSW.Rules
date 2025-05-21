@@ -5,7 +5,7 @@ A POC that will validate the compatibility between Rules and Tina – using Next
 
 **1. Clone SSW.Rules.Content repo to your local, and switch to `tina/main` branch**
 
-**2. Clone this repo to your local, make sure both repos are inside same root folder**
+**2. Clone this repo to your local, make sure both repos are inside same folder**
 
 **3. Create `.env` file and copy environment variables from Keeper(search for record "SSW.Rules.PoC Environment Variables")**
 

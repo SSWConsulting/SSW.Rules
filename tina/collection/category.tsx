@@ -1,12 +1,5 @@
+import { generateGuid } from "@/utils/guidGenerationUtils";
 import { Collection } from "tinacms";
-
-export function generateGuid() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
 
 const Category: Collection = {
   name: "category",
@@ -17,7 +10,10 @@ const Category: Collection = {
     filename: {
       readonly: true,
       slugify: (values) => {
-        if (values?._template === "top_category") {
+        if (
+          values?._template === "top_category" ||
+          values?._template === "main"
+        ) {
           return "index";
         } else {
           return `${values?.title
@@ -28,13 +24,56 @@ const Category: Collection = {
         }
       },
       description:
-        'If it is the top level category, then the filename will be "index", otherwise the title will be used to create filename',
+        'If it is the main or top category, then the filename will be "index", otherwise the title will be used to create filename',
     },
   },
   templates: [
+    // main category file that contains top categories
+    {
+      name: "main",
+      label: "Main Category",
+      fields: [
+        {
+          type: "string",
+          label: "Title",
+          name: "title",
+          isTitle: true,
+          required: true,
+        },
+        {
+          type: "object",
+          label: "Categories",
+          name: "index",
+          list: true,
+          ui: {
+            itemProps: (item) => {
+              const name = item.category?.split("/");
+              return {
+                label: name ? name[1] : "Top category is not selected",
+              };
+            },
+          },
+          fields: [
+            {
+              type: "reference",
+              label: "Category",
+              name: "category",
+              collections: ["category"],
+              ui: {
+                optionComponent: (props: { name: string }, _internalSys) => {
+                  return _internalSys.path;
+                },
+              },
+            },
+          ],
+        },
+      ],
+    },
+
+    // top category that contains subcategories
     {
       name: "top_category",
-      label: "Top Level Category",
+      label: "Top Category",
       fields: [
         {
           type: "string",
@@ -75,6 +114,7 @@ const Category: Collection = {
       ],
     },
 
+    // subcategory that contains rules
     {
       name: "category",
       label: "Category",
@@ -142,7 +182,7 @@ const Category: Collection = {
               collections: ["rule"],
               ui: {
                 optionComponent: (props: { name: string }, _internalSys) => {
-                  return _internalSys.title;
+                  return props.name ?? _internalSys.path;
                 },
               },
             },

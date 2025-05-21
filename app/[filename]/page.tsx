@@ -34,7 +34,6 @@ const getRuleData = async (filename: string) => {
     const tinaProps = await client.queries.rule({
       relativePath: filename + "/rule.md",
     });
-    console.log("Fetched rule data:", tinaProps);
 
     return {
       data: tinaProps.data,

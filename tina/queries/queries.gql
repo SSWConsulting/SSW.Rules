@@ -1,0 +1,15 @@
+query latestRulesQuery($size: Float, $sortOption: String) {
+  ruleConnection(last: $size, sort: $sortOption) {
+    edges {
+      node {
+        id
+        title
+        lastUpdated
+        created
+       _sys {
+          filename
+        }
+      }
+    }
+  }
+}

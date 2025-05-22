@@ -144,6 +144,7 @@ const Rule: Collection = {
       label: "Body",
       isBody: true,
       templates: embedTemplates,
+      isBody: true
     },
   ],
 };

@@ -1,6 +1,6 @@
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
-import { Collection } from "tinacms";
+import { Collection, Form, TinaCMS } from "tinacms";
 
 const Rule: Collection = {
   name: "rule",
@@ -17,6 +17,26 @@ const Rule: Collection = {
     filename: {
       readonly: true,
     },
+    beforeSubmit: async ({
+      form,
+      values,
+    }: {
+      form: Form
+      cms: TinaCMS
+      values: Record<string, any>
+    }) => {
+      if (form.crudType === 'create') {
+        return {
+          ...values,
+          created: new Date().toISOString(),
+        }
+      }
+
+      return {
+        ...values,
+        lastUpdated: new Date().toISOString(),
+      }
+    }
   },
   fields: [
     {
@@ -85,7 +105,16 @@ const Rule: Collection = {
         component: "hidden",
       },
     },
-
+    {
+      type: "datetime",
+      name: "lastUpdated",
+      description:
+        "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
+      label: "Last Updated",
+      ui: {
+        component: "hidden",
+      },
+    },
     {
       type: "string",
       name: "archivedreason",

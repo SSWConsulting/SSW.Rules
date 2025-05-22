@@ -8,7 +8,9 @@ import HomeClientPage from './client-page';
 export const revalidate = 300;
 
 export default async function Home() {
-  const categoriesConnectionData = await client.queries.categoryConnection({});
+  const categoriesConnectionData = await client.queries.categoryConnection({
+    first: 500
+  });
   const categories =
     categoriesConnectionData.data.categoryConnection.edges?.map(
       (edge: any) => edge.node

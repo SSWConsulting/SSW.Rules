@@ -1,16 +1,20 @@
 import { defineConfig } from "tinacms";
 import Global from "./collection/global";
-import nextConfig from '../next.config';
+import nextConfig from "../next.config";
 import Category from "./collection/category";
 import Rule from "./collection/rule";
 
+const branch = process.env.TINA_CONTENT_BRANCH ?? "main";
+const localContentPath = process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined;
+const clientId = process.env.TINA_CLIENT_ID;
+const token = process.env.TINA_TOKEN;
+const basePath = process.env.TINA_BASE_PATH ?? undefined;
+
 const config = defineConfig({
-  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
-  branch:
-    process.env.NEXT_PUBLIC_TINA_BRANCH! || // custom branch env override
-    process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF! || // Vercel branch env
-    process.env.HEAD!, // Netlify branch env
-  token: process.env.TINA_TOKEN!,
+  clientId: clientId,
+  token: token,
+  branch: branch,
+  localContentPath: localContentPath,
   media: {
     // If you wanted cloudinary do this
     // loadCustomStore: async () => {
@@ -26,10 +30,10 @@ const config = defineConfig({
   build: {
     publicFolder: "public", // The public asset folder for your framework
     outputFolder: "admin", // within the public folder
-    basePath: nextConfig.basePath?.replace(/^\//, '') || '', // The base path of the app (could be /blog)
+    basePath: nextConfig.basePath?.replace(/^\//, "") || "", // The base path of the app (could be /blog)
   },
   schema: {
-    collections: [Global,Category,Rule],
+    collections: [Global, Category, Rule],
   },
 });
 

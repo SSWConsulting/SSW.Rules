@@ -25,8 +25,8 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
         {category.index &&
           category.index.map((x) => {
             return (
-              <li key={x.rule._sys.filename}>
-                <Link href={`/${x.rule._sys.filename}`}>{x.rule.title}</Link>
+              <li key={x?.rule?.uri}>
+                <Link href={`/${x?.rule?.uri}`}>{x?.rule?.title}</Link>
               </li>
             );
           })}

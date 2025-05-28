@@ -10,7 +10,6 @@ export interface HomeClientPageProps {
 export default function HomeClientPage(props: HomeClientPageProps) {
   const { categories } = props;
 
-  console.log("categories", categories);
   return (
     <>
       <h1 className="font-bold mb-4">Categories</h1>
@@ -28,6 +27,14 @@ export default function HomeClientPage(props: HomeClientPageProps) {
           </ul>
         )
       )}
+
+      <div className="flex justify-end mt-4">
+        <Link href="/rules/latest-rules/?size=50">
+          <button className="px-4 py-2 text-red-600 rounded-md cursor-pointer hover:underline">
+            See More
+          </button>
+        </Link>
+      </div>
     </>
   );
 }

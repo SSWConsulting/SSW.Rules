@@ -31,9 +31,14 @@
     "@radix-ui/react-slot": "^1.1.2",
     "@tailwindcss/postcss": "^4.0.17",
     "@tailwindcss/typography": "^0.5.16",
+    "algoliasearch": "^5.25.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "dotenv": "^16.5.0",
+    "fast-glob": "^3.3.3",
+    "gray-matter": "^4.0.3",
+    "instantsearch.js": "^4.78.3",
     "lucide-react": "^0.484.0",
     "mermaid": "^11.4.1",
     "motion": "^12.6.3",
@@ -42,6 +47,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.5.0",
+    "react-instantsearch-hooks-web": "^6.47.3",
     "react-player": "^2.16.0",
     "react-use-measure": "^2.1.7",
     "shiki": "^3.2.2",
@@ -52,5 +58,6 @@
     "tw-animate-css": "^1.2.4",
     "usehooks-ts": "^3.1.1"
   },
-  "packageManager": "pnpm@10.10.0"
+  "packageManager": "pnpm@10.10.0",
+  "type": "module"
 }

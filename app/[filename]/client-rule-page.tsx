@@ -12,15 +12,12 @@ export interface ClientRulePageProps {
 
 export default function ClientRulePage(props: ClientRulePageProps) {
   const { ruleQueryProps } = props;
-
   const ruleData = useTina({
     query: ruleQueryProps?.query,
     variables: ruleQueryProps?.variables,
     data: ruleQueryProps?.data,
   }).data;
-
   const rule = ruleData?.rule;
-
   return (
     <>
       <div className="flex gap-8">
@@ -35,9 +32,9 @@ export default function ClientRulePage(props: ClientRulePageProps) {
             Updated by <b>XXX</b> 8 months ago.{" "}
             <a href="https://www.ssw.com.au/rules/rule">See history</a>
           </p>
-          <div data-tina-field={tinaField(rule, "content")}>
+          <div data-tina-field={tinaField(rule, "body")}>
             <TinaMarkdown
-              content={rule.content}
+              content={rule.body}
               components={{
                 ...embedComponents,
                 ...typographyComponents,

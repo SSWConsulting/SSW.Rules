@@ -71,7 +71,7 @@ export const figureEmbedFieldsDefaultValue = {
 
 export const figureEmbedTemplate: Template = {
   name: "figureEmbed",
-  label: "Figure",
+  label: "Figure (standalone)",
   ui: {
     defaultItem: figureEmbedFieldsDefaultValue,
   },

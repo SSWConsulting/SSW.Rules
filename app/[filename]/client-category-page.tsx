@@ -21,7 +21,7 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
   return (
     <>
       <h1 className="font-bold mb-4"> {category.title} </h1>
-      <ul className="list-disc pl-5">
+      <ul>
         {category.index &&
           category.index.map((x) => {
             return (

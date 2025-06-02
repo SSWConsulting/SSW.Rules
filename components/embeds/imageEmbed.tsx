@@ -32,6 +32,7 @@ export function ImageEmbed({ data }: { data: any }) {
             sizes="100vw"
             placeholder="empty"
             className="w-full h-auto"
+            unoptimized
           />
         )}
       </div>

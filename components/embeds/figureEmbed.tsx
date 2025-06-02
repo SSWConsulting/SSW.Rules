@@ -18,6 +18,9 @@ export function FigureEmbed({ data }: { data: FigureEmbedProps }) {
     case "badExample":
       prefix = "❌ Figure: Bad example - ";
       break;
+    case "okExample":
+      prefix = "😐 Figure: OK example - ";
+      break;
     case "goodExample":
       prefix = "✅ Figure: Good example - ";
       break;
@@ -51,6 +54,10 @@ export const figureEmbedFields = {
         {
           value: "badExample",
           label: "Bad Example",
+        },
+        {
+          value: "okExample",
+          label: "OK Example",
         },
         {
           value: "goodExample",

@@ -6,7 +6,7 @@ const Rule: Collection = {
   name: "rule",
   label: "Rules",
   path: "rules",
-  format: "md",
+  format: "mdx",
   defaultItem() {
     return {
       guid: generateGuid(),

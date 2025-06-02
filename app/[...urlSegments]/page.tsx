@@ -32,7 +32,7 @@ export default async function Page({
 
   try {
     categoryQueryProps = await client.queries.category({
-      relativePath: filepath + ".md",
+      relativePath: filepath + ".mdx",
     });
 
     //TODO: find a better way to retrieve rules for a category

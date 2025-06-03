@@ -6,7 +6,7 @@ const Rule: Collection = {
   name: "rule",
   label: "Rules",
   path: "rules",
-  format: "md",
+  format: "mdx",
   defaultItem() {
     return {
       guid: generateGuid(),
@@ -16,6 +16,9 @@ const Rule: Collection = {
   ui: {
     filename: {
       readonly: true,
+    },
+    router: ({ document }) => {
+      return document._sys.relativePath.split("/")[0];
     },
     beforeSubmit: async ({
       form,

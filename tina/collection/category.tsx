@@ -5,7 +5,7 @@ const Category: Collection = {
   name: "category",
   label: "Categories",
   path: "categories",
-  format: "md",
+  format: "mdx",
   ui: {
     filename: {
       readonly: true,

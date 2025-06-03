@@ -17,6 +17,9 @@ const Rule: Collection = {
     filename: {
       readonly: true,
     },
+    router: ({ document }) => {
+      return document._sys.relativePath.split("/")[0];
+    },
     beforeSubmit: async ({
       form,
       values,

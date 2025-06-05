@@ -128,17 +128,36 @@
     @apply text-4xl font-bold my-4;
   }
 
-  h2, h3, h4, h5, h6 {
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply mt-8 text-[#333] leading-[1.2] mb-4 font-semibold;
   }
 
-  h2 { @apply text-3xl; }
-  h3 { @apply text-2xl; }
-  h4 { @apply text-xl; }
-  h5 { @apply text-lg; }
-  h6 { @apply text-base; }
+  h2 {
+    @apply text-3xl;
+  }
 
-  ul, ol {
+  h3 {
+    @apply text-2xl;
+  }
+
+  h4 {
+    @apply text-xl;
+  }
+
+  h5 {
+    @apply text-lg;
+  }
+
+  h6 {
+    @apply text-base;
+  }
+
+  ul,
+  ol {
     @apply mb-4 ps-8 m-0 p-0;
   }
 
@@ -149,6 +168,11 @@
   ol {
     @apply list-decimal;
   }
+
+  .rule-icon {
+    @apply hover:opacity-60 cursor-pointer transition-opacity duration-200;
+  }
+
 }
 
 

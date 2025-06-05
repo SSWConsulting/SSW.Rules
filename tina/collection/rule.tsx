@@ -50,6 +50,12 @@ const Rule: Collection = {
       required: true,
     },
     {
+      type:"image",
+      label:"Thumbnail",
+      name: "thumbnail",
+      description: "A thumbnail image for the rule",
+    },
+    {
       type: "string",
       name: "uri",
       label: "Uri",

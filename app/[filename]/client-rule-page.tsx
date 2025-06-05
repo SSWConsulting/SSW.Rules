@@ -5,6 +5,14 @@ import { typographyComponents } from "@/components/typography-components";
 import { Card } from "@/components/ui/card";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import Image from "next/image";
+import {
+  RiThumbUpLine,
+  RiThumbDownLine,
+  RiPencilLine,
+  RiBookmarkLine,
+  RiGithubLine,
+} from "react-icons/ri";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -18,21 +26,66 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     data: ruleQueryProps?.data,
   }).data;
   const rule = ruleData?.rule;
+
+  const iconSize = 32;
+
   return (
     <>
       <div className="flex gap-8">
         <Card dropShadow className="flex-2">
-          <h1
-            className="text-[#CC4141] text-4xl leading-[1.2] mt-0 b-4 font-semibold"
-            data-tina-field={tinaField(rule, "title")}
-          >
-            {rule?.title}
-          </h1>
-          <p className="border-b-2 pb-4 mt-4">
-            Updated by <b>XXX</b> 8 months ago.{" "}
-            <a href="https://www.ssw.com.au/rules/rule">See history</a>
-          </p>
-          <div data-tina-field={tinaField(rule, "body")}>
+          <div className="flex border-b-2 pb-4">
+            {rule.thumbnail && (
+              <div className="w-[175px] h-[175px] relative mr-4">
+                <Image
+                  data-tina-field={tinaField(rule, "thumbnail")}
+                  src={rule.thumbnail}
+                  alt="thumbnail image for the rule"
+                  fill
+                  className="object-cover object-center"
+                />
+              </div>
+            )}
+            <div className="flex flex-col flex-1 justify-between">
+              <div>
+                <h1
+                  className="text-[#CC4141] text-4xl leading-[1.2] my-0 b-4 font-semibold"
+                  data-tina-field={tinaField(rule, "title")}
+                >
+                  {rule?.title}
+                </h1>
+                <p className="mt-4">
+                  Updated by <b>XXX</b> 8 months ago.{" "}
+                  <a href="https://www.ssw.com.au/rules/rule">See history</a>
+                </p>
+              </div>
+              <div className="flex align-center gap-4 text-2xl">
+                <RiThumbUpLine
+                  size={iconSize}
+                  className="rule-icon"
+                ></RiThumbUpLine>
+                <span className="-ml-3">12</span>
+                <RiThumbDownLine
+                  size={iconSize}
+                  className="rule-icon"
+                ></RiThumbDownLine>
+                <span className="-ml-3">3</span>
+                <div className="flex-1"></div>
+                <RiPencilLine
+                  size={iconSize}
+                  className="rule-icon"
+                ></RiPencilLine>
+                <RiBookmarkLine
+                  size={iconSize}
+                  className="rule-icon"
+                ></RiBookmarkLine>
+                <RiGithubLine
+                  size={iconSize}
+                  className="rule-icon"
+                ></RiGithubLine>
+              </div>
+            </div>
+          </div>
+          <div data-tina-field={tinaField(rule, "body")} className="mt-8">
             <TinaMarkdown
               content={rule.body}
               components={{

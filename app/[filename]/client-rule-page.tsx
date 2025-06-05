@@ -58,7 +58,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   <a href="https://www.ssw.com.au/rules/rule">See history</a>
                 </p>
               </div>
-              <div className="flex align-center gap-4 text-2xl">
+              <div className="flex align-center gap-4 text-2xl mt-4">
                 <RiThumbUpLine
                   size={iconSize}
                   className="rule-icon"

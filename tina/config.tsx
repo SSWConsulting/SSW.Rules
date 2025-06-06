@@ -4,7 +4,7 @@ import nextConfig from "../next.config";
 import Category from "./collection/category";
 import Rule from "./collection/rule";
 
-const branch = process.env.TINA_CONTENT_BRANCH ?? "main";
+const branch = process.env.NEXT_PUBLIC_TINA_BRANCH ?? "main";
 const localContentPath = process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined;
 const clientId = process.env.TINA_CLIENT_ID;
 const token = process.env.TINA_TOKEN;

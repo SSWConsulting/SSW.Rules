@@ -5,7 +5,7 @@ import SearchBar from '@/components/SearchBar';
 
 export const revalidate = 300;
 
-export default async function RulesSearchPage({ searchParams }: { searchParams: { keyword?: string } }) {
+export default async function RulesSearchPage({ searchParams }: { searchParams: Promise<{ keyword?: string }> }) {
     const { keyword = '' } = await searchParams;
     const layout = await Layout({
         children: (

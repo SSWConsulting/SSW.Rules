@@ -8,7 +8,7 @@ export const revalidate = 300;
 export default async function RulesSearchPage({
   searchParams,
 }: {
-  searchParams: { size?: number };
+  searchParams: Promise<{ size?: number }>;
 }) {
 
   const { size = 50 } = await searchParams;

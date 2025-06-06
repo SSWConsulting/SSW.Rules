@@ -55,13 +55,12 @@ export async function generateStaticParams() {
 
     const rules =
       ruleConnection.data.ruleConnection.edges?.map((page) => ({
-        filename: page?.node?._sys.filename,
+        ruleName: page?.node?._sys.relativePath.split("/")[0],
       })) || [];
     const categories =
       categoryConnection.data.categoryConnection.edges?.map((page) => ({
         filename: page?.node?._sys.filename,
       })) || [];
-
     return [...rules, ...categories];
   } catch (error) {
     console.error("Error fetching static params:", error);

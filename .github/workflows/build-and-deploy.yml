@@ -48,24 +48,24 @@ jobs:
       - run: pnpm build
         env:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH:    ${{ github.ref_name }}
+          NEXT_PUBLIC_TINA_BRANCH:    content_deployment
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
-      - run: touch public/.nojekyll
-      - uses: actions/configure-pages@v5
-        with:
-          static_site_generator: next
+  #     - run: touch public/.nojekyll
+  #     - uses: actions/configure-pages@v5
+  #       with:
+  #         static_site_generator: next
 
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./out
+  #     - uses: actions/upload-pages-artifact@v3
+  #       with:
+  #         path: ./out
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - id: deploy
-        uses: actions/deploy-pages@v4
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deploy.outputs.page_url }}
+  #   steps:
+  #     - id: deploy
+  #       uses: actions/deploy-pages@v4

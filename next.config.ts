@@ -1,7 +1,10 @@
 import type { NextConfig } from 'next'
  
 const nextConfig: NextConfig = {
+  output: 'export',  // Ajout pour l'export statique
+  trailingSlash: true,  // Recommandé pour Azure Static Web Apps
   images: {
+    unoptimized: true,  // Nécessaire pour l'export statique
     remotePatterns: [
       {
         protocol: 'https',
@@ -16,7 +19,7 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
-    // these are also defined in the root layout since github pages doesn't support headers
+    // ces headers sont aussi définis dans le layout racine car GitHub pages ne supporte pas les headers
     const headers = [
       {
         key: 'X-Frame-Options',

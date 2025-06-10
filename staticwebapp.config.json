@@ -1,0 +1,62 @@
+{
+  "globalHeaders": {
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block"
+  },
+  "mimeTypes": {
+    ".json": "application/json",
+    ".woff": "application/font-woff",
+    ".woff2": "application/font-woff2"
+  },
+  "navigationFallback": {
+    "exclude": [
+      "/admin/*",
+      "/api/*",
+      "/_next/*",
+      "/uploads/*",
+      "/*.{css,scss,sass,js,ts,json,xml,pdf,ico,jpg,jpeg,png,gif,svg,woff,woff2,ttf,eot}"
+    ],
+    "rewrite": "/index.html"
+  },
+  "responseOverrides": {
+    "401": {
+      "redirect": "/login",
+      "statusCode": 302
+    },
+    "403": {
+      "redirect": "/unauthorized",
+      "statusCode": 302
+    },
+    "404": {
+      "rewrite": "/404.html"
+    }
+  },
+  "routes": [
+    {
+      "headers": {
+        "Content-Security-Policy": "frame-ancestors 'self'",
+        "X-Frame-Options": "SAMEORIGIN"
+      },
+      "route": "/admin*"
+    },
+    {
+      "allowedRoles": [
+        "authenticated"
+      ],
+      "route": "/api/*"
+    },
+    {
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      },
+      "route": "/_next/static/*"
+    },
+    {
+      "headers": {
+        "cache-control": "public, max-age=31536000"
+      },
+      "route": "/uploads/*"
+    }
+  ]
+}

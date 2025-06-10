@@ -11,11 +11,12 @@ export default async function RulesSearchPage({
   searchParams: Promise<{ size?: number }>;
 }) {
 
-  const { size = 50 } = await searchParams;
+  //TODO: fix- cant use await searchParams in server component
+  // const { size = 50 } = await searchParams;
   const layout = await Layout({
     children: (
       <Section>
-        <ClientLatestRulesPage size={size} />
+        <ClientLatestRulesPage size={50} />
       </Section>
     )
   });

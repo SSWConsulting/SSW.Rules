@@ -1,4 +1,4 @@
-name: Deploy Next.js site to Azure Static Web Apps
+name: Deploy Tina + Next.js to Azure Static Web Apps
 
 on:
   push:
@@ -7,76 +7,47 @@ on:
 
 permissions:
   contents: read
-  pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
-  build:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     env:
       NEXT_PUBLIC_ALGOLIA_APP_ID:    ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
       NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
       NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
-      NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+      NEXT_PUBLIC_ALGOLIA_API_KEY:   ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
 
     steps:
       - uses: actions/checkout@v4
 
-      # 1 – Node (no pnpm cache yet)
       - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc      # “22” in your repo
+          node-version-file: .nvmrc
+          cache: pnpm
 
-      # 2 – Install pnpm and add it to PATH (+ cache)
       - uses: pnpm/action-setup@v4
         with:
-          version: 10.10.0               # keep in sync with packageManager
-          cache: true                    # enables pnpm store cache
-          run_install: false             # we control install step
+          version: 10.10.0
+          run_install: true
 
-      # 3 – Install dependencies
-      - run: pnpm install --frozen-lockfile
-
-      # 4 – Algolia sync
       - run: pnpm exec node scripts/update_algolia_index.js
 
-      # 5 – Static build for GitHub Pages
       - run: pnpm build
         env:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
           NEXT_PUBLIC_TINA_BRANCH:    content_deployment
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
-      - uses: Azure/static-web-apps-deploy@v1
+      # facultatif : garder la config de routage dans le dossier exporté
+      # - run: cp staticwebapp.config.json out/staticwebapp.config.json || true
 
+      - uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-          app_location: /
-          output_location: out
-
-
-  #     - run: touch public/.nojekyll
-  #     - uses: actions/configure-pages@v5
-  #       with:
-  #         static_site_generator: next
-
-  #     - uses: actions/upload-pages-artifact@v3
-  #       with:
-  #         path: ./out
-
-  # deploy:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deploy.outputs.page_url }}
-  #   steps:
-  #     - id: deploy
-  #       uses: actions/deploy-pages@v4
+          skip_app_build: true
+          skip_api_build: true
+          app_location: out

@@ -51,9 +51,9 @@ const Rule: Collection = {
     },
     {
       type:"image",
-      label:"Thumbnail",
+      label:"Rule thumbnail",
       name: "thumbnail",
-      description: "A thumbnail image for the rule",
+      description: "Use a JPG or PNG image that is at least 175 x 175px",
     },
     {
       type: "string",

@@ -1,4 +1,4 @@
-name: Deploy Next.js site to Pages
+name: Deploy Next.js site to Azure Static Web Apps
 
 on:
   push:
@@ -51,6 +51,16 @@ jobs:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
           NEXT_PUBLIC_TINA_BRANCH:    content_deployment
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
+
+      - uses: Azure/static-web-apps-deploy@v1
+
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          app_location: /
+          output_location: out
+
 
   #     - run: touch public/.nojekyll
   #     - uses: actions/configure-pages@v5

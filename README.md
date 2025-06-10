@@ -60,6 +60,10 @@ As per rule: [Done - Do you go beyond 'Done' and follow a 'Definition of Done'?]
   
 - Branching off **main** to **release/xx**, or making changes to **release/xx** will build and deploy to the **production** site: https://www.ssw.com.au/rules
 
+### GitHub Actions Documentation
+
+📘 Documentation for how GitHub Actions are used in this project is available in the [Wiki](https://github.com/SSWConsulting/SSW.Rules/wiki).
+
 ### Rules repository
 
 > Rules repository lives here: https://github.com/SSWConsulting/SSW.Rules.Content

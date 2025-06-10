@@ -52,6 +52,8 @@ jobs:
           NEXT_PUBLIC_TINA_BRANCH:    content_deployment
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
+      - run: cp -r public/admin out/admin
+
       - uses: Azure/static-web-apps-deploy@v1
 
         with:
@@ -60,4 +62,4 @@ jobs:
           action: upload
           skip_app_build: true
           skip_api_build: true
-          app_location: public/admin
+          app_location: out

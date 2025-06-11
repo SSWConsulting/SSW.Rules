@@ -1,19 +1,15 @@
-import React from 'react';
 import Layout from '@/components/layout/layout';
 import { Section } from '@/components/layout/section';
-import SearchBar from '@/components/SearchBar';
+import RulesSearchClientPage from './client-page';
 
 export const revalidate = 300;
 
-export default async function RulesSearchPage({ searchParams }: { searchParams: { keyword?: string } }) {
-    const { keyword = '' } = await searchParams;
-    const layout = await Layout({
-        children: (
+export default function RulesSearchPage() {
+    return (
+        <Layout>
             <Section>
-                <SearchBar keyword={keyword} />
+                <RulesSearchClientPage />
             </Section>
-        ),
-    });
-
-    return layout;
+        </Layout>
+    );
 }

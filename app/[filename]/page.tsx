@@ -55,14 +55,19 @@ export async function generateStaticParams() {
 
     const rules =
       ruleConnection.data.ruleConnection.edges?.map((page) => ({
-        filename: page?.node?._sys.filename,
-      })) || [];
-    const categories =
-      categoryConnection.data.categoryConnection.edges?.map((page) => ({
-        filename: page?.node?._sys.filename,
+        filename: page?.node?._sys.relativePath.split("/")[0],
       })) || [];
 
-    return [...rules, ...categories];
+    const categories =
+      categoryConnection.data.categoryConnection.edges
+        ?.filter((page) => page?.node?._sys.filename !== "index")
+        .map((page) => ({
+          filename: page?.node?._sys.filename,
+        })) || [];
+
+    const paths = [...rules, ...categories];
+
+    return paths;
   } catch (error) {
     console.error("Error fetching static params:", error);
     return [];

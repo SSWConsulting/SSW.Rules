@@ -42,6 +42,7 @@ jobs:
 
       # 3 – Install dependencies
       - run: pnpm install --frozen-lockfile
+        working-directory: website
 
       # 4 – Algolia sync
       - run: pnpm exec node website/scripts/update_algolia_index.js
@@ -68,6 +69,7 @@ jobs:
 
       # 5 – Static build for Azure Static Web Apps
       - run: pnpm build
+        working-directory: website
         env:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
           NEXT_PUBLIC_TINA_BRANCH:    content_deployment

@@ -1,54 +1,50 @@
 {
-    "ai-prompt-xml": [
-        {
-            "categoryTitle": "Rules to Better ChatGPT Prompt Engineering",
-            "categoryUri": "rules-to-better-chatgpt-prompt-engineering"
-        }
-    ],
     "best-ai-tools": [
         {
-            "categoryTitle": "Rules to Better AI Use",
-            "categoryUri": "rules-to-better-ai"
-        },
-        {
-            "categoryTitle": "Rule To Better Call Saul",
-            "categoryUri": "rules-to-better-call-saul"
-        }
-    ],
-    "corridor-conversations": [
-        {
-            "categoryTitle": "Rules to Better Specification Reviews",
-            "categoryUri": "rules-to-better-specification-reviews"
-        }
-    ],
-    "fundamentals-of-prompt-engineering": [
-        {
-            "categoryTitle": "Rules to Better ChatGPT Prompt Engineering",
-            "categoryUri": "rules-to-better-chatgpt-prompt-engineering"
-        }
-    ],
-    "meeting-bookings": [
-        {
-            "categoryTitle": "Rules to Better Account Management",
-            "categoryUri": "rules-to-better-account-management"
-        }
-    ],
-    "perform-client-follow-ups": [
-        {
-            "categoryTitle": "Rules to Better Account Management",
-            "categoryUri": "rules-to-better-account-management"
-        }
-    ],
-    "what-is-a-spec-review": [
-        {
-            "categoryTitle": "Rules to Better Specification Reviews",
-            "categoryUri": "rules-to-better-specification-reviews"
+            "categoryUri": "rules-to-better-ai",
+            "categoryTitle": "Rules to Better AI Use"
         }
     ],
     "what-is-chatgpt": [
         {
-            "categoryTitle": "Rules to Better AI Use",
-            "categoryUri": "rules-to-better-ai"
+            "categoryUri": "rules-to-better-ai",
+            "categoryTitle": "Rules to Better AI Use"
+        }
+    ],
+    "fundamentals-of-prompt-engineering": [
+        {
+            "categoryUri": "rules-to-better-chatgpt-prompt-engineering",
+            "categoryTitle": "Rules to Better ChatGPT Prompt Engineering"
+        }
+    ],
+    "ai-prompt-xml": [
+        {
+            "categoryUri": "rules-to-better-chatgpt-prompt-engineering",
+            "categoryTitle": "Rules to Better ChatGPT Prompt Engineering"
+        }
+    ],
+    "meeting-bookings": [
+        {
+            "categoryUri": "rules-to-better-account-management",
+            "categoryTitle": "Rules to Better Account Management"
+        }
+    ],
+    "perform-client-follow-ups": [
+        {
+            "categoryUri": "rules-to-better-account-management",
+            "categoryTitle": "Rules to Better Account Management"
+        }
+    ],
+    "what-is-a-spec-review": [
+        {
+            "categoryUri": "rules-to-better-specification-reviews",
+            "categoryTitle": "Rules to Better Specification Reviews"
+        }
+    ],
+    "corridor-conversations": [
+        {
+            "categoryUri": "rules-to-better-specification-reviews",
+            "categoryTitle": "Rules to Better Specification Reviews"
         }
     ]
 }

@@ -32,7 +32,7 @@ jobs:
       # 1 – Node (no pnpm cache yet)
       - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc      # "22" in your repo
+          node-version-file: website/.nvmrc      # "22" in your repo
 
       # 2 – Install pnpm and add it to PATH (+ cache)
       - uses: pnpm/action-setup@v4
@@ -44,7 +44,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       # 4 – Algolia sync
-      - run: pnpm exec node scripts/update_algolia_index.js
+      - run: pnpm exec node website/scripts/update_algolia_index.js
 
       - name: Checkout Content repo
         uses: actions/checkout@v4
@@ -74,7 +74,7 @@ jobs:
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
       # 6 – Copy staticwebapp.config.json to out/
-      - run: cp staticwebapp.config.json out/
+      - run: cp website/staticwebapp.config.json out/
 
       # 7 - Upload to Azure Static Web Apps
       - uses: Azure/static-web-apps-deploy@v1

@@ -16,13 +16,13 @@ export function FigureEmbed({ data }: { data: FigureEmbedProps }) {
       prefix = "Figure: ";
       break;
     case "badExample":
-      prefix = "❌ Figure: Bad example - ";
+      prefix = "❌ Figure: ";
       break;
     case "okExample":
-      prefix = "😐 Figure: OK example - ";
+      prefix = "😐 Figure: ";
       break;
     case "goodExample":
-      prefix = "✅ Figure: Good example - ";
+      prefix = "✅ Figure: ";
       break;
     default:
       break;

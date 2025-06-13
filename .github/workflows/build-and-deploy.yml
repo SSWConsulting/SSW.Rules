@@ -44,6 +44,26 @@ jobs:
       # 4 – Algolia sync
       - run: pnpm exec node scripts/update_algolia_index.js
 
+      - name: Checkout Content repo
+        uses: actions/checkout@v4
+        with:
+          repository: SSWConsulting/SSW.Rules.Content
+          ref: tina/Content_Azure_Deployment-Categories
+          path: content-repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy test.json
+        run: |
+          cp content-repo/scripts/tina-migration/rule-category-mapping.json ./rule-category-mapping.json
+
+      - name: Commit & Push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add rule-category-mapping.json
+          git commit -m "Update rule-category-mapping.json from Content repo" || echo "No changes"
+          git push
+
       # 5 – Static build for Azure Static Web Apps
       - run: pnpm build
         env:

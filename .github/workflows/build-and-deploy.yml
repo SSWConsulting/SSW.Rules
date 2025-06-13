@@ -29,23 +29,20 @@ jobs:
         with:
           path: website
 
-      # 1 – Node (no pnpm cache yet)
       - uses: actions/setup-node@v4
         with:
-          node-version-file: website/.nvmrc      # "22" in your repo
+          node-version-file: website/.nvmrc
 
-      # 2 – Install pnpm and add it to PATH (+ cache)
       - uses: pnpm/action-setup@v4
         with:
-          version: 10.10.0               # keep in sync with packageManager
-          run_install: true             # we control install step
+          version: 10.10.0
+          run_install: false
 
-      # 3 – Install dependencies
       - run: pnpm install --frozen-lockfile
         working-directory: website
 
-      # 4 – Algolia sync
-      - run: pnpm exec node website/scripts/update_algolia_index.js
+      - run: pnpm exec node scripts/update_algolia_index.js
+        working-directory: website
 
       - name: Checkout Content repo
         uses: actions/checkout@v4
@@ -56,10 +53,10 @@ jobs:
           token: ${{ secrets.POC_PAT_GILLES }} # TODO: change the POC_PAT_GILLES by GitHub Token when SysAdmin will have setup GitHub App
 
       - name: Copy test.json
-        run: |
-          cp content-repo/scripts/tina-migration/rule-category-mapping.json ./rule-category-mapping.json
+        run: cp content-repo/scripts/tina-migration/rule-category-mapping.json website/rule-category-mapping.json
 
       - name: Commit & Push
+        working-directory: website
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
@@ -67,7 +64,6 @@ jobs:
           git commit -m "Update rule-category-mapping.json from Content repo" || echo "No changes"
           git push
 
-      # 5 – Static build for Azure Static Web Apps
       - run: pnpm build
         working-directory: website
         env:
@@ -75,10 +71,8 @@ jobs:
           NEXT_PUBLIC_TINA_BRANCH:    content_deployment
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
-      # 6 – Copy staticwebapp.config.json to out/
-      - run: cp website/staticwebapp.config.json out/
+      - run: cp website/staticwebapp.config.json website/out/
 
-      # 7 - Upload to Azure Static Web Apps
       - uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
@@ -86,4 +80,4 @@ jobs:
           action: upload
           skip_app_build: true
           skip_api_build: true
-          app_location: out
+          app_location: website/out

@@ -27,6 +27,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: website
 
       # 1 – Node (no pnpm cache yet)
       - uses: actions/setup-node@v4

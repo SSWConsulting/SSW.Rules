@@ -1,4 +1,4 @@
-name: Deploy Next.js site to Pages
+name: Deploy Next.js site to Azure Static Web Apps
 
 on:
   push:
@@ -22,6 +22,7 @@ jobs:
       NEXT_PUBLIC_ALGOLIA_APP_ID:    ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
       NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
       NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+      NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -29,14 +30,13 @@ jobs:
       # 1 – Node (no pnpm cache yet)
       - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc      # “22” in your repo
+          node-version-file: .nvmrc      # "22" in your repo
 
       # 2 – Install pnpm and add it to PATH (+ cache)
       - uses: pnpm/action-setup@v4
         with:
           version: 10.10.0               # keep in sync with packageManager
-          cache: true                    # enables pnpm store cache
-          run_install: false             # we control install step
+          run_install: true             # we control install step
 
       # 3 – Install dependencies
       - run: pnpm install --frozen-lockfile
@@ -44,28 +44,22 @@ jobs:
       # 4 – Algolia sync
       - run: pnpm exec node scripts/update_algolia_index.js
 
-      # 5 – Static build for GitHub Pages
+      # 5 – Static build for Azure Static Web Apps
       - run: pnpm build
         env:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH:    ${{ github.ref_name }}
+          NEXT_PUBLIC_TINA_BRANCH:    content_deployment
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
-      - run: touch public/.nojekyll
-      - uses: actions/configure-pages@v5
-        with:
-          static_site_generator: next
+      # 6 – Copy staticwebapp.config.json to out/
+      - run: cp staticwebapp.config.json out/
 
-      - uses: actions/upload-pages-artifact@v3
+      # 7 - Upload to Azure Static Web Apps
+      - uses: Azure/static-web-apps-deploy@v1
         with:
-          path: ./out
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - id: deploy
-        uses: actions/deploy-pages@v4
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          skip_app_build: true
+          skip_api_build: true
+          app_location: out

@@ -1,0 +1,27 @@
+{
+  "globalHeaders": {
+    "Content-Security-Policy": "frame-ancestors 'self'",
+    "X-Frame-Options": "SAMEORIGIN"
+  },
+  "navigationFallback": {
+    "exclude": [
+      "/admin/*",
+      "/_next/*",
+      "/api/*",
+      "*.{css,scss,sass,js,ts,tsx,jsx,ico,png,jpg,jpeg,gif,svg,woff,woff2,ttf,eot}"
+    ],
+    "rewrite": "/index.html"
+  },
+  "routes": [
+    {
+      "rewrite": "/admin/index.html",
+      "route": "/admin"
+    },
+    {
+      "headers": {
+        "Cache-Control": "no-cache"
+      },
+      "route": "/admin/*"
+    }
+  ]
+}

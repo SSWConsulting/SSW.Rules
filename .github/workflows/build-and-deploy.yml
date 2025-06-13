@@ -24,6 +24,7 @@ jobs:
       NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
       NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
 
+
     steps:
       - uses: actions/checkout@v4
 
@@ -50,7 +51,7 @@ jobs:
           repository: SSWConsulting/SSW.Rules.Content
           ref: tina/Content_Azure_Deployment-Categories
           path: content-repo
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.POC_PAT_GILLES }} # TODO: change the POC_PAT_GILLES by GitHub Token when SysAdmin will have setup GitHub App
 
       - name: Copy test.json
         run: |

@@ -87,7 +87,7 @@ export default async function Page({
     return (
       <Layout>
         <Section>
-          <ClientCategoryPage categoryQueryProps={category} ruleCategories={[]}/>
+          <ClientCategoryPage categoryQueryProps={category}/>
         </Section>
       </Layout>
     );

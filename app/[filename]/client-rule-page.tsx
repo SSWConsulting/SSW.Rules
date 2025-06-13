@@ -17,7 +17,7 @@ import Link from "next/dist/client/link";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
-  ruleCategories?;
+  ruleCategories;
 }
 
 export default function ClientRulePage(props: ClientRulePageProps) {

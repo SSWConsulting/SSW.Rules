@@ -13,9 +13,11 @@ import {
   RiBookmarkLine,
   RiGithubLine,
 } from "react-icons/ri";
+import Link from "next/dist/client/link";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
+  ruleCategories?;
 }
 
 export default function ClientRulePage(props: ClientRulePageProps) {
@@ -96,7 +98,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
           </div>
         </Card>
         <div className="flex flex-col flex-1 gap-8">
-          <Card>categories</Card>
+          <Card>{props.ruleCategories && props.ruleCategories.map((category) => <ul><Link href={`/${category.categoryUri}`}>{category.categoryTitle}</Link></ul>)}</Card>
           <Card>acknowledgements</Card>
           <Card>related rules</Card>
         </div>

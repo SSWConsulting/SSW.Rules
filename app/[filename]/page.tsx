@@ -5,6 +5,7 @@ import client from "@/tina/__generated__/client";
 import ClientCategoryPage from "./client-category-page";
 import ClientRulePage from "./client-rule-page";
 import { notFound } from "next/navigation";
+import categoriesss from '@/rule-category-mapping.json'; 
 
 export const revalidate = 300;
 
@@ -86,18 +87,21 @@ export default async function Page({
     return (
       <Layout>
         <Section>
-          <ClientCategoryPage categoryQueryProps={category} />
+          <ClientCategoryPage categoryQueryProps={category} ruleCategories={[]}/>
         </Section>
       </Layout>
     );
   }
 
   const rule = await getRuleData(filename);
+  const ruleUri = rule?.data.rule.uri;
+  const ruleCategories = ruleUri ? categoriesss[ruleUri] : undefined;
+
   if (rule?.data) {
     return (
       <Layout>
         <Section>
-          <ClientRulePage ruleQueryProps={rule} />
+          <ClientRulePage ruleQueryProps={rule} ruleCategories={ruleCategories} />
         </Section>
       </Layout>
     );

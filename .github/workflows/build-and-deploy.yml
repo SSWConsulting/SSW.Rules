@@ -52,6 +52,15 @@ jobs:
           path: content-repo
           token: ${{ secrets.POC_PAT_GILLES }} # TODO: change the POC_PAT_GILLES by GitHub Token when SysAdmin will have setup GitHub App
 
+      - run: pnpm build
+        working-directory: website
+        env:
+          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+          NEXT_PUBLIC_TINA_BRANCH:    tina/Content_Azure_Deployment-Categories
+          TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
+
+      - run: cp website/staticwebapp.config.json website/out/
+
       - name: Copy test.json
         run: cp content-repo/scripts/tina-migration/rule-category-mapping.json website/rule-category-mapping.json
 
@@ -64,14 +73,7 @@ jobs:
           git commit -m "Update rule-category-mapping.json from Content repo" || echo "No changes"
           git push
 
-      - run: pnpm build
-        working-directory: website
-        env:
-          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH:    tina/Content_Azure_Deployment-Categories
-          TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
-      - run: cp website/staticwebapp.config.json website/out/
 
       - uses: Azure/static-web-apps-deploy@v1
         with:

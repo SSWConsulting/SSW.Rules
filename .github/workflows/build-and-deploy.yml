@@ -3,6 +3,8 @@ name: Deploy Next.js site to Azure Static Web Apps
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**/.skip-ci'
   workflow_dispatch:
 
 permissions:
@@ -44,13 +46,13 @@ jobs:
       - run: pnpm exec node scripts/update_algolia_index.js
         working-directory: website
 
-      - name: Checkout Content repo
-        uses: actions/checkout@v4
-        with:
-          repository: SSWConsulting/SSW.Rules.Content
-          ref: tina/Content_Azure_Deployment-Categories
-          path: content-repo
-          token: ${{ secrets.POC_PAT_GILLES }} # TODO: change the POC_PAT_GILLES by GitHub Token when SysAdmin will have setup GitHub App
+      # - name: Checkout Content repo
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: SSWConsulting/SSW.Rules.Content
+      #     ref: tina/Content_Azure_Deployment-Categories
+      #     path: content-repo
+      #     token: ${{ secrets.POC_PAT_GILLES }} # TODO: change the POC_PAT_GILLES by GitHub Token when SysAdmin will have setup GitHub App
 
       - run: pnpm build
         working-directory: website
@@ -59,21 +61,19 @@ jobs:
           NEXT_PUBLIC_TINA_BRANCH:    tina/Content_Azure_Deployment-Categories
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
+      # - name: Copy test.json
+      #   run: cp content-repo/scripts/tina-migration/rule-category-mapping.json website/rule-category-mapping.json
+
+      # - name: Commit & Push
+      #   working-directory: website
+      #   run: |
+      #     git config user.name "github-actions"
+      #     git config user.email "github-actions@github.com"
+      #     git add rule-category-mapping.json
+      #     git commit -m "Update rule-category-mapping.json from Content repo" || echo "No changes"
+      #     git push
+
       - run: cp website/staticwebapp.config.json website/out/
-
-      - name: Copy test.json
-        run: cp content-repo/scripts/tina-migration/rule-category-mapping.json website/rule-category-mapping.json
-
-      - name: Commit & Push
-        working-directory: website
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add rule-category-mapping.json
-          git commit -m "Update rule-category-mapping.json from Content repo" || echo "No changes"
-          git push
-
-
 
       - uses: Azure/static-web-apps-deploy@v1
         with:

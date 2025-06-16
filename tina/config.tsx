@@ -14,7 +14,7 @@ const config = defineConfig({
   clientId: clientId,
   token: token,
   branch: branch,
-  localContentPath: localContentPath,
+  // localContentPath: localContentPath,
   media: {
     // If you wanted cloudinary do this
     // loadCustomStore: async () => {

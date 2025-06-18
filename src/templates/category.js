@@ -78,18 +78,22 @@ export default function Category({ data }) {
       />
       <div className="container full-width m-auto">
         <div className="flex flex-wrap">
-          <div className='w-full xl:w-3/4 lg:w-1/1'>
+          <div className="w-full xl:w-3/4 lg:w-1/1">
             <div className="rule-category rounded">
               <section className="mb-6 xl:mb-20 rounded pb-2">
                 <div className="cat-title-grid-container">
                   <h1 className="font-semibold">
                     {category.frontmatter.title}
                     <span className="rule-count">
-                      {' - '} {rules.length} {rules.length > 1 ? 'Rules' : 'Rule'}
+                      {' - '} {rules.length}{' '}
+                      {rules.length > 1 ? 'Rules' : 'Rule'}
                     </span>
                   </h1>
 
-                  <Tooltip text="Edit in GitHub" className="mt-1 justify-self-end">
+                  <Tooltip
+                    text="Edit in GitHub"
+                    className="mt-1 justify-self-end"
+                  >
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
@@ -225,8 +229,8 @@ export default function Category({ data }) {
                                     <span className="tooltiptext w-52 !-left-[4.6rem]">
                                       Edit
                                       <p>
-                                        (Warning: Stale branches can cause issues -
-                                        See wiki for help)
+                                        (Warning: Stale branches can cause
+                                        issues - See wiki for help)
                                       </p>
                                     </span>
                                   </button>
@@ -258,7 +262,10 @@ export default function Category({ data }) {
                               className={`rule-content mb-4
                                 ${selectedOption === 'all' ? 'visible' : 'hidden'}`}
                             >
-                              <MD components={components} htmlAst={rule.htmlAst} />
+                              <MD
+                                components={components}
+                                htmlAst={rule.htmlAst}
+                              />
                             </section>
 
                             <section
@@ -266,7 +273,9 @@ export default function Category({ data }) {
                               ${selectedOption === 'blurb' ? 'visible' : 'hidden'}`}
                             >
                               <div
-                                dangerouslySetInnerHTML={{ __html: rule.excerpt }}
+                                dangerouslySetInnerHTML={{
+                                  __html: rule.excerpt,
+                                }}
                               />
                               <p className="pt-5 pb-0 font-bold">
                                 <Link
@@ -275,8 +284,8 @@ export default function Category({ data }) {
                                   state={{ category: category.parent.name }}
                                   title={`Read more about ${rule.frontmatter.title}`}
                                 >
-                                  <FontAwesomeIcon icon={faArrowCircleRight} /> Read
-                                  more
+                                  <FontAwesomeIcon icon={faArrowCircleRight} />{' '}
+                                  Read more
                                 </Link>
                               </p>
                             </section>
@@ -290,10 +299,11 @@ export default function Category({ data }) {
             </div>
 
             <div className="xl:hidden md:w-1/1 px-4 mb-20">
-              <CategorySideBar/>
+              <CategorySideBar />
             </div>
 
-            {(category.frontmatter.consulting || category.frontmatter.experts) && (
+            {(category.frontmatter.consulting ||
+              category.frontmatter.experts) && (
               <div className="flex flex-col items-center justify-center gap-4 -mt-16 mb-10">
                 <h3 className="text-3xl">
                   Need some help with{' '}

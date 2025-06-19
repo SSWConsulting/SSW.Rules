@@ -4,27 +4,27 @@ import { dirname, resolve, join } from 'path';
 import 'dotenv/config';
 import { execSync } from 'child_process';
 
-// Simule __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const relPath = process.env.LOCAL_CONTENT_RELATIVE_PATH;
 if (!relPath) {
-    console.error('Missing LOCAL_CONTENT_RELATIVE_PATH');
-    process.exit(1);
+  console.error('Missing LOCAL_CONTENT_RELATIVE_PATH');
+  process.exit(1);
 }
 
-// Content repo
 const contentAbsPath = resolve(__dirname, relPath);
 const scriptsPath = join(contentAbsPath, 'scripts/tina-migration');
 const input = join(scriptsPath, 'build-rule-category-map.py');
 const output = join(scriptsPath, 'rule-category-mapping.json');
 
-// Website repo
 const dest = resolve(__dirname, '../rule-category-mapping.json');
 
-// Exécute le script Python
-execSync(`python "${input}"`, { stdio: 'inherit' });
+execSync(`python "${input}"`, { stdio: 'inherit', cwd: scriptsPath });
 
-// Copie le fichier via Node.js (compatible Windows)
+if (!fs.existsSync(output)) {
+  console.error(`Expected file not found: ${output}`);
+  process.exit(1);
+}
+
 fs.copyFileSync(output, dest);

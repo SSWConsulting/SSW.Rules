@@ -3,8 +3,6 @@ name: Deploy Next.js site to Azure Static Web Apps
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - '**/.skip-ci'
   workflow_dispatch:
     inputs:
       run_id:
@@ -52,7 +50,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: SSWConsulting/SSW.Rules.Content
-          token: ${{ secrets.POC_PAT_GILLES }}
+          token: ${{ secrets.POC_PAT_GILLES }} # TODO - Change that with the GitHub Token when configured
 
       - uses: actions/checkout@v4
         with:
@@ -94,20 +92,12 @@ jobs:
             -n rule-category-mapping \
             --dir website/tmp
         env:
-          GH_TOKEN: ${{ secrets.POC_PAT_GILLES }}
+          GH_TOKEN: ${{ secrets.POC_PAT_GILLES }} # TODO - Change that with the GitHub Token when configured
           CONTENT_REPO: SSWConsulting/SSW.Rules.Content
 
       - run: |
           mv "$(find website/tmp -name rule-category-mapping.json -print -quit)" \
           website/rule-category-mapping.json
-
-      # - name: Checkout Content repo
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: SSWConsulting/SSW.Rules.Content
-      #     ref: tina/Content_Azure_Deployment-Categories
-      #     path: content-repo
-      #     token: ${{ secrets.POC_PAT_GILLES }} # TODO: change the POC_PAT_GILLES by GitHub Token when SysAdmin will have setup GitHub App
 
       - run: pnpm build
         working-directory: website
@@ -115,18 +105,6 @@ jobs:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
           NEXT_PUBLIC_TINA_BRANCH:    tina/Content_Azure_Deployment-Categories
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
-
-      # - name: Copy test.json
-      #   run: cp content-repo/scripts/tina-migration/rule-category-mapping.json website/rule-category-mapping.json
-
-      # - name: Commit & Push
-      #   working-directory: website
-      #   run: |
-      #     git config user.name "github-actions"
-      #     git config user.email "github-actions@github.com"
-      #     git add rule-category-mapping.json
-      #     git commit -m "Update rule-category-mapping.json from Content repo" || echo "No changes"
-      #     git push
 
       - run: cp website/staticwebapp.config.json website/out/
 

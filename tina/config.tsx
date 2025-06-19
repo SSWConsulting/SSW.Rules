@@ -8,6 +8,7 @@ const branch = process.env.NEXT_PUBLIC_TINA_BRANCH ?? "main";
 const localContentPath = process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined;
 const clientId = process.env.NEXT_PUBLIC_TINA_CLIENT_ID;
 const token = process.env.TINA_TOKEN;
+const searchToken = process.env.TINA_SEARCH_TOKEN;
 const basePath = process.env.TINA_BASE_PATH ?? undefined;
 
 const config = defineConfig({
@@ -34,6 +35,14 @@ const config = defineConfig({
   },
   schema: {
     collections: [Global, Category, Rule],
+  },
+  search: {
+    tina: {
+      indexerToken: searchToken,
+      stopwordLanguages: ['eng'],
+    },
+    indexBatchSize: 100,
+    maxSearchIndexFieldLength: 100,
   },
 });
 

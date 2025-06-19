@@ -4,9 +4,18 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      run_id:
+        description: This is the id of the Content Workflow
+        required: true
+        type: string
+      branch_name:
+        description: This is the branch name of the workflow
+        required: true
+        type: string
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -23,38 +32,82 @@ jobs:
       NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
       NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
       NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+      CONTENT_REPO: SSWConsulting/SSW.Rules.Content
 
     steps:
-      - uses: actions/checkout@v4
 
-      # 1 – Node (no pnpm cache yet)
+      # TODO - Uncomment this while we'll get GitHub Token
+      # - name: Generate a token
+      #   id: generate-token
+      #   uses: actions/create-github-app-token@v2
+      #   with:
+      #     app-id: ${{ vars.POC_APP_ID }}
+      #     private-key: ${{ secrets.POC_APP_PRIVATE_KEY }}
+      #     owner: SSWConsulting
+      #     repositories: SSW.Rules.Tina.Nextjs.POC
+
+      - name: Checkout SSW.Rules.Content
+        uses: actions/checkout@v4
+        with:
+          repository: SSWConsulting/SSW.Rules.Content
+          token: ${{ secrets.POC_PAT_GILLES }} # TODO - Change that with the GitHub Token when configured
+
+      - uses: actions/checkout@v4
+        with:
+          path: website
+
       - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc      # "22" in your repo
+          node-version-file: website/.nvmrc
 
-      # 2 – Install pnpm and add it to PATH (+ cache)
       - uses: pnpm/action-setup@v4
         with:
-          version: 10.10.0               # keep in sync with packageManager
-          run_install: true             # we control install step
+          version: 10.10.0
+          run_install: false
 
-      # 3 – Install dependencies
       - run: pnpm install --frozen-lockfile
+        working-directory: website
 
-      # 4 – Algolia sync
       - run: pnpm exec node scripts/update_algolia_index.js
+        working-directory: website
 
-      # 5 – Static build for Azure Static Web Apps
+      - name: Install GitHub CLI + jq
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gh jq
+
+      # Get Github Workflow Id and the branch that generated the artifact
+      - name: Read metadata from dispatch payload
+        id: meta
+        run: |
+          echo "run_id=${{ github.event.inputs.run_id }}"   >> $GITHUB_OUTPUT
+          echo "branch=${{ github.event.inputs.branch_name }}" >> $GITHUB_OUTPUT
+
+      # Download the artifact that contains the json file
+      - name: Download rule-category-mapping artifact
+        run: |
+          mkdir -p website/tmp
+          gh run download   "${{ steps.meta.outputs.run_id }}" \
+            --repo "$CONTENT_REPO" \
+            -n rule-category-mapping \
+            --dir website/tmp
+        env:
+          GH_TOKEN: ${{ secrets.POC_PAT_GILLES }} # TODO - Change that with the GitHub Token when configured
+          CONTENT_REPO: SSWConsulting/SSW.Rules.Content
+
+      - run: |
+          mv "$(find website/tmp -name rule-category-mapping.json -print -quit)" \
+          website/rule-category-mapping.json
+
       - run: pnpm build
+        working-directory: website
         env:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH:    content_deployment
+          NEXT_PUBLIC_TINA_BRANCH:    ${{ github.event.inputs.branch_name }}
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
-      # 6 – Copy staticwebapp.config.json to out/
-      - run: cp staticwebapp.config.json out/
+      - run: cp website/staticwebapp.config.json website/out/
 
-      # 7 - Upload to Azure Static Web Apps
       - uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
@@ -62,4 +115,4 @@ jobs:
           action: upload
           skip_app_build: true
           skip_api_build: true
-          app_location: out
+          app_location: website/out

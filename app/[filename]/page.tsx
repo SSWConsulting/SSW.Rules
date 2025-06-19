@@ -5,6 +5,7 @@ import client from "@/tina/__generated__/client";
 import ClientCategoryPage from "./client-category-page";
 import ClientRulePage from "./client-rule-page";
 import { notFound } from "next/navigation";
+import ruleCatgeoryMapping from '@/rule-category-mapping.json'; 
 
 export const revalidate = 300;
 
@@ -54,7 +55,9 @@ export async function generateStaticParams() {
     ]);
 
     const rules =
-      ruleConnection.data.ruleConnection.edges?.map((page) => ({
+      ruleConnection.data.ruleConnection.edges
+      ?.filter( page => page?.node?._sys.filename == "rule")
+      .map((page) => ({
         filename: page?.node?._sys.relativePath.split("/")[0],
       })) || [];
 
@@ -86,18 +89,21 @@ export default async function Page({
     return (
       <Layout>
         <Section>
-          <ClientCategoryPage categoryQueryProps={category} />
+          <ClientCategoryPage categoryQueryProps={category}/>
         </Section>
       </Layout>
     );
   }
 
   const rule = await getRuleData(filename);
+  const ruleUri = rule?.data.rule.uri;
+  const ruleCategories = ruleUri ? ruleCatgeoryMapping[ruleUri] : undefined;
+
   if (rule?.data) {
     return (
       <Layout>
         <Section>
-          <ClientRulePage ruleQueryProps={rule} />
+          <ClientRulePage ruleQueryProps={rule} ruleCategories={ruleCategories} />
         </Section>
       </Layout>
     );

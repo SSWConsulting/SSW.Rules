@@ -91,7 +91,6 @@ jobs:
           mkdir -p website/tmp
           gh run download   "${{ steps.meta.outputs.run_id }}" \
             --repo "$CONTENT_REPO" \
-            --branch "${{ steps.meta.outputs.branch }}" \
             -n scripts/tina-migration/rule-category-mapping \
             --dir website/tmp
         env:

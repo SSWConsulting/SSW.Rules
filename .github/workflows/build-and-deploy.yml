@@ -6,6 +6,15 @@ on:
     paths-ignore:
       - '**/.skip-ci'
   workflow_dispatch:
+    inputs:
+      run_id:
+        description: This is the id of the Content Workflow
+        required: true
+        type: string
+      branch_name:
+        description: This is the branch name of the workflow
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -70,15 +79,11 @@ jobs:
           sudo apt-get install -y gh jq
 
       # Get Github Workflow Id and the branch that generated the artifact
-      - name: Get branch & run ID from Content repo
+      - name: Read metadata from dispatch payload
         id: meta
         run: |
-          RUN_ID="${{ github.event.workflow_run.id }}"
-          BRANCH=$(gh api repos/$CONTENT_REPO/actions/runs/$RUN_ID --jq '.head_branch')
-          echo "run_id=$RUN_ID"   >> $GITHUB_OUTPUT
-          echo "branch=$BRANCH"   >> $GITHUB_OUTPUT
-        env:
-          GH_TOKEN: ${{ secrets.POC_PAT_GILLES }}
+          echo "run_id=${{ github.event.client_payload.run_id }}"   >> $GITHUB_OUTPUT
+          echo "branch=${{ github.event.client_payload.branch_name }}" >> $GITHUB_OUTPUT
 
       # Download the artifact that contains the json file
       - name: Download rule-category-mapping artifact
@@ -86,6 +91,7 @@ jobs:
           mkdir -p website/tmp
           gh run download   "${{ steps.meta.outputs.run_id }}" \
             --repo "$CONTENT_REPO" \
+            --branch "${{ steps.meta.outputs.branch }}" \
             -n scripts/tina-migration/rule-category-mapping \
             --dir website/tmp
         env:

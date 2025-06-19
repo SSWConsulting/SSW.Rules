@@ -77,6 +77,8 @@ jobs:
           BRANCH=$(gh api repos/$CONTENT_REPO/actions/runs/$RUN_ID --jq '.head_branch')
           echo "run_id=$RUN_ID"   >> $GITHUB_OUTPUT
           echo "branch=$BRANCH"   >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ env.POC_PAT_GILLES }}
 
       # Download the artifact that contains the json file
       - name: Download rule-category-mapping artifact

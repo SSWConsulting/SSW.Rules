@@ -13,7 +13,7 @@ import {
   RiBookmarkLine,
   RiGithubLine,
 } from "react-icons/ri";
-import Link from "next/dist/client/link";
+import Link from "next/link";
 
 export interface ClientRulePageProps {
   ruleQueryProps;

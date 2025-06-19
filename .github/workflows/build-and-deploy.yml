@@ -25,8 +25,19 @@ jobs:
       NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
       NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
       NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+      CONTENT_REPO: SSWConsulting/SSW.Rules.Content
 
     steps:
+
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.POC_APP_ID }}
+          private-key: ${{ secrets.POC_APP_PRIVATE_KEY }}
+          owner: SSWConsulting
+          repositories: SSW.Rules.Tina.Nextjs.POC
+
       - uses: actions/checkout@v4
         with:
           path: website
@@ -45,6 +56,35 @@ jobs:
 
       - run: pnpm exec node scripts/update_algolia_index.js
         working-directory: website
+
+      - name: Install GitHub CLI + jq
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gh jq
+
+      # Get Github Workflow Id and the branch that generated the artifact
+      - name: Get branch & run ID from Content repo
+        id: meta
+        run: |
+          RUN_ID="${{ github.event.workflow_run.id }}"
+          BRANCH=$(gh api repos/$CONTENT_REPO/actions/runs/$RUN_ID --jq '.head_branch')
+          echo "run_id=$RUN_ID"   >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH"   >> $GITHUB_OUTPUT
+
+      # Download the artifact that contains the json file
+      - name: Download rule-category-mapping artifact
+        run: |
+          mkdir -p website/tmp
+          gh run download   "${{ steps.meta.outputs.run_id }}" \
+            --repo "$CONTENT_REPO" \
+            -n scripts/tina-migration/rule-category-mapping \
+            --dir website/tmp
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token  }}
+
+      - name: Move JSON to root of website
+        run: |
+          mv website/tmp/rule-category-mapping/rule-category-mapping.json website/rule-category-mapping.json
 
       # - name: Checkout Content repo
       #   uses: actions/checkout@v4

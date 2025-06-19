@@ -97,9 +97,9 @@ jobs:
           GH_TOKEN: ${{ secrets.POC_PAT_GILLES }}
           CONTENT_REPO: SSWConsulting/SSW.Rules.Content
 
-      - name: Move JSON to root of website
-        run: |
-          mv website/tmp/rule-category-mapping/rule-category-mapping.json website/rule-category-mapping.json
+      - run: |
+          mv "$(find website/tmp -name rule-category-mapping.json -print -quit)" \
+          website/rule-category-mapping.json
 
       # - name: Checkout Content repo
       #   uses: actions/checkout@v4

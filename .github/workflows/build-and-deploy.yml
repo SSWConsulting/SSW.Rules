@@ -25,18 +25,26 @@ jobs:
       NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
       NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
       NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+      CONTENT_PAT: ${{ secrets.POC_PAT_GILLES }}
       CONTENT_REPO: SSWConsulting/SSW.Rules.Content
 
     steps:
 
-      - name: Generate a token
-        id: generate-token
-        uses: actions/create-github-app-token@v2
+      # TODO - Uncomment this while we'll get GitHub Token
+      # - name: Generate a token
+      #   id: generate-token
+      #   uses: actions/create-github-app-token@v2
+      #   with:
+      #     app-id: ${{ vars.POC_APP_ID }}
+      #     private-key: ${{ secrets.POC_APP_PRIVATE_KEY }}
+      #     owner: SSWConsulting
+      #     repositories: SSW.Rules.Tina.Nextjs.POC
+
+      - name: Checkout SSW.Rules.Content
+        uses: actions/checkout@v4
         with:
-          app-id: ${{ vars.POC_APP_ID }}
-          private-key: ${{ secrets.POC_APP_PRIVATE_KEY }}
-          owner: SSWConsulting
-          repositories: SSW.Rules.Tina.Nextjs.POC
+          repository: SSWConsulting/SSW.Rules.Content
+          token: ${{ secrets.CONTENT_PAT }}
 
       - uses: actions/checkout@v4
         with:
@@ -80,7 +88,7 @@ jobs:
             -n scripts/tina-migration/rule-category-mapping \
             --dir website/tmp
         env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token  }}
+          GH_TOKEN: ${{ env.CONTENT_PAT }}
 
       - name: Move JSON to root of website
         run: |

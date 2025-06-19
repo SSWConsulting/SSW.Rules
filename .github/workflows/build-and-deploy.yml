@@ -91,7 +91,7 @@ jobs:
           mkdir -p website/tmp
           gh run download   "${{ steps.meta.outputs.run_id }}" \
             --repo "$CONTENT_REPO" \
-            -n rule-category-mapping \ 
+            -n rule-category-mapping \
             --dir website/tmp
         env:
           GH_TOKEN: ${{ secrets.POC_PAT_GILLES }}

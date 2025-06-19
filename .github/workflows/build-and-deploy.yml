@@ -25,7 +25,6 @@ jobs:
       NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
       NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
       NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
-      CONTENT_PAT: ${{ secrets.POC_PAT_GILLES }}
       CONTENT_REPO: SSWConsulting/SSW.Rules.Content
 
     steps:
@@ -44,7 +43,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: SSWConsulting/SSW.Rules.Content
-          token: ${{ secrets.CONTENT_PAT }}
+          token: ${{ secrets.POC_PAT_GILLES }}
 
       - uses: actions/checkout@v4
         with:
@@ -88,7 +87,7 @@ jobs:
             -n scripts/tina-migration/rule-category-mapping \
             --dir website/tmp
         env:
-          GH_TOKEN: ${{ env.CONTENT_PAT }}
+          GH_TOKEN: ${{ env.POC_PAT_GILLES }}
 
       - name: Move JSON to root of website
         run: |

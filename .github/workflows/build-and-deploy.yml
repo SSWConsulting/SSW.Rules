@@ -2,7 +2,7 @@ name: Deploy Next.js site to Azure Static Web Apps
 
 on:
   push:
-    branches: [main]
+    branches: [main_Categories-management-update] # TODO - Change the targeted branch to "main" before merging PR
   workflow_dispatch:
     inputs:
       run_id:

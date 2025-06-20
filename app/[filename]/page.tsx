@@ -97,7 +97,6 @@ export default async function Page({
 
   const rule = await getRuleData(filename);
   const ruleUri = rule?.data.rule.uri;
-  console.log("ruleUri", ruleUri);
   const ruleCategories = ruleUri ? ruleToCategoryIndex[ruleUri] : undefined;
 
   if (rule?.data) {

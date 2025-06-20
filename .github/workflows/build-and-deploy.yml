@@ -83,21 +83,37 @@ jobs:
           echo "run_id=${{ github.event.inputs.run_id }}"   >> $GITHUB_OUTPUT
           echo "branch=${{ github.event.inputs.branch_name }}" >> $GITHUB_OUTPUT
 
-      # Download the artifact that contains the json file
-      - name: Download rule-category-mapping artifact
+      # Download the artifact that contains rule-to-categories json file
+      - name: Download rule-to-categories artifact
         run: |
           mkdir -p website/tmp
           gh run download   "${{ steps.meta.outputs.run_id }}" \
             --repo "$CONTENT_REPO" \
-            -n rule-category-mapping \
+            -n rule-to-categories \
             --dir website/tmp
         env:
           GH_TOKEN: ${{ secrets.POC_PAT_GILLES }} # TODO - Change that with the GitHub Token when configured
           CONTENT_REPO: SSWConsulting/SSW.Rules.Content
 
       - run: |
-          mv "$(find website/tmp -name rule-category-mapping.json -print -quit)" \
-          website/rule-category-mapping.json
+          mv "$(find website/tmp -name rule-to-categories.json -print -quit)" \
+          website/rule-to-categories.json
+
+      # Download the artifact that contains category-uri-title-map json file
+      - name: Download category-uri-title-map artifact
+        run: |
+          mkdir -p website/tmp
+          gh run download   "${{ steps.meta.outputs.run_id }}" \
+            --repo "$CONTENT_REPO" \
+            -n category-uri-title-map \
+            --dir website/tmp
+        env:
+          GH_TOKEN: ${{ secrets.POC_PAT_GILLES }} # TODO - Change that with the GitHub Token when configured
+          CONTENT_REPO: SSWConsulting/SSW.Rules.Content
+
+      - run: |
+          mv "$(find website/tmp -name category-uri-title-map.json -print -quit)" \
+          website/category-uri-title-map.json
 
       - run: pnpm build
         working-directory: website

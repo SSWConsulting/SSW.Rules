@@ -5,7 +5,8 @@ import client from "@/tina/__generated__/client";
 import ClientCategoryPage from "./client-category-page";
 import ClientRulePage from "./client-rule-page";
 import { notFound } from "next/navigation";
-import ruleCatgeoryMapping from '@/rule-category-mapping.json'; 
+import ruleToCategoryIndex from '@/rule-to-categories.json'; 
+import categoryTitleIndex from '@/category-uri-title-map.json';
 
 export const revalidate = 300;
 
@@ -97,13 +98,20 @@ export default async function Page({
 
   const rule = await getRuleData(filename);
   const ruleUri = rule?.data.rule.uri;
-  const ruleCategories = ruleUri ? ruleCatgeoryMapping[ruleUri] : undefined;
+  const ruleCategories = ruleUri ? ruleToCategoryIndex[ruleUri] : undefined;
+
+  const ruleCategoriesMapping = ruleCategories.map((categoryUri: string) => {
+    return {
+      title: categoryTitleIndex.categories[categoryUri],
+      uri: categoryUri,
+    }
+  })
 
   if (rule?.data) {
     return (
       <Layout>
         <Section>
-          <ClientRulePage ruleQueryProps={rule} ruleCategories={ruleCategories} />
+          <ClientRulePage ruleQueryProps={rule} ruleCategoriesMapping={ruleCategoriesMapping} />
         </Section>
       </Layout>
     );

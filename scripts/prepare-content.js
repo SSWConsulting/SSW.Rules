@@ -8,8 +8,6 @@ const copyAndMoveJsonFile = (fileName, scriptsPath) => {
   const output = join(scriptsPath, fileName);
   const dest = resolve(__dirname, `../${fileName}`);
 
-  execSync(`python "${input}"`, { stdio: 'inherit', cwd: scriptsPath });
-
   if (!fs.existsSync(output)) {
     console.error(`Expected file not found: ${output}`);
     process.exit(1);
@@ -29,6 +27,7 @@ if (!relPath) {
 const contentAbsPath = resolve(__dirname, relPath);
 const scriptsPath = join(contentAbsPath, 'scripts/tina-migration');
 const input = join(scriptsPath, 'build-rule-category-map.py');
+execSync(`python "${input}"`, { stdio: 'inherit', cwd: scriptsPath });
 
 copyAndMoveJsonFile("category-uri-title-map.json", scriptsPath)
 copyAndMoveJsonFile("rule-to-categories.json", scriptsPath)

@@ -14,11 +14,10 @@ import {
   RiGithubLine,
 } from "react-icons/ri";
 import Link from "next/link";
-import categoryTitleIndex from '@/category-uri-title-map.json';
 
 export interface ClientRulePageProps {
   ruleQueryProps;
-  ruleToCategoryIndex;
+  ruleCategoriesMapping;
 }
 
 export default function ClientRulePage(props: ClientRulePageProps) {
@@ -101,15 +100,15 @@ export default function ClientRulePage(props: ClientRulePageProps) {
         <div className="flex flex-col flex-1 gap-8">
           <Card title="Categories">
             <div className="flex flex-wrap gap-4">
-              {props.ruleToCategoryIndex &&
-                props.ruleToCategoryIndex.map((categoryUri, index) => {
+              {props.ruleCategoriesMapping &&
+                props.ruleCategoriesMapping.map((category, index) => {
                   return (
                   <Link
                     key={index}
-                    href={`/${categoryUri}`}
+                    href={`/${category.uri}`}
                     className="border-2 no-underline border-[#CC4141] text-[#CC4141] p-2 rounded-sm font-semibold hover:text-white hover:bg-[#CC4141] transition-colors duration-200"
                   >
-                    {categoryTitleIndex.categories[categoryUri]}
+                    {category.title}
                   </Link>
                 )
                 })}

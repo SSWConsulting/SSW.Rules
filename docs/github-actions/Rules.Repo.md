@@ -1,7 +1,7 @@
 # Build and Deploy
 This GitHub Action builds and deploys the production version of **SSW.Rules** using **Next.js** and **Azure Static Web Apps**.
 
-## 🧠 Workflow Overview
+## Workflow Overview
 
 ```mermaid
 flowchart TD
@@ -82,19 +82,12 @@ These files are saved into the appropriate location under `website/`.
 - Uploads `website/out` to Azure
 - Skips redundant app and API builds
 
-### 🔐 Inputs & Secrets
+### Inputs
 
 #### Inputs (for `workflow_dispatch`)
 
 - `run_id`: ID of the source content workflow (required)
 - `branch_name`: Branch of the content repo (required)
-
-#### Secrets Used
-
-- `POC_PAT_GILLES`: Used for accessing the content repo and downloading artifacts
-- `ALGOLIA_*`: For updating the Algolia index
-- `TINA_TOKEN`: For TinaCMS environment access
-- `AZURE_STATIC_WEB_APPS_API_TOKEN`: Required for deploying to Azure
 
 ### Notes
 

@@ -1,4 +1,4 @@
-**TODO**: This is the temporary file for stroing docs for GitHub Actions on SSW.Rules.Content. Once the Tina migration is finished, the content should be put on the [wiki](https://github.com/SSWConsulting/SSW.Rules.Content/wiki) of the SSW.Rules.Content repo.
+**TODO**: This is the temporary file for storing docs for GitHub Actions on SSW.Rules.Content. Once the Tina migration is finished, the content should be moved to the [wiki](https://github.com/SSWConsulting/SSW.Rules.Content/wiki) of the SSW.Rules.Content repo.
 
 ---
 # Check Folder Name 

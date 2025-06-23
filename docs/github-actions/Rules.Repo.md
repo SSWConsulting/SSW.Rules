@@ -84,8 +84,6 @@ These files are saved into the appropriate location under `website/`.
 
 ### Inputs
 
-#### Inputs (for `workflow_dispatch`)
-
 - `run_id`: ID of the source content workflow (required)
 - `branch_name`: Branch of the content repo (required)
 

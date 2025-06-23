@@ -28,4 +28,5 @@ yarn-error.log*
 
 .tina/__generated__
 
-/rule-category-mapping.json
+/category-uri-title-map.json
+/rule-to-categories.json

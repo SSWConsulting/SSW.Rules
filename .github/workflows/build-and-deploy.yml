@@ -118,7 +118,7 @@ jobs:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
           NEXT_PUBLIC_TINA_BRANCH:    ${{ github.event.inputs.branch_name || 'tina/migration-dev-content' }}
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
-          TINA_SEARCH_TOKEN:          ${{ secrets.TINA_SEARCH_TOKEN }}
+          # TINA_SEARCH_TOKEN:          ${{ secrets.TINA_SEARCH_TOKEN }} TODO: uncomment when we fix build problem because of tina search
 
       - run: cp website/staticwebapp.config.json website/out/
 

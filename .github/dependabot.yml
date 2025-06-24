@@ -12,3 +12,8 @@ updates:
     allow:
       - dependency-name: "tinacms"
       - dependency-name: "@tinacms*"
+    groups:
+      tinacms:
+        patterns:
+          - "@tinacms/*"
+          - "tinacms"

@@ -5,7 +5,7 @@ import { Collection, Form, TinaCMS } from "tinacms";
 const Rule: Collection = {
   name: "rule",
   label: "Rules",
-  path: "rules",
+  path: "public/uploads/rules",
   format: "mdx",
   defaultItem() {
     return {

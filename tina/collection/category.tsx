@@ -168,9 +168,10 @@ const Category: Collection = {
           list: true,
           ui: {
             itemProps: (item) => {
-              const name = item.rule?.split("/");
+              const parts = item.rule?.split("/");
+              const name = parts[parts.length - 2] || null;
               return {
-                label: name ? name[1] : "Rule is not selected",
+                label: name ? name : "Rule is not selected",
               };
             },
           },

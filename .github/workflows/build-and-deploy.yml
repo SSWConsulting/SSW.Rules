@@ -68,9 +68,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
         working-directory: website
 
-      - run: pnpm exec node scripts/update_algolia_index.js
-        working-directory: website
-
       - name: Install GitHub CLI + jq
         run: |
           sudo apt-get update -y

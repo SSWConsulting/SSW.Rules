@@ -116,7 +116,7 @@ jobs:
         working-directory: website
         env:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH:    ${{ github.event.inputs.branch_name }}
+          NEXT_PUBLIC_TINA_BRANCH:    ${{ github.event.inputs.branch_name || 'tina/migration-dev-content' }}
           TINA_TOKEN:                 ${{ secrets.TINA_TOKEN }}
 
       - run: cp website/staticwebapp.config.json website/out/

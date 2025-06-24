@@ -41,7 +41,7 @@ jobs:
       #     owner: SSWConsulting
       #     repositories: SSW.Rules.Tina.Nextjs.POC
 
-      # Checkout du repo Content pour accéder au script Python
+      # Checkout du repo Content
       - name: Checkout SSW.Rules.Content
         uses: actions/checkout@v4
         with:
@@ -50,7 +50,7 @@ jobs:
           token: ${{ secrets.POC_PAT_GILLES }} # TODO - Change that with the GitHub Token when configured
           path: content
 
-      # Checkout du repo POC
+      # Checkout of POC repo
       - uses: actions/checkout@v4
         with:
           path: website
@@ -59,7 +59,7 @@ jobs:
         with:
           node-version-file: website/.nvmrc
 
-      # Setup Python pour exécuter le script
+      # Setup Python for the script
       - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
@@ -72,12 +72,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
         working-directory: website
 
-      # Exécuter le script Python depuis le repo Content
+      # Run Python script from Content repo
       - name: Generate rule-category mapping files
         working-directory: content/scripts/tina-migration
         run: python build-rule-category-map.py
 
-      # Copier les fichiers générés vers le répertoire website
+      # Move the file to the Website directory
       - name: Copy generated files to website directory
         run: |
           cp content/scripts/tina-migration/rule-to-categories.json website/

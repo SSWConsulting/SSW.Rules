@@ -5,10 +5,6 @@ on:
     branches: [main]
   workflow_dispatch:
     inputs:
-      run_id:
-        description: This is the id of the Content Workflow
-        required: true
-        type: string
       branch_name:
         description: This is the branch name of the workflow
         required: true
@@ -35,7 +31,6 @@ jobs:
       CONTENT_REPO: SSWConsulting/SSW.Rules.Content
 
     steps:
-
       # TODO - Uncomment this while we'll get GitHub Token
       # - name: Generate a token
       #   id: generate-token
@@ -46,12 +41,16 @@ jobs:
       #     owner: SSWConsulting
       #     repositories: SSW.Rules.Tina.Nextjs.POC
 
+      # Checkout du repo Content
       - name: Checkout SSW.Rules.Content
         uses: actions/checkout@v4
         with:
           repository: SSWConsulting/SSW.Rules.Content
+          ref: ${{ github.event.inputs.branch_name || 'main' }}
           token: ${{ secrets.POC_PAT_GILLES }} # TODO - Change that with the GitHub Token when configured
+          path: content
 
+      # Checkout of POC repo
       - uses: actions/checkout@v4
         with:
           path: website
@@ -59,6 +58,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: website/.nvmrc
+
+      # Setup Python for the script
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
       - uses: pnpm/action-setup@v4
         with:
@@ -68,49 +72,16 @@ jobs:
       - run: pnpm install --frozen-lockfile
         working-directory: website
 
-      - name: Install GitHub CLI + jq
+      # Run Python script from Content repo
+      - name: Generate rule-category mapping files
+        working-directory: content/scripts/tina-migration
+        run: python build-rule-category-map.py
+
+      # Move the file to the Website directory
+      - name: Copy generated files to website directory
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y gh jq
-
-      # Get Github Workflow Id and the branch that generated the artifact
-      - name: Read metadata from dispatch payload
-        id: meta
-        run: |
-          echo "run_id=${{ github.event.inputs.run_id }}"   >> $GITHUB_OUTPUT
-          echo "branch=${{ github.event.inputs.branch_name }}" >> $GITHUB_OUTPUT
-
-      # Download the artifact that contains rule-to-categories json file
-      - name: Download rule-to-categories artifact
-        run: |
-          mkdir -p website/tmp
-          gh run download   "${{ steps.meta.outputs.run_id }}" \
-            --repo "$CONTENT_REPO" \
-            -n rule-to-categories \
-            --dir website/tmp
-        env:
-          GH_TOKEN: ${{ secrets.POC_PAT_GILLES }} # TODO - Change that with the GitHub Token when configured
-          CONTENT_REPO: SSWConsulting/SSW.Rules.Content
-
-      - run: |
-          mv "$(find website/tmp -name rule-to-categories.json -print -quit)" \
-          website/rule-to-categories.json
-
-      # Download the artifact that contains category-uri-title-map json file
-      - name: Download category-uri-title-map artifact
-        run: |
-          mkdir -p website/tmp
-          gh run download   "${{ steps.meta.outputs.run_id }}" \
-            --repo "$CONTENT_REPO" \
-            -n category-uri-title-map \
-            --dir website/tmp
-        env:
-          GH_TOKEN: ${{ secrets.POC_PAT_GILLES }} # TODO - Change that with the GitHub Token when configured
-          CONTENT_REPO: SSWConsulting/SSW.Rules.Content
-
-      - run: |
-          mv "$(find website/tmp -name category-uri-title-map.json -print -quit)" \
-          website/category-uri-title-map.json
+          cp content/scripts/tina-migration/rule-to-categories.json website/
+          cp content/scripts/tina-migration/category-uri-title-map.json website/
 
       - run: pnpm build
         working-directory: website

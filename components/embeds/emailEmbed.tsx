@@ -8,6 +8,7 @@ import {
 
 export function EmailEmbed({ data }: { data: any }) {
   const fields = [
+    { label: "From", value: data.from },
     { label: "To", value: data.to },
     { label: "Cc", value: data.cc },
     { label: "Bcc", value: data.bcc },
@@ -47,6 +48,7 @@ export const emailEmbedTemplate: Template = withFigureEmbedTemplateFields({
   label: "Email",
   ui: {
     defaultItem: {
+      from: "XXX",
       to: "XXX",
       cc: "YYY",
       bcc: "ZZZ",
@@ -67,6 +69,7 @@ export const emailEmbedTemplate: Template = withFigureEmbedTemplateFields({
     },
   },
   fields: [
+    { name: "from", label: "From", type: "string" },
     { name: "to", label: "To", type: "string" },
     { name: "cc", label: "Cc", type: "string" },
     { name: "bcc", label: "Bcc", type: "string" },

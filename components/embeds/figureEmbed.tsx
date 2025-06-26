@@ -9,7 +9,7 @@ export interface FigureEmbedProps {
 
 export function FigureEmbed({ data }: { data: FigureEmbedProps }) {
   const { preset, figure, shouldDisplay } = data;
-
+  
   let prefix = "";
   switch (preset) {
     case "default":
@@ -86,5 +86,5 @@ export const figureEmbedTemplate: Template = {
 };
 
 export const figureEmbedComponent = {
-  figureEmbed: (props: any) => <FigureEmbed data={props} />,
+  figureEmbed: (props: any) => <FigureEmbed data={props.figureEmbed || props} />
 };

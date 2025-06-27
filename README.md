@@ -1,17 +1,49 @@
 # SSW.Rules.Tina.Nextjs.POC
 A POC that will validate the compatibility between Rules and Tina – using Next.js.
 
+The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWConsulting/SSW.Rules.Content)
+
+
+## Getting Started
+
+### Required Tools
+- Node.js (version defined in .nvmrc) – recommended to use nvm
+- corepack (run corepack enable to manage correct pnpm version)
+- pnpm package manager
+
+
 ### F5 experience
 
-**1. Clone SSW.Rules.Content repo to your local, and switch to `tina/main` branch**
+1. Clone [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content) and switch to the `tina/migration-dev-content` branch
 
-**2. Clone this repo to your local, make sure both repos are inside same folder**
+2. Clone this repo
 
-**3. Create `.env` file and copy environment variables from Keeper (search for record "SSW.Rules.PoC Environment Variables")**
+3. Place both repos in the same parent directory
 
-**4. Run `pnpm install`**
+4. Create a `.env` file based off `.env.example` in the root of this repo - get the values from Keeper (SSW.Rules.PoC Environment Variables)
 
-**5. Run `pnpm dev`**
+5. Run `pnpm install` to install packages
+
+6. Run `pnpm dev` to start the development server
+
+
+### Syncing and Updating Content
+To test changes to MDX rules:
+
+1. Go to the `tina/migration-dev-content` branch of SSW.Rules.Content
+
+2. Modify the rule MDX as needed
+
+3. Run `pnpm dev` in this project to see the changes reflected locally
+
+### Branches
+- Always create a new branch for your PBIs 
+- Always delete your branch once your PR has been merged
+
+
+### Builds
+- Changes made to http://github.com/SSWConsulting/SSW.Rules.Content (i.e. rule changes) trigger builds that deploy:
+  - **main** to the **staging** site: https://salmon-tree-0bbb96a00.6.azurestaticapps.net/
 
 
 ### 📝 Adding Editorial Workflow

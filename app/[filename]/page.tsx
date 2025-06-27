@@ -100,12 +100,12 @@ export default async function Page({
   const ruleUri = rule?.data.rule.uri;
   const ruleCategories = ruleUri ? ruleToCategoryIndex[ruleUri] : undefined;
 
-  const ruleCategoriesMapping = ruleCategories.map((categoryUri: string) => {
+  const ruleCategoriesMapping = ruleCategories?.map((categoryUri: string) => {
     return {
       title: categoryTitleIndex.categories[categoryUri],
       uri: categoryUri,
     }
-  })
+  })|| [];
 
   if (rule?.data) {
     return (

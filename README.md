@@ -42,7 +42,8 @@ To test changes to MDX rules:
 ### Branches
 - Always create a new branch for your PBIs 
 - Always delete your branch once your PR has been merged
-
+- To create a new **content branch** (in `SSW.Rules.Content`), follow the setup steps in the [Wiki](https://github.com/SSWConsulting/SSW.Rules.Content/wiki/How-to-Recreate-the-tina-main-Branch-(If-Deleted))
+  
 
 ### Builds
 - Changes made to http://github.com/SSWConsulting/SSW.Rules.Content (i.e. rule changes) trigger builds that deploy:

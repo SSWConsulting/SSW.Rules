@@ -1,7 +1,10 @@
 # SSW.Rules.Tina.Nextjs.POC
-A POC that will validate the compatibility between Rules and Tina – using Next.js.
+A POC that will validate the compatibility between Rules and Tina – using Next.js.  
 
 The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWConsulting/SSW.Rules.Content)
+## Architecture Diagram
+
+![architecture diagram](./docs/architecture-diagram-ssw-rules.drawio.png)
 
 
 ## Getting Started

@@ -103,7 +103,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@playwright/test": "^1.50.0",
     "@types/node": "^20.16.5",
-    "eslint": "^8.57.1",
+    "eslint": "^9.30.0",
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-prettier": "5.2.1",
     "eslint-plugin-react": "^7.36.1",

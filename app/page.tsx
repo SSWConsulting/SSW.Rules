@@ -6,24 +6,42 @@ import SearchBar from '@/components/SearchBar';
 import HomeClientPage from './client-page';
 
 export const revalidate = 300;
+export const dynamic = "force-dynamic";
+
+async function fetchAllCategories() {
+  let hasNextPage = true;
+  let after: string | null = null;
+  const allCategories: any[] = [];
+
+  while (hasNextPage) {
+    const res = await client.queries.categoryConnection({ first: 30, after });
+    const edges = res.data.categoryConnection.edges || [];
+
+    allCategories.push(
+      ...edges
+        .filter(edge => edge && edge.node)
+        .map(edge => edge!.node)
+    );
+
+    hasNextPage = res.data.categoryConnection.pageInfo.hasNextPage;
+    after = res.data.categoryConnection.pageInfo.endCursor;
+
+    await new Promise(r => setTimeout(r, 300));
+  }
+
+  return allCategories;
+}
+
 
 export default async function Home() {
-  const categoriesConnectionData = await client.queries.categoryConnection({
-    first: 500
-  });
-  const categories =
-    categoriesConnectionData.data.categoryConnection.edges?.map(
-      (edge: any) => edge.node
-    ) || [];
+  const categories = await fetchAllCategories();
 
-  const layout = await Layout({
+  return await Layout({
     children: (
       <Section>
         <SearchBar />
         <HomeClientPage categories={categories} />
       </Section>
-    )
+    ),
   });
-
-  return layout;
 }

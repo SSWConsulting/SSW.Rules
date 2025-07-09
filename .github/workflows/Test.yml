@@ -10,6 +10,7 @@ permissions:
 jobs:
   test_login:
     runs-on: ubuntu-latest
+    environment: staging
     steps:
     - name: Azure CLI - Login
       uses: azure/login@v2

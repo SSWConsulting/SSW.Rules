@@ -1,5 +1,6 @@
 import { generateGuid } from "@/utils/guidGenerationUtils";
-import { Collection } from "tinacms";
+import { Collection, Form, TinaCMS } from "tinacms";
+import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 
 const Category: Collection = {
   name: "category",
@@ -26,6 +27,7 @@ const Category: Collection = {
       description:
         'If it is the main or top category, then the filename will be "index", otherwise the title will be used to create filename',
     },
+    beforeSubmit: historyBeforeSubmit,
   },
   templates: [
     // main category file that contains top categories
@@ -111,6 +113,7 @@ const Category: Collection = {
             },
           ],
         },
+        ...historyFields,
       ],
     },
 
@@ -196,6 +199,7 @@ const Category: Collection = {
           isBody: true,
           description: "This is description of the category",
         },
+        ...historyFields,
       ],
     },
   ],

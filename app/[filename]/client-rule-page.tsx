@@ -12,8 +12,11 @@ import {
   RiPencilLine,
   RiBookmarkLine,
   RiGithubLine,
+  RiHistoryLine,
 } from "react-icons/ri";
 import Link from "next/link";
+import { useMemo } from "react";
+import { formatDateLong, timeAgo } from "@/lib/dateUtils";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -30,6 +33,18 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   const rule = ruleData?.rule;
 
   const iconSize = 32;
+
+  const relativeTime = useMemo(() => {
+    return rule?.lastUpdated ? timeAgo(rule.lastUpdated) : "";
+  }, [rule?.lastUpdated]);
+
+  const historyTooltip = useMemo(() => {
+    const created = rule?.created ? formatDateLong(rule.created) : "Unknown";
+    const updated = rule?.lastUpdated
+      ? formatDateLong(rule.lastUpdated)
+      : "Unknown";
+    return `Created ${created}\nLast Updated ${updated}`;
+  }, [rule?.created, rule?.lastUpdated]);
 
   return (
     <>
@@ -56,8 +71,16 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   {rule?.title}
                 </h1>
                 <p className="mt-4">
-                  Updated by <b>XXX</b> 8 months ago.{" "}
-                  <a href="https://www.ssw.com.au/rules/rule">See history</a>
+                  Updated by <b>{rule?.lastUpdatedBy}</b> {relativeTime}.{" "}
+                  {/* TODO: update link when migration is done (path will be wrong as reules will be in public folder) */}
+                  <a
+                    href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/main/rules/${rule.uri}/rule.md`}
+                    target="_blank"
+                    className="inline-flex items-center gap-1"
+                    title={historyTooltip}
+                  >
+                    See history <RiHistoryLine />
+                  </a>
                 </p>
               </div>
               <div className="flex align-center gap-4 text-2xl mt-4">
@@ -103,14 +126,14 @@ export default function ClientRulePage(props: ClientRulePageProps) {
               {props.ruleCategoriesMapping &&
                 props.ruleCategoriesMapping.map((category, index) => {
                   return (
-                  <Link
-                    key={index}
-                    href={`/${category.uri}`}
-                    className="border-2 no-underline border-[#CC4141] text-[#CC4141] p-2 rounded-sm font-semibold hover:text-white hover:bg-[#CC4141] transition-colors duration-200"
-                  >
-                    {category.title}
-                  </Link>
-                )
+                    <Link
+                      key={index}
+                      href={`/${category.uri}`}
+                      className="border-2 no-underline border-[#CC4141] text-[#CC4141] p-2 rounded-sm font-semibold hover:text-white hover:bg-[#CC4141] transition-colors duration-200"
+                    >
+                      {category.title}
+                    </Link>
+                  );
                 })}
             </div>
           </Card>

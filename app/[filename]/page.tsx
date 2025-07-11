@@ -9,22 +9,44 @@ import ruleToCategoryIndex from '@/rule-to-categories.json';
 import categoryTitleIndex from '@/category-uri-title-map.json';
 
 export const revalidate = 300;
-export const dynamic = "force-dynamic";
+
+const getFullRelativePathFromFilename = async (filename: string): Promise<string | null> => {
+  const res = await client.queries.topCategoryWithIndexQuery();
+  const topCategories = res?.data.categoryConnection?.edges || [];
+
+  for (const edge of topCategories) {
+    const node = edge?.node;
+    if (node?.__typename === "CategoryTop_category") {
+      const topRelativePath = node._sys.relativePath;
+      const topDir = topRelativePath.replace("/index.mdx", "");
+
+      const children = node.index || [];
+      for (const child of children) {
+        // @ts-ignore
+        if (child?.category?._sys.filename === filename) {
+          return `${topDir}/${filename}.mdx`;
+        }
+      }
+    }
+  }
+
+  return null;
+};
 
 const getCategoryData = async (filename: string) => {
+  const fullPath = await getFullRelativePathFromFilename(filename);
+  if (!fullPath) return
+
   try {
-    const tinaProps = await client.queries.categoryConnection();
-    const categories =
-      tinaProps.data.categoryConnection.edges?.map((edge: any) => edge.node) ||
-      [];
-    const category = categories.find((cat: any) => {
-      return cat._sys.filename === filename;
-    });
+    const res = await client.queries.categoryWithRulesQuery({
+      relativePath: `${fullPath}`,
+    })
 
     return {
-      data: category,
-      query: tinaProps.query,
-      variables: tinaProps.variables,
+      data: res.data.category,
+      variables: {
+        relativePath: `${fullPath}`,
+      },
     };
   } catch (error) {
     console.error("Error fetching category data:", error);

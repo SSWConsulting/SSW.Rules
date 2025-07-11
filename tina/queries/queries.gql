@@ -13,3 +13,77 @@ query latestRulesQuery($size: Float, $sortOption: String) {
     }
   }
 }
+
+query homepageCategoriesQuery($first: Float, $after: String) {
+  categoryConnection(first: $first, after: $after) {
+    edges {
+      node {
+       __typename
+        ... on CategoryTop_category {
+          title
+          _sys {
+            filename
+          }
+        }
+        ... on CategoryCategory {
+          title
+          _sys {
+            filename
+          }
+        }
+        ... on CategoryMain {
+          title
+          _sys {
+            filename
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query topCategoryWithIndexQuery {
+  categoryConnection {
+    edges {
+      node {
+        __typename
+        ... on CategoryTop_category {
+          title
+          _sys {
+            relativePath
+          }
+          index {
+            category {
+              ... on CategoryCategory {
+                title
+                _sys {
+                  filename
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query categoryWithRulesQuery($relativePath: String!) {
+  category(relativePath: $relativePath) {
+    ... on CategoryCategory {
+      title
+      index {
+        rule {
+          ... on Rule {
+            uri
+            title
+          }
+        }
+      }
+    }
+  }
+}

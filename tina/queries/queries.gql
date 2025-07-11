@@ -46,8 +46,8 @@ query homepageCategoriesQuery($first: Float, $after: String) {
   }
 }
 
-query topCategoryWithIndexQuery {
-  categoryConnection {
+query topCategoryWithIndexQuery($first: Float, $after: String) {
+  categoryConnection(first: $first, after: $after) {
     edges {
       node {
         __typename
@@ -69,8 +69,13 @@ query topCategoryWithIndexQuery {
         }
       }
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }
+
 
 query categoryWithRulesQuery($relativePath: String!) {
   category(relativePath: $relativePath) {

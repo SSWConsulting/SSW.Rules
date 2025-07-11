@@ -11,23 +11,35 @@ import categoryTitleIndex from '@/category-uri-title-map.json';
 export const revalidate = 300;
 
 const getFullRelativePathFromFilename = async (filename: string): Promise<string | null> => {
-  const res = await client.queries.topCategoryWithIndexQuery();
-  const topCategories = res?.data.categoryConnection?.edges || [];
+  let hasNextPage = true;
+  let after: string | null = null;
 
-  for (const edge of topCategories) {
-    const node = edge?.node;
-    if (node?.__typename === "CategoryTop_category") {
-      const topRelativePath = node._sys.relativePath;
-      const topDir = topRelativePath.replace("/index.mdx", "");
+  while (hasNextPage) {
+    const res = await client.queries.topCategoryWithIndexQuery({
+      first: 50,
+      after,
+    });
 
-      const children = node.index || [];
-      for (const child of children) {
-        // @ts-ignore
-        if (child?.category?._sys.filename === filename) {
-          return `${topDir}/${filename}.mdx`;
+    const topCategories = res?.data.categoryConnection?.edges || [];
+
+    for (const edge of topCategories) {
+      const node = edge?.node;
+      if (node?.__typename === "CategoryTop_category") {
+        const topRelativePath = node._sys.relativePath;
+        const topDir = topRelativePath.replace("/index.mdx", "");
+
+        const children = node.index || [];
+        for (const child of children) {
+          // @ts-ignore
+          if (child?.category?._sys?.filename === filename) {
+            return `${topDir}/${filename}.mdx`;
+          }
         }
       }
     }
+
+    hasNextPage = res?.data?.categoryConnection?.pageInfo?.hasNextPage;
+    after = res?.data?.categoryConnection?.pageInfo?.endCursor;
   }
 
   return null;

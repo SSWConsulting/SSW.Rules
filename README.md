@@ -47,7 +47,8 @@ To test changes to MDX rules:
 
 ### Builds
 - Changes made to http://github.com/SSWConsulting/SSW.Rules.Content (i.e. rule changes) trigger builds that deploy:
-  - **main** to the **staging** site: https://salmon-tree-0bbb96a00.6.azurestaticapps.net/
+  - **Staging site with fewer rules**: https://salmon-tree-0bbb96a00.6.azurestaticapps.net/
+  - **Staging site with all rules**: https://ssw-rules-tina-nextjs-poc-five.vercel.app/
 
 
 

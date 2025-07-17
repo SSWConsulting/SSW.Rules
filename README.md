@@ -11,17 +11,22 @@ The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWCon
 
 ### Required Tools
 - Node.js (version defined in .nvmrc) – recommended to use nvm
-- corepack (run corepack enable to manage correct pnpm version)
-- pnpm package manager
+- [corepack](https://github.com/nodejs/corepack) (run corepack enable to manage correct pnpm version)
+- [pnpm](https://pnpm.io/installation) package manager
 
 
 ### F5 experience
 
-1. Clone [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content) and switch to the `tina/migration-dev-content` branch
+1. Clone this repo
 
-2. Clone this repo
+2. Clone [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content) and switch to the `tina/migration-dev-content` branch
 
-3. Place both repos in the same parent directory
+3. Place both repos in the same parent directory e.g.
+```
+📁 SSW.Rules/
+├── 📁 SSW.Rules.Content/
+└── 📁 SSW.Rules.Tina.Nextjs.POC/
+```
 
 4. Create a `.env` file based off `.env.example` in the root of this repo - get the values from Keeper (SSW.Rules.PoC Environment Variables)
 
@@ -45,8 +50,14 @@ To test changes to MDX rules:
 - To create a new **content branch** (in `SSW.Rules.Content`), follow the setup steps in the [Wiki](https://github.com/SSWConsulting/SSW.Rules.Content/wiki/How-to-Recreate-the-tina-main-Branch-(If-Deleted))
   
 
-### Builds
-- Changes made to http://github.com/SSWConsulting/SSW.Rules.Content (i.e. rule changes) trigger builds that deploy:
+## Builds & Deployment
+
+### SSW.Rules.Tina.Nextjs.POC
+- Changes made to [SSW.Rules.Tina.Nextjs.POC]() trigger builds that deploy to vercel
+- **TODO:** Deploy to Azure Static Web App
+
+### SSW.Rules.Content
+- Changes made to [SSW.Rules.Content](http://github.com/SSWConsulting/SSW.Rules.Content) (i.e. rule changes) trigger builds that deploy:
   - **Staging site with fewer rules**: https://salmon-tree-0bbb96a00.6.azurestaticapps.net/
   - **Staging site with all rules**: https://ssw-rules-tina-nextjs-poc-five.vercel.app/
 

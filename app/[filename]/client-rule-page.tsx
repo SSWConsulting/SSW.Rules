@@ -15,22 +15,77 @@ import {
   RiHistoryLine,
 } from "react-icons/ri";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { formatDateLong, timeAgo } from "@/lib/dateUtils";
+import { extractCoAuthor } from "@/lib/utils";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
   ruleCategoriesMapping;
 }
 
+type AuthorInfo = {
+  author: string;
+  date: string;
+} | null;
+
 export default function ClientRulePage(props: ClientRulePageProps) {
   const { ruleQueryProps } = props;
+  const [gitHubApiResponse, setGitHubApiResponse] = useState(null);
+  const [author, setAuthor] = useState<AuthorInfo>(null);
+  
   const ruleData = useTina({
     query: ruleQueryProps?.query,
     variables: ruleQueryProps?.variables,
     data: ruleQueryProps?.data,
   }).data;
+
+
   const rule = ruleData?.rule;
+
+  useEffect(() => {
+    const fetchApiData = async () => {
+      try {
+        // Get branch from environment variables with Vercel fallbacks
+        const currentBranch = 
+          process.env.NEXT_PUBLIC_TINA_BRANCH || 
+          process.env.VERCEL_GIT_COMMIT_REF || 
+          'main'; 
+        
+        const response = await fetch(
+          `https://api.github.com/repos/SSWConsulting/SSW.Rules.Content/commits?sha=${currentBranch}&path=public/uploads/rules/${rule.uri}/rule.mdx&per_page=1`
+        );
+        const data = await response.json();
+        
+        if (data.length > 0) {
+          const commit = data[0];
+          
+          if (commit.commit.author.name !== 'tina-cloud-app[bot]') {
+            setAuthor({
+              author: commit.commit.author.name, 
+              date: timeAgo(commit.commit.author.date)
+            });
+          } else {
+            const extractedCoAuthor = extractCoAuthor(commit.commit.message);
+            setAuthor({
+              author: extractedCoAuthor?.name,
+              date: timeAgo(commit.commit.author.date)
+            })
+          }
+        } else {
+          console.warn("No commits found for the specified path.");
+        }
+
+        console.log("response", data);
+      } catch (error) {
+        console.error("Error fetching API data:", error);
+      }
+    };
+
+    if (rule?.id) {
+      fetchApiData();
+    }
+  }, [rule?.id]);
 
   const iconSize = 32;
 
@@ -51,7 +106,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
       <div className="flex gap-8">
         <Card dropShadow className="flex-2">
           <div className="flex border-b-2 pb-4">
-            {rule.thumbnail && (
+            {rule?.thumbnail && (
               <div className="w-[175px] h-[175px] relative mr-4">
                 <Image
                   data-tina-field={tinaField(rule, "thumbnail")}
@@ -71,10 +126,10 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   {rule?.title}
                 </h1>
                 <p className="mt-4">
-                  Updated by <b>{rule?.lastUpdatedBy}</b> {relativeTime}.{" "}
-                  {/* TODO: update link when migration is done (path will be wrong as reules will be in public folder) */}
+                  Updated by <b>{author?.author}</b> {author?.date}.{" "}
+                  {/* TODO: update link when migration is done (path will be wrong as rules will be in public folder) */}
                   <a
-                    href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/main/rules/${rule.uri}/rule.md`}
+                    href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/main/rules/${rule?.uri}/rule.md`}
                     target="_blank"
                     className="inline-flex items-center gap-1"
                     title={historyTooltip}
@@ -112,7 +167,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
           </div>
           <div data-tina-field={tinaField(rule, "body")} className="mt-8">
             <TinaMarkdown
-              content={rule.body}
+              content={rule?.body}
               components={{
                 ...embedComponents,
                 ...typographyComponents,

@@ -1036,8 +1036,8 @@ div.bad-example {
 
 .greybox, .highlight, .todo, .info, .china, .codeauditor {
   padding: 1rem;
-  margin: .5rem 0;
-  display: inline-block;
+  margin: 1rem 0;
+  display: block;
   border-radius:.25rem;
   min-width: 50%;
   max-width: 700px;

@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import { useMemo } from "react";
 import { formatDateLong, timeAgo } from "@/lib/dateUtils";
+import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -113,10 +114,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
           <div data-tina-field={tinaField(rule, "body")} className="mt-8">
             <TinaMarkdown
               content={rule?.body}
-              components={{
-                ...embedComponents,
-                ...typographyComponents,
-              }}
+              components={MarkdownComponentMapping}
             />
           </div>
         </Card>

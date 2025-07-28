@@ -175,6 +175,11 @@
 
 }
 
+@layer utilities {
+  .prism-code {
+    @apply whitespace-pre-wrap break-words;
+  }
+}
 
 ul li::before {
   content: "\25A0";

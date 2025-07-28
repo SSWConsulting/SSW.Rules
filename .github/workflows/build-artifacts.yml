@@ -1,0 +1,187 @@
+name: Building Artifact depending on environment passed in parameter
+
+on:
+    workflow_call:
+        inputs:
+            tag:
+                type: string
+                required: true
+            registry_name:
+                type: string
+                required: false
+                default: 'sswrulesregistry'
+            image_name:
+                type: string
+                required: false
+                default: 'ssw-rules-tina-nextjs'
+            tina_branch:
+                type: string
+                required: false
+                default: ''
+        secrets:
+            AZURE_CLIENT_ID:
+                required: true
+            AZURE_TENANT_ID:
+                required: true
+            AZURE_SUBSCRIPTION_ID:
+                required: true
+            TINA_TOKEN:
+                required: false
+            NEXT_PUBLIC_TINA_CLIENT_ID:
+                required: false
+            TOKEN:
+                required: true
+            NEXT_PUBLIC_ALGOLIA_APP_ID:
+                required: false
+            NEXT_PUBLIC_ALGOLIA_ADMIN_KEY:
+                required: false
+            NEXT_PUBLIC_ALGOLIA_INDEX_NAME:
+                required: false
+            NEXT_PUBLIC_ALGOLIA_API_KEY:
+                required: false
+            NEXT_PUBLIC_TINA_BRANCH:
+                required: false
+        outputs:
+            image_tag:
+                description: 'Docker tag to deploy'
+                value: ${{ jobs.build-and-push.outputs.image_tag }}
+            image_digest:
+                value: ${{ jobs.build-and-push.outputs.image_digest }}
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        environment: staging
+        outputs:
+            image_tag: ${{ steps.meta.outputs.tags }}
+            image_digest: ${{ steps.build.outputs.digest }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Checkout SSW.Rules.Content
+              uses: actions/checkout@v4
+              with:
+                  repository: SSWConsulting/SSW.Rules.Content
+                  ref: ${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH }}
+                  token: ${{ secrets.TOKEN }}
+                  path: content-temp
+
+            - name: Setup Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: '3.x'
+
+            - name: Generate rule-category mapping files
+              working-directory: content-temp/scripts/tina-migration
+              run: python build-rule-category-map.py
+
+            - name: Copy generated files to build context
+              run: |
+                  cp content-temp/scripts/tina-migration/rule-to-categories.json ./
+                  cp content-temp/scripts/tina-migration/category-uri-title-map.json ./
+                  mv content-temp ./content
+
+            - name: Azure CLI - Login
+              uses: azure/login@v2
+              with:
+                  client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                  tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+                  subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+            - name: Login to Azure Container Registry
+              run: az acr login --name ${{ inputs.registry_name }}
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Extract metadata
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}
+                  tags: |
+                      type=raw,value=${{ inputs.tag }}
+
+            - name: Create Dockerfile
+              run: |
+                  cat > Dockerfile << 'EOF'
+                  FROM node:18-alpine AS base
+
+                  FROM base AS deps
+                  RUN apk add --no-cache libc6-compat
+                  WORKDIR /app
+                  COPY package*.json ./
+                  COPY yarn.lock* ./
+                  RUN if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+                      elif [ -f package-lock.json ]; then npm ci --force; \
+                      else npm install --force; fi
+
+                  FROM base AS builder
+                  WORKDIR /app
+                  COPY --from=deps /app/node_modules ./node_modules
+                  COPY . .
+
+                  ARG TINA_TOKEN
+                  ARG NEXT_PUBLIC_TINA_CLIENT_ID
+                  ARG NEXT_PUBLIC_TINA_BRANCH
+                  ARG NEXT_PUBLIC_ALGOLIA_APP_ID
+                  ARG NEXT_PUBLIC_ALGOLIA_ADMIN_KEY
+                  ARG NEXT_PUBLIC_ALGOLIA_INDEX_NAME
+                  ARG NEXT_PUBLIC_ALGOLIA_API_KEY
+                  ENV TINA_TOKEN=$TINA_TOKEN
+                  ENV NEXT_PUBLIC_TINA_CLIENT_ID=$NEXT_PUBLIC_TINA_CLIENT_ID
+                  ENV NEXT_PUBLIC_TINA_BRANCH=$NEXT_PUBLIC_TINA_BRANCH
+                  ENV NEXT_PUBLIC_ALGOLIA_APP_ID=$NEXT_PUBLIC_ALGOLIA_APP_ID
+                  ENV NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=$NEXT_PUBLIC_ALGOLIA_ADMIN_KEY
+                  ENV NEXT_PUBLIC_ALGOLIA_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_INDEX_NAME
+                  ENV NEXT_PUBLIC_ALGOLIA_API_KEY=$NEXT_PUBLIC_ALGOLIA_API_KEY
+                  ENV NEXT_TELEMETRY_DISABLED=1
+                  RUN if [ -f yarn.lock ]; then yarn build; else npm run build; fi
+
+                  FROM base AS runner
+                  WORKDIR /app
+                  ENV NODE_ENV=production
+                  ENV NEXT_TELEMETRY_DISABLED=1
+                  RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+                  
+                  COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+                  COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+                  COPY --from=builder /app/public ./public
+
+                  USER nextjs
+                  EXPOSE 3000
+                  ENV PORT=3000
+                  ENV HOSTNAME="0.0.0.0"
+                  CMD ["node", "server.js"]
+                  EOF
+
+            - name: Build and push Docker image
+              id: build
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  platforms: linux/amd64
+                  push: true
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
+                  build-args: |
+                      TINA_TOKEN=${{ secrets.TINA_TOKEN }}
+                      NEXT_PUBLIC_TINA_CLIENT_ID=${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+                      NEXT_PUBLIC_ALGOLIA_APP_ID=${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
+                      NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
+                      NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+                      NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+                      NEXT_PUBLIC_TINA_BRANCH=${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH }}
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+
+            - name: Output image info
+              run: |
+                  echo "Image built and pushed successfully!"
+                  echo "Tag: ${{ steps.meta.outputs.tags }}"
+                  echo "Digest: ${{ steps.build.outputs.digest }}"

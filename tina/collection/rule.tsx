@@ -8,6 +8,9 @@ const Rule: Collection = {
   label: "Rules",
   path: "public/uploads/rules",
   format: "mdx",
+  match: {
+        include: '**/rule'
+  },
   defaultItem() {
     return {
       guid: generateGuid(),

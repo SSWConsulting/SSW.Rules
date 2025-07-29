@@ -60,8 +60,12 @@ jobs:
             image_tag: ${{ steps.meta.outputs.tags }}
             image_digest: ${{ steps.build.outputs.digest }}
         steps:
-            - name: Checkout code
+            # ────────────────────────────── CHECKOUTS ──────────────────────────────
+            - name: Checkout main repo
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  lfs: true
 
             - name: Checkout SSW.Rules.Content
               uses: actions/checkout@v4
@@ -70,36 +74,41 @@ jobs:
                   ref: ${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH }}
                   token: ${{ secrets.TOKEN }}
                   path: content-temp
+                  fetch-depth: 0
+                  lfs: true
 
+            # ────────────────────────────── PYTHON + MAPPING FILES ────────────────
             - name: Setup Python
               uses: actions/setup-python@v4
               with:
                   python-version: '3.x'
 
-            - name: Generate rule-category mapping files
+            - name: Generate rule‑category mapping files
               working-directory: content-temp/scripts/tina-migration
               run: python build-rule-category-map.py
 
-            - name: Copy generated files to build context
+            - name: Copy generated mapping + content
               run: |
                   cp content-temp/scripts/tina-migration/rule-to-categories.json ./
                   cp content-temp/scripts/tina-migration/category-uri-title-map.json ./
                   mv content-temp ./content
 
-            - name: Azure CLI - Login
+            # ────────────────────────────── AZURE LOGIN ───────────────────────────
+            - name: Azure CLI – Login
               uses: azure/login@v2
               with:
                   client-id: ${{ secrets.AZURE_CLIENT_ID }}
                   tenant-id: ${{ secrets.AZURE_TENANT_ID }}
                   subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-            - name: Login to Azure Container Registry
+            - name: Login to ACR
               run: az acr login --name ${{ inputs.registry_name }}
 
+            # ────────────────────────────── DOCKER BUILD ──────────────────────────
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
 
-            - name: Extract metadata
+            - name: Extract metadata (tags, labels)
               id: meta
               uses: docker/metadata-action@v5
               with:
@@ -109,11 +118,11 @@ jobs:
 
             - name: Create Dockerfile
               run: |
-                  cat > Dockerfile << 'EOF'
+                  cat > Dockerfile <<'EOF'
                   FROM node:18-alpine AS base
 
                   FROM base AS deps
-                  RUN apk add --no-cache libc6-compat
+                  RUN apk add --no-cache libc6-compat git-lfs
                   WORKDIR /app
                   COPY package*.json ./
                   COPY yarn.lock* ./
@@ -125,6 +134,7 @@ jobs:
                   WORKDIR /app
                   COPY --from=deps /app/node_modules ./node_modules
                   COPY . .
+                  RUN git lfs pull || true
 
                   ARG TINA_TOKEN
                   ARG NEXT_PUBLIC_TINA_CLIENT_ID
@@ -133,34 +143,33 @@ jobs:
                   ARG NEXT_PUBLIC_ALGOLIA_ADMIN_KEY
                   ARG NEXT_PUBLIC_ALGOLIA_INDEX_NAME
                   ARG NEXT_PUBLIC_ALGOLIA_API_KEY
-                  ENV TINA_TOKEN=$TINA_TOKEN
-                  ENV NEXT_PUBLIC_TINA_CLIENT_ID=$NEXT_PUBLIC_TINA_CLIENT_ID
-                  ENV NEXT_PUBLIC_TINA_BRANCH=$NEXT_PUBLIC_TINA_BRANCH
-                  ENV NEXT_PUBLIC_ALGOLIA_APP_ID=$NEXT_PUBLIC_ALGOLIA_APP_ID
-                  ENV NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=$NEXT_PUBLIC_ALGOLIA_ADMIN_KEY
-                  ENV NEXT_PUBLIC_ALGOLIA_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_INDEX_NAME
-                  ENV NEXT_PUBLIC_ALGOLIA_API_KEY=$NEXT_PUBLIC_ALGOLIA_API_KEY
-                  ENV NEXT_TELEMETRY_DISABLED=1
+                  ENV TINA_TOKEN=$TINA_TOKEN \
+                      NEXT_PUBLIC_TINA_CLIENT_ID=$NEXT_PUBLIC_TINA_CLIENT_ID \
+                      NEXT_PUBLIC_TINA_BRANCH=$NEXT_PUBLIC_TINA_BRANCH \
+                      NEXT_PUBLIC_ALGOLIA_APP_ID=$NEXT_PUBLIC_ALGOLIA_APP_ID \
+                      NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=$NEXT_PUBLIC_ALGOLIA_ADMIN_KEY \
+                      NEXT_PUBLIC_ALGOLIA_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_INDEX_NAME \
+                      NEXT_PUBLIC_ALGOLIA_API_KEY=$NEXT_PUBLIC_ALGOLIA_API_KEY \
+                      NEXT_TELEMETRY_DISABLED=1
+
                   RUN if [ -f yarn.lock ]; then yarn build; else npm run build; fi
 
                   FROM base AS runner
                   WORKDIR /app
-                  ENV NODE_ENV=production
-                  ENV NEXT_TELEMETRY_DISABLED=1
-                  RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
-                  
+                  ENV NODE_ENV=production \
+                      NEXT_TELEMETRY_DISABLED=1 \
+                      PORT=3000 \
+                      HOSTNAME="0.0.0.0"
+                  RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001
                   COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
                   COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
                   COPY --from=builder /app/public ./public
-
                   USER nextjs
                   EXPOSE 3000
-                  ENV PORT=3000
-                  ENV HOSTNAME="0.0.0.0"
                   CMD ["node", "server.js"]
                   EOF
 
-            - name: Build and push Docker image
+            - name: Build & push image
               id: build
               uses: docker/build-push-action@v5
               with:
@@ -180,8 +189,7 @@ jobs:
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
 
-            - name: Output image info
+            - name: Image info
               run: |
-                  echo "Image built and pushed successfully!"
-                  echo "Tag: ${{ steps.meta.outputs.tags }}"
-                  echo "Digest: ${{ steps.build.outputs.digest }}"
+                  echo "Image tag   : ${{ steps.meta.outputs.tags }}"
+                  echo "Image digest: ${{ steps.build.outputs.digest }}"

@@ -18,6 +18,11 @@ on:
                 required: false
                 default: ''
                 type: string
+            branch_name:
+                description: 'Source branch name that triggered this deployment'
+                required: false
+                default: ''
+                type: string
 
 concurrency:
     group: ${{ github.ref_name }}-deployment
@@ -36,6 +41,7 @@ jobs:
             registry_name: 'sswrulestinastaging'
             image_name: 'ssw-rules-tina-staging-nextjs'
             tina_branch: ${{ github.event.inputs.tina_branch }}
+            source_branch: ${{ github.event.inputs.branch_name }}
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -55,6 +61,13 @@ jobs:
         needs: build
         environment: staging
         steps:
+            - name: Log deployment info
+              run: |
+                  echo "🚀 Deploying POC Application"
+                  echo "Triggered by source branch: ${{ github.event.inputs.branch_name || github.ref_name }}"
+                  echo "Target environment: ${{ github.event.inputs.environment || 'staging' }}"
+                  echo "Tina content branch: ${{ github.event.inputs.tina_branch || 'default' }}"
+
             - name: Azure CLI - Login
               uses: azure/login@v2
               with:
@@ -70,6 +83,7 @@ jobs:
 
             - name: Verify deployment
               run: |
-                  echo "Application deployed successfully!"
+                  echo "✅ Application deployed successfully!"
                   echo "Image: ${{ needs.build.outputs.image_tag }}"
                   echo "App URL: https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+                  echo "Source: ${{ github.event.inputs.branch_name || github.ref_name }}"

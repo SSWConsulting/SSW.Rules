@@ -18,6 +18,11 @@ on:
                 type: string
                 required: false
                 default: ''
+            source_branch:
+                type: string
+                required: false
+                default: ''
+                description: 'Source branch name that triggered this build'
         secrets:
             AZURE_CLIENT_ID:
                 required: true
@@ -60,6 +65,16 @@ jobs:
             image_tag: ${{ steps.meta.outputs.tags }}
             image_digest: ${{ steps.build.outputs.digest }}
         steps:
+            # ────────────────────────────── BUILD INFO ─────────────────────────────
+            - name: Log build information
+              run: |
+                  echo "🚀 Starting build process"
+                  echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
+                  echo "Tina branch: ${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH || 'Default' }}"
+                  echo "Environment tag: ${{ inputs.tag }}"
+                  echo "Registry: ${{ inputs.registry_name }}"
+                  echo "Image: ${{ inputs.image_name }}"
+
             # ────────────────────────────── CHECKOUTS ──────────────────────────────
             - name: Checkout main repo
               uses: actions/checkout@v4
@@ -115,6 +130,9 @@ jobs:
                   images: ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}
                   tags: |
                       type=raw,value=${{ inputs.tag }}
+                  labels: |
+                      org.opencontainers.image.source.branch=${{ inputs.source_branch }}
+                      org.opencontainers.image.tina.branch=${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH }}
 
             - name: Create Dockerfile
               run: |
@@ -191,5 +209,8 @@ jobs:
 
             - name: Image info
               run: |
+                  echo "✅ Build completed successfully!"
                   echo "Image tag   : ${{ steps.meta.outputs.tags }}"
                   echo "Image digest: ${{ steps.build.outputs.digest }}"
+                  echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
+                  echo "Content branch: ${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH }}"

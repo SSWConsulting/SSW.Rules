@@ -31,11 +31,14 @@ const Tooltip = ({ children, text, showDelay, hideDelay, className = '' }) => {
       {showTooltip && (
         <span
           className="
-            absolute bottom-full mb-1 whitespace-nowrap rounded-md 
-            bg-tooltip-grey p-1.5 text-xs text-white transition-opacity 
-            after:absolute after:top-full after:left-2/4 after:-translate-x-1/2 
-            after:border-4 after:border-solid after:border-tooltip-grey after:border-l-transparent 
-            after:border-r-transparent after:border-b-transparent after:content-['']
+            absolute left-full top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md 
+            bg-tooltip-grey p-1.5 text-xs text-white transition-opacity bg-opacity-100
+            after:absolute after:left-0 after:top-1/2 after:-translate-y-1/2 after:-translate-x-full 
+            after:border-4 after:border-solid after:border-tooltip-grey after:border-t-transparent 
+            after:border-b-transparent after:border-l-tooltip-grey after:content-[''] z-50           
+            sm:left-auto sm:top-auto sm:bottom-full sm:ml-0 sm:mb-1 
+            sm:-translate-y-0 sm:translate-x-0 sm:after:top-full sm:after:left-2/4 sm:after:-translate-x-1/2 
+            sm:after:-translate-y-0 sm:after:border-l-transparent sm:after:border-r-transparent sm:after:border-b-tooltip-grey
           "
         >
           {text}

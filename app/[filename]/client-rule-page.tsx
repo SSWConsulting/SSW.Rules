@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { formatDateLong, timeAgo } from "@/lib/dateUtils";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
+import HelpCard from "@/components/HelpCard";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -137,6 +138,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
           </Card>
           <Card>acknowledgements</Card>
           <Card>related rules</Card>
+          <HelpCard />
         </div>
       </div>
     </>

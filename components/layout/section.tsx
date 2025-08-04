@@ -10,7 +10,7 @@ export const Section: React.FC<SectionProps> = ({ className, children, backgroun
   return (
     <div className={background || "bg-default"}>
       <section
-        className={cn("py-12 mx-auto max-w-[1280px] px-8", className)}
+        className={cn("py-12 mx-auto max-w-screen-xl px-8", className)}
         {...props}
       >
         {children}

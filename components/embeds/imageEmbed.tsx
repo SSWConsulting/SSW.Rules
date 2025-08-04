@@ -8,18 +8,18 @@ import Image from "next/image";
 
 export function ImageEmbed({ data }: { data: any }) {
   const sizeClasses = {
-    small: "max-w-[300px]",
-    medium: "max-w-[600px]",
+    small: "max-w-sm",
+    medium: "max-w-2xl",
     large: "max-w-full",
   };
 
-  const borderClass = data.showBorder ? "border-[10px] border-[#dddddd00]" : "";
+  const borderClass = data.showBorder ? "border-[10px] border-transparent" : "";
   const heightClass = data.src ? "h-auto" : "h-[300px]";
 
   return (
     <ComponentWithFigure data={data}>
       <div
-        className={`bg-[#eee] mt-4 w-auto ${
+        className={`bg-gray-200 mt-4 w-auto ${
           sizeClasses[data.size]
         } ${borderClass} ${heightClass}`}
       >

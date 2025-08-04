@@ -16,7 +16,7 @@ const HelpCard: React.FC = () => {
       </p>
       <button
         onClick={() => handleOpenForm()}
-        className="w-full bg-[#CC4141] text-white py-3 px-4 rounded hover:bg-[#CC2121] transition hover:cursor-pointer"
+        className="w-full bg-ssw-red text-white py-3 px-4 rounded hover:bg-ssw-red/90 transition hover:cursor-pointer"
       >
         Book a free initial meeting
       </button>

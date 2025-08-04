@@ -40,6 +40,16 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-ssw-red: var(--ssw-red);
+  --color-gray-100: var(--gray-100);
+  --color-gray-200: var(--gray-200);
+  --color-gray-300: var(--gray-300);
+  --color-gray-400: var(--gray-400);
+  --color-gray-500: var(--gray-500);
+  --color-gray-600: var(--gray-600);
+  --color-gray-700: var(--gray-700);
+  --color-gray-800: var(--gray-800);
+  --color-gray-900: var(--gray-900);
 }
 
 :root {
@@ -75,6 +85,16 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --ssw-red: oklch(0.577 0.245 27.325);
+  --gray-100: oklch(0.97 0 0);
+  --gray-200: oklch(0.922 0 0);
+  --gray-300: oklch(0.85 0 0);
+  --gray-400: oklch(0.708 0 0);
+  --gray-500: oklch(0.556 0 0);
+  --gray-600: oklch(0.4 0 0);
+  --gray-700: oklch(0.32 0 0);
+  --gray-800: oklch(0.25 0 0);
+  --gray-900: oklch(0.145 0 0);
 }
 
 .dark {
@@ -109,6 +129,16 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --ssw-red: oklch(0.577 0.245 27.325);
+  --gray-100: oklch(0.32 0 0);
+  --gray-200: oklch(0.35 0 0);
+  --gray-300: oklch(0.4 0 0);
+  --gray-400: oklch(0.5 0 0);
+  --gray-500: oklch(0.6 0 0);
+  --gray-600: oklch(0.7 0 0);
+  --gray-700: oklch(0.8 0 0);
+  --gray-800: oklch(0.9 0 0);
+  --gray-900: oklch(0.985 0 0);
 }
 
 @layer base {
@@ -121,7 +151,7 @@
   }
 
   a {
-    @apply underline hover:cursor-pointer hover:text-[#CC4141];
+    @apply underline hover:cursor-pointer hover:text-ssw-red;
   }
 
   h1 {
@@ -133,7 +163,7 @@
   h4,
   h5,
   h6 {
-    @apply mt-8 text-[#333] leading-[1.2] mb-4 font-semibold;
+    @apply mt-8 text-gray-900 leading-[1.2] mb-4 font-semibold;
   }
 
   h2 {
@@ -186,7 +216,6 @@ ul li::before {
   display: inline-block;
   width: 1rem;
   margin-left: -1rem;
-  color: rgb(204 65 65 / var(--tw-text-opacity));
-  --tw-text-opacity: 1;
+  color: var(--color-ssw-red);
   position: absolute;
 }

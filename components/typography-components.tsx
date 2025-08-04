@@ -6,12 +6,12 @@ export const typographyComponents = {
   ),
   blockquote: (props: any) => (
     <blockquote
-      className="border-l-2 border-black my-4 pl-4 italic text-[#666]"
+      className="border-l-2 border-gray-900 my-4 pl-4 italic text-gray-600"
       {...props}
     />
   ),
   code: (props: any) => (
-    <code className="bg-[#f4f4f4] py-1 px-2 rounded-sm" {...props} />
+    <code className="bg-gray-100 py-1 px-2 rounded-sm" {...props} />
   ),
   code_block: (props) => {
     if (!props) {

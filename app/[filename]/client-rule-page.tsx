@@ -67,7 +67,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
             <div className="flex flex-col flex-1 justify-between">
               <div>
                 <h1
-                  className="text-[#CC4141] text-4xl leading-[1.2] my-0 b-4 font-semibold"
+                  className="text-ssw-red text-4xl leading-[1.2] my-0 b-4 font-semibold"
                   data-tina-field={tinaField(rule, "title")}
                 >
                   {rule?.title}
@@ -128,7 +128,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                     <Link
                       key={index}
                       href={`/${category.uri}`}
-                      className="border-2 no-underline border-[#CC4141] text-[#CC4141] p-2 rounded-sm font-semibold hover:text-white hover:bg-[#CC4141] transition-colors duration-200"
+                      className="border-2 no-underline border-ssw-red text-ssw-red p-2 rounded-sm font-semibold hover:text-white hover:bg-ssw-red transition-colors duration-200"
                     >
                       {category.title}
                     </Link>

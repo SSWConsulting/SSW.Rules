@@ -59,7 +59,7 @@ export async function GET(
     
     const mimeType = getContentType(fullImagePath)
 
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(new Uint8Array(fileBuffer), {
       headers: {
         'Content-Type': mimeType,
         'Content-Length': fileStat.size.toString(),

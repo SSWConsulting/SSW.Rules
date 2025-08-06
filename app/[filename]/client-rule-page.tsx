@@ -19,6 +19,7 @@ import { useMemo } from "react";
 import { formatDateLong, timeAgo } from "@/lib/dateUtils";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 import HelpCard from "@/components/HelpCard";
+import Acknowledgements from "@/components/Acknowledgements";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -33,7 +34,6 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     data: ruleQueryProps?.data,
   }).data;
   const rule = ruleData?.rule;
-
   const iconSize = 32;
 
   const relativeTime = useMemo(() => {
@@ -128,7 +128,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                     <Link
                       key={index}
                       href={`/${category.uri}`}
-                      className="border-2 no-underline border-ssw-red text-ssw-red p-2 rounded-sm font-semibold hover:text-white hover:bg-ssw-red transition-colors duration-200"
+                      className="border-2 no-underline border-ssw-red text-ssw-red p-2 rounded-xs font-semibold hover:text-white hover:bg-ssw-red transition-colors duration-200"
                     >
                       {category.title}
                     </Link>
@@ -136,8 +136,10 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                 })}
             </div>
           </Card>
-          <Card>acknowledgements</Card>
-          <Card>related rules</Card>
+          <Card title="Acknowledgements">
+            <Acknowledgements authors={rule.authors} />
+          </Card>
+          <Card>Related rules</Card>
           <HelpCard />
         </div>
       </div>

@@ -9,8 +9,8 @@ type CardProps = {
 
 export function Card({ children,title,dropShadow, className = "" }: CardProps) {
   return (
-    <div className={`border-2 border-border rounded-sm p-8 bg-card ${dropShadow?'drop-shadow-lg':''} ${className}`}>
-      {title && <h3 className="mt-0">{title}</h3>}
+    <div className={`border-2 border-border rounded-sm px-6 py-6 bg-card ${dropShadow?'drop-shadow-lg':''} ${className}`}>
+      {title && <h3 className="mt-0 text-lg">{title}</h3>}
       {children}
     </div>
   );

@@ -6,14 +6,6 @@ on:
             tag:
                 type: string
                 required: true
-            registry_name:
-                type: string
-                required: false
-                default: 'sswrulesregistry'
-            image_name:
-                type: string
-                required: false
-                default: 'ssw-rules-tina-nextjs'
             tina_branch:
                 type: string
                 required: false
@@ -60,7 +52,7 @@ defaults:
 jobs:
     build-and-push:
         runs-on: ubuntu-latest
-        environment: staging
+        environment: ${{ inputs.tag }}
         outputs:
             image_tag: ${{ steps.meta.outputs.tags }}
             image_digest: ${{ steps.build.outputs.digest }}
@@ -72,8 +64,8 @@ jobs:
                   echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
                   echo "Tina branch: ${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH || 'Default' }}"
                   echo "Environment tag: ${{ inputs.tag }}"
-                  echo "Registry: ${{ inputs.registry_name }}"
-                  echo "Image: ${{ inputs.image_name }}"
+                  echo "Registry: ${{ vars.REGISTRY_NAME }}"
+                  echo "Image: ${{ vars.IMAGE_NAME }}"
 
             # ────────────────────────────── CHECKOUTS ──────────────────────────────
             - name: Checkout main repo
@@ -117,7 +109,7 @@ jobs:
                   subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
             - name: Login to ACR
-              run: az acr login --name ${{ inputs.registry_name }}
+              run: az acr login --name ${{ vars.registry_name }}
 
             # ────────────────────────────── DOCKER BUILD ──────────────────────────
             - name: Set up Docker Buildx
@@ -127,7 +119,7 @@ jobs:
               id: meta
               uses: docker/metadata-action@v5
               with:
-                  images: ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}
+                  images: ${{ vars.registry_name }}.azurecr.io/${{ vars.image_name }}
                   tags: |
                       type=raw,value=${{ inputs.tag }}
                   labels: |

@@ -53,14 +53,12 @@ To test changes to MDX rules:
 ## Builds & Deployment
 
 ### SSW.Rules.Tina.Nextjs.POC
-- Changes made to [SSW.Rules.Tina.Nextjs.POC]() trigger builds that deploy to vercel
-- **TODO:** Deploy to Azure Static Web App
+- Changes made to [SSW.Rules.Tina.Nextjs.POC]() trigger builds that deploy to Azure
 
 ### SSW.Rules.Content
 - Changes made to [SSW.Rules.Content](http://github.com/SSWConsulting/SSW.Rules.Content) (i.e. rule changes) trigger builds that deploy:
-  - **Staging site with all rules**: https://ssw-rules-tina-staging-c5bwbjc4a8d2g8gm.australiaeast-01.azurewebsites.net/
-
-
+  - **main** to the **staging** - https://ssw-rules-tina-staging-c5bwbjc4a8d2g8gm.australiaeast-01.azurewebsites.net/
+  - latest **release/xx** to the **production** site - https://ssw-rules-tina-production-f8dhamhjhaggbdan.australiaeast-01.azurewebsites.net/
 
 
 
@@ -79,11 +77,10 @@ To test changes to MDX rules:
 - [x] Algolia search integration
 - [x] Editorial workflow enabled
 - [x] Vercel deployment setup
-- [ ] Azure deployment setup
-- [ ] Full deployment with all rules
-- [ ] Preview deployment on Vercel
+- [x] Azure deployment setup
+- [x] Full deployment with all rules
+- [x] Migration script all rules md to mdx
 - [ ] Preview deployment on Azure
-- [ ] Migration script all rules md to mdx
 
 
 ---

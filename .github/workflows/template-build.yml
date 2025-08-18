@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         name: Checkout SSW.Rules
         with:
           path: SSW.Rules
@@ -30,7 +30,7 @@ jobs:
             build-scripts
           fetch-depth: 1
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         name: Checkout SSW.Rules.Content
         with:
           repository: SSWConsulting/SSW.Rules.Content
@@ -89,7 +89,7 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ inputs.branch_name }}
 
@@ -184,7 +184,7 @@ jobs:
     name: Infra
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ inputs.branch_name }}
           sparse-checkout: |

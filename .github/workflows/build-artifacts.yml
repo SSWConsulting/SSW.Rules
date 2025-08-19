@@ -64,7 +64,7 @@ jobs:
                   echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
                   echo "Tina branch: ${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH || 'Default' }}"
                   echo "Environment tag: ${{ inputs.tag }}"
-                  echo "Registry: ${{ vars.REGISTRY_NAME }}"
+                  echo "Registry: ${{ vars.registry_name }}"
                   echo "Image: ${{ vars.IMAGE_NAME }}"
 
             # ────────────────────────────── CHECKOUTS ──────────────────────────────

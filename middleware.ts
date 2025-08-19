@@ -1,13 +1,18 @@
 // middleware.ts
 import { NextRequest, NextResponse } from 'next/server'
+import { auth0 } from './lib/auth0'
 
 export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  if (pathname.startsWith('/auth')) {
+    return auth0.middleware(request)
+  }
+
   // Only run in development mode
   if (process.env.NODE_ENV !== 'development') {
     return NextResponse.next()
   }
-
-  const { pathname } = request.nextUrl
 
   // Check if this is an image request that might be from TinaCMS
   // Adjust this pattern based on your TinaCMS image paths
@@ -34,5 +39,6 @@ export const config = {
      * - favicon.ico (favicon file)
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/auth/:path*'
   ],
 }

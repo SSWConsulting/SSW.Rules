@@ -92,3 +92,19 @@ query categoryWithRulesQuery($relativePath: String!) {
     }
   }
 }
+
+query rulesByGuidQuery($guids: [String!]!) {
+  ruleConnection(filter: { guid: { in: $guids } }) {
+    edges {
+      node {
+        guid
+        title
+        uri
+        body
+        authors {
+          title
+        }
+      }
+    }
+  }
+}

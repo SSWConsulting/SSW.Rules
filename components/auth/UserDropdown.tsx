@@ -62,27 +62,32 @@ export default function UserDropdown() {
           <div className="border-t border-gray-200 dark:border-gray-700" />
 
           <nav className="p-1">
-            <MenuItem href={`https://www.github.com/${u.nickname}`}><FaGithub size="18" /> GitHub Profile</MenuItem>
-            <MenuItem href="/rules/profile"><FaUser size="18" /> SSW.Rules Profile</MenuItem>
-            <MenuItem as="a" href="/auth/logout">
-              <FaSignOutAlt size="18" />
-              Sign Out
-            </MenuItem>
+            <a
+              href={`https://www.github.com/${u.nickname}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800"
+            >
+              <FaGithub size="18" /> GitHub Profile
+            </a>
+
+            <Link
+              href="/rules/profile"
+              prefetch={false}
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800"
+            >
+              <FaUser size="18" /> SSW.Rules Profile
+            </Link>
+
+            <a
+              href="/auth/logout"
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800"
+            >
+              <FaSignOutAlt size="18" /> Sign Out
+            </a>
           </nav>
         </div>
       )}
     </div>
-  );
-}
-
-function MenuItem(props) {
-  const { as, className = '', children, ...rest } = props;
-  const base =
-    'flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800';
-
-  return (
-    <Link className={`${base} ${className}`} {...(rest)}>
-      {children}
-    </Link>
   );
 }

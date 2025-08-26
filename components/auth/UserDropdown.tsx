@@ -63,7 +63,7 @@ export default function UserDropdown() {
 
           <nav className="p-1">
             <MenuItem href={`https://www.github.com/${u.nickname}`}><FaGithub size="18" /> GitHub Profile</MenuItem>
-            <MenuItem href="/profile"><FaUser size="18" /> SSW.Rules Profile</MenuItem>
+            <MenuItem href="/rules/profile"><FaUser size="18" /> SSW.Rules Profile</MenuItem>
             <MenuItem as="a" href="/auth/logout">
               <FaSignOutAlt size="18" />
               Sign Out

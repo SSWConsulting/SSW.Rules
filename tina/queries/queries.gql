@@ -86,6 +86,7 @@ query categoryWithRulesQuery($relativePath: String!) {
           ... on Rule {
             uri
             title
+            body
           }
         }
       }

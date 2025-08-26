@@ -45,13 +45,13 @@ function getContentForViewStyle(
 export default function ClientCategoryPage(props: ClientCategoryPageProps) {
   const { categoryQueryProps } = props;
 
-  const categoryData = useTina({
-    query: categoryQueryProps?.query,
-    variables: categoryQueryProps?.variables,
-    data: categoryQueryProps?.data,
-  }).data;
-
-  const category = categoryData;
+  const { data } = useTina({
+    query: categoryQueryProps.query,
+    variables: categoryQueryProps.variables ?? {},
+    data: categoryQueryProps.data ?? {},
+  });
+  
+  const category = data?.category;
 
   const [viewStyle, setViewStyle] = useState<"titleOnly" | "blurb" | "all">(
     "all"

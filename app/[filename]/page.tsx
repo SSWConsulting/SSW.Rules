@@ -55,10 +55,9 @@ const getCategoryData = async (filename: string) => {
     })
 
     return {
-      data: res.data.category,
-      variables: {
-        relativePath: `${fullPath}`,
-      },
+      data: res.data,
+      query: res.query,
+      variables: res.variables
     };
   } catch (error) {
     console.error("Error fetching category data:", error);

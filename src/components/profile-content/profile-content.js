@@ -23,14 +23,14 @@ const ProfileContent = (props) => {
   const [change, setChange] = useState(0);
   const [viewStyle, setViewStyle] = useState('titleOnly');
   const { user, isAuthenticated } = useAuth0();
-  const { fetchIdToken } = useAuthService();
+  const { fetchAccessToken } = useAuthService();
   const { trackException } = useAppInsights();
   const handleOptionChange = (e) => {
     setViewStyle(e.target.value);
   };
 
   async function onRemoveClick(ruleGuid) {
-    const jwt = await fetchIdToken();
+    const jwt = await fetchAccessToken();
     if (isAuthenticated) {
       if (props.filter == Filter.Bookmarks) {
         RemoveBookmark({ ruleGuid: ruleGuid, UserId: user.sub }, jwt)

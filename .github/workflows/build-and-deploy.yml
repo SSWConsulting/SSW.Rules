@@ -84,6 +84,10 @@ jobs:
                     AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
                     AUTH0_SECRET=${{ secrets.AUTH0_SECRET }} \
                     AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }} \
+                    NEXT_PUBLIC_GISCUS_REPO_NAME=${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }} \
+                    NEXT_PUBLIC_GISCUS_REPO_ID=${{ vars.NEXT_PUBLIC_GISCUS_REPO_ID }} \
+                    NEXT_PUBLIC_GISCUS_CATEGORY_ID=${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }} \
+                    NEXT_PUBLIC_GISCUS_THEME_URL=${{ vars.NEXT_PUBLIC_GISCUS_THEME_URL }} \
                     --output none
 
             - name: Deploy to Azure Web App

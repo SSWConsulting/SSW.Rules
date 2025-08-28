@@ -22,6 +22,7 @@ import HelpCard from "@/components/HelpCard";
 import Acknowledgements from "@/components/Acknowledgements";
 import { useUser, getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
+import Discussion from "@/components/Discussion";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -149,6 +150,8 @@ export default function ClientRulePage(props: ClientRulePageProps) {
               components={MarkdownComponentMapping}
             />
           </div>
+          <hr className="my-6 mx-0"/>
+          <Discussion ruleGuid={rule?.guid || ''} />
         </Card>
         <div className="flex flex-col flex-1 gap-8">
           <Card title="Categories">

@@ -109,3 +109,37 @@ query rulesByGuidQuery($guids: [String!]!) {
     }
   }
 }
+
+query rulesByUriQuery($uris: [String!]!) {
+  ruleConnection(filter: { uri: { in: $uris } }) {
+    edges {
+      node {
+        guid
+        title
+        uri
+        body
+        authors {
+          title
+        }
+      }
+    }
+  }
+}
+
+query rulesByAuthor($authorTitle: String!) {
+  ruleConnection(
+    filter: { authors: { title: { eq: $authorTitle } } }
+  ) {
+    edges {
+      node {
+        guid
+        title
+        uri
+        body
+        authors {
+          title
+        }
+      }
+    }
+  }
+}

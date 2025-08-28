@@ -23,6 +23,8 @@ import Acknowledgements from "@/components/Acknowledgements";
 import { useUser, getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
 import Discussion from "@/components/Discussion";
+import { useRouter } from "next/navigation";
+import { createGitHubService } from "@/lib/services/github";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -33,7 +35,11 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   const { ruleQueryProps } = props;
   const { user } = useUser();
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const [authorUsername, setAuthorUsername] = useState<string | null>(null);
 
+  const router = useRouter();
+  const [githubService] = useState(() => createGitHubService());
+  const [isLoadingUsername, setIsLoadingUsername] = useState(false);
   const ruleData = useTina({
     query: ruleQueryProps?.query,
     variables: ruleQueryProps?.variables,
@@ -54,6 +60,43 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     return `Created ${created}\nLast Updated ${updated}`;
   }, [rule?.created, rule?.lastUpdated]);
 
+  const openUserRule = async (ruleUri: string, state: number) => {
+    if (!ruleUri) return;
+
+    try {
+      if (authorUsername) {
+        router.push(`/rules/user?author=${encodeURIComponent(authorUsername)}`);
+        return;
+      }
+      setIsLoadingUsername(true);
+      const lastModifiedByUsername = await githubService.fetchGitHubUsernameForRule(ruleUri, state);
+      if (lastModifiedByUsername) setAuthorUsername(lastModifiedByUsername);
+      router.push(`/rules/user?author=${encodeURIComponent(lastModifiedByUsername)}`);
+    } catch (error) {
+      console.error('Failed to fetch GitHub username:', error);
+    } finally {
+      setIsLoadingUsername(false);
+    }
+  };
+
+  // Prefetch the GitHub username as soon as we know the rule URI
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      const uri = rule?.uri;
+      if (!uri) return;
+      try {
+        const username = await githubService.fetchGitHubUsernameForRule(uri, 1);
+        if (username && isMounted) setAuthorUsername(username);
+      } catch {
+        // Silently ignore prefetch errors; click fallback will handle
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, [rule?.uri, githubService]);
+  
   useEffect(() => {
     (async () => {
       if (user?.sub && rule?.uri) {
@@ -98,7 +141,27 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   {rule?.title}
                 </h1>
                 <p className="mt-4">
-                  Updated by <b>{rule?.lastUpdatedBy}</b> {relativeTime}.{" "}
+                  Updated by{" "}
+                  {rule?.lastUpdatedBy ? (
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (!isLoadingUsername) {
+                          openUserRule(rule?.uri || '', 1);
+                        }
+                      }}
+                      className={`font-semibold hover:text-ssw-red hover:underline transition-colors duration-200 ${
+                        isLoadingUsername ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                      title={`View ${rule.lastUpdatedBy}'s rules`}
+                    >
+                      {isLoadingUsername ? 'Loading...' : rule.lastUpdatedBy}
+                    </a>
+                  ) : (
+                    <b>Unknown</b>
+                  )}{" "}
+                  {relativeTime}.{" "}
                   {/* TODO: update link when migration is done (path will be wrong as reules will be in public folder) */}
                   <a
                     href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/main/rules/${rule?.uri}/rule.md`}

@@ -12,11 +12,14 @@ export interface RuleListItemHeaderProps {
     title: string;
     uri: string;
   };
-  type: string;
+  showBookmark?: boolean;
   onBookmarkRemoved?: (ruleGuid: string) => void;
 }
 
-const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, type, onBookmarkRemoved }) => {
+const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ 
+  rule, 
+  showBookmark = false, 
+  onBookmarkRemoved }) => {
   const linkRef = useRef<HTMLAnchorElement>(null);
   const { user } = useUser();
   const [isRemoving, setIsRemoving] = useState(false);
@@ -45,15 +48,17 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, type, onB
           </Link>
         </h2>
 
-        <div className="profile-rule-buttons flex flex-col justify-center">
-          <IconButton
-            onClick={() => handleRemoveBookmark(rule.guid)}
-            disabled={isRemoving}
-            className={isRemoving ? 'opacity-50' : ''}
-          >
-            <RiBookmarkFill size={26} className="text-ssw-red" />
-          </IconButton>
-         </div>
+        {showBookmark && (
+          <div className="profile-rule-buttons flex flex-col justify-center">
+            <IconButton
+              onClick={() => handleRemoveBookmark(rule.guid)}
+              disabled={isRemoving}
+              className={isRemoving ? 'opacity-50' : ''}
+            >
+              <RiBookmarkFill size={26} className="text-ssw-red" />
+            </IconButton>
+          </div>
+        )}
       </div>
     </section>
   );

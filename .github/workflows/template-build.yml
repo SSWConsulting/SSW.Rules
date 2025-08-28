@@ -119,6 +119,7 @@ jobs:
           AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
           AUTH0_REDIRECT_URI: ${{ vars.AUTH0_REDIRECT_URI }}
           AUTH0_SCOPE: ${{ vars.AUTH0_SCOPE }}
+          AUTH0_AUDIENCE: ${{ vars.AUTH0_AUDIENCE }}
           GITHUB_API_PAT: ${{ secrets.CONTENT_GITHUB_TOKEN }}
           GTM_CONTAINER_ID: ${{ vars.GTM_CONTAINER_ID }}
           GITHUB_ORG: ${{ github.repository_owner }}

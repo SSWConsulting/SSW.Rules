@@ -1043,12 +1043,10 @@ div.bad-example {
 
 .greybox, .highlight, .todo, .info, .china, .codeauditor {
   padding: 1rem;
-  margin: 1rem 0;
-  display: block;
+  width: 100%;
+  margin: .5rem 0;
+  display: inline-block;
   border-radius:.25rem;
-  min-width: 50%;
-  max-width: 700px;
-  width: fit-content;
 }
 
 .greybox {

@@ -39,27 +39,44 @@ export default function UserDropdown() {
 
       {open && (
         <div
-          role="menu"
-          className="absolute right-0 z-50 top-3/4 w-60 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900"
-        >
-          <div className="flex items-center gap-3 p-4">
-            <img
-              src={u.picture}
-              alt={displayName}
-              className="h-10 w-10 rounded-full object-cover"
-              referrerPolicy="no-referrer"
-            />
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold">{displayName}</p>
-              {u.email && (
-                <p className="truncate text-xs text-gray-500 dark:text-gray-400">
-                  {u.email}
-                </p>
-              )}
-            </div>
+        role="menu"
+        className="absolute right-0 z-50 top-11/12 w-60 rounded-2xl bg-white shadow-xl"
+      >
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -top-[10px] right-4 h-0 w-0
+                    border-l-[10px] border-l-transparent
+                    border-r-[10px] border-r-transparent
+                    border-b-[10px] border-b-gray-200
+                    dark:border-b-gray-700"
+        />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -top-[9px] right-4 h-0 w-0
+                    border-l-[9px] border-l-transparent
+                    border-r-[9px] border-r-transparent
+                    border-b-[9px] border-b-white
+                    dark:border-b-gray-900"
+        />
+    
+        <div className="flex items-center gap-3 p-4">
+          <img
+            src={u.picture}
+            alt={displayName}
+            className="h-10 w-10 rounded-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold">{displayName}</p>
+            {u.email && (
+              <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                {u.email}
+              </p>
+            )}
           </div>
-
-          <div className="border-t border-gray-200 dark:border-gray-700" />
+        </div>
+    
+        <div className="border-t border-gray-200 dark:border-gray-700" />
 
           <nav className="p-1">
             <a

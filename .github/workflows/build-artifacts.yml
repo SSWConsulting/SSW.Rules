@@ -38,6 +38,8 @@ on:
                 required: false
             NEXT_PUBLIC_TINA_BRANCH:
                 required: false
+            NEXT_PUBLIC_API_BASE_URL:
+                required: false
         outputs:
             image_tag:
                 description: 'Docker tag to deploy'
@@ -153,6 +155,7 @@ jobs:
                   ARG NEXT_PUBLIC_ALGOLIA_ADMIN_KEY
                   ARG NEXT_PUBLIC_ALGOLIA_INDEX_NAME
                   ARG NEXT_PUBLIC_ALGOLIA_API_KEY
+                  ARG NEXT_PUBLIC_API_BASE_URL
                   ENV TINA_TOKEN=$TINA_TOKEN \
                       NEXT_PUBLIC_TINA_CLIENT_ID=$NEXT_PUBLIC_TINA_CLIENT_ID \
                       NEXT_PUBLIC_TINA_BRANCH=$NEXT_PUBLIC_TINA_BRANCH \
@@ -196,6 +199,7 @@ jobs:
                       NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
                       NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
                       NEXT_PUBLIC_TINA_BRANCH=${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH }}
+                      NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
 

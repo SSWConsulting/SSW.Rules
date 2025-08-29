@@ -31,7 +31,7 @@ function makeBlurbContent(body?: any) {
   return { type: 'root', children: embeds };
 }
 
-const RuleListItem: React.FC<RuleListItemProps> = ({ rule, viewStyle, type, onBookmarkRemoved }) => {
+const RuleListItem: React.FC<RuleListItemProps> = ({ rule, viewStyle, onBookmarkRemoved }) => {
   const blurbContent = React.useMemo(() => makeBlurbContent(rule?.body), [rule?.body]);
   const hasBlurb =
     blurbContent &&

@@ -95,7 +95,12 @@ export default function UserRulesClientPage() {
       const resultList = prSearchData.search.nodes;
       const allRules = resultList
         .flatMap(pr => pr.files.nodes)
-        .filter(file => file.path.endsWith('rule.mdx'));
+        .filter(file => file.path.endsWith('rule.mdx') || file.path.endsWith('rule.md'))
+        .map(file => ({
+          ...file,
+          path: file.path.endsWith('rule.md') ? file.path.slice(0, -3) + '.mdx' : file.path,
+        }));
+        
       if(allRules.length === 0){
         return;
       }

@@ -46,7 +46,7 @@ const Layout = ({
         authorizationParams={{
           redirect_uri: process.env.AUTH0_REDIRECT_URI,
           audience: process.env.AUTH0_AUDIENCE,
-          scope: process.env.AUTH0_SCOPE
+          scope: process.env.AUTH0_SCOPE,
         }}
         onRedirectCallback={onRedirectCallback}
         useRefreshTokens={true}

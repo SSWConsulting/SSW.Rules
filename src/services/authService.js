@@ -8,7 +8,7 @@ export const useAuthService = () => {
       const token = await getAccessTokenSilently({
         authorizationParams: {
           audience: process.env.AUTH0_AUDIENCE,
-          scope: process.env.AUTH0_SCOPE
+          scope: process.env.AUTH0_SCOPE,
         },
         cacheMode: 'on',
       });

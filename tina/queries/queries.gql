@@ -5,10 +5,7 @@ query latestRulesQuery($size: Float, $sortOption: String) {
         id
         title
         lastUpdated
-        created
-       _sys {
-          filename
-        }
+        uri
       }
     }
   }

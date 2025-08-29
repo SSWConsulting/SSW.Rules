@@ -151,7 +151,7 @@
   }
 
   a {
-    @apply underline hover:cursor-pointer hover:text-ssw-red;
+    @apply hover:cursor-pointer hover:text-ssw-red;
   }
 
   h1 {
@@ -198,11 +198,24 @@
   ol {
     @apply list-decimal;
   }
+}
 
+@layer components {
   .rule-icon {
     @apply hover:opacity-60 cursor-pointer transition-opacity duration-200;
   }
 
+  .layout-two-columns {
+    @apply flex flex-col gap-8 lg:flex-row;
+  }
+
+  .layout-main-section {
+    @apply lg:flex-2;
+  }
+
+  .layout-sidebar {
+    @apply flex flex-col flex-1 gap-8;
+  }
 }
 
 @layer utilities {

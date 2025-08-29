@@ -118,8 +118,8 @@ export default function ClientRulePage(props: ClientRulePageProps) {
 
   return (
     <>
-      <div className="flex gap-8">
-        <Card dropShadow className="flex-2">
+      <div className="layout-two-columns">
+        <Card dropShadow className="layout-main-section">
           <div className="flex border-b-2 pb-4">
             {rule?.thumbnail && (
               <div className="w-[175px] h-[175px] relative mr-4">
@@ -216,7 +216,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
           <hr className="my-6 mx-0"/>
           <Discussion ruleGuid={rule?.guid || ''} />
         </Card>
-        <div className="flex flex-col flex-1 gap-8">
+        <div className="layout-sidebar">
           <Card title="Categories">
             <div className="flex flex-wrap gap-4">
               {props.ruleCategoriesMapping &&

@@ -33,14 +33,28 @@ async function fetchAllCategories() {
   return allCategories;
 }
 
+async function fetchLatestRules() {
+  const res = await client.queries.latestRulesQuery({
+    size: 5,
+    sortOption: 'lastUpdated',
+  });
+
+  return res?.data?.ruleConnection?.edges
+    ?.filter((edge: any) => edge && edge.node)
+    .map((edge: any) => edge.node) || [];
+}
+
 export default async function Home() {
-  const categories = await fetchAllCategories();
+  const [categories, latestRules] = await Promise.all([
+    fetchAllCategories(),
+    fetchLatestRules()
+  ]);
 
   const layout = await Layout({
     children: (
       <Section>
         <SearchBar />
-        <HomeClientPage categories={categories} />
+        <HomeClientPage categories={categories} latestRules={latestRules} />
       </Section>
     )
   });

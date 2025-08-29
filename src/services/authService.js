@@ -14,6 +14,7 @@ export const useAuthService = () => {
       });
       return token;
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('Failed to fetch access token', e);
       return null;
     }

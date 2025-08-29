@@ -41,7 +41,6 @@ export default function HomeClientPage(props: HomeClientPageProps) {
           <Card title="Latest Rules">
 
           {latestRules.map((rule, index) => (
-            console.log(rule),
             <ul key={index}>
               <li>
                 <Link href={`/${rule?.uri}`}>

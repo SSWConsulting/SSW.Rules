@@ -45,12 +45,12 @@ const Layout = ({
         clientId={process.env.AUTH0_CLIENT_ID}
         authorizationParams={{
           redirect_uri: process.env.AUTH0_REDIRECT_URI,
+          audience: process.env.AUTH0_AUDIENCE,
+          scope: process.env.AUTH0_SCOPE,
         }}
         onRedirectCallback={onRedirectCallback}
         useRefreshTokens={true}
         cacheLocation="localstorage"
-        scope={process.env.AUTH0_SCOPE}
-        audience={process.env.AUTH0_DOMAIN}
         useRefreshTokensFallback={true}
       >
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}

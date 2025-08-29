@@ -17,7 +17,7 @@ const Bookmark = (props) => {
   const [bookmarked, setBookmarked] = useState(false);
 
   const { isAuthenticated, user, loginWithRedirect } = useAuth0();
-  const { fetchIdToken } = useAuthService();
+  const { fetchAccessToken } = useAuthService();
 
   const { trackException } = useAppInsights();
 
@@ -36,17 +36,17 @@ const Bookmark = (props) => {
   async function onClick() {
     if (isAuthenticated) {
       setBookmarked(!bookmarked);
-      const jwt = await fetchIdToken();
+      const token = await fetchAccessToken();
       const data = { ruleGuid: ruleId, UserId: user.sub };
       !bookmarked
-        ? BookmarkRule(data, jwt)
+        ? BookmarkRule(data, token)
             .then(() => {
               setChange(change + 1);
             })
             .catch((err) => {
               trackException(err, 3);
             })
-        : RemoveBookmark({ ruleGuid: ruleId, UserId: user.sub }, jwt)
+        : RemoveBookmark({ ruleGuid: ruleId, UserId: user.sub }, token)
             .then(() => {
               setChange(change + 1);
             })

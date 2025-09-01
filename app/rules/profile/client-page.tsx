@@ -42,7 +42,7 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
       }
 
       const bookmarkResult: UserBookmarksResponse = await BookmarkService.getUserBookmarks(user.sub, accessToken);
-      
+
       if (!bookmarkResult.error && bookmarkResult.bookmarkedRules) {
         setBookmarkedRules(bookmarkResult.bookmarkedRules);
         setBookmarkCount(bookmarkResult.bookmarkedRules.length);
@@ -74,6 +74,7 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
                 title: fullRule.title,
                 uri: fullRule.uri,
                 body: fullRule.body,
+                isBookmarked: true,
                 authors:
                   fullRule.authors
                     ?.map((a: any) => (a && a.title ? { title: a.title } : null))
@@ -192,7 +193,7 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
               </div>
             </div>
             
-            <div className="bg-white">
+            <div className="bg-white p-6">
               {authLoading || isLoading ? (
                 <div className="flex items-center justify-center min-h-[400px] p-12">
                   <p className="text-xl text-gray-600">

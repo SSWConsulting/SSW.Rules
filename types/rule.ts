@@ -5,4 +5,5 @@ export interface Rule {
   excerpt?: string;
   htmlAst?: any;
   authors?: Array<{ title: string }>;
+  isBookmarked: boolean;
 }

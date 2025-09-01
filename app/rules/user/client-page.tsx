@@ -281,7 +281,7 @@ export default function UserRulesClientPage() {
               )}
               {!loadingLastModified && lastModifiedRules.length > 0 && (
                 lastModifiedRules.map((rule) => (
-                  <RuleListItemHeader key={rule.guid} rule={rule} />
+                  <RuleListItemHeader key={rule.guid} rule={rule} index={0} />
                 ))
               )}
             </div>
@@ -296,7 +296,7 @@ export default function UserRulesClientPage() {
               )}
               {!loadingAuthored && authoredRules.length > 0 && (
                 authoredRules.map((rule) => (
-                  <RuleListItemHeader key={rule.guid} rule={rule} />
+                  <RuleListItemHeader key={rule.guid} rule={rule} index={0} />
                 ))
               )}
             </div>

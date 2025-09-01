@@ -7,11 +7,16 @@ interface SectionProps extends React.HTMLProps<HTMLElement> {
 }
 
 export const Section: React.FC<SectionProps> = ({ className, children, background, ...props }) => {
-    return (
-        <div className={background || 'bg-default'}>
-            <section {...props}>{children}</section>
-        </div>
-    );
+  return (
+    <div className={background || "bg-default"}>
+      <section
+        className={cn("mx-auto max-w-screen-xl sm:p-8", className)}
+        {...props}
+      >
+        {children}
+      </section>
+    </div>
+  );
 };
 
 export const tailwindBackgroundOptions = [

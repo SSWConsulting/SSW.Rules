@@ -138,6 +138,12 @@ const Category: Collection = {
         },
         {
           type: "string",
+          name: "uri",
+          label: "URI",
+          description: "The URI of the category",
+        },
+        {
+          type: "string",
           name: "guid",
           label: "Guid",
           description:

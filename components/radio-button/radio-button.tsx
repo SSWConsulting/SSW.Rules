@@ -9,7 +9,6 @@ interface RadioButtonProps {
   selectedOption: string;
   handleOptionChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   labelText: string;
-  icon: React.ReactNode;
 }
 
 const RadioButton: React.FC<RadioButtonProps> = ({
@@ -18,8 +17,7 @@ const RadioButton: React.FC<RadioButtonProps> = ({
   value,
   selectedOption,
   handleOptionChange,
-  labelText,
-  icon
+  labelText
 }) => {
   const isSelected = selectedOption === value;
   
@@ -38,19 +36,14 @@ const RadioButton: React.FC<RadioButtonProps> = ({
   };
   
   return (
-    <button
-      type="button"
-      id={id}
-      className={`group flex items-center justify-center p-3 min-w-[200px] cursor-pointer hover:text-white transition-colors ${
-        isSelected ? 'bg-[#525252]' : 'bg-[#e7e5e4] hover:bg-[#525252]'
+    <button type="button" id={id}
+      className={`group px-4 py-1 text-sm border rounded cursor-pointer hover:text-white transition-colors ${
+        isSelected ? 'bg-ssw-red' : 'bg-white hover:bg-ssw-red'
       }`}
       onClick={handleButtonClick}
       aria-pressed={isSelected}
     >
-      <span className={`flex items-center transition-colors ${
-        isSelected ? 'text-white' : 'text-gray-700 group-hover:text-white'
-      }`}>
-        <span className="mr-2">{icon}</span>
+      <span className={`transition-colors ${isSelected ? 'text-white' : 'text-gray-700 group-hover:text-white'}`}>
         {labelText}
       </span>
     </button>

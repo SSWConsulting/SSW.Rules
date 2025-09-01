@@ -78,9 +78,12 @@ query categoryWithRulesQuery($relativePath: String!) {
   category(relativePath: $relativePath) {
     ... on CategoryCategory {
       title
+      body
+      uri
       index {
         rule {
           ... on Rule {
+            guid
             uri
             title
             body

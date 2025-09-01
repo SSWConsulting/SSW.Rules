@@ -1,21 +1,23 @@
 'use client';
 
+import { useState } from 'react';
 import { useUser, getAccessToken } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/navigation';
 import { BookmarkService } from '@/lib/bookmarkService';
 import { RiBookmarkLine, RiBookmarkFill } from 'react-icons/ri';
+import { ICON_SIZE } from '@/constants';
 
 interface BookmarkProps {
-  ruleId: string;
+  ruleGuid: string;
   isBookmarked: boolean;
-  onBookmarkToggle: (ruleId: string, newStatus: boolean) => void;
-  size?: number;
+  onBookmarkToggle: (newStatus: boolean) => void;
   className?: string;
 }
 
-export default function Bookmark({ ruleId, isBookmarked, onBookmarkToggle, size = 32, className = '' }: BookmarkProps) {
-  const { user, isLoading: authLoading } = useUser();
+export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, className = '' }: BookmarkProps) {
+  const { user } = useUser();
   const router = useRouter();
+  const [bookmarked, setBookmarked] = useState<boolean>(isBookmarked);
 
   const handleBookmarkToggle = async () => {
     if (!user) {
@@ -26,25 +28,27 @@ export default function Bookmark({ ruleId, isBookmarked, onBookmarkToggle, size 
 
     try {
       const accessToken = await getAccessToken();
-      
+
       if (!accessToken) {
         console.error('No access token available');
         return;
       }
 
-      const data = { ruleGuid: ruleId, UserId: user.sub };
-      
-      if (isBookmarked) {
+      const data = { ruleGuid: ruleGuid, UserId: user.sub };
+
+      if (bookmarked) {
         const result = await BookmarkService.removeBookmark(data, accessToken);
         if (!result.error) {
-          onBookmarkToggle(ruleId, false);
+          setBookmarked(false);
+          onBookmarkToggle(false);
         } else {
           console.error('Failed to remove bookmark:', result.message);
         }
       } else {
         const result = await BookmarkService.addBookmark(data, accessToken);
         if (!result.error) {
-          onBookmarkToggle(ruleId, true);
+          setBookmarked(true);
+          onBookmarkToggle(true);
         } else {
           console.error('Failed to add bookmark:', result.message);
         }
@@ -58,12 +62,13 @@ export default function Bookmark({ ruleId, isBookmarked, onBookmarkToggle, size 
     <button
       onClick={handleBookmarkToggle}
       className={`rule-icon ${className}`}
-      title={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
+      title={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
     >
-      {isBookmarked ? (
-        <RiBookmarkFill size={size} className="text-ssw-red" />
+      <span>{bookmarked}</span>
+      {bookmarked ? (
+        <RiBookmarkFill size={ICON_SIZE} className="text-ssw-red" />
       ) : (
-        <RiBookmarkLine size={size} />
+        <RiBookmarkLine size={ICON_SIZE} />
       )}
     </button>
   );

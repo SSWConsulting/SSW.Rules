@@ -111,6 +111,9 @@ jobs:
                     AUTH0_SECRET=${{ secrets.AUTH0_SECRET }} \
                     AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }} \
                     AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }} \
+                    GITHUB_API_PAT=${{ secrets.GH_API_PAT }}
+                    NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
+                    NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
                     NEXT_PUBLIC_GISCUS_REPO_NAME=${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }} \
                     NEXT_PUBLIC_GISCUS_REPO_ID=${{ vars.NEXT_PUBLIC_GISCUS_REPO_ID }} \
                     NEXT_PUBLIC_GISCUS_CATEGORY_ID=${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }} \

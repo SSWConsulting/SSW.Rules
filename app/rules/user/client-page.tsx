@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { createGitHubService } from "@/lib/services/github";
 import client from '@/tina/__generated__/client';
 import { RuleListItemHeader } from '@/components/rule-list';
 import { normalizeName, toSlug } from '@/lib/utils';
@@ -30,7 +29,6 @@ export default function UserRulesClientPage() {
   const [loadingLastModified, setLoadingLastModified] = useState(false);
   const [loadingAuthored, setLoadingAuthored] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [githubService] = useState(() => createGitHubService());
 
   const queryStringRulesAuthor = searchParams.get('author') || '';
 
@@ -86,11 +84,14 @@ export default function UserRulesClientPage() {
         direction = 'after';
       }
 
-      const prSearchData = await githubService.searchPullRequestsByAuthor(
-        queryStringRulesAuthor, 
-        cursor, 
-        direction
-      );
+      const params = new URLSearchParams();
+      params.set('author', queryStringRulesAuthor);
+      if (cursor) params.set('cursor', cursor);
+      params.set('direction', direction);
+
+      const res = await fetch(`/api/github/rules/prs?${params.toString()}`);
+      if (!res.ok) throw new Error('Failed to fetch GitHub PR search');
+      const prSearchData = await res.json();
 
       const resultList = prSearchData.search.nodes;
       const allRules = resultList

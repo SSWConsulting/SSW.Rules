@@ -24,7 +24,7 @@ import { useUser, getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
 import Discussion from "@/components/Discussion";
 import { useRouter } from "next/navigation";
-import { createGitHubService } from "@/lib/services/github";
+import { getRuleLastModifiedFromAuthors } from "@/lib/services/github";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -40,7 +40,6 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   const relatedRules = props.relatedRulesMapping || [];
 
   const router = useRouter();
-  const [githubService] = useState(() => createGitHubService());
   const [isLoadingUsername, setIsLoadingUsername] = useState(false);
   const ruleData = useTina({
     query: ruleQueryProps?.query,
@@ -62,7 +61,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     return `Created ${created}\nLast Updated ${updated}`;
   }, [rule?.created, rule?.lastUpdated]);
 
-  const openUserRule = async (ruleUri: string, state: number) => {
+  const openUserRule = async (ruleUri: string) => {
     if (!ruleUri) return;
 
     try {
@@ -71,9 +70,14 @@ export default function ClientRulePage(props: ClientRulePageProps) {
         return;
       }
       setIsLoadingUsername(true);
-      const lastModifiedByUsername = await githubService.fetchGitHubUsernameForRule(ruleUri, state);
-      if (lastModifiedByUsername) setAuthorUsername(lastModifiedByUsername);
-      router.push(`/rules/user?author=${encodeURIComponent(lastModifiedByUsername)}`);
+      const params = new URLSearchParams();
+      params.set('ruleUri', ruleUri);
+      const res = await fetch(`/api/github/rules/authors?${params.toString()}`);
+      if (!res.ok) throw new Error('Failed to fetch GitHub username');
+      const { authors } = await res.json();
+      const lastModified = getRuleLastModifiedFromAuthors(authors);
+      if (lastModified) setAuthorUsername(lastModified);
+      router.push(`/rules/user?author=${encodeURIComponent(lastModified)}`);
     } catch (error) {
       console.error('Failed to fetch GitHub username:', error);
     } finally {
@@ -88,8 +92,13 @@ export default function ClientRulePage(props: ClientRulePageProps) {
       const uri = rule?.uri;
       if (!uri) return;
       try {
-        const username = await githubService.fetchGitHubUsernameForRule(uri, 1);
-        if (username && isMounted) setAuthorUsername(username);
+        const params = new URLSearchParams();
+        params.set('ruleUri', uri);
+        const res = await fetch(`/api/github/rules/authors?${params.toString()}`);
+        if (!res.ok) throw new Error('Failed to fetch GitHub username');
+        const { authors } = await res.json();
+        const lastModified = getRuleLastModifiedFromAuthors(authors);
+        if (lastModified && isMounted) setAuthorUsername(lastModified);
       } catch {
         // Silently ignore prefetch errors; click fallback will handle
       }
@@ -97,7 +106,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     return () => {
       isMounted = false;
     };
-  }, [rule?.uri, githubService]);
+  }, [rule?.uri]);
   
   useEffect(() => {
     (async () => {
@@ -150,7 +159,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                       onClick={(e) => {
                         e.preventDefault();
                         if (!isLoadingUsername) {
-                          openUserRule(rule?.uri || '', 1);
+                          openUserRule(rule?.uri || '');
                         }
                       }}
                       className={`font-semibold hover:text-ssw-red hover:underline transition-colors duration-200 ${

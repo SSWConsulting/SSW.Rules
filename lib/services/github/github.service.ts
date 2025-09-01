@@ -96,16 +96,10 @@ export class GitHubService {
     return Array.from(uniqueRulesMap.values());
   }
 
-  /**
-   * Fetch GitHub username for a specific rule
-   * @param ruleUri - The rule URI (e.g., "capture-contact-details-of-service-providers")
-   * @param state - 0 for finding the creator, 1 for finding the last updater
-   * @returns Promise<string> - The GitHub username
-   */
-  async fetchGitHubUsernameForRule(ruleUri: string, state: number = 1): Promise<string> {
+  async getRuleAuthors(ruleUri: string): Promise<string[]> {
     const filePath = `rules/${ruleUri}/rule.md`;
     const apiUrl = `https://api.github.com/repos/${this.config.owner}/${this.config.repo}/commits?path=${filePath}`;
-    
+
     const response = await fetch(apiUrl, {
       headers: {
         'Authorization': `bearer ${this.config.token}`,
@@ -120,32 +114,40 @@ export class GitHubService {
     }
 
     const data = await response.json();
-    
-    if (!data || data.length === 0) {
+
+    if (!Array.isArray(data) || data.length === 0) {
       throw new Error('No commits found for the specified file path');
     }
 
-    // When state === 0, we want the creator (last commit in the array)
-    // When state === 1, we want the last updater (first commit in the array)
-    const commitIndex = state === 0 ? data.length - 1 : 0;
-    const loginName = data[commitIndex]?.author?.login;
-
-    if (!loginName) {
-      throw new Error('Could not determine GitHub username from commit data');
-    }
-
-    return loginName;
+    // data is newest-first from GitHub; reverse to chronological oldest->newest
+    const chronological = [...data].reverse();
+    const authors = chronological
+      .map((c: any) => c?.author?.login)
+      .filter((login: any): login is string => Boolean(login));
+    return authors;
   }
+}
+
+export function getRuleCreatorFromAuthors(authors: string[]): string {
+  const creator = Array.isArray(authors) ? authors[0] : undefined;
+  if (!creator) throw new Error('No creator found from authors');
+  return creator;
+}
+
+export function getRuleLastModifiedFromAuthors(authors: string[]): string {
+  const last = Array.isArray(authors) ? authors[authors.length - 1] : undefined;
+  if (!last) throw new Error('No last modified author found from authors');
+  return last;
 }
 
 export function createGitHubService(): GitHubService {
   const owner = process.env.NEXT_PUBLIC_GITHUB_ORG || 'SSWConsulting';
   const repo = process.env.NEXT_PUBLIC_GITHUB_REPO || 'SSW.Rules.Content';
   const branch = process.env.NEXT_PUBLIC_TINA_BRANCH || 'main';
-  const token = process.env.NEXT_PUBLIC_GITHUB_API_PAT;
+  const token = process.env.GITHUB_API_PAT;
 
   if (!token) {
-    throw new Error('GitHub API token is required. Set NEXT_PUBLIC_GITHUB_API_PAT environment variable.');
+    throw new Error('GitHub API token is required. Set GITHUB_API_PAT (server-only).');
   }
 
   return new GitHubService({ owner, repo, branch, token });

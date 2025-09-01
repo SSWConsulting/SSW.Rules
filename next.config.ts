@@ -2,6 +2,14 @@ import type { NextConfig } from 'next'
  
 const nextConfig: NextConfig = {
   output: 'standalone', // Required for the Docker setup
+  env: {
+    BUILD_TIMESTAMP: process.env.BUILD_TIMESTAMP,
+    VERSION_DEPLOYED: process.env.VERSION_DEPLOYED,
+    DEPLOYMENT_URL: process.env.DEPLOYMENT_URL,
+    BUILD_DATE: process.env.BUILD_DATE,
+    COMMIT_HASH: process.env.COMMIT_HASH,
+  },
+  
   images: {
     remotePatterns: [
       {
@@ -26,6 +34,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  
   async headers() {
     const headers = [
       {
@@ -44,6 +53,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  
   async rewrites() {
     return [
       {

@@ -60,12 +60,37 @@ jobs:
         needs: build
         environment: ${{ github.event.inputs.environment || 'staging' }}
         steps:
+            - name: Use build info from build job
+              id: build_info
+              run: |
+                  # Use build info from the build job outputs
+                  BUILD_TIMESTAMP="${{ needs.build.outputs.build_timestamp }}"
+                  BUILD_DATE="${{ needs.build.outputs.build_date }}"
+                  COMMIT_HASH="${{ needs.build.outputs.commit_hash }}"
+                  VERSION_DEPLOYED="${{ needs.build.outputs.version_deployed }}"
+                  DEPLOYMENT_URL="${{ needs.build.outputs.deployment_url }}"
+                  
+                  echo "BUILD_TIMESTAMP=$BUILD_TIMESTAMP" >> $GITHUB_ENV
+                  echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
+                  echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+                  echo "VERSION_DEPLOYED=$VERSION_DEPLOYED" >> $GITHUB_ENV
+                  echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_ENV
+                  
+                  echo "🏗️ Using Build Info from Build Job:"
+                  echo "  Timestamp: $BUILD_TIMESTAMP"
+                  echo "  Date: $BUILD_DATE" 
+                  echo "  Version: $VERSION_DEPLOYED"
+                  echo "  Commit: $COMMIT_HASH"
+                  echo "  Deployment URL: $DEPLOYMENT_URL"
+
             - name: Log deployment info
               run: |
                   echo "🚀 Deploying POC Application"
                   echo "Triggered by source branch: ${{ github.event.inputs.branch_name || github.ref_name }}"
                   echo "Target environment: ${{ github.event.inputs.environment || 'staging' }}"
                   echo "Tina content branch: ${{ github.event.inputs.tina_branch || 'default' }}"
+                  echo "Build timestamp: ${{ env.BUILD_TIMESTAMP }}"
+                  echo "Build version: ${{ env.VERSION_DEPLOYED }}"
 
             - name: Azure CLI - Login
               uses: azure/login@v2
@@ -74,7 +99,7 @@ jobs:
                   tenant-id: ${{ secrets.AZURE_TENANT_ID }}
                   subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-            - name: Configure Auth0 app settings
+            - name: Configure Auth0 and Build Info app settings
               run: |
                 az webapp config appsettings set \
                     --name ${{ secrets.AZURE_WEBAPP_NAME }} \
@@ -91,6 +116,11 @@ jobs:
                     NEXT_PUBLIC_GISCUS_CATEGORY_ID=${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }} \
                     NEXT_PUBLIC_GISCUS_THEME_URL=${{ vars.NEXT_PUBLIC_GISCUS_THEME_URL }} \
                     NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }} \
+                    BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }} \
+                    VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }} \
+                    DEPLOYMENT_URL="${{ env.DEPLOYMENT_URL }}" \
+                    BUILD_DATE="${{ env.BUILD_DATE }}" \
+                    COMMIT_HASH=${{ env.COMMIT_HASH }} \
                     --output none
 
             - name: Deploy to Azure Web App
@@ -105,3 +135,7 @@ jobs:
                   echo "Image: ${{ needs.build.outputs.image_tag }}"
                   echo "App URL: https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net"
                   echo "Source: ${{ github.event.inputs.branch_name || github.ref_name }}"
+                  echo "Build Info:"
+                  echo "  📅 Deployed: ${{ env.BUILD_DATE }}"
+                  echo "  🏷️ Version: ${{ env.VERSION_DEPLOYED }}"
+                  echo "  🔗 Build Details: ${{ env.DEPLOYMENT_URL }}"

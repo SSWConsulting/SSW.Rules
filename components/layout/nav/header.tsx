@@ -1,73 +1,51 @@
-"use client";
+'use client';
 
-import React from "react";
-import Link from "next/link";
-import { Icon } from "../../icon";
-import { useLayout } from "../layout-context";
-import { Menu, X } from "lucide-react";
-import SignIn from "@/components/auth/SignIn";
+import React, { useState, useEffect } from 'react';
+import posed from 'react-pose';
+import { MenuWrapper } from '@/components/MenuWrapper';
+import { MegaMenuWrapper } from '@/components/server/MegaMenuWrapper';
+import { getMegamenu } from '@/utils/get-mega-menu';
+
+const AnimatedContainer = posed.div({
+    enter: {
+        y: 0,
+        transition: {
+            ease: 'easeInOut',
+        },
+    },
+    exit: {
+        y: '-100%',
+        transition: {
+            ease: 'easeInOut',
+        },
+    },
+});
 
 export const Header = () => {
-  const { globalSettings, theme } = useLayout();
-  const header = globalSettings!.header!;
+    const [menuGroups, setMenuGroups] = useState<any>(null);
 
-  const [menuState, setMenuState] = React.useState(false)
-  return (
-    <header>
-      <nav
-        data-state={menuState && 'active'}
-        className="bg-[var(--card)] fixed z-20 w-full border-b backdrop-blur-3xl">
-        <div className="mx-auto max-w-screen-xl px-8 transition-all duration-300 flex justify-between">
-          <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
-            <div className="flex w-full items-center justify-between gap-12">
-              <Link
-                href="/"
-                aria-label="home"
-                className="flex items-center space-x-2">
-                <Icon
-                  parentColor={header.color!}
-                  data={{
-                    name: header.icon!.name,
-                    color: header.icon!.color,
-                    style: header.icon!.style,
-                  }}
-                />{" "}
-                <span>
-                  {header.name}
-                </span>
-              </Link>
+    useEffect(() => {
+        const fetchMenuData = async () => {
+            try {
+                const data = await getMegamenu();
+                const menuGroups = data?.data.megamenu.menuGroups;
+                setMenuGroups(menuGroups);
+            } catch (err) {
+                console.error('Error fetching menu data:', err);
+            }
+        };
+        fetchMenuData();
+    }, []);
 
-              <button
-                onClick={() => setMenuState(!menuState)}
-                aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
-                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
-                <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
-                <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
-              </button>
-
-            </div>
-
-            <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
-              <div className="lg:hidden">
-                <ul className="space-y-6 text-base">
-                  {header.nav!.map((item, index) => (
-                    <li key={index}>
-                      <Link
-                        href={item!.href!}
-                        className="text-muted-foreground hover:text-accent-foreground block duration-150">
-                        <span>{item!.label}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-          </div>
-          <SignIn />
-
-        </div>
-      </nav>
-    </header>
-  )
-}
+    return (
+        <AnimatedContainer>
+            <header className='no-print z-1 main-container max-sm:!m-4'>
+                {menuGroups && menuGroups.length && (
+                    <MenuWrapper>
+                        <MegaMenuWrapper menu={menuGroups} />
+                    </MenuWrapper>
+                )}
+            </header>
+        </AnimatedContainer>
+    );
+};

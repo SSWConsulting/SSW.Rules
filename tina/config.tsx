@@ -3,6 +3,7 @@ import Global from "./collection/global";
 import nextConfig from "../next.config";
 import Category from "./collection/category";
 import Rule from "./collection/rule";
+import { MegaMenu } from "./collection/megamenu";
 
 const branch = process.env.NEXT_PUBLIC_TINA_BRANCH ?? "main";
 const localContentPath = process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined;
@@ -34,7 +35,7 @@ const config = defineConfig({
     basePath: nextConfig.basePath?.replace(/^\//, "") || "", // The base path of the app (could be /blog)
   },
   schema: {
-    collections: [Global, Category, Rule],
+    collections: [Global, Category, Rule, MegaMenu],
   },
   // search: {
   //   tina: {

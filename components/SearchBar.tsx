@@ -34,7 +34,7 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-3">
+        <form onSubmit={handleSubmit}>
             <div className="relative">
                 <input
                     type="text"
@@ -54,7 +54,7 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
     );
 }
 
-export default function SearchBar({ keyword = '' }: { keyword?: string }) {
+export default function SearchBar({ keyword = '', showSort = true }: { keyword?: string; showSort?: boolean }) {
     const [submitted, setSubmitted] = useState(false);
     const [sortOption, setSortOption] = useState(sortOptions[0].value);
 
@@ -69,11 +69,13 @@ export default function SearchBar({ keyword = '' }: { keyword?: string }) {
             }}
         >
             <CustomSearchBox onSubmit={() => setSubmitted(true)} />
-            <SortDropdown
-                options={sortOptions}
-                selectedValue={sortOption}
-                onChange={setSortOption}
-            />
+            {showSort && (
+                <SortDropdown
+                    options={sortOptions}
+                    selectedValue={sortOption}
+                    onChange={setSortOption}
+                />
+            )}
             <SearchNavigator submitted={submitted} reset={() => setSubmitted(false)} />
             <Hits
                 hitComponent={Hit}

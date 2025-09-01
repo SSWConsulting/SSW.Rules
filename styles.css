@@ -259,6 +259,10 @@
   ol {
     @apply list-decimal;
   }
+
+  blockquote{
+    @apply italic text-sm font-light text-justify;
+  }
 }
 
 @layer components {

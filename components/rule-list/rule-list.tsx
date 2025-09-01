@@ -9,7 +9,6 @@ import { RiFileTextFill, RiBookOpenFill, RiDoubleQuotesL } from 'react-icons/ri'
 export interface RuleListProps {
   rules: any[];
   type?: string;
-  filter?: boolean;
   noContentMessage?: string;
   onBookmarkRemoved?: (ruleGuid: string) => void;
 }
@@ -17,7 +16,6 @@ export interface RuleListProps {
 const RuleList: React.FC<RuleListProps> = ({ 
   rules, 
   type, 
-  filter = false, 
   noContentMessage, 
   onBookmarkRemoved }) => {
   const [viewStyle, setViewStyle] = useState<'titleOnly' | 'blurb' | 'all'>('titleOnly');
@@ -37,37 +35,35 @@ const RuleList: React.FC<RuleListProps> = ({
 
   return (
     <>
-      {filter && (
-        <div className="flex justify-center gap-8 border-b border-solid border-b-gray-100 p-4 text-center lg:grid-cols-5">
-          <RadioButton
-            id="customRadioInline1"
-            name="customRadioInline1"
-            value="titleOnly"
-            selectedOption={viewStyle}
-            handleOptionChange={handleOptionChange}
-            labelText="View titles only"
-            icon={<RiDoubleQuotesL size={iconSize} />}
-          />
-          <RadioButton
-            id="customRadioInline3"
-            name="customRadioInline1"
-            value="blurb"
-            selectedOption={viewStyle}
-            handleOptionChange={handleOptionChange}
-            labelText="Show blurb"
-            icon={<RiFileTextFill size={iconSize} />}
-          />
-          <RadioButton
-            id="customRadioInline2"
-            name="customRadioInline1"
-            value="all"
-            selectedOption={viewStyle}
-            handleOptionChange={handleOptionChange}
-            labelText="Gimme everything!"
-            icon={<RiBookOpenFill size={iconSize} />}
-          />
-        </div>
-      )}
+      <div className="flex justify-center gap-8 border-b border-solid border-b-gray-100 p-4 text-center lg:grid-cols-5">
+        <RadioButton
+          id="customRadioInline1"
+          name="customRadioInline1"
+          value="titleOnly"
+          selectedOption={viewStyle}
+          handleOptionChange={handleOptionChange}
+          labelText="View titles only"
+          icon={<RiDoubleQuotesL size={iconSize} />}
+        />
+        <RadioButton
+          id="customRadioInline3"
+          name="customRadioInline1"
+          value="blurb"
+          selectedOption={viewStyle}
+          handleOptionChange={handleOptionChange}
+          labelText="Show blurb"
+          icon={<RiFileTextFill size={iconSize} />}
+        />
+        <RadioButton
+          id="customRadioInline2"
+          name="customRadioInline1"
+          value="all"
+          selectedOption={viewStyle}
+          handleOptionChange={handleOptionChange}
+          labelText="Gimme everything!"
+          icon={<RiBookOpenFill size={iconSize} />}
+        />
+      </div>
       <ol className="rule-number">
         {rules.map((rule) => (
           <RuleListItem

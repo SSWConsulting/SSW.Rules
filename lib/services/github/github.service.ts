@@ -143,7 +143,7 @@ export function getRuleLastModifiedFromAuthors(authors: string[]): string {
 export function createGitHubService(): GitHubService {
   const owner = process.env.NEXT_PUBLIC_GITHUB_ORG || 'SSWConsulting';
   const repo = process.env.NEXT_PUBLIC_GITHUB_REPO || 'SSW.Rules.Content';
-  const branch = process.env.NEXT_PUBLIC_TINA_BRANCH || 'main';
+  const branch = 'main';
   const token = process.env.GITHUB_API_PAT;
 
   if (!token) {

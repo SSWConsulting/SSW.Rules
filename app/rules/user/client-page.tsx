@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import client from '@/tina/__generated__/client';
 import { RuleListItemHeader } from '@/components/rule-list';
 import { normalizeName, toSlug } from '@/lib/utils';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const ActionTypes = {
   BEFORE: 'before',
@@ -248,11 +249,7 @@ export default function UserRulesClientPage() {
 
   return (
     <div className="w-full">
-      {/* <Breadcrumb
-        breadcrumbText={
-          author.fullName ? `${author.fullName}'s Rules` : 'User Rules'
-        }
-      /> */}
+      <Breadcrumbs breadcrumbText={author?.fullName ? `${author.fullName}'s Rules` : 'User Rules'} />
       <div className="container" id="rules">
         <div className="flex flex-wrap">
           <div className="w-full lg:w-3/4 px-4">

@@ -8,6 +8,7 @@ import { BookmarkService } from '@/lib/bookmarkService';
 import client from '@/tina/__generated__/client';
 import Image from 'next/image';
 import { RiGithubFill, RiBookmarkFill } from 'react-icons/ri';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 interface ProfileData {
   [key: string]: any;
@@ -161,6 +162,7 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
   if (isAuthenticated) {
     return (
       <>
+        <Breadcrumbs breadcrumbText="Profile" />
         <div className="shadow-lg rounded">
           <section className="mb-20 rounded">
             <div className="flex flex-col gap-8 px-12 pt-12 bg-[#f5f5f5] rounded-t">

@@ -26,6 +26,7 @@ import Discussion from "@/components/Discussion";
 import { useRouter } from "next/navigation";
 import { getRuleLastModifiedFromAuthors } from "@/lib/services/github";
 import { ICON_SIZE } from "@/constants";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -127,8 +128,19 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     })();
   }, [user?.sub, rule?.guid]);
 
+  const primaryCategory = useMemo(
+    () => props.ruleCategoriesMapping?.[0],
+    [props.ruleCategoriesMapping]
+  );
+
+  const breadcrumbCategories = useMemo(() => {
+    if (!primaryCategory) return undefined;
+    return [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }];
+  }, [primaryCategory]);
+
   return (
     <>
+      <Breadcrumbs categories={breadcrumbCategories} breadcrumbText="This rule" />
       <div className="layout-two-columns">
         <Card dropShadow className="layout-main-section">
           <div className="flex border-b-2 pb-4">

@@ -8,6 +8,7 @@ import MarkdownComponentMapping from "@/components/tina-markdown/markdown-compon
 import RuleList from "@/components/rule-list";
 import { useUser, getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export interface ClientCategoryPageProps {
   categoryQueryProps: {
@@ -79,7 +80,7 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
 
   return (
     <div>
-      {/* TODO: Breadcrumb */}
+      <Breadcrumbs isCategory breadcrumbText={category?.title} />
       <div className="flex">
         <div className="w-full lg:w-2/3 bg-white pt-4 p-6 rounded shadow">
           <h1 className="m-0 mb-2 text-ssw-red font-bold">{category?.title}</h1>

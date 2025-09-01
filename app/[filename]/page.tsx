@@ -141,11 +141,29 @@ export default async function Page({
     }
   })|| [];
 
+  // Build related rules mapping (uri -> title)
+  let relatedRulesMapping: { uri: string; title: string }[] = [];
+  try {
+    const relatedUris = (rule?.data?.rule?.related || []).filter((u): u is string => typeof u === 'string' && u.length > 0);
+    if (relatedUris.length) {
+      const uris = Array.from(new Set(relatedUris));
+      const res = await client.queries.rulesByUriQuery({ uris });
+      const edges = res?.data?.ruleConnection?.edges ?? [];
+      relatedRulesMapping = edges
+        .map((e: any) => e?.node)
+        .filter(Boolean)
+        .map((n: any) => ({ uri: n.uri as string, title: n.title as string }))
+        .sort((a, b) => a.title.localeCompare(b.title));
+    }
+  } catch (e) {
+    console.error('Error loading related rules:', e);
+  }
+
   if (rule?.data) {
     return (
       <Layout>
         <Section>
-          <ClientRulePage ruleQueryProps={rule} ruleCategoriesMapping={ruleCategoriesMapping} />
+          <ClientRulePage ruleQueryProps={rule} ruleCategoriesMapping={ruleCategoriesMapping} relatedRulesMapping={relatedRulesMapping} />
         </Section>
       </Layout>
     );

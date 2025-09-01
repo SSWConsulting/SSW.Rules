@@ -29,6 +29,7 @@ import { createGitHubService } from "@/lib/services/github";
 export interface ClientRulePageProps {
   ruleQueryProps;
   ruleCategoriesMapping;
+  relatedRulesMapping?: { uri: string; title: string }[];
 }
 
 export default function ClientRulePage(props: ClientRulePageProps) {
@@ -36,6 +37,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   const { user } = useUser();
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [authorUsername, setAuthorUsername] = useState<string | null>(null);
+  const relatedRules = props.relatedRulesMapping || [];
 
   const router = useRouter();
   const [githubService] = useState(() => createGitHubService());
@@ -236,7 +238,23 @@ export default function ClientRulePage(props: ClientRulePageProps) {
           <Card title="Acknowledgements">
             <Acknowledgements authors={rule.authors} />
           </Card>
-          <Card>Related rules</Card>
+          <Card title="Related rules">
+            {relatedRules.length > 0 ? (
+              <ul className="pl-4">
+                {relatedRules.map((r) => (
+                  <li key={r.uri}>
+                    <Link
+                      href={`/${r.uri}`}
+                      className="no-underline">
+                      {r.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-sm text-gray-500">No related rules.</div>
+            )}
+          </Card>
           <HelpCard />
         </div>
       </div>

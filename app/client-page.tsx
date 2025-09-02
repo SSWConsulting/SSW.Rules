@@ -17,36 +17,14 @@ import HelpCard from "@/components/HelpCard";
 import Image from "next/image";
 
 export interface HomeClientPageProps {
-  categories: Category[];
+  topCategories: any[];
   latestRules: LatestRule[];
   ruleCount: number;
   categoryRuleCounts: Record<string, number>;
 }
 
 export default function HomeClientPage(props: HomeClientPageProps) {
-  const { categories, latestRules, ruleCount, categoryRuleCounts } = props;
-
-  const groupedCategories = () => {
-    const groups: Array<{ topCategory: any; subCategories: any[] }> = [];
-    let currentGroup: { topCategory: any; subCategories: any[] } | null = null;
-
-    categories.forEach((category) => {
-      if (category.__typename === "CategoryTop_category") {
-        if (currentGroup) {
-          groups.push(currentGroup);
-        }
-        currentGroup = { topCategory: category, subCategories: [] };
-      } else if (currentGroup) {
-        currentGroup.subCategories.push(category);
-      }
-    });
-
-    if (currentGroup) {
-      groups.push(currentGroup);
-    }
-
-    return groups;
-  };
+  const { topCategories, latestRules, ruleCount, categoryRuleCounts } = props;
 
   const getTopCategoryTotal = (subCategories: any[]) => {
     return subCategories.reduce((total, category) => {
@@ -61,26 +39,30 @@ export default function HomeClientPage(props: HomeClientPageProps) {
           <SearchBar showSort={false} />
 
             <h2 className="m-0 mb-4 text-ssw-red font-bold">Categories</h2>
-            {groupedCategories().map((group, groupIndex) => (
-              <Card key={groupIndex} className="mb-4">
+            {topCategories.map((topCategory, index) => (
+              <Card key={index} className="mb-4">
                 <h2 className="flex justify-between m-0 mb-4 text-2xl max-sm:text-lg">
-                  <span>{group.topCategory.title}</span>
-                  <span className="text-gray-500 text-lg">{getTopCategoryTotal(group.subCategories)} Rules</span>
+                  <span>{topCategory.title}</span>
+                  <span className="text-gray-500 text-lg">
+                    {getTopCategoryTotal(topCategory.index?.map((item: any) => item.category).filter(Boolean) || [])} Rules
+                  </span>
                 </h2>
 
                 <ol>
-                  {group.subCategories.map((category, index) => (
-                    <li key={index} className="mb-4">
-                      <div className=" flex justify-between">
-                        <Link href={`/${category._sys.filename}`}>
-                          {category.title}
-                        </Link>
-                        <span className="text-gray-300">
-                          {categoryRuleCounts[category._sys.filename] || 0}
-                        </span>
-                      </div>
-                    </li>
-                  ))}
+                  {topCategory.index?.map((item: any, subIndex: number) => 
+                    item.category ? (
+                      <li key={subIndex} className="mb-4">
+                        <div className=" flex justify-between">
+                          <Link href={`/${item.category._sys.filename}`}>
+                            {item.category.title}
+                          </Link>
+                          <span className="text-gray-300">
+                            {categoryRuleCounts[item.category._sys.filename] || 0}
+                          </span>
+                        </div>
+                      </li>
+                    ) : null
+                  )}
                 </ol>
               </Card>
             ))}

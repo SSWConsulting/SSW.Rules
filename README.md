@@ -141,3 +141,18 @@ We've integrated TinaCMS with an editorial workflow to support content editing i
 👉 [TinaCMS Editorial Workflow Documentation](https://tina.io/docs/tina-cloud/editorial-workflow)
 
 This workflow allows for content changes to be reviewed before being published, improving collaboration and content quality.
+
+
+### 🔖 Bookmarks (via SSW.Rules.Functions)
+
+The Bookmark feature uses the **[SSW.Rules.Functions](https://github.com/SSWConsulting/SSW.Rules.Functions)** API.
+
+**Local debugging setup**
+1. Clone the `SSW.Rules.Functions` repository.
+2. In the repo root, create a `local.settings.json` file and copy the values from Keeper (environment variables for the Functions app).
+3. Start the Functions app in **dev** mode.
+
+**Local endpoint**
+- By default, the API is available at: `http://localhost:7248`.
+- Bookmark data is persisted to the **staging** database.
+

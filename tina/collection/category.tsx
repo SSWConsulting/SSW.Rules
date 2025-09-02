@@ -176,13 +176,9 @@ const Category: Collection = {
           name: "index",
           list: true,
           ui: {
-            itemProps: (item) => {
-              const parts = item.rule?.split("/");
-              const name = parts[parts.length - 2] || null;
-              return {
-                label: name ? name : "Rule is not selected",
-              };
-            },
+            itemProps: (item) => ({
+              label: item.rule?.split("/").at(-2) || "Rule is not selected"
+            }),
           },
           fields: [
             {

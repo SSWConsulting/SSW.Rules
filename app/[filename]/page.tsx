@@ -171,3 +171,33 @@ export default async function Page({
 
   notFound();
 }
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ filename: string }>;
+}) {
+  const { filename } = await params;
+
+  try {
+    const category = await getCategoryData(filename);
+    if (category?.data?.category?.title) {
+      return {
+        title: `${category.data.category.title} | SSW.Rules`,
+      };
+    }
+
+    const rule = await getRuleData(filename);
+    if (rule?.data?.rule?.title) {
+      return {
+        title: `${rule.data.rule.title} | SSW.Rules`,
+      };
+    }
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+  }
+
+  return {
+    title: "SSW.Rules",
+  };
+}

@@ -9,29 +9,29 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const revalidate = 300;
 
-async function fetchAllCategories() {
+async function fetchTopCategoriesWithSubcategories() {
   let hasNextPage = true;
   let after: string | null = null;
-  const allCategories: any[] = [];
+  const allTopCategories: any[] = [];
 
   while (hasNextPage) {
-    const res = await client.queries.homepageCategoriesQuery({
+    const res = await client.queries.paginatedTopCategoriesQuery({
       first: 50,
       after,
     });
 
     const edges = res?.data?.categoryConnection?.edges || [];
 
-    allCategories.push(
+    allTopCategories.push(
       ...edges
-        .filter((edge: any) => edge && edge.node && edge.node.__typename !== "CategoryMain")
+        .filter((edge: any) => edge && edge.node && edge.node.__typename === "CategoryTop_category")
         .map((edge: any) => edge.node)
     );
 
     hasNextPage = res?.data?.categoryConnection?.pageInfo?.hasNextPage;
     after = res?.data?.categoryConnection?.pageInfo?.endCursor;
   }
-  return allCategories;
+  return allTopCategories;
 }
 
 async function fetchLatestRules() {
@@ -64,8 +64,8 @@ function buildCategoryRuleCounts(): Record<string, number> {
 }
 
 export default async function Home() {
-  const [categories, latestRules, ruleCount, categoryRuleCounts] = await Promise.all([
-    fetchAllCategories(),
+  const [topCategories, latestRules, ruleCount, categoryRuleCounts] = await Promise.all([
+    fetchTopCategoriesWithSubcategories(),
     fetchLatestRules(),
     fetchRuleCount(),
     Promise.resolve(buildCategoryRuleCounts()),
@@ -75,10 +75,16 @@ export default async function Home() {
     children: (
       <Section>
         <Breadcrumbs isHomePage />
-        <HomeClientPage categories={categories} latestRules={latestRules} ruleCount={ruleCount} categoryRuleCounts={categoryRuleCounts} />
+        <HomeClientPage topCategories={topCategories} latestRules={latestRules} ruleCount={ruleCount} categoryRuleCounts={categoryRuleCounts} />
       </Section>
     ),
   });
 
   return layout;
+}
+
+export async function generateMetadata() {
+  return {
+    title: "SSW.Rules | Secret Ingredients for Quality Software (Open Source on GitHub)",
+  }
 }

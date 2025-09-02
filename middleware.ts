@@ -15,9 +15,8 @@ export function middleware(request: NextRequest) {
   }
 
   // Check if this is an image request that might be from TinaCMS
-  // Adjust this pattern based on your TinaCMS image paths
-  // For example, if your TinaCMS images are in /uploads/ or /images/
-  const isTinaCMSImage = /^\/(?:uploads|images)\/.*\.(jpg|jpeg|png|gif|webp|svg)$/i.test(pathname)
+  // Only proxy content images from /uploads/rules/ to avoid interfering with site assets
+  const isTinaCMSImage = /^\/uploads\/rules\/.*\.(jpg|jpeg|png|gif|webp|svg)$/i.test(pathname)
   
   if (isTinaCMSImage && process.env.LOCAL_CONTENT_RELATIVE_PATH) {
     // Proxy to our API route to serve from content repo

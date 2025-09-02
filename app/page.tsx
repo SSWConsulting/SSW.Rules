@@ -24,7 +24,7 @@ async function fetchAllCategories() {
 
     allCategories.push(
       ...edges
-        .filter((edge: any) => edge && edge.node)
+        .filter((edge: any) => edge && edge.node && edge.node.__typename !== "CategoryMain")
         .map((edge: any) => edge.node)
     );
 
@@ -51,18 +51,31 @@ async function fetchRuleCount() {
   return Object.keys(ruleToCategories).length;
 }
 
+function buildCategoryRuleCounts(): Record<string, number> {
+  const counts: Record<string, number> = {};
+  
+  Object.values(ruleToCategories).forEach(categories => {
+    categories.forEach(category => {
+      counts[category] = (counts[category] || 0) + 1;
+    });
+  });
+  
+  return counts;
+}
+
 export default async function Home() {
-  const [categories, latestRules, ruleCount] = await Promise.all([
+  const [categories, latestRules, ruleCount, categoryRuleCounts] = await Promise.all([
     fetchAllCategories(),
     fetchLatestRules(),
     fetchRuleCount(),
+    Promise.resolve(buildCategoryRuleCounts()),
   ]);
 
   const layout = await Layout({
     children: (
       <Section>
         <Breadcrumbs isHomePage />
-        <HomeClientPage categories={categories} latestRules={latestRules} ruleCount={ruleCount} />
+        <HomeClientPage categories={categories} latestRules={latestRules} ruleCount={ruleCount} categoryRuleCounts={categoryRuleCounts} />
       </Section>
     ),
   });

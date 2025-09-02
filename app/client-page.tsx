@@ -20,10 +20,39 @@ export interface HomeClientPageProps {
   categories: Category[];
   latestRules: LatestRule[];
   ruleCount: number;
+  categoryRuleCounts: Record<string, number>;
 }
 
 export default function HomeClientPage(props: HomeClientPageProps) {
-  const { categories, latestRules, ruleCount } = props;
+  const { categories, latestRules, ruleCount, categoryRuleCounts } = props;
+
+  const groupedCategories = () => {
+    const groups: Array<{ topCategory: any; subCategories: any[] }> = [];
+    let currentGroup: { topCategory: any; subCategories: any[] } | null = null;
+
+    categories.forEach((category) => {
+      if (category.__typename === "CategoryTop_category") {
+        if (currentGroup) {
+          groups.push(currentGroup);
+        }
+        currentGroup = { topCategory: category, subCategories: [] };
+      } else if (currentGroup) {
+        currentGroup.subCategories.push(category);
+      }
+    });
+
+    if (currentGroup) {
+      groups.push(currentGroup);
+    }
+
+    return groups;
+  };
+
+  const getTopCategoryTotal = (subCategories: any[]) => {
+    return subCategories.reduce((total, category) => {
+      return total + (categoryRuleCounts[category._sys.filename] || 0);
+    }, 0);
+  };
 
   return (
     <>
@@ -31,25 +60,30 @@ export default function HomeClientPage(props: HomeClientPageProps) {
         <div className="layout-main-section">
           <SearchBar showSort={false} />
 
-          <Card dropShadow>
-            <h1 className="font-bold mb-4">Categories</h1>
+            <h2 className="m-0 mb-4 text-ssw-red font-bold">Categories</h2>
+            {groupedCategories().map((group, groupIndex) => (
+              <Card key={groupIndex} className="mb-4">
+                <h2 className="flex justify-between m-0 mb-4 text-2xl max-sm:text-lg">
+                  <span>{group.topCategory.title}</span>
+                  <span className="text-gray-500 text-lg">{getTopCategoryTotal(group.subCategories)} Rules</span>
+                </h2>
 
-            {categories.map((category, index) =>
-              category.__typename === "CategoryTop_category" ? (
-                <h3 key={index} className="font-bold">
-                  {category.title}
-                </h3>
-              ) : (
-                <ul key={index}>
-                  <li>
-                    <Link href={`/${category._sys.filename}`}>
-                      {category.title}
-                    </Link>
-                  </li>
-                </ul>
-              )
-            )}
-          </Card>
+                <ol>
+                  {group.subCategories.map((category, index) => (
+                    <li key={index} className="mb-4">
+                      <div className=" flex justify-between">
+                        <Link href={`/${category._sys.filename}`}>
+                          {category.title}
+                        </Link>
+                        <span className="text-gray-300">
+                          {categoryRuleCounts[category._sys.filename] || 0}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </Card>
+            ))}
         </div>
 
         <div className="layout-sidebar">

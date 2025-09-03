@@ -19,6 +19,10 @@ const Rule: Collection = {
   },
   ui: {
     filename: {
+      slugify: (values) => {
+        const folder = values?.uri?.trim() || "";
+        return folder ? `${folder}/rule` : "rule";
+      },
       readonly: true,
     },
     router: ({ document }) => {

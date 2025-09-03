@@ -52,6 +52,12 @@ jobs:
             NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
             NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
             NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+            NEXT_PUBLIC_GITHUB_ORG: ${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
+            NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
+            NEXT_PUBLIC_GISCUS_REPO_NAME: ${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }}
+            NEXT_PUBLIC_GISCUS_REPO_ID: ${{ vars.NEXT_PUBLIC_GISCUS_REPO_ID }}
+            NEXT_PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
+            NEXT_PUBLIC_GISCUS_THEME_URL: ${{ vars.NEXT_PUBLIC_GISCUS_THEME_URL }}
             NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
 
     deploy:
@@ -119,12 +125,6 @@ jobs:
                     CRM_VIEW_CURRENT=${{ vars.CRM_VIEW_CURRENT }} \
                     CRM_VIEW_PAST=${{ vars.CRM_VIEW_PAST }} \
                     CRM_APP_SECRET=${{ secrets.CRM_APP_SECRET }} \
-                    NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }} \
-                    NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }} \
-                    NEXT_PUBLIC_GISCUS_REPO_NAME=${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }} \
-                    NEXT_PUBLIC_GISCUS_REPO_ID=${{ vars.NEXT_PUBLIC_GISCUS_REPO_ID }} \
-                    NEXT_PUBLIC_GISCUS_CATEGORY_ID=${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }} \
-                    NEXT_PUBLIC_GISCUS_THEME_URL=${{ vars.NEXT_PUBLIC_GISCUS_THEME_URL }} \
                     NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }} \
                     BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }} \
                     VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }} \

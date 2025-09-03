@@ -16,16 +16,16 @@ importers:
         version: 5.2.6
       '@fortawesome/fontawesome-svg-core':
         specifier: ^7.0.0
-        version: 7.0.0
+        version: 7.0.1
       '@fortawesome/free-brands-svg-icons':
         specifier: ^7.0.0
-        version: 7.0.0
+        version: 7.0.1
       '@fortawesome/free-solid-svg-icons':
         specifier: ^7.0.0
-        version: 7.0.0
+        version: 7.0.1
       '@fortawesome/react-fontawesome':
         specifier: ^3.0.0
-        version: 3.0.2(@fortawesome/fontawesome-svg-core@7.0.0)(react@18.3.1)
+        version: 3.0.2(@fortawesome/fontawesome-svg-core@7.0.1)(react@18.3.1)
       '@giscus/react':
         specifier: ^3.1.0
         version: 3.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -133,7 +133,7 @@ importers:
         version: 2.1.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       shiki:
         specifier: ^3.2.2
-        version: 3.12.1
+        version: 3.12.2
       ssw.megamenu:
         specifier: ^4.13.2
         version: 4.13.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1314,20 +1314,20 @@ packages:
   '@fontsource-variable/inter@5.2.6':
     resolution: {integrity: sha512-jks/bficUPQ9nn7GvXvHtlQIPudW7Wx8CrlZoY8bhxgeobNxlQan8DclUJuYF2loYRrGpfrhCIZZspXYysiVGg==}
 
-  '@fortawesome/fontawesome-common-types@7.0.0':
-    resolution: {integrity: sha512-PGMrIYXLGA5K8RWy8zwBkd4vFi4z7ubxtet6Yn13Plf6krRTwPbdlCwlcfmoX0R7B4Z643QvrtHmdQ5fNtfFCg==}
+  '@fortawesome/fontawesome-common-types@7.0.1':
+    resolution: {integrity: sha512-0VpNtO5cNe1/HQWMkl4OdncYK/mv9hnBte0Ew0n6DMzmo3Q3WzDFABHm6LeNTipt5zAyhQ6Ugjiu8aLaEjh1gg==}
     engines: {node: '>=6'}
 
-  '@fortawesome/fontawesome-svg-core@7.0.0':
-    resolution: {integrity: sha512-obBEF+zd98r/KtKVW6A+8UGWeaOoyMpl6Q9P3FzHsOnsg742aXsl8v+H/zp09qSSu/a/Hxe9LNKzbBaQq1CEbA==}
+  '@fortawesome/fontawesome-svg-core@7.0.1':
+    resolution: {integrity: sha512-x0cR55ILVqFpUioSMf6ebpRCMXMcheGN743P05W2RB5uCNpJUqWIqW66Lap8PfL/lngvjTbZj0BNSUweIr/fHQ==}
     engines: {node: '>=6'}
 
-  '@fortawesome/free-brands-svg-icons@7.0.0':
-    resolution: {integrity: sha512-C8oY28gq/Qx/cHReJa2AunKJUHvUZDVoPlSTHtAvjriaNfi+5nugW4cx7yA/xN3f/nYkElw11gFBoJ2xUDDFgg==}
+  '@fortawesome/free-brands-svg-icons@7.0.1':
+    resolution: {integrity: sha512-6xPmn5SrND/GM0+W33E77x05+aDn6RpR02eWd8eLdN0IxY0vXa5yU/ugaAKloOVxiG9w2330TSRsbJYL6c57Ow==}
     engines: {node: '>=6'}
 
-  '@fortawesome/free-solid-svg-icons@7.0.0':
-    resolution: {integrity: sha512-njSLAllkOddYDCXgTFboXn54Oe5FcvpkWq+FoetOHR64PbN0608kM02Lze0xtISGpXgP+i26VyXRQA0Irh3Obw==}
+  '@fortawesome/free-solid-svg-icons@7.0.1':
+    resolution: {integrity: sha512-esKuSrl1WMOTMDLNt38i16VfLe/gRZt2ZAJ3Yw7slfs7sj583MKqNFqO57zmhknk1Sya6f9Wys89aCzIJkcqlg==}
     engines: {node: '>=6'}
 
   '@fortawesome/react-fontawesome@3.0.2':
@@ -2368,38 +2368,38 @@ packages:
   '@shikijs/core@1.29.2':
     resolution: {integrity: sha512-vju0lY9r27jJfOY4Z7+Rt/nIOjzJpZ3y+nYpqtUZInVoXQ/TJZcfGnNOGnKjFdVZb8qexiCuSlZRKcGfhhTTZQ==}
 
-  '@shikijs/core@3.12.1':
-    resolution: {integrity: sha512-j9+UDQ6M50xvaSR/e9lg212H0Fqxy3lYd39Q6YITYQxfrb5VYNUKPLZp4PN9f+YmRcdpyNAm3obn/tIZ2WkUWg==}
+  '@shikijs/core@3.12.2':
+    resolution: {integrity: sha512-L1Safnhra3tX/oJK5kYHaWmLEBJi1irASwewzY3taX5ibyXyMkkSDZlq01qigjryOBwrXSdFgTiZ3ryzSNeu7Q==}
 
   '@shikijs/engine-javascript@1.29.2':
     resolution: {integrity: sha512-iNEZv4IrLYPv64Q6k7EPpOCE/nuvGiKl7zxdq0WFuRPF5PAE9PRo2JGq/d8crLusM59BRemJ4eOqrFrC4wiQ+A==}
 
-  '@shikijs/engine-javascript@3.12.1':
-    resolution: {integrity: sha512-mwif5T3rEBSMn/1m9dNi4WmB4dxH4VfYqreQMLpbFYov8MM3Gus98I549amFMjtEmYDAkTKGP7bmsv1n9t9I+A==}
+  '@shikijs/engine-javascript@3.12.2':
+    resolution: {integrity: sha512-Nm3/azSsaVS7hk6EwtHEnTythjQfwvrO5tKqMlaH9TwG1P+PNaR8M0EAKZ+GaH2DFwvcr4iSfTveyxMIvXEHMw==}
 
   '@shikijs/engine-oniguruma@1.29.2':
     resolution: {integrity: sha512-7iiOx3SG8+g1MnlzZVDYiaeHe7Ez2Kf2HrJzdmGwkRisT7r4rak0e655AcM/tF9JG/kg5fMNYlLLKglbN7gBqA==}
 
-  '@shikijs/engine-oniguruma@3.12.1':
-    resolution: {integrity: sha512-hbYq+XOc55CU7Irkhsgwh8WgQbx2W5IVzHV4l+wZ874olMLSNg5o3F73vo9m4SAhimFyqq/86xnx9h+T30HhhQ==}
+  '@shikijs/engine-oniguruma@3.12.2':
+    resolution: {integrity: sha512-hozwnFHsLvujK4/CPVHNo3Bcg2EsnG8krI/ZQ2FlBlCRpPZW4XAEQmEwqegJsypsTAN9ehu2tEYe30lYKSZW/w==}
 
   '@shikijs/langs@1.29.2':
     resolution: {integrity: sha512-FIBA7N3LZ+223U7cJDUYd5shmciFQlYkFXlkKVaHsCPgfVLiO+e12FmQE6Tf9vuyEsFe3dIl8qGWKXgEHL9wmQ==}
 
-  '@shikijs/langs@3.12.1':
-    resolution: {integrity: sha512-Y1MbMfVO5baRz7Boo7EoD36TmzfUx/I5n8e+wZumx6SlUA81Zj1ZwNJL871iIuSHrdsheV4AxJtHQ9mlooklmg==}
+  '@shikijs/langs@3.12.2':
+    resolution: {integrity: sha512-bVx5PfuZHDSHoBal+KzJZGheFuyH4qwwcwG/n+MsWno5cTlKmaNtTsGzJpHYQ8YPbB5BdEdKU1rga5/6JGY8ww==}
 
   '@shikijs/themes@1.29.2':
     resolution: {integrity: sha512-i9TNZlsq4uoyqSbluIcZkmPL9Bfi3djVxRnofUHwvx/h6SRW3cwgBC5SML7vsDcWyukY0eCzVN980rqP6qNl9g==}
 
-  '@shikijs/themes@3.12.1':
-    resolution: {integrity: sha512-9JrAm9cA5hqM/YXymA3oAAZdnCgQf1zyrNDtsnM105nNEoEpux4dyzdoOjc2KawEKj1iUs/WH2ota6Atp7GYkQ==}
+  '@shikijs/themes@3.12.2':
+    resolution: {integrity: sha512-fTR3QAgnwYpfGczpIbzPjlRnxyONJOerguQv1iwpyQZ9QXX4qy/XFQqXlf17XTsorxnHoJGbH/LXBvwtqDsF5A==}
 
   '@shikijs/types@1.29.2':
     resolution: {integrity: sha512-VJjK0eIijTZf0QSTODEXCqinjBn0joAHQ+aPSBzrv4O2d/QSbsMw+ZeSRx03kV34Hy7NzUvV/7NqfYGRLrASmw==}
 
-  '@shikijs/types@3.12.1':
-    resolution: {integrity: sha512-Is/p+1vTss22LIsGCJTmGrxu7ZC1iBL9doJFYLaZ4aI8d0VDXb7Mn0kBzhkc7pdsRpmUbQLQ5HXwNpa3H6F8og==}
+  '@shikijs/types@3.12.2':
+    resolution: {integrity: sha512-K5UIBzxCyv0YoxN3LMrKB9zuhp1bV+LgewxuVwHdl4Gz5oePoUFrr9EfgJlGlDeXCU1b/yhdnXeuRvAnz8HN8Q==}
 
   '@shikijs/vscode-textmate@10.0.2':
     resolution: {integrity: sha512-83yeghZ2xxin3Nj8z1NMd/NCuca+gsYXswywDy5bHvwlWL8tpTQmzGeUuHd9FC3E/SBEMvzJRwWEOz5gGes9Qg==}
@@ -3892,8 +3892,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.211:
-    resolution: {integrity: sha512-IGBvimJkotaLzFnwIVgW9/UD/AOJ2tByUmeOrtqBfACSbAw5b1G0XpvdaieKyc7ULmbwXVx+4e4Be8pOPBrYkw==}
+  electron-to-chromium@1.5.213:
+    resolution: {integrity: sha512-xr9eRzSLNa4neDO0xVFrkXu3vyIzG4Ay08dApecw42Z1NbmCt+keEpXdvlYGVe0wtvY5dhW0Ay0lY0IOfsCg0Q==}
 
   emoji-regex-xs@1.0.0:
     resolution: {integrity: sha512-LRlerrMYoIDrT6jgpeZ2YYl/L8EulRTt5hQcYjy5AInh7HWXKimpqx68aknBFpGL2+/IcogTcaydJEgaTmOpDg==}
@@ -6156,8 +6156,8 @@ packages:
   shiki@1.29.2:
     resolution: {integrity: sha512-njXuliz/cP+67jU2hukkxCNuH1yUi4QfdZZY+sMr5PPrIyXSu5iTb/qYC4BiWWB0vZ+7TbdvYUCeL23zpwCfbg==}
 
-  shiki@3.12.1:
-    resolution: {integrity: sha512-eMlxVaXyuNQAQCaMtDKQjKv0eVm+kA6fsZtv9UqKgspP+7lWCVi7SoN+cJq1dawvIDQY7TI3SixamztotM6R6Q==}
+  shiki@3.12.2:
+    resolution: {integrity: sha512-uIrKI+f9IPz1zDT+GMz+0RjzKJiijVr6WDWm9Pe3NNY6QigKCfifCEv9v9R2mDASKKjzjQ2QpFLcxaR3iHSnMA==}
 
   side-channel-list@1.0.0:
     resolution: {integrity: sha512-FCLHtRD/gnpCiCHEiJLOwdmFP+wzCmDEkc9y7NsYxeF4u7Btsn1ZuwgwJGxImImHicJArLP4R0yX4c2KCrMrTA==}
@@ -8159,23 +8159,23 @@ snapshots:
 
   '@fontsource-variable/inter@5.2.6': {}
 
-  '@fortawesome/fontawesome-common-types@7.0.0': {}
+  '@fortawesome/fontawesome-common-types@7.0.1': {}
 
-  '@fortawesome/fontawesome-svg-core@7.0.0':
+  '@fortawesome/fontawesome-svg-core@7.0.1':
     dependencies:
-      '@fortawesome/fontawesome-common-types': 7.0.0
+      '@fortawesome/fontawesome-common-types': 7.0.1
 
-  '@fortawesome/free-brands-svg-icons@7.0.0':
+  '@fortawesome/free-brands-svg-icons@7.0.1':
     dependencies:
-      '@fortawesome/fontawesome-common-types': 7.0.0
+      '@fortawesome/fontawesome-common-types': 7.0.1
 
-  '@fortawesome/free-solid-svg-icons@7.0.0':
+  '@fortawesome/free-solid-svg-icons@7.0.1':
     dependencies:
-      '@fortawesome/fontawesome-common-types': 7.0.0
+      '@fortawesome/fontawesome-common-types': 7.0.1
 
-  '@fortawesome/react-fontawesome@3.0.2(@fortawesome/fontawesome-svg-core@7.0.0)(react@18.3.1)':
+  '@fortawesome/react-fontawesome@3.0.2(@fortawesome/fontawesome-svg-core@7.0.1)(react@18.3.1)':
     dependencies:
-      '@fortawesome/fontawesome-svg-core': 7.0.0
+      '@fortawesome/fontawesome-svg-core': 7.0.1
       react: 18.3.1
 
   '@giscus/react@3.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
@@ -9290,9 +9290,9 @@ snapshots:
       '@types/hast': 3.0.4
       hast-util-to-html: 9.0.5
 
-  '@shikijs/core@3.12.1':
+  '@shikijs/core@3.12.2':
     dependencies:
-      '@shikijs/types': 3.12.1
+      '@shikijs/types': 3.12.2
       '@shikijs/vscode-textmate': 10.0.2
       '@types/hast': 3.0.4
       hast-util-to-html: 9.0.5
@@ -9303,9 +9303,9 @@ snapshots:
       '@shikijs/vscode-textmate': 10.0.2
       oniguruma-to-es: 2.3.0
 
-  '@shikijs/engine-javascript@3.12.1':
+  '@shikijs/engine-javascript@3.12.2':
     dependencies:
-      '@shikijs/types': 3.12.1
+      '@shikijs/types': 3.12.2
       '@shikijs/vscode-textmate': 10.0.2
       oniguruma-to-es: 4.3.3
 
@@ -9314,33 +9314,33 @@ snapshots:
       '@shikijs/types': 1.29.2
       '@shikijs/vscode-textmate': 10.0.2
 
-  '@shikijs/engine-oniguruma@3.12.1':
+  '@shikijs/engine-oniguruma@3.12.2':
     dependencies:
-      '@shikijs/types': 3.12.1
+      '@shikijs/types': 3.12.2
       '@shikijs/vscode-textmate': 10.0.2
 
   '@shikijs/langs@1.29.2':
     dependencies:
       '@shikijs/types': 1.29.2
 
-  '@shikijs/langs@3.12.1':
+  '@shikijs/langs@3.12.2':
     dependencies:
-      '@shikijs/types': 3.12.1
+      '@shikijs/types': 3.12.2
 
   '@shikijs/themes@1.29.2':
     dependencies:
       '@shikijs/types': 1.29.2
 
-  '@shikijs/themes@3.12.1':
+  '@shikijs/themes@3.12.2':
     dependencies:
-      '@shikijs/types': 3.12.1
+      '@shikijs/types': 3.12.2
 
   '@shikijs/types@1.29.2':
     dependencies:
       '@shikijs/vscode-textmate': 10.0.2
       '@types/hast': 3.0.4
 
-  '@shikijs/types@3.12.1':
+  '@shikijs/types@3.12.2':
     dependencies:
       '@shikijs/vscode-textmate': 10.0.2
       '@types/hast': 3.0.4
@@ -10552,7 +10552,7 @@ snapshots:
   browserslist@4.25.4:
     dependencies:
       caniuse-lite: 1.0.30001739
-      electron-to-chromium: 1.5.211
+      electron-to-chromium: 1.5.213
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.25.4)
 
@@ -11216,7 +11216,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.211: {}
+  electron-to-chromium@1.5.213: {}
 
   emoji-regex-xs@1.0.0: {}
 
@@ -13937,14 +13937,14 @@ snapshots:
       '@shikijs/vscode-textmate': 10.0.2
       '@types/hast': 3.0.4
 
-  shiki@3.12.1:
+  shiki@3.12.2:
     dependencies:
-      '@shikijs/core': 3.12.1
-      '@shikijs/engine-javascript': 3.12.1
-      '@shikijs/engine-oniguruma': 3.12.1
-      '@shikijs/langs': 3.12.1
-      '@shikijs/themes': 3.12.1
-      '@shikijs/types': 3.12.1
+      '@shikijs/core': 3.12.2
+      '@shikijs/engine-javascript': 3.12.2
+      '@shikijs/engine-oniguruma': 3.12.2
+      '@shikijs/langs': 3.12.2
+      '@shikijs/themes': 3.12.2
+      '@shikijs/types': 3.12.2
       '@shikijs/vscode-textmate': 10.0.2
       '@types/hast': 3.0.4
 

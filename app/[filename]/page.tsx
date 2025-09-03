@@ -181,7 +181,7 @@ export async function generateMetadata({
 
   try {
     const category = await getCategoryData(filename);
-    if (category?.data?.category?.title) {
+    if (category?.data?.category && "title" in category.data.category) {
       return {
         title: `${category.data.category.title} | SSW.Rules`,
       };

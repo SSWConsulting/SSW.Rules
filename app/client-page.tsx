@@ -36,54 +36,63 @@ export default function HomeClientPage(props: HomeClientPageProps) {
     <>
       <div className="layout-two-columns">
         <div className="layout-main-section">
-          <SearchBar showSort={false} />
-
+          <div className="h-[7rem]">
+            <SearchBar showSort={false} />
             <h2 className="m-0 mb-4 text-ssw-red font-bold">Categories</h2>
-            {topCategories.map((topCategory, index) => (
-              <Card key={index} className="mb-4">
-                <h2 className="flex justify-between m-0 mb-4 text-2xl max-sm:text-lg">
-                  <span>{topCategory.title}</span>
-                  <span className="text-gray-500 text-lg">
-                    {getTopCategoryTotal(topCategory.index?.map((item: any) => item.category).filter(Boolean) || [])} Rules
-                  </span>
-                </h2>
+          </div>
 
-                <ol>
-                  {topCategory.index?.map((item: any, subIndex: number) => 
-                    item.category ? (
-                      <li key={subIndex} className="mb-4">
-                        <div className=" flex justify-between">
-                          <Link href={`/${item.category._sys.filename}`}>
-                            {item.category.title}
-                          </Link>
-                          <span className="text-gray-300">
-                            {categoryRuleCounts[item.category._sys.filename] || 0}
-                          </span>
-                        </div>
-                      </li>
-                    ) : null
-                  )}
-                </ol>
-              </Card>
-            ))}
+          {topCategories.map((topCategory, index) => (
+            <Card key={index} className="mb-4">
+              <h2 className="flex justify-between m-0 mb-4 text-2xl max-sm:text-lg">
+                <span>{topCategory.title}</span>
+                <span className="text-gray-500 text-lg">
+                  {getTopCategoryTotal(
+                    topCategory.index
+                      ?.map((item: any) => item.category)
+                      .filter(Boolean) || []
+                  )}{" "}
+                  Rules
+                </span>
+              </h2>
+
+              <ol>
+                {topCategory.index?.map((item: any, subIndex: number) =>
+                  item.category ? (
+                    <li key={subIndex} className="mb-4">
+                      <div className=" flex justify-between">
+                        <Link href={`/${item.category._sys.filename}`}>
+                          {item.category.title}
+                        </Link>
+                        <span className="text-gray-300">
+                          {categoryRuleCounts[item.category._sys.filename] || 0}
+                        </span>
+                      </div>
+                    </li>
+                  ) : null
+                )}
+              </ol>
+            </Card>
+          ))}
         </div>
 
         <div className="layout-sidebar">
-          <div className="flex justify-center">
-            {ruleCount && (
-              <div className="flex">
-                <PiGavelFill
-                  size={48}
-                  className="transform rotate-270 text-[var(--ssw-red)]"
-                />
-                <div className="flex flex-col justify-center items-center ml-2 ">
-                  <span className="text-3xl font-semibold text-[var(--ssw-red)]">
-                    {ruleCount.toLocaleString("en-US")}
-                  </span>
-                  <span className="font-light">SSW Rules</span>
+          <div className="h-[5rem]">
+            <div className="flex justify-center">
+              {ruleCount && (
+                <div className="flex">
+                  <PiGavelFill
+                    size={48}
+                    className="transform rotate-270 text-[var(--ssw-red)]"
+                  />
+                  <div className="flex flex-col justify-center items-center ml-2 ">
+                    <span className="text-3xl font-semibold text-[var(--ssw-red)]">
+                      {ruleCount.toLocaleString("en-US")}
+                    </span>
+                    <span className="font-light">SSW Rules</span>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           <Card title="Latest Rules">

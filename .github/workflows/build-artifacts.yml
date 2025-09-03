@@ -231,18 +231,24 @@ jobs:
 
                   # Environment variables for build info (available at build time and runtime)
                   ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP \
-                      VERSION_DEPLOYED=$VERSION_DEPLOYED \
-                      DEPLOYMENT_URL=$DEPLOYMENT_URL \
-                      BUILD_DATE=$BUILD_DATE \
-                      COMMIT_HASH=$COMMIT_HASH \
-                      TINA_TOKEN=$TINA_TOKEN \
-                      NEXT_PUBLIC_TINA_CLIENT_ID=$NEXT_PUBLIC_TINA_CLIENT_ID \
-                      NEXT_PUBLIC_TINA_BRANCH=$NEXT_PUBLIC_TINA_BRANCH \
-                      NEXT_PUBLIC_ALGOLIA_APP_ID=$NEXT_PUBLIC_ALGOLIA_APP_ID \
-                      NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=$NEXT_PUBLIC_ALGOLIA_ADMIN_KEY \
-                      NEXT_PUBLIC_ALGOLIA_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_INDEX_NAME \
-                      NEXT_PUBLIC_ALGOLIA_API_KEY=$NEXT_PUBLIC_ALGOLIA_API_KEY \
-                      NEXT_TELEMETRY_DISABLED=1
+                        VERSION_DEPLOYED=$VERSION_DEPLOYED \
+                        DEPLOYMENT_URL=$DEPLOYMENT_URL \
+                        BUILD_DATE=$BUILD_DATE \
+                        COMMIT_HASH=$COMMIT_HASH \
+                        TINA_TOKEN=$TINA_TOKEN \
+                        NEXT_PUBLIC_TINA_CLIENT_ID=$NEXT_PUBLIC_TINA_CLIENT_ID \
+                        NEXT_PUBLIC_TINA_BRANCH=$NEXT_PUBLIC_TINA_BRANCH \
+                        NEXT_PUBLIC_ALGOLIA_APP_ID=$NEXT_PUBLIC_ALGOLIA_APP_ID \
+                        NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=$NEXT_PUBLIC_ALGOLIA_ADMIN_KEY \
+                        NEXT_PUBLIC_ALGOLIA_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_INDEX_NAME \
+                        NEXT_PUBLIC_ALGOLIA_API_KEY=$NEXT_PUBLIC_ALGOLIA_API_KEY \
+                        NEXT_PUBLIC_GITHUB_ORG=$NEXT_PUBLIC_GITHUB_ORG \
+                        NEXT_PUBLIC_GITHUB_REPO=$NEXT_PUBLIC_GITHUB_REPO \
+                        NEXT_PUBLIC_GISCUS_REPO_NAME=$NEXT_PUBLIC_GISCUS_REPO_NAME \
+                        NEXT_PUBLIC_GISCUS_REPO_ID=$NEXT_PUBLIC_GISCUS_REPO_ID \
+                        NEXT_PUBLIC_GISCUS_CATEGORY_ID=$NEXT_PUBLIC_GISCUS_CATEGORY_ID \
+                        NEXT_PUBLIC_GISCUS_THEME_URL=$NEXT_PUBLIC_GISCUS_THEME_URL \
+                        NEXT_TELEMETRY_DISABLED=1
 
                   RUN if [ -f yarn.lock ]; then yarn build; else npm run build; fi
 
@@ -287,19 +293,25 @@ jobs:
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
                   build-args: |
-                      BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-                      VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }}
-                      DEPLOYMENT_URL=${{ env.DEPLOYMENT_URL }}
-                      BUILD_DATE=${{ env.BUILD_DATE }}
-                      COMMIT_HASH=${{ env.COMMIT_HASH }}
-                      TINA_TOKEN=${{ secrets.TINA_TOKEN }}
-                      NEXT_PUBLIC_TINA_CLIENT_ID=${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-                      NEXT_PUBLIC_ALGOLIA_APP_ID=${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
-                      NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
-                      NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
-                      NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
-                      NEXT_PUBLIC_TINA_BRANCH=${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH }}
-                      NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+                        BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+                        VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }}
+                        DEPLOYMENT_URL=${{ env.DEPLOYMENT_URL }}
+                        BUILD_DATE=${{ env.BUILD_DATE }}
+                        COMMIT_HASH=${{ env.COMMIT_HASH }}
+                        TINA_TOKEN=${{ secrets.TINA_TOKEN }}
+                        NEXT_PUBLIC_TINA_CLIENT_ID=${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+                        NEXT_PUBLIC_ALGOLIA_APP_ID=${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
+                        NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
+                        NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+                        NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+                        NEXT_PUBLIC_TINA_BRANCH=${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH }}
+                        NEXT_PUBLIC_GITHUB_ORG=${{ inputs.NEXT_PUBLIC_GITHUB_ORG }}
+                        NEXT_PUBLIC_GITHUB_REPO=${{ inputs.NEXT_PUBLIC_GITHUB_REPO }}
+                        NEXT_PUBLIC_GISCUS_REPO_NAME=${{ inputs.NEXT_PUBLIC_GISCUS_REPO_NAME }}
+                        NEXT_PUBLIC_GISCUS_REPO_ID=${{ inputs.NEXT_PUBLIC_GISCUS_REPO_ID }}
+                        NEXT_PUBLIC_GISCUS_CATEGORY_ID=${{ inputs.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
+                        NEXT_PUBLIC_GISCUS_THEME_URL=${{ inputs.NEXT_PUBLIC_GISCUS_THEME_URL }}
+                        NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
 

@@ -228,6 +228,12 @@ jobs:
                   ARG NEXT_PUBLIC_ALGOLIA_INDEX_NAME
                   ARG NEXT_PUBLIC_ALGOLIA_API_KEY
                   ARG NEXT_PUBLIC_API_BASE_URL
+                  ARG NEXT_PUBLIC_GITHUB_ORG
+                  ARG NEXT_PUBLIC_GITHUB_REPO
+                  ARG NEXT_PUBLIC_GISCUS_REPO_NAME
+                  ARG NEXT_PUBLIC_GISCUS_REPO_ID
+                  ARG NEXT_PUBLIC_GISCUS_CATEGORY_ID
+                  ARG NEXT_PUBLIC_GISCUS_THEME_URL
 
                   # Environment variables for build info (available at build time and runtime)
                   ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP \

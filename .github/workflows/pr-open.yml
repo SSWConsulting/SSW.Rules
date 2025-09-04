@@ -5,13 +5,48 @@ on:
 env:
   NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
   TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-  NEXT_PUBLIC_TINA_BRANCH: ${{ github.head_ref }}
+  NEXT_PUBLIC_TINA_BRANCH: tina/migration-main-content # TODO - Change to main when production is ready
+  TOKEN: ${{ secrets.POC_PAT_GILLES }}
+  NEXT_PUBLIC_ALGOLIA_APP_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
+  NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
+  NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+  NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
 jobs:
   build:
     runs-on: ubuntu-latest
     name: Build sample
+    environment: staging
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Checkout SSW.Rules.Content
+        uses: actions/checkout@v4
+        with:
+          repository: SSWConsulting/SSW.Rules.Content
+          ref: ${{ env.NEXT_PUBLIC_TINA_BRANCH }}
+          token: ${{ env.TOKEN }}
+          path: content-temp
+          fetch-depth: 0
+          lfs: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Generate rule‑category mapping files
+        working-directory: content-temp/scripts/tina-migration
+        run: python build-rule-category-map.py
+
+      - name: Copy generated mapping + content
+        run: |
+          cp content-temp/scripts/tina-migration/rule-to-categories.json ./
+          cp content-temp/scripts/tina-migration/category-uri-title-map.json ./
+          mv content-temp ./content
+
       - name: Setup node
         uses: actions/setup-node@v4
         with:

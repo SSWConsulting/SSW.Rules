@@ -40,12 +40,6 @@ jobs:
             tag: ${{ github.event.inputs.environment || 'staging' }}
             tina_branch: ${{ github.event.inputs.tina_branch }}
             source_branch: ${{ github.event.inputs.branch_name }}
-            NEXT_PUBLIC_GITHUB_ORG: ${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
-            NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
-            NEXT_PUBLIC_GISCUS_REPO_NAME: ${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }}
-            NEXT_PUBLIC_GISCUS_REPO_ID: ${{ vars.NEXT_PUBLIC_GISCUS_REPO_ID }}
-            NEXT_PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
-            NEXT_PUBLIC_GISCUS_THEME_URL: ${{ vars.NEXT_PUBLIC_GISCUS_THEME_URL }}
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}

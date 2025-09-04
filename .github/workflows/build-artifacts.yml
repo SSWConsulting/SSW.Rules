@@ -15,24 +15,6 @@ on:
                 required: false
                 default: ''
                 description: 'Source branch name that triggered this build'
-            NEXT_PUBLIC_GITHUB_ORG:
-                type: string
-                required: false
-            NEXT_PUBLIC_GITHUB_REPO:
-                type: string
-                required: false
-            NEXT_PUBLIC_GISCUS_REPO_NAME:
-                type: string
-                required: false
-            NEXT_PUBLIC_GISCUS_REPO_ID:
-                type: string
-                required: false
-            NEXT_PUBLIC_GISCUS_CATEGORY_ID:
-                type: string
-                required: false
-            NEXT_PUBLIC_GISCUS_THEME_URL:
-                type: string
-                required: false
         secrets:
             AZURE_CLIENT_ID:
                 required: true
@@ -311,12 +293,12 @@ jobs:
                         NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
                         NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
                         NEXT_PUBLIC_TINA_BRANCH=${{ inputs.tina_branch || secrets.NEXT_PUBLIC_TINA_BRANCH }}
-                        NEXT_PUBLIC_GITHUB_ORG=${{ inputs.NEXT_PUBLIC_GITHUB_ORG }}
-                        NEXT_PUBLIC_GITHUB_REPO=${{ inputs.NEXT_PUBLIC_GITHUB_REPO }}
-                        NEXT_PUBLIC_GISCUS_REPO_NAME=${{ inputs.NEXT_PUBLIC_GISCUS_REPO_NAME }}
-                        NEXT_PUBLIC_GISCUS_REPO_ID=${{ inputs.NEXT_PUBLIC_GISCUS_REPO_ID }}
-                        NEXT_PUBLIC_GISCUS_CATEGORY_ID=${{ inputs.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
-                        NEXT_PUBLIC_GISCUS_THEME_URL=${{ inputs.NEXT_PUBLIC_GISCUS_THEME_URL }}
+                        NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
+                        NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
+                        NEXT_PUBLIC_GISCUS_REPO_NAME=${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }}
+                        NEXT_PUBLIC_GISCUS_REPO_ID=${{ vars.NEXT_PUBLIC_GISCUS_REPO_ID }}
+                        NEXT_PUBLIC_GISCUS_CATEGORY_ID=${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
+                        NEXT_PUBLIC_GISCUS_THEME_URL=${{ vars.NEXT_PUBLIC_GISCUS_THEME_URL }}
                         NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
                   cache-from: type=gha
                   cache-to: type=gha,mode=max

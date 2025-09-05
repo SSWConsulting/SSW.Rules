@@ -5,6 +5,9 @@ query latestRulesQuery($size: Float, $sortOption: String) {
         id
         title
         lastUpdated
+        lastUpdatedBy
+        created
+        createdBy
         uri
       }
     }

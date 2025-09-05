@@ -262,7 +262,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
             {relatedRules.length > 0 ? (
               <ul className="pl-4">
                 {relatedRules.map((r) => (
-                  <li key={r.uri}>
+                  <li key={r.uri} className="not-last:mb-2">
                     <Link
                       href={`/${r.uri}`}
                       className="no-underline">

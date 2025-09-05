@@ -271,15 +271,15 @@
   }
 
   .layout-two-columns {
-    @apply flex flex-col gap-8 lg:flex-row;
+    @apply flex flex-col gap-6 lg:flex-row;
   }
 
   .layout-main-section {
-    @apply lg:flex-2;
+    @apply lg:flex-5;
   }
 
   .layout-sidebar {
-    @apply flex flex-col flex-1 gap-8;
+    @apply flex flex-col flex-2 gap-6;
   }
 }
 

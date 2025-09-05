@@ -67,7 +67,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
 
     try {
       if (authorUsername) {
-        router.push(`/rules/user?author=${encodeURIComponent(authorUsername)}`);
+        router.push(`/user?author=${encodeURIComponent(authorUsername)}`);
         return;
       }
       setIsLoadingUsername(true);
@@ -78,7 +78,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
       const { authors } = await res.json();
       const lastModified = getRuleLastModifiedFromAuthors(authors);
       if (lastModified) setAuthorUsername(lastModified);
-      router.push(`/rules/user?author=${encodeURIComponent(lastModified)}`);
+      router.push(`/user?author=${encodeURIComponent(lastModified)}`);
     } catch (error) {
       console.error('Failed to fetch GitHub username:', error);
     } finally {

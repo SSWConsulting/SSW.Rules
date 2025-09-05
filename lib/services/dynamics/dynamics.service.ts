@@ -110,6 +110,17 @@ export class DynamicsService {
 
     return employees;
   }
+
+  async findEmployeeByGitHub(
+    query: string,
+    options: DynamicsEmployeesOptions = { includeCurrent: true, includePast: true }
+  ): Promise<DynamicsEmployeeSimple | null> {
+    const q = (query || '').toLowerCase();
+    if (!q) return null;
+
+    const employees = await this.getEmployees(options);
+    return employees.find(e => (e.gitHubUrl || '').toLowerCase().includes(q)) ?? null;
+  }
 }
 
 export function createDynamicsService(): DynamicsService {

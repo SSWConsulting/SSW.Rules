@@ -85,7 +85,7 @@ export default function UserDropdown() {
         </a>
 
         <Link
-          href='/rules/profile'
+          href='/profile'
           prefetch={false}
           className='flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800'
         >

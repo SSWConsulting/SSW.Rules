@@ -6,12 +6,14 @@ import { fetchLatestRules, fetchRuleCount } from '@/lib/services/rules';
 export const revalidate = 300;
 
 interface LatestRulePageProps {
-  searchParams: { size?: string };
+  searchParams: Promise<{ size?: string }>;
 }
 
 export default async function LatestRulePage({ searchParams }: LatestRulePageProps) {
-  const size = searchParams.size ? parseInt(searchParams.size, 10) : 5;
-  
+  const { size: sizeStr } = await searchParams;
+
+  const size = sizeStr ? parseInt(sizeStr, 10) : 5;
+
   const [latestRulesByUpdated, latestRulesByCreated, ruleCount] = await Promise.all([
     fetchLatestRules(size, "lastUpdated"),
     fetchLatestRules(size, "created"),

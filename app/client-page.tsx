@@ -33,7 +33,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
       <div className="layout-two-columns">
         <div className="layout-main-section">
           <div className="h-[7rem]">
-            <SearchBar showSort={false} />
+            <SearchBar/>
             <h2 className="m-0 mb-4 text-ssw-red font-bold">Categories</h2>
           </div>
 

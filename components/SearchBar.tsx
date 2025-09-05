@@ -1,21 +1,41 @@
 'use client';
 
-import { useSearchBox, Hits, InstantSearch } from 'react-instantsearch-hooks-web';
-import { useState, FormEvent } from 'react';
+import { useSearchBox, useHits, InstantSearch } from 'react-instantsearch-hooks-web';
+import { useState, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { searchClient } from '@/lib/algoliaClient';
-import SortDropdown from './SortDropdown';
-import SearchNavigator from './SearchNavigator';
-import { sortItems } from '@/utils/sortUtils';
-import Link from 'next/link';
 import { Search } from 'lucide-react';
 
-const sortOptions = [
-    { value: 'Updated', label: 'Recently Updated', field: 'lastUpdated' },
-    { value: 'Created', label: 'Recently Added', field: 'created' },
-];
+interface SearchResult {
+    objectID: string;
+    title: string;
+    slug: string;
+    [key: string]: any;
+}
 
-const Hit = ({ hit }: { hit: any }) => <Link href={`/${hit.slug}`}>{hit.title}</Link>;
+interface SearchBarProps {
+    keyword?: string;
+    sortBy?: string;
+    onResults?: (results: SearchResult[]) => void;
+}
+
+function SearchResults({ onResults, sortBy }: { onResults?: (results: SearchResult[]) => void; sortBy?: string }) {
+    const { hits } = useHits();
+    
+    useEffect(() => {
+        let sortedHits = [...hits] as unknown as SearchResult[];
+        
+        if (sortBy === 'created') {
+            sortedHits.sort((a, b) => new Date(b.created || 0).getTime() - new Date(a.created || 0).getTime());
+        } else if (sortBy === 'lastUpdated') {
+            sortedHits.sort((a, b) => new Date(b.lastUpdated || 0).getTime() - new Date(a.lastUpdated || 0).getTime());
+        }
+        
+        onResults?.(sortedHits);
+    }, [hits, onResults, sortBy]);
+    
+    return null;
+}
 
 function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
     const { query, refine } = useSearchBox();
@@ -29,6 +49,7 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
             router.push('/');
         } else {
             refine(trimmed);
+            router.push(`/search?keyword=${encodeURIComponent(trimmed)}`);
             onSubmit(trimmed);
         }
     };
@@ -38,7 +59,7 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
             <div className="relative">
                 <input
                     type="text"
-                    className="block w-full h-10 pl-3 pr-10 py-2 bg-white border placeholder-slate-400 focus:ring-gray-400 rounded-md"
+                    className="block w-full h-10 pl-3 pr-10 py-2 mb-4 bg-white border placeholder-slate-400 focus:ring-gray-400 rounded-md"
                     placeholder="Search..."
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
@@ -54,35 +75,22 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
     );
 }
 
-export default function SearchBar({ keyword = '', showSort = true }: { keyword?: string; showSort?: boolean }) {
+export default function SearchBar({ keyword = '', sortBy, onResults }: SearchBarProps) {
     const [submitted, setSubmitted] = useState(false);
-    const [sortOption, setSortOption] = useState(sortOptions[0].value);
+    const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!;
 
     return (
         <InstantSearch
             searchClient={searchClient}
-            indexName={process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!}
+            indexName={indexName}
             initialUiState={{
-                [process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!]: {
+                [indexName]: {
                     query: keyword,
                 },
             }}
         >
             <CustomSearchBox onSubmit={() => setSubmitted(true)} />
-            {showSort && (
-                <SortDropdown
-                    options={sortOptions}
-                    selectedValue={sortOption}
-                    onChange={setSortOption}
-                />
-            )}
-            <SearchNavigator submitted={submitted} reset={() => setSubmitted(false)} />
-            <Hits
-                hitComponent={Hit}
-                transformItems={(items) =>
-                    sortItems(items, sortOption, sortOptions)
-                }
-            />
+            <SearchResults onResults={onResults} sortBy={sortBy} />
         </InstantSearch>
     );
 }

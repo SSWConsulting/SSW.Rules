@@ -30,3 +30,9 @@ export default async function LatestRulePage({ searchParams }: LatestRulePagePro
     </Layout>
   );
 }
+
+export async function generateMetadata() {
+  return {
+    title: "Latest Rules | SSW.Rules",
+  }
+}

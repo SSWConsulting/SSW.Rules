@@ -23,7 +23,7 @@ export default function LatestRuleClientPage({ ruleCount, latestRulesByUpdated, 
           <div className="layout-two-columns">
             <div className="layout-main-section">
               <div className="h-[5rem]">
-                <SearchBar showSort={false} />
+                <SearchBar />
               </div>
               
               <LatestRulesList 

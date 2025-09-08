@@ -27,7 +27,7 @@ const Popup: React.FC<PopupProps> = ({
       classNames={{
         closeButton: "!bg-white rounded-[15px]",
         overlay: "bg-black/50",
-        modal: "sm:max-w-3xl sm:m-5 sm:p-5 w-full mx-0 !shadow-none !bg-black/0"
+        modal: "w-[95vw] max-w-sm sm:max-w-md mx-auto my-4 !shadow-lg !bg-white rounded-lg !p-0 !m-0"
       }}
       animationDuration={500}
     >

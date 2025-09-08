@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUser, getAccessToken } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/navigation';
 import { BookmarkService } from '@/lib/bookmarkService';
@@ -18,6 +18,10 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
   const { user } = useUser();
   const router = useRouter();
   const [bookmarked, setBookmarked] = useState<boolean>(isBookmarked);
+
+  useEffect(() => {
+    setBookmarked(isBookmarked);
+  }, [isBookmarked]);
 
   const handleBookmarkToggle = async () => {
     if (!user) {
@@ -64,7 +68,6 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
       className={`rule-icon ${className}`}
       title={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
     >
-      <span>{bookmarked}</span>
       {bookmarked ? (
         <RiBookmarkFill size={ICON_SIZE} className="text-ssw-red" />
       ) : (

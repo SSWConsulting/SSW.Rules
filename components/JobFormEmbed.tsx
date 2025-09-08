@@ -15,7 +15,12 @@ const JobFormEmbed: React.FC<JobFormEmbedProps> = ({ jotFormId, open, onClose })
 
   return (
     <Popup isVisible={open} onClose={onClose} showCloseIcon>
-      <Jotform src={`https://form.jotform.com/${jotFormId}`}></Jotform>
+      <div className="w-full h-[90vh] overflow-auto">
+        <Jotform 
+          src={`https://form.jotform.com/${jotFormId}`}
+          className="w-full h-full border-0"
+        />
+      </div>
     </Popup>
   );
 };

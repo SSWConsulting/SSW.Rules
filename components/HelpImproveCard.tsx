@@ -36,7 +36,7 @@ export default function HelpImproveCard() {
         >
           Adam Cogan
         </a>
-        <p className="font-light">Chief Software Architect as SSW</p>
+        <p className="font-light">Chief Software Architect at SSW</p>
       </div>
     </Card>
   );

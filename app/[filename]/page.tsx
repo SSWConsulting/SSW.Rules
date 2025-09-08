@@ -122,11 +122,9 @@ export default async function Page({
   const category = await getCategoryData(filename);
   if (category?.data) {
     return (
-      <Layout>
         <Section>
           <ClientCategoryPage categoryQueryProps={category}/>
         </Section>
-      </Layout>
     );
   }
 
@@ -161,11 +159,9 @@ export default async function Page({
 
   if (rule?.data) {
     return (
-      <Layout>
         <Section>
           <ClientRulePage ruleQueryProps={rule} ruleCategoriesMapping={ruleCategoriesMapping} relatedRulesMapping={relatedRulesMapping} />
         </Section>
-      </Layout>
     );
   }
 

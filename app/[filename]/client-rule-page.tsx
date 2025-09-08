@@ -20,13 +20,14 @@ import { formatDateLong, timeAgo } from "@/lib/dateUtils";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 import HelpCard from "@/components/HelpCard";
 import Acknowledgements from "@/components/Acknowledgements";
-import { useUser, getAccessToken } from "@auth0/nextjs-auth0";
+import { getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
 import Discussion from "@/components/Discussion";
 import { useRouter } from "next/navigation";
 import { getRuleLastModifiedFromAuthors } from "@/lib/services/github";
 import { ICON_SIZE } from "@/constants";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useAuth } from "@/components/auth/AuthContext";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -36,7 +37,7 @@ export interface ClientRulePageProps {
 
 export default function ClientRulePage(props: ClientRulePageProps) {
   const { ruleQueryProps } = props;
-  const { user } = useUser();
+  const { user } = useAuth();
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [authorUsername, setAuthorUsername] = useState<string | null>(null);
   const relatedRules = props.relatedRulesMapping || [];

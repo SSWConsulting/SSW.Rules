@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useUser, getAccessToken } from '@auth0/nextjs-auth0';
+import { getAccessToken } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/navigation';
 import { BookmarkService } from '@/lib/bookmarkService';
 import { RiBookmarkLine, RiBookmarkFill } from 'react-icons/ri';
 import { ICON_SIZE } from '@/constants';
+import { useAuth } from './auth/AuthContext';
 
 interface BookmarkProps {
   ruleGuid: string;
@@ -15,7 +16,7 @@ interface BookmarkProps {
 }
 
 export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, className = '' }: BookmarkProps) {
-  const { user } = useUser();
+  const { user } = useAuth();
   const router = useRouter();
   const [bookmarked, setBookmarked] = useState<boolean>(isBookmarked);
 

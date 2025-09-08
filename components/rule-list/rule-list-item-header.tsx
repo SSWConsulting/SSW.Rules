@@ -34,6 +34,21 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, showBookm
     setIsBookmarked(newStatus);
   };
 
+  const handleRemoveBookmark = async (ruleGuid: string) => {
+    if (!user?.sub) return;
+
+    setIsRemoving(true);
+    try {
+      if (onBookmarkRemoved) {
+        onBookmarkRemoved(ruleGuid);
+      }
+    } catch (error) {
+      console.error('Error removing bookmark:', error);
+    } finally {
+      setIsRemoving(false);
+    }
+  };
+
   return (
     <section>
       <div className="mt-2 flex items-center flex-col justify-between sm:flex-row">

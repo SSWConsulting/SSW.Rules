@@ -235,10 +235,8 @@ export default function ClientRulePage(props: ClientRulePageProps) {
               components={MarkdownComponentMapping}
             />
           </div>
-          <div className="hidden md:block">
-            <hr className="my-6 mx-0"/>
-            <Discussion ruleGuid={rule?.guid || ''} />
-          </div>
+          <hr className="my-6 mx-0"/>
+          <Discussion ruleGuid={rule?.guid || ''} />
         </Card>
         <div className="layout-sidebar">
           <Card title="Categories">
@@ -278,9 +276,6 @@ export default function ClientRulePage(props: ClientRulePageProps) {
             )}
           </Card>
           <HelpCard />
-          <div className="block md:hidden">
-            <Discussion ruleGuid={rule?.guid || ''} />
-          </div>
         </div>
       </div>
     </>

@@ -11,12 +11,10 @@ export default async function UserRulesPage() {
   const ruleCount = await fetchRuleCount()
 
   return (
-    <Layout>
       <Section>
         <Suspense fallback={null}>
           <UserRulesClientPage ruleCount={ruleCount} />
         </Suspense>
       </Section>
-    </Layout>
   );
 }

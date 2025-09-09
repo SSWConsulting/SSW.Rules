@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useUser, getAccessToken } from '@auth0/nextjs-auth0';
+import {  getAccessToken } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/navigation';
 import { BookmarkService } from '@/lib/bookmarkService';
 import { RiBookmarkLine, RiBookmarkFill } from 'react-icons/ri';
 import { ICON_SIZE } from '@/constants';
+import { useAuth } from './auth/UserClientProvider';
 
 interface BookmarkProps {
   ruleGuid: string;
@@ -15,7 +16,7 @@ interface BookmarkProps {
 }
 
 export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, className = '' }: BookmarkProps) {
-  const { user } = useUser();
+  const { user } = useAuth();
   const router = useRouter();
   const [bookmarked, setBookmarked] = useState<boolean>(isBookmarked);
 
@@ -24,8 +25,9 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
   }, [isBookmarked]);
 
   const handleBookmarkToggle = async () => {
-    if (!user) {
-      const currentPath = window.location.pathname;
+    const currentPath = window.location.pathname;
+    const userId = user?.sub;
+    if (!userId) {
       router.push(`/auth/login?returnTo=${encodeURIComponent(currentPath)}`);
       return;
     }
@@ -38,7 +40,7 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
         return;
       }
 
-      const data = { ruleGuid: ruleGuid, UserId: user.sub };
+      const data = { ruleGuid: ruleGuid, UserId: userId };
 
       if (bookmarked) {
         const result = await BookmarkService.removeBookmark(data, accessToken);

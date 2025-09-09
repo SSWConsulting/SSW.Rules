@@ -21,7 +21,6 @@ export default async function LatestRulePage({ searchParams }: LatestRulePagePro
   ]);
 
   return (
-    <Layout>
       <Section>
         <LatestRuleClientPage 
           ruleCount={ruleCount}
@@ -29,7 +28,6 @@ export default async function LatestRulePage({ searchParams }: LatestRulePagePro
           latestRulesByCreated={latestRulesByCreated}
         />
       </Section>
-    </Layout>
   );
 }
 

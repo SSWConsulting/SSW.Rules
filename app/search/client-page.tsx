@@ -14,6 +14,7 @@ import LatestRulesCard from "@/components/LatestRulesCard";
 import Dropdown from "@/components/ui/dropdown";
 import { CgSortAz } from "react-icons/cg";
 import RuleCard from "@/components/RuleCard";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface SearchResult {
   objectID: string;
@@ -48,6 +49,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
 
   return (
     <>
+      <Breadcrumbs breadcrumbText="Search" />
       <div className="layout-two-columns">
         <div className="layout-main-section">
           <div className="h-[5rem]">

@@ -2,9 +2,11 @@ import React from "react";
 import { Metadata } from "next";
 import { Inter as FontSans, Lato, Nunito } from "next/font/google";
 import { cn } from "@/lib/utils";
+import SiteLayout from "@/components/layout/layout";
 
 import "@/styles.css";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
+import UserClientProvider from "@/components/auth/UserClientProvider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -38,7 +40,9 @@ export default function RootLayout({
       className={cn(fontSans.variable, nunito.variable, lato.variable)}
     >
       <body className="min-h-screen bg-background font-sans antialiased">
-        {children}
+        <UserClientProvider>
+          <SiteLayout>{children}</SiteLayout>
+        </UserClientProvider>
         <TailwindIndicator />
       </body>
     </html>

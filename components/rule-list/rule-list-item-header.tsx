@@ -6,7 +6,7 @@ import { RiGithubLine, RiPencilLine } from 'react-icons/ri';
 import { IconLink } from '@/components/ui';
 import Bookmark from '../Bookmark';
 import { ICON_SIZE } from '@/constants';
-import { useAuth } from '../auth/AuthContext';
+import { useUser } from '@auth0/nextjs-auth0';
 
 export interface RuleListItemHeaderProps {
   rule: {
@@ -23,7 +23,7 @@ export interface RuleListItemHeaderProps {
 const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, showBookmark = false, onBookmarkRemoved, index }) => {
   const linkRef = useRef<HTMLAnchorElement>(null);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(rule.isBookmarked);
-  const { user } = useAuth();
+  const { user } = useUser();
   const [isRemoving, setIsRemoving] = useState(false);
 
   useEffect(() => {

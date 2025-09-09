@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useUser } from '@auth0/nextjs-auth0';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { FaGithub, FaUser, FaSignOutAlt } from 'react-icons/fa';
-import { useAuth } from './AuthContext';
 
 type AnyUser = {
   name?: string;
@@ -15,7 +15,7 @@ type AnyUser = {
 };
 
 export default function UserDropdown() {
-  const { user } = useAuth();
+  const { user } = useUser();
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ top: 0, right: 0 });
   const [isPositioned, setIsPositioned] = useState(false);

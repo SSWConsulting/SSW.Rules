@@ -56,17 +56,16 @@ export default async function Home() {
     Promise.resolve(buildCategoryRuleCounts()),
   ]);
 
-  return (
+  const layout = await Layout({
+    children: (
       <Section>
         <Breadcrumbs isHomePage />
-        <HomeClientPage
-          topCategories={topCategories}
-          latestRules={latestRules}
-          ruleCount={ruleCount}
-          categoryRuleCounts={categoryRuleCounts}
-        />
+        <HomeClientPage topCategories={topCategories} latestRules={latestRules} ruleCount={ruleCount} categoryRuleCounts={categoryRuleCounts} />
       </Section>
-  )
+    ),
+  });
+
+  return layout;
 }
 
 export async function generateMetadata() {

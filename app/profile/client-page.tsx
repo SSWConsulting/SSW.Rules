@@ -1,6 +1,6 @@
 'use client';
 
-import { getAccessToken } from '@auth0/nextjs-auth0';
+import { useUser, getAccessToken } from '@auth0/nextjs-auth0';
 import React, { useState, useEffect } from 'react';
 import RuleList from '@/components/rule-list';
 import { BookmarkedRule, UserBookmarksResponse, Rule } from '@/types';
@@ -9,7 +9,6 @@ import client from '@/tina/__generated__/client';
 import Image from 'next/image';
 import { RiGithubFill, RiBookmarkFill } from 'react-icons/ri';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { useAuth } from '@/components/auth/AuthContext';
 
 interface ProfileData {
   [key: string]: any;
@@ -24,7 +23,7 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
   const [rules, setRules] = useState<Rule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [bookmarkCount, setBookmarkCount] = useState(0);
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading } = useUser();
   const isAuthenticated = !!user;
 
   async function getBookmarkList() {

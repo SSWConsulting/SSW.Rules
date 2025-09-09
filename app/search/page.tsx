@@ -13,6 +13,7 @@ export default async function RulesSearchPage() {
   ]);
 
   return (
+    <Layout>
       <Section>
         <Suspense fallback={null}>
           <RulesSearchClientPage
@@ -21,6 +22,7 @@ export default async function RulesSearchPage() {
           />
         </Suspense>
       </Section>
+    </Layout>
   );
 }
 

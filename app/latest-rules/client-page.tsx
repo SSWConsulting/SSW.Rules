@@ -9,7 +9,6 @@ import JoinConversationCard from '@/components/JoinConversationCard';
 import HelpCard from '@/components/HelpCard';
 import LatestRulesList from '@/components/LatestRulesList';
 import { LatestRule } from '@/models/LatestRule';
-import Breadcrumbs from '@/components/Breadcrumbs';
 
 interface LatestRuleClientPageProps {
   ruleCount: number;
@@ -21,7 +20,6 @@ export default function LatestRuleClientPage({ ruleCount, latestRulesByUpdated, 
 
   return (
        <>
-          <Breadcrumbs breadcrumbText="Latest Rules" />
           <div className="layout-two-columns">
             <div className="layout-main-section">
               <div className="h-[5rem]">

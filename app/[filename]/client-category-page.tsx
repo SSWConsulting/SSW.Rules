@@ -6,10 +6,9 @@ import Link from "next/link";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 import RuleList from "@/components/rule-list";
-import { getAccessToken } from "@auth0/nextjs-auth0";
+import { useUser, getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { useAuth } from "@/components/auth/AuthContext";
 
 export interface ClientCategoryPageProps {
   categoryQueryProps: {
@@ -28,7 +27,7 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
     data: categoryQueryProps.data ?? {},
   });
 
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading } = useUser();
   const category = data?.category;
   const baseRules = useMemo(() => {
     return category?.index.flatMap((i) => i.rule) || [];

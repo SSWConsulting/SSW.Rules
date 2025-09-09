@@ -1,10 +1,10 @@
 'use client';
 
+import { useUser } from '@auth0/nextjs-auth0';
 import UserDropdown from './UserDropdown';
-import { useAuth } from './AuthContext';
 
 export default function SignIn() {
-    const { user } = useAuth();
+    const { user } = useUser();
 
     if (!user) {
         const href = `/auth/login?returnTo=/`;

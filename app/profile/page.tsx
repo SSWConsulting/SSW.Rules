@@ -7,10 +7,12 @@ export const revalidate = 300;
 
 export default function ProfilePage() {
   return (
+    <Layout>
       <Section>
         <Suspense fallback={null}>
           <ProfileClientPage />
         </Suspense>
       </Section>
+    </Layout>
   );
 }

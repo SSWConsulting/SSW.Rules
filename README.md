@@ -1,4 +1,7 @@
 # SSW.Rules.Tina.Nextjs.POC
+
+[![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square)](https://gitmoji.dev) [![Scheduled CodeAuditor test](https://github.com/SSWConsulting/SSW.Rules.Tina.Nextjs.POC/actions/workflows/codeauditor-test.yml/badge.svg?event=schedule)](https://github.com/SSWConsulting/SSW.Rules.Tina.Nextjs.POC/actions/workflows/codeauditor-test.yml)
+
 A POC that will validate the compatibility between Rules and Tina – using Next.js.  
 
 The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWConsulting/SSW.Rules.Content)

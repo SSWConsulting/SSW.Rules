@@ -84,26 +84,68 @@ const getRuleData = async (filename: string) => {
 
 export async function generateStaticParams() {
   try {
+    if (!client?.queries) {
+      console.error("Client or queries not available");
+      return [];
+    }
+
     const [categoryConnection, ruleConnection] = await Promise.all([
-      client.queries.categoryConnection(),
-      client.queries.ruleConnection(),
+      client.queries.categoryConnection().catch((err) => {
+        const isRecordNotFound = err?.message?.includes('Unable to find record');
+        if (!isRecordNotFound) {
+          console.warn("Error fetching categories:", err?.message || err);
+        }
+        return { data: { categoryConnection: { edges: [] } } };
+      }),
+      client.queries.ruleConnection().catch((err) => {
+        const isRecordNotFound = err?.message?.includes('Unable to find record');
+        if (!isRecordNotFound) {
+          console.warn("Error fetching rules:", err?.message || err);
+        }
+        return { data: { ruleConnection: { edges: [] } } };
+      }),
     ]);
 
-    const rules =
-      ruleConnection.data.ruleConnection.edges
-      ?.filter( page => page?.node?._sys.filename == "rule")
-      .map((page) => ({
-        filename: page?.node?._sys.relativePath.split("/")[0],
-      })) || [];
+    if (!categoryConnection?.data && !ruleConnection?.data) {
+      console.error("Failed to fetch any valid connections data");
+      return [];
+    }
 
-    const categories =
-      categoryConnection.data.categoryConnection.edges
-        ?.filter((page) => page?.node?._sys.filename !== "index")
-        .map((page) => ({
-          filename: page?.node?._sys.filename,
-        })) || [];
+    const rules: { filename: string }[] = [];
+    if (ruleConnection?.data?.ruleConnection?.edges && Array.isArray(ruleConnection.data.ruleConnection.edges)) {
+      for (const page of ruleConnection.data.ruleConnection.edges) {
+        try {
+          if (page?.node?._sys?.filename === "rule" && page?.node?._sys?.relativePath) {
+            const relativePath = page.node._sys.relativePath;
+            const pathParts = relativePath.split("/");
+            if (pathParts.length > 0 && pathParts[0]) {
+              rules.push({ filename: pathParts[0] });
+            }
+          }
+        } catch (err) {
+          console.warn("Error processing rule page:", err);
+        }
+      }
+    }
+
+    const categories: { filename: string }[] = [];
+    if (categoryConnection?.data?.categoryConnection?.edges && Array.isArray(categoryConnection.data.categoryConnection.edges)) {
+      for (const page of categoryConnection.data.categoryConnection.edges) {
+        try {
+          if (page?.node?._sys?.filename && page.node._sys.filename !== "index") {
+            categories.push({ filename: page.node._sys.filename });
+          }
+        } catch (err) {
+          console.warn("Error processing category page:", err);
+        }
+      }
+    }
 
     const paths = [...rules, ...categories];
+
+    if (paths.length === 0) {
+      console.warn("No static params generated - no valid rules or categories found");
+    }
 
     return paths;
   } catch (error) {

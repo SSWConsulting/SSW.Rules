@@ -261,7 +261,7 @@
   }
 
   blockquote{
-    @apply italic text-sm font-light text-justify;
+    @apply italic text-sm font-light;
   }
 }
 

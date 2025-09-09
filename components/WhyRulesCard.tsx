@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 export default function WhyRulesCard() {
   return (
     <Card title="Why All These Rules?">
-      <p className="text-justify">
+      <p>
         Read about the{" "}
         <a
           className="underline"

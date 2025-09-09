@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 export default function AboutSSWCard() {
   return (
     <Card title="About SSW">
-      <p className="text-justify">
+      <p>
         SSW Consulting has over 30 years of experience developing awesome
         Microsoft solutions that today build on top of Angular, React,
         Azure, Azure DevOps, SharePoint, Office 365, .NET Core, WebAPI,

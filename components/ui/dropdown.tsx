@@ -39,7 +39,7 @@ export default function Dropdown({ options, value, onChange, className = '' }: D
   };
 
   return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
+    <div className={`relative ${className}`} ref={dropdownRef} style={{ zIndex: 10000 }}>
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -57,7 +57,15 @@ export default function Dropdown({ options, value, onChange, className = '' }: D
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-[160px]">
+        <div 
+          className="fixed mt-1 bg-white border border-gray-200 rounded-md shadow-lg min-w-[160px]" 
+          style={{ 
+            zIndex: 10000,
+            position: 'fixed',
+            left: dropdownRef.current ? dropdownRef.current.getBoundingClientRect().left : 0,
+            top: dropdownRef.current ? dropdownRef.current.getBoundingClientRect().bottom + 4 : 0
+          }}
+        >
           {options.map((option) => (
             <button
               key={option.value}

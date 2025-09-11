@@ -73,7 +73,7 @@ export default function Acknowledgements({ authors }: AcknowledgementsProps) {
                   alt={title}
                   title={title}
                   fill
-                  className="object-cover"
+                  className="object-cover object-top"
                   onError={() => handleImageError(index)}
                 />
               </a>

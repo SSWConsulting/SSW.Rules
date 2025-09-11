@@ -14,6 +14,7 @@ import { appendNewRules } from '@/utils/appendNewRules';
 import { selectLatestRuleFilesByPath } from '@/utils/selectLatestRuleFilesByPath';
 import LoadMoreButton from '@/components/LoadMoreButton';
 import RuleCard from '@/components/RuleCard';
+import Spinner from '@/components/Spinner';
 
 const Tabs = {
   LAST_MODIFIED: 'last-modified',
@@ -181,7 +182,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   useEffect(() => {
     (async () => {
       if (queryStringRulesAuthor) {
-        const [_, resolvedAuthorName] = await Promise.all([getLastModifiedRules({ append: true }), resolveAuthor()]);
+        const [_, resolvedAuthorName] = await Promise.all([getLastModifiedRules(), resolveAuthor()]);
         await getAuthoredRules(resolvedAuthorName as string);
       }
     })();
@@ -243,7 +244,7 @@ export default function UserRulesClientPage({ ruleCount }) {
     },
   ) => {
     if (items.length === 0 && loadingInitial) {
-      return <div className="py-4 text-sm text-gray-500">Loading…</div>;
+      return <Spinner size="lg" className='center' />
     }
     if (items.length === 0) {
       return <div className="py-4 text-sm text-gray-500">{emptyText}</div>;

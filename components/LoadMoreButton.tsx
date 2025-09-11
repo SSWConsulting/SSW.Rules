@@ -1,4 +1,5 @@
 import React from 'react';
+import Spinner from './Spinner';
 
 export default function LoadMoreButton({
   onClick,
@@ -23,12 +24,7 @@ export default function LoadMoreButton({
           : 'border-ssw-red bg-ssw-red text-white hover:bg-ssw-red/90 hover:cursor-pointer',
       ].join(' ')}
     >
-      {loading && (
-        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" opacity="0.25" />
-          <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="4" fill="none" />
-        </svg>
-      )}
+      {loading && <Spinner size="sm" inline />}
       {children ?? 'Load More'}
     </button>
   );

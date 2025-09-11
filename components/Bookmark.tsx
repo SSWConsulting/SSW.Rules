@@ -7,6 +7,7 @@ import { BookmarkService } from '@/lib/bookmarkService';
 import { RiBookmarkLine, RiBookmarkFill } from 'react-icons/ri';
 import { ICON_SIZE } from '@/constants';
 import { useAuth } from './auth/UserClientProvider';
+import Spinner from './Spinner';
 
 interface BookmarkProps {
   ruleGuid: string;
@@ -19,6 +20,7 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
   const { user } = useAuth();
   const router = useRouter();
   const [bookmarked, setBookmarked] = useState<boolean>(isBookmarked);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setBookmarked(isBookmarked);
@@ -32,11 +34,14 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const accessToken = await getAccessToken();
 
       if (!accessToken) {
         console.error('No access token available');
+        setIsLoading(false);
         return;
       }
 
@@ -61,6 +66,8 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
       }
     } catch (error) {
       console.error('Error toggling bookmark:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,11 +76,14 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
       onClick={handleBookmarkToggle}
       className={`rule-icon ${className}`}
       title={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
+      disabled={isLoading}
     >
-      {bookmarked ? (
+      {isLoading ? (
+        <Spinner size="sm" inline />
+      ) : bookmarked ? (
         <RiBookmarkFill size={ICON_SIZE} className="text-ssw-red" />
       ) : (
-        <RiBookmarkLine size={ICON_SIZE} />
+        <RiBookmarkLine size={ICON_SIZE} className="hover:text-ssw-red transition-colors duration-200" />
       )}
     </button>
   );

@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { RiGithubFill, RiBookmarkFill } from 'react-icons/ri';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { useAuth } from '@/components/auth/UserClientProvider';
+import Spinner from '@/components/Spinner';
 
 interface ProfileData {
   [key: string]: any;
@@ -198,11 +199,9 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
             
             <div className="bg-white p-6">
               {authLoading || isLoading ? (
-                <div className="flex items-center justify-center min-h-[400px] p-12">
-                  <p className="text-xl text-gray-600">
-                    Loading your bookmarks...
-                    </p>
-                  </div>
+                <div className="flex flex-col items-center justify-center min-h-[400px] p-12 gap-4">
+                  <Spinner size="lg" />
+                </div>
               ) : (
                 <RuleList
                   rules={rules}

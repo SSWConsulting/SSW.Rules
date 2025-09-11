@@ -196,7 +196,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                 </p>
               </div>
               <div className="flex align-center gap-4 text-2xl mt-4">
-                <RiThumbUpLine
+                {/* <RiThumbUpLine
                   size={ICON_SIZE}
                   className="rule-icon"
                 ></RiThumbUpLine>
@@ -205,7 +205,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   size={ICON_SIZE}
                   className="rule-icon"
                 ></RiThumbDownLine>
-                <span className="-ml-3">3</span>
+                <span className="-ml-3">3</span> */}
                 <div className="flex-1"></div>
                 <button>
                   <Link href={`./admin#/~/${rule?.uri}`}>

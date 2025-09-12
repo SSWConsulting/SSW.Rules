@@ -33,8 +33,10 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
   const baseRules = useMemo(() => {
     return category?.index.flatMap((i) => i.rule) || [];
   }, [category]);
-  const [annotatedRules, setAnnotatedRules] = useState<any[]>(baseRules);
+  const [annotatedRules, setAnnotatedRules] = useState<any[]>([]);
+  const [rightSidebarRules, setRightSidebarRules] = useState<any[]>([]);
   const [bookmarkedGuids, setBookmarkedGuids] = useState<string[]>([]);
+  const [includeArchived, setIncludeArchived] = useState(false);
   const path = categoryQueryProps?.variables?.relativePath;
 
   // Fetch user bookmarks as soon as auth is ready
@@ -65,19 +67,36 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
     };
   }, [authLoading, user?.sub]);
 
-  // Derive annotated rules when baseRules or bookmarks change
+  // Derive annotated rules when baseRules, bookmarks, or includeArchived change
   useEffect(() => {
     if (!baseRules || baseRules.length === 0) {
       setAnnotatedRules([]);
+      setRightSidebarRules([]);
       return;
     }
     const bookmarkSet = new Set(bookmarkedGuids);
-    const updated = baseRules.map((r: any) => ({
+    
+    const activeRules = baseRules.filter((r: any) => r?.isArchived !== true);
+    const archivedRules = baseRules.filter((r: any) => r?.isArchived === true);
+    
+    let finalRules = activeRules;
+    if (includeArchived) {
+      finalRules = [...activeRules, ...archivedRules];
+    }
+    
+    const updated = finalRules.map((r: any) => ({
       ...r,
       isBookmarked: r?.guid ? bookmarkSet.has(r.guid) : false,
     }));
     setAnnotatedRules(updated);
-  }, [baseRules, bookmarkedGuids]);
+    
+    // Right sidebar: Show same rules as main list
+    const rightSidebarUpdated = finalRules.map((r: any) => ({
+      ...r,
+      isBookmarked: r?.guid ? bookmarkSet.has(r.guid) : false,
+    }));
+    setRightSidebarRules(rightSidebarUpdated);
+  }, [baseRules, bookmarkedGuids, includeArchived]);
 
   return (
     <div>
@@ -88,12 +107,18 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
           <div data-tina-field={tinaField(category, 'body')} className="text-md">
             <TinaMarkdown content={category?.body} components={MarkdownComponentMapping} />
           </div>
-          <RuleList rules={annotatedRules} categoryUri={path} type="category" />
+          <RuleList 
+            rules={annotatedRules} 
+            categoryUri={path} 
+            type="category" 
+            includeArchived={includeArchived}
+            onIncludeArchivedChange={setIncludeArchived}
+          />
         </div>
         <div className="hidden lg:w-1/3 lg:block md:hidden p-6 pr-0">
           <ol className="border-l-3 border-gray-300 pl-6">
-            {annotatedRules.map((rule) => (
-              <li key={`${rule.guid}-${rule.uri}`} className="py-1 ml-4">
+            {rightSidebarRules.map((rule, index) => (
+              <li key={`sidebar-${rule.guid}-${index}`} className="py-1 ml-4">
                 <Link href={rule.uri} className="text-gray-700 hover:text-ssw-red">
                   {rule.title}
                 </Link>

@@ -228,6 +228,32 @@ export default function ClientRulePage(props: ClientRulePageProps) {
               </div>
             </div>
           </div>
+          {rule?.isArchived && rule?.archivedreason && (
+            <div className="mt-8 bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-red-800 m-0 mb-1">
+                    This rule has been archived
+                  </h3>
+                  <div className="text-sm text-red-700 m-0">
+                    <span className="font-medium">Archived Reason:</span>{' '}
+                    <span 
+                      dangerouslySetInnerHTML={{
+                        __html: rule.archivedreason
+                          ?.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-red-800 underline hover:text-red-900">$1</a>')
+                          ?.replace(/https?:\/\/[^\s]+/g, '<a href="$&" class="text-red-800 underline hover:text-red-900">$&</a>')
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           <div data-tina-field={tinaField(rule, "body")} className="mt-8">
             <TinaMarkdown
               content={rule?.body}

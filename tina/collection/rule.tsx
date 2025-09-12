@@ -117,29 +117,6 @@ const Rule: Collection = {
       isBody: true,
       templates: embedTemplates,
     },
-    {
-      type: "boolean",
-      name: "archived",
-      label: "Archived",
-      description: "Mark this rule as archived.",
-    },
-    {
-      type: "string",
-      name: "archivedreason",
-      label: "Archived Reason",
-      description: "If this rule has been archived, summarise why here. Only required if 'Archived' is checked.",
-      ui: {
-        validate: (value, allValue) => {
-          if (!allValue.archived && value?.length) {
-            return "You cannot provide an archived reason if the rule is not archived.";
-          }
-
-          if (allValue.archived && !value?.length) {
-            return "Please provide a reason when archiving this rule.";
-          }
-        },
-      },
-    },
     ...historyFields
   ],
 };

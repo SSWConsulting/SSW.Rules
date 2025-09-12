@@ -13,6 +13,7 @@ export interface RuleListItemHeaderProps {
     title: string;
     uri: string;
     isBookmarked: boolean;
+    isArchived?: boolean;
   };
   showBookmark?: boolean;
   onBookmarkRemoved?: (ruleGuid: string) => void;
@@ -34,13 +35,22 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, showBookm
   return (
     <section>
       <div className="mt-2 flex items-center flex-col justify-between sm:flex-row">
-        <div className="flex gap-4 md:gap-2 md:mr-2">
-          <span className="text-sm text-gray-500">#{index + 1}</span>
-          <h2 className="m-0 text-2xl">
-            <Link href={`../${rule.uri}`} ref={linkRef} className="no-underline">
-              {rule.title}
-            </Link>
-          </h2>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-4 md:gap-2 md:mr-2">
+            <span className="text-sm text-gray-500">#{index + 1}</span>
+            <h2 className="m-0 text-2xl">
+              <Link href={`../${rule.uri}`} ref={linkRef} className="no-underline">
+                {rule.title}
+              </Link>
+            </h2>
+          </div>
+          {rule.isArchived && (
+            <div className="ml-8 md:ml-6">
+              <span className="inline-block bg-red-600 text-white text-sm px-2 py-1 rounded font-medium">
+                Archived
+              </span>
+            </div>
+          )}
         </div>
 
         {showBookmark && (

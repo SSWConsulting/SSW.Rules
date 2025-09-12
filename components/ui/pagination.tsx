@@ -25,14 +25,16 @@ export default function Pagination({
   onItemsPerPageChange,
   className
 }: PaginationProps) {
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+  const isShowingAll = itemsPerPage >= totalItems;
+  const startItem = isShowingAll ? 1 : (currentPage - 1) * itemsPerPage + 1;
+  const endItem = isShowingAll ? totalItems : Math.min(currentPage * itemsPerPage, totalItems);
 
   const itemsPerPageOptions = [
     { value: '5', label: '5' },
     { value: '10', label: '10' },
     { value: '20', label: '20' },
-    { value: '50', label: '50' }
+    { value: '50', label: '50' },
+    { value: totalItems.toString(), label: 'All' }
   ];
 
   const getVisiblePages = () => {
@@ -76,48 +78,50 @@ export default function Pagination({
       {/* Desktop layout */}
       <div className="hidden sm:flex items-center justify-between">
         {/* Page navigation */}
-        <div className="flex items-center gap-1">
-          {visiblePages.map((page, index) => {
-            if (page === 'ellipsis-start' || page === 'ellipsis-end') {
+        {!isShowingAll && (
+          <div className="flex items-center gap-1">
+            {visiblePages.map((page, index) => {
+              if (page === 'ellipsis-start' || page === 'ellipsis-end') {
+                return (
+                  <div
+                    key={`ellipsis-${index}`}
+                    className="flex items-center justify-center w-8 h-8 text-gray-500"
+                  >
+                    <RiMoreFill />
+                  </div>
+                );
+              }
+              
+              const pageNum = page as number;
+              const isActive = pageNum === currentPage;
+              
               return (
-                <div
-                  key={`ellipsis-${index}`}
-                  className="flex items-center justify-center w-8 h-8 text-gray-500"
+                <Button
+                  key={pageNum}
+                  variant={isActive ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => onPageChange(pageNum)}
+                  className={cn(
+                    "w-8 h-8 p-0 text-sm cursor-pointer",
+                    isActive && "bg-ssw-red text-white hover:bg-ssw-red/90"
+                  )}
                 >
-                  <RiMoreFill />
-                </div>
+                  {pageNum}
+                </Button>
               );
-            }
+            })}
             
-            const pageNum = page as number;
-            const isActive = pageNum === currentPage;
-            
-            return (
-              <Button
-                key={pageNum}
-                variant={isActive ? "default" : "ghost"}
-                size="sm"
-                onClick={() => onPageChange(pageNum)}
-                className={cn(
-                  "w-8 h-8 p-0 text-sm cursor-pointer",
-                  isActive && "bg-ssw-red text-white hover:bg-ssw-red/90"
-                )}
-              >
-                {pageNum}
-              </Button>
-            );
-          })}
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage >= totalPages}
-            className="w-8 h-8 p-0 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <RiArrowRightSLine size={16} />
-          </Button>
-        </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage >= totalPages}
+              className="w-8 h-8 p-0 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RiArrowRightSLine size={16} />
+            </Button>
+          </div>
+        )}
 
         {/* Items per page and count */}
         <div className="flex items-center gap-4 text-sm text-gray-600">
@@ -139,48 +143,50 @@ export default function Pagination({
       {/* Mobile layout */}
       <div className="sm:hidden">
         {/* Page navigation - full width */}
-        <div className="flex items-center justify-center gap-1 mb-4">
-          {visiblePages.map((page, index) => {
-            if (page === 'ellipsis-start' || page === 'ellipsis-end') {
+        {!isShowingAll && (
+          <div className="flex items-center justify-center gap-1 mb-4">
+            {visiblePages.map((page, index) => {
+              if (page === 'ellipsis-start' || page === 'ellipsis-end') {
+                return (
+                  <div
+                    key={`ellipsis-${index}`}
+                    className="flex items-center justify-center w-8 h-8 text-gray-500"
+                  >
+                    <RiMoreFill />
+                  </div>
+                );
+              }
+              
+              const pageNum = page as number;
+              const isActive = pageNum === currentPage;
+              
               return (
-                <div
-                  key={`ellipsis-${index}`}
-                  className="flex items-center justify-center w-8 h-8 text-gray-500"
+                <Button
+                  key={pageNum}
+                  variant={isActive ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => onPageChange(pageNum)}
+                  className={cn(
+                    "w-8 h-8 p-0 text-sm cursor-pointer",
+                    isActive && "bg-ssw-red text-white hover:bg-ssw-red/90"
+                  )}
                 >
-                  <RiMoreFill />
-                </div>
+                  {pageNum}
+                </Button>
               );
-            }
+            })}
             
-            const pageNum = page as number;
-            const isActive = pageNum === currentPage;
-            
-            return (
-              <Button
-                key={pageNum}
-                variant={isActive ? "default" : "ghost"}
-                size="sm"
-                onClick={() => onPageChange(pageNum)}
-                className={cn(
-                  "w-8 h-8 p-0 text-sm cursor-pointer",
-                  isActive && "bg-ssw-red text-white hover:bg-ssw-red/90"
-                )}
-              >
-                {pageNum}
-              </Button>
-            );
-          })}
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage >= totalPages}
-            className="w-8 h-8 p-0 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <RiArrowRightSLine size={16} />
-          </Button>
-        </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage >= totalPages}
+              className="w-8 h-8 p-0 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RiArrowRightSLine size={16} />
+            </Button>
+          </div>
+        )}
 
         {/* Items per page and count - centered on new line */}
         <div className="flex items-center justify-center gap-4 text-sm text-gray-600">

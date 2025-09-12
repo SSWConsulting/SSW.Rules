@@ -287,6 +287,11 @@
   .prism-code {
     @apply whitespace-pre-wrap break-words;
   }
+  
+  input[type="checkbox"]:checked {
+    background-color: var(--color-ssw-red);
+    border-color: var(--color-ssw-red);
+  }
 }
 
 ul li::before {

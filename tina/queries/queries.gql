@@ -88,6 +88,8 @@ query categoryWithRulesQuery($relativePath: String!) {
             uri
             title
             body
+            isArchived
+            archivedreason
           }
         }
       }

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
-import { Button, wrapFieldsWithMeta } from "tinacms";
+import { Button } from "tinacms";
 import { BiChevronRight, BiChevronLeft, BiChevronDown, BiSearch } from "react-icons/bi";
 import {
   Popover,
@@ -23,7 +23,7 @@ interface Rule {
 const RULES_PER_PAGE = 25;
 const SEARCH_FETCH_SIZE = 100;
 
-export const PaginatedRuleSelectorInput = wrapFieldsWithMeta(({ input }) => {
+export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
   const [filter, setFilter] = useState("");
   const [debouncedFilter, setDebouncedFilter] = useState("");
   const [allRules, setAllRules] = useState<Rule[]>([]);
@@ -89,7 +89,7 @@ export const PaginatedRuleSelectorInput = wrapFieldsWithMeta(({ input }) => {
       const response = await client.request({
         query,
         variables
-      });
+      }, {});
       
       if (response?.data?.ruleConnection) {
         const connection = response.data.ruleConnection;
@@ -405,4 +405,4 @@ export const PaginatedRuleSelectorInput = wrapFieldsWithMeta(({ input }) => {
       </Popover>
     </div>
   );
-});
+};

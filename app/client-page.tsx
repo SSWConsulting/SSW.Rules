@@ -11,7 +11,8 @@ import HelpImproveCard from "@/components/HelpImproveCard";
 import AboutSSWCard from "@/components/AboutSSWCard";
 import JoinConversationCard from "@/components/JoinConversationCard";
 import HelpCard from "@/components/HelpCard";
-import QuickLinksCard, { QuickLink } from "@/components/QuickLinksCard";
+import QuickLinksCard from "@/components/QuickLinksCard";
+import { QuickLink } from "@/types/quickLink";
 
 export interface HomeClientPageProps {
   topCategories: any[];

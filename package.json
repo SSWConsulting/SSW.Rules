@@ -29,7 +29,7 @@
     "algoliasearch": "^4.24.0",
     "applicationinsights": "^3.3.0",
     "autoprefixer": "^10.4.20",
-    "axios": "1.7.7",
+    "axios": "1.12.2",
     "babel-eslint": "^10.1.0",
     "buffer": "^6.0.3",
     "classnames": "^2.5.1",

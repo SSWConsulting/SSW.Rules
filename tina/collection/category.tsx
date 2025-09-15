@@ -1,6 +1,7 @@
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { Collection, Form, TinaCMS } from "tinacms";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
+import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
 
 const Category: Collection = {
   name: "category",
@@ -187,9 +188,7 @@ const Category: Collection = {
               name: "rule",
               collections: ["rule"],
               ui: {
-                optionComponent: (props: { name: string }, _internalSys) => {
-                  return props.name ?? _internalSys.path;
-                },
+                component: PaginatedRuleSelectorInput,
               },
             },
           ],

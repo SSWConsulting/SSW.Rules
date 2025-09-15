@@ -6,6 +6,7 @@ import HomeClientPage from "./client-page";
 import ruleToCategories from "../rule-to-categories.json";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
+import { QuickLink } from "@/types/quickLink";
 
 export const revalidate = 300;
 
@@ -34,7 +35,12 @@ async function fetchTopCategoriesWithSubcategories() {
   return allTopCategories;
 }
 
-
+async function fetchQuickLinks(): Promise<QuickLink[]> {
+  const res = await client.queries.global({
+    relativePath: "index.json",
+  });
+  return Array.isArray(res.data.global.quickLinks?.links) ? res.data.global.quickLinks.links as QuickLink[] : [];
+}
 
 function buildCategoryRuleCounts(): Record<string, number> {
   const counts: Record<string, number> = {};
@@ -49,17 +55,23 @@ function buildCategoryRuleCounts(): Record<string, number> {
 }
 
 export default async function Home() {
-  const [topCategories, latestRules, ruleCount, categoryRuleCounts] = await Promise.all([
+  const [topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks] = await Promise.all([
     fetchTopCategoriesWithSubcategories(),
     fetchLatestRules(),
     fetchRuleCount(),
     Promise.resolve(buildCategoryRuleCounts()),
+    fetchQuickLinks()
   ]);
 
   return (
       <Section>
         <Breadcrumbs isHomePage />
-        <HomeClientPage topCategories={topCategories} latestRules={latestRules} ruleCount={ruleCount} categoryRuleCounts={categoryRuleCounts} />
+        <HomeClientPage 
+          topCategories={topCategories} 
+          latestRules={latestRules} 
+          ruleCount={ruleCount} 
+          categoryRuleCounts={categoryRuleCounts} 
+          quickLinks={quickLinks} />
       </Section>
     )
 }

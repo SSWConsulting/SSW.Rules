@@ -140,6 +140,29 @@ const Global: Collection = {
         },
       ],
     },
+    {
+      type: 'object',
+      name: "quickLinks",
+      label: "Quick Links",
+      fields: [
+        {
+          type: "object",
+          list: true,
+          name: "links",
+          label: "Links",
+          ui: {
+            itemProps: (item) => {
+              console.log("Quick Link item:", item);
+              return { label: item?.linkText || 'undefined' };
+            },
+          },
+          fields: [
+            { type: "string", name: "linkText", label: "Link Text" },
+            { type: "string", name: "uri", label: "URI" },
+          ],
+        },
+      ],
+    }
   ],
 };
 

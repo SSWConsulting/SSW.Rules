@@ -11,16 +11,18 @@ import HelpImproveCard from "@/components/HelpImproveCard";
 import AboutSSWCard from "@/components/AboutSSWCard";
 import JoinConversationCard from "@/components/JoinConversationCard";
 import HelpCard from "@/components/HelpCard";
+import QuickLinksCard, { QuickLink } from "@/components/QuickLinksCard";
 
 export interface HomeClientPageProps {
   topCategories: any[];
   latestRules: LatestRule[];
   ruleCount: number;
   categoryRuleCounts: Record<string, number>;
+  quickLinks: QuickLink[];
 }
 
 export default function HomeClientPage(props: HomeClientPageProps) {
-  const { topCategories, latestRules, ruleCount, categoryRuleCounts } = props;
+  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks } = props;
 
   const getTopCategoryTotal = (subCategories: any[]) => {
     return subCategories.reduce((total, category) => {
@@ -76,6 +78,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
             {ruleCount && <RuleCount count={ruleCount} />}
           </div>
           <LatestRulesCard rules={latestRules} />
+          <QuickLinksCard links={quickLinks} />
           <WhyRulesCard />
           <HelpImproveCard />
           <HelpCard />

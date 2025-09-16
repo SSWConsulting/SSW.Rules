@@ -154,3 +154,33 @@ query rulesByAuthor($authorTitle: String!, $first: Float, $after: String) {
     }
   }
 }
+
+query paginatedRulesQuery($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: RuleFilter) {
+  ruleConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    totalCount
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        title
+        uri
+        _sys {
+          relativePath
+        }
+      }
+    }
+  }
+}

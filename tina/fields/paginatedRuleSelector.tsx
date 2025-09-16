@@ -9,7 +9,7 @@ import {
   PopoverPanel,
 } from "@headlessui/react";
 import { client } from "../__generated__/client";
-import type { RuleConnectionQueryVariables } from "../__generated__/types";
+import type { PaginatedRulesQueryQueryVariables } from "../__generated__/types";
 
 interface Rule {
   id: string;
@@ -36,7 +36,6 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isSearchMode, setIsSearchMode] = useState(false);
 
-  // For reference field, input.value is a single rule path string
   const selectedRule = useMemo(() => {
     return input.value || null;
   }, [input.value]);
@@ -46,50 +45,15 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
     try {
       const isSearch = searchFilter.trim().length > 0;
       
-      const variables: RuleConnectionQueryVariables = {
+      const variables = {
         first: after || !before ? (isSearch ? SEARCH_FETCH_SIZE : RULES_PER_PAGE) : undefined,
         last: before && !after ? (isSearch ? SEARCH_FETCH_SIZE : RULES_PER_PAGE) : undefined,
         after: after || undefined,
         before: before || undefined,
-        filter: undefined // Remove server-side filtering for more permissive search
+        filter: undefined
       };
-      
-      const query = `
-        query ruleConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: RuleFilter) {
-          ruleConnection(
-            before: $before
-            after: $after
-            first: $first
-            last: $last
-            sort: $sort
-            filter: $filter
-          ) {
-            totalCount
-            pageInfo {
-              hasPreviousPage
-              hasNextPage
-              startCursor
-              endCursor
-            }
-            edges {
-              cursor
-              node {
-                id
-                title
-                uri
-                _sys {
-                  relativePath
-                }
-              }
-            }
-          }
-        }
-      `;
 
-      const response = await client.request({
-        query,
-        variables
-      }, {});
+      const response = await client.queries.paginatedRulesQuery(variables);
       
       if (response?.data?.ruleConnection) {
         const connection = response.data.ruleConnection;
@@ -253,16 +217,11 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
       <Popover>
         {({ open }) => (
           <>
-            <PopoverButton>
-              <Button
-                className="text-sm h-11 px-4 justify-between w-full"
-                size="custom"
-                rounded="full"
-                variant={open ? "secondary" : "white"}
-              >
-                <span>{labelText}</span>
-                <BiChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} />
-              </Button>
+            <PopoverButton
+              className="text-sm h-11 px-4 justify-between w-full bg-white border border-gray-200 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors flex items-center"
+            >
+              <span>{labelText}</span>
+              <BiChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} />
             </PopoverButton>
             <div
               className="absolute w-full min-w-[600px] max-w-4xl -bottom-2 left-0 translate-y-full z-[1000]"

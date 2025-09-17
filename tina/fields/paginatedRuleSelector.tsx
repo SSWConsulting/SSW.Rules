@@ -160,7 +160,7 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
   const displayRules = isSearchMode ? paginatedRules : filteredRules;
 
   const handleRuleSelect = (rule: Rule) => {
-    const rulePath = `rules/${rule._sys.relativePath}`;
+    const rulePath = `public/uploads/rules/${rule._sys.relativePath}`;
     input.onChange(rulePath);
   };
 

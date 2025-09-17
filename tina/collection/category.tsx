@@ -12,11 +12,15 @@ const Category: Collection = {
     filename: {
       readonly: true,
       slugify: (values) => {
-        if (
-          values?._template === "top_category" ||
-          values?._template === "main"
-        ) {
+        if (values?._template === "main") {
           return "index";
+        } else if (values?._template === "top_category") {
+          const slugifiedTitle = values?.title
+            ?.toLowerCase()
+            .trim()
+            .replace(/ /g, "-")
+            .replace("?", "");
+          return `${slugifiedTitle}/index`;
         } else {
           return `${values?.title
             ?.toLowerCase()
@@ -26,7 +30,7 @@ const Category: Collection = {
         }
       },
       description:
-        'If it is the main or top category, then the filename will be "index", otherwise the title will be used to create filename',
+        'Main category will be "index", top categories will be "{title}/index", and regular categories will use the title as filename',
     },
     beforeSubmit: historyBeforeSubmit,
   },
@@ -77,6 +81,13 @@ const Category: Collection = {
     {
       name: "top_category",
       label: "Top Category",
+      ui: {
+        defaultItem: () => {
+          return {
+            type: "top_category",
+          };
+        },
+      },
       fields: [
         {
           type: "string",
@@ -84,6 +95,20 @@ const Category: Collection = {
           name: "title",
           isTitle: true,
           required: true,
+        },
+        {
+          type: "string",
+          name: "type",
+          label: "Type",
+          ui: {
+            component: "hidden",
+          },
+        },
+        {
+          type: "string",
+          name: "uri",
+          label: "URI",
+          description: "The URI of the top category. Should match the title in lowercase with spaces replaced by dashes (e.g., 'Azure DevOps' -> 'azure-devops')",
         },
         {
           type: "object",

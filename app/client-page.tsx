@@ -40,7 +40,16 @@ export default function HomeClientPage(props: HomeClientPageProps) {
             <h2 className="m-0 mb-4 text-ssw-red font-bold">Categories</h2>
           </div>
 
-          {topCategories.map((topCategory, index) => (
+          {topCategories
+            .filter((topCategory) =>
+              topCategory.index &&
+              topCategory.index.length > 0 &&
+              topCategory.index.some((item: any) =>
+                item.category &&
+                categoryRuleCounts[item.category._sys.filename] > 0
+              )
+            )
+            .map((topCategory, index) => (
             <Card key={index} className="mb-4">
               <h2 className="flex justify-between m-0 mb-4 text-2xl max-sm:text-lg">
                 <span>{topCategory.title}</span>
@@ -55,8 +64,12 @@ export default function HomeClientPage(props: HomeClientPageProps) {
               </h2>
 
               <ol>
-                {topCategory.index?.map((item: any, subIndex: number) =>
-                  item.category ? (
+                {topCategory.index
+                  ?.filter((item: any) =>
+                    item.category &&
+                    categoryRuleCounts[item.category._sys.filename] > 0
+                  )
+                  ?.map((item: any, subIndex: number) => (
                     <li key={subIndex} className="mb-4">
                       <div className=" flex justify-between">
                         <Link href={`/${item.category._sys.filename}`}>
@@ -67,8 +80,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
                         </span>
                       </div>
                     </li>
-                  ) : null
-                )}
+                  ))}
               </ol>
             </Card>
           ))}

@@ -76,7 +76,7 @@ const RuleList: React.FC<RuleListProps> = ({ categoryUri, rules, type, noContent
     <>
       <div ref={filterSectionRef} className="flex flex-col-reverse justify-between items-center mt-2 sm:flex-row sm:mt-0">
         <div className="flex flex-col items-center sm:flex-row sm:items-center gap-2 py-4 text-center lg:grid-cols-5">
-          <div className="flex gap-2 items-center">
+          <div className="flex items-center">
             <RadioButton
               id="customRadioInline1"
               value="titleOnly"

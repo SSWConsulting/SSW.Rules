@@ -407,7 +407,7 @@ jobs:
                   echo "Post-build cache verification:"
                   echo ""
                   
-                  # Vérifier si de nouveaux caches ont été créés
+                  # Verify that no cache has been created
                   FINAL_CACHES=$(gh api repos/${{ github.repository }}/actions/caches --jq '.actions_caches | length' 2>/dev/null || echo "unknown")
                   FINAL_SIZE=$(gh api repos/${{ github.repository }}/actions/caches --paginate \
                     --jq '[.actions_caches[] | .size_in_bytes] | add // 0' 2>/dev/null || echo "0")

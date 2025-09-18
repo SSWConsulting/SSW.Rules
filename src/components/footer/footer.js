@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   faFacebook,
   faInstagram,
@@ -10,13 +11,22 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 import preval from 'preval.macro';
-import React from 'react';
 import GitHubButton from 'react-github-btn';
 import { pathPrefix } from '../../../site-config';
 
 const buildTimestamp = preval`module.exports = new Date().getTime();`;
+const buildYear = preval`module.exports = new Date().getFullYear();`;
 
 const Footer = () => {
+  const [relativeDeployTime, setRelativeDeployTime] = useState('...');
+
+  useEffect(() => {
+    const update = () => setRelativeDeployTime(getLastDeployTime());
+    update();
+    const id = setInterval(update, 60000);
+    return () => clearInterval(id);
+  }, []);
+  
   return (
     <>
       <div className="p-4 text-center bg-grey-translucent text-sm">
@@ -62,7 +72,7 @@ const Footer = () => {
           <div className="xl:mx-6">
             <div className="mx-6 flex flex-col-reverse md:flex-row justify-between align-middle leading-6">
               <div className="py-2">
-                &copy; 1990-{new Date().getFullYear()} SSW. All rights reserved.
+                &copy; 1990-{buildYear} SSW. All rights reserved.
               </div>
               <div className="w-full md:w-3/6 md:text-right py-2">
                 <a
@@ -154,7 +164,7 @@ const Footer = () => {
                 >
                   CONSTANT CONTINUOUS DEPLOYMENT
                 </a>
-                . Last deployed {getLastDeployTime()} ago (Build #{' '}
+                . Last deployed <span suppressHydrationWarning>{relativeDeployTime}</span> ago (Build #{' '}
                 <a
                   className="footer-link"
                   href={

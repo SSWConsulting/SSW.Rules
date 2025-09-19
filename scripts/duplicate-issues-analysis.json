@@ -1,0 +1,134 @@
+{
+  "timestamp": "2025-09-19T02:57:21.838Z",
+  "summary": {
+    "totalPatterns": 5,
+    "totalIssuesAnalyzed": 14,
+    "analysisMethod": "Manual pattern recognition based on issue titles and content"
+  },
+  "duplicatePatterns": [
+    {
+      "pattern": "TinaCMS Migration Issues",
+      "description": "Multiple issues related to TinaCMS migration, broken images, and MDX problems",
+      "potentialDuplicates": [
+        {
+          "number": 1933,
+          "title": "🐛 Bug - Fix Broken Images and HTML Rendering in Rules (Content)"
+        },
+        {
+          "number": 1930,
+          "title": "🐛 Bug - MDX Issues in Rules (Content) on Staging Environment"
+        },
+        {
+          "number": 1878,
+          "title": "🐛 Bug - Investigate and Fix Broken Images on Azure Deployment"
+        }
+      ],
+      "recommendation": "These issues seem to be related to content rendering problems in the TinaCMS migration. Consider consolidating into a single issue."
+    },
+    {
+      "pattern": "Missing UI Components",
+      "description": "Multiple issues about missing buttons and UI elements on the migration website",
+      "potentialDuplicates": [
+        {
+          "number": 1929,
+          "title": "🐛 Bug - Missing Buttons and related page (Orphaned, Archived) on Migration Website"
+        },
+        {
+          "number": 1926,
+          "title": "🐛 Bug - Missing 'Include Archive' Button on Migration Website"
+        },
+        {
+          "number": 1912,
+          "title": "✨ ✨ Category Page - Add Missing \"Show Titles Only\" Button to POC Website"
+        }
+      ],
+      "recommendation": "These are all about missing UI components. Could be combined into a single comprehensive UI completion issue."
+    },
+    {
+      "pattern": "Authentication and Token Issues",
+      "description": "Multiple issues related to authentication, login loops, and token persistence",
+      "potentialDuplicates": [
+        {
+          "number": 1921,
+          "title": "🐛 Bug - Infinite Login and Fork Loop on Rules (Content) Page"
+        },
+        {
+          "number": 1915,
+          "title": "🐛 Bug - 401 Error on Page Reload Due to Token Persistence Issue"
+        }
+      ],
+      "recommendation": "Both issues seem related to authentication problems. Consider investigating if they have the same root cause."
+    },
+    {
+      "pattern": "Homepage Implementation",
+      "description": "Multiple issues about implementing features on the homepage",
+      "potentialDuplicates": [
+        {
+          "number": 1902,
+          "title": "✨ Add Right panel missing part SSW Rules POC"
+        },
+        {
+          "number": 1896,
+          "title": "💄Homepage - Polish homepage"
+        },
+        {
+          "number": 1895,
+          "title": "✨ Homepage - Add latest rules to homepage"
+        }
+      ],
+      "recommendation": "These could potentially be consolidated into a single homepage enhancement epic."
+    },
+    {
+      "pattern": "Build and Deployment Issues",
+      "description": "Issues related to build failures and deployment problems",
+      "potentialDuplicates": [
+        {
+          "number": 1937,
+          "title": "🐛 Bug - Exceeding Cache Limit in TinaCMS - NDC Migration Repository"
+        },
+        {
+          "number": 1928,
+          "title": "🐛 Bug - Production Build Failing Due to URI Issue in Rules (Gatsby)"
+        },
+        {
+          "number": 1907,
+          "title": "👷 Build - Fix build issues"
+        }
+      ],
+      "recommendation": "Consider if these build issues are related and could benefit from a unified approach."
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "High",
+      "action": "Review TinaCMS migration issues",
+      "description": "Multiple issues (#1933, #1930, #1878) seem to be related to content rendering problems. Consider consolidating or creating an epic to track all migration-related rendering issues."
+    },
+    {
+      "priority": "High",
+      "action": "Consolidate missing UI component issues",
+      "description": "Issues #1929, #1926, #1912 are all about missing UI components on the migration site. These could be tracked under a single comprehensive UI completion issue."
+    },
+    {
+      "priority": "Medium",
+      "action": "Investigate authentication issues",
+      "description": "Issues #1921 and #1915 both relate to authentication problems. They may share the same root cause and could benefit from a unified investigation."
+    },
+    {
+      "priority": "Medium",
+      "action": "Create homepage enhancement epic",
+      "description": "Issues #1902, #1896, #1895 could be organized under a single homepage enhancement epic for better tracking."
+    },
+    {
+      "priority": "Low",
+      "action": "Review build-related issues",
+      "description": "Build issues (#1937, #1928, #1907) may benefit from a systematic approach to build optimization."
+    }
+  ],
+  "automationSuggestions": [
+    "Implement issue templates that help users search for existing issues before creating new ones",
+    "Add labels like 'duplicate' and 'needs-triage' to help identify and manage potential duplicates",
+    "Create issue workflows that automatically suggest similar issues based on title keywords",
+    "Implement a periodic review process for issues with similar keywords or labels"
+  ]
+}

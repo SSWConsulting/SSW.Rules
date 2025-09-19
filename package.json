@@ -18,7 +18,8 @@
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
     "lint": "eslint --max-warnings=0 . --ext ts --ext tsx --ext js --ext jsx",
-    "updateRelativePath": "node scripts/updateRelativePath.js"
+    "updateRelativePath": "node scripts/updateRelativePath.js",
+    "find-duplicates": "node scripts/analyze-duplicate-issues.js"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",

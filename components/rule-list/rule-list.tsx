@@ -83,9 +83,10 @@ const RuleList: React.FC<RuleListProps> = ({ categoryUri, rules, type, noContent
               selectedOption={filter}
               handleOptionChange={handleOptionChange}
               labelText="Titles"
+              position='first'
             />
-            <RadioButton id="customRadioInline3" value="blurb" selectedOption={filter} handleOptionChange={handleOptionChange} labelText="Blurbs" />
-            <RadioButton id="customRadioInline2" value="all" selectedOption={filter} handleOptionChange={handleOptionChange} labelText="Everything" />
+            <RadioButton id="customRadioInline3" value="blurb" selectedOption={filter} handleOptionChange={handleOptionChange} labelText="Blurbs" position='middle'/>
+            <RadioButton id="customRadioInline2" value="all" selectedOption={filter} handleOptionChange={handleOptionChange} labelText="Everything" position='last'/>
           </div>
           {onIncludeArchivedChange && (
             <label className="flex items-center gap-2 px-4 py-1 text-sm cursor-pointer hover:bg-gray-50 transition-colors bg-white sm:ml-2">

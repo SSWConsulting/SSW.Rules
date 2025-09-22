@@ -15,10 +15,11 @@ import { selectLatestRuleFilesByPath } from '@/utils/selectLatestRuleFilesByPath
 import LoadMoreButton from '@/components/LoadMoreButton';
 import RuleCard from '@/components/RuleCard';
 import Spinner from '@/components/Spinner';
+import { FaUserCircle } from 'react-icons/fa';
 
 const Tabs = {
   LAST_MODIFIED: 'last-modified',
-  ACKNOWLEDGMENT: 'acknowledgment',
+  Acknowledged: 'acknowledged',
 } as const;
 
 type TabKey = typeof Tabs[keyof typeof Tabs];
@@ -35,7 +36,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [nextPageCursor, setNextPageCursor] = useState('');
   const [hasNext, setHasNext] = useState(false);
 
-  // Acknowledgment
+  // Acknowledged
   const [authoredRules, setAuthoredRules] = useState<any[]>([]);
   const [author, setAuthor] = useState<{ fullName?: string; slug?: string; gitHubUrl?: string }>({});
   const [loadingAuthored, setLoadingAuthored] = useState(false);
@@ -199,11 +200,11 @@ export default function UserRulesClientPage({ ruleCount }) {
   };
 
   const TabHeader = () => (
-    <div role="tablist" aria-label="User Rules Tabs" className="flex items-center gap-2 mt-2 mb-4">
+    <div role="tablist" aria-label="User Rules Tabs" className="flex mt-2 mb-4 divide-x divide-gray-200 rounded">
       {[
         { key: Tabs.LAST_MODIFIED, label: `Last Modified (${lastModifiedRules.length})` },
-        { key: Tabs.ACKNOWLEDGMENT, label: `Acknowledgment (${authoredRules.length})` },
-      ].map((t) => {
+        { key: Tabs.Acknowledged, label: `Acknowledged (${authoredRules.length})` },
+      ].map((t, i) => {
         const isActive = activeTab === t.key;
         return (
           <button
@@ -213,12 +214,13 @@ export default function UserRulesClientPage({ ruleCount }) {
             aria-selected={isActive}
             onClick={() => setActiveTab(t.key)}
             className={[
-              'group px-4 py-1 text-sm border rounded cursor-pointer hover:text-white transition-colors',
-              'hover:bg-ssw-red/100 hover:text-white hover:cursor-pointer',
+              "px-4 py-1 text-sm transition-colors hover:cursor-pointer",
+              i === 0 ? "rounded-l" : "-ml-px",
+              i === 1 ? "rounded-r" : "",
               isActive
-                ? 'bg-ssw-red text-white shadow-sm'
-                : 'bg-white hover:text-ssw-red',
-            ].join(' ')}
+                ? "bg-ssw-red text-white shadow-sm border-0"
+                : "bg-white hover:text-ssw-red border",
+            ].join(" ")}
           >
             {t.label}
           </button>
@@ -277,12 +279,18 @@ export default function UserRulesClientPage({ ruleCount }) {
       <Breadcrumbs breadcrumbText={author?.fullName ? `${author.fullName}'s Rules` : 'User Rules'} />
 
       <div className="layout-two-columns">
-        <div className="layout-main-section">
+        <div className="layout-main-section mt-6">
           {author.fullName && (
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
-              <h2 className="text-ssw-red">{author.fullName}&#39;s Rules</h2>
-              <a href={`https://ssw.com.au/people/${author.slug}/`} className="underline unstyled hover:text-ssw-red">
-                View people profile
+            <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4">
+              <h2 className="text-ssw-red mt-1.5">{author.fullName}'s Rules</h2>
+            
+              <a
+                target="_blank"
+                href={`https://ssw.com.au/people/${author.slug}/`}
+                className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-800 border border-gray-400 rounded-md hover:border-ssw-red hover:text-ssw-red transition-colors leading-5"
+              >
+                <FaUserCircle className="w-4 h-4 mr-1" />
+                View SSW People profile
               </a>
             </div>
           )}
@@ -298,7 +306,7 @@ export default function UserRulesClientPage({ ruleCount }) {
                   onLoadMore: handleLoadMoreLastModified,
                 })}
 
-              {activeTab === Tabs.ACKNOWLEDGMENT &&
+              {activeTab === Tabs.Acknowledged &&
                 renderList(authoredRules, {
                   loadingInitial: loadingAuthored,
                   loadingMore: loadingMoreAuthored,

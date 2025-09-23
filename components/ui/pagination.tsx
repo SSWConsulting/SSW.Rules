@@ -131,8 +131,9 @@ export default function Pagination({
               value={itemsPerPage.toString()}
               onChange={(value) => onItemsPerPageChange(parseInt(value))}
               className="text-sm"
+              showBorder={true}
             />
-            <span>per page</span>
+            <span className="mr-8">per page</span>
           </div>
           <span>
             {startItem} - {endItem} of {totalItems} items
@@ -196,8 +197,9 @@ export default function Pagination({
               value={itemsPerPage.toString()}
               onChange={(value) => onItemsPerPageChange(parseInt(value))}
               className="text-sm"
+              showBorder={true}
             />
-            <span>per page</span>
+            <span className="mr-8">per page</span>
           </div>
           <span>
             {startItem} - {endItem} of {totalItems} items

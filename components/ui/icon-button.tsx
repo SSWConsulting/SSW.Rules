@@ -19,7 +19,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   title,
   type = 'button'
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center rounded-md font-medium transition-colors cursor-pointer hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+  const baseClasses = 'inline-flex items-center justify-center rounded-md font-medium transition-colors cursor-pointer hover:text-[var(--ssw-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
 
   return (
     <button

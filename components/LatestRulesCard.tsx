@@ -26,7 +26,7 @@ export default function LatestRulesCard({ rules }: LatestRulesProps) {
       ))}
 
       <Link href="/latest-rules/?size=50">
-        <button className="px-4 py-2 text-red-600 rounded-md cursor-pointer hover:underline">
+        <button className="px-4 py-2 text-[var(--ssw-red)] rounded-md cursor-pointer hover:underline">
           See More
         </button>
       </Link>

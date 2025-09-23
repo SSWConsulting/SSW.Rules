@@ -20,7 +20,7 @@ const IconLink: React.FC<IconLinkProps> = ({
   target,
   rel
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center rounded-md font-medium transition-colors hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
+  const baseClasses = 'inline-flex items-center justify-center rounded-md font-medium transition-colors hover:text-[var(--ssw-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
 
   return (
     <Link

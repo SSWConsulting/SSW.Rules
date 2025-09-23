@@ -4,7 +4,7 @@ export function extractYoutubeId(input?: string | null): string | null {
     const value = (input ?? "").trim();
     if (!value) return null;
     if (/^[a-zA-Z0-9_-]{11}$/.test(value)) return value;
-    const match = value.match(/(?:youtube\.com\/(?:.*v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    const match = value.match(/(?:youtube\.com\/(?:.*v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     return match ? match[1] : null;
 }
 

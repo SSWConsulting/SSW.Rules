@@ -13,9 +13,10 @@ interface DropdownProps {
   value: string;
   onChange: (value: string) => void;
   className?: string;
+  showBorder?: boolean;
 }
 
-export default function Dropdown({ options, value, onChange, className = '' }: DropdownProps) {
+export default function Dropdown({ options, value, onChange, className = '', showBorder = false }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +44,7 @@ export default function Dropdown({ options, value, onChange, className = '' }: D
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="border-none bg-transparent focus:outline-none cursor-pointer flex items-center"
+        className={`${showBorder ? 'border border-gray-200 rounded-md px-3 py-2 bg-white' : 'border-none bg-transparent'} focus:outline-none cursor-pointer flex items-center`}
         type="button"
       >
         <span>{selectedOption?.label || 'Select...'}</span>

@@ -44,6 +44,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [authoredNextCursor, setAuthoredNextCursor] = useState<string | null>(null);
   const [authoredHasNext, setAuthoredHasNext] = useState(false);
   const [loadingMoreAuthored, setLoadingMoreAuthored] = useState(false);
+  const [githubError, setGithubError] = useState<string | null>(null);
 
   const resolveAuthor = async (): Promise<string> => {
     const res = await fetch(`/api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);
@@ -56,6 +57,8 @@ export default function UserRulesClientPage({ ruleCount }) {
   const getLastModifiedRules = async (opts?: { append?: boolean }) => {
     const append = !!opts?.append;
     try {
+      // clear previous GitHub errors when starting a fetch
+      setGithubError(null);
       append ? setLoadingMoreLastModified(true) : setLoadingLastModified(true);
   
       const params = new URLSearchParams();
@@ -63,8 +66,21 @@ export default function UserRulesClientPage({ ruleCount }) {
       if (append && nextPageCursor) params.set('cursor', nextPageCursor);
       params.set('direction', 'after');
   
-      const res = await fetch(`/api/github/rules/prs?${params.toString()}`);
-      if (!res.ok) throw new Error('Failed to fetch GitHub PR search');
+  const url = `/api/github/rules/prs?${params.toString()}`;
+  // debug: log the full URL to verify it's constructed correctly
+  // check the browser console / network tab for this value
+  console.debug('Fetching GitHub PRs URL:', url);
+  const res = await fetch(url);
+      if (!res.ok) {
+        // try to include server error body to help debugging
+        let body = '';
+        try {
+          body = await res.text();
+        } catch (e) {
+          body = String(e);
+        }
+        throw new Error(`Failed to fetch GitHub PR search: ${res.status} ${res.statusText} - ${body}`);
+      }
       const prSearchData = await res.json();
   
       const resultList = prSearchData.search.nodes;
@@ -87,7 +103,9 @@ export default function UserRulesClientPage({ ruleCount }) {
       setNextPageCursor(endCursor || '');
       setHasNext(!!hasNextPage);
     } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
       console.error('Failed to fetch GitHub data:', err);
+      setGithubError(message);
     } finally {
       append ? setLoadingMoreLastModified(false) : setLoadingLastModified(false);
     }
@@ -261,6 +279,7 @@ export default function UserRulesClientPage({ ruleCount }) {
             slug={rule.uri}
             lastUpdatedBy={rule.lastUpdatedBy ?? null}
             lastUpdated={rule.lastUpdated ?? null}
+            authorUrl={author.gitHubUrl ?? null}
           />
         ))}
         {hasNextPage && (
@@ -280,6 +299,12 @@ export default function UserRulesClientPage({ ruleCount }) {
 
       <div className="layout-two-columns">
         <div className="layout-main-section mt-6">
+          {githubError && (
+            <div className="mb-4 rounded-md bg-red-50 border border-red-200 p-3">
+              <strong className="text-red-800">GitHub data error: </strong>
+              <span className="text-sm text-red-700">{githubError}</span>
+            </div>
+          )}
           {author.fullName && (
             <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4">
               <h2 className="text-ssw-red mt-1.5">{author.fullName}'s Rules</h2>

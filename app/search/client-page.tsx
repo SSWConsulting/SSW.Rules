@@ -14,6 +14,8 @@ import LatestRulesCard from "@/components/LatestRulesCard";
 import Dropdown from "@/components/ui/dropdown";
 import { CgSortAz } from "react-icons/cg";
 import RuleCard from "@/components/RuleCard";
+import Spinner from '@/components/Spinner';
+import { useEffect } from 'react';
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface SearchResult {
@@ -34,11 +36,17 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
   const keyword = searchParams.get("keyword") || "";
   const sortBy = searchParams.get("sortBy") || "lastUpdated";
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [searchParams]);
 
   const handleSortChange = (newSort: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("sortBy", newSort);
     if (keyword) params.set("keyword", keyword);
+    setIsLoading(true);
     router.push(`/search?${params.toString()}`);
   };
 
@@ -60,7 +68,12 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
             />
           </div>
           
-          {searchResults.length > 0 && (
+          {isLoading ? (
+            <div className="py-8 flex justify-center">
+              <Spinner size="lg" />
+            </div>
+          ) : (
+            searchResults.length > 0 && (
             <div>
               <div className="mb-4 flex justify-between items-center">
                 <h2 className="m-0 text-ssw-red font-bold">
@@ -84,10 +97,12 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
                   lastUpdatedBy={result.lastUpdatedBy}
                   lastUpdated={result.lastUpdated}
                   index={index}
+                  authorUrl={result.authorUrl}
                 />
               ))}
             </div>
-          )}
+        )
+      )}
             
         </div>
 

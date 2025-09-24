@@ -66,8 +66,9 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     if (!ruleUri) return;
 
     try {
+      // If we already have the GitHub username, open their GitHub profile directly
       if (authorUsername) {
-        router.push(`/user?author=${encodeURIComponent(authorUsername)}`);
+        window.open(`https://github.com/${authorUsername}`, '_blank', 'noopener,noreferrer');
         return;
       }
       setIsLoadingUsername(true);
@@ -77,8 +78,11 @@ export default function ClientRulePage(props: ClientRulePageProps) {
       if (!res.ok) throw new Error('Failed to fetch GitHub username');
       const { authors } = await res.json();
       const lastModified = getRuleLastModifiedFromAuthors(authors);
-      if (lastModified) setAuthorUsername(lastModified);
-      router.push(`/user?author=${encodeURIComponent(lastModified)}`);
+      if (lastModified) {
+        setAuthorUsername(lastModified);
+        // Open the GitHub profile in a new tab
+        window.open(`https://github.com/${lastModified}`, '_blank', 'noopener,noreferrer');
+      }
     } catch (error) {
       console.error('Failed to fetch GitHub username:', error);
     } finally {
@@ -166,21 +170,25 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                 <p className="mt-4">
                   Updated by{" "}
                   {rule?.lastUpdatedBy ? (
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (!isLoadingUsername) {
-                          openUserRule(rule?.uri || '');
-                        }
-                      }}
-                      className={`font-semibold hover:text-ssw-red hover:underline transition-colors duration-200 ${
-                        isLoadingUsername ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                      title={`View ${rule.lastUpdatedBy}'s rules`}
-                    >
-                      {isLoadingUsername ? 'Loading...' : rule.lastUpdatedBy}
-                    </a>
+                      <a
+                        href={authorUsername ? `https://github.com/${authorUsername}` : '#'}
+                        onClick={(e) => {
+                          if (!authorUsername) {
+                            e.preventDefault();
+                            if (!isLoadingUsername) {
+                              openUserRule(rule?.uri || '');
+                            }
+                          }
+                        }}
+                        className={`font-semibold hover:text-ssw-red hover:underline transition-colors duration-200 ${
+                          isLoadingUsername ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                        title={authorUsername ? `View ${authorUsername}'s GitHub profile` : `View ${rule.lastUpdatedBy}'s rules`}
+                        target={authorUsername ? '_blank' : undefined}
+                        rel={authorUsername ? 'noopener noreferrer' : undefined}
+                      >
+                        {isLoadingUsername ? 'Loading...' : (authorUsername || rule.lastUpdatedBy)}
+                      </a>
                   ) : (
                     <b>Unknown</b>
                   )}{" "}

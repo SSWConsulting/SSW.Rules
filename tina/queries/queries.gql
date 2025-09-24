@@ -8,10 +8,15 @@ query latestRulesQuery($size: Float, $sortOption: String) {
         lastUpdatedBy
         created
         createdBy
-        uri
+          uri
+        authors {
+          title
+          url
       }
     }
   }
+}
+
 }
 
 query topCategoryWithIndexQuery($first: Float, $after: String) {
@@ -106,7 +111,7 @@ query rulesByGuidQuery($guids: [String!]!) {
         uri
         body
         authors {
-          title
+            title
         }
       }
     }
@@ -122,7 +127,7 @@ query rulesByUriQuery($uris: [String!]!) {
         uri
         body
         authors {
-          title
+            title
         }
         lastUpdated
         lastUpdatedBy
@@ -144,7 +149,7 @@ query rulesByAuthor($authorTitle: String!, $first: Float, $after: String) {
     edges {
       node {
         guid
-        title
+            title
         uri
         body
         authors { title }

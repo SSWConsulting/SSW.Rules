@@ -39,7 +39,8 @@ export default function Spinner({
   if (inline) {
     return (
       <svg 
-        className={`animate-spin ${sizeClasses[size]} ${className}`} 
+        // apply default gray color unless caller provided a text-* class
+        className={`animate-spin ${sizeClasses[size]} ${className} ${/\btext-[^\s]+\b/.test(className) ? '' : 'text-gray-500'}`}
         viewBox="0 0 24 24" 
         aria-hidden="true"
       >
@@ -63,7 +64,8 @@ export default function Spinner({
   }
 
   return (
-    <div className={`${positionClasses[position]} ${className}`}>
+    // if caller didn't provide a text color (text-...), default to gray
+    <div className={`${positionClasses[position]} ${className} ${/\btext-[^\s]+\b/.test(className) ? '' : 'text-gray-500'}`}>
       <svg 
         className={`animate-spin ${sizeClasses[size]}`} 
         viewBox="0 0 24 24" 

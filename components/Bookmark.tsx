@@ -8,6 +8,7 @@ import { RiBookmarkLine, RiBookmarkFill } from 'react-icons/ri';
 import { ICON_SIZE } from '@/constants';
 import { useAuth } from './auth/UserClientProvider';
 import Spinner from './Spinner';
+import Tooltip from './tooltip/tooltip';
 
 interface BookmarkProps {
   ruleGuid: string;
@@ -72,19 +73,21 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
   };
 
   return (
-    <button
-      onClick={handleBookmarkToggle}
-      className={`rule-icon ${className}`}
-      title={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
-      disabled={isLoading}
-    >
-      {isLoading ? (
-        <Spinner size="sm" inline />
-      ) : bookmarked ? (
-        <RiBookmarkFill size={ICON_SIZE} className="text-ssw-red" />
-      ) : (
-        <RiBookmarkLine size={ICON_SIZE} className="hover:text-ssw-red transition-colors duration-200" />
-      )}
-    </button>
+    <Tooltip text={bookmarked ? 'Remove bookmark' : 'Add bookmark'} opaque={true}>
+      <button
+        onClick={handleBookmarkToggle}
+        className={`rule-icon ${className}`}
+        title={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <Spinner size="sm" inline />
+        ) : bookmarked ? (
+          <RiBookmarkFill size={ICON_SIZE} className="text-ssw-red" />
+        ) : (
+          <RiBookmarkLine size={ICON_SIZE} className="hover:text-ssw-red transition-colors duration-200" />
+        )}
+      </button>
+    </Tooltip>
   );
 }

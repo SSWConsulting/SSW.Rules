@@ -24,16 +24,20 @@ export function ImageEmbed({ data }: { data: any }) {
         } ${borderClass} ${heightClass}`}
       >
         {data.src && (
-          <Image
-            src={data.src}
-            alt={data.alt}
-            width={0}
-            height={0}
-            sizes="100vw"
-            placeholder="empty"
-            className="w-full h-auto"
-            unoptimized
-          />
+          <>
+            <div className="border border-gray-200">
+                <Image
+                  src={data.src}
+                  alt={data.alt}
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  placeholder="empty"
+                  className="w-full h-auto"
+                  unoptimized
+                />
+            </div>
+          </>
         )}
       </div>
     </ComponentWithFigure>

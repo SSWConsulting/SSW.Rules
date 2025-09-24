@@ -56,10 +56,17 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, showBookm
         {showBookmark && (
           <div className="profile-rule-buttons flex gap-3 justify-center mt-4 md:mt-0">
             <Bookmark ruleGuid={rule.guid} isBookmarked={isBookmarked} onBookmarkToggle={handleBookmarkToggle} />
-            <IconLink href={`./admin#/~/${rule?.uri}`} children={<RiPencilLine size={ICON_SIZE} />} />
+            <IconLink
+              href={`./admin#/~/${rule?.uri}`}
+              title="Edit rule"
+              tooltipOpaque={true}
+              children={<RiPencilLine size={ICON_SIZE} />}
+            />
             <IconLink
               href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule?.uri}/rule.md`}
               target="_blank"
+              title="View rule on GitHub"
+              tooltipOpaque={true}
               children={<RiGithubLine size={ICON_SIZE} className="rule-icon" />}
             />
           </div>

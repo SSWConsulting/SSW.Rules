@@ -6,4 +6,5 @@ export interface LatestRule {
   created?: string | null;
   createdBy?: string | null;
   uri: string;
+  authorUrl?: string | null;
 }

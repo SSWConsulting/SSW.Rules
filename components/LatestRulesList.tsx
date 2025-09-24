@@ -54,6 +54,7 @@ export default function LatestRulesList({
           slug={rule.uri}
           lastUpdatedBy={rule.lastUpdatedBy}
           lastUpdated={rule.lastUpdated}
+          authorUrl={rule.authorUrl}
           index={index}
         />
       ))}

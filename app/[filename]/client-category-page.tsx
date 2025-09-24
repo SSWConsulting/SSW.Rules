@@ -10,6 +10,9 @@ import { getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useAuth } from "@/components/auth/UserClientProvider";
+import { IconLink } from "@/components/ui";
+import { ICON_SIZE } from "@/constants";
+import { RiPencilLine, RiGithubLine } from "react-icons/ri";
 
 export interface ClientCategoryPageProps {
   categoryQueryProps: {
@@ -104,6 +107,21 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
       <div className="flex">
         <div className="w-full lg:w-2/3 bg-white pt-4 p-6 rounded shadow">
           <h1 className="m-0 mb-2 text-ssw-red font-bold">{category?.title}</h1>
+          <div className="flex gap-2 justify-center my-2 md:hidden">
+            <IconLink
+              href={`admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`}
+              title="Edit category"
+              tooltipOpaque={true}
+              children={<RiPencilLine size={ICON_SIZE} />}
+            />
+            <IconLink
+              href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${process.env.NEXT_PUBLIC_TINA_BRANCH}/categories/${path}`}
+              target="_blank"
+              title="View category on GitHub"
+              tooltipOpaque={true}
+              children={<RiGithubLine size={ICON_SIZE} className="rule-icon" />}
+            />
+          </div>
           <div data-tina-field={tinaField(category, 'body')} className="text-md">
             <TinaMarkdown content={category?.body} components={MarkdownComponentMapping} />
           </div>
@@ -115,7 +133,7 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
             onIncludeArchivedChange={setIncludeArchived}
           />
         </div>
-        <div className="hidden lg:w-1/3 lg:block md:hidden p-6 pr-0">
+         <div className="hidden lg:block lg:w-1/3 p-6 pr-0">
           <ol className="border-l-3 border-gray-300 pl-6">
             {rightSidebarRules.map((rule, index) => (
               <li key={`sidebar-${rule.guid}-${index}`} className="py-1 ml-4">

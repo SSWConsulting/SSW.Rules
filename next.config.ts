@@ -32,9 +32,14 @@ const nextConfig: NextConfig = {
         hostname: 'raw.githubusercontent.com',
         port: '',
       },
-        {
+      {
         protocol: 'https',
         hostname: 'adamcogan.com',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'github-production-user-asset-*',
         port: '',
       },
     ],

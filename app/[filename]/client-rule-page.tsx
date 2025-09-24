@@ -5,15 +5,13 @@ import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Image from "next/image";
 import {
-  RiThumbUpLine,
-  RiThumbDownLine,
   RiPencilLine,
   RiGithubLine,
   RiHistoryLine,
 } from "react-icons/ri";
 import Bookmark from "@/components/Bookmark";
 import Link from "next/link";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { formatDateLong, timeAgo } from "@/lib/dateUtils";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 import HelpCard from "@/components/HelpCard";
@@ -26,6 +24,7 @@ import { getRuleLastModifiedFromAuthors } from "@/lib/services/github";
 import { ICON_SIZE } from "@/constants";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useAuth } from "@/components/auth/UserClientProvider";
+import { useMarkHighlight } from "@/lib/useMarkHighlight";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -39,7 +38,6 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [authorUsername, setAuthorUsername] = useState<string | null>(null);
   const relatedRules = props.relatedRulesMapping || [];
-
   const router = useRouter();
   const [isLoadingUsername, setIsLoadingUsername] = useState(false);
   const ruleData = useTina({
@@ -60,6 +58,9 @@ export default function ClientRulePage(props: ClientRulePageProps) {
       : "Unknown";
     return `Created ${created}\nLast Updated ${updated}`;
   }, [rule?.created, rule?.lastUpdated]);
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  useMarkHighlight(contentRef, "ul li div");
 
   const openUserRule = async (ruleUri: string) => {
     if (!ruleUri) return;
@@ -254,11 +255,11 @@ export default function ClientRulePage(props: ClientRulePageProps) {
               </div>
             </div>
           )}
-          <div data-tina-field={tinaField(rule, "body")} className="mt-8">
-            <TinaMarkdown
-              content={rule?.body}
-              components={MarkdownComponentMapping}
-            />
+          <div data-tina-field={tinaField(rule, "body")} className="mt-8" ref={contentRef}>
+              <TinaMarkdown
+                content={rule?.body}
+                components={MarkdownComponentMapping}
+              />
           </div>
           <div className="hidden md:block">
             <hr className="my-6 mx-0"/>

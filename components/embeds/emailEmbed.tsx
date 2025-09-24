@@ -1,10 +1,12 @@
 import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
-import React from "react";
+import React, { useRef } from "react";
 import {
   ComponentWithFigure,
   withFigureEmbedTemplateFields,
 } from "./componentWithFigure";
+import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
+import { useMarkHighlight } from "@/lib/useMarkHighlight";
 
 export function EmailEmbed({ data }: { data: any }) {
   const fields = [
@@ -14,6 +16,9 @@ export function EmailEmbed({ data }: { data: any }) {
     { label: "Bcc", value: data.bcc },
     { label: "Subject", value: data.subject },
   ].filter((field) => field.value?.trim());
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  useMarkHighlight(contentRef, "ol li div");
 
   return (
     <ComponentWithFigure data={data}>
@@ -33,8 +38,8 @@ export function EmailEmbed({ data }: { data: any }) {
 
         <div className="mt-6 pl-24">
           <div className="bg-white border p-4 rounded">
-            <div className="prose prose-sm">
-              <TinaMarkdown content={data.body} />
+            <div className="prose prose-sm" ref={contentRef}>
+              <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import {
   withFigureEmbedTemplateFields,
 } from "./componentWithFigure";
 import { CodeXml, Info } from "lucide-react";
+import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
 
 type AsideVariant =
   | "greybox"
@@ -74,7 +75,7 @@ export function AsideEmbed({ data }: { data: any }) {
             <div className="flex items-start">
             {config.icon}
             <div className={`prose prose-sm max-w-none text-base ${config.textClass ?? ""}`}>
-                <TinaMarkdown content={data.body} />
+                <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
             </div>
             </div>
         </div>

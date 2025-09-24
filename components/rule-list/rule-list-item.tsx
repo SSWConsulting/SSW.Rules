@@ -1,11 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import RuleListItemHeader from './rule-list-item-header';
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import { tinaField } from 'tinacms/dist/react';
 import MarkdownComponentMapping from '../tina-markdown/markdown-component-mapping';
 import { RuleListFilter } from '@/types/ruleListFilter';
+import { useMarkHighlight } from '@/lib/useMarkHighlight';
 
 export interface RuleListItemProps {
   rule: any;
@@ -36,6 +37,9 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
     if (filter === RuleListFilter.Blurb) return makeBlurbContent(body);
     return undefined;
   }
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  useMarkHighlight(contentRef, "ul li div");
 
   return (
     <li key={index} className="p-4 pt-5 border rounded shadow">
@@ -68,7 +72,7 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
         </div>
       )}
 
-      <div data-tina-field={tinaField(rule, 'body')} className="py-2 pr-2 pl-10 md:py-4 md:pr-6 md:pl-8">
+      <div data-tina-field={tinaField(rule, 'body')} className="py-2 pr-2 pl-10 md:py-4 md:pr-6 md:pl-8" ref={contentRef}>
         <TinaMarkdown content={getContentForViewStyle(filter, rule.body)} components={MarkdownComponentMapping} />
       </div>
     </li>

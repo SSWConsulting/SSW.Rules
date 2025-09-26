@@ -1,10 +1,16 @@
 'use client';
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 type AnyUser = { sub?: string; name?: string; email?: string; picture?: string; nickname?: string };
 type Ctx = { user: AnyUser | null; isLoading: boolean };
 const Ctx = createContext<Ctx>({ user: null, isLoading: true });
 export const useAuth = () => useContext(Ctx);
+
+const withBase = (path: string) => {
+  const p = path.startsWith('/') ? path : `/${path}`;
+  return `${BASE_PATH}${p}`;
+};
 
 export default function UserClientProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AnyUser | null>(null);
@@ -17,7 +23,7 @@ export default function UserClientProvider({ children }: { children: React.React
     let alive = true;
     (async () => {
       try {
-        const res = await fetch('/auth/profile', { credentials: 'include' });
+        const res = await fetch(withBase('/auth/profile'), { credentials: 'include' });
         if (alive && res.ok) setUser(await res.json());
       } finally {
         if (alive) setLoading(false);

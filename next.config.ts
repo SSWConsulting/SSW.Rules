@@ -1,7 +1,15 @@
 import type { NextConfig } from 'next'
+
+const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
+// Remove all slashes and add a leading slash if not empty
+const normalizedBasePath = rawBasePath.replace(/\//g, '');
+const basePath = normalizedBasePath ? `/${normalizedBasePath}` : '';
  
 const nextConfig: NextConfig = {
   output: 'standalone', // Required for the Docker setup
+  basePath: basePath,
+  assetPrefix: basePath,
   env: {
     BUILD_TIMESTAMP: process.env.BUILD_TIMESTAMP,
     VERSION_DEPLOYED: process.env.VERSION_DEPLOYED,

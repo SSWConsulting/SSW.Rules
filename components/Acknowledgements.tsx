@@ -75,6 +75,7 @@ export default function Acknowledgements({ authors }: AcknowledgementsProps) {
                   fill
                   className="object-cover object-top"
                   onError={() => handleImageError(index)}
+                  unoptimized
                 />
               </a>
             </div>

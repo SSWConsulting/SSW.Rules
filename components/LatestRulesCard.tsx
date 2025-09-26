@@ -7,6 +7,7 @@ import { timeAgo } from "@/lib/dateUtils";
 import { RiTimeFill } from "react-icons/ri";
 import Spinner from "./Spinner";
 import React, { useState, useTransition } from "react";
+import Link from "next/link";
 
 interface LatestRulesProps {
   rules: LatestRule[];
@@ -32,7 +33,7 @@ export default function LatestRulesCard({ rules }: LatestRulesProps) {
       {rules.map((rule, index) => (
         <ul key={index} className="ps-4 p-0 m-0">
           <li className="relative mb-2">
-            <a href={`/${rule?.uri}`}>{rule?.title}</a>
+            <Link href={`/${rule?.uri}`}>{rule?.title}</Link>
             {rule?.lastUpdated && (
               <p className="text-xs text-gray-400 mt-1">
                 <RiTimeFill className="inline mr-2"></RiTimeFill>

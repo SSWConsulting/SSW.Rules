@@ -281,6 +281,7 @@ jobs:
                   ARG NEXT_PUBLIC_GISCUS_REPO_ID
                   ARG NEXT_PUBLIC_GISCUS_CATEGORY_ID
                   ARG NEXT_PUBLIC_GISCUS_THEME_URL
+                  ARG NEXT_PUBLIC_BASE_PATH
 
                   # Environment variables for build info (available at build time and runtime)
                   ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP \
@@ -301,6 +302,7 @@ jobs:
                         NEXT_PUBLIC_GISCUS_REPO_ID=$NEXT_PUBLIC_GISCUS_REPO_ID \
                         NEXT_PUBLIC_GISCUS_CATEGORY_ID=$NEXT_PUBLIC_GISCUS_CATEGORY_ID \
                         NEXT_PUBLIC_GISCUS_THEME_URL=$NEXT_PUBLIC_GISCUS_THEME_URL \
+                        NEXT_PUBLIC_BASE_PATH=$NEXT_PUBLIC_BASE_PATH \
                         NEXT_TELEMETRY_DISABLED=1
 
                   # Fresh build every time
@@ -371,6 +373,7 @@ jobs:
                         NEXT_PUBLIC_GISCUS_CATEGORY_ID=${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
                         NEXT_PUBLIC_GISCUS_THEME_URL=${{ vars.NEXT_PUBLIC_GISCUS_THEME_URL }}
                         NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+                        NEXT_PUBLIC_BASE_PATH=${{ vars.NEXT_PUBLIC_BASE_PATH }}
                   # CACHE COMPLETELY DISABLED
                   no-cache: true
 

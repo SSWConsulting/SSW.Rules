@@ -5,7 +5,8 @@ import { auth0 } from './lib/auth0'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (pathname.startsWith('/auth')) {
+  // Support auth routes with or without basePath prefix
+  if (pathname.startsWith('/auth') || (pathname.startsWith(`${process.env.NEXT_PUBLIC_BASE_PATH}/auth`))) {
     return auth0.middleware(request)
   }
 

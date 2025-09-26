@@ -1,7 +1,7 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { parentSiteUrl, siteUrlRelative } from "@/site-config";
+import { withBasePath } from "@/lib/withBasePath";
 
 interface BreadcrumbProps {
   categories?: { link: string; title: string }[];
@@ -55,12 +55,14 @@ export default function Breadcrumbs({
           href={parentSiteUrl}
           className="inline-flex items-center shrink-0 translate-y-[2px] md:translate-y-0 md:h-[1.5em]"
         >
-          <Image
+          <img
             alt="SSW Foursquare"
-            src={iconSrc}
+            src={withBasePath(iconSrc)}
             width={16}
             height={16}
             className="block w-4 h-4"
+            loading="lazy"
+            decoding="async"
           />
           <ChevronIcon className="ml-2 hidden md:block" size={18} />
         </a>

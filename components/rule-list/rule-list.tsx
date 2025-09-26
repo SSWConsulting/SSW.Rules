@@ -99,7 +99,7 @@ const RuleList: React.FC<RuleListProps> = ({ categoryUri, rules, type, noContent
               <span className="text-gray-700">Include Archived</span>
             </label>
           )}
-          <p className="mx-3 hidden sm:block">{rules.length} Rules</p>
+          <span className="mx-3 hidden sm:block">{rules.length} Rules</span>
         </div>
         {type === 'category' && (
           <div className="hidden md:flex gap-2">

@@ -172,8 +172,11 @@ export default function UserRulesClientPage({ ruleCount }) {
       const nodes = edges.map((e: any) => e?.node).filter(Boolean);
   
       const pageInfo = res?.data?.ruleConnection?.pageInfo;
+      const totalFetched = nodes.length;
+      const hasMorePages = !!pageInfo?.hasNextPage;
+
       setAuthoredNextCursor(pageInfo?.endCursor ?? null);
-      setAuthoredHasNext(!!pageInfo?.hasNextPage);
+      setAuthoredHasNext(hasMorePages && totalFetched === AUTHORED_PAGE_SIZE);
   
       const batch = nodes.map((fullRule: any) => ({
         guid: fullRule.guid,

@@ -32,6 +32,9 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, showBookm
     setIsBookmarked(newStatus);
   };
 
+  // Remove any extra slashes from the base path
+  const sanitizedBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
+
   return (
     <section>
       <div className="mt-2 flex items-center flex-col justify-between sm:flex-row">
@@ -57,7 +60,7 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, showBookm
           <div className="profile-rule-buttons flex gap-3 justify-center mt-4 md:mt-0">
             <Bookmark ruleGuid={rule.guid} isBookmarked={isBookmarked} onBookmarkToggle={handleBookmarkToggle} />
             <IconLink
-              href={`/admin#/~/${rule?.uri}`}
+              href={`/admin#/~/${sanitizedBasePath}/${rule?.uri}`}
               title="Edit rule"
               tooltipOpaque={true}
               children={<RiPencilLine size={ICON_SIZE} />}

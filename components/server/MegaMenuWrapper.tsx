@@ -18,6 +18,7 @@ export function MegaMenuWrapper(props) {
             linkComponent={(props) => <CustomLink {...props} className={classNames('unstyled', props.className)} />}
             url='/rules'
             searchUrl='https://www.ssw.com.au/rules'
+            isFlagVisible={false}
         />
     );
 }

@@ -135,8 +135,8 @@ importers:
         specifier: ^3.2.2
         version: 3.13.0
       ssw.megamenu:
-        specifier: ^4.13.2
-        version: 4.13.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^4.13.3
+        version: 4.13.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       styled-jsx:
         specifier: ^5.1.6
         version: 5.1.7(@babel/core@7.28.4)(react@18.3.1)
@@ -6261,8 +6261,8 @@ packages:
     peerDependencies:
       sucrase: ^3.35.0
 
-  ssw.megamenu@4.13.2:
-    resolution: {integrity: sha512-YqI9v9Vaeelk075MC9xtEFi5P1/TREqQWECJCyU/LNLjgef5G9xKLMwZOwN8lVrue95mUrqQeJUB0ZFBFti1qg==}
+  ssw.megamenu@4.13.3:
+    resolution: {integrity: sha512-h4lv3HhxnjPoiZj5fNlVunixUXdcbKUuZBuulo14VFD9pqFd+hwVB4pKlmEqbP31L/x7Gh4DALn86NpHxzuHbA==}
     peerDependencies:
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -14085,7 +14085,7 @@ snapshots:
       module-error: 1.0.2
       sucrase: 3.35.0
 
-  ssw.megamenu@4.13.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  ssw.megamenu@4.13.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@headlessui/react': 2.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@heroicons/react': 2.2.0(react@18.3.1)

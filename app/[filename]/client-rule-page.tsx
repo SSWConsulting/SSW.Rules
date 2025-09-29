@@ -20,8 +20,8 @@ import { getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
 import Discussion from "@/components/Discussion";
 import { useRouter } from "next/navigation";
-import { getRuleLastModifiedFromAuthors } from "@/lib/services/github";
 import { ICON_SIZE } from "@/constants";
+import { extractUsernameFromUrl } from "@/lib/services/github";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useAuth } from "@/components/auth/UserClientProvider";
 import { useMarkHighlight } from "@/lib/useMarkHighlight";
@@ -62,26 +62,28 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   useMarkHighlight(contentRef, "ul li div");
 
-  const openUserRule = async (ruleUri: string) => {
-    if (!ruleUri) return;
+  const fetchGitHubUsernameForEmployee = async (employeeName: string): Promise<string | null> => {
+    if (!employeeName) return null;
+    const res = await fetch(`./api/crm/employees/${encodeURIComponent(employeeName)}`);
+    if (!res.ok) throw new Error('Failed to fetch CRM employee');
+    const { employee } = await res.json();
+    return extractUsernameFromUrl(employee?.gitHubUrl);
+  };
+
+  const openUserRule = async (employeeName: string) => {
+    if (!employeeName) return;
 
     try {
       // If we already have the GitHub username, open their GitHub profile directly
       if (authorUsername) {
-        window.open(`https://github.com/${authorUsername}`, '_blank', 'noopener,noreferrer');
+        router.push(`./user?author=${encodeURIComponent(authorUsername)}`);
         return;
       }
       setIsLoadingUsername(true);
-      const params = new URLSearchParams();
-      params.set('ruleUri', ruleUri);
-      const res = await fetch(`/api/github/rules/authors?${params.toString()}`);
-      if (!res.ok) throw new Error('Failed to fetch GitHub username');
-      const { authors } = await res.json();
-      const lastModified = getRuleLastModifiedFromAuthors(authors);
-      if (lastModified) {
-        setAuthorUsername(lastModified);
-        // Open the GitHub profile in a new tab
-        window.open(`https://github.com/${lastModified}`, '_blank', 'noopener,noreferrer');
+      const username = await fetchGitHubUsernameForEmployee(employeeName);
+      if (username) {
+        setAuthorUsername(username);
+        router.push(`./user?author=${encodeURIComponent(username)}`);
       }
     } catch (error) {
       console.error('Failed to fetch GitHub username:', error);
@@ -90,20 +92,15 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     }
   };
 
-  // Prefetch the GitHub username as soon as we know the rule URI
+  // Prefetch the GitHub username as soon as we know the employee name (from CRM)
   useEffect(() => {
     let isMounted = true;
     (async () => {
-      const uri = rule?.uri;
-      if (!uri) return;
+      const employeeName = rule?.lastUpdatedBy;
+      if (!employeeName) return;
       try {
-        const params = new URLSearchParams();
-        params.set('ruleUri', uri);
-        const res = await fetch(`/api/github/rules/authors?${params.toString()}`);
-        if (!res.ok) throw new Error('Failed to fetch GitHub username');
-        const { authors } = await res.json();
-        const lastModified = getRuleLastModifiedFromAuthors(authors);
-        if (lastModified && isMounted) setAuthorUsername(lastModified);
+        const username = await fetchGitHubUsernameForEmployee(employeeName);
+        if (username && isMounted) setAuthorUsername(username);
       } catch {
         // Silently ignore prefetch errors; click fallback will handle
       }
@@ -111,7 +108,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     return () => {
       isMounted = false;
     };
-  }, [rule?.uri]);
+  }, [rule?.lastUpdatedBy]);
   
   useEffect(() => {
     (async () => {
@@ -171,12 +168,12 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   Updated by{" "}
                   {rule?.lastUpdatedBy ? (
                       <a
-                        href={authorUsername ? `https://github.com/${authorUsername}` : '#'}
+                        href="#"
                         onClick={(e) => {
                           if (!authorUsername) {
                             e.preventDefault();
                             if (!isLoadingUsername) {
-                              openUserRule(rule?.uri || '');
+                              openUserRule(rule?.lastUpdatedBy || '');
                             }
                           }
                         }}
@@ -187,7 +184,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                         target={authorUsername ? '_blank' : undefined}
                         rel={authorUsername ? 'noopener noreferrer' : undefined}
                       >
-                        {isLoadingUsername ? 'Loading...' : (authorUsername || rule.lastUpdatedBy)}
+                        {isLoadingUsername ? 'Loading...' : rule.lastUpdatedBy}
                       </a>
                   ) : (
                     <b>Unknown</b>

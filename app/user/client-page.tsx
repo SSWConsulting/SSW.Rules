@@ -47,7 +47,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [githubError, setGithubError] = useState<string | null>(null);
 
   const resolveAuthor = async (): Promise<string> => {
-    const res = await fetch(`/api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);
+    const res = await fetch(`./api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);
     if (!res.ok) throw new Error('Failed to resolve author');
     const profile = await res.json();
     setAuthor(profile);
@@ -66,13 +66,9 @@ export default function UserRulesClientPage({ ruleCount }) {
       if (append && nextPageCursor) params.set('cursor', nextPageCursor);
       params.set('direction', 'after');
   
-  const url = `/api/github/rules/prs?${params.toString()}`;
-  // debug: log the full URL to verify it's constructed correctly
-  // check the browser console / network tab for this value
-  console.debug('Fetching GitHub PRs URL:', url);
-  const res = await fetch(url);
+      const url = `./api/github/rules/prs?${params.toString()}`;
+      const res = await fetch(url);
       if (!res.ok) {
-        // try to include server error body to help debugging
         let body = '';
         try {
           body = await res.text();
@@ -221,7 +217,7 @@ export default function UserRulesClientPage({ ruleCount }) {
     <div role="tablist" aria-label="User Rules Tabs" className="flex mt-2 mb-4 divide-x divide-gray-200 rounded">
       {[
         { key: Tabs.LAST_MODIFIED, label: `Last Modified (${lastModifiedRules.length})` },
-        { key: Tabs.Acknowledged, label: `Acknowledged (${authoredRules.length})` },
+        { key: Tabs.Acknowledged, label: `Authored (${authoredRules.length})` },
       ].map((t, i) => {
         const isActive = activeTab === t.key;
         return (

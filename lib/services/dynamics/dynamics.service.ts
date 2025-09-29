@@ -121,6 +121,28 @@ export class DynamicsService {
     const employees = await this.getEmployees(options);
     return employees.find(e => (e.gitHubUrl || '').toLowerCase().includes(q)) ?? null;
   }
+
+  async findEmployeeFromName(
+    query: string,
+    options: DynamicsEmployeesOptions = { includeCurrent: true, includePast: true }
+  ): Promise<DynamicsEmployeeSimple | null> {
+    const q = (query || '').toLowerCase();
+    if (!q) return null;
+
+    const employees = await this.getEmployees(options);
+
+    // Prefer exact matches first (fullname or nickname)
+    const exactMatch = employees.find(e => e.fullName.toLowerCase() === q || (e.nickname || '').toLowerCase() === q);
+    if (exactMatch) return exactMatch;
+
+    // Then try names that start with the query (helps with partial first/last names)
+    const startsWithMatch = employees.find(e => e.fullName.toLowerCase().startsWith(q));
+    if (startsWithMatch) return startsWithMatch;
+
+    // Finally, fallback to substring match anywhere in the full name
+    const containsMatch = employees.find(e => e.fullName.toLowerCase().includes(q));
+    return containsMatch ?? null;
+  }
 }
 
 export function createDynamicsService(): DynamicsService {

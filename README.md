@@ -61,7 +61,7 @@ To test changes to MDX rules:
 ### SSW.Rules.Content
 - Changes made to [SSW.Rules.Content](http://github.com/SSWConsulting/SSW.Rules.Content) (i.e. rule changes) trigger builds that deploy:
   - **main** to the **staging** - https://ssw-rules-tina-staging-c5bwbjc4a8d2g8gm.australiaeast-01.azurewebsites.net/
-  - latest **release/xx** to the **production** site - https://ssw-rules-tina-production-f8dhamhjhaggbdan.australiaeast-01.azurewebsites.net/
+  - latest **release/xx** to the **production** site - https://www.ssw.com.au/rules-beta/
 
 
 

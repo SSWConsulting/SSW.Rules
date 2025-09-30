@@ -3,12 +3,14 @@ import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { typographyComponents } from "@/components/typography-components";
 import { YouTubePlayer } from "../shared/Youtube";
+import { AsideEmbed, asideEmbedTemplate } from "./asideEmbed";
 
 const IntroInnerMarkdownComponents = {
   ...typographyComponents,
   introYoutube: (props: any) => (
     <YouTubePlayer url={props?.url ?? ""} description={props?.description ?? ""} />
   ),
+  asideEmbed: (props: any) => <AsideEmbed data={props} />,
 };
 
 export function IntroEmbed({ body }: { body: any }) {
@@ -47,7 +49,7 @@ export const introEmbedTemplate: Template = {
       name: "body",
       label: "Body",
       type: "rich-text",
-      templates: [introYoutubeTemplate],
+      templates: [introYoutubeTemplate, asideEmbedTemplate],
     },
   ],
   ui: {

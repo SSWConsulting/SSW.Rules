@@ -26,8 +26,11 @@ if (!relPath) {
 
 const contentAbsPath = resolve(__dirname, relPath);
 const scriptsPath = join(contentAbsPath, 'scripts/tina-migration');
-const input = join(scriptsPath, 'build-rule-category-map.py');
-execSync(`python "${input}"`, { stdio: 'inherit', cwd: scriptsPath });
+const buildMapScript = join(scriptsPath, 'build-rule-category-map.py');
+const orphanedCheckScript = join(scriptsPath, 'orphaned_rules_check.py');
+execSync(`python "${buildMapScript}"`, { stdio: 'inherit', cwd: scriptsPath });
+execSync(`python "${orphanedCheckScript}"`, { stdio: 'inherit', cwd: scriptsPath });
 
 copyAndMoveJsonFile("category-uri-title-map.json", scriptsPath)
 copyAndMoveJsonFile("rule-to-categories.json", scriptsPath)
+copyAndMoveJsonFile("orphaned_rules.json", scriptsPath)

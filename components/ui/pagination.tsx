@@ -78,7 +78,7 @@ export default function Pagination({
       {/* Desktop layout */}
       <div className="hidden sm:flex items-center justify-between">
         {/* Page navigation */}
-        {!isShowingAll && (
+        {!isShowingAll ? (
           <div className="flex items-center gap-1">
             {visiblePages.map((page, index) => {
               if (page === 'ellipsis-start' || page === 'ellipsis-end') {
@@ -91,10 +91,10 @@ export default function Pagination({
                   </div>
                 );
               }
-              
+
               const pageNum = page as number;
               const isActive = pageNum === currentPage;
-              
+
               return (
                 <Button
                   key={pageNum}
@@ -110,7 +110,7 @@ export default function Pagination({
                 </Button>
               );
             })}
-            
+
             <Button
               variant="ghost"
               size="sm"
@@ -121,6 +121,8 @@ export default function Pagination({
               <RiArrowRightSLine size={16} />
             </Button>
           </div>
+        ) : (
+          <div></div>
         )}
 
         {/* Items per page and count */}

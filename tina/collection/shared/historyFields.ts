@@ -61,7 +61,7 @@ export const historyFields:TinaField[] = [
             component: "hidden",
         },
     },
-        {
+    {
       type: "boolean",
       name: "isArchived",
       label: "Archived",

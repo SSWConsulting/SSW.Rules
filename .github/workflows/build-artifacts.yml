@@ -192,6 +192,7 @@ jobs:
               run: |
                   cp content-temp/scripts/tina-migration/rule-to-categories.json ./
                   cp content-temp/scripts/tina-migration/category-uri-title-map.json ./
+                  cp content-temp/scripts/tina-migration/orphaned_rules.json ./
                   mv content-temp ./content
 
             # ────────────────────────────── AZURE LOGIN ───────────────────────────

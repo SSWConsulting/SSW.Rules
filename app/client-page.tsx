@@ -13,6 +13,8 @@ import JoinConversationCard from "@/components/JoinConversationCard";
 import HelpCard from "@/components/HelpCard";
 import QuickLinksCard from "@/components/QuickLinksCard";
 import { QuickLink } from "@/types/quickLink";
+import CategoryActionButtons from "@/components/CategoryActionButtons";
+import { Rule } from "@/models/Rule";
 
 export interface HomeClientPageProps {
   topCategories: any[];
@@ -20,10 +22,12 @@ export interface HomeClientPageProps {
   ruleCount: number;
   categoryRuleCounts: Record<string, number>;
   quickLinks: QuickLink[];
+  orphanedRules: Rule[];
+  archivedRules: Rule[];
 }
 
 export default function HomeClientPage(props: HomeClientPageProps) {
-  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks } = props;
+  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, orphanedRules, archivedRules } = props;
 
   const getTopCategoryTotal = (subCategories: any[]) => {
     return subCategories.reduce((total, category) => {
@@ -99,6 +103,8 @@ export default function HomeClientPage(props: HomeClientPageProps) {
           <JoinConversationCard />
         </div>
       </div>
+      
+        <CategoryActionButtons />
     </>
   );
 }

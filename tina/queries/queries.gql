@@ -8,15 +8,14 @@ query latestRulesQuery($size: Float, $sortOption: String) {
         lastUpdatedBy
         created
         createdBy
-          uri
+        uri
         authors {
           title
           url
+        }
       }
     }
   }
-}
-
 }
 
 query topCategoryWithIndexQuery($first: Float, $after: String) {
@@ -79,7 +78,6 @@ query paginatedTopCategoriesQuery($first: Float, $after: String) {
   }
 }
 
-
 query categoryWithRulesQuery($relativePath: String!) {
   category(relativePath: $relativePath) {
     ... on CategoryCategory {
@@ -111,7 +109,7 @@ query rulesByGuidQuery($guids: [String!]!) {
         uri
         body
         authors {
-            title
+          title
         }
       }
     }
@@ -127,7 +125,7 @@ query rulesByUriQuery($uris: [String!]!) {
         uri
         body
         authors {
-            title
+          title
         }
         lastUpdated
         lastUpdatedBy
@@ -149,10 +147,12 @@ query rulesByAuthor($authorTitle: String!, $first: Float, $after: String) {
     edges {
       node {
         guid
-            title
+        title
         uri
         body
-        authors { title }
+        authors {
+          title
+        }
         lastUpdated
         lastUpdatedBy
       }
@@ -160,7 +160,42 @@ query rulesByAuthor($authorTitle: String!, $first: Float, $after: String) {
   }
 }
 
-query paginatedRulesQuery($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: RuleFilter) {
+query archivedRulesQuery($first: Float, $after: String) {
+  ruleConnection(
+    filter: { isArchived: { eq: true } }
+    first: $first
+    after: $after
+  ) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        guid
+        title
+        uri
+        body
+        isArchived
+        archivedreason
+        authors {
+          title
+        }
+        lastUpdated
+        lastUpdatedBy
+      }
+    }
+  }
+}
+
+query paginatedRulesQuery(
+  $before: String
+  $after: String
+  $first: Float
+  $last: Float
+  $sort: String
+  $filter: RuleFilter
+) {
   ruleConnection(
     before: $before
     after: $after

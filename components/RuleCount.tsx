@@ -2,9 +2,10 @@ import { PiGavelFill } from "react-icons/pi";
 
 interface RuleCountProps {
   count: number;
+  label?: string;
 }
 
-export default function RuleCount({ count }: RuleCountProps) {
+export default function RuleCount({ count, label = "SSW Rules" }: RuleCountProps) {
   return (
     <div className="flex justify-center">
       <div className="flex">
@@ -16,7 +17,7 @@ export default function RuleCount({ count }: RuleCountProps) {
           <span className="text-3xl font-semibold text-[var(--ssw-red)]">
             {count.toLocaleString("en-US")}
           </span>
-          <span className="font-light">SSW Rules</span>
+          <span className="font-light">{label}</span>
         </div>
       </div>
     </div>

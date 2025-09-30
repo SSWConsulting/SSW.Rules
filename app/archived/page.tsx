@@ -1,10 +1,9 @@
 import React from "react";
 import { Section } from "@/components/layout/section";
-import client from "@/tina/__generated__/client";
-import HomeClientPage from "./client-page";
-import ruleToCategories from "../rule-to-categories.json";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { fetchArchivedRules, fetchArchivedRulesData, fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
+import { fetchArchivedRulesData, fetchLatestRules } from "@/lib/services/rules";
+import client from "@/tina/__generated__/client";
+import ArchivedClientPage from "./client-page";
 import { QuickLink } from "@/types/quickLink";
 
 export const revalidate = 300;
@@ -41,44 +40,30 @@ async function fetchQuickLinks(): Promise<QuickLink[]> {
   return Array.isArray(res.data.global.quickLinks?.links) ? res.data.global.quickLinks.links as QuickLink[] : [];
 }
 
-function buildCategoryRuleCounts(): Record<string, number> {
-  const counts: Record<string, number> = {};
-  
-  Object.values(ruleToCategories).forEach(categories => {
-    categories.forEach(category => {
-      counts[category] = (counts[category] || 0) + 1;
-    });
-  });
-  
-  return counts;
-}
-
-export default async function Home() {
-  const [topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, archivedRules] = await Promise.all([
+export default async function ArchivedPage() {
+  const [archivedRules, topCategories, latestRules, quickLinks] = await Promise.all([
+    fetchArchivedRulesData(),
     fetchTopCategoriesWithSubcategories(),
     fetchLatestRules(),
-    fetchRuleCount(),
-    Promise.resolve(buildCategoryRuleCounts()),
-    fetchQuickLinks(),
-    fetchArchivedRulesData()
+    fetchQuickLinks()
   ]);
 
   return (
-      <Section>
-        <Breadcrumbs isHomePage />
-        <HomeClientPage
-          topCategories={topCategories}
-          latestRules={latestRules}
-          ruleCount={ruleCount}
-          categoryRuleCounts={categoryRuleCounts}
-          quickLinks={quickLinks}
-          archivedRules={archivedRules} />
-      </Section>
-    )
+    <Section>
+      <Breadcrumbs breadcrumbText="Archived Rules" />
+      <ArchivedClientPage 
+        archivedRules={archivedRules} 
+        topCategories={topCategories} 
+        latestRules={latestRules}
+        quickLinks={quickLinks}
+      />
+    </Section>
+  );
 }
 
 export async function generateMetadata() {
   return {
-    title: "SSW.Rules | Secret Ingredients for Quality Software (Open Source on GitHub)",
-  }
+    title: "Archived Rules | SSW Rules",
+    description: "Rules that have been archived",
+  };
 }

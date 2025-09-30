@@ -10,6 +10,7 @@ import { getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useAuth } from "@/components/auth/UserClientProvider";
+import { useSearchParams } from "next/navigation";
 import { IconLink } from "@/components/ui";
 import { ICON_SIZE } from "@/constants";
 import { RiPencilLine, RiGithubLine } from "react-icons/ri";
@@ -24,6 +25,8 @@ export interface ClientCategoryPageProps {
 
 export default function ClientCategoryPage(props: ClientCategoryPageProps) {
   const { categoryQueryProps } = props;
+  const searchParams = useSearchParams();
+  const showArchivedFromUrl = searchParams.get('archived') === 'true';
 
   const { data } = useTina({
     query: categoryQueryProps.query,
@@ -34,13 +37,19 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
   const { user, isLoading: authLoading } = useAuth();
   const category = data?.category;
   const baseRules = useMemo(() => {
-    return category?.index.flatMap((i) => i.rule) || [];
+    if (!category?.index) return [];
+    return category.index.flatMap((i) => i?.rule ? [i.rule] : []);
   }, [category]);
   const [annotatedRules, setAnnotatedRules] = useState<any[]>([]);
   const [rightSidebarRules, setRightSidebarRules] = useState<any[]>([]);
   const [bookmarkedGuids, setBookmarkedGuids] = useState<string[]>([]);
-  const [includeArchived, setIncludeArchived] = useState(false);
+  const [includeArchived, setIncludeArchived] = useState(showArchivedFromUrl);
   const path = categoryQueryProps?.variables?.relativePath;
+
+  // Update includeArchived when URL parameter changes
+  useEffect(() => {
+    setIncludeArchived(showArchivedFromUrl);
+  }, [showArchivedFromUrl]);
 
   // Fetch user bookmarks as soon as auth is ready
   useEffect(() => {
@@ -103,10 +112,12 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
 
   return (
     <div>
-      <Breadcrumbs isCategory breadcrumbText={category?.title} />
+      <Breadcrumbs isCategory breadcrumbText={showArchivedFromUrl ? `Archived Rules - ${category?.title}` : category?.title} />
       <div className="flex">
         <div className="w-full lg:w-2/3 bg-white pt-4 p-6 rounded shadow">
-          <h1 className="m-0 mb-2 text-ssw-red font-bold">{category?.title}</h1>
+          <h1 className="m-0 mb-2 text-ssw-red font-bold">
+            {showArchivedFromUrl ? `Archived Rules - ${category?.title}` : category?.title}
+          </h1>
           <div className="flex gap-2 justify-center my-2 md:hidden">
             <IconLink
               href={`admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`}

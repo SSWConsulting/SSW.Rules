@@ -96,6 +96,7 @@ To test changes to MDX rules:
   Generates two JSON files:
   - `rule-to-categories.json` (maps rules to categories)  
   - `category-uri-title-map.json` (maps category URIs to titles)  
+  - `orphaned_rules.json` (maps category URIs to titles)  
   Reads rule data from the `SSW.Rules.Content` repo and runs during the build process (via GitHub Actions) or manually from `scripts/tina-migration`.
 
 - **`prepare-content.js`**  

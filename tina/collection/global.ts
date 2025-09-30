@@ -152,7 +152,6 @@ const Global: Collection = {
           label: "Links",
           ui: {
             itemProps: (item) => {
-              console.log("Quick Link item:", item);
               return { label: item?.linkText || 'undefined' };
             },
           },

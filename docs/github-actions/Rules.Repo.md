@@ -90,5 +90,5 @@ These files are saved into the appropriate location under `website/`.
 ### Notes
 
 - **Concurrency**: Uses `concurrency: group: pages` to prevent overlapping deploys.
-- **Artifacts**: JSON files (`rule-to-categories.json`, `category-uri-title-map.json`) are pulled from previous workflow runs using GitHub CLI.
+- **Artifacts**: JSON files (`rule-to-categories.json`, `category-uri-title-map.json`, `orphaned_rules.json`) are pulled from previous workflow runs using GitHub CLI.
 - **Flexibility**: Manual trigger allows you to test or redeploy specific branches/content versions.

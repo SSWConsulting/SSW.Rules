@@ -30,6 +30,7 @@ yarn-error.log*
 
 /category-uri-title-map.json
 /rule-to-categories.json
+/orphaned_rules.json
 
 # Claude Code configuration
 CLAUDE.md

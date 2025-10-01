@@ -14,53 +14,42 @@ export function Illustration(props: React.ComponentPropsWithoutRef<"svg">) {
 
 export default function NotFound() {
   return (
-    <div className="relative z-[1] py-52 max-w-screen-xl mx-auto px-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* First column - 1/3 width */}
-        <div className="md:col-span-1">
-          <Illustration className="mx-auto w-full max-w-sm text-ssw-red" />
-          <p className="mt-4 text-lg font-medium text-muted-foreground text-center">
-            Oops! Something went wrong.
-          </p>
-          <div className="hidden md:block mt-6 bg-gray-200 p-4 rounded">
-            Visit{" "}
-            <Link href="/" className="text-[var(--ssw-red)] hover:underline">
-              SSW Rules homepage
-            </Link>
-            {" "}and find out more secret ingredients to quality software.
-          </div>
-          <div className="hidden md:block mt-6 bg-gray-200 p-4 rounded">
-            Learn more about{" "}
-            <Link href="/404-useful-error-page" className="text-[var(--ssw-red)] hover:underline">
-              having a useful 404 error page.
-            </Link>
-          </div>
-        </div>
+    <div className="relative z-[1] py-20 max-w-screen-xl mx-auto px-4">
+      <div className="flex flex-col items-center text-center">
+        {/* 404 Illustration */}
+        <Illustration className="w-full max-w-xl text-ssw-red" />
 
-        {/* Second column - 2/3 width */}
-        <div className="md:col-span-2 text-center md:text-left">
-          <p className="text-4xl font-light text-gray-500  sm:text-6xl">
+        {/* Error message */}
+        <p className="mt-6 text-lg font-medium text-muted-foreground">
+          Oops! Something went wrong.
+        </p>
+
+        {/* Verdict text */}
+        <div className="mt-8 max-w-3xl">
+          <p className="text-3xl sm:text-4xl font-light text-gray-500">
             The verdict is in...
           </p>
-          <p className="text-4xl font-light text-gray-500 sm:text-6xl">
-            SSW Rules has concluded that this pas is <b className="text-primary">NOT FOUND!</b>
+          <p className="mt-2 text-3xl sm:text-4xl font-light text-gray-500">
+            SSW Rules has concluded that this page is{" "}
+            <span className="font-bold text-primary">NOT FOUND!</span>
           </p>
         </div>
 
-        {/* Mobile-only bottom section */}
-        <div className="md:hidden col-span-1">
-          <div className="mt-6 bg-gray-200 p-4 rounded">
+        {/* Information boxes */}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+          <div className="bg-gray-200 p-6 rounded text-left">
             Visit{" "}
-            <Link href="/" className="text-[var(--ssw-red)] hover:underline">
+            <Link href="/" className="text-ssw-red hover:underline">
               SSW Rules homepage
             </Link>
             {" "}and find out more secret ingredients to quality software.
           </div>
-          <div className="mt-6 bg-gray-200 p-4 rounded">
+          <div className="bg-gray-200 p-6 rounded text-left">
             Learn more about{" "}
-            <Link href="/404-useful-error-page" className="text-[var(--ssw-red)] hover:underline">
-              having a useful 404 error page.
+            <Link href="/404-useful-error-page" className="text-ssw-red hover:underline">
+              having a useful 404 error page
             </Link>
+            .
           </div>
         </div>
       </div>

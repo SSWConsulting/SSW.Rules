@@ -39,7 +39,7 @@ export default function RootLayout({
       lang="en"
       className={cn(fontSans.variable, nunito.variable, lato.variable)}
     >
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className="min-h-screen bg-background font-sans antialiased flex flex-col">
         <UserClientProvider>
           <SiteLayout>{children}</SiteLayout>
         </UserClientProvider>

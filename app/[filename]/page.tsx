@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Layout from "@/components/layout/layout";
 import { Section } from "@/components/layout/section";
 import client from "@/tina/__generated__/client";
@@ -164,9 +164,11 @@ export default async function Page({
   const category = await getCategoryData(filename);
   if (category?.data) {
     return (
+      <Suspense fallback={null}>
         <Section>
           <ClientCategoryPage categoryQueryProps={category}/>
         </Section>
+      </Suspense>
     );
   }
 
@@ -201,9 +203,11 @@ export default async function Page({
 
   if (rule?.data) {
     return (
+      <Suspense fallback={null}>
         <Section>
           <ClientRulePage ruleQueryProps={rule} ruleCategoriesMapping={ruleCategoriesMapping} relatedRulesMapping={relatedRulesMapping} />
         </Section>
+      </Suspense>
     );
   }
 

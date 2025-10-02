@@ -5,7 +5,7 @@ export interface Rule {
   body: any;
   isArchived?: boolean;
   archivedreason?: string;
-  authors?: { title: string }[];
+  authors?: ({ title?: string | null; url?: string | null } | null)[] | null;
   lastUpdated?: string;
   lastUpdatedBy?: string;
 }

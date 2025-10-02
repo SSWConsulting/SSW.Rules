@@ -25,7 +25,11 @@ const getTextContent = (props: any): string => {
   return '';
 };
 
-const createHeading = (Tag: 'h2' | 'h3' | 'h4') => (props: any) => {
+const createHeading = (Tag: 'h2' | 'h3' | 'h4', enableAnchors = false) => (props: any) => {
+  if (!enableAnchors) {
+    return <Tag {...props} />;
+  }
+
   const textContent = getTextContent(props);
   const id = toSlug(textContent);
 
@@ -45,7 +49,7 @@ const createHeading = (Tag: 'h2' | 'h3' | 'h4') => (props: any) => {
   );
 };
 
-export const typographyComponents = {
+export const getTypographyComponents = (enableAnchors = false) => ({
   p: (props: any) => (
     <p className="mb-4" {...props} />
   ),
@@ -64,7 +68,10 @@ export const typographyComponents = {
     }
     return <Prism lang={props.lang} value={props.value} />;
   },
-  h2: createHeading('h2'),
-  h3: createHeading('h3'),
-  h4: createHeading('h4'),
-};
+  h2: createHeading('h2', enableAnchors),
+  h3: createHeading('h3', enableAnchors),
+  h4: createHeading('h4', enableAnchors),
+});
+
+// Default export without anchors for backwards compatibility
+export const typographyComponents = getTypographyComponents(false);

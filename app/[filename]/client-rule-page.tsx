@@ -13,7 +13,7 @@ import Bookmark from "@/components/Bookmark";
 import Link from "next/link";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { formatDateLong, timeAgo } from "@/lib/dateUtils";
-import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
+import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import HelpCard from "@/components/HelpCard";
 import Acknowledgements from "@/components/Acknowledgements";
 import { getAccessToken } from "@auth0/nextjs-auth0";
@@ -263,7 +263,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
           <div data-tina-field={tinaField(rule, "body")} className="mt-8" ref={contentRef}>
               <TinaMarkdown
                 content={rule?.body}
-                components={MarkdownComponentMapping}
+                components={getMarkdownComponentMapping(true)}
               />
           </div>
           <div className="hidden md:block">

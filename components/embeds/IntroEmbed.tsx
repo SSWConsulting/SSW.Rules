@@ -1,12 +1,12 @@
 import React from "react";
 import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
-import { typographyComponents } from "@/components/typography-components";
+import { getTypographyComponents } from "@/components/typography-components";
 import { YouTubePlayer } from "../shared/Youtube";
 import { AsideEmbed, asideEmbedTemplate } from "./asideEmbed";
 
 const IntroInnerMarkdownComponents = {
-  ...typographyComponents,
+  ...getTypographyComponents(false),
   introYoutube: (props: any) => (
     <YouTubePlayer url={props?.url ?? ""} description={props?.description ?? ""} />
   ),

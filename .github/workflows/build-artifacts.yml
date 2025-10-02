@@ -184,6 +184,9 @@ jobs:
               with:
                   python-version: '3.x'
 
+            - name: Install dependencies
+              run: pip install pyyaml
+
             - name: Generate rule‑category mapping files
               working-directory: content-temp/scripts/tina-migration
               run: python build-rule-category-map.py

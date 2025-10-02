@@ -1,7 +1,7 @@
 'use client';
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
 type AnyUser = { sub?: string; name?: string; email?: string; picture?: string; nickname?: string };
 type Ctx = { user: AnyUser | null; isLoading: boolean };
 const Ctx = createContext<Ctx>({ user: null, isLoading: true });
@@ -9,7 +9,7 @@ export const useAuth = () => useContext(Ctx);
 
 const withBase = (path: string) => {
   const p = path.startsWith('/') ? path : `/${path}`;
-  return `${BASE_PATH}${p}`;
+  return BASE_PATH ? `${BASE_PATH}${p}` : p;
 };
 
 export default function UserClientProvider({ children }: { children: React.ReactNode }) {

@@ -57,7 +57,7 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, showBookm
         </div>
 
         {showBookmark && (
-          <div className="profile-rule-buttons flex gap-3 justify-center mt-4 md:mt-0">
+          <div className="profile-rule-buttons flex gap-3 justify-center self-start mt-4 md:mt-0">
             <Bookmark ruleGuid={rule.guid} isBookmarked={isBookmarked} onBookmarkToggle={handleBookmarkToggle} />
             <IconLink
               href={`/admin#/~/${sanitizedBasePath}/${rule?.uri}`}

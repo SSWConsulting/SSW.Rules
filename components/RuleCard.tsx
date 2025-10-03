@@ -20,7 +20,6 @@ export default function RuleCard({
   index,
   authorUrl
 }: RuleCardProps) {
-  console.log(authorUrl);
   return (
     <Card className="mb-4">
       <div className="flex">

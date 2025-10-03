@@ -2,11 +2,8 @@
 
 import { Card } from "@/components/ui/card";
 import { LatestRule } from "@/models/LatestRule";
-import { useRouter } from "next/navigation";
 import { timeAgo } from "@/lib/dateUtils";
 import { RiTimeFill } from "react-icons/ri";
-import Spinner from "./Spinner";
-import React, { useState, useTransition } from "react";
 import Link from "next/link";
 
 interface LatestRulesProps {
@@ -14,20 +11,6 @@ interface LatestRulesProps {
 }
 
 export default function LatestRulesCard({ rules }: LatestRulesProps) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [isPending, startTransition] = useTransition();
-
-  const handleSeeMore = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (loading || isPending) return;
-    setLoading(true);
-    // Start a React transition; isPending will remain true until navigation completes
-    startTransition(() => {
-      router.push("/latest-rules/?size=50");
-    });
-  };
-
   return (
     <Card title="Latest Rules">
       {rules.map((rule, index) => (
@@ -45,14 +28,12 @@ export default function LatestRulesCard({ rules }: LatestRulesProps) {
       ))}
 
       <div>
-        <button
-          onClick={handleSeeMore}
-          disabled={loading || isPending}
-          className={`px-4 py-2 rounded-md inline-flex items-center ${loading || isPending ? 'text-gray-500' : 'text-ssw-red cursor-pointer hover:underline'}`}
+        <Link
+          href="/latest-rules/?size=50"
+          className="px-4 py-2 rounded-md inline-flex items-center text-ssw-red hover:underline"
         >
-          {(loading || isPending) ? <Spinner size="sm" inline className="mr-2" /> : null}
-          <span>{(loading || isPending) ? "Loading..." : "See More"}</span>
-        </button>
+          See More
+        </Link>
       </div>
     </Card>
   );

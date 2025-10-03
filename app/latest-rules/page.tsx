@@ -1,6 +1,8 @@
 import { Section } from '@/components/layout/section';
 import LatestRuleClientPage from './client-page';
-import { fetchLatestRules, fetchRuleCount } from '@/lib/services/rules';
+import { fetchRuleCount } from '@/lib/services/rules';
+import { Suspense } from 'react';
+import Spinner from '@/components/Spinner';
 
 export const revalidate = 300;
 
@@ -21,19 +23,16 @@ export default async function LatestRulePage({ searchParams }: LatestRulePagePro
     size = MAX_SIZE;
   }
 
-  const [latestRulesByUpdated, latestRulesByCreated, ruleCount] = await Promise.all([
-    fetchLatestRules(size, "lastUpdated"),
-    fetchLatestRules(size, "created"),
-    fetchRuleCount(),
-  ]);
+  const ruleCount = await fetchRuleCount();
 
   return (
       <Section>
-        <LatestRuleClientPage 
-          ruleCount={ruleCount}
-          latestRulesByUpdated={latestRulesByUpdated}
-          latestRulesByCreated={latestRulesByCreated}
-        />
+        <Suspense fallback={<Spinner size="lg" />}>
+          <LatestRuleClientPage
+            ruleCount={ruleCount}
+            initialSize={size}
+          />
+        </Suspense>
       </Section>
   );
 }

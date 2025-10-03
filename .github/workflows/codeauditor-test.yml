@@ -20,6 +20,6 @@ jobs:
           # Your CodeAuditor token
           token: ${{ secrets.CODEAUDITOR_TOKEN }}
           # Your Scan URL
-          url: https://ssw-rules-tina-production-f8dhamhjhaggbdan.australiaeast-01.azurewebsites.net/
+          url: https://www.ssw.com.au/rules-beta/
           # Your GitHub Token
           GitHub_Token: ${{ github.token }}

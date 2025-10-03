@@ -14,7 +14,7 @@ type AnyUser = {
   sub?: string;
 };
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 export default function UserDropdown() {
   const { user } = useAuth();
@@ -95,7 +95,7 @@ export default function UserDropdown() {
         </Link>
 
         <a
-          href={`${basePath}/auth/logout`}
+          href={`${basePath}/auth/logout?returnTo=${window.location.origin}${basePath}`}
           className='flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800'
         >
           <FaSignOutAlt size='18' /> Sign Out

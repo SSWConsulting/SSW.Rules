@@ -9,6 +9,7 @@ import { ICON_SIZE } from '@/constants';
 import { useAuth } from './auth/UserClientProvider';
 import Spinner from './Spinner';
 import Tooltip from './tooltip/tooltip';
+import { BookmarkData } from '@/types';
 
 interface BookmarkProps {
   ruleGuid: string;
@@ -52,7 +53,7 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
         return;
       }
 
-      const data = { ruleGuid: ruleGuid, UserId: userId };
+      const data: BookmarkData = { ruleGuid, userId };
 
       if (bookmarked) {
         const result = await BookmarkService.removeBookmark(data, accessToken);

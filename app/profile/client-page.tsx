@@ -132,7 +132,7 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
       }
 
       const removeResult = await BookmarkService.removeBookmark(
-        { ruleGuid, UserId: user.sub },
+        { ruleGuid, userId: user.sub },
         accessToken
       );
 

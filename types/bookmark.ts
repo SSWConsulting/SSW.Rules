@@ -1,6 +1,6 @@
 export interface BookmarkData {
   ruleGuid: string;
-  UserId: string;
+  userId: string;
 }
 
 export interface BookmarkResponse {

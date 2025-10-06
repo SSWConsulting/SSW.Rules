@@ -808,15 +808,15 @@ blockquote :last-child {
 /* Single Rule
 -------------------------------------------------- */
 
-  .rule-header-container h1 {
-    margin-top: 1rem;
-  }
+.rule-header-container h1 {
+  margin-top: 1rem;
+}
 
-.rule-content h2 {
+.rule-content h2, .rule-content .h2 {
   margin-top: 3rem;
 }
 
-.rule-content h3, .rule-content h4, .rule-content h5, .rule-content h6, .rule-content .h1, .rule-content .h2, .rule-content .h3, .rule-content .h4, .rule-content .h5, .rule-content .h6 {
+.rule-content h3, .rule-content h4, .rule-content h5, .rule-content h6, .rule-content .h1, .rule-content .h3, .rule-content .h4, .rule-content .h5, .rule-content .h6 {
   margin-top: 2rem;
 }
 

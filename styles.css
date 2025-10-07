@@ -219,7 +219,7 @@
   h1 {
     @apply text-4xl font-bold my-4;
   }
-
+  
   h2,
   h3,
   h4,
@@ -229,7 +229,7 @@
   }
 
   h2 {
-    @apply text-3xl;
+    @apply mt-12 text-3xl;
   }
 
   h3 {

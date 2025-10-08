@@ -2,6 +2,7 @@ import { generateGuid } from "@/utils/guidGenerationUtils";
 import { Collection, Form, TinaCMS } from "tinacms";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
+import { embedTemplates } from "@/components/embeds";
 
 const Category: Collection = {
   name: "category",
@@ -224,6 +225,7 @@ const Category: Collection = {
           label: "Body",
           isBody: true,
           description: "This is description of the category",
+          templates:embedTemplates
         },
         ...historyFields,
       ],

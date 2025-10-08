@@ -177,7 +177,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                             }
                           }
                         }}
-                        className={`font-semibold hover:text-ssw-red hover:underline transition-colors duration-200 ${
+                        className={`font-semibold ssw-link ${
                           isLoadingUsername ? 'opacity-50 cursor-not-allowed' : ''
                         }`}
                         title={authorUsername ? `View ${authorUsername}'s GitHub profile` : `View ${rule.lastUpdatedBy}'s rules`}
@@ -194,7 +194,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   <a
                     href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/main/rules/${rule?.uri}/rule.md`}
                     target="_blank"
-                    className="inline-flex items-center gap-1"
+                    className="inline-flex items-center gap-1 ssw-link"
                     title={historyTooltip}
                   >
                     See history <RiHistoryLine />

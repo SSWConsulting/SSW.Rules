@@ -114,6 +114,11 @@
     @apply bg-ssw-red;
 }
 
+.ssw-link:hover {
+  color: var(--ssw-red);
+  text-decoration: underline;
+}
+
 .action-btn-container {
   margin-left: auto;
   display: flex;

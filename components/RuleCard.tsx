@@ -36,7 +36,7 @@ export default function RuleCard({
             <span className="font-medium">
               {authorUrl ? (
                 // Always treat authorUrl as external
-                <a href={authorUrl} target="_blank" rel="noopener noreferrer" className="hover:text-ssw-red hover:underline transition-colors cursor-pointer">
+                <a href={authorUrl} target="_blank" rel="noopener noreferrer" className="ssw-link cursor-pointer">
                   {lastUpdatedBy || "Unknown"}
                 </a>
               ) : (

@@ -74,7 +74,7 @@ export function AsideEmbed({ data }: { data: any }) {
         <div className={`p-4 rounded-sm my-4 ${config.containerClass}`}>
             <div className="flex items-start">
             {config.icon}
-            <div className={`prose prose-sm max-w-none text-base ${config.textClass ?? ""}`}>
+            <div className={`prose prose-neutral prose-sm max-w-none text-base ${config.textClass ?? ""}`}>
                 <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
             </div>
             </div>

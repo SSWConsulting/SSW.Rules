@@ -38,7 +38,7 @@ export function EmailEmbed({ data }: { data: any }) {
 
         <div className="mt-6 pl-24">
           <div className="bg-white border p-4 rounded">
-            <div className="prose prose-sm" ref={contentRef}>
+            <div className="prose prose-neutral prose-sm" ref={contentRef}>
               <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
             </div>
           </div>

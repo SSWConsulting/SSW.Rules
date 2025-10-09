@@ -157,24 +157,23 @@ export default function ClientRulePage(props: ClientRulePageProps) {
               </div>
             )}
             <div className="flex flex-col flex-1 justify-between">
-              <div>
-                <h1
-                  className="text-ssw-red text-4xl leading-[1.2] my-0 b-4 font-semibold"
-                  data-tina-field={tinaField(rule, "title")}
-                >
-                  {rule?.title}
-                </h1>
+              <h1
+                className="text-ssw-red text-4xl leading-[1.2] my-0 b-4 font-semibold"
+                data-tina-field={tinaField(rule, "title")}
+              >
+                {rule?.title}
+              </h1>
+              <div className="flex justify-between">
                 <p className="mt-4">
                   Updated by{" "}
                   {rule?.lastUpdatedBy ? (
                       <a
-                        href="#"
-                        onClick={(e) => {
-                          if (!authorUsername) {
-                            e.preventDefault();
-                            if (!isLoadingUsername) {
-                              openUserRule(rule?.lastUpdatedBy || '');
-                            }
+                      href="#"
+                      onClick={(e) => {
+                        if (!authorUsername) {
+                          e.preventDefault();
+                          if (!isLoadingUsername) {
+                            openUserRule(rule?.lastUpdatedBy || '');
                           }
                         }}
                         className={`font-semibold ssw-link ${
@@ -196,41 +195,30 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                     target="_blank"
                     className="inline-flex items-center gap-1 ssw-link"
                     title={historyTooltip}
-                  >
+                    >
                     See history <RiHistoryLine />
                   </a>
                 </p>
-              </div>
-              <div className="flex align-center gap-4 text-2xl mt-4">
-                {/* <RiThumbUpLine
-                  size={ICON_SIZE}
-                  className="rule-icon"
-                ></RiThumbUpLine>
-                <span className="-ml-3">12</span>
-                <RiThumbDownLine
-                  size={ICON_SIZE}
-                  className="rule-icon"
-                ></RiThumbDownLine>
-                <span className="-ml-3">3</span> */}
-                <div className="flex-1"></div>
-                <button>
-                  <Link href={`./admin#/~/${rule?.uri}`}>
-                    <RiPencilLine
-                      size={ICON_SIZE}
-                      className="rule-icon"
-                    ></RiPencilLine>
-                  </Link>
-                </button>
-                <Bookmark 
-                  ruleGuid={rule?.guid || ''} 
-                  isBookmarked={isBookmarked}
-                  onBookmarkToggle={(newStatus) => setIsBookmarked(newStatus)}
-                />
-                <button>
-                  <Link href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule?.uri}/rule.md`} target="_blank">
-                    <RiGithubLine size={ICON_SIZE} className="rule-icon"></RiGithubLine>
-                  </Link>
-                </button>
+                <div className="flex items-center gap-4 text-2xl">
+                  <Bookmark 
+                    ruleGuid={rule?.guid || ''} 
+                    isBookmarked={isBookmarked}
+                    onBookmarkToggle={(newStatus) => setIsBookmarked(newStatus)}
+                  />
+                  <button>
+                    <Link href={`./admin#/~/${rule?.uri}`}>
+                      <RiPencilLine
+                        size={ICON_SIZE}
+                        className="rule-icon"
+                      ></RiPencilLine>
+                    </Link>
+                  </button>
+                  <button>
+                    <Link href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule?.uri}/rule.md`} target="_blank">
+                      <RiGithubLine size={ICON_SIZE} className="rule-icon"></RiGithubLine>
+                    </Link>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -66,7 +66,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
                 </span>
               </h2>
 
-              <ol>
+              <ol className="text-lg mb-0">
                 {topCategory.index
                   ?.filter((item: any) =>
                     item.category &&

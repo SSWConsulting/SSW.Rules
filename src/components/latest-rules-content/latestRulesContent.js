@@ -3,7 +3,7 @@ import { bool, func, object, objectOf, string } from 'prop-types';
 import { FilterOptions } from '../filter/filter';
 import Heading from '../heading/heading';
 import { Link, navigate } from 'gatsby';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import locale from 'date-fns/locale/en-AU';
 import { sanitizeName } from '../../helpers/sanitizeName';
@@ -47,27 +47,38 @@ const LatestRulesContent = ({
     return result + ' ago';
   };
 
-  const FormatDate = ({ item }) => (
-    <span className="block text-light-grey text-right">
-      <FontAwesomeIcon icon={faClock} size="sm" className="mr-1" />
+  const FormatDate = ({ item }) => {
+    const [relative, setRelative] = useState('');
+    
+    useEffect(() => {
+      const compute = () =>
+        filteredItems.filter === FilterOptions.RecentlyUpdated
+          ? formatDistanceToNow(new Date(item.file.node.lastUpdated), {
+              locale: {
+                ...locale,
+                formatDistance,
+              },
+              addSuffix: true,
+            })
+          : formatDistanceToNow(new Date(item.file.node.created), {
+              locale: {
+                ...locale,
+                formatDistance,
+              },
+              addSuffix: true,
+            });
+      setRelative(compute());
+      const id = setInterval(() => setRelative(compute()), 60000);
+      return () => clearInterval(id);
+    }, [item, filteredItems.filter]);
 
-      {filteredItems.filter === FilterOptions.RecentlyUpdated
-        ? formatDistanceToNow(new Date(item.file.node.lastUpdated), {
-            locale: {
-              ...locale,
-              formatDistance,
-            },
-            addSuffix: true,
-          })
-        : formatDistanceToNow(new Date(item.file.node.created), {
-            locale: {
-              ...locale,
-              formatDistance,
-            },
-            addSuffix: true,
-          })}
-    </span>
-  );
+    return (
+      <span className="block text-light-grey text-right" suppressHydrationWarning>
+        <FontAwesomeIcon icon={faClock} size="sm" className="mr-1" />
+        {relative}
+      </span>
+    );
+  };
 
   const sanitizeRule = (item) => {
     let rule = sanitizeName(item, true);

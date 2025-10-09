@@ -58,12 +58,13 @@ const Rule = ({ data, location }) => {
                             data.history.nodes[0].lastUpdatedBy
                           )}
                         </strong>{' '}
-                        <span className="opacity-60 pr-1">
-                          {formatDistance(
-                            new Date(data.history.nodes[0].lastUpdated),
-                            new Date()
-                          )}{' '}
-                          ago.
+                        <span className="opacity-60 pr-1" suppressHydrationWarning>
+                          {typeof window === 'undefined'
+                            ? ''
+                            : `${formatDistance(
+                                new Date(data.history.nodes[0].lastUpdated),
+                                new Date()
+                              )} ago.`}
                         </span>
                         <a
                           title={`Created ${format(

@@ -16,7 +16,7 @@ export function MegaMenuWrapper(props) {
             subtitle='Secret ingredients to quality software'
             rightSideActionsOverride={() => <ActionButtons />}
             linkComponent={(props) => <CustomLink {...props} className={classNames('unstyled', props.className)} />}
-            url='/rules'
+            url="/"
             searchUrl='https://www.ssw.com.au/rules'
             isFlagVisible={false}
         />

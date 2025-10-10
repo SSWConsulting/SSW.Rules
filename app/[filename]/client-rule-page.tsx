@@ -47,6 +47,9 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   }).data;
   const rule = ruleData?.rule;
 
+  // Remove any extra slashes from the base path
+  const sanitizedBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
+
   const relativeTime = useMemo(() => {
     return rule?.lastUpdated ? timeAgo(rule?.lastUpdated) : "";
   }, [rule?.lastUpdated]);
@@ -167,7 +170,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                 <p className="mt-4">
                   Updated by{" "}
                   {rule?.lastUpdatedBy ? (
-                      <a
+                    <a
                       href="#"
                       onClick={(e) => {
                         if (!authorUsername) {
@@ -176,15 +179,16 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                             openUserRule(rule?.lastUpdatedBy || '');
                           }
                         }}
-                        className={`font-semibold ssw-link ${
-                          isLoadingUsername ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                        title={authorUsername ? `View ${authorUsername}'s GitHub profile` : `View ${rule.lastUpdatedBy}'s rules`}
-                        target={authorUsername ? '_blank' : undefined}
-                        rel={authorUsername ? 'noopener noreferrer' : undefined}
-                      >
-                        {isLoadingUsername ? 'Loading...' : rule.lastUpdatedBy}
-                      </a>
+                      }
+                      className={`font-semibold ssw-link ${
+                        isLoadingUsername ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                      title={authorUsername ? `View ${authorUsername}'s GitHub profile` : `View ${rule.lastUpdatedBy}'s rules`}
+                      target={authorUsername ? '_blank' : undefined}
+                      rel={authorUsername ? 'noopener noreferrer' : undefined}
+                    >
+                      {isLoadingUsername ? 'Loading...' : rule.lastUpdatedBy}
+                    </a>
                   ) : (
                     <b>Unknown</b>
                   )}{" "}
@@ -206,7 +210,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                     onBookmarkToggle={(newStatus) => setIsBookmarked(newStatus)}
                   />
                   <button>
-                    <Link href={`./admin#/~/${rule?.uri}`}>
+                    <Link href={`./admin#/~/${sanitizedBasePath}/${rule?.uri}`}>
                       <RiPencilLine
                         size={ICON_SIZE}
                         className="rule-icon"

@@ -326,11 +326,14 @@
   }
 }
 
+ul > li {
+  padding-left: 1.5rem;
+  position: relative;
+}
+
 ul > li::before {
   content: "\25A0";
-  display: inline-block;
-  width: 1rem;
-  margin-left: -1rem;
-  color: var(--color-ssw-red);
   position: absolute;
+  left: 0;
+  color: var(--color-ssw-black);
 }

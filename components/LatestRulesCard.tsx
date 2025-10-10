@@ -18,7 +18,7 @@ export default function LatestRulesCard({ rules }: LatestRulesProps) {
           <li className="relative mb-2">
             <Link href={`/${rule?.uri}`}>{rule?.title}</Link>
             {rule?.lastUpdated && (
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 mt-1 flex items-center">
                 <RiTimeFill className="inline mr-2"></RiTimeFill>
                 {timeAgo(rule?.lastUpdated)}
               </p>

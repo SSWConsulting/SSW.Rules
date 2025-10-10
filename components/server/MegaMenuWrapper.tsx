@@ -23,6 +23,8 @@ export function MegaMenuWrapper(props) {
     );
 }
 
+const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
+
 const ActionButtons = () => {
     const { trackEvent } = useAppInsights();
 
@@ -44,7 +46,7 @@ const ActionButtons = () => {
                 </Tooltip>
 
                 <Tooltip text='Create an SSW Rule'>
-                    <a target='_blank' rel='noopener noreferrer' href={`/admin/index.html#/collections/rule/~`} className='action-btn-link-underlined'>
+                    <a target='_blank' rel='noopener noreferrer' href={`/${basePath}/admin/index.html#/collections/rule/~`} className='action-btn-link-underlined'>
                         <RiAddCircleFill className='header-icon' />
                     </a>
                 </Tooltip>

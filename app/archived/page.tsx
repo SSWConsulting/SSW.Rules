@@ -9,28 +9,20 @@ import { QuickLink } from "@/types/quickLink";
 export const revalidate = 300;
 
 async function fetchTopCategoriesWithSubcategories() {
-  let hasNextPage = true;
-  let after: string | null = null;
-  const allTopCategories: any[] = [];
+  // Fetch the main category index file with all top categories expanded in one query
+  // This preserves the order defined in the main category index file
+  const result = await client.queries.mainCategoryQuery();
 
-  while (hasNextPage) {
-    const res = await client.queries.paginatedTopCategoriesQuery({
-      first: 50,
-      after,
-    });
-
-    const edges = res?.data?.categoryConnection?.edges || [];
-
-    allTopCategories.push(
-      ...edges
-        .filter((edge: any) => edge && edge.node && edge.node.__typename === "CategoryTop_category")
-        .map((edge: any) => edge.node)
-    );
-
-    hasNextPage = res?.data?.categoryConnection?.pageInfo?.hasNextPage;
-    after = res?.data?.categoryConnection?.pageInfo?.endCursor;
+  if (!result?.data?.category || result.data.category.__typename !== "CategoryMain") {
+    return [];
   }
-  return allTopCategories;
+
+  // Extract top categories from the index array (already includes subcategories)
+  const topCategories = result.data.category.index
+    ?.map((item: any) => item?.top_category)
+    .filter(Boolean) || [];
+
+  return topCategories;
 }
 
 async function fetchQuickLinks(): Promise<QuickLink[]> {

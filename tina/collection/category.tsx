@@ -40,6 +40,13 @@ const Category: Collection = {
     {
       name: "main",
       label: "Main Category",
+          ui: {
+        defaultItem: () => {
+          return {
+            type: "main",
+          };
+        },
+      },
       fields: [
         {
           type: "string",
@@ -55,7 +62,7 @@ const Category: Collection = {
           list: true,
           ui: {
             itemProps: (item) => {
-              const name = item.category?.split("/");
+              const name = item.top_category?.split("/");
               return {
                 label: name ? name[1] : "Top category is not selected",
               };
@@ -65,9 +72,9 @@ const Category: Collection = {
             {
               type: "reference",
               label: "Category",
-              name: "category",
+              name: "top_category",
               collections: ["category"],
-              ui: {
+               ui: {
                 optionComponent: (props: { name: string }, _internalSys) => {
                   return _internalSys.path;
                 },

@@ -118,6 +118,9 @@ To test changes to MDX rules:
 - **`modify-top-categories-frontmatter.py`**  
   Targets `index.md` files in sub-category folders and updates frontmatter to match the expected format.
 
+- **`modify-main-category-frontmatter`**  
+  Updates `index.md` file at the root of the categories folder.
+
 ---
 
 ### 📁 Public Content Folder

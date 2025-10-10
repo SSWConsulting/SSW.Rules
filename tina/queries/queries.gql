@@ -48,32 +48,30 @@ query topCategoryWithIndexQuery($first: Float, $after: String) {
   }
 }
 
-query paginatedTopCategoriesQuery($first: Float, $after: String) {
-  categoryConnection(first: $first, after: $after) {
-    edges {
-      node {
-        __typename
-        ... on CategoryTop_category {
-          title
-          _sys {
-            filename
-          }
-          index {
-            category {
-              ... on CategoryCategory {
-                title
-                _sys {
-                  filename
+query mainCategoryQuery {
+  category(relativePath: "index.mdx") {
+    __typename
+    ... on CategoryMain {
+      index {
+        top_category {
+          ... on CategoryTop_category {
+            title
+            _sys {
+              filename
+            }
+            index {
+              category {
+                ... on CategoryCategory {
+                  title
+                  _sys {
+                    filename
+                  }
                 }
               }
             }
           }
         }
       }
-    }
-    pageInfo {
-      hasNextPage
-      endCursor
     }
   }
 }

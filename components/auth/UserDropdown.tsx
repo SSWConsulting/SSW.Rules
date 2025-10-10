@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { FaGithub, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import { useAuth } from './UserClientProvider';
@@ -22,6 +22,7 @@ export default function UserDropdown() {
   const [position, setPosition] = useState({ top: 0, right: 0 });
   const [isPositioned, setIsPositioned] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const u = (user || {}) as AnyUser;
   const displayName = u.nickname || u.name;
@@ -41,10 +42,32 @@ export default function UserDropdown() {
     }
   };
 
+  useEffect(() => {
+    if (!open) return;
+  
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node | null;
+  
+      if (menuRef.current?.contains(target)) return;
+      if (buttonRef.current?.contains(target)) return;
+  
+      setOpen(false);
+      setIsPositioned(false);
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+  
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [open]);
+  
+
   const dropdownMenu = open && isPositioned && (
     <div
       role='menu'
-      className='fixed z-[9999] w-60 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900'
+      ref={menuRef}
+      className='absolute z-[9999] w-60 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900'
       style={{
         top: `${position.top}px`,
         right: `${position.right}px`,

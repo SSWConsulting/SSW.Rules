@@ -50,6 +50,11 @@ const nextConfig: NextConfig = {
         hostname: 'github-production-user-asset-*',
         port: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+      },
     ],
   },
   

@@ -25,6 +25,7 @@ import { extractUsernameFromUrl } from "@/lib/services/github";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useAuth } from "@/components/auth/UserClientProvider";
 import { useMarkHighlight } from "@/lib/useMarkHighlight";
+import { IconLink } from "@/components/ui";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -209,19 +210,19 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                     isBookmarked={isBookmarked}
                     onBookmarkToggle={(newStatus) => setIsBookmarked(newStatus)}
                   />
-                  <button>
-                    <Link href={`./admin#/~/${sanitizedBasePath}/${rule?.uri}`}>
-                      <RiPencilLine
-                        size={ICON_SIZE}
-                        className="rule-icon"
-                      ></RiPencilLine>
-                    </Link>
-                  </button>
-                  <button>
-                    <Link href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule?.uri}/rule.md`} target="_blank">
-                      <RiGithubLine size={ICON_SIZE} className="rule-icon"></RiGithubLine>
-                    </Link>
-                  </button>
+                  <IconLink
+                    href={`/admin#/~/${sanitizedBasePath}/${rule?.uri}`}
+                    title="Edit rule"
+                    tooltipOpaque={true}
+                    children={<RiPencilLine size={ICON_SIZE} />}
+                  />
+                  <IconLink
+                    href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule?.uri}/rule.md`}
+                    target="_blank"
+                    title="View rule on GitHub"
+                    tooltipOpaque={true}
+                    children={<RiGithubLine size={ICON_SIZE} className="rule-icon" />}
+                  />
                 </div>
               </div>
             </div>

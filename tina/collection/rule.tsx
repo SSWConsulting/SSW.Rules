@@ -55,6 +55,14 @@ const Rule: Collection = {
       label: "Uri",
       description: "The URI of the rule - this defines the slug and refereces.",
       required: true,
+      ui: {
+        validate: (value?: string): string | void => {
+          const v = (value ?? "").trim();
+          if (!v) return "URI is required";
+          if (/[A-Z]/.test(v)) return "URI cannot contain uppercase letters";
+          if (/\s/.test(v)) return "URI cannot contain spaces";
+        },
+      },
     },
     {
       type: "object",

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
-import { Button } from "tinacms";
 import { BiChevronRight, BiChevronLeft, BiChevronDown, BiSearch } from "react-icons/bi";
 import {
   Popover,
@@ -8,8 +7,6 @@ import {
   Transition,
   PopoverPanel,
 } from "@headlessui/react";
-import { client } from "../__generated__/client";
-import type { PaginatedRulesQueryQueryVariables } from "../__generated__/types";
 
 interface Rule {
   id: string;
@@ -22,6 +19,7 @@ interface Rule {
 
 const RULES_PER_PAGE = 25;
 const SEARCH_FETCH_SIZE = 100;
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
   const [filter, setFilter] = useState("");
@@ -40,45 +38,63 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
     return input.value || null;
   }, [input.value]);
 
-  const fetchRules = async (searchFilter: string = "", after?: string, before?: string, reset: boolean = false) => {
+  const fetchRules = async (
+    searchFilter: string = "",
+    after?: string,
+    before?: string,
+    reset: boolean = false
+  ) => {
     setLoading(true);
     try {
       const isSearch = searchFilter.trim().length > 0;
-      
-      const variables = {
-        first: after || !before ? (isSearch ? SEARCH_FETCH_SIZE : RULES_PER_PAGE) : undefined,
-        last: before && !after ? (isSearch ? SEARCH_FETCH_SIZE : RULES_PER_PAGE) : undefined,
-        after: after || undefined,
-        before: before || undefined,
-        filter: undefined
-      };
-
-      const response = await client.queries.paginatedRulesQuery(variables);
-      
-      if (response?.data?.ruleConnection) {
-        const connection = response.data.ruleConnection;
-        const newRules = connection.edges?.map(edge => ({
-          id: edge?.node?.id || "",
-          title: edge?.node?.title || "",
-          uri: edge?.node?.uri || "",
-          _sys: {
-            relativePath: edge?.node?._sys?.relativePath || ""
-          }
-        })).filter(rule => rule.id) || [];
-
-        if (reset) {
-          setAllRules(newRules);
-          setCurrentPage(1);
-        } else {
-          setAllRules(prev => [...prev, ...newRules]);
-        }
-
-        setHasNextPage(connection.pageInfo.hasNextPage);
-        setHasPreviousPage(connection.pageInfo.hasPreviousPage);
-        setEndCursor(connection.pageInfo.endCursor);
-        setStartCursor(connection.pageInfo.startCursor);
-        setTotalCount(connection.totalCount);
+  
+      const pageSize = isSearch ? SEARCH_FETCH_SIZE : RULES_PER_PAGE;
+  
+      const params = new URLSearchParams();
+      if (after && !before) params.set("first", String(pageSize));
+      if (before && !after) params.set("last", String(pageSize));
+      if (!after && !before) params.set("first", String(pageSize));
+  
+      if (after) params.set("after", after);
+      if (before) params.set("before", before);
+  
+      const res = await fetch(`${basePath}/api/rules/paginated?${params.toString()}`, {
+        method: "GET",
+        cache: "no-store",
+      });
+  
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  
+      const data = await res.json();
+  
+      const newRules: Rule[] = (data?.items ?? [])
+        .map((node: any) => ({
+          id: node?.id || "",
+          title: node?.title || "",
+          uri: node?.uri || "",
+          _sys: { relativePath: node?._sys?.relativePath || "" },
+        }))
+        .filter((r: Rule) => r.id || r._sys?.relativePath);
+  
+      if (reset || !isSearch) {
+        setAllRules(newRules);
+        if (reset) setCurrentPage(1);
+      } else {
+        setAllRules(prev => {
+          const uniqueRules = new Map<string, Rule>();
+          const getKey = (r: Rule) => r.id || r._sys?.relativePath;
+          [...prev, ...newRules].forEach(rule => {
+            uniqueRules.set(getKey(rule), rule);
+          });
+          return Array.from(uniqueRules.values());
+        });
       }
+  
+      setHasNextPage(!!data?.pageInfo?.hasNextPage);
+      setHasPreviousPage(!!data?.pageInfo?.hasPreviousPage);
+      setEndCursor(data?.pageInfo?.endCursor ?? null);
+      setStartCursor(data?.pageInfo?.startCursor ?? null);
+      setTotalCount(data?.totalCount ?? 0);
     } catch (error) {
       console.error("Failed to fetch rules:", error);
     } finally {
@@ -110,13 +126,7 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
     setEndCursor(null);
     setStartCursor(null);
     
-    if (isSearch) {
-      // For search, fetch more rules to filter client-side
-      fetchRules("", undefined, undefined, true);
-    } else {
-      // For normal pagination, fetch normally
-      fetchRules("", undefined, undefined, true);
-    }
+    fetchRules(debouncedFilter, undefined, undefined, true);
   }, [debouncedFilter]);
 
   // Comprehensive client-side search function
@@ -170,12 +180,10 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
 
   const handleNextPage = () => {
     if (isSearchMode) {
-      // Client-side pagination for search results
       if (currentPage * RULES_PER_PAGE < filteredRules.length) {
         setCurrentPage(prev => prev + 1);
       }
     } else {
-      // Server-side pagination for normal browsing
       if (hasNextPage && endCursor) {
         setCurrentPage(prev => prev + 1);
         fetchRules("", endCursor);
@@ -201,8 +209,10 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
   // Find the selected rule details for display
   const selectedRuleDetails = useMemo(() => {
     if (!selectedRule) return null;
-    const rulePath = selectedRule.replace('rules/', '');
-    return allRules.find(rule => rule._sys.relativePath === rulePath);
+    const rel = selectedRule.startsWith('rules/')
+      ? selectedRule.slice('rules/'.length)
+      : selectedRule;
+    return allRules.find(rule => rule._sys.relativePath === rel) || null;
   }, [selectedRule, allRules]);
 
   const labelText = selectedRuleDetails 
@@ -293,7 +303,7 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
                             
                             return (
                               <button
-                                key={rule.id}
+                                key={rule.id || rule._sys.relativePath}
                                 className={`w-full text-left p-4 hover:bg-gray-50 border-b border-gray-100 transition-colors block ${
                                   isSelected ? 'bg-blue-50 border-blue-200' : ''
                                 }`}

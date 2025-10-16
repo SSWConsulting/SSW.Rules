@@ -2,6 +2,7 @@ import client from "@/tina/__generated__/client";
 import ruleToCategories from "../../../rule-to-categories.json";
 import { Rule } from "@/models/Rule";
 import { QueryResult } from "@/models/QueryResult";
+import { PaginationResult, PaginationVars } from "@/models/Pagination";
 
 export async function fetchLatestRules(
   size: number = 5, 
@@ -116,4 +117,29 @@ export async function fetchArchivedRules(variables: { first?: number; after?: st
 export async function fetchArchivedRulesData(variables: { first?: number; after?: string } = {}): Promise<Rule[]> {
   const result = await fetchArchivedRules(variables);
   return result.data;
+}
+
+export async function fetchPaginatedRules(
+  variables: PaginationVars = {}
+): Promise<PaginationResult<Rule>> {
+  const res = await client.queries.paginatedRulesQuery({
+    first: variables.first,
+    last: variables.last,
+    after: variables.after,
+    before: variables.before,
+  });
+
+  const conn = res?.data?.ruleConnection;
+  const edges = (conn?.edges ?? []).map((e: any) => e?.node).filter(Boolean);
+
+  return {
+    items: edges as Rule[],
+    pageInfo: {
+      hasNextPage: !!conn?.pageInfo?.hasNextPage,
+      hasPreviousPage: !!conn?.pageInfo?.hasPreviousPage,
+      startCursor: conn?.pageInfo?.startCursor ?? null,
+      endCursor: conn?.pageInfo?.endCursor ?? null,
+    },
+    totalCount: conn?.totalCount ?? 0,
+  };
 }

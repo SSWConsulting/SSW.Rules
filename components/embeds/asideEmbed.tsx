@@ -5,8 +5,9 @@ import {
   ComponentWithFigure,
   withFigureEmbedTemplateFields,
 } from "./componentWithFigure";
-import { CodeXml, Info } from "lucide-react";
+import { CodeXml, Info, TriangleAlert } from "lucide-react";
 import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
+import { FaLightbulb } from "react-icons/fa6";
 
 type AsideVariant =
   | "greybox"
@@ -14,7 +15,9 @@ type AsideVariant =
   | "todo"
   | "china"
   | "codeauditor"
-  | "highlight";
+  | "highlight"
+  | "warning"
+  | "tips";
 
 type VariantConfig = {
     containerClass: string;
@@ -62,6 +65,22 @@ const variantConfig: Record<AsideVariant, VariantConfig> = {
     },
     highlight: {
       containerClass: "bg-yellow-200 text-yellow-900",
+    },
+    warning: {
+      containerClass: "bg-white border text-gray-800",
+      icon: (
+        <div className="w-8 h-8 mr-4 flex items-center justify-center text-[var(--ssw-red)]">
+          <TriangleAlert className="w-8 h-8" />
+        </div>
+      ),
+    },
+    tips: {
+      containerClass: "bg-white border text-gray-800",
+      icon: (
+        <div className="w-8 h-8 mr-4 flex items-center justify-center text-[var(--ssw-red)]">
+          <FaLightbulb className="w-8 h-8" />
+        </div>
+      ),
     },
   };
 
@@ -113,6 +132,8 @@ export const asideEmbedTemplate: Template = withFigureEmbedTemplateFields({
         { value: "china", label: "China" },
         { value: "codeauditor", label: "Codeauditor" },
         { value: "highlight", label: "Highlight" },
+        { value: "warning", label: "Warning" },
+        { value: "tips", label: "Tips" },
       ],
     },
     {

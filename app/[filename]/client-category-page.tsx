@@ -114,7 +114,7 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
     <div>
       <Breadcrumbs isCategory breadcrumbText={showArchivedFromUrl ? `Archived Rules - ${category?.title}` : category?.title} />
       <div className="flex">
-        <div className="w-full lg:w-2/3 bg-white pt-4 p-6 rounded shadow">
+        <div className="w-full lg:w-2/3 bg-white pt-4 p-6 border border-[#CCC] rounded shadow-lg">
           <h1 className="m-0 mb-2 text-ssw-red font-bold">
             {showArchivedFromUrl ? `Archived Rules - ${category?.title}` : category?.title}
           </h1>

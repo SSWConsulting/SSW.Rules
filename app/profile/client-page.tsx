@@ -165,7 +165,7 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
     return (
       <>
         <Breadcrumbs breadcrumbText="Profile" />
-        <div className="shadow-lg rounded">
+        <div className="min-w-full shadow-lg rounded">
           <section className="mb-20 rounded">
             <div className="flex flex-col gap-8 px-12 pt-12 bg-[#f5f5f5] rounded-t">
               <div className="flex gap-8">

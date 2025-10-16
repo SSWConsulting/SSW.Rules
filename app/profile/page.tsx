@@ -6,10 +6,8 @@ export const revalidate = 300;
 
 export default function ProfilePage() {
   return (
-      <Section>
-        <Suspense fallback={null}>
-          <ProfileClientPage />
-        </Suspense>
-      </Section>
+    <Suspense fallback={null}>
+      <ProfileClientPage />
+    </Suspense>
   );
 }

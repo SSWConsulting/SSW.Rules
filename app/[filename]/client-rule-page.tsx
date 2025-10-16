@@ -147,8 +147,8 @@ export default function ClientRulePage(props: ClientRulePageProps) {
     <>
       <Breadcrumbs categories={breadcrumbCategories} breadcrumbText="This rule" />
       <div className="layout-two-columns">
-        <Card dropShadow className="layout-main-section">
-          <div className="flex border-b-2 pb-4">
+        <Card dropShadow className="layout-main-section p-6">
+          <div className="flex border-b-2 pb-3">
             {rule?.thumbnail && (
               <div className="w-[175px] h-[175px] relative mr-4">
                 <Image
@@ -168,7 +168,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                 {rule?.title}
               </h1>
               <div className="flex justify-between">
-                <p className="mt-4">
+                <p className="mt-4 text-sm font-light">
                   Updated by{" "}
                   {rule?.lastUpdatedBy ? (
                     <a
@@ -198,7 +198,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   <a
                     href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/main/rules/${rule?.uri}/rule.md`}
                     target="_blank"
-                    className="inline-flex items-center gap-1 ssw-link"
+                    className="inline-flex items-center gap-1 font-semibold ssw-link"
                     title={historyTooltip}
                     >
                     See history <RiHistoryLine />

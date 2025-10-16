@@ -36,10 +36,10 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, showBookm
   const sanitizedBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
 
   return (
-    <section>
-      <div className="mt-2 flex items-center flex-col justify-between sm:flex-row">
+    <section className='my-1.5'>
+      <div className="flex items-center flex-col justify-between sm:flex-row">
         <div className="flex flex-col gap-2">
-          <div className="flex gap-4 md:gap-3 md:mr-2">
+          <div className="flex">
             <span className="text-sm text-gray-500 w-6 flex-shrink-0 mt-1">#{index + 1}</span>
             <h2 className="m-0 text-2xl">
               <Link href={`/${rule.uri}`} ref={linkRef} className="no-underline">

@@ -11,22 +11,19 @@ export async function GET(req: Request) {
 
   const first = firstStr ? Number(firstStr) : undefined;
   const last = lastStr ? Number(lastStr) : undefined;
+  
+  const q = (searchParams.get("q") || "").trim() || undefined;
+  const field = (searchParams.get("field") as "title" | "uri") || undefined;
+  const sort = searchParams.get("sort") || undefined;
 
   try {
-    const result = await fetchPaginatedRules({ first, last, after, before });
+    const result = await fetchPaginatedRules({ first, last, after, before, q, field, sort });
     return NextResponse.json(
-      {
-        items: result.items,
-        pageInfo: result.pageInfo,
-        totalCount: result.totalCount,
-      },
+      { items: result.items, pageInfo: result.pageInfo, totalCount: result.totalCount },
       { status: 200 }
     );
-  } catch (err: any) {
+  } catch (err) {
     console.error("[/api/rules/paginated] error:", err);
-    return NextResponse.json(
-      { message: "Failed to fetch paginated rules" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Failed to fetch paginated rules" }, { status: 500 });
   }
 }

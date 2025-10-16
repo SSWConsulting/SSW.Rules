@@ -18,7 +18,6 @@ interface Rule {
 }
 
 const RULES_PER_PAGE = 25;
-const SEARCH_FETCH_SIZE = 100;
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
@@ -38,65 +37,50 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
     return input.value || null;
   }, [input.value]);
 
-  const fetchRules = async (
-    searchFilter: string = "",
-    after?: string,
-    before?: string,
-    reset: boolean = false
-  ) => {
+  const fetchRules = async (searchFilter = "", after?: string, before?: string, reset = false) => {
     setLoading(true);
     try {
       const isSearch = searchFilter.trim().length > 0;
-  
-      const pageSize = isSearch ? SEARCH_FETCH_SIZE : RULES_PER_PAGE;
+      const pageSize = RULES_PER_PAGE;
   
       const params = new URLSearchParams();
+      
       if (after && !before) params.set("first", String(pageSize));
       if (before && !after) params.set("last", String(pageSize));
       if (!after && !before) params.set("first", String(pageSize));
-  
       if (after) params.set("after", after);
       if (before) params.set("before", before);
   
-      const res = await fetch(`${basePath}/api/rules/paginated?${params.toString()}`, {
+      if (isSearch) {
+        params.set("q", searchFilter.trim());
+        params.set("field", "uri");
+      }
+  
+      const res = await fetch(`${basePath.replace(/\/+$/, "")}/api/rules/paginated?${params.toString()}`, {
         method: "GET",
         cache: "no-store",
       });
-  
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
   
       const data = await res.json();
   
-      const newRules: Rule[] = (data?.items ?? [])
-        .map((node: any) => ({
-          id: node?.id || "",
-          title: node?.title || "",
-          uri: node?.uri || "",
-          _sys: { relativePath: node?._sys?.relativePath || "" },
-        }))
-        .filter((r: Rule) => r.id || r._sys?.relativePath);
+      const newRules: Rule[] = (data?.items ?? []).map((node: any) => ({
+        id: node?.id || "",
+        title: node?.title || "",
+        uri: node?.uri || "",
+        _sys: { relativePath: node?._sys?.relativePath || "" },
+      }));
   
-      if (reset || !isSearch) {
-        setAllRules(newRules);
-        if (reset) setCurrentPage(1);
-      } else {
-        setAllRules(prev => {
-          const uniqueRules = new Map<string, Rule>();
-          const getKey = (r: Rule) => r.id || r._sys?.relativePath;
-          [...prev, ...newRules].forEach(rule => {
-            uniqueRules.set(getKey(rule), rule);
-          });
-          return Array.from(uniqueRules.values());
-        });
-      }
+      setAllRules(newRules);
+      if (reset) setCurrentPage(1);
   
       setHasNextPage(!!data?.pageInfo?.hasNextPage);
       setHasPreviousPage(!!data?.pageInfo?.hasPreviousPage);
       setEndCursor(data?.pageInfo?.endCursor ?? null);
       setStartCursor(data?.pageInfo?.startCursor ?? null);
       setTotalCount(data?.totalCount ?? 0);
-    } catch (error) {
-      console.error("Failed to fetch rules:", error);
+    } catch (e) {
+      console.error("Failed to fetch rules:", e);
     } finally {
       setLoading(false);
     }
@@ -118,56 +102,15 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
 
   // Refetch when debounced filter changes
   useEffect(() => {
-    if (debouncedFilter !== filter) return; // Only when debounce is complete
-    
-    const isSearch = debouncedFilter.trim().length > 0;
+    const isSearch = !!debouncedFilter.trim();
     setIsSearchMode(isSearch);
     setCurrentPage(1);
     setEndCursor(null);
     setStartCursor(null);
-    
     fetchRules(debouncedFilter, undefined, undefined, true);
   }, [debouncedFilter]);
 
-  // Comprehensive client-side search function
-  const searchInText = (text: string, searchTerm: string): boolean => {
-    const normalizedText = text.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').trim();
-    const normalizedSearch = searchTerm.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').trim();
-    
-    // Split search term into words
-    const searchWords = normalizedSearch.split(/\s+/).filter(word => word.length > 0);
-    
-    // Check if all search words are found in the text (permissive matching)
-    return searchWords.every(word => 
-      normalizedText.includes(word) || 
-      // Allow partial matches for words longer than 2 characters
-      (word.length > 2 && normalizedText.split(/\s+/).some(textWord => 
-        textWord.includes(word) || word.includes(textWord)
-      ))
-    );
-  };
-
-  // Client-side filtering with comprehensive search
-  const filteredRules = useMemo(() => {
-    if (!debouncedFilter.trim()) return allRules;
-    
-    const searchTerm = debouncedFilter.trim();
-    return allRules.filter(rule => 
-      searchInText(rule.title, searchTerm) ||
-      searchInText(rule.uri, searchTerm) ||
-      searchInText(rule._sys.relativePath, searchTerm)
-    );
-  }, [allRules, debouncedFilter]);
-
-  // Paginate filtered results for display
-  const paginatedRules = useMemo(() => {
-    if (!isSearchMode) return filteredRules;
-    
-    const startIndex = (currentPage - 1) * RULES_PER_PAGE;
-    return filteredRules.slice(startIndex, startIndex + RULES_PER_PAGE);
-  }, [filteredRules, currentPage, isSearchMode]);
-
-  const displayRules = isSearchMode ? paginatedRules : filteredRules;
+  const displayRules = allRules
 
   const handleRuleSelect = (rule: Rule) => {
     const rulePath = `public/uploads/rules/${rule._sys.relativePath}`;
@@ -179,30 +122,15 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
   };
 
   const handleNextPage = () => {
-    if (isSearchMode) {
-      if (currentPage * RULES_PER_PAGE < filteredRules.length) {
-        setCurrentPage(prev => prev + 1);
-      }
-    } else {
-      if (hasNextPage && endCursor) {
-        setCurrentPage(prev => prev + 1);
-        fetchRules("", endCursor);
-      }
+    if (hasNextPage && endCursor) {
+      setCurrentPage((p) => p + 1);
+      fetchRules(debouncedFilter, endCursor);
     }
   };
-
   const handlePreviousPage = () => {
-    if (isSearchMode) {
-      // Client-side pagination for search results
-      if (currentPage > 1) {
-        setCurrentPage(prev => prev - 1);
-      }
-    } else {
-      // Server-side pagination for normal browsing
-      if (hasPreviousPage && startCursor) {
-        setCurrentPage(prev => Math.max(1, prev - 1));
-        fetchRules("", undefined, startCursor);
-      }
+    if (hasPreviousPage && startCursor) {
+      setCurrentPage((p) => Math.max(1, p - 1));
+      fetchRules(debouncedFilter, undefined, startCursor);
     }
   };
 
@@ -262,7 +190,7 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
                             onChange={(event) => {
                               setFilter(event.target.value);
                             }}
-                            placeholder="Search rules..."
+                            placeholder="Enter rule URI, e.g. 3-steps-to-a-pbi"
                           />
                         </div>
                         {selectedRule && (
@@ -332,32 +260,21 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
                       {!loading && displayRules.length > 0 && (
                         <div className="bg-gray-50 p-3 border-t border-gray-100 flex items-center justify-between">
                           <div className="text-xs text-gray-600">
-                            {isSearchMode ? (
-                              <>Page {currentPage} • {filteredRules.length} results found</>
-                            ) : (
-                              <>Page {currentPage} • {totalCount} total rules</>
-                            )}
+                            Page {currentPage} • {totalCount} results
                           </div>
                           <div className="flex items-center space-x-2">
                             <button
                               onClick={handlePreviousPage}
-                              disabled={isSearchMode ? currentPage === 1 : !hasPreviousPage}
-                              className={`p-1 rounded ${
-                                (isSearchMode ? currentPage > 1 : hasPreviousPage)
-                                  ? 'text-gray-600 hover:text-gray-800 hover:bg-gray-200' 
-                                  : 'text-gray-300 cursor-not-allowed'
-                              }`}
+                              disabled={!hasPreviousPage}
+                              className={`p-1 rounded ${hasPreviousPage ? 'text-gray-600 hover:text-gray-800 hover:bg-gray-200' : 'text-gray-300 cursor-not-allowed'}`}
                             >
                               <BiChevronLeft className="w-4 h-4" />
                             </button>
+
                             <button
                               onClick={handleNextPage}
-                              disabled={isSearchMode ? (currentPage * RULES_PER_PAGE >= filteredRules.length) : !hasNextPage}
-                              className={`p-1 rounded ${
-                                (isSearchMode ? (currentPage * RULES_PER_PAGE < filteredRules.length) : hasNextPage)
-                                  ? 'text-gray-600 hover:text-gray-800 hover:bg-gray-200' 
-                                  : 'text-gray-300 cursor-not-allowed'
-                              }`}
+                              disabled={!hasNextPage}
+                              className={`p-1 rounded ${hasNextPage ? 'text-gray-600 hover:text-gray-800 hover:bg-gray-200' : 'text-gray-300 cursor-not-allowed'}`}
                             >
                               <BiChevronRight className="w-4 h-4" />
                             </button>

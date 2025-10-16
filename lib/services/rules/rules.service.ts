@@ -4,6 +4,14 @@ import { Rule } from "@/models/Rule";
 import { QueryResult } from "@/models/QueryResult";
 import { PaginationResult, PaginationVars } from "@/models/Pagination";
 
+type RuleSearchField = "title" | "uri";
+
+type RuleQueryVars = PaginationVars & {
+  q?: string;
+  field?: RuleSearchField;
+  sort?: string;
+};
+
 export async function fetchLatestRules(
   size: number = 5, 
   sortOption: "lastUpdated" | "created" = "lastUpdated"
@@ -120,20 +128,24 @@ export async function fetchArchivedRulesData(variables: { first?: number; after?
 }
 
 export async function fetchPaginatedRules(
-  variables: PaginationVars = {}
+  variables: RuleQueryVars = {}
 ): Promise<PaginationResult<Rule>> {
+  const { first, last, after, before, q, field = "title", sort } = variables;
+
+  const filter =
+    q && q.trim()
+      ? { [field]: { startsWith: q.trim() } }
+      : undefined;
+
   const res = await client.queries.paginatedRulesQuery({
-    first: variables.first,
-    last: variables.last,
-    after: variables.after,
-    before: variables.before,
+    first, last, after, before, sort, filter,
   });
 
   const conn = res?.data?.ruleConnection;
-  const edges = (conn?.edges ?? []).map((e: any) => e?.node).filter(Boolean);
+  const nodes = (conn?.edges ?? []).map((e: any) => e?.node).filter(Boolean);
 
   return {
-    items: edges as Rule[],
+    items: nodes as Rule[],
     pageInfo: {
       hasNextPage: !!conn?.pageInfo?.hasNextPage,
       hasPreviousPage: !!conn?.pageInfo?.hasPreviousPage,

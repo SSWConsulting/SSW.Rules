@@ -66,45 +66,41 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   useMarkHighlight(contentRef, "ul li div");
 
-  const fetchGitHubUsernameForEmployee = async (employeeName: string): Promise<string | null> => {
-    if (!employeeName) return null;
-    const res = await fetch(`./api/crm/employees/${encodeURIComponent(employeeName)}`);
-    if (!res.ok) throw new Error('Failed to fetch CRM employee');
-    const { employee } = await res.json();
-    return extractUsernameFromUrl(employee?.gitHubUrl);
-  };
-
-  const openUserRule = async (employeeName: string) => {
-    if (!employeeName) return;
-
+  const fetchGitHubUsernameFromCrmName = async (lastUpdatedBy: string): Promise<string | null> => {
+    if (!lastUpdatedBy) return null;
+    if (authorUsername) return authorUsername;
     try {
-      // If we already have the GitHub username, open their GitHub profile directly
-      if (authorUsername) {
-        router.push(`./user?author=${encodeURIComponent(authorUsername)}`);
-        return;
-      }
       setIsLoadingUsername(true);
-      const username = await fetchGitHubUsernameForEmployee(employeeName);
-      if (username) {
-        setAuthorUsername(username);
-        router.push(`./user?author=${encodeURIComponent(username)}`);
-      }
+      const res = await fetch(`./api/crm/employees/${encodeURIComponent(lastUpdatedBy)}`);
+      if (!res.ok) throw new Error('Failed to fetch CRM employee');
+      const { employee } = await res.json();
+      const username = extractUsernameFromUrl(employee?.gitHubUrl) || null;
+      if (username) setAuthorUsername(username);
+      return username;
     } catch (error) {
       console.error('Failed to fetch GitHub username:', error);
+      return null;
     } finally {
       setIsLoadingUsername(false);
     }
   };
 
-  // Prefetch the GitHub username as soon as we know the employee name (from CRM)
+  const handleAuthorClick = async (lastUpdatedBy: string) => {
+    const username = await fetchGitHubUsernameFromCrmName(lastUpdatedBy);
+  
+    if (username) {
+      router.push(`./user?author=${encodeURIComponent(username)}`);
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
     (async () => {
-      const employeeName = rule?.lastUpdatedBy;
-      if (!employeeName) return;
+      const lastUpdatedBy = rule?.lastUpdatedBy;
+      if (!lastUpdatedBy) return;
       try {
-        const username = await fetchGitHubUsernameForEmployee(employeeName);
-        if (username && isMounted) setAuthorUsername(username);
+        await fetchGitHubUsernameFromCrmName(lastUpdatedBy);
+        if (!isMounted) return;
       } catch {
         // Silently ignore prefetch errors; click fallback will handle
       }
@@ -171,36 +167,29 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                 <p className="mt-4 text-sm font-light">
                   Updated by{" "}
                   {rule?.lastUpdatedBy ? (
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        if (!authorUsername) {
-                          e.preventDefault();
-                          if (!isLoadingUsername) {
-                            openUserRule(rule?.lastUpdatedBy || '');
-                          }
-                        }}
-                      }
-                      className={`font-semibold ssw-link ${
-                        isLoadingUsername ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                      title={authorUsername ? `View ${authorUsername}'s GitHub profile` : `View ${rule.lastUpdatedBy}'s rules`}
-                      target={authorUsername ? '_blank' : undefined}
-                      rel={authorUsername ? 'noopener noreferrer' : undefined}
-                    >
-                      {isLoadingUsername ? 'Loading...' : rule.lastUpdatedBy}
-                    </a>
+                    authorUsername ? (
+                      <Link href={`./user?author=${encodeURIComponent(authorUsername)}`}
+                        className="font-semibold ssw-link"
+                        title={`View ${rule.lastUpdatedBy}'s rules`}
+                      >
+                        {rule.lastUpdatedBy}
+                      </Link>
+                    ) : (
+                      <span onClick={() => handleAuthorClick(rule.lastUpdatedBy!)}
+                        className="font-semibold"
+                        title={`View ${rule.lastUpdatedBy}'s rules`}
+                      >
+                        {rule.lastUpdatedBy}
+                      </span>
+                    )
                   ) : (
                     <b>Unknown</b>
                   )}{" "}
                   {relativeTime}.{" "}
                   {/* TODO: update link when migration is done (path will be wrong as reules will be in public folder) */}
-                  <a
-                    href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/main/rules/${rule?.uri}/rule.md`}
-                    target="_blank"
-                    className="inline-flex items-center gap-1 font-semibold ssw-link"
-                    title={historyTooltip}
-                    >
+                  <a href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/main/rules/${rule?.uri}/rule.md`}
+                    target="_blank" title={historyTooltip}
+                    className="inline-flex items-center gap-1 font-semibold ssw-link" >
                     See history <RiHistoryLine />
                   </a>
                 </p>

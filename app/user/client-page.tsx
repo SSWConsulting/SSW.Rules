@@ -272,7 +272,7 @@ export default function UserRulesClientPage({ ruleCount }) {
       <>
         {items.map((rule, i) => (
           <RuleCard
-            key={rule.guid ?? rule.uri}
+            key={`${rule.guid}-${i}`}
             index={i}
             title={rule.title}
             slug={rule.uri}

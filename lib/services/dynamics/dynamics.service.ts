@@ -126,7 +126,7 @@ export class DynamicsService {
     query: string,
     options: DynamicsEmployeesOptions = { includeCurrent: true, includePast: true }
   ): Promise<DynamicsEmployeeSimple | null> {
-    const q = (query || '').toLowerCase().replace(/\s*\[ssw\]$/, "");
+    const q = (query || '').toLowerCase().replace(/\s*\[ssw\]$/, "").normalize("NFD").replace(/\p{Diacritic}/gu, "");
     if (!q) return null;
 
     const employees = await this.getEmployees(options);

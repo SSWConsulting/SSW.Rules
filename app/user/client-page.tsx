@@ -200,6 +200,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   useEffect(() => {
     (async () => {
       if (queryStringRulesAuthor) {
+        setLoadingAuthored(true);
         const [_, resolvedAuthorName] = await Promise.all([getLastModifiedRules(), resolveAuthor()]);
         await getAuthoredRules(resolvedAuthorName as string);
       }

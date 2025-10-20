@@ -42,7 +42,7 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, showBookm
           <div className="flex">
             <span className="text-sm text-gray-500 mr-2 flex-shrink-0 mt-1">#{index + 1}</span>
             <h2 className="m-0 text-2xl">
-              <Link href={`/${rule.uri}`} ref={linkRef} className="no-underline">
+              <Link href={`/${rule.uri}`} title={rule.title} ref={linkRef} className="no-underline">
                 {rule.title}
               </Link>
             </h2>

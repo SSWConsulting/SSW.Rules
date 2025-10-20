@@ -17,24 +17,31 @@ export interface RuleListProps {
   onBookmarkRemoved?: (ruleGuid: string) => void;
   includeArchived?: boolean;
   onIncludeArchivedChange?: (include: boolean) => void;
+  showPagination?: boolean;
+  showFilterControls?: boolean;
 }
 
-const RuleList: React.FC<RuleListProps> = ({ categoryUri, rules, type, noContentMessage, onBookmarkRemoved, includeArchived = false, onIncludeArchivedChange }) => {
+const RuleList: React.FC<RuleListProps> = ({ categoryUri, rules, type, noContentMessage, onBookmarkRemoved, includeArchived = false, onIncludeArchivedChange, showPagination = true, showFilterControls = true }) => {
   const [filter, setFilter] = useState<RuleListFilter>(RuleListFilter.Blurb);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const filterSectionRef = useRef<HTMLDivElement>(null);
 
+  const displayItemsPerPage = useMemo(
+    () => (showPagination ? itemsPerPage : rules.length),
+    [showPagination, itemsPerPage, rules.length]
+  );
+
+  const totalPages = displayItemsPerPage >= rules.length ? 1 : Math.ceil(rules.length / displayItemsPerPage);
+
   const paginatedRules = useMemo(() => {
-    if (itemsPerPage >= rules.length) {
+    if (displayItemsPerPage >= rules.length) {
       return rules; // Show all rules
     }
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+    const startIndex = (currentPage - 1) * displayItemsPerPage;
+    const endIndex = startIndex + displayItemsPerPage;
     return rules.slice(startIndex, endIndex);
-  }, [rules, currentPage, itemsPerPage]);
-
-  const totalPages = itemsPerPage >= rules.length ? 1 : Math.ceil(rules.length / itemsPerPage);
+  }, [rules, currentPage, displayItemsPerPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -76,19 +83,22 @@ const RuleList: React.FC<RuleListProps> = ({ categoryUri, rules, type, noContent
     <>
       <div ref={filterSectionRef} className="flex flex-col-reverse justify-between items-center mt-2 sm:flex-row sm:mt-0">
         <div className="flex flex-col items-center sm:flex-row sm:items-center gap-2 py-4 text-center lg:grid-cols-5">
-          <div className="flex items-center">
-            <span className="mr-4 hidden sm:block">Show Me</span>
-            <RadioButton
-              id="customRadioInline1"
-              value="titleOnly"
-              selectedOption={filter}
-              handleOptionChange={handleOptionChange}
-              labelText="Titles"
-              position='first'
-            />
-            <RadioButton id="customRadioInline3" value="blurb" selectedOption={filter} handleOptionChange={handleOptionChange} labelText="Blurbs" position='middle'/>
-            <RadioButton id="customRadioInline2" value="all" selectedOption={filter} handleOptionChange={handleOptionChange} labelText="Everything" position='last'/>
-          </div>
+          {showFilterControls && (
+            <div className="flex items-center">
+              <span className="mr-4 hidden sm:block">Show Me</span>
+              <RadioButton
+                id="customRadioInline1"
+                value="titleOnly"
+                selectedOption={filter}
+                handleOptionChange={handleOptionChange}
+                labelText="Titles"
+                position='first'
+              />
+              <RadioButton id="customRadioInline3" value="blurb" selectedOption={filter} handleOptionChange={handleOptionChange} labelText="Blurbs" position='middle'/>
+              <RadioButton id="customRadioInline2" value="all" selectedOption={filter} handleOptionChange={handleOptionChange} labelText="Everything" position='last'/>
+            </div>
+          )}
+          
           {onIncludeArchivedChange && (
             <label className="flex items-center gap-2 px-4 py-1 text-sm cursor-pointer hover:bg-gray-50 transition-colors bg-white sm:ml-2">
               <input
@@ -100,7 +110,8 @@ const RuleList: React.FC<RuleListProps> = ({ categoryUri, rules, type, noContent
               <span className="text-gray-700">Include Archived</span>
             </label>
           )}
-          <span className="mx-3 hidden sm:block">{rules.length} Rules</span>
+
+          {showFilterControls && (<span className="mx-3 hidden sm:block">{rules.length} Rules</span>)}
         </div>
         {type === 'category' && (
           <div className="hidden md:flex gap-2">
@@ -132,15 +143,17 @@ const RuleList: React.FC<RuleListProps> = ({ categoryUri, rules, type, noContent
           />
         ))}
       </ol>
-      
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={rules.length}
-        itemsPerPage={itemsPerPage}
-        onPageChange={handlePageChange}
-        onItemsPerPageChange={handleItemsPerPageChange}
-      />
+
+      {showPagination && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={rules.length}
+          itemsPerPage={displayItemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
+      )}
     </>
   );
 };

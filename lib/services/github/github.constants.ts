@@ -16,7 +16,7 @@ export const GITHUB_PULL_REQUESTS_QUERY = `
       }
       nodes {
         ... on PullRequest {
-          files(first: 20) {
+          files(first: 6) {
             nodes {
               path
             }
@@ -28,5 +28,5 @@ export const GITHUB_PULL_REQUESTS_QUERY = `
   }
 `;
 
-export const DEFAULT_RESULTS_PER_PAGE = 20;
+export const DEFAULT_RESULTS_PER_PAGE = 6;
 export const DEFAULT_FILES_PER_PULL_REQUEST = 20;

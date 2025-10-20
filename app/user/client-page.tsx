@@ -26,7 +26,7 @@ type TabKey = typeof Tabs[keyof typeof Tabs];
 
 export default function UserRulesClientPage({ ruleCount }) {
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<TabKey>(Tabs.MODIFIED);
+  const [activeTab, setActiveTab] = useState<TabKey>(Tabs.AUTHORED);
   const queryStringRulesAuthor = searchParams.get('author') || '';
 
   // Last Modified
@@ -40,7 +40,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [authoredRules, setAuthoredRules] = useState<any[]>([]);
   const [author, setAuthor] = useState<{ fullName?: string; slug?: string; gitHubUrl?: string }>({});
   const [loadingAuthored, setLoadingAuthored] = useState(false);
-  const AUTHORED_PAGE_SIZE = 10;
+  const AUTHORED_PAGE_SIZE = 6;
   const [authoredNextCursor, setAuthoredNextCursor] = useState<string | null>(null);
   const [authoredHasNext, setAuthoredHasNext] = useState(false);
   const [loadingMoreAuthored, setLoadingMoreAuthored] = useState(false);
@@ -219,8 +219,8 @@ export default function UserRulesClientPage({ ruleCount }) {
   const TabHeader = () => (
     <div role="tablist" aria-label="User Rules Tabs" className="flex mt-2 mb-4 divide-x divide-gray-200 rounded">
       {[
-        { key: Tabs.MODIFIED, label: `Modified (${lastModifiedRules.length})` },
         { key: Tabs.AUTHORED, label: `Authored (${authoredRules.length})` },
+        { key: Tabs.MODIFIED, label: `Last Modified (${lastModifiedRules.length})` },
       ].map((t, i) => {
         const isActive = activeTab === t.key;
         return (
@@ -270,7 +270,7 @@ export default function UserRulesClientPage({ ruleCount }) {
     }
     return (
       <>
-        <RuleList rules={items} />
+        <RuleList rules={items} showFilterControls={false} showPagination={false} />
         {hasNextPage && (
           <div className="mt-4 flex justify-center">
             <LoadMoreButton onClick={onLoadMore} disabled={loadingMore} loading={loadingMore}>

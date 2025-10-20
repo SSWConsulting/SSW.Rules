@@ -25,8 +25,8 @@ const lato = Lato({
 });
 
 export const metadata: Metadata = {
-  title: "Tina",
-  description: "Tina Cloud Starter",
+  title: "SSW.Rules | Secret Ingredients to Quality Software (Open Source on GitHub)",
+  description: "Secret Ingredients to Quality Software | SSW Rules provides best practices for developing secure, reliable, and efficient .NET, Azure, CRM, Angular, React, Dynamics, and AI applications. Learn more today!",
 };
 
 export default function RootLayout({

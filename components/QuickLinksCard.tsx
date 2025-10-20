@@ -9,7 +9,7 @@ interface QuickLinksProps {
 const QuickLinksCard = ({ links } : QuickLinksProps) => {
     return <Card title="Quick Links">
         {links && links.length > 0 ? (
-            <ul className="space-y-2 m-0">
+            <ul>
                 {links.map((link) => (
                     <li key={link.uri}>
                         <Link href={link.uri} target="_blank" rel="noopener noreferrer">{link.linkText}</Link>

@@ -14,11 +14,13 @@ type RuleQueryVars = PaginationVars & {
 
 export async function fetchLatestRules(
   size: number = 5, 
-  sortOption: "lastUpdated" | "created" = "lastUpdated"
+  sortOption: "lastUpdated" | "created" = "lastUpdated",
+  includeBody: boolean = false
 ) {
   const res = await client.queries.latestRulesQuery({
     size,
     sortOption,
+    includeBody,
   });
 
   const results = res?.data?.ruleConnection?.edges

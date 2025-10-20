@@ -4,7 +4,7 @@ import { LatestRule } from "@/models/LatestRule";
 import { useState } from "react";
 import { CgSortAz } from "react-icons/cg";
 import Dropdown from "./ui/dropdown";
-import RuleCard from "./RuleCard";
+import RuleList from "./rule-list";
 
 interface LatestRulesListProps {
   rulesByUpdated: LatestRule[];
@@ -47,17 +47,7 @@ export default function LatestRulesList({
         </div>
       </div>
 
-      {currentRules.map((rule, index) => (
-        <RuleCard
-          key={rule.id}
-          title={rule.title}
-          slug={rule.uri}
-          lastUpdatedBy={rule.lastUpdatedBy}
-          lastUpdated={rule.lastUpdated}
-          authorUrl={rule.authorUrl}
-          index={index}
-        />
-      ))}
+      <RuleList rules={currentRules} />
     </div>
   );
 }

@@ -13,20 +13,20 @@ import JoinConversationCard from '@/components/JoinConversationCard';
 import { appendNewRules } from '@/utils/appendNewRules';
 import { selectLatestRuleFilesByPath } from '@/utils/selectLatestRuleFilesByPath';
 import LoadMoreButton from '@/components/LoadMoreButton';
-import RuleCard from '@/components/RuleCard';
 import Spinner from '@/components/Spinner';
 import { FaUserCircle } from 'react-icons/fa';
+import RuleList from '@/components/rule-list';
 
 const Tabs = {
-  LAST_MODIFIED: 'last-modified',
-  Acknowledged: 'acknowledged',
+  MODIFIED: 'modified',
+  AUTHORED: 'authored',
 } as const;
 
 type TabKey = typeof Tabs[keyof typeof Tabs];
 
 export default function UserRulesClientPage({ ruleCount }) {
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<TabKey>(Tabs.LAST_MODIFIED);
+  const [activeTab, setActiveTab] = useState<TabKey>(Tabs.MODIFIED);
   const queryStringRulesAuthor = searchParams.get('author') || '';
 
   // Last Modified
@@ -87,7 +87,7 @@ export default function UserRulesClientPage({ ruleCount }) {
           ...file,
           path: file.path.endsWith('rule.md') ? file.path.slice(0, -3) + '.mdx' : file.path,
         }));
-  
+
       if (allRules.length === 0 && !append) {
         setLastModifiedRules([]);
       } else if (allRules.length > 0) {
@@ -219,8 +219,8 @@ export default function UserRulesClientPage({ ruleCount }) {
   const TabHeader = () => (
     <div role="tablist" aria-label="User Rules Tabs" className="flex mt-2 mb-4 divide-x divide-gray-200 rounded">
       {[
-        { key: Tabs.LAST_MODIFIED, label: `Last Modified (${lastModifiedRules.length})` },
-        { key: Tabs.Acknowledged, label: `Authored (${authoredRules.length})` },
+        { key: Tabs.MODIFIED, label: `Modified (${lastModifiedRules.length})` },
+        { key: Tabs.AUTHORED, label: `Authored (${authoredRules.length})` },
       ].map((t, i) => {
         const isActive = activeTab === t.key;
         return (
@@ -270,17 +270,7 @@ export default function UserRulesClientPage({ ruleCount }) {
     }
     return (
       <>
-        {items.map((rule, i) => (
-          <RuleCard
-            key={`${rule.guid}-${i}`}
-            index={i}
-            title={rule.title}
-            slug={rule.uri}
-            lastUpdatedBy={rule.lastUpdatedBy ?? null}
-            lastUpdated={rule.lastUpdated ?? null}
-            authorUrl={author.gitHubUrl ?? null}
-          />
-        ))}
+        <RuleList rules={items} />
         {hasNextPage && (
           <div className="mt-4 flex justify-center">
             <LoadMoreButton onClick={onLoadMore} disabled={loadingMore} loading={loadingMore}>
@@ -322,7 +312,7 @@ export default function UserRulesClientPage({ ruleCount }) {
           <TabHeader />
 
           <div className="rounded-lg border border-gray-100 bg-white p-4">
-              {activeTab === Tabs.LAST_MODIFIED &&
+              {activeTab === Tabs.MODIFIED &&
                   renderList(lastModifiedRules, {
                   loadingInitial: loadingLastModified,
                   loadingMore: loadingMoreLastModified,
@@ -330,7 +320,7 @@ export default function UserRulesClientPage({ ruleCount }) {
                   onLoadMore: handleLoadMoreLastModified,
                 })}
 
-              {activeTab === Tabs.Acknowledged &&
+              {activeTab === Tabs.AUTHORED &&
                 renderList(authoredRules, {
                   loadingInitial: loadingAuthored,
                   loadingMore: loadingMoreAuthored,

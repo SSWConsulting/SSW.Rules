@@ -1,4 +1,4 @@
-query latestRulesQuery($size: Float, $sortOption: String) {
+query latestRulesQuery($size: Float, $sortOption: String, $includeBody: Boolean = false) {
   ruleConnection(last: $size, sort: $sortOption) {
     edges {
       node {
@@ -9,6 +9,7 @@ query latestRulesQuery($size: Float, $sortOption: String) {
         created
         createdBy
         uri
+        body @include(if: $includeBody)
         authors {
           title
           url

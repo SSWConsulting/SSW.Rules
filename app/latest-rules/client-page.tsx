@@ -30,8 +30,8 @@ export default function LatestRuleClientPage({ ruleCount, initialSize }: LatestR
       setIsLoading(true);
       try {
         const [updatedRes, createdRes] = await Promise.all([
-          client.queries.latestRulesQuery({ size: initialSize, sortOption: "lastUpdated" }),
-          client.queries.latestRulesQuery({ size: initialSize, sortOption: "created" }),
+          client.queries.latestRulesQuery({ size: initialSize, sortOption: "lastUpdated", includeBody: true }),
+          client.queries.latestRulesQuery({ size: initialSize, sortOption: "created", includeBody: true }),
         ]);
 
         const processRules = (res: any) => {

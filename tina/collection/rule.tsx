@@ -7,7 +7,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH?.replace(/^\//, "") || ""
 
 const Rule: Collection = {
   name: "rule",
-  label: "Rules",
+  label: "Rule",
   path: "public/uploads/rules",
   format: "mdx",
   match: {

@@ -38,7 +38,6 @@ export default function RootLayout({
     <html
       lang="en"
       className={cn(fontSans.variable, nunito.variable, lato.variable)}
-      title="SSW Rules | Secret Ingredients for Quality Software (Open Source on GitHub)"
     >
       <body className="min-h-screen bg-background font-sans antialiased flex flex-col">
         <UserClientProvider>

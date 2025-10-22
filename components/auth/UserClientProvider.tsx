@@ -3,7 +3,10 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState } from 
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
 type AnyUser = { sub?: string; name?: string; email?: string; picture?: string; nickname?: string };
-type Ctx = { user: AnyUser | null; isLoading: boolean };
+type Ctx = { 
+  user: AnyUser | null; 
+  isLoading: boolean; 
+};
 const Ctx = createContext<Ctx>({ user: null, isLoading: true });
 export const useAuth = () => useContext(Ctx);
 
@@ -23,8 +26,15 @@ export default function UserClientProvider({ children }: { children: React.React
     let alive = true;
     (async () => {
       try {
-        const res = await fetch(withBase('/auth/profile'), { credentials: 'include' });
-        if (alive && res.ok) setUser(await res.json());
+        const sessionCheck = await fetch(withBase('/api/session/check'));
+        const session = await sessionCheck.json();
+        if(session.isAuthenticated) {
+          const res = await fetch(withBase('/auth/profile'), { credentials: 'include' });
+          if (alive && res.ok) setUser(await res.json());
+        } else {
+          setUser(null);
+        }
+
       } finally {
         if (alive) setLoading(false);
       }

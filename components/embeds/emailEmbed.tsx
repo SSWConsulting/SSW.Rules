@@ -36,13 +36,15 @@ export function EmailEmbed({ data }: { data: any }) {
           ))}
         </div>
 
-        <div className="mt-6 pl-24">
-          <div className="bg-white border p-4 rounded">
-            <div className="prose prose-neutral prose-sm" ref={contentRef}>
-              <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
+        {data.shouldDisplayBody && data.body && (
+          <div className="mt-6 pl-24">
+            <div className="bg-white border p-4 rounded">
+              <div className="prose prose-neutral prose-sm" ref={contentRef}>
+                <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </ComponentWithFigure>
   );
@@ -58,6 +60,7 @@ export const emailEmbedTemplate: Template = withFigureEmbedTemplateFields({
       cc: "YYY",
       bcc: "ZZZ",
       subject: "Email Subject",
+      shouldDisplayBody: true,
       body: {
         type: "root",
         children: [
@@ -79,6 +82,7 @@ export const emailEmbedTemplate: Template = withFigureEmbedTemplateFields({
     { name: "cc", label: "Cc", type: "string" },
     { name: "bcc", label: "Bcc", type: "string" },
     { name: "subject", label: "Subject", type: "string" },
+    { name: "shouldDisplayBody", label: "Display Body?", type: "boolean" },
     { name: "body", label: "Body", type: "rich-text" },
   ],
 });

@@ -37,6 +37,93 @@ module.exports = {
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-sitemap',
     'gatsby-transformer-json',
+    {
+      resolve: 'gatsby-plugin-feed',
+      options: {
+        query: `
+          {
+            site {
+              siteMetadata {
+                siteTitle
+                siteDescription
+                siteUrl
+              }
+            }
+          }
+        `,
+        feeds: [
+          {
+            serialize: ({
+              query: { site, allHistoryJson, allMarkdownRemark },
+            }) => {
+              // Create a lookup object for rules by file path
+              const rulesMap = {};
+              allMarkdownRemark.nodes.forEach((rule) => {
+                const filePath = `rules/${rule.frontmatter.uri}/rule.md`;
+                rulesMap[filePath] = rule;
+              });
+
+              // Get recent updates from history, filter out archived rules
+              return allHistoryJson.edges
+                .filter((edge) => {
+                  const rule = rulesMap[edge.node.file];
+                  return rule && !rule.frontmatter.archivedreason;
+                })
+                .slice(0, 50) // Limit to 50 most recent updates
+                .map((edge) => {
+                  const rule = rulesMap[edge.node.file];
+                  const url = `${site.siteMetadata.siteUrl}/${rule.frontmatter.uri}`;
+
+                  return {
+                    title: rule.frontmatter.title,
+                    description:
+                      rule.frontmatter.seoDescription ||
+                      rule.excerpt ||
+                      `Updated by ${edge.node.lastUpdatedBy}`,
+                    date: edge.node.lastUpdated,
+                    url: url,
+                    guid: url,
+                    custom_elements: [
+                      { 'dc:creator': edge.node.lastUpdatedBy },
+                      { pubDate: edge.node.lastUpdated },
+                    ],
+                  };
+                });
+            },
+            query: `
+              {
+                allHistoryJson(sort: {lastUpdated: DESC}) {
+                  edges {
+                    node {
+                      file
+                      lastUpdated
+                      lastUpdatedBy
+                    }
+                  }
+                }
+                allMarkdownRemark(filter: {frontmatter: {type: {eq: "rule"}}}) {
+                  nodes {
+                    excerpt(pruneLength: 250)
+                    frontmatter {
+                      title
+                      uri
+                      archivedreason
+                      seoDescription
+                    }
+                  }
+                }
+              }
+            `,
+            output: '/rss.xml',
+            title: 'SSW Rules - Recent Updates',
+            description: 'Stay updated with the latest changes to SSW Rules',
+            site_url: 'https://www.ssw.com.au/rules',
+            feed_url: 'https://www.ssw.com.au/rules/rss.xml',
+            language: 'en',
+          },
+        ],
+      },
+    },
     'gatsby-plugin-postcss',
     {
       resolve: 'gatsby-source-git',

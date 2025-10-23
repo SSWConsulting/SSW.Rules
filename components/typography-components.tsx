@@ -54,7 +54,10 @@ export const getTypographyComponents = (enableAnchors = false) => ({
     <p className="mb-4" {...props} />
   ),
   a: (props: any) => (
-    <a className="underline" {...props} />
+    <a className="underline" href={props.url} {...props} />
+  ),
+  li: (props) => (
+    <li {...props} />
   ),
   mark: (props: any) => (
     <mark {...props} />

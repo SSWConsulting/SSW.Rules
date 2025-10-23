@@ -56,6 +56,9 @@ export const getTypographyComponents = (enableAnchors = false) => ({
   a: (props: any) => (
     <a className="underline" {...props} />
   ),
+  mark: (props: any) => (
+    <mark {...props} />
+  ),
   blockquote: (props: any) => (
     <blockquote
       className="border-l-2 border-gray-900 my-4 pl-4 italic text-gray-600"

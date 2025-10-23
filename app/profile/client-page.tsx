@@ -181,7 +181,7 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
                     <div className="text-3xl">
                     {isAuthenticated ? user?.name : ''}
                     </div>
-                    <a className="flex align-center ssw-link"
+                    <a className="flex align-center underline"
                       href={`https://www.github.com/${user?.nickname}`}
                       target="_blank"
                       rel="noreferrer"

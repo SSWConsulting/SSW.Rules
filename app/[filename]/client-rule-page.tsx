@@ -169,7 +169,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   {rule?.lastUpdatedBy ? (
                     authorUsername ? (
                       <Link href={`./user?author=${encodeURIComponent(authorUsername)}`}
-                        className="font-semibold ssw-link"
+                        className="font-semibold underline"
                         title={`View ${rule.lastUpdatedBy}'s rules`}
                       >
                         {rule.lastUpdatedBy}
@@ -189,7 +189,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   {/* TODO: update link when migration is done (path will be wrong as reules will be in public folder) */}
                   <a href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/main/rules/${rule?.uri}/rule.md`}
                     target="_blank" title={historyTooltip}
-                    className="inline-flex items-center gap-1 font-semibold ssw-link" >
+                    className="inline-flex items-center gap-1 font-semibold underline" >
                     See history <RiHistoryLine />
                   </a>
                 </p>

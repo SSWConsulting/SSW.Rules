@@ -114,15 +114,6 @@
   @apply bg-ssw-red;
 }
 
-.ssw-link{
-  text-decoration: underline;
-  font-weight: 500;
-}
-
-.ssw-link:hover {
-  color: var(--ssw-red);
-}
-
 .action-btn-container {
   margin-left: auto;
   display: flex;

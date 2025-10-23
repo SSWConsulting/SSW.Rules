@@ -47,3 +47,21 @@ Each feed item includes:
 - **Date**: Last update timestamp
 - **Author**: Last person who updated the rule
 - **URL**: Direct link to the rule
+
+## Validation
+
+You can validate the RSS feed configuration by running:
+
+```bash
+node scripts/validate-rss-config.js
+```
+
+This script checks that:
+- The `gatsby-plugin-feed` plugin is properly configured
+- All required fields are present
+- The output path is set to `/rss.xml`
+- The feed query includes necessary data sources
+
+## Example Output
+
+See `_docs/rss-feed-example.xml` for an example of what the generated RSS feed will look like.

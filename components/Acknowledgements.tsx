@@ -22,9 +22,20 @@ export default function Acknowledgements({ authors }: AcknowledgementsProps) {
 
     if (img?.includes('http')) return img
 
-    if (url?.includes('ssw.com.au/people') && title) {
-      const formattedTitle = title.replace(/ /g, '-')
-      return `https://raw.githubusercontent.com/SSWConsulting/SSW.People.Profiles/main/${formattedTitle}/Images/${formattedTitle}-Profile.jpg`
+    if (url?.includes('ssw.com.au/people')) {
+      // Extract the part after '/people/'
+      const match = url.match(/people\/([^/?#]+)/);
+      const slug = match ? match[1] : null;
+
+      if (slug) {
+        // Capitalize each word
+        const formattedTitle = slug
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join('-');
+
+        return `https://raw.githubusercontent.com/SSWConsulting/SSW.People.Profiles/main/${formattedTitle}/Images/${formattedTitle}-Profile.jpg`;
+      }
     }
 
     if (url?.includes('github.com/')) {

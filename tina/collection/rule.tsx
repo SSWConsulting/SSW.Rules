@@ -74,6 +74,10 @@ const Rule: Collection = {
         itemProps: (item) => {
           return { label: "👤 " + (item?.title ?? "Author") };
         },
+        defaultItem: {
+          title: "Bob Northwind",
+          url: "https://ssw.com.au/people/bob-northwind",
+        },
       },
       fields: [
         {
@@ -86,7 +90,7 @@ const Rule: Collection = {
         {
           type: "string",
           description:
-            "The SSW People link for the contributor - e.g. https://ssw.com.au/people/sebastien-boissiere",
+            "The SSW People link for the contributor - e.g. https://ssw.com.au/people/bob-northwind",
           name: "url",
           label: "Url",
         },

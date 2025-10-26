@@ -19,7 +19,7 @@ import Acknowledgements from "@/components/Acknowledgements";
 import { getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
 import Discussion from "@/components/Discussion";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { ICON_SIZE } from "@/constants";
 import { extractUsernameFromUrl } from "@/lib/services/github";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -40,7 +40,33 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   const [authorUsername, setAuthorUsername] = useState<string | null>(null);
   const relatedRules = props.relatedRulesMapping || [];
   const router = useRouter();
+  const pathname = usePathname();
+  const [isAdminPage, setIsAdminPage] = useState(false);
   const [isLoadingUsername, setIsLoadingUsername] = useState(false);
+
+  useEffect(() => {
+    // Check if we're inside TinaCMS admin iframe
+    if (typeof window === 'undefined') return;
+
+    const isInIframe = window.self !== window.top;
+    let parentIsAdmin = false;
+
+    if (isInIframe) {
+      try {
+        parentIsAdmin = window.top?.location.pathname.includes('/admin') || false;
+      } catch (e) {
+        // If we can't access parent URL but we're in iframe, assume it's admin
+        // TinaCMS always renders the preview in an iframe
+        parentIsAdmin = true;
+      }
+    }
+
+    const isAdmin = pathname?.includes('/admin') ||
+                    window.location.pathname.includes('/admin') ||
+                    parentIsAdmin;
+
+    setIsAdminPage(isAdmin);
+  }, [pathname]);
   const ruleData = useTina({
     query: ruleQueryProps?.query,
     variables: ruleQueryProps?.variables,
@@ -194,24 +220,28 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   </a>
                 </p>
                 <div className="flex items-center gap-4 text-2xl">
-                  <Bookmark 
-                    ruleGuid={rule?.guid || ''} 
+                  <Bookmark
+                    ruleGuid={rule?.guid || ''}
                     isBookmarked={isBookmarked}
                     onBookmarkToggle={(newStatus) => setIsBookmarked(newStatus)}
                   />
-                  <IconLink
-                    href={`/admin#/~/${sanitizedBasePath}/${rule?.uri}`}
-                    title="Edit rule"
-                    tooltipOpaque={true}
-                    children={<RiPencilLine size={ICON_SIZE} />}
-                  />
-                  <IconLink
-                    href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule?.uri}/rule.md`}
-                    target="_blank"
-                    title="View rule on GitHub"
-                    tooltipOpaque={true}
-                    children={<RiGithubLine size={ICON_SIZE} className="rule-icon" />}
-                  />
+                  {!isAdminPage && (
+                    <>
+                      <IconLink
+                        href={`/admin#/~/${sanitizedBasePath}/${rule?.uri}`}
+                        title="Edit rule"
+                        tooltipOpaque={true}
+                        children={<RiPencilLine size={ICON_SIZE} />}
+                      />
+                      <IconLink
+                        href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule?.uri}/rule.md`}
+                        target="_blank"
+                        title="View rule on GitHub"
+                        tooltipOpaque={true}
+                        children={<RiGithubLine size={ICON_SIZE} className="rule-icon" />}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             </div>

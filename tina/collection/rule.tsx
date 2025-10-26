@@ -133,6 +133,7 @@ const Rule: Collection = {
       label: "Body",
       isBody: true,
       templates: embedTemplates,
+      toolbarOverride: ['embed', 'heading', 'link', 'quote', 'ul', 'ol', 'bold', 'italic', 'code', 'codeBlock', 'mermaid', 'table', 'raw']
     },
     ...historyFields
   ],

@@ -108,6 +108,8 @@ const Rule: Collection = {
       type: "string",
       name: "redirects",
       label: "Redirects",
+      description: 
+        "The URIs of rules which should redirect to this rule.",
       list: true,
     },
     {

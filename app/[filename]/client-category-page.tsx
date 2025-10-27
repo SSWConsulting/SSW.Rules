@@ -117,6 +117,7 @@ export default function ClientCategoryPage(props: ClientCategoryPageProps) {
         <div className="w-full lg:w-2/3 bg-white pt-4 p-6 border border-[#CCC] rounded shadow-lg">
           <h1 className="m-0 mb-2 text-ssw-red font-bold">
             {showArchivedFromUrl ? `Archived Rules - ${category?.title}` : category?.title}
+            <span className="text-gray-500 font-normal text-[0.75em]"> - {annotatedRules.length} {annotatedRules.length === 1 ? 'Rule' : 'Rules'}</span>
           </h1>
           <div className="flex gap-2 justify-center my-2 md:hidden">
             <IconLink

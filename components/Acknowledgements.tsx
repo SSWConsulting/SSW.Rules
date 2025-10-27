@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 interface Author {
   title?: string
@@ -13,14 +13,14 @@ interface AcknowledgementsProps {
 }
 
 export default function Acknowledgements({ authors }: AcknowledgementsProps) {
-  const placeholderImg = '/uploads/ssw-employee-profile-placeholder-sketch.jpg'
+  const placeholderImg = '/uploads/ssw-employee-profile-placeholder-sketch.jpg';
 
-  function getImgSource(author: Author): string {
-    const { noimage, img, title, url } = author
+  const getImgSource = useCallback((author: Author): string => {
+    const { noimage, img, url } = author;
 
-    if (noimage) return placeholderImg
+    if (noimage) return placeholderImg;
 
-    if (img?.includes('http')) return img
+    if (img?.includes('http')) return img;
 
     if (url?.includes('ssw.com.au/people')) {
       // Extract the part after '/people/'
@@ -39,30 +39,32 @@ export default function Acknowledgements({ authors }: AcknowledgementsProps) {
     }
 
     if (url?.includes('github.com/')) {
-      const gitHubUsername = url.split('github.com/').pop()
-      return `https://avatars.githubusercontent.com/${gitHubUsername}`
+      const gitHubUsername = url.split('github.com/').pop();
+      return `https://avatars.githubusercontent.com/${gitHubUsername}`;
     }
 
-    return placeholderImg
-  }
+    return placeholderImg;
+  }, [placeholderImg]);
 
-  const [imgSrcList, setImgSrcList] = useState<string[]>(
-    authors.map(getImgSource)
-  )
+  const [imgSrcList, setImgSrcList] = useState<string[]>([]);
+
+  useEffect(() => {
+    setImgSrcList(authors.map(getImgSource));
+  }, [authors, getImgSource]);
 
   useEffect(() => {
     authors.forEach((author) => {
       if (!author.title) {
-        console.warn(`Profile title is missing for author with URL: ${author.url}`)
+        console.warn(`Profile title is missing for author with URL: ${author.url}`);
       }
     })
-  }, [authors])
+  }, [authors]);
 
   const handleImageError = (index: number) => {
     setImgSrcList((prev) => {
-      const updated = [...prev]
-      updated[index] = placeholderImg
-      return updated
+      const updated = [...prev];
+      updated[index] = placeholderImg;
+      return updated;
     })
   }
 

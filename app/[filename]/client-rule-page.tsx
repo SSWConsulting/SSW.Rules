@@ -26,6 +26,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { useAuth } from "@/components/auth/UserClientProvider";
 import { useMarkHighlight } from "@/lib/useMarkHighlight";
 import { IconLink } from "@/components/ui";
+import RelatedRules from "@/components/RelatedRules";
 
 export interface ClientRulePageProps {
   ruleQueryProps;
@@ -38,7 +39,6 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   const { user } = useAuth();
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [authorUsername, setAuthorUsername] = useState<string | null>(null);
-  const relatedRules = props.relatedRulesMapping || [];
   const router = useRouter();
   const pathname = usePathname();
   const [isAdminPage, setIsAdminPage] = useState(false);
@@ -304,21 +304,8 @@ export default function ClientRulePage(props: ClientRulePageProps) {
             <Acknowledgements authors={rule.authors} />
           </Card>
           <Card title="Related rules">
-            {relatedRules.length > 0 ? (
-              <ul className="pl-4">
-                {relatedRules.map((r) => (
-                  <li key={r.uri} className="not-last:mb-2">
-                    <Link
-                      href={`/${r.uri}`}
-                      className="no-underline">
-                      {r.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="text-sm text-gray-500">No related rules.</div>
-            )}
+            <RelatedRules relatedUris={rule?.related as string[] | undefined} 
+              initialMapping={props.relatedRulesMapping} />
           </Card>
           <HelpCard />
           <div className="block md:hidden">

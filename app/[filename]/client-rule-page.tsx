@@ -19,7 +19,7 @@ import Acknowledgements from "@/components/Acknowledgements";
 import { getAccessToken } from "@auth0/nextjs-auth0";
 import { BookmarkService } from "@/lib/bookmarkService";
 import Discussion from "@/components/Discussion";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ICON_SIZE } from "@/constants";
 import { extractUsernameFromUrl } from "@/lib/services/github";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -40,42 +40,27 @@ export default function ClientRulePage(props: ClientRulePageProps) {
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [authorUsername, setAuthorUsername] = useState<string | null>(null);
   const router = useRouter();
-  const pathname = usePathname();
-  const [isAdminPage, setIsAdminPage] = useState(false);
   const [isLoadingUsername, setIsLoadingUsername] = useState(false);
+  const [isAdminPage, setIsAdminPage] = useState(false);
+  
+  // Remove any extra slashes from the base path
+  const sanitizedBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
 
   useEffect(() => {
-    // Check if we're inside TinaCMS admin iframe
-    if (typeof window === 'undefined') return;
-
-    const isInIframe = window.self !== window.top;
-    let parentIsAdmin = false;
-
-    if (isInIframe) {
-      try {
-        parentIsAdmin = window.top?.location.pathname.includes('/admin') || false;
-      } catch (e) {
-        // If we can't access parent URL but we're in iframe, assume it's admin
-        // TinaCMS always renders the preview in an iframe
-        parentIsAdmin = true;
-      }
+    try {
+      const isAdmin = window.top?.location?.pathname.includes('/admin') ?? false;
+      setIsAdminPage(isAdmin);
+    } catch {
+      setIsAdminPage(false);
     }
+  }, []);
 
-    const isAdmin = pathname?.includes('/admin') ||
-                    window.location.pathname.includes('/admin') ||
-                    parentIsAdmin;
-
-    setIsAdminPage(isAdmin);
-  }, [pathname]);
   const ruleData = useTina({
     query: ruleQueryProps?.query,
     variables: ruleQueryProps?.variables,
     data: ruleQueryProps?.data,
   }).data;
   const rule = ruleData?.rule;
-
-  // Remove any extra slashes from the base path
-  const sanitizedBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
 
   const relativeTime = useMemo(() => {
     return rule?.lastUpdated ? timeAgo(rule?.lastUpdated) : "";
@@ -220,13 +205,13 @@ export default function ClientRulePage(props: ClientRulePageProps) {
                   </a>
                 </p>
                 <div className="flex items-center gap-4 text-2xl">
-                  <Bookmark
-                    ruleGuid={rule?.guid || ''}
-                    isBookmarked={isBookmarked}
-                    onBookmarkToggle={(newStatus) => setIsBookmarked(newStatus)}
-                  />
                   {!isAdminPage && (
                     <>
+                      <Bookmark
+                        ruleGuid={rule?.guid || ''}
+                        isBookmarked={isBookmarked}
+                        onBookmarkToggle={(newStatus) => setIsBookmarked(newStatus)}
+                      />
                       <IconLink
                         href={`/admin#/~/${sanitizedBasePath}/${rule?.uri}`}
                         title="Edit rule"

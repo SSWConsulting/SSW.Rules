@@ -42,6 +42,7 @@ const Rule: Collection = {
       name: "title",
       isTitle: true,
       required: true,
+      searchable: true
     },
     {
       type: "image",
@@ -53,8 +54,9 @@ const Rule: Collection = {
       type: "string",
       name: "uri",
       label: "Uri",
-      description: "The URI of the rule - this defines the slug and refereces.",
+      description: "The URI of the rule - this defines the slug and references.",
       required: true,
+      searchable: true,
       ui: {
         validate: (value?: string): string | void => {
           const v = (value ?? "").trim();
@@ -69,6 +71,7 @@ const Rule: Collection = {
       name: "authors",
       label: "Authors",
       description: "The list of contributors for this rule.",
+      searchable: false,
       list: true,
       ui: {
         itemProps: (item) => {
@@ -103,6 +106,7 @@ const Rule: Collection = {
       description:
         "The URIs of rules that should be suggested based on the content of this rule.",
       list: true,
+      searchable: false,
     },
     {
       type: "string",
@@ -111,6 +115,7 @@ const Rule: Collection = {
       description: 
         "The URIs of rules which should redirect to this rule.",
       list: true,
+      searchable: false,
     },
     {
       type: "string",
@@ -128,12 +133,14 @@ const Rule: Collection = {
       label: "SEO Description",
       description:
         "A summary of the page content, used for SEO purposes. This can be generated automatically with AI.",
+      searchable: false,
     },
     {
       type: "rich-text",
       name: "body",
       label: "Body",
       isBody: true,
+      searchable: false,
       templates: embedTemplates,
       toolbarOverride: ['embed', 'heading', 'link', 'quote', 'ul', 'ol', 'bold', 'italic', 'code', 'codeBlock', 'mermaid', 'table', 'raw']
     },

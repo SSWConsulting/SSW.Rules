@@ -23,9 +23,11 @@ on:
             AZURE_SUBSCRIPTION_ID:
                 required: true
             TINA_TOKEN:
+                required: true
+            TINA_SEARCH_TOKEN:
                 required: false
             NEXT_PUBLIC_TINA_CLIENT_ID:
-                required: false
+                required: true
             TOKEN:
                 required: true
             NEXT_PUBLIC_ALGOLIA_APP_ID:
@@ -276,6 +278,7 @@ jobs:
 
                   # Existing build arguments
                   ARG TINA_TOKEN
+                  ARG TINA_SEARCH_TOKEN
                   ARG NEXT_PUBLIC_TINA_CLIENT_ID
                   ARG NEXT_PUBLIC_TINA_BRANCH
                   ARG NEXT_PUBLIC_ALGOLIA_APP_ID
@@ -298,6 +301,7 @@ jobs:
                         BUILD_DATE=$BUILD_DATE \
                         COMMIT_HASH=$COMMIT_HASH \
                         TINA_TOKEN=$TINA_TOKEN \
+                        TINA_SEARCH_TOKEN=$TINA_SEARCH_TOKEN \
                         NEXT_PUBLIC_TINA_CLIENT_ID=$NEXT_PUBLIC_TINA_CLIENT_ID \
                         NEXT_PUBLIC_TINA_BRANCH=$NEXT_PUBLIC_TINA_BRANCH \
                         NEXT_PUBLIC_ALGOLIA_APP_ID=$NEXT_PUBLIC_ALGOLIA_APP_ID \
@@ -368,6 +372,7 @@ jobs:
                         BUILD_DATE=${{ env.BUILD_DATE }}
                         COMMIT_HASH=${{ env.COMMIT_HASH }}
                         TINA_TOKEN=${{ secrets.TINA_TOKEN }}
+                        TINA_SEARCH_TOKEN=${{ secrets.TINA_SEARCH_TOKEN }}
                         NEXT_PUBLIC_TINA_CLIENT_ID=${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
                         NEXT_PUBLIC_ALGOLIA_APP_ID=${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
                         NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}

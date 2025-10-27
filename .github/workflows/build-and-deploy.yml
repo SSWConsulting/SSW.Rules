@@ -46,6 +46,7 @@ jobs:
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
             AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
             TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+            TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
             NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
             NEXT_PUBLIC_TINA_BRANCH: ${{ secrets.NEXT_PUBLIC_TINA_BRANCH }}
             TOKEN: ${{ secrets.POC_PAT_GILLES }} # TODO: replace that with a GitHub Token for production environement

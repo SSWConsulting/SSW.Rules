@@ -37,14 +37,14 @@ const config = defineConfig({
   schema: {
     collections: [Global, Category, Rule, MegaMenu],
   },
-  // search: {
-  //   tina: {
-  //     indexerToken: searchToken,
-  //     stopwordLanguages: ['eng'],
-  //   },
-  //   indexBatchSize: 100,
-  //   maxSearchIndexFieldLength: 100,
-  // },
+  search: {
+    tina: {
+      indexerToken: searchToken,
+      stopwordLanguages: ['eng'],
+    },
+    indexBatchSize: 100,
+    maxSearchIndexFieldLength: 100,
+  },
 });
 
 export default config;

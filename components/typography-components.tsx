@@ -54,7 +54,7 @@ export const getTypographyComponents = (enableAnchors = false) => ({
     <p className="mb-4" {...props} />
   ),
   a: (props: any) => (
-    <a className="underline" href={props.url} {...props} />
+    <a className="underline hover:text-ssw-red" href={props.url} {...props} />
   ),
   li: (props) => (
     <li {...props} />

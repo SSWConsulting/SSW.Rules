@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/card";
 import { LatestRule } from "@/models/LatestRule";
 import Link from "next/link";
-import SearchBar from "@/components/SearchBar";
+import SearchBar from "@/components/SearchBarWrapper";
 import RuleCount from "@/components/RuleCount";
 import LatestRulesCard from "@/components/LatestRulesCard";
 import WhyRulesCard from "@/components/WhyRulesCard";

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import SearchBar from '@/components/SearchBar';
+import SearchBar from '@/components/SearchBarWrapper';
 import RuleCount from '@/components/RuleCount';
 import WhyRulesCard from '@/components/WhyRulesCard';
 import HelpImproveCard from '@/components/HelpImproveCard';

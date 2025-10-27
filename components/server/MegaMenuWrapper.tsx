@@ -7,9 +7,11 @@ import Tooltip from '../tooltip/tooltip';
 import SignIn from '../auth/SignIn';
 import { CustomLink } from '../customLink';
 import { RiAddCircleFill, RiOpenaiFill, RiQuestionFill } from 'react-icons/ri';
+import { Suspense } from 'react';
 
 export function MegaMenuWrapper(props) {
     return (
+        <div className='mx-auto max-w-7xl px-0 py-4'>
         <MegaMenuLayout
             title='Rules'
             menuBarItems={props.menu}
@@ -20,6 +22,7 @@ export function MegaMenuWrapper(props) {
             searchUrl='https://www.ssw.com.au/rules'
             isFlagVisible={false}
         />
+        </div>
     );
 }
 
@@ -58,7 +61,9 @@ const ActionButtons = () => {
                 </Tooltip>
             </div>
             
-            <SignIn />
+            <Suspense fallback={<div className="w-8 h-8" />}>
+                <SignIn />
+            </Suspense>
         </div>
     );
 };

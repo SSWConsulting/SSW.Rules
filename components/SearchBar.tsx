@@ -23,7 +23,7 @@ function SearchResults({ onResults, sortBy }: { onResults?: (results: SearchResu
     const { hits } = useHits();
     
     useEffect(() => {
-        let sortedHits = [...hits] as unknown as SearchResult[];
+        const sortedHits = [...hits] as unknown as SearchResult[];
         
         if (sortBy === 'created') {
             sortedHits.sort((a, b) => new Date(b.created || 0).getTime() - new Date(a.created || 0).getTime());

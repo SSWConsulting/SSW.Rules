@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import posed from 'react-pose';
 import { MenuWrapper } from '@/components/MenuWrapper';
 import { MegaMenuWrapper } from '@/components/server/MegaMenuWrapper';
-import { getMegamenu } from '@/utils/get-mega-menu';
+import { useMenu } from '../MenuProvider';
 
 const AnimatedContainer = posed.div({
     enter: {
@@ -22,29 +22,18 @@ const AnimatedContainer = posed.div({
 });
 
 export const Header = () => {
-    const [menuGroups, setMenuGroups] = useState<any>(null);
+    const { menuGroups, isLoading, error } = useMenu();
 
-    useEffect(() => {
-        const fetchMenuData = async () => {
-            try {
-                const data = await getMegamenu();
-                const menuGroups = data?.data.megamenu.menuGroups;
-                setMenuGroups(menuGroups);
-            } catch (err) {
-                console.error('Error fetching menu data:', err);
-            }
-        };
-        fetchMenuData();
-    }, []);
+    if (error) {
+        console.error('Menu loading error:', error);
+    }
 
     return (
         <AnimatedContainer>
-            <header className='no-print z-1 main-container max-sm:!m-4 sm:px-8'>
-                {menuGroups && menuGroups.length && (
-                    <MenuWrapper>
-                        <MegaMenuWrapper menu={menuGroups} />
-                    </MenuWrapper>
-                )}
+            <header className='no-print z-1 main-container max-sm:m-4! sm:px-8'>
+                <MenuWrapper>
+                    <MegaMenuWrapper menu={menuGroups || []} />
+                </MenuWrapper>
             </header>
         </AnimatedContainer>
     );

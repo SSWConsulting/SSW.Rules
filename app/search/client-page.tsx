@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import SearchBar from "@/components/SearchBar";
+import SearchBar from "@/components/SearchBarWrapper";
 import AboutSSWCard from "@/components/AboutSSWCard";
 import HelpCard from "@/components/HelpCard";
 import HelpImproveCard from "@/components/HelpImproveCard";

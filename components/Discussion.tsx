@@ -1,3 +1,5 @@
+'use client';
+
 import Giscus from '@giscus/react';
 
 export default function Discussion({ruleGuid}: {ruleGuid: string}) {

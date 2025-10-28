@@ -156,7 +156,7 @@ export default function ClientRulePage(props: ClientRulePageProps) {
       <div className="layout-two-columns">
         <Card dropShadow className="layout-main-section p-6">
           <div className="flex border-b-2 pb-3">
-            {rule?.thumbnail && (
+            {rule?.thumbnail && rule.thumbnail.trim() !== "" && (
               <div className="w-[175px] h-[175px] relative mr-4">
                 <Image
                   data-tina-field={tinaField(rule, "thumbnail")}

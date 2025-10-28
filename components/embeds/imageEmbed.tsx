@@ -14,7 +14,7 @@ export function ImageEmbed({ data }: { data: any }) {
   };
 
   const borderClass = data.showBorder ? "border-[10px] border-transparent" : "";
-  const heightClass = data.src ? "h-auto" : "h-[300px]";
+  const heightClass = data?.src?.trim() ? "h-auto" : "h-[300px]";
 
   return (
     <ComponentWithFigure data={data}>
@@ -23,7 +23,7 @@ export function ImageEmbed({ data }: { data: any }) {
           sizeClasses[data.size]
         } ${borderClass} ${heightClass}`}
       >
-        {data.src && (
+        {data?.src?.trim() && (
           <>
             <div className="border border-gray-200">
                 <Image

@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import { useEffect, useState, useCallback } from 'react'
 
@@ -81,15 +83,17 @@ export default function Acknowledgements({ authors }: AcknowledgementsProps) {
           >
             <div className="w-12 h-12 overflow-hidden rounded-full relative">
               <a href={author.url} target="_blank" rel="noopener noreferrer">
-                <Image
-                  src={imgSrc}
-                  alt={title}
-                  title={title}
-                  fill
-                  className="object-cover object-top"
-                  onError={() => handleImageError(index)}
-                  unoptimized
-                />
+                {imgSrc?.trim() && (
+                  <Image
+                    src={imgSrc}
+                    alt={title}
+                    title={title}
+                    fill
+                    className="object-cover object-top"
+                    onError={() => handleImageError(index)}
+                    unoptimized
+                  />
+                )}
               </a>
             </div>
           </div>

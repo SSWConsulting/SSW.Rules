@@ -1,13 +1,19 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { Section } from "@/components/layout/section";
 import client from "@/tina/__generated__/client";
-import ClientCategoryPage from "./client-category-page";
-import ClientRulePage from "./client-rule-page";
 import { notFound } from "next/navigation";
-import ruleToCategoryIndex from '@/rule-to-categories.json'; 
-import categoryTitleIndex from '@/category-uri-title-map.json';
+import ruleToCategoryIndex from "@/rule-to-categories.json";
+import categoryTitleIndex from "@/category-uri-title-map.json";
+import ServerCategoryPage from "@/components/ServerCategoryPage";
+import { TinaRuleWrapper } from "./tina-rule-wrapper";
 
-export const revalidate = 300;
+export const revalidate = 3600;
+export const dynamicParams = false;
+
+// Add this to force static generation - ensure that the getRuleData and getCategoryData 
+// functions are called at build time and have them cached.
+
+export const dynamic = 'force-static';
 
 const getFullRelativePathFromFilename = async (filename: string): Promise<string | null> => {
   let hasNextPage = true;
@@ -46,17 +52,17 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
 
 const getCategoryData = async (filename: string) => {
   const fullPath = await getFullRelativePathFromFilename(filename);
-  if (!fullPath) return
+  if (!fullPath) return;
 
   try {
     const res = await client.queries.categoryWithRulesQuery({
       relativePath: `${fullPath}`,
-    })
+    });
 
     return {
       data: res.data,
       query: res.query,
-      variables: res.variables
+      variables: res.variables,
     };
   } catch (error) {
     console.error("Error fetching category data:", error);
@@ -88,63 +94,129 @@ export async function generateStaticParams() {
       return [];
     }
 
-    const [categoryConnection, ruleConnection] = await Promise.all([
-      client.queries.categoryConnection().catch((err) => {
-        const isRecordNotFound = err?.message?.includes('Unable to find record');
-        if (!isRecordNotFound) {
-          console.warn("Error fetching categories:", err?.message || err);
+    // Helper function to fetch all pages from a connection
+    const fetchAllPages = async (queryFunction: (args?: any) => Promise<any>, queryName: string) => {
+      const allEdges: any[] = [];
+      let hasNextPage = true;
+      let after: string | null = null;
+
+      while (hasNextPage) {
+        try {
+          const result = await queryFunction({ first: 50, after }).catch((err) => {
+            const isRecordNotFound = err?.message?.includes("Unable to find record");
+            if (!isRecordNotFound) {
+              console.warn(`Error fetching ${queryName}:`, err?.message || err);
+            }
+            return { data: { [`${queryName}Connection`]: { edges: [], pageInfo: { hasNextPage: false } } } };
+          });
+
+          const connection = result?.data?.[`${queryName}Connection`];
+          if (connection?.edges && Array.isArray(connection.edges)) {
+            allEdges.push(...connection.edges);
+          }
+
+          hasNextPage = connection?.pageInfo?.hasNextPage || false;
+          after = connection?.pageInfo?.endCursor || null;
+        } catch (err) {
+          console.warn(`Error fetching ${queryName} page:`, err);
+          hasNextPage = false;
         }
-        return { data: { categoryConnection: { edges: [] } } };
-      }),
-      client.queries.ruleConnection().catch((err) => {
-        const isRecordNotFound = err?.message?.includes('Unable to find record');
-        if (!isRecordNotFound) {
-          console.warn("Error fetching rules:", err?.message || err);
+      }
+
+      return allEdges;
+    };
+
+    // Helper function to fetch all top categories with their child categories (same logic as getFullRelativePathFromFilename)
+    const fetchAllTopCategoriesWithChildren = async () => {
+      const allChildCategories: { filename: string }[] = [];
+      let hasNextPage = true;
+      let after: string | null = null;
+
+      while (hasNextPage) {
+        try {
+          const res = await client.queries.topCategoryWithIndexQuery({
+            first: 50,
+            after,
+          });
+
+          const topCategories = res?.data.categoryConnection?.edges || [];
+
+          for (const edge of topCategories) {
+            const node = edge?.node;
+            if (node?.__typename === "CategoryTop_category") {
+              const children = node.index || [];
+              for (const child of children) {
+                if (child?.category?.__typename === "CategoryCategory" && child?.category?._sys?.filename) {
+                  allChildCategories.push({
+                    filename: child.category._sys.filename,
+                  });
+                }
+              }
+            }
+          }
+
+          hasNextPage = res?.data?.categoryConnection?.pageInfo?.hasNextPage;
+          after = res?.data?.categoryConnection?.pageInfo?.endCursor;
+        } catch (err) {
+          console.warn("Error fetching top categories with children:", err);
+          hasNextPage = false;
         }
-        return { data: { ruleConnection: { edges: [] } } };
-      }),
+      }
+
+      return allChildCategories;
+    };
+
+    // Fetch all categories, rules, and child categories with pagination
+    const [allCategoryEdges, allRuleEdges, childCategories] = await Promise.all([
+      fetchAllPages(client.queries.categoryConnection, "category"),
+      fetchAllPages(client.queries.ruleConnection, "rule"),
+      fetchAllTopCategoriesWithChildren(),
     ]);
 
-    if (!categoryConnection?.data && !ruleConnection?.data) {
+    if (allCategoryEdges.length === 0 && allRuleEdges.length === 0 && childCategories.length === 0) {
       console.error("Failed to fetch any valid connections data");
       return [];
     }
 
     const rules: { filename: string }[] = [];
-    if (ruleConnection?.data?.ruleConnection?.edges && Array.isArray(ruleConnection.data.ruleConnection.edges)) {
-      for (const page of ruleConnection.data.ruleConnection.edges) {
-        try {
-          if (page?.node?._sys?.filename === "rule" && page?.node?._sys?.relativePath) {
-            const relativePath = page.node._sys.relativePath;
-            const pathParts = relativePath.split("/");
-            if (pathParts.length > 0 && pathParts[0]) {
-              rules.push({ filename: pathParts[0] });
-            }
+    for (const page of allRuleEdges) {
+      try {
+        if (page?.node?._sys?.filename === "rule" && page?.node?._sys?.relativePath) {
+          const relativePath = page.node._sys.relativePath;
+          const pathParts = relativePath.split("/");
+          if (pathParts.length > 0 && pathParts[0]) {
+            rules.push({ filename: pathParts[0] });
           }
-        } catch (err) {
-          console.warn("Error processing rule page:", err);
         }
+      } catch (err) {
+        console.warn("Error processing rule page:", err);
       }
     }
 
     const categories: { filename: string }[] = [];
-    if (categoryConnection?.data?.categoryConnection?.edges && Array.isArray(categoryConnection.data.categoryConnection.edges)) {
-      for (const page of categoryConnection.data.categoryConnection.edges) {
-        try {
-          if (page?.node?._sys?.filename && page.node._sys.filename !== "index") {
-            categories.push({ filename: page.node._sys.filename });
-          }
-        } catch (err) {
-          console.warn("Error processing category page:", err);
+    for (const page of allCategoryEdges) {
+      try {
+        if (page?.node?._sys?.filename && page.node._sys.filename !== "index") {
+          categories.push({ filename: page.node._sys.filename });
         }
+      } catch (err) {
+        console.warn("Error processing category page:", err);
       }
     }
 
-    const paths = [...rules, ...categories];
+    const fileCategories: { filename: string }[] = Object.keys(
+      (categoryTitleIndex as any).categories || {}
+    ).map((uri) => ({ filename: uri }));
 
-    if (paths.length === 0) {
-      console.warn("No static params generated - no valid rules or categories found");
-    }
+    // Combine all paths: rules, direct categories, child categories, and local file categories
+    const all = [...rules, ...categories, ...childCategories, ...fileCategories];
+
+    const paths = Array.from(new Map(all.map((i) => [i.filename, i])).values());
+
+    console.log(
+      `🚀 ~ generateStaticParams ~ Generated ${paths.length} paths ` +
+        `(rules=${rules.length}, categories=${categories.length}, childCategories=${childCategories.length}, fileCats=${fileCategories.length})`
+    );
 
     return paths;
   } catch (error) {
@@ -155,37 +227,53 @@ export async function generateStaticParams() {
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ filename: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { filename } = await params;
 
   const category = await getCategoryData(filename);
   if (category?.data) {
+    const sp = (await searchParams) ?? {};
+    const includeArchived = String(sp.archived ?? "") === "true";
+    const view = String(sp.view ?? "blurb") as "titleOnly" | "blurb" | "all";
+    const page = Math.max(1, parseInt(String(sp.page ?? "1"), 10) || 1);
+    const perPage = Math.max(1, Math.min(50, parseInt(String(sp.perPage ?? "10"), 10) || 10));
+
     return (
-      <Suspense fallback={null}>
-        <Section>
-          <ClientCategoryPage categoryQueryProps={category}/>
-        </Section>
-      </Suspense>
+      <Section>
+        <ServerCategoryPage
+          category={category.data.category}
+          path={category.variables?.relativePath}
+          includeArchived={includeArchived}
+          view={view}
+          page={page}
+          perPage={perPage}
+        />
+      </Section>
     );
   }
 
   const rule = await getRuleData(filename);
   const ruleUri = rule?.data.rule.uri;
-  const ruleCategories = ruleUri ? ruleToCategoryIndex[ruleUri] : undefined;
+  const ruleCategories = ruleUri ? (ruleToCategoryIndex as Record<string, string[]>)[ruleUri] : undefined;
 
-  const ruleCategoriesMapping = ruleCategories?.map((categoryUri: string) => {
-    return {
-      title: categoryTitleIndex.categories[categoryUri],
-      uri: categoryUri,
-    }
-  })|| [];
+  const ruleCategoriesMapping =
+    ruleCategories?.map((categoryUri: string) => {
+      return {
+        title: (categoryTitleIndex as any).categories[categoryUri],
+        uri: categoryUri,
+      };
+    }) || [];
 
   // Build related rules mapping (uri -> title)
   let relatedRulesMapping: { uri: string; title: string }[] = [];
   try {
-    const relatedUris = (rule?.data?.rule?.related || []).filter((u): u is string => typeof u === 'string' && u.length > 0);
+    const relatedUris = (rule?.data?.rule?.related || []).filter(
+      (u): u is string => typeof u === "string" && u.length > 0
+    );
     if (relatedUris.length) {
       const uris = Array.from(new Set(relatedUris));
       const res = await client.queries.rulesByUriQuery({ uris });
@@ -197,16 +285,23 @@ export default async function Page({
         .sort((a, b) => a.title.localeCompare(b.title));
     }
   } catch (e) {
-    console.error('Error loading related rules:', e);
+    console.error("Error loading related rules:", e);
   }
 
   if (rule?.data) {
+    const sanitizedBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/^\/+/, "");
     return (
-      <Suspense fallback={null}>
-        <Section>
-          <ClientRulePage ruleQueryProps={rule} ruleCategoriesMapping={ruleCategoriesMapping} relatedRulesMapping={relatedRulesMapping} />
-        </Section>
-      </Suspense>
+      <Section>
+        <TinaRuleWrapper
+          tinaQueryProps={rule}
+          serverRulePageProps={{
+            rule: rule.data.rule,
+            ruleCategoriesMapping: ruleCategoriesMapping,
+            relatedRulesMapping: relatedRulesMapping,
+            sanitizedBasePath: sanitizedBasePath,
+          }}
+        />
+      </Section>
     );
   }
 

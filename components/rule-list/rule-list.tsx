@@ -1,5 +1,4 @@
-'use client';
-
+"use client";
 import React, { useState, useMemo, useRef } from 'react';
 import RuleListItem from './rule-list-item';
 import RadioButton from '@/components/radio-button';
@@ -19,12 +18,28 @@ export interface RuleListProps {
   onIncludeArchivedChange?: (include: boolean) => void;
   showPagination?: boolean;
   showFilterControls?: boolean;
+  initialFilter?: RuleListFilter;
+  initialPage?: number;
+  initialItemsPerPage?: number;
 }
 
-const RuleList: React.FC<RuleListProps> = ({ categoryUri, rules, type, noContentMessage, onBookmarkRemoved, includeArchived = false, onIncludeArchivedChange, showPagination = true, showFilterControls = true }) => {
-  const [filter, setFilter] = useState<RuleListFilter>(RuleListFilter.Blurb);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+const RuleList: React.FC<RuleListProps> = ({ 
+  categoryUri, 
+  rules, 
+  type, 
+  noContentMessage, 
+  onBookmarkRemoved, 
+  includeArchived = false, 
+  onIncludeArchivedChange, 
+  showPagination = true, 
+  showFilterControls = true,
+  initialFilter = RuleListFilter.Blurb,
+  initialPage = 1,
+  initialItemsPerPage = 10
+}) => {
+  const [filter, setFilter] = useState<RuleListFilter>(initialFilter);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
   const filterSectionRef = useRef<HTMLDivElement>(null);
 
   const displayItemsPerPage = useMemo(

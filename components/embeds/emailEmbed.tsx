@@ -1,3 +1,4 @@
+'use client'
 import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import React, { useRef } from "react";

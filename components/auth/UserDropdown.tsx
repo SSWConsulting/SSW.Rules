@@ -90,7 +90,9 @@ export default function UserDropdown() {
                     dark:border-b-gray-900'
       />
       <div className='flex items-center gap-3 p-4'>
-        <img src={u.picture} alt={displayName} className='h-10 w-10 rounded-full object-cover' referrerPolicy='no-referrer' />
+        {u?.picture?.trim() && (
+          <img src={u.picture} alt={displayName} className='h-10 w-10 rounded-full object-cover' referrerPolicy='no-referrer' />
+        )}
         <div className='min-w-0'>
           <p className='truncate text-sm font-semibold'>{displayName}</p>
           {u.email && <p className='truncate text-xs text-gray-500 dark:text-gray-400'>{u.email}</p>}
@@ -137,7 +139,9 @@ export default function UserDropdown() {
           aria-haspopup='menu'
           aria-expanded={open}
         >
-          <img src={u.picture} alt={displayName} className='h-10 w-10 rounded-full object-cover cursor-pointer' referrerPolicy='no-referrer' />
+          {u?.picture?.trim() && (
+            <img src={u.picture} alt={displayName} className='h-10 w-10 rounded-full object-cover cursor-pointer' referrerPolicy='no-referrer' />
+          )}
         </button>
       </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import {  getAccessToken } from '@auth0/nextjs-auth0';
+import { useState, useEffect, useMemo } from 'react';
+import { getAccessToken } from '@auth0/nextjs-auth0';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { BookmarkService } from '@/lib/bookmarkService';
 import { RiBookmarkLine, RiBookmarkFill } from 'react-icons/ri';
@@ -13,22 +13,62 @@ import { BookmarkData } from '@/types';
 
 interface BookmarkProps {
   ruleGuid: string;
-  isBookmarked: boolean;
-  onBookmarkToggle: (newStatus: boolean) => void;
+  isBookmarked?: boolean;
+  defaultIsBookmarked?: boolean;
+  onBookmarkToggle?: (newStatus: boolean) => void;
   className?: string;
 }
 
-export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, className = '' }: BookmarkProps) {
+export default function Bookmark({
+  ruleGuid,
+  isBookmarked,
+  defaultIsBookmarked = false,
+  onBookmarkToggle,
+  className = '',
+}: BookmarkProps) {
+  const controlled = useMemo(() => typeof isBookmarked === 'boolean', [isBookmarked]);
+
   const { user } = useAuth();
   const router = useRouter();
-  const [bookmarked, setBookmarked] = useState<boolean>(isBookmarked);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const pathname = usePathname() ?? '/';
   const query = useSearchParams()?.toString();
 
+  const [bookmarked, setBookmarked] = useState<boolean>(
+    controlled ? (isBookmarked as boolean) : defaultIsBookmarked
+  );
+  const [initialLoading, setInitialLoading] = useState<boolean>(!controlled); // 只有非受控才需要首拉
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   useEffect(() => {
-    setBookmarked(isBookmarked);
-  }, [isBookmarked]);
+    if (controlled) setBookmarked(isBookmarked as boolean);
+  }, [controlled, isBookmarked]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (controlled) return;
+      try {
+        if (!user?.sub || !ruleGuid) {
+          setInitialLoading(false);
+          return;
+        }
+        const accessToken = await getAccessToken();
+        if (!accessToken) {
+          setInitialLoading(false);
+          return;
+        }
+        const result = await BookmarkService.getBookmarkStatus(ruleGuid, user.sub, accessToken);
+        if (!cancelled && !result.error) {
+          setBookmarked(Boolean(result.bookmarkStatus));
+        }
+      } catch (e) {
+        console.error('Failed to fetch bookmark status', e);
+      } finally {
+        if (!cancelled) setInitialLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [controlled, ruleGuid, user?.sub]);
 
   const handleBookmarkToggle = async () => {
     const userId = user?.sub;
@@ -43,13 +83,10 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
     }
 
     setIsLoading(true);
-
     try {
       const accessToken = await getAccessToken();
-
       if (!accessToken) {
         console.error('No access token available');
-        setIsLoading(false);
         return;
       }
 
@@ -58,16 +95,16 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
       if (bookmarked) {
         const result = await BookmarkService.removeBookmark(data, accessToken);
         if (!result.error) {
-          setBookmarked(false);
-          onBookmarkToggle(false);
+          if (!controlled) setBookmarked(false);
+          onBookmarkToggle?.(false);
         } else {
           console.error('Failed to remove bookmark:', result.message);
         }
       } else {
         const result = await BookmarkService.addBookmark(data, accessToken);
         if (!result.error) {
-          setBookmarked(true);
-          onBookmarkToggle(true);
+          if (!controlled) setBookmarked(true);
+          onBookmarkToggle?.(true);
         } else {
           console.error('Failed to add bookmark:', result.message);
         }
@@ -79,15 +116,18 @@ export default function Bookmark({ ruleGuid, isBookmarked, onBookmarkToggle, cla
     }
   };
 
+  const disabled = isLoading || initialLoading;
+
   return (
     <Tooltip text={bookmarked ? 'Remove bookmark' : 'Add bookmark'} opaque={true}>
       <button
         onClick={handleBookmarkToggle}
         className={`rule-icon ${className}`}
         title={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
-        disabled={isLoading}
+        disabled={disabled}
+        aria-busy={disabled}
       >
-        {isLoading ? (
+        {disabled ? (
           <Spinner size="sm" inline />
         ) : bookmarked ? (
           <RiBookmarkFill size={ICON_SIZE} className="text-ssw-red" />

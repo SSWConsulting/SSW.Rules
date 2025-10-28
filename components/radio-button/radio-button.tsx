@@ -37,7 +37,7 @@ const RadioButton: React.FC<RadioButtonProps> = ({ id, value, selectedOption, ha
     } else if (position === 'last') {
       return 'border border-l-0 rounded-r-md rounded-l-none';
     } else if (position === 'middle') {
-      return 'border-y border-l-0 border-r-0 rounded-none';
+      return 'border rounded-none';
     }
 
     return 'border rounded';

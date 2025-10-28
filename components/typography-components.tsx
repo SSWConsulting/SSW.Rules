@@ -75,7 +75,11 @@ export const getTypographyComponents = (enableAnchors = false) => ({
     if (!props) {
       return <></>;
     }
-    return <Prism lang={props.lang} value={props.value} />;
+    return (
+      <div className="[&_.prism-code]:p-4">
+        <Prism lang={props.lang} value={props.value} />
+      </div>
+    );
   },
   h2: createHeading('h2', enableAnchors),
   h3: createHeading('h3', enableAnchors),

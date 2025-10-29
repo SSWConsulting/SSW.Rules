@@ -81,8 +81,8 @@ const nextConfig: NextConfig = {
     // Without it, the static generation of the app will take a 52 minutes.
     // With it, the static generation of the app will take a 11 minutes.
     staticGenerationRetryCount: 2,
-    staticGenerationMaxConcurrency: 200,
-    staticGenerationMinPagesPerWorker: 100,
+    staticGenerationMaxConcurrency: 50,
+    staticGenerationMinPagesPerWorker: 25,
   },
   async rewrites() {
     return [

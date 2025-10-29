@@ -113,7 +113,7 @@ const Rule: Collection = {
       name: "redirects",
       label: "Redirects",
       description: 
-        "The URIs of rules which should redirect to this rule.",
+        "Other URIs which will redirect to this rule.",
       list: true,
       searchable: false,
     },

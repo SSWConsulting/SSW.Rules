@@ -13,6 +13,7 @@ import { ICON_SIZE } from "@/constants";
 import Acknowledgements from "./Acknowledgements";
 import HelpCard from "./HelpCard";
 import Bookmark from "./Bookmark";
+import ChatGPTSummaryButton from "./OpenInChatGptButton";
 
 export interface ServerRulePageProps {
   rule: any;
@@ -104,6 +105,7 @@ export default function ServerRulePage({
                   >
                     <RiGithubLine size={ICON_SIZE} className="rule-icon" />
                   </IconLink>
+                  <ChatGPTSummaryButton />
                 </div>
               </div>
             </div>

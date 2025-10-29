@@ -27,12 +27,12 @@ type VariantConfig = {
 
 const variantConfig: Record<AsideVariant, VariantConfig> = {
     greybox: {
-      containerClass: "bg-gray-100 text-gray-800",
+      containerClass: "bg-gray-100",
     },
     info: {
-      containerClass: "bg-white border text-gray-800",
+      containerClass: "bg-white border",
       icon: (
-        <div className="w-8 h-8 mr-4 flex items-center justify-center text-[var(--ssw-red)]">
+        <div className="w-8 h-8 mr-4 flex items-start justify-center text-[var(--ssw-red)]">
           <Info className="w-8 h-8" />
         </div>
       ),
@@ -42,7 +42,7 @@ const variantConfig: Record<AsideVariant, VariantConfig> = {
       textClass: "text-[var(--ssw-red)]",
     },
     china: {
-      containerClass: "bg-white border text-gray-800",
+      containerClass: "bg-white border",
       icon: (
         <div
           className="w-7 h-6 mt-1 mr-4 flex-shrink-0 rounded"
@@ -56,9 +56,9 @@ const variantConfig: Record<AsideVariant, VariantConfig> = {
       ),
     },
     codeauditor: {
-      containerClass: "bg-white border text-gray-800",
+      containerClass: "bg-white border",
       icon: (
-        <div className="w-8 h-8 mr-4 flex items-center justify-center text-[var(--ssw-red)]">
+        <div className="w-8 h-8 mr-4 flex items-start justify-center text-[var(--ssw-red)]">
           <CodeXml className="w-8 h-8" />
         </div>
       ),
@@ -67,17 +67,17 @@ const variantConfig: Record<AsideVariant, VariantConfig> = {
       containerClass: "bg-yellow-200 text-yellow-900",
     },
     warning: {
-      containerClass: "bg-white border text-gray-800",
+      containerClass: "bg-white border",
       icon: (
-        <div className="w-8 h-8 mr-4 flex items-center justify-center text-[var(--ssw-red)]">
+        <div className="w-8 h-8 mr-4 flex items-start justify-center text-[var(--ssw-red)]">
           <TriangleAlert className="w-8 h-8" />
         </div>
       ),
     },
     tips: {
-      containerClass: "bg-white border text-gray-800",
+      containerClass: "bg-white border",
       icon: (
-        <div className="w-8 h-8 mr-4 flex items-center justify-center text-[var(--ssw-red)]">
+        <div className="w-8 h-8 mr-4 flex items-start justify-center text-[var(--ssw-red)]">
           <FaLightbulb className="w-8 h-8" />
         </div>
       ),
@@ -91,9 +91,9 @@ export function AsideEmbed({ data }: { data: any }) {
     return (
       <ComponentWithFigure data={data}>
         <div className={`p-4 rounded-sm my-4 ${config.containerClass}`}>
-            <div className="flex items-center">
+            <div className="flex items-start">
             {config.icon}
-            <div className={`prose prose-neutral prose-sm max-w-none text-base ${config.textClass ?? ""}`}>
+            <div className={`${config.textClass ?? ""}`}>
                 <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
             </div>
             </div>
@@ -101,7 +101,6 @@ export function AsideEmbed({ data }: { data: any }) {
       </ComponentWithFigure>
     );
 }
-  
 
 export const asideEmbedTemplate: Template = withFigureEmbedTemplateFields({
   name: "asideEmbed",

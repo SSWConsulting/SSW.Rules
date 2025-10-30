@@ -34,3 +34,4 @@ execSync(`python "${orphanedCheckScript}"`, { stdio: 'inherit', cwd: scriptsPath
 copyAndMoveJsonFile("category-uri-title-map.json", scriptsPath)
 copyAndMoveJsonFile("rule-to-categories.json", scriptsPath)
 copyAndMoveJsonFile("orphaned_rules.json", scriptsPath)
+copyAndMoveJsonFile("redirects.json", scriptsPath)

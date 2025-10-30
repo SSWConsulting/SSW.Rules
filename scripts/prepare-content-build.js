@@ -91,5 +91,6 @@ const destDir = process.cwd();
 copyAndMoveJsonFile("category-uri-title-map.json", scriptsPath, destDir);
 copyAndMoveJsonFile("rule-to-categories.json", scriptsPath, destDir);
 copyAndMoveJsonFile("orphaned_rules.json", scriptsPath, destDir);
+copyAndMoveJsonFile("redirects.json", scriptsPath, destDir);
 
 console.log('Content preparation completed successfully!');

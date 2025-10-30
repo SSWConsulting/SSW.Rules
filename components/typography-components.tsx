@@ -2,6 +2,7 @@ import { Prism } from "tinacms/dist/rich-text/prism";
 import React from "react";
 import { Link as LinkIcon } from "lucide-react";
 import { toSlug } from "@/lib/utils";
+import Link from "next/link";
 
 // Helper function to extract text content from TinaCMS props structure
 const getTextContent = (props: any): string => {
@@ -53,9 +54,28 @@ export const getTypographyComponents = (enableAnchors = false) => ({
   p: (props: any) => (
     <p className="mb-4" {...props} />
   ),
-  a: (props: any) => (
-    <a className="underline hover:text-ssw-red" href={props.url} {...props} />
-  ),
+  a: (props: any) => {
+    const href = props?.url || props?.href || "";
+    const isInternal =
+      typeof href === "string" &&
+      href.startsWith("/") &&
+      !href.startsWith("//") &&
+      !href.startsWith("/_next");
+
+    if (isInternal) {
+      return (
+        <Link href={href} className="underline hover:text-ssw-red">
+          {props.children}
+        </Link>
+      );
+    }
+
+    return (
+      <a className="underline hover:text-ssw-red" href={href} {...props}>
+        {props.children}
+      </a>
+    );
+  },
   li: (props) => (
     <li {...props} />
   ),

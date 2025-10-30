@@ -1,4 +1,6 @@
 import type { NextConfig } from 'next'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 
 const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
@@ -93,6 +95,35 @@ const nextConfig: NextConfig = {
       { source: '/_next/:path*', destination: '/_next/:path*' },
       { source: '/.well-known/:path*', destination: '/.well-known/:path*' },
     ];
+  },
+  async redirects() {
+    // Load redirect mapping from JSON file generated during content preparation
+    // Contains redirects for both rules and categories
+    const redirectMappingPath = join(process.cwd(), 'redirects.json')
+    let redirectMapping: Record<string, string> = {}
+
+    try {
+      const fileContent = readFileSync(redirectMappingPath, 'utf-8')
+      redirectMapping = JSON.parse(fileContent)
+    } catch (error) {
+      // If file doesn't exist yet (e.g., first build), return empty array
+      console.warn('⚠️  redirects.json not found. Skipping redirects generation.')
+      return []
+    }
+
+    // Escape special characters that have meaning in path-to-regexp
+    // These characters need to be escaped: ( ) + * ? [ ] { } |
+    const escapePathSegment = (path: string): string => {
+      return path.replace(/[()+*?[\]{}|]/g, '\\$&')
+    }
+
+    // Transform the redirect mapping object into Next.js redirect format
+    // redirectMapping is { "old-uri": "new-uri", ... }
+    return Object.entries(redirectMapping).map(([source, destination]) => ({
+      source: `${basePath}/${escapePathSegment(source)}`,
+      destination: `${basePath}/${destination}`,
+      permanent: true, // 308 permanent redirect
+    }));
   },
 };
 

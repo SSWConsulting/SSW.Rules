@@ -28,8 +28,10 @@ const contentAbsPath = resolve(__dirname, relPath);
 const scriptsPath = join(contentAbsPath, 'scripts/tina-migration');
 const buildMapScript = join(scriptsPath, 'build-rule-category-map.py');
 const orphanedCheckScript = join(scriptsPath, 'orphaned_rules_check.py');
+const buildRedirectMapScript = join(scriptsPath, 'build-redirect-map.py');
 execSync(`python "${buildMapScript}"`, { stdio: 'inherit', cwd: scriptsPath });
 execSync(`python "${orphanedCheckScript}"`, { stdio: 'inherit', cwd: scriptsPath });
+execSync(`python "${buildRedirectMapScript}"`, { stdio: 'inherit', cwd: scriptsPath });
 
 copyAndMoveJsonFile("category-uri-title-map.json", scriptsPath)
 copyAndMoveJsonFile("rule-to-categories.json", scriptsPath)

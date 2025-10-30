@@ -3,9 +3,9 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { IconLink } from "@/components/ui";
+import RuleListWrapper from "@/components/rule-list/rule-list-wrapper";
 import { ICON_SIZE } from "@/constants";
 import { RiPencilLine, RiGithubLine } from "react-icons/ri";
-import RuleListWrapper from "./rule-list/rule-list-wrapper";
 
 interface ServerCategoryPageProps {
   category: any;

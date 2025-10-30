@@ -1,8 +1,8 @@
 "use client";
 
-import { ServerRulePageProps } from "@/components/ServerRulePage";
+import { ServerRulePageProps } from "./ServerRulePage";
 import { useTina } from "tinacms/dist/react";
-import ServerRulePage from "@/components/ServerRulePage";
+import ServerRulePage from "./ServerRulePage";
 
 export type TinaRuleProps = {  
   serverRulePageProps: ServerRulePageProps;

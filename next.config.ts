@@ -1,6 +1,4 @@
 import type { NextConfig } from 'next'
-import { readFileSync } from 'fs'
-import { join } from 'path'
 
 const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
@@ -97,6 +95,10 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
+    // Import Node.js modules inside the function to avoid issues with TinaCMS build
+    const { readFileSync } = await import('fs')
+    const { join } = await import('path')
+
     // Load redirect mapping from JSON file generated during content preparation
     // Contains redirects for both rules and categories
     const redirectMappingPath = join(process.cwd(), 'redirects.json')

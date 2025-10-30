@@ -1,33 +1,34 @@
 import { NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
 
-// In-memory cache for aggregated rules (per server instance)
-let cachedItems: any[] | null = null;
-let cacheExpiresAt = 0;
-const CACHE_TTL_MS = 60000; // 1 minute
-
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const now = Date.now();
-    if (cachedItems && cacheExpiresAt > now) {
-      return new NextResponse(JSON.stringify(cachedItems), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "s-maxage=900, stale-while-revalidate=60",
-          "X-Cache": "HIT",
-        },
-      });
+    const { searchParams } = new URL(req.url);
+    const pageParam = searchParams.get("page");
+    const limitParam = searchParams.get("limit");
+    const searchQuery = searchParams.get("search")?.trim().toLowerCase();
+
+    // If no pagination params, return empty response (require search)
+    if (!pageParam || !limitParam) {
+      return NextResponse.json(
+        { rules: [], hasMore: false, total: 0 },
+        { status: 200 }
+      );
     }
-    const PAGE_SIZE = 4000; // server-side page size (Tina may cap to 50)
+
+    const page = parseInt(pageParam, 10);
+    const limit = parseInt(limitParam, 10);
+
+    // Fetch rules from Tina with a reasonable page size
+    const TINA_PAGE_SIZE = 100;
     let after: string | undefined = undefined;
     let hasNextPage = true;
     const allEdges: any[] = [];
 
-    // Loop over all pages until exhausted
-    for (let i = 0; hasNextPage; i++) {
+    // Fetch multiple pages if needed to gather enough data
+    while (hasNextPage && allEdges.length < page * limit + limit) {
       const res: any = await (client as any).queries.paginatedRulesQuery({
-        first: PAGE_SIZE,
+        first: TINA_PAGE_SIZE,
         after,
       });
       const data = (res?.data ?? res) as any;
@@ -44,10 +45,12 @@ export async function GET() {
       after = nextCursor;
     }
 
-    const items = allEdges
+    // Process all rules
+    let items = allEdges
       .map((e: any) => e?.node)
       .filter(Boolean)
       .map((node: any) => ({
+        id: node?.id || node?._sys?.relativePath || "",
         title: node?.title || "",
         uri: node?.uri || "",
         created: node?.created || "",
@@ -61,20 +64,54 @@ export async function GET() {
         return bDate - aDate; // Descending order (most recent first)
       });
 
-    // Update cache
-    cachedItems = items;
-    cacheExpiresAt = Date.now() + CACHE_TTL_MS;
+    // Apply search filter if provided
+    if (searchQuery && searchQuery.length >= 2) {
+      items = items.filter((item) => {
+        const uri = item.uri.toLowerCase();
+        const title = item.title.toLowerCase();
+        return uri.includes(searchQuery) || title.includes(searchQuery);
+      });
 
-    return new NextResponse(JSON.stringify(items), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "s-maxage=900, stale-while-revalidate=60",
-        "X-Cache": "MISS",
+      // Prioritize matches that start with the query
+      const startsWithMatches = items.filter(
+        (item) =>
+          item.uri.toLowerCase().startsWith(searchQuery) ||
+          item.title.toLowerCase().startsWith(searchQuery)
+      );
+      const startsWithIds = new Set(startsWithMatches.map((item) => item.id));
+      const includesMatches = items.filter(
+        (item) => !startsWithIds.has(item.id)
+      );
+      items = [...startsWithMatches, ...includesMatches];
+    }
+
+    const totalCount = items.length;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedRules = items.slice(startIndex, endIndex);
+    const hasMore = endIndex < totalCount;
+
+    return NextResponse.json(
+      {
+        rules: paginatedRules,
+        hasMore,
+        total: totalCount,
+        page,
+        limit,
       },
-    });
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+        },
+      }
+    );
   } catch (err) {
     console.error("[/api/rules] error:", err);
-    return NextResponse.json({ message: "Failed to fetch rules" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to fetch rules", rules: [], hasMore: false, total: 0 },
+      { status: 500 }
+    );
   }
 }

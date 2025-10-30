@@ -51,6 +51,7 @@ try {
 const scriptsPath = join(tempDir, 'scripts/tina-migration');
 const buildMapScript = join(scriptsPath, 'build-rule-category-map.py');
 const orphanedCheckScript = join(scriptsPath, 'orphaned_rules_check.py');
+const buildRedirectMapScript = join(scriptsPath, 'build-redirect-map.py');
 
 // Verify the scripts directory and Python scripts exist
 if (!fs.existsSync(scriptsPath)) {
@@ -68,12 +69,18 @@ if (!fs.existsSync(orphanedCheckScript)) {
   process.exit(1);
 }
 
+if (!fs.existsSync(buildRedirectMapScript)) {
+  console.error(`Python script not found: ${buildRedirectMapScript}`);
+  process.exit(1);
+}
+
 console.log(`Running Python script: ${buildMapScript}`);
 
 // Run the Python scripts
 try {
   execSync(`python3 "${buildMapScript}"`, { stdio: 'inherit', cwd: scriptsPath });
   execSync(`python3 "${orphanedCheckScript}"`, { stdio: 'inherit', cwd: scriptsPath });
+  execSync(`python3 "${buildRedirectMapScript}"`, { stdio: 'inherit', cwd: scriptsPath });
 } catch (error) {
   console.error('Python script execution failed:', error.message);
   process.exit(1);
@@ -84,5 +91,6 @@ const destDir = process.cwd();
 copyAndMoveJsonFile("category-uri-title-map.json", scriptsPath, destDir);
 copyAndMoveJsonFile("rule-to-categories.json", scriptsPath, destDir);
 copyAndMoveJsonFile("orphaned_rules.json", scriptsPath, destDir);
+copyAndMoveJsonFile("redirects.json", scriptsPath, destDir);
 
 console.log('Content preparation completed successfully!');

@@ -216,6 +216,8 @@ query paginatedRulesQuery(
         id
         title
         uri
+        created
+        lastUpdated
         _sys {
           relativePath
         }

@@ -7,12 +7,16 @@ import categoryTitleIndex from "@/category-uri-title-map.json";
 import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
 
+// We have a Tina webhook revalidating each page individually on change
+// Leaving this as a fallback in case the above goes wrong
 export const revalidate = 3600;
+
+// TODO: Remove me once we are sure all pages are statically generated and no more 404's
 export const dynamicParams = false;
 
+// TODO: Remove me once we are sure all pages are statically generated and no more 404's
 // Add this to force static generation - ensure that the getRuleData and getCategoryData 
 // functions are called at build time and have them cached.
-
 export const dynamic = 'force-static';
 
 const getFullRelativePathFromFilename = async (filename: string): Promise<string | null> => {

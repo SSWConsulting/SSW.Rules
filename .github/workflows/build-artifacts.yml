@@ -26,6 +26,8 @@ on:
                 required: true
             TINA_SEARCH_TOKEN:
                 required: false
+            TINA_WEBHOOK_SECRET:
+                required: true
             NEXT_PUBLIC_TINA_CLIENT_ID:
                 required: true
             TOKEN:
@@ -307,6 +309,7 @@ jobs:
                         COMMIT_HASH=$COMMIT_HASH \
                         TINA_TOKEN=$TINA_TOKEN \
                         TINA_SEARCH_TOKEN=$TINA_SEARCH_TOKEN \
+                        TINA_WEBHOOK_SECRET=$TINA_WEBHOOK_SECRET \
                         NEXT_PUBLIC_TINA_CLIENT_ID=$NEXT_PUBLIC_TINA_CLIENT_ID \
                         NEXT_PUBLIC_TINA_BRANCH=$NEXT_PUBLIC_TINA_BRANCH \
                         NEXT_PUBLIC_ALGOLIA_APP_ID=$NEXT_PUBLIC_ALGOLIA_APP_ID \
@@ -378,6 +381,7 @@ jobs:
                         COMMIT_HASH=${{ env.COMMIT_HASH }}
                         TINA_TOKEN=${{ secrets.TINA_TOKEN }}
                         TINA_SEARCH_TOKEN=${{ secrets.TINA_SEARCH_TOKEN }}
+                        TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}
                         NEXT_PUBLIC_TINA_CLIENT_ID=${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
                         NEXT_PUBLIC_ALGOLIA_APP_ID=${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
                         NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}

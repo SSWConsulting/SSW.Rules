@@ -7,7 +7,7 @@ const path = require('path');
 const axios = require('axios');
 const { getViewDataFromCRM } = require('./src/services/crmApi');
 
-if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+if (process.env.APPLICATIONINSIGHTS_DISABLED !== 'true' && process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   // Log build time stats to appInsights
   appInsights
     .setup()

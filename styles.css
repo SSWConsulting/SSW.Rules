@@ -226,7 +226,7 @@
   h4,
   h5,
   h6 {
-    @apply mt-8 text-gray-900 leading-[1.2] mb-4 font-semibold;
+    @apply mt-2 mb-4 text-gray-900 leading-[1.2] font-semibold;
   }
 
   h2 {

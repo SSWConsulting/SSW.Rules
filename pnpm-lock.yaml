@@ -204,8 +204,8 @@ importers:
 
 packages:
 
-  '@ai-sdk/gateway@2.0.3':
-    resolution: {integrity: sha512-/vCoMKtod+A74/BbkWsaAflWKz1ovhX5lmJpIaXQXtd6gyexZncjotBTbFM8rVJT9LKJ/Kx7iVVo3vh+KT+IJg==}
+  '@ai-sdk/gateway@2.0.4':
+    resolution: {integrity: sha512-YakzaijPayJI244AOAXX+29WY+6i40vbvyMggfBB5D75ui8GyJPHvD/1TCSdD8lUyD4/QJvi9xSQ26QnPjmhag==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3123,8 +3123,8 @@ packages:
   add@2.0.6:
     resolution: {integrity: sha512-j5QzrmsokwWWp6kUcJQySpbG+xfOBqqKnup3OIk1pz+kB/80SLorZ9V8zHFLO92Lcd+hbvq8bT+zOGoPkmBV0Q==}
 
-  ai@5.0.82:
-    resolution: {integrity: sha512-wmZZfsU40qB77umrcj3YzMSk6cUP5gxLXZDPfiSQLBLegTVXPUdSJC603tR7JB5JkhBDzN5VLaliuRKQGKpUXg==}
+  ai@5.0.83:
+    resolution: {integrity: sha512-tMc1wqc9khzETBN0X4/MHw9RbeP5uKFdoG5sUIUJ3p7lSgfDU6yZMwT6jrnA3Nk2AvxM0T43P1h2LfPlBSwGKA==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3349,8 +3349,8 @@ packages:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
 
-  caniuse-lite@1.0.30001751:
-    resolution: {integrity: sha512-A0QJhug0Ly64Ii3eIqHu5X51ebln3k4yTUkY1j8drqpWHVreg/VLijN48cZ1bYPiqOQuqpkIKnzr/Ul8V+p6Cw==}
+  caniuse-lite@1.0.30001752:
+    resolution: {integrity: sha512-vKUk7beoukxE47P5gcVNKkDRzXdVofotshHwfR9vmpeFKxmI5PBpgOMC18LUJUA/DvJ70Y7RveasIBraqsyO/g==}
 
   capital-case@1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
@@ -3785,8 +3785,8 @@ packages:
     resolution: {integrity: sha512-39BOQLs9ZjKh0/patS9nrT8wc3ioX3/eA/zgbKNopnF2wCqJEoxywwwElATYvRsXdnOxA/OQeQoFZ3rFjVajhg==}
     engines: {node: '>=4.0'}
 
-  dayjs@1.11.18:
-    resolution: {integrity: sha512-zFBQ7WFRvVRhKcWoUh+ZA1g2HVgUbsZm9sbddh8EC5iv93sui8DVVz1Npvz+r6meo9VKfa8NyLWBsQK1VvIKPA==}
+  dayjs@1.11.19:
+    resolution: {integrity: sha512-t5EcLVS6QPBNqM2z8fakk/NKel+Xzshgt8FFKAn+qwlD1pzZWxh0nVCrvFK7ZDb6XucZeF9z8C7CBWTRIVApAw==}
 
   debounce-promise@3.1.2:
     resolution: {integrity: sha512-rZHcgBkbYavBeD9ej6sP56XfG53d51CD4dnaw989YX/nZ/ZJfgRx/9ePKmTNiUiyQvh4mtrMoS3OAWW+yoYtpg==}
@@ -7025,7 +7025,7 @@ packages:
 
 snapshots:
 
-  '@ai-sdk/gateway@2.0.3(zod@4.1.12)':
+  '@ai-sdk/gateway@2.0.4(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@ai-sdk/provider-utils': 3.0.14(zod@4.1.12)
@@ -10438,9 +10438,9 @@ snapshots:
 
   add@2.0.6: {}
 
-  ai@5.0.82(zod@4.1.12):
+  ai@5.0.83(zod@4.1.12):
     dependencies:
-      '@ai-sdk/gateway': 2.0.3(zod@4.1.12)
+      '@ai-sdk/gateway': 2.0.4(zod@4.1.12)
       '@ai-sdk/provider': 2.0.0
       '@ai-sdk/provider-utils': 3.0.14(zod@4.1.12)
       '@opentelemetry/api': 1.9.0
@@ -10532,7 +10532,7 @@ snapshots:
   autoprefixer@10.4.21(postcss@8.5.6):
     dependencies:
       browserslist: 4.27.0
-      caniuse-lite: 1.0.30001751
+      caniuse-lite: 1.0.30001752
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.1.1
@@ -10635,7 +10635,7 @@ snapshots:
   browserslist@4.27.0:
     dependencies:
       baseline-browser-mapping: 2.8.21
-      caniuse-lite: 1.0.30001751
+      caniuse-lite: 1.0.30001752
       electron-to-chromium: 1.5.244
       node-releases: 2.0.27
       update-browserslist-db: 1.1.4(browserslist@4.27.0)
@@ -10688,7 +10688,7 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-  caniuse-lite@1.0.30001751: {}
+  caniuse-lite@1.0.30001752: {}
 
   capital-case@1.0.4:
     dependencies:
@@ -11175,7 +11175,7 @@ snapshots:
 
   date-format@4.0.14: {}
 
-  dayjs@1.11.18: {}
+  dayjs@1.11.19: {}
 
   debounce-promise@3.1.2: {}
 
@@ -11845,7 +11845,7 @@ snapshots:
   instantsearch-ui-components@0.12.0(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.28.4
-      ai: 5.0.82(zod@4.1.12)
+      ai: 5.0.83(zod@4.1.12)
       markdown-to-jsx: 7.7.17(react@18.3.1)
       zod: 4.1.12
       zod-to-json-schema: 3.24.6(zod@4.1.12)
@@ -11876,7 +11876,7 @@ snapshots:
       '@types/google.maps': 3.58.1
       '@types/hogan.js': 3.0.5
       '@types/qs': 6.14.0
-      ai: 5.0.82(zod@4.1.12)
+      ai: 5.0.83(zod@4.1.12)
       algoliasearch: 5.42.0
       algoliasearch-helper: 3.26.0(algoliasearch@5.42.0)
       hogan.js: 3.0.2
@@ -12546,7 +12546,7 @@ snapshots:
       d3: 7.9.0
       d3-sankey: 0.12.3
       dagre-d3-es: 7.0.13
-      dayjs: 1.11.18
+      dayjs: 1.11.19
       dompurify: 3.3.0
       katex: 0.16.25
       khroma: 2.1.0
@@ -12984,7 +12984,7 @@ snapshots:
       '@swc/counter': 0.1.3
       '@swc/helpers': 0.5.15
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001751
+      caniuse-lite: 1.0.30001752
       postcss: 8.4.31
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)

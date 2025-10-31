@@ -4,7 +4,7 @@ export default function useAppInsights() {
   const ai =
     typeof window !== 'undefined' &&
     process.env.APPLICATIONINSIGHTS_CONNECTION_STRING &&
-    process.env.APPLICATIONINSIGHTS_DISABLED !== 'true' &&
+    process.env.GATSBY_APPLICATIONINSIGHTS_DISABLED !== 'true' &&
     new ApplicationInsights({
       config: {
         connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,

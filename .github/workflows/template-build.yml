@@ -173,6 +173,7 @@ jobs:
         run: yarn build
         env:
           GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: true
+          APPLICATIONINSIGHTS_DISABLED: 'true'
         timeout-minutes: 30
 
       - name: Archive artifacts

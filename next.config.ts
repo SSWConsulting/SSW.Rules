@@ -121,9 +121,11 @@ const nextConfig: NextConfig = {
 
     // Transform the redirect mapping object into Next.js redirect format
     // redirectMapping is { "old-uri": "new-uri", ... }
+    // Note: Next.js automatically prepends basePath to source and destination,
+    // so we don't need to include it here
     return Object.entries(redirectMapping).map(([source, destination]) => ({
-      source: `${basePath}/${escapePathSegment(source)}`,
-      destination: `${basePath}/${destination}`,
+      source: `/${escapePathSegment(source)}`,
+      destination: `/${destination}`,
       permanent: true, // 308 permanent redirect
     }));
   },

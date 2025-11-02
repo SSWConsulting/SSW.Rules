@@ -53,7 +53,7 @@ export default function ServerRulePage({
 
       <div className="layout-two-columns">
         <Card dropShadow className="layout-main-section p-6">
-          <div className="flex border-b-2 pb-3">
+          <div className="flex border-b-2">
             {rule?.thumbnail && (
               <div className="w-[175px] h-[175px] relative mr-4">
                 <Image
@@ -69,7 +69,7 @@ export default function ServerRulePage({
                 {rule?.title}
               </h1>
 
-              <div className="flex justify-between">
+              <div className="flex justify-between my-2 flex-col md:flex-row">
                 <p className="mt-4 text-sm font-light">
                   Updated by <b>{rule?.lastUpdatedBy || "Unknown"}</b> {relativeTime}.{" "}
                   <a
@@ -81,7 +81,6 @@ export default function ServerRulePage({
                     See history <RiHistoryLine />
                   </a>
                 </p>
-
                 <RuleActionButtons rule={rule} 
                   sanitizedBasePath={sanitizedBasePath} />
               </div>

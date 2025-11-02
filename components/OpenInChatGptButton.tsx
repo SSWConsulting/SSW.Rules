@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { RiOpenaiFill } from 'react-icons/ri';
-import { IconLink } from './ui';
+import Link from 'next/link';
 
 const ChatGPTSummaryButton = () => {
   const [uri, setUri] = useState<string>('');
@@ -17,12 +17,11 @@ const ChatGPTSummaryButton = () => {
   }, []);
 
   return (
-    <IconLink href={uri || ''}
-      title='Summarise in ChatGPT'
-      tooltipOpaque={true}
-      target='_blank'>
+    <Link href={uri} target='_blank'
+      className='flex items-center px-2 py-1 border rounded-md hover:bg-ssw-red hover:text-white'>
       <RiOpenaiFill />
-    </IconLink>
+      <span className='ml-1 text-sm font-semibold'>Open in ChatGPT</span>
+    </Link>
   );
 };
 

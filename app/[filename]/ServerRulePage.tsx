@@ -1,20 +1,16 @@
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
-import { ICON_SIZE } from "@/constants";
 import { formatDateLong, timeAgo } from "@/lib/dateUtils";
-import { IconLink } from "@/components/ui";
 import { Card } from "@/components/ui/card";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import Discussion from "@/components/Discussion";
-import { RiGithubLine, RiHistoryLine, RiPencilLine } from "react-icons/ri";
+import { RiHistoryLine } from "react-icons/ri";
 import Acknowledgements from "@/components/Acknowledgements";
 import HelpCard from "@/components/HelpCard";
-import Bookmark from "@/components/Bookmark";
-import ChatGPTSummaryButton from "@/components/OpenInChatGptButton";
 import RelatedRules from "@/components/RelatedRules";
+import RuleActionButtons from "@/components/RuleActionButtons";
 
 export interface ServerRulePageProps {
   rule: any;
@@ -45,7 +41,6 @@ export default function ServerRulePage({
   const created = rule?.created ? formatDateLong(rule.created) : "Unknown";
   const updated = rule?.lastUpdated ? formatDateLong(rule.lastUpdated) : "Unknown";
   const historyTooltip = `Created ${created}\nLast Updated ${updated}`;
-  const relatedRules = relatedRulesMapping || [];
 
   const primaryCategory = ruleCategoriesMapping?.[0];
   const breadcrumbCategories = primaryCategory
@@ -87,27 +82,8 @@ export default function ServerRulePage({
                   </a>
                 </p>
 
-                <div className="flex items-center gap-4 text-2xl">
-                  <Suspense fallback={<span className="opacity-50">...</span>}>
-                    <Bookmark ruleGuid={rule?.guid || ''} />
-                  </Suspense>
-                  <IconLink
-                    href={`/admin#/~/${sanitizedBasePath}/${rule?.uri}`}
-                    title="Edit rule"
-                    tooltipOpaque={true}
-                  >
-                    <RiPencilLine size={ICON_SIZE} />
-                  </IconLink>
-                  <IconLink
-                    href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule?.uri}/rule.md`}
-                    target="_blank"
-                    title="View rule on GitHub"
-                    tooltipOpaque={true}
-                  >
-                    <RiGithubLine size={ICON_SIZE} className="rule-icon" />
-                  </IconLink>
-                  <ChatGPTSummaryButton />
-                </div>
+                <RuleActionButtons rule={rule} 
+                  sanitizedBasePath={sanitizedBasePath} />
               </div>
             </div>
           </div>

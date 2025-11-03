@@ -6,7 +6,25 @@ import {
 } from "./componentWithFigure";
 import Image from "next/image";
 
+const normalizeSrc = (input?: string) => {
+  if (!input) return "";
+
+  const tinaPrefix = "https://assets.tina.io/";
+  if (!input.startsWith(tinaPrefix)) return input;
+
+  const secondUrlStart = ["https://", "http://"]
+    .map((scheme) => input.indexOf(scheme, tinaPrefix.length))
+    .filter((i) => i !== -1);
+
+  if (secondUrlStart.length === 0) return input;
+
+  const secondUrlIndex = Math.min(...secondUrlStart);
+  return input.slice(secondUrlIndex);
+}
+
 export function ImageEmbed({ data }: { data: any }) {
+  const src = normalizeSrc(data.src);
+
   const sizeClasses = {
     small: "max-w-sm",
     medium: "max-w-2xl",
@@ -27,7 +45,7 @@ export function ImageEmbed({ data }: { data: any }) {
           <>
             <div className="border border-gray-200">
                 <Image
-                  src={data.src}
+                  src={src}
                   alt={data.alt}
                   width={0}
                   height={0}

@@ -15,7 +15,6 @@ import RuleActionButtons from "@/components/RuleActionButtons";
 export interface ServerRulePageProps {
   rule: any;
   ruleCategoriesMapping: { title: string; uri: string }[];
-  relatedRulesMapping: { uri: string; title: string }[];
   sanitizedBasePath: string;
 }
 
@@ -33,7 +32,6 @@ export default function ServerRulePage({
   
   const {
     ruleCategoriesMapping,
-    relatedRulesMapping,
     sanitizedBasePath,
   } = serverRulePageProps;
 
@@ -139,8 +137,7 @@ export default function ServerRulePage({
             <Acknowledgements authors={rule.authors} />
           </Card>
           <Card title="Related rules">
-            <RelatedRules relatedUris={rule?.related as string[] | undefined} 
-              initialMapping={relatedRulesMapping} />
+            <RelatedRules relatedRules={rule.related} />
           </Card>
           <HelpCard />
           <div className="block md:hidden">

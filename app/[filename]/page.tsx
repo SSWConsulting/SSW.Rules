@@ -98,7 +98,32 @@ export async function generateStaticParams() {
       return [];
     }
 
-    // Helper function to fetch all pages from a connection
+    const filenames = new Set<string>();
+    let after: string | null = null;
+    let hasNext = true;
+
+    while (hasNext) {
+      const res = await client.queries.allRulesPaths({
+        first: 200,
+        after,
+      }).catch((err: any) => {
+        console.warn("allRuleFoldersQuery page fetch error:", err?.message || err);
+        return null;
+      });
+
+      const edges = res?.data?.ruleConnection?.edges ?? [];
+      for (const e of edges) {
+        // e.g. "definition-of-done/rule.mdx" => "definition-of-done"
+        const rel = e?.node?._sys?.relativePath;
+        const folder = rel?.split("/")?.[0];
+        if (folder) filenames.add(folder);
+      }
+
+      const p = res?.data?.ruleConnection?.pageInfo;
+      hasNext = !!p?.hasNextPage;
+      after = p?.endCursor ?? null;
+    }
+
     const fetchAllPages = async (queryFunction: (args?: any) => Promise<any>, queryName: string) => {
       const allEdges: any[] = [];
       let hasNextPage = true;
@@ -130,7 +155,6 @@ export async function generateStaticParams() {
       return allEdges;
     };
 
-    // Helper function to fetch all top categories with their child categories (same logic as getFullRelativePathFromFilename)
     const fetchAllTopCategoriesWithChildren = async () => {
       const allChildCategories: { filename: string }[] = [];
       let hasNextPage = true;
@@ -144,16 +168,13 @@ export async function generateStaticParams() {
           });
 
           const topCategories = res?.data.categoryConnection?.edges || [];
-
           for (const edge of topCategories) {
             const node = edge?.node;
             if (node?.__typename === "CategoryTop_category") {
               const children = node.index || [];
               for (const child of children) {
                 if (child?.category?.__typename === "CategoryCategory" && child?.category?._sys?.filename) {
-                  allChildCategories.push({
-                    filename: child.category._sys.filename,
-                  });
+                  allChildCategories.push({ filename: child.category._sys.filename });
                 }
               }
             }
@@ -170,58 +191,29 @@ export async function generateStaticParams() {
       return allChildCategories;
     };
 
-    // Fetch all categories, rules, and child categories with pagination
-    const [allCategoryEdges, allRuleEdges, childCategories] = await Promise.all([
+    const [allCategoryEdges, childCategories] = await Promise.all([
       fetchAllPages(client.queries.categoryConnection, "category"),
-      fetchAllPages(client.queries.ruleConnection, "rule"),
       fetchAllTopCategoriesWithChildren(),
     ]);
 
-    if (allCategoryEdges.length === 0 && allRuleEdges.length === 0 && childCategories.length === 0) {
-      console.error("Failed to fetch any valid connections data");
-      return [];
-    }
-
-    const rules: { filename: string }[] = [];
-    for (const page of allRuleEdges) {
-      try {
-        if (page?.node?._sys?.filename === "rule" && page?.node?._sys?.relativePath) {
-          const relativePath = page.node._sys.relativePath;
-          const pathParts = relativePath.split("/");
-          if (pathParts.length > 0 && pathParts[0]) {
-            rules.push({ filename: pathParts[0] });
-          }
-        }
-      } catch (err) {
-        console.warn("Error processing rule page:", err);
-      }
-    }
-
-    const categories: { filename: string }[] = [];
     for (const page of allCategoryEdges) {
       try {
-        if (page?.node?._sys?.filename && page.node._sys.filename !== "index") {
-          categories.push({ filename: page.node._sys.filename });
-        }
+        const fn = page?.node?._sys?.filename;
+        if (fn && fn !== "index") filenames.add(fn);
       } catch (err) {
         console.warn("Error processing category page:", err);
       }
     }
+    for (const c of childCategories) {
+      filenames.add(c.filename);
+    }
 
-    const fileCategories: { filename: string }[] = Object.keys(
-      (categoryTitleIndex as any).categories || {}
-    ).map((uri) => ({ filename: uri }));
+    const fileCategories = Object.keys((categoryTitleIndex as any).categories || {});
+    for (const fn of fileCategories) filenames.add(fn);
 
-    // Combine all paths: rules, direct categories, child categories, and local file categories
-    const all = [...rules, ...categories, ...childCategories, ...fileCategories];
+    const paths = Array.from(filenames).map((filename) => ({ filename }));
 
-    const paths = Array.from(new Map(all.map((i) => [i.filename, i])).values());
-
-    console.log(
-      `🚀 ~ generateStaticParams ~ Generated ${paths.length} paths ` +
-        `(rules=${rules.length}, categories=${categories.length}, childCategories=${childCategories.length}, fileCats=${fileCategories.length})`
-    );
-
+    console.log(`🚀 generateStaticParams: rules + categories total=${paths.length}`);
     return paths;
   } catch (error) {
     console.error("Error fetching static params:", error);
@@ -272,26 +264,6 @@ export default async function Page({
       };
     }) || [];
 
-  // Build related rules mapping (uri -> title)
-  let relatedRulesMapping: { uri: string; title: string }[] = [];
-  try {
-    const relatedUris = (rule?.data?.rule?.related || []).filter(
-      (u): u is string => typeof u === "string" && u.length > 0
-    );
-    if (relatedUris.length) {
-      const uris = Array.from(new Set(relatedUris));
-      const res = await client.queries.rulesByUriQuery({ uris });
-      const edges = res?.data?.ruleConnection?.edges ?? [];
-      relatedRulesMapping = edges
-        .map((e: any) => e?.node)
-        .filter(Boolean)
-        .map((n: any) => ({ uri: n.uri as string, title: n.title as string }))
-        .sort((a, b) => a.title.localeCompare(b.title));
-    }
-  } catch (e) {
-    console.error("Error loading related rules:", e);
-  }
-
   if (rule?.data) {
     const sanitizedBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/^\/+/, "");
     return (
@@ -301,7 +273,6 @@ export default async function Page({
           serverRulePageProps={{
             rule: rule.data.rule,
             ruleCategoriesMapping: ruleCategoriesMapping,
-            relatedRulesMapping: relatedRulesMapping,
             sanitizedBasePath: sanitizedBasePath,
           }}
         />

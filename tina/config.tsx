@@ -35,7 +35,7 @@ const config = defineConfig({
     basePath: nextConfig.basePath?.replace(/^\//, "") || "", // The base path of the app (could be /blog)
   },
   schema: {
-    collections: [Global, Category, Rule, MegaMenu],
+    collections: [Rule, Category, Global, MegaMenu],
   },
   search: {
     tina: {

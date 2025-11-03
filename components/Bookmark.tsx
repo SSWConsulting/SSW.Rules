@@ -37,7 +37,7 @@ export default function Bookmark({
   const [bookmarked, setBookmarked] = useState<boolean>(
     controlled ? (isBookmarked as boolean) : defaultIsBookmarked
   );
-  const [initialLoading, setInitialLoading] = useState<boolean>(!controlled); // 只有非受控才需要首拉
+  const [initialLoading, setInitialLoading] = useState<boolean>(!controlled);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
 

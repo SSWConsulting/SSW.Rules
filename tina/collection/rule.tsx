@@ -1,7 +1,8 @@
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
-import { Collection, Form, TinaCMS } from "tinacms";
+import { Collection } from "tinacms";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
+import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH?.replace(/^\//, "") || ""
 
@@ -100,13 +101,28 @@ const Rule: Collection = {
       ],
     },
     {
-      type: "string",
+      type: "object",
       label: "Related Rules",
       name: "related",
       description:
         "The URIs of rules that should be suggested based on the content of this rule.",
       list: true,
-      searchable: false,
+      ui: {
+        itemProps: (item) => ({
+          label: item.rule?.split("/").at(-2) || "Rule is not selected"
+        }),
+      },
+      fields: [
+        {
+          type: "reference",
+          label: "Rule",
+          name: "rule",
+          collections: ["rule"],
+          ui: {
+            component: PaginatedRuleSelectorInput,
+          },
+        },
+      ],
     },
     {
       type: "string",

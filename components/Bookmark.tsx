@@ -10,6 +10,7 @@ import { useAuth } from './auth/UserClientProvider';
 import Spinner from './Spinner';
 import Tooltip from './tooltip/tooltip';
 import { BookmarkData } from '@/types';
+import Popup from './Popup';
 
 interface BookmarkProps {
   ruleGuid: string;
@@ -38,6 +39,7 @@ export default function Bookmark({
   );
   const [initialLoading, setInitialLoading] = useState<boolean>(!controlled); // 只有非受控才需要首拉
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (controlled) setBookmarked(isBookmarked as boolean);
@@ -72,13 +74,9 @@ export default function Bookmark({
 
   const handleBookmarkToggle = async () => {
     const userId = user?.sub;
-    const current = query ? `${pathname}?${query}` : pathname;
 
     if (!userId) {
-      const ok = window.confirm('Sign in to bookmark this rule?');
-      if (ok) {
-        router.push(`/auth/login?returnTo=${encodeURIComponent(current)}`);
-      }
+      setShowLoginModal(true);
       return;
     }
 
@@ -116,25 +114,55 @@ export default function Bookmark({
     }
   };
 
+  const handleLoginRedirect = () => {
+    const current = query ? `${pathname}?${query}` : pathname;
+    router.push(`/auth/login?returnTo=${encodeURIComponent(current)}`);
+  };
+
   const disabled = isLoading || initialLoading;
 
   return (
-    <Tooltip text={bookmarked ? 'Remove bookmark' : 'Add bookmark'} opaque={true}>
-      <button
-        onClick={handleBookmarkToggle}
-        className={`rule-icon ${className}`}
-        title={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
-        disabled={disabled}
-        aria-busy={disabled}
-      >
-        {disabled ? (
-          <Spinner size="sm" inline />
-        ) : bookmarked ? (
-          <RiBookmarkFill size={ICON_SIZE} className="text-ssw-red" />
-        ) : (
-          <RiBookmarkLine size={ICON_SIZE} className="hover:text-ssw-red transition-colors duration-200" />
-        )}
-      </button>
-    </Tooltip>
+    <>
+      <Tooltip text={bookmarked ? 'Remove bookmark' : 'Add bookmark'} opaque={true}>
+        <button
+          onClick={handleBookmarkToggle}
+          className={`rule-icon ${className}`}
+          title={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
+          disabled={disabled}
+          aria-busy={disabled}
+        >
+          {disabled ? (
+            <Spinner size="sm" inline />
+          ) : bookmarked ? (
+            <RiBookmarkFill size={ICON_SIZE} className="text-ssw-red" />
+          ) : (
+            <RiBookmarkLine size={ICON_SIZE} className="hover:text-ssw-red transition-colors duration-200" />
+          )}
+        </button>
+      </Tooltip>
+
+      <Popup showCloseIcon isVisible={showLoginModal}
+        className='min-w-sm max-w-lg'
+        onClose={() => setShowLoginModal(false)}>
+        <div className="p-6">
+          <h3 className="text-lg font-semibold mb-2">Sign in required</h3>
+          <p className="text-gray-700">Sign in to bookmark this rule.</p>
+          <div className="mt-6 flex justify-end gap-3">
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="px-4 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleLoginRedirect}
+              className="px-4 py-2 rounded bg-ssw-red text-white cursor-pointer hover:bg-ssw-red/90"
+            >
+              Sign in
+            </button>
+          </div>
+        </div>
+      </Popup>
+    </>
   );
 }

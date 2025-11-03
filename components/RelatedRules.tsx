@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import client from "@/tina/__generated__/client";
+import redirects from "@/redirects.json";
 import { useDebounceEffect } from "@/components/hooks/useDebounceEffect";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 
@@ -15,7 +16,6 @@ interface RelatedRulesProps {
 
 const RelatedRules = ({ relatedUris, initialMapping }: RelatedRulesProps) => {
   const [rules, setRules] = useState<RelatedRule[]>(initialMapping || []);
-  const [resolvedKey, setResolvedKey] = useState<string | null>(null);
   const [confirmedNotFound, setConfirmedNotFound] = useState<string[]>([]);
   const isAdminPage = useIsAdminPage();
 
@@ -42,6 +42,14 @@ const RelatedRules = ({ relatedUris, initialMapping }: RelatedRulesProps) => {
     return true;
   };
 
+  const getRulesByUris = async (uris: string[]): Promise<RelatedRule[]> => {
+    const directQuery = await client.queries.rulesByUriQuery({ uris: uris });
+    const directEdges = directQuery?.data?.ruleConnection?.edges ?? [];
+    return directEdges.map((edge: any) => edge?.node)
+      .filter((node: any) => !!node && typeof node.uri === "string" && typeof node.title === "string")
+      .map((node: any) => ({ uri: node.uri as string, title: node.title as string }));
+  };
+
   useDebounceEffect(() => {
     const loadRelatedRules = async () => {
       try {
@@ -51,38 +59,48 @@ const RelatedRules = ({ relatedUris, initialMapping }: RelatedRulesProps) => {
         if (!requestedUris.length) {
           if (rules.length) setRules([]);
           setConfirmedNotFound([]);
-          setResolvedKey(urisKey);
           return;
         }
 
-        // Fetch direct matches for the requested URIs
-        const queryResult = await client.queries.rulesByUriQuery({ uris: requestedUris });
-        const connectionEdges = queryResult?.data?.ruleConnection?.edges ?? [];
-        const directMatches: RelatedRule[] = connectionEdges
-          .map((edge: any) => edge?.node)
-          .filter(Boolean)
-          .map((node: any) => ({ uri: node.uri as string, title: node.title as string }))
-          .sort((a, b) => a.title.localeCompare(b.title));
-
-        if (!areRuleListsEqual(directMatches, rules)) setRules(directMatches);
-
+        const directMatches: RelatedRule[] = await getRulesByUris(requestedUris);
         const matchedUris = new Set(directMatches.map((r) => r.uri));
         const unmatchedUris = requestedUris.filter((u) => !matchedUris.has(u));
 
-        // TODO: Check redirects for each rule to resolve more inputs
-        setConfirmedNotFound((prev) => {
-          const next = new Set(prev);
-          for (const uri of Array.from(next)) {
-            if (!requestedUris.includes(uri) || matchedUris.has(uri)) next.delete(uri);
-          }
-          for (const uri of unmatchedUris) next.add(uri);
-          return Array.from(next);
-        });
+        // 2) For only unmatched requests, resolve redirects and fetch their targets
+        const redirectMap: Record<string, string> = {};
+        for (const uri of unmatchedUris) {
+          const target = (redirects as Record<string, string>)[uri];
+          if (typeof target === "string" && target.length > 0) redirectMap[uri] = target;
+        }
+        const redirectTargets = Array.from(new Set(Object.values(redirectMap)));
+        let redirectMatches: RelatedRule[] = [];
+        if (redirectTargets.length > 0) {
+          redirectMatches = await getRulesByUris(redirectTargets);
+          for (const r of redirectMatches) matchedUris.add(r.uri);
+        }
 
-        setResolvedKey(urisKey);
+        // 3) Add redirect matches to the current matches (avoid duplicates)
+        const directUris = new Set(directMatches.map((r) => r.uri));
+        const addedRedirects = redirectMatches.filter((r) => !directUris.has(r.uri));
+        const nextMatches = addedRedirects.length ? [...directMatches, ...addedRedirects] : directMatches;
+        if (!areRuleListsEqual(nextMatches, rules)) setRules(nextMatches);
+
+        // 4) Set not found uris if not on admin page
+        if (isAdminPage) {
+          const fulfilledRequests = new Set<string>();
+          for (const req of requestedUris) {
+            const redirectTarget = redirectMap[req];
+            if (matchedUris.has(req) || (redirectTarget && matchedUris.has(redirectTarget))) {
+              fulfilledRequests.add(req);
+            }
+          }
+          const finalUnmatched = requestedUris.filter((u) => !fulfilledRequests.has(u));
+          setConfirmedNotFound(finalUnmatched);
+        } else if (confirmedNotFound.length) {
+          setConfirmedNotFound([]);
+        }
       } catch (error) {
         console.error(error);
-        setResolvedKey(urisKey);
       }
     };
 

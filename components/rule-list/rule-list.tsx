@@ -21,30 +21,38 @@ export interface RuleListProps {
   initialFilter?: RuleListFilter;
   initialPage?: number;
   initialItemsPerPage?: number;
+  externalCurrentPage?: number;  // For external pagination control
+  externalItemsPerPage?: number; // For external pagination control
 }
 
-const RuleList: React.FC<RuleListProps> = ({ 
-  categoryUri, 
-  rules, 
-  type, 
-  noContentMessage, 
-  onBookmarkRemoved, 
-  includeArchived = false, 
-  onIncludeArchivedChange, 
-  showPagination = true, 
+const RuleList: React.FC<RuleListProps> = ({
+  categoryUri,
+  rules,
+  type,
+  noContentMessage,
+  onBookmarkRemoved,
+  includeArchived = false,
+  onIncludeArchivedChange,
+  showPagination = true,
   showFilterControls = true,
   initialFilter = RuleListFilter.Blurb,
   initialPage = 1,
-  initialItemsPerPage = 10
+  initialItemsPerPage = 10,
+  externalCurrentPage,
+  externalItemsPerPage
 }) => {
   const [filter, setFilter] = useState<RuleListFilter>(initialFilter);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
   const filterSectionRef = useRef<HTMLDivElement>(null);
 
+  // Use external pagination values if provided, otherwise use internal state
+  const effectiveCurrentPage = externalCurrentPage ?? currentPage;
+  const effectiveItemsPerPage = externalItemsPerPage ?? itemsPerPage;
+
   const displayItemsPerPage = useMemo(
-    () => (showPagination ? itemsPerPage : rules.length),
-    [showPagination, itemsPerPage, rules.length]
+    () => (showPagination ? effectiveItemsPerPage : rules.length),
+    [showPagination, effectiveItemsPerPage, rules.length]
   );
 
   const totalPages = displayItemsPerPage >= rules.length ? 1 : Math.ceil(rules.length / displayItemsPerPage);
@@ -53,10 +61,10 @@ const RuleList: React.FC<RuleListProps> = ({
     if (displayItemsPerPage >= rules.length) {
       return rules; // Show all rules
     }
-    const startIndex = (currentPage - 1) * displayItemsPerPage;
+    const startIndex = (effectiveCurrentPage - 1) * displayItemsPerPage;
     const endIndex = startIndex + displayItemsPerPage;
     return rules.slice(startIndex, endIndex);
-  }, [rules, currentPage, displayItemsPerPage]);
+  }, [rules, effectiveCurrentPage, displayItemsPerPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -147,12 +155,12 @@ const RuleList: React.FC<RuleListProps> = ({
 
       <ol className="flex flex-col justify-between gap-2 p-0 list-none">
         {paginatedRules.map((rule, i) => (
-          <RuleListItem 
-            key={`${rule.guid}-${rule.uri}-${(currentPage - 1) * itemsPerPage + i}`} 
-            rule={rule} 
-            index={(currentPage - 1) * itemsPerPage + i} 
-            onBookmarkRemoved={onBookmarkRemoved} 
-            filter={filter} 
+          <RuleListItem
+            key={`${rule.guid}-${rule.uri}-${(effectiveCurrentPage - 1) * effectiveItemsPerPage + i}`}
+            rule={rule}
+            index={(effectiveCurrentPage - 1) * effectiveItemsPerPage + i}
+            onBookmarkRemoved={onBookmarkRemoved}
+            filter={filter}
           />
         ))}
       </ol>

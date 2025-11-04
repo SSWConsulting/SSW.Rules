@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import client from '@/tina/__generated__/client';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -12,10 +12,10 @@ import AboutSSWCard from '@/components/AboutSSWCard';
 import JoinConversationCard from '@/components/JoinConversationCard';
 import { appendNewRules } from '@/utils/appendNewRules';
 import { selectLatestRuleFilesByPath } from '@/utils/selectLatestRuleFilesByPath';
-import LoadMoreButton from '@/components/LoadMoreButton';
 import Spinner from '@/components/Spinner';
 import { FaUserCircle } from 'react-icons/fa';
 import RuleList from '@/components/rule-list';
+import Pagination from '@/components/ui/pagination';
 
 const Tabs = {
   MODIFIED: 'modified',
@@ -35,16 +35,20 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [loadingMoreLastModified, setLoadingMoreLastModified] = useState(false);
   const [nextPageCursor, setNextPageCursor] = useState('');
   const [hasNext, setHasNext] = useState(false);
+  const [currentPageLastModified, setCurrentPageLastModified] = useState(1);
+  const [itemsPerPageLastModified, setItemsPerPageLastModified] = useState(10);
 
   // Acknowledged
   const [authoredRules, setAuthoredRules] = useState<any[]>([]);
   const [author, setAuthor] = useState<{ fullName?: string; slug?: string; gitHubUrl?: string }>({});
   const [loadingAuthored, setLoadingAuthored] = useState(false);
-  const AUTHORED_PAGE_SIZE = 6;
   const [authoredNextCursor, setAuthoredNextCursor] = useState<string | null>(null);
   const [authoredHasNext, setAuthoredHasNext] = useState(false);
   const [loadingMoreAuthored, setLoadingMoreAuthored] = useState(false);
   const [githubError, setGithubError] = useState<string | null>(null);
+  const [currentPageAuthored, setCurrentPageAuthored] = useState(1);
+  const [itemsPerPageAuthored, setItemsPerPageAuthored] = useState(10);
+  const FETCH_PAGE_SIZE = 10;
 
   const resolveAuthor = async (): Promise<string> => {
     const res = await fetch(`./api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);
@@ -54,18 +58,20 @@ export default function UserRulesClientPage({ ruleCount }) {
     return profile.fullName as string;
   };
 
-  const getLastModifiedRules = async (opts?: { append?: boolean }) => {
+  const getLastModifiedRules = async (opts?: { append?: boolean; page?: number; cursor?: string }) => {
     const append = !!opts?.append;
+    const page = opts?.page ?? 1;
+    const cursor = opts?.cursor || '';
     try {
       // clear previous GitHub errors when starting a fetch
       setGithubError(null);
       append ? setLoadingMoreLastModified(true) : setLoadingLastModified(true);
-  
+
       const params = new URLSearchParams();
       params.set('author', queryStringRulesAuthor);
-      if (append && nextPageCursor) params.set('cursor', nextPageCursor);
+      if (append && cursor) params.set('cursor', cursor);
       params.set('direction', 'after');
-  
+
       const url = `./api/github/rules/prs?${params.toString()}`;
       const res = await fetch(url);
       if (!res.ok) {
@@ -78,7 +84,7 @@ export default function UserRulesClientPage({ ruleCount }) {
         throw new Error(`Failed to fetch GitHub PR search: ${res.status} ${res.statusText} - ${body}`);
       }
       const prSearchData = await res.json();
-  
+
       const resultList = prSearchData.search.nodes;
       const allRules = resultList
         .flatMap((pr: any) => pr.files.nodes)
@@ -94,14 +100,25 @@ export default function UserRulesClientPage({ ruleCount }) {
         const uniqueRules = selectLatestRuleFilesByPath(allRules);
         await updateFilteredItems(uniqueRules, append);
       }
-  
+
       const { endCursor, hasNextPage } = prSearchData.search.pageInfo;
-      setNextPageCursor(endCursor || '');
-      setHasNext(!!hasNextPage);
+      const newCursor = endCursor || '';
+      const hasMore = !!hasNextPage;
+
+      setNextPageCursor(newCursor);
+      setHasNext(hasMore);
+
+      if (!append) {
+        setCurrentPageLastModified(page);
+      }
+
+      // Return pagination info for the calling function
+      return { endCursor: newCursor, hasNextPage: hasMore };
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('Failed to fetch GitHub data:', err);
       setGithubError(message);
+      return { endCursor: '', hasNextPage: false };
     } finally {
       append ? setLoadingMoreLastModified(false) : setLoadingLastModified(false);
     }
@@ -157,27 +174,31 @@ export default function UserRulesClientPage({ ruleCount }) {
     }
   };
 
-  const getAuthoredRules = async (authorName: string, opts?: { append?: boolean }) => {
+  const getAuthoredRules = async (authorName: string, opts?: { append?: boolean; page?: number; cursor?: string | null }) => {
     const append = !!opts?.append;
+    const page = opts?.page ?? 1;
+    const cursor = opts?.cursor ?? null;
     try {
       append ? setLoadingMoreAuthored(true) : setLoadingAuthored(true);
-  
+
       const res = await client.queries.rulesByAuthor({
         authorTitle: authorName || '',
-        first: AUTHORED_PAGE_SIZE,
-        after: append ? authoredNextCursor : undefined,
+        first: FETCH_PAGE_SIZE,
+        after: append ? cursor : undefined,
       });
-  
+
       const edges = res?.data?.ruleConnection?.edges ?? [];
       const nodes = edges.map((e: any) => e?.node).filter(Boolean);
-  
+
       const pageInfo = res?.data?.ruleConnection?.pageInfo;
       const totalFetched = nodes.length;
       const hasMorePages = !!pageInfo?.hasNextPage;
+      const newCursor = pageInfo?.endCursor ?? null;
+      const hasMore = hasMorePages;
 
-      setAuthoredNextCursor(pageInfo?.endCursor ?? null);
-      setAuthoredHasNext(hasMorePages && totalFetched === AUTHORED_PAGE_SIZE);
-  
+      setAuthoredNextCursor(newCursor);
+      setAuthoredHasNext(hasMore);
+
       const batch = nodes.map((fullRule: any) => ({
         guid: fullRule.guid,
         title: fullRule.title,
@@ -190,8 +211,18 @@ export default function UserRulesClientPage({ ruleCount }) {
         lastUpdated: fullRule.lastUpdated,
         lastUpdatedBy: fullRule.lastUpdatedBy
       }));
-  
+
       setAuthoredRules((prev) => (append ? appendNewRules(prev, batch) : batch));
+
+      if (!append) {
+        setCurrentPageAuthored(page);
+      }
+
+      // Return pagination info for the calling function
+      return { endCursor: newCursor, hasNextPage: hasMore };
+    } catch (err) {
+      console.error('Failed to fetch authored rules:', err);
+      return { endCursor: null, hasNextPage: false };
     } finally {
       append ? setLoadingMoreAuthored(false) : setLoadingAuthored(false);
     }
@@ -200,21 +231,191 @@ export default function UserRulesClientPage({ ruleCount }) {
   useEffect(() => {
     (async () => {
       if (queryStringRulesAuthor) {
-        setLoadingAuthored(true);
-        const [_, resolvedAuthorName] = await Promise.all([getLastModifiedRules(), resolveAuthor()]);
-        await getAuthoredRules(resolvedAuthorName as string);
+        const resolvedAuthorName = await resolveAuthor();
+        // Load BOTH in parallel for maximum speed
+        await Promise.all([
+          loadAllAuthoredRules(resolvedAuthorName as string),
+          loadAllLastModifiedRules()
+        ]);
       }
     })();
   }, [queryStringRulesAuthor]);
 
-  const handleLoadMoreLastModified = () => {
-    if (loadingMoreLastModified || !hasNext) return;
-    getLastModifiedRules({ append: true });
+  // Function to load ALL last modified rules (not just one page)
+  const loadAllLastModifiedRules = async () => {
+    setLoadingLastModified(true);
+    setLastModifiedRules([]);
+    let cursor = '';
+    let previousCursor = '';
+    let hasMore = true;
+    let pageCount = 0;
+    const MAX_PAGES = 100; // Safety limit to prevent infinite loops
+    const allRulesFromGithub: any[] = [];
+
+    try {
+      // Step 1: Fetch ALL pages from GitHub API (collect paths only)
+      while (hasMore && pageCount < MAX_PAGES) {
+        pageCount++;
+
+        const params = new URLSearchParams();
+        params.set('author', queryStringRulesAuthor);
+        if (cursor) params.set('cursor', cursor);
+        params.set('direction', 'after');
+
+        const url = `./api/github/rules/prs?${params.toString()}`;
+        const res = await fetch(url);
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch GitHub PR search: ${res.status} ${res.statusText}`);
+        }
+
+        const prSearchData = await res.json();
+        const resultList = prSearchData.search.nodes;
+
+        const rules = resultList
+          .flatMap((pr: any) => pr.files.nodes)
+          .filter((file: any) => file.path.endsWith('rule.mdx') || file.path.endsWith('rule.md'))
+          .map((file: any) => ({
+            ...file,
+            path: file.path.endsWith('rule.md') ? file.path.slice(0, -3) + '.mdx' : file.path,
+          }));
+
+        allRulesFromGithub.push(...rules);
+
+        const { endCursor, hasNextPage } = prSearchData.search.pageInfo;
+        const newCursor = endCursor || '';
+
+        // Stop if cursor hasn't changed (prevents infinite loop)
+        if (newCursor === previousCursor && previousCursor !== '') {
+          break;
+        }
+
+        previousCursor = cursor;
+        cursor = newCursor;
+        hasMore = !!hasNextPage && newCursor !== '';
+      }
+
+      // Step 2: Process all rules at once with TinaCMS (ONE call instead of 50+)
+      if (allRulesFromGithub.length > 0) {
+        const uniqueRules = selectLatestRuleFilesByPath(allRulesFromGithub);
+        const uris = Array.from(
+          new Set(
+            uniqueRules
+              .map((b) => b.path.replace(/^rules\//, '').replace(/\/rule\.mdx$/, ''))
+              .filter((g): g is string => Boolean(g)),
+          ),
+        );
+
+        const res = await client.queries.rulesByUriQuery({ uris });
+        const edges = res?.data?.ruleConnection?.edges ?? [];
+        const byUri = new Map<string, any>(
+          edges
+            .map((e: any) => e?.node)
+            .filter(Boolean)
+            .map((n: any) => [n.uri, n]),
+        );
+
+        const matchedRules: any[] = uris
+          .map((g) => byUri.get(g))
+          .filter(Boolean)
+          .map((fullRule: any) => ({
+            guid: fullRule.guid,
+            title: fullRule.title,
+            uri: fullRule.uri,
+            body: fullRule.body,
+            lastUpdated: fullRule.lastUpdated,
+            lastUpdatedBy: fullRule.lastUpdatedBy,
+            authors:
+              fullRule.authors
+                ?.map((a: any) => (a && a.title ? { title: a.title } : null))
+                .filter((a: any): a is { title: string } => a !== null) || [],
+          }));
+
+        // Sort by date (most recent first)
+        const sortedRules = matchedRules.sort((a, b) => {
+          const dateA = a.lastUpdated ? new Date(a.lastUpdated).getTime() : 0;
+          const dateB = b.lastUpdated ? new Date(b.lastUpdated).getTime() : 0;
+          return dateB - dateA; // Descending order (newest first)
+        });
+
+        setLastModifiedRules(sortedRules);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error('Failed to fetch GitHub data:', err);
+      setGithubError(message);
+    } finally {
+      setLoadingLastModified(false);
+    }
   };
 
-  const handleLoadMoreAcknowledgment = () => {
-    if (loadingMoreAuthored || !authoredHasNext) return;
-    getAuthoredRules(author.fullName || '', { append: true });
+  // Function to load ALL authored rules (not just one page) - WITH BATCHING
+  const loadAllAuthoredRules = async (authorName: string) => {
+    setLoadingAuthored(true);
+    setAuthoredRules([]);
+    let cursor: string | null = null;
+    let previousCursor: string | null = null;
+    let hasMore = true;
+    let pageCount = 0;
+    const MAX_PAGES = 100; // Safety limit to prevent infinite loops
+    const allRulesFromTina: any[] = [];
+
+    try {
+      // Step 1: Fetch ALL pages from TinaCMS API (collect rules)
+      while (hasMore && pageCount < MAX_PAGES) {
+        pageCount++;
+
+        const res = await client.queries.rulesByAuthor({
+          authorTitle: authorName || '',
+          first: FETCH_PAGE_SIZE,
+          after: cursor || undefined,
+        });
+
+        const edges = res?.data?.ruleConnection?.edges ?? [];
+        const nodes = edges.map((e: any) => e?.node).filter(Boolean);
+
+        const batch = nodes.map((fullRule: any) => ({
+          guid: fullRule.guid,
+          title: fullRule.title,
+          uri: fullRule.uri,
+          body: fullRule.body,
+          authors:
+            fullRule.authors
+              ?.map((a: any) => (a && a.title ? { title: a.title } : null))
+              .filter((a: any): a is { title: string } => a !== null) || [],
+          lastUpdated: fullRule.lastUpdated,
+          lastUpdatedBy: fullRule.lastUpdatedBy
+        }));
+
+        allRulesFromTina.push(...batch);
+
+        const pageInfo = res?.data?.ruleConnection?.pageInfo;
+        const newCursor = pageInfo?.endCursor ?? null;
+        const hasMorePages = !!pageInfo?.hasNextPage;
+
+        // Stop if cursor hasn't changed (prevents infinite loop)
+        if (newCursor === previousCursor && previousCursor !== null) {
+          break;
+        }
+
+        previousCursor = cursor;
+        cursor = newCursor;
+        hasMore = hasMorePages && newCursor !== null;
+      }
+
+      // Step 2: Sort by date (most recent first) and set all at once
+      const sortedRules = allRulesFromTina.sort((a, b) => {
+        const dateA = a.lastUpdated ? new Date(a.lastUpdated).getTime() : 0;
+        const dateB = b.lastUpdated ? new Date(b.lastUpdated).getTime() : 0;
+        return dateB - dateA; // Descending order (newest first)
+      });
+
+      setAuthoredRules(sortedRules);
+    } catch (err) {
+      console.error('Failed to fetch authored rules:', err);
+    } finally {
+      setLoadingAuthored(false);
+    }
   };
 
   const TabHeader = () => (
@@ -247,40 +448,46 @@ export default function UserRulesClientPage({ ruleCount }) {
     </div>
   );
 
-  const renderList = (
-    items: any[],
-    {
-      loadingInitial,
-      loadingMore,
-      hasNextPage,
-      onLoadMore,
-      emptyText = 'No results found.',
-    }: {
-      loadingInitial: boolean;
-      loadingMore: boolean;
-      hasNextPage: boolean;
-      onLoadMore: () => void;
-      emptyText?: string;
-    },
-  ) => {
-    if (items.length === 0 && loadingInitial) {
-      return <Spinner size="lg" className='center' />
+  // Pagination helpers for Last Modified
+  const totalPagesLastModified = itemsPerPageLastModified >= lastModifiedRules.length ? 1 : Math.ceil(lastModifiedRules.length / itemsPerPageLastModified);
+
+  const paginatedLastModifiedRules = useMemo(() => {
+    if (itemsPerPageLastModified >= lastModifiedRules.length) {
+      return lastModifiedRules;
     }
-    if (items.length === 0) {
-      return <div className="py-4 text-sm text-gray-500">{emptyText}</div>;
+    const startIndex = (currentPageLastModified - 1) * itemsPerPageLastModified;
+    const endIndex = startIndex + itemsPerPageLastModified;
+    return lastModifiedRules.slice(startIndex, endIndex);
+  }, [lastModifiedRules, currentPageLastModified, itemsPerPageLastModified]);
+
+  const handlePageChangeLastModified = (page: number) => {
+    setCurrentPageLastModified(page);
+  };
+
+  const handleItemsPerPageChangeLastModified = (newItemsPerPage: number) => {
+    setItemsPerPageLastModified(newItemsPerPage);
+    setCurrentPageLastModified(1);
+  };
+
+  // Pagination helpers for Authored
+  const totalPagesAuthored = itemsPerPageAuthored >= authoredRules.length ? 1 : Math.ceil(authoredRules.length / itemsPerPageAuthored);
+
+  const paginatedAuthoredRules = useMemo(() => {
+    if (itemsPerPageAuthored >= authoredRules.length) {
+      return authoredRules;
     }
-    return (
-      <>
-        <RuleList rules={items} showFilterControls={false} showPagination={false} />
-        {hasNextPage && (
-          <div className="mt-4 flex justify-center">
-            <LoadMoreButton onClick={onLoadMore} disabled={loadingMore} loading={loadingMore}>
-              {loadingMore ? 'Loading…' : 'Load More'}
-            </LoadMoreButton>
-          </div>
-        )}
-      </>
-    );
+    const startIndex = (currentPageAuthored - 1) * itemsPerPageAuthored;
+    const endIndex = startIndex + itemsPerPageAuthored;
+    return authoredRules.slice(startIndex, endIndex);
+  }, [authoredRules, currentPageAuthored, itemsPerPageAuthored]);
+
+  const handlePageChangeAuthored = (page: number) => {
+    setCurrentPageAuthored(page);
+  };
+
+  const handleItemsPerPageChangeAuthored = (newItemsPerPage: number) => {
+    setItemsPerPageAuthored(newItemsPerPage);
+    setCurrentPageAuthored(1);
   };
   
   return (
@@ -313,21 +520,71 @@ export default function UserRulesClientPage({ ruleCount }) {
           <TabHeader />
 
           <div className="rounded-lg border border-gray-100 bg-white p-4">
-              {activeTab === Tabs.MODIFIED &&
-                  renderList(lastModifiedRules, {
-                  loadingInitial: loadingLastModified,
-                  loadingMore: loadingMoreLastModified,
-                  hasNextPage: hasNext,
-                  onLoadMore: handleLoadMoreLastModified,
-                })}
+              {activeTab === Tabs.MODIFIED && (
+                <>
+                  {lastModifiedRules.length === 0 && loadingLastModified ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Spinner
+                        size="lg"
+                        text="Fetching data from GitHub... this might take a minute."
+                      />
+                    </div>
+                  ) : lastModifiedRules.length === 0 ? (
+                    <div className="py-4 text-sm text-gray-500">No rules found.</div>
+                  ) : (
+                    <>
+                      <RuleList
+                        rules={paginatedLastModifiedRules}
+                        showFilterControls={false}
+                        showPagination={false}
+                        externalCurrentPage={currentPageLastModified}
+                        externalItemsPerPage={itemsPerPageLastModified}
+                      />
+                      <Pagination
+                        currentPage={currentPageLastModified}
+                        totalPages={totalPagesLastModified}
+                        totalItems={lastModifiedRules.length}
+                        itemsPerPage={itemsPerPageLastModified}
+                        onPageChange={handlePageChangeLastModified}
+                        onItemsPerPageChange={handleItemsPerPageChangeLastModified}
+                      />
+                    </>
+                  )}
+                </>
+              )}
 
-              {activeTab === Tabs.AUTHORED &&
-                renderList(authoredRules, {
-                  loadingInitial: loadingAuthored,
-                  loadingMore: loadingMoreAuthored,
-                  hasNextPage: authoredHasNext,
-                  onLoadMore: handleLoadMoreAcknowledgment,
-              })}
+              {activeTab === Tabs.AUTHORED && (
+                <>
+                  {authoredRules.length === 0 && loadingAuthored ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Spinner
+                        size="lg"
+                        text="Fetching data from GitHub... this might take a minute."
+                      />
+                    </div>
+                  ) : authoredRules.length === 0 ? (
+                    <div className="py-4 text-sm text-gray-500">No rules found.</div>
+                  ) : (
+                    <>
+                      <RuleList
+                        rules={paginatedAuthoredRules}
+                        showFilterControls={false}
+                        showPagination={false}
+                        externalCurrentPage={currentPageAuthored}
+                        externalItemsPerPage={itemsPerPageAuthored}
+                      />
+                      <Pagination
+                        currentPage={currentPageAuthored}
+                        totalPages={totalPagesAuthored}
+                        totalItems={authoredRules.length}
+                        itemsPerPage={itemsPerPageAuthored}
+                        onPageChange={handlePageChangeAuthored}
+                        onItemsPerPageChange={handleItemsPerPageChangeAuthored}
+                      />
+                    </>
+                  )}
+                </>
+              )}
           </div>
         </div>
 

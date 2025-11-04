@@ -127,7 +127,7 @@ const Rule: Collection = {
     {
       type: "string",
       name: "redirects",
-      label: "Redirects",
+      label: "URI Redirects",
       description: 
         "Other URIs which will redirect to this rule.",
       list: true,

@@ -8,6 +8,7 @@ interface SpinnerProps {
   position?: SpinnerPosition;
   className?: string;
   inline?: boolean;
+  text?: string;
 }
 
 const sizeClasses: Record<SpinnerSize, string> = {
@@ -30,63 +31,54 @@ const positionClasses: Record<SpinnerPosition, string> = {
   'bottom-right': 'flex justify-end items-end',
 };
 
-export default function Spinner({ 
-  size = 'md', 
-  position = 'center', 
+export default function Spinner({
+  size = 'md',
+  position = 'center',
   className = '',
-  inline = false
+  inline = false,
+  text
 }: SpinnerProps) {
-  if (inline) {
+  const spinnerSvg = (
+    <svg
+      className={`animate-spin ${sizeClasses[size]} ${inline && !text ? className : ''} ${inline && !text && !/\btext-[^\s]+\b/.test(className) ? 'text-gray-500' : ''}`}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+        fill="none"
+        opacity="0.25"
+      />
+      <path
+        d="M22 12a10 10 0 0 1-10 10"
+        stroke="currentColor"
+        strokeWidth="4"
+        fill="none"
+      />
+    </svg>
+  );
+
+  if (inline && !text) {
+    return spinnerSvg;
+  }
+
+  if (text) {
     return (
-      <svg 
-        // apply default gray color unless caller provided a text-* class
-        className={`animate-spin ${sizeClasses[size]} ${className} ${/\btext-[^\s]+\b/.test(className) ? '' : 'text-gray-500'}`}
-        viewBox="0 0 24 24" 
-        aria-hidden="true"
-      >
-        <circle 
-          cx="12" 
-          cy="12" 
-          r="10" 
-          stroke="currentColor" 
-          strokeWidth="4" 
-          fill="none" 
-          opacity="0.25" 
-        />
-        <path 
-          d="M22 12a10 10 0 0 1-10 10" 
-          stroke="currentColor" 
-          strokeWidth="4" 
-          fill="none" 
-        />
-      </svg>
+      <div className={`flex items-center gap-3 ${className}`}>
+        {spinnerSvg}
+        <span className="text-sm text-gray-600">{text}</span>
+      </div>
     );
   }
 
   return (
     // if caller didn't provide a text color (text-...), default to gray
     <div className={`${positionClasses[position]} ${className} ${/\btext-[^\s]+\b/.test(className) ? '' : 'text-gray-500'}`}>
-      <svg 
-        className={`animate-spin ${sizeClasses[size]}`} 
-        viewBox="0 0 24 24" 
-        aria-hidden="true"
-      >
-        <circle 
-          cx="12" 
-          cy="12" 
-          r="10" 
-          stroke="currentColor" 
-          strokeWidth="4" 
-          fill="none" 
-          opacity="0.25" 
-        />
-        <path 
-          d="M22 12a10 10 0 0 1-10 10" 
-          stroke="currentColor" 
-          strokeWidth="4" 
-          fill="none" 
-        />
-      </svg>
+      {spinnerSvg}
     </div>
   );
 }

@@ -32,7 +32,7 @@ const Rule: Collection = {
       const slug =
         document?._sys?.relativePath?.split("/")?.[0] ??
         "";
-      return `${basePath}/${slug}`;
+      return `/${slug}`;
     },
     beforeSubmit: historyBeforeSubmit,
   },

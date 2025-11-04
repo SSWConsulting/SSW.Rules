@@ -49,7 +49,6 @@ jobs:
             TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
             TINA_WEBHOOK_SECRET: ${{ secrets.TINA_WEBHOOK_SECRET }}
             NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-            NEXT_PUBLIC_TINA_BRANCH: ${{ secrets.NEXT_PUBLIC_TINA_BRANCH }}
             TOKEN: ${{ secrets.POC_PAT_GILLES }} # TODO: replace that with a GitHub Token for production environement
             NEXT_PUBLIC_ALGOLIA_APP_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
             NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}

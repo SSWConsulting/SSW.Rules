@@ -284,6 +284,7 @@ jobs:
                   # Existing build arguments
                   ARG TINA_TOKEN
                   ARG TINA_SEARCH_TOKEN
+                  ARG TINA_WEBHOOK_SECRET
                   ARG NEXT_PUBLIC_TINA_CLIENT_ID
                   ARG NEXT_PUBLIC_TINA_BRANCH
                   ARG NEXT_PUBLIC_ALGOLIA_APP_ID

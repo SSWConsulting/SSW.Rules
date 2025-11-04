@@ -300,9 +300,15 @@ export async function generateMetadata({
 
     const rule = await getRuleData(filename);
     if (rule?.data?.rule?.title) {
-      return {
+      const metadata: any = {
         title: `${rule.data.rule.title} | SSW.Rules`,
       };
+
+      if (rule.data.rule.seoDescription) {
+        metadata.description = rule.data.rule.seoDescription;
+      }
+
+      return metadata;
     }
   } catch (error) {
     console.error("Error generating metadata:", error);

@@ -3,6 +3,11 @@ import { revalidatePath } from 'next/cache';
 
 const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
 
+export enum TINA_CONTENT_CHANGE_TYPE {
+  Modified = 'content.modified',
+  Added = 'content.added',
+}
+
 const pathsToRevalidate = [
   `/${basePath}/api/rules`
 ]
@@ -16,7 +21,7 @@ export async function POST(req: Request) {
 
     const body = await req.json().catch(() => ({}));
     const eventType = body?.type;
-    if (eventType !== 'content.modified') {
+    if (eventType !== TINA_CONTENT_CHANGE_TYPE.Modified && eventType !== TINA_CONTENT_CHANGE_TYPE.Added) {
       return NextResponse.json({ revalidated: false, ignored: true, reason: `Unhandled type: ${eventType}` }, { status: 200 });
     }
 
@@ -42,8 +47,10 @@ export async function POST(req: Request) {
       }
     }
 
-    for (const route of pathsToRevalidate) {
-      routesToRevalidate.add(route);
+    if(eventType === TINA_CONTENT_CHANGE_TYPE.Added) {
+      for (const route of pathsToRevalidate) {
+        routesToRevalidate.add(route);
+      }
     }
 
     for (const route of routesToRevalidate) {

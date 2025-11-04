@@ -141,7 +141,7 @@ export default function ServerRulePage({
           </Card>
           <HelpCard />
           <div className="block md:hidden">
-            <Discussion ruleGuid={rule?.guid || ''} />
+            <Discussion ruleGuid={rule.guid} />
           </div>
         </div>
       </div>

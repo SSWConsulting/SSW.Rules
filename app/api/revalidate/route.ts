@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache';
 
 const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
 
-export enum TINA_CONTENT_CHANGE_TYPE {
+enum TINA_CONTENT_CHANGE_TYPE {
   Modified = 'content.modified',
   Added = 'content.added',
 }

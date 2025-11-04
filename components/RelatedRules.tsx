@@ -6,14 +6,14 @@ import Link from "next/link";
 export type RelatedRule = { uri: string; title: string };
 
 interface RelatedRulesProps {
-  relatedRules: Rule[];
+  relatedRules?: Rule[] | null;
   emptyText?: string;
   className?: string;
 }
 
 const RelatedRules = ({ relatedRules, emptyText = "No related rules.", className }: RelatedRulesProps) => {
   const relatedRulesMapping = (): RelatedRule[] => {
-    const nodes = relatedRules
+    const nodes = (relatedRules || [])
       .map((r: any) => r?.rule)
       .filter(
         (n: any): n is { uri: string; title: string } =>

@@ -211,7 +211,7 @@ export async function generateStaticParams() {
     const fileCategories = Object.keys((categoryTitleIndex as any).categories || {});
     for (const fn of fileCategories) filenames.add(fn);
 
-    const paths = Array.from(filenames).map((filename) => ({ filename }));
+    const paths = Array.from(filenames || []).map((filename) => ({ filename }));
 
     console.log(`🚀 generateStaticParams: rules + categories total=${paths.length}`);
     return paths;

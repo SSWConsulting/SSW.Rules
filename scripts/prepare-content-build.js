@@ -24,7 +24,7 @@ console.log('Preparing content for build...');
 
 // Hardcoded for now - can be moved to env vars later
 const contentRepoUrl = 'https://github.com/SSWConsulting/SSW.Rules.Content.git';
-const contentBranch = process.env.NEXT_PUBLIC_TINA_BRANCH || 'tina/migration-dev-content';
+const contentBranch = process.env.NEXT_PUBLIC_TINA_BRANCH || 'tina-migration-dev-content';
 
 console.log(`Cloning content repo: ${contentRepoUrl} (branch: ${contentBranch})`);
 

@@ -22,7 +22,7 @@ The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWCon
 
 1. Clone this repo
 
-2. Clone [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content) and switch to the `tina/migration-dev-content` branch
+2. Clone [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content) and switch to the `tina-migration-dev-content` branch
 
 3. Place both repos in the same parent directory e.g.
 ```
@@ -41,7 +41,7 @@ The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWCon
 ### Syncing and Updating Content
 To test changes to MDX rules:
 
-1. Go to the `tina/migration-dev-content` branch of SSW.Rules.Content
+1. Go to the `tina-migration-dev-content` branch of SSW.Rules.Content
 
 2. Modify the rule MDX as needed
 

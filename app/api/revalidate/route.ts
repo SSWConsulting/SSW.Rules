@@ -1,14 +1,10 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
-const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/^\/+/, "");
-
 enum TINA_CONTENT_CHANGE_TYPE {
   Modified = "content.modified",
   Added = "content.added",
 }
-
-const pathsToRevalidate = [`/${basePath}/api/rules`];
 
 export async function POST(req: Request) {
   try {
@@ -28,6 +24,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ revalidated: false, reason: "No paths in payload" }, { status: 200 });
     }
 
+    const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/^\/+/, "");
+    const pathsToRevalidate = [`/${basePath}/api/rules`];
     const routesToRevalidate = new Set<string>();
 
     for (const changedPath of changedPaths) {

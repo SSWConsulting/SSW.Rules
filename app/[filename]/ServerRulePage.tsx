@@ -122,14 +122,16 @@ export default function ServerRulePage({
         <div className="layout-sidebar">
           <Card title="Categories">
             <div className="flex flex-wrap gap-4">
-              {ruleCategoriesMapping?.map((category) => (
+              {rule?.categories?.map((c) => (
+                c.category && (
                 <Link
-                  key={category.uri}
-                  href={`/${category.uri}`}
+                  key={c.category.uri}
+                  href={`/${c.category.uri}`}
                   className="border-2 no-underline border-ssw-red text-ssw-red py-1 px-2 rounded-xs font-semibold hover:text-white hover:bg-ssw-red transition-colors duration-200"
                 >
-                  {category.title.replace(/^Rules to better\s*/i, "")}
+                  {c.category.title?.replace(/^Rules to better\s*/i, "")}
                 </Link>
+                )
               ))}
             </div>
           </Card>

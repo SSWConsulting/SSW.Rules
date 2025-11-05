@@ -29,6 +29,12 @@ const scriptsPath = join(contentAbsPath, 'scripts/tina-migration');
 const buildMapScript = join(scriptsPath, 'build-rule-category-map.py');
 const orphanedCheckScript = join(scriptsPath, 'orphaned_rules_check.py');
 const buildRedirectMapScript = join(scriptsPath, 'build-redirect-map.py');
+const updateCategoriesJs = resolve(__dirname, './update-categories.js');
+const rulesDirAbs = join(contentAbsPath, 'public/uploads/rules');
+
+// Update categories via Node script in this repo
+execSync(`node "${updateCategoriesJs}" "${rulesDirAbs}"`, { stdio: 'inherit' });
+
 execSync(`python "${buildMapScript}"`, { stdio: 'inherit', cwd: scriptsPath });
 execSync(`python "${orphanedCheckScript}"`, { stdio: 'inherit', cwd: scriptsPath });
 execSync(`python "${buildRedirectMapScript}"`, { stdio: 'inherit', cwd: scriptsPath });

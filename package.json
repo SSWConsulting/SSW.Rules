@@ -10,7 +10,8 @@
     "export": "npm run build && next export",
     "lint": "biome lint",
     "dev:build": "next build",
-    "prepare:content": "cross-env node ./scripts/prepare-content.js"
+    "prepare:content": "cross-env node ./scripts/prepare-content.js",
+    "update-categories": "cross-env node ./scripts/update-categories.js"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.3",

@@ -128,6 +128,17 @@ query rulesByUriQuery($uris: [String!]!) {
         }
         lastUpdated
         lastUpdatedBy
+        categories {
+          category {
+            ... on CategoryCategory {
+              uri
+              title
+              _sys {
+                relativePath
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -235,6 +246,60 @@ query allRulesPaths($first: Float, $after: String) {
           _sys { relativePath filename }
         }
       }
+    }
+  }
+}
+
+# Minimal rule query to avoid overfetching category and related rule fields
+query ruleData($relativePath: String!) {
+  rule(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        hasReferences
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ... on Rule {
+      title
+      uri
+      body
+      authors {
+        title
+        url
+      }
+      categories {
+        category {
+          ... on CategoryCategory {
+            uri
+            title
+          }
+        }
+      }
+      related {
+        rule {
+          ... on Rule {
+            title
+            uri
+          }
+        }
+      }
+      redirects
+      guid
+      seoDescription
+      created
+      createdBy
+      createdByEmail
+      lastUpdated
+      lastUpdatedBy
+      lastUpdatedByEmail
+      isArchived
+      archivedreason
     }
   }
 }

@@ -12,7 +12,7 @@ const token = process.env.TINA_TOKEN;
 const searchToken = process.env.TINA_SEARCH_TOKEN;
 const basePath = process.env.TINA_BASE_PATH ?? undefined;
 
-const config = defineConfig({
+export const config = defineConfig({
   clientId: clientId,
   token: token,
   branch: branch,

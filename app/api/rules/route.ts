@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
 
-export const revalidate = 3600;
-
-export const dynamic = 'force-static';
+export const revalidate = 3600; // 60 minutes
 
 export async function GET() {
   try {
-    const PAGE_SIZE = 1000; // server-side page size (Tina may cap to 50)
+    const PAGE_SIZE = 1000; // server-side page size
     let after: string | undefined = undefined;
     let hasNextPage = true;
     const allEdges: any[] = [];
@@ -45,7 +43,7 @@ export async function GET() {
     return new NextResponse(JSON.stringify(items), { 
       status: 200,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
     });
   } catch (err) {

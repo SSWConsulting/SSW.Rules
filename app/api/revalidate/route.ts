@@ -24,9 +24,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ revalidated: false, reason: "No paths in payload" }, { status: 200 });
     }
 
-    const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/^\/+/, "");
-    // Note: revalidatePath expects the internal app route (without basePath)
-    // We revalidate the rules listing page, not the API route
     const pathsToRevalidate = ["/rules"]; 
     const routesToRevalidate = new Set<string>();
 
@@ -37,7 +34,6 @@ export async function POST(req: Request) {
       if (changedPath.startsWith("public/uploads/rules/")) {
         const slug = changedPath.replace("public/uploads/rules/", "").replace("/rule.mdx", "").replace(/\/+$/, "");
         if (slug) {
-          // Do not include basePath here; Next.js basePath is handled internally
           routesToRevalidate.add(`/${slug}`);
         }
       }
@@ -50,7 +46,7 @@ export async function POST(req: Request) {
     }
 
     for (const route of routesToRevalidate) {
-      revalidatePath(route, "page");
+      revalidatePath(route);
     }
 
     return NextResponse.json({ revalidated: true, routes: Array.from(routesToRevalidate) });

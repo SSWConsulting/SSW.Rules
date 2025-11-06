@@ -4,8 +4,6 @@ import { Collection } from "tinacms";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH?.replace(/^\//, "") || ""
-
 const Rule: Collection = {
   name: "rule",
   label: "Rule",
@@ -46,34 +44,6 @@ const Rule: Collection = {
       searchable: true
     },
     {
-      type: "image",
-      label: "Rule thumbnail",
-      name: "thumbnail",
-      description: "Use a JPG or PNG image that is at least 175 x 175px",
-    },
-    {
-      name: "categories",
-      label: "Categories",
-      description: "The mapping of the rule to the category",
-      list: true,
-      type: "object",
-      ui: {
-        itemProps: (item) => {
-      const categoryTitle = item?.category ? `🔗 ${item?.category?.split("/").at(-1)?.replace(".mdx","")}` : "Unselected Category";
-          return { label: categoryTitle }; 
-        },
-      },
-      fields: [
-        {
-          type: "reference",
-          name: "category",
-          label: "Related Category",
-          description: "The related category of the rule",
-          collections: ["category"],
-        },
-      ],
-    },
-    {
       type: "string",
       name: "uri",
       label: "Uri",
@@ -88,6 +58,28 @@ const Rule: Collection = {
           if (/\s/.test(v)) return "URI cannot contain spaces";
         },
       },
+    },
+    {
+      name: "categories",
+      label: "Categories",
+      description: "Assigns one or more categories to the rule",
+      list: true,
+      type: "object",
+      ui: {
+        itemProps: (item) => {
+          const categoryTitle = item?.category ? `🔗 ${item?.category?.split("/").at(-1)?.replace(".mdx","")}` : "Unselected Category";
+          return { label: categoryTitle }; 
+        },
+      },
+      fields: [
+        {
+          type: "reference",
+          name: "category",
+          label: "Related Category",
+          description: "The related category of the rule",
+          collections: ["category"],
+        },
+      ],
     },
     {
       type: "object",
@@ -181,6 +173,12 @@ const Rule: Collection = {
       searchable: false,
       templates: embedTemplates,
       toolbarOverride: ['embed', 'heading', 'link', 'quote', 'ul', 'ol', 'bold', 'italic', 'code', 'codeBlock', 'mermaid', 'table', 'raw']
+    },
+    {
+      type: "image",
+      label: "Rule thumbnail",
+      name: "thumbnail",
+      description: "Use a JPG or PNG image that is at least 175 x 175px",
     },
     ...historyFields
   ],

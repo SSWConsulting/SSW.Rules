@@ -103,9 +103,21 @@ export function categorizeCategories(
 }
 
 export async function getRuleCategories(
-  ruleUri: string
+  ruleUri: string,
+  branch?: string
 ): Promise<{ rule: any; currentRuleCategories: string[] }> {
-  const currentRule = await client.queries.rulesByUriQuery({ uris: [ruleUri] });
+  const currentRule = await client.queries.rulesByUriQuery(
+    { uris: [ruleUri] },
+    branch
+      ? {
+          fetchOptions: {
+            headers: {
+              "x-branch": branch,
+            },
+          },
+        }
+      : undefined
+  );
   const rule = currentRule?.data?.ruleConnection?.edges?.[0]?.node;
 
   if (!rule) {

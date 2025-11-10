@@ -70,8 +70,7 @@ const getCategoryData = async (filename: string) => {
 
 const getRuleData = async (filename: string) => {
   try {
-    const queryFn = (client.queries as any).ruleData ?? client.queries.rule;
-    const tinaProps = await queryFn({
+    const tinaProps = await client.queries.ruleData({
       relativePath: filename + "/rule.mdx",
     });
 

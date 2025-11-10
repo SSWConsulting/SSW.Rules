@@ -1,13 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BiChevronDown, BiSearch } from "react-icons/bi";
-import {
-  Popover,
-  PopoverButton,
-  Transition,
-  PopoverPanel,
-} from "@headlessui/react";
 
 interface Rule {
   title: string;
@@ -19,13 +14,14 @@ interface Rule {
 }
 
 const MIN_SEARCH_LENGTH = 2;
+const INITIAL_RULES_COUNT = 20;
 
 export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
   const [filter, setFilter] = useState("");
   const [allRules, setAllRules] = useState<Rule[]>([]);
   const [filteredRules, setFilteredRules] = useState<Rule[]>([]);
   const [loading, setLoading] = useState(false);
-  
+
   const [selectedRuleLabel, setSelectedRuleLabel] = useState<string | null>(null);
 
   const selectedRule = useMemo(() => {
@@ -61,15 +57,58 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
     run();
   }, []);
 
+  // Initialize selected rule label from input.value when rules are loaded
+  useEffect(() => {
+    if (allRules.length === 0 || !input.value) return;
+
+    // Extract relative path from input.value (handles both "public/uploads/rules/" and "rules/" prefixes)
+    const selectedRel = input.value.replace(/^public\/uploads\/rules\//, "").replace(/^rules\//, "");
+
+    // Find the matching rule
+    const matchingRule = allRules.find((r) => r._sys.relativePath === selectedRel);
+
+    if (matchingRule) {
+      setSelectedRuleLabel(matchingRule.uri);
+    }
+  }, [allRules, input.value]);
+
   // Recompute filtered results when query changes
   useEffect(() => {
     const q = filter.trim().toLowerCase();
     const isSearch = q.length >= MIN_SEARCH_LENGTH;
+
     if (!isSearch) {
-      setFilteredRules([]);
+      // Show first 20 rules sorted by lastUpdated when no search query
+      // Ensure selected rule is always included if it exists
+      const selectedRel = selectedRule ? selectedRule.replace(/^public\/uploads\/rules\//, "").replace(/^rules\//, "") : null;
+      const selectedRuleObj = selectedRel ? allRules.find((r) => r._sys.relativePath === selectedRel) : null;
+
+      const sorted = [...allRules].sort((a, b) => {
+        const timeA = new Date(a.lastUpdated).getTime() || 0;
+        const timeB = new Date(b.lastUpdated).getTime() || 0;
+        return timeB - timeA;
+      });
+
+      // If there's a selected rule, ensure it's included
+      if (selectedRuleObj) {
+        const topRules = sorted.slice(0, INITIAL_RULES_COUNT);
+        const isSelectedInTop = topRules.some((r) => r._sys.relativePath === selectedRel);
+
+        if (!isSelectedInTop) {
+          // Remove the last item and add selected rule at the top
+          topRules.pop();
+          setFilteredRules([selectedRuleObj, ...topRules]);
+        } else {
+          // Selected rule is already in top 20, just show top 20
+          setFilteredRules(topRules);
+        }
+      } else {
+        setFilteredRules(sorted.slice(0, INITIAL_RULES_COUNT));
+      }
       return;
     }
 
+    // Filter and sort when searching - show ALL matching results (no limit)
     const includesMatches = allRules.filter((r) => {
       const uri = r.uri.toLowerCase();
       const title = r.title.toLowerCase();
@@ -80,36 +119,31 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
       const timeB = new Date(b.lastUpdated).getTime() || 0;
       return timeB - timeA;
     });
+    // Show all matching results when searching (no limit)
     setFilteredRules(includesSorted);
-  }, [filter, allRules]);
+  }, [filter, allRules, selectedRule]);
 
   const handleRuleSelect = (rule) => {
     setSelectedRuleLabel(rule.uri);
     const rulePath = `public/uploads/rules/${rule._sys.relativePath}`;
     input.onChange(rulePath);
-  }
+  };
 
-  if(loading) {
-    return <div className="p-4 text-center text-gray-500">
-      Loading rules...
-    </div>;
+  if (loading) {
+    return <div className="p-4 text-center text-gray-500">Loading rules...</div>;
   }
 
   return (
-    <div className="relative z-[1000]">
+    <div className="relative z-1000">
       <input type="hidden" id={input.name} {...input} />
       <Popover>
         {({ open }) => (
           <>
-            <PopoverButton
-              className="text-sm h-11 px-4 justify-between w-full bg-white border border-gray-200 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors flex items-center"
-            >
+            <PopoverButton className="text-sm h-11 px-4 justify-between w-full bg-white border border-gray-200 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors flex items-center">
               <span>{selectedRuleLabel || "Select a rule"}</span>
-              <BiChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+              <BiChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
             </PopoverButton>
-            <div
-              className="absolute inset-x-0 -bottom-2 translate-y-full z-[1000]"
-            >
+            <div className="absolute inset-x-0 -bottom-2 translate-y-full z-1000">
               <Transition
                 enter="transition duration-150 ease-out"
                 enterFrom="transform opacity-0 -translate-y-2"
@@ -143,24 +177,21 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
 
                       {/* Empty state */}
                       {!loading && filteredRules.length === 0 && filter.length >= MIN_SEARCH_LENGTH && (
-                        <div className="p-4 text-center text-gray-400">
-                          No rules found matching your search
-                        </div>
+                        <div className="p-4 text-center text-gray-400">No rules found matching your search</div>
                       )}
 
                       {/* Rules list */}
                       {!loading && filteredRules.length > 0 && (
                         <div className="flex-1 overflow-y-auto">
                           {filteredRules.map((rule) => {
-                            const selectedRel = selectedRule
-                              ? selectedRule.replace(/^public\/uploads\/rules\//, '').replace(/^rules\//, '')
-                              : null;
+                            const selectedRel = selectedRule ? selectedRule.replace(/^public\/uploads\/rules\//, "").replace(/^rules\//, "") : null;
                             const isSelected = selectedRel === rule._sys.relativePath;
-                            
+
                             return (
-                              <button key={rule.uri}
+                              <button
+                                key={rule.uri}
                                 className={`w-full text-left py-2 px-3 hover:bg-gray-50 border-b border-gray-100 transition-colors block ${
-                                  isSelected ? 'bg-blue-50 border-blue-200' : ''
+                                  isSelected ? "bg-blue-50 border-blue-200" : ""
                                 }`}
                                 onClick={() => {
                                   handleRuleSelect(rule);
@@ -169,12 +200,8 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
                               >
                                 <div className="flex items-center justify-between w-full gap-3">
                                   <div className="flex-1 min-w-0 overflow-hidden">
-                                    <div className="font-medium text-gray-900 text-sm leading-5 truncate">
-                                      {rule.title}
-                                    </div>
-                                    <div className="text-xs text-gray-500 leading-4 truncate">
-                                      {rule.uri}
-                                    </div>
+                                    <div className="font-medium text-gray-900 text-sm leading-5 truncate">{rule.title}</div>
+                                    <div className="text-xs text-gray-500 leading-4 truncate">{rule.uri}</div>
                                   </div>
                                   <div className="text-xs text-gray-500 leading-4 whitespace-nowrap text-right">
                                     Last updated: {formatLastUpdated(rule.lastUpdated)}

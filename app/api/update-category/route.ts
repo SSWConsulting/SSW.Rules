@@ -24,13 +24,25 @@ async function processSingleCategory(
   category: string,
   ruleUri: string,
   tgc: TinaGraphQLClient,
-  action: "add" | "delete"
+  action: "add" | "delete",
+  branch?: string
 ): Promise<boolean> {
   try {
     const relativePath = getRelativePathForCategory(category);
-    const categoryQueryResult = await client.queries.categoryWithRulesQuery({
-      relativePath,
-    });
+    const categoryQueryResult = await client.queries.categoryWithRulesQuery(
+      {
+        relativePath,
+      },
+      branch
+        ? {
+            fetchOptions: {
+              headers: {
+                "x-branch": branch,
+              },
+            },
+          }
+        : undefined
+    );
     const ruleAlreadyExists = ruleExistsByUriInCategory(
       categoryQueryResult,
       ruleUri
@@ -67,7 +79,8 @@ async function processCategories(
   categories: string[],
   ruleUri: string,
   tgc: TinaGraphQLClient,
-  action: "add" | "delete"
+  action: "add" | "delete",
+  branch?: string
 ): Promise<CategoryProcessingResult> {
   const processed: string[] = [];
   const failed: string[] = [];
@@ -78,7 +91,8 @@ async function processCategories(
         category,
         ruleUri,
         tgc,
-        action
+        action,
+        branch
       );
 
       const relativePath = getRelativePathForCategory(category);
@@ -195,9 +209,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const { categories, ruleUri } = bodyValidation.data!;
     const token = authValidation.token || "";
+    const activeBranch = request.cookies.get("x-branch")?.value;
 
     // Get current rule and its categories
-    const { rule, currentRuleCategories } = await getRuleCategories(ruleUri);
+    const { rule, currentRuleCategories } = await getRuleCategories(
+      ruleUri,
+      activeBranch
+    );
 
     if (!rule) {
       return NextResponse.json(
@@ -217,10 +235,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
 
     // Process categories
-    const tgc = new TinaGraphQLClient(token);
+    const tgc = new TinaGraphQLClient(token, activeBranch);
     const [addResult, deleteResult] = await Promise.all([
-      processCategories(toAdd, ruleUri, tgc, "add"),
-      processCategories(toDelete, ruleUri, tgc, "delete"),
+      processCategories(toAdd, ruleUri, tgc, "add", activeBranch),
+      processCategories(toDelete, ruleUri, tgc, "delete", activeBranch),
     ]);
 
     // Build response

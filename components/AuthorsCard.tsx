@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useEffect, useState, useCallback } from 'react'
+import { Card } from '@/components/ui/card'
 
 interface Author {
   title?: string
@@ -10,11 +11,12 @@ interface Author {
   noimage?: boolean
 }
 
-interface AcknowledgementsProps {
-  authors: Author[]
+interface AuthorsCardProps {
+  authors?: Author[]
 }
 
-export default function Acknowledgements({ authors }: AcknowledgementsProps) {
+export default function AuthorsCard({ authors }: AuthorsCardProps) {
+  const resolvedAuthors: Author[] = authors ?? [];
   const placeholderImg = '/uploads/ssw-employee-profile-placeholder-sketch.jpg';
 
   const getImgSource = useCallback((author: Author): string => {
@@ -51,16 +53,16 @@ export default function Acknowledgements({ authors }: AcknowledgementsProps) {
   const [imgSrcList, setImgSrcList] = useState<string[]>([]);
 
   useEffect(() => {
-    setImgSrcList(authors.map(getImgSource));
-  }, [authors, getImgSource]);
+    setImgSrcList(resolvedAuthors.map(getImgSource));
+  }, [resolvedAuthors, getImgSource]);
 
   useEffect(() => {
-    authors.forEach((author) => {
+    resolvedAuthors.forEach((author) => {
       if (!author.title) {
         console.warn(`Profile title is missing for author with URL: ${author.url}`);
       }
     })
-  }, [authors]);
+  }, [resolvedAuthors]);
 
   const handleImageError = (index: number) => {
     setImgSrcList((prev) => {
@@ -70,35 +72,43 @@ export default function Acknowledgements({ authors }: AcknowledgementsProps) {
     })
   }
 
-  return (
-    <div className="flex flex-row flex-wrap">
-      {authors.map((author, index) => {
-        const title = author.title ?? 'Unknown'
-        const imgSrc = imgSrcList[index]
+  if (resolvedAuthors.length === 0) {
+    return <></>
+  }
 
-        return (
-          <div
-            className="px-2 flex items-center my-2 justify-center"
-            key={`author_${index}`}
-          >
-            <div className="w-12 h-12 overflow-hidden rounded-full relative">
-              <a href={author.url} target="_blank" rel="noopener noreferrer">
-                {imgSrc?.trim() && (
-                  <Image
-                    src={imgSrc}
-                    alt={title}
-                    title={title}
-                    fill
-                    className="object-cover object-top"
-                    onError={() => handleImageError(index)}
-                    unoptimized
-                  />
-                )}
-              </a>
+  return (
+    <Card title="Authors">
+      <div className="flex flex-row flex-wrap">
+        {resolvedAuthors.map((author, index) => {
+          const title = author.title ?? 'Unknown'
+          const imgSrc = imgSrcList[index]
+
+          return (
+            <div
+              className="px-2 flex items-center my-2 justify-center"
+              key={`author_${index}`}
+            >
+              <div className="w-12 h-12 overflow-hidden rounded-full relative">
+                <a href={author.url} target="_blank" rel="noopener noreferrer">
+                  {imgSrc?.trim() && (
+                    <Image
+                      src={imgSrc}
+                      alt={title}
+                      title={title}
+                      fill
+                      className="object-cover object-top"
+                      onError={() => handleImageError(index)}
+                      unoptimized
+                    />
+                  )}
+                </a>
+              </div>
             </div>
-          </div>
-        )
-      })}
-    </div>
+          )
+        })}
+      </div>
+    </Card>
   )
 }
+
+

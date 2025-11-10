@@ -1,16 +1,16 @@
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Image from "next/image";
-import Link from "next/link";
 import { formatDateLong, timeAgo } from "@/lib/dateUtils";
 import { Card } from "@/components/ui/card";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import Discussion from "@/components/Discussion";
 import { RiHistoryLine } from "react-icons/ri";
-import Acknowledgements from "@/components/Acknowledgements";
+import AuthorsCard from "@/components/AuthorsCard";
 import HelpCard from "@/components/HelpCard";
-import RelatedRules from "@/components/RelatedRules";
+import RelatedRulesCard from "@/components/RelatedRulesCard";
 import RuleActionButtons from "@/components/RuleActionButtons";
+import CategoriesCard from "@/components/CategoriesCard";
 
 export interface ServerRulePageProps {
   rule: any;
@@ -120,27 +120,9 @@ export default function ServerRulePage({
         </Card>
 
         <div className="layout-sidebar">
-          <Card title="Categories">
-            <div className="flex flex-wrap gap-4">
-              {rule?.categories?.map((c) => (
-                c.category && (
-                <Link
-                  key={c.category.uri}
-                  href={`/${c.category.uri}`}
-                  className="border-2 no-underline border-ssw-red text-ssw-red py-1 px-2 rounded-xs font-semibold hover:text-white hover:bg-ssw-red transition-colors duration-200"
-                >
-                  {c.category.title?.replace(/^Rules to better\s*/i, "")}
-                </Link>
-                )
-              ))}
-            </div>
-          </Card>
-          <Card title="Acknowledgements">
-            <Acknowledgements authors={rule.authors} />
-          </Card>
-          <Card title="Related rules">
-            <RelatedRules relatedRules={rule.related} />
-          </Card>
+          <CategoriesCard categories={rule?.categories} />
+          <AuthorsCard authors={rule.authors} />
+          <RelatedRulesCard relatedRules={rule.related} />
           <HelpCard />
           <div className="block md:hidden">
             <Discussion ruleGuid={rule.guid} />

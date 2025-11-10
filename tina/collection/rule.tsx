@@ -1,8 +1,10 @@
+import React from 'react';
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
-import { Collection } from "tinacms";
+import { Collection, wrapFieldsWithMeta } from "tinacms";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
+import { CategorySelectorInput } from "../fields/CategorySelector";
 
 const Rule: Collection = {
   name: "rule",
@@ -78,6 +80,11 @@ const Rule: Collection = {
           label: "Related Category",
           description: "The related category of the rule",
           collections: ["category"],
+          ui: {
+            component: wrapFieldsWithMeta((props) => (
+              <CategorySelectorInput {...props} />
+            ))
+          }
         },
       ],
     },

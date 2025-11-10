@@ -57,6 +57,7 @@ query mainCategoryQuery {
         top_category {
           ... on CategoryTop_category {
             title
+            uri
             _sys {
               filename
             }

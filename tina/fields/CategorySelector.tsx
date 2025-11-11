@@ -47,7 +47,7 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
         // First, check branch status
         let branchProtected = false;
         try {
-          const branchRes = await fetch(`../api/branch`, { method: "GET", cache: "no-store" });
+          const branchRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/branch`, { method: "GET", cache: "no-store" });
           if (branchRes.ok) {
             const branchData = await branchRes.json();
             const branch = branchData?.branch || "";
@@ -68,7 +68,7 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
         }
 
         // Fetch categories via API route
-        const categoriesRes = await fetch(`../api/categories`, { method: "GET", cache: "no-store" });
+        const categoriesRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/categories`, { method: "GET", cache: "no-store" });
         if (!categoriesRes.ok) {
           throw new Error(`HTTP ${categoriesRes.status}`);
         }

@@ -44,7 +44,7 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
       setLoading(true);
       try {
         // Since we are in Tina admin site, we are at /admin so need to drop down a level back to root
-        const res = await fetch(`../api/rules`, { method: "GET", cache: "no-store" });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/rules`, { method: "GET", cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const rules = await res.json();
         setAllRules(rules);

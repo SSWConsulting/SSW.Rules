@@ -1,17 +1,17 @@
 import React from "react";
-import { Section } from "@/components/layout/section";
-import client from "@/tina/__generated__/client";
-import { notFound } from "next/navigation";
-import ruleToCategoryIndex from "@/rule-to-categories.json";
-import categoryTitleIndex from "@/category-uri-title-map.json";
 import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
+import categoryTitleIndex from "@/category-uri-title-map.json";
+import { Section } from "@/components/layout/section";
+import ruleToCategoryIndex from "@/rule-to-categories.json";
+import client from "@/tina/__generated__/client";
+import ClientFallbackPage from "./ClientFallbackPage";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
 
 // We have a Tina webhook revalidating each page individually on change
 // Leaving this as a fallback in case the above goes wrong
 // export const revalidate = 3600;
 
-export const dynamic = 'force-static';
+export const dynamic = "force-static";
 
 const getFullRelativePathFromFilename = async (filename: string): Promise<string | null> => {
   let hasNextPage = true;
@@ -97,13 +97,15 @@ export async function generateStaticParams() {
     let hasNext = true;
 
     while (hasNext) {
-      const res = await client.queries.allRulesPaths({
-        first: 200,
-        after,
-      }).catch((err: any) => {
-        console.warn("allRuleFoldersQuery page fetch error:", err?.message || err);
-        return null;
-      });
+      const res = await client.queries
+        .allRulesPaths({
+          first: 200,
+          after,
+        })
+        .catch((err: any) => {
+          console.warn("allRuleFoldersQuery page fetch error:", err?.message || err);
+          return null;
+        });
 
       const edges = res?.data?.ruleConnection?.edges ?? [];
       for (const e of edges) {
@@ -274,14 +276,12 @@ export default async function Page({
     );
   }
 
-  notFound();
+  // If data is not found statically, try fetching on client side with branch support
+  const sp = (await searchParams) ?? {};
+  return <ClientFallbackPage filename={filename} searchParams={sp} />;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ filename: string }>;
-}) {
+export async function generateMetadata({ params }: { params: Promise<{ filename: string }> }) {
   const { filename } = await params;
 
   try {

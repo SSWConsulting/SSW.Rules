@@ -1,8 +1,8 @@
-import { Prism } from "tinacms/dist/rich-text/prism";
-import React from "react";
 import { Link as LinkIcon } from "lucide-react";
-import { toSlug } from "@/lib/utils";
 import Link from "next/link";
+import React from "react";
+import { Prism } from "tinacms/dist/rich-text/prism";
+import { toSlug } from "@/lib/utils";
 
 // Helper function to extract text content from TinaCMS props structure
 const getTextContent = (props: any): string => {
@@ -10,57 +10,62 @@ const getTextContent = (props: any): string => {
   const content = props?.children?.props?.content;
 
   if (Array.isArray(content)) {
-    return content
-      .map((node) => (typeof node.text === "string" ? node.text : ""))
-      .join("");
+    return content.map((node) => (typeof node.text === "string" ? node.text : "")).join("");
   }
 
   // Fallback for standard React children
-  if (typeof props.children === 'string') return props.children;
+  if (typeof props.children === "string") return props.children;
   if (Array.isArray(props.children)) {
-    return props.children.map(child =>
-      typeof child === 'string' ? child : ''
-    ).join('');
+    return props.children.map((child) => (typeof child === "string" ? child : "")).join("");
   }
 
-  return '';
+  return "";
 };
 
-const createHeading = (Tag: 'h2' | 'h3' | 'h4', enableAnchors = false) => (props: any) => {
-  if (!enableAnchors) {
-    return <Tag {...props} />;
+const createHeading =
+  (Tag: "h2" | "h3" | "h4", enableAnchors = false) =>
+  (props: any) => {
+    if (!enableAnchors) {
+      return <Tag {...props} />;
+    }
+
+    const textContent = getTextContent(props);
+    const id = toSlug(textContent);
+
+    const iconSize = Tag === "h2" ? 24 : Tag === "h3" ? 20 : 16;
+
+    return (
+      <Tag id={id} className="group relative scroll-mt-24" {...props}>
+        {props.children}
+        <a
+          href={`#${id}`}
+          className="inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 no-underline"
+          aria-label={`Link to ${textContent}`}
+        >
+          <LinkIcon size={iconSize} className="text-gray-400 hover:text-ssw-red" />
+        </a>
+      </Tag>
+    );
+  };
+
+const rewriteUploadsToAssets = (href?: string) => {
+  const TINA_CLIENT_ID = process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "";
+  const ALLOWED_EXTS = new Set(["pdf", "txt", "zip", "mp4", "mp3", "ics", "doc", "docx", "ppt", "pptx", "xls", "xlsx"]);
+
+  if (!href || !TINA_CLIENT_ID || !href.startsWith("/uploads/rules/")) {
+    return href;
   }
-
-  const textContent = getTextContent(props);
-  const id = toSlug(textContent);
-
-  const iconSize = Tag === 'h2' ? 24 : Tag === 'h3' ? 20 : 16;
-
-  return (
-    <Tag id={id} className="group relative scroll-mt-24" {...props}>
-      {props.children}
-      <a
-        href={`#${id}`}
-        className="inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 no-underline"
-        aria-label={`Link to ${textContent}`}
-      >
-        <LinkIcon size={iconSize} className="text-gray-400 hover:text-ssw-red" />
-      </a>
-    </Tag>
-  );
+  const ext = href.split(".").pop()?.toLowerCase() || "";
+  if (!ALLOWED_EXTS.has(ext)) return href;
+  return `https://assets.tina.io/${TINA_CLIENT_ID}/${href.replace(/^\/uploads\//, "")}`;
 };
 
 export const getTypographyComponents = (enableAnchors = false) => ({
-  p: (props: any) => (
-    <p className="mb-4" {...props} />
-  ),
+  p: (props: any) => <p className="mb-4" {...props} />,
   a: (props: any) => {
-    const href = props?.url || props?.href || "";
-    const isInternal =
-      typeof href === "string" &&
-      href.startsWith("/") &&
-      !href.startsWith("//") &&
-      !href.startsWith("/_next");
+    let href = props?.url || props?.href || "";
+    href = rewriteUploadsToAssets(href);
+    const isInternal = typeof href === "string" && href.startsWith("/") && !href.startsWith("//") && !href.startsWith("/_next");
 
     if (isInternal) {
       return (
@@ -76,21 +81,10 @@ export const getTypographyComponents = (enableAnchors = false) => ({
       </a>
     );
   },
-  li: (props) => (
-    <li {...props} />
-  ),
-  mark: (props: any) => (
-    <mark {...props} />
-  ),
-  blockquote: (props: any) => (
-    <blockquote
-      className="border-l-2 border-gray-900 my-4 pl-4 italic text-gray-600"
-      {...props}
-    />
-  ),
-  code: (props: any) => (
-    <code className="bg-gray-100 py-1 px-2 rounded-sm" {...props} />
-  ),
+  li: (props) => <li {...props} />,
+  mark: (props: any) => <mark {...props} />,
+  blockquote: (props: any) => <blockquote className="border-l-2 border-gray-900 my-4 pl-4 italic text-gray-600" {...props} />,
+  code: (props: any) => <code className="bg-gray-100 py-1 px-2 rounded-sm" {...props} />,
   code_block: (props) => {
     if (!props) {
       return <></>;
@@ -101,9 +95,9 @@ export const getTypographyComponents = (enableAnchors = false) => ({
       </div>
     );
   },
-  h2: createHeading('h2', enableAnchors),
-  h3: createHeading('h3', enableAnchors),
-  h4: createHeading('h4', enableAnchors),
+  h2: createHeading("h2", enableAnchors),
+  h3: createHeading("h3", enableAnchors),
+  h4: createHeading("h4", enableAnchors),
 });
 
 // Default export without anchors for backwards compatibility

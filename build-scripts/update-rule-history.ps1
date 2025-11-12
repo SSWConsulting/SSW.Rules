@@ -66,7 +66,7 @@ $historyArray | Foreach-Object {
                     $fullPath = Join-Path $rulesContentFolder $_
                     if (!(Test-Path $fullPath)) {
                         Write-Output "Skipping missing file: $fullPath"
-                        return
+                        continue
                     }
                     $createdRecord = git log --diff-filter=A --reverse --pretty="%ad<LINE>%aN<LINE>%ae<LINE>" --date=iso-strict -- $_
                     $createdDetails = $createdRecord -split "<LINE>"

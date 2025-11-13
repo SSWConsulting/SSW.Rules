@@ -25,6 +25,40 @@ query CategoryFull($relativePath: String!) {
         lastUpdatedByEmail
         isArchived
         archivedreason
+        index {
+            rule {
+                ... on Rule {
+                    uri
+                    _sys {
+                        relativePath
+                    }
+                }
+            }
+        }
+    }
+    }
+}
+`;
+
+export const CATEGORY_FULL_QUERY_NO_INDEX = `
+query CategoryFullNoIndex($relativePath: String!) {
+    category(relativePath: $relativePath) {
+    ... on CategoryCategory {
+        title
+        uri
+        guid
+        consulting
+        experts
+        redirects
+        body
+        created
+        createdBy
+        createdByEmail
+        lastUpdated
+        lastUpdatedBy
+        lastUpdatedByEmail
+        isArchived
+        archivedreason
     }
     }
 }
@@ -47,7 +81,6 @@ query CategoryRulePaths($relativePath: String!) {
         rule {
           ... on Rule {
             uri
-            _sys { relativePath }
           }
         }
       }

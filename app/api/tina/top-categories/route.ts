@@ -2,20 +2,12 @@ import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
+import { getFetchOptions } from "@/utils/tina/get-branch";
 
 // Helper function to fetch top categories data (will be wrapped with cache)
 async function fetchTopCategoriesData(first: number, after: string | null, branch?: string) {
   if (branch) {
-    return await client.queries.topCategoryWithIndexQuery(
-      { first, after },
-      {
-        fetchOptions: {
-          headers: {
-            "x-branch": branch,
-          },
-        },
-      }
-    );
+    return await client.queries.topCategoryWithIndexQuery({ first, after }, await getFetchOptions());
   } else {
     return await client.queries.topCategoryWithIndexQuery({ first, after });
   }

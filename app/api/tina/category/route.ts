@@ -1,21 +1,12 @@
 import { unstable_cache } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
-import { getBranch } from "@/utils/tina/get-branch";
+import { getBranch, getFetchOptions } from "@/utils/tina/get-branch";
 
 // Helper function to fetch category data (will be wrapped with cache)
 async function fetchCategoryData(relativePath: string, branch?: string) {
   if (branch) {
-    return await client.queries.categoryWithRulesQuery(
-      { relativePath },
-      {
-        fetchOptions: {
-          headers: {
-            "x-branch": branch,
-          },
-        },
-      }
-    );
+    return await client.queries.categoryWithRulesQuery({ relativePath }, await getFetchOptions());
   } else {
     return await client.queries.categoryWithRulesQuery({ relativePath });
   }

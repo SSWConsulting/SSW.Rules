@@ -2,20 +2,12 @@ import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
+import { getFetchOptions } from "@/utils/tina/get-branch";
 
 // Helper function to fetch main category data (will be wrapped with cache)
 async function fetchMainCategoryData(branch?: string) {
   if (branch) {
-    return await client.queries.mainCategoryQuery(
-      {},
-      {
-        fetchOptions: {
-          headers: {
-            "x-branch": branch,
-          },
-        },
-      }
-    );
+    return await client.queries.mainCategoryQuery({}, await getFetchOptions());
   } else {
     return await client.queries.mainCategoryQuery({});
   }

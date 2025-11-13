@@ -3,7 +3,8 @@ export type CategoryRuleIndexItem = {
       _sys?: {
         relativePath?: string;
       };
-    };
+      uri?: string;
+    } | string; // Rule can be an object with _sys/uri or a string path
   };
   
   export type CategoryQueryResponse = {
@@ -81,6 +82,7 @@ export type CategoryRuleIndexItem = {
   export type UpdateCategoryRequest = {
     categories: Array<string | { category?: string }>;
     ruleUri: string;
+    formType?: "create" | "update";
   };
   
   export type UpdateCategoryResponse = {

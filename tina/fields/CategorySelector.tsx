@@ -28,19 +28,11 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
   }, [input.value]);
 
   // If creating a new rule, disable the selector
-  // When save happens we add the rule to the category, but at this point the rule doesnt yet exist
-  const isCreating = tinaForm.crudType == "create";
-  const isDisabled = isCreating || isProtectedBranch === true;
+  const isDisabled = isProtectedBranch === true;
 
   // Determine current branch and fetch categories
   useEffect(() => {
     // Don't fetch if creating a new rule
-    if (isCreating) {
-      setAllCategories([]);
-      setFilteredCategories([]);
-      return;
-    }
-
     const run = async () => {
       setLoading(true);
       try {
@@ -85,7 +77,7 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
       }
     };
     run();
-  }, [isCreating]);
+  }, []);
 
   // Initialize selected category label from existing value when categories load
   useEffect(() => {
@@ -216,11 +208,7 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
                 </PopoverPanel>
               </Transition>
             </div>
-            {isDisabled && (
-              <div className="mt-1 text-xs text-gray-400">
-                {isCreating ? "Save the rule to enable category selection." : "Switch to a non-protected branch to enable category selection."}
-              </div>
-            )}
+            {isDisabled && <div className="mt-1 text-xs text-gray-400">{"Switch to a non-protected branch to enable category selection."}</div>}
           </>
         )}
       </Popover>

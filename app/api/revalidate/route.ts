@@ -24,9 +24,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ revalidated: false, reason: "No paths in payload" }, { status: 200 });
     }
 
-    const pathsToRevalidate = ["/rules"]; 
     const routesToRevalidate = new Set<string>();
-
     for (const changedPath of changedPaths) {
       if (typeof changedPath !== "string") continue;
 
@@ -36,12 +34,26 @@ export async function POST(req: Request) {
         if (slug) {
           routesToRevalidate.add(`/${slug}`);
         }
+        // If change type is add then we also need to revalidate the /api/rules route
+        if (eventType === TINA_CONTENT_CHANGE_TYPE.Added) {
+          routesToRevalidate.add("/api/rules");
+        }
       }
-    }
 
-    if (eventType === TINA_CONTENT_CHANGE_TYPE.Added) {
-      for (const route of pathsToRevalidate) {
-        routesToRevalidate.add(route);
+      // Example: categories/communication/rules-to-better-email.mdx -> /rules-to-better-email
+      if (changedPath.startsWith("categories/")) {
+        const rel = changedPath.replace("categories/", "");
+        // Ignore main/top index files like categories/index.mdx or categories/<top>/index.mdx
+        if (!rel.endsWith("/index.mdx") && rel.endsWith(".mdx")) {
+          const filename = rel.replace(/\.mdx$/, "").split("/").pop();
+          if (filename) {
+            routesToRevalidate.add(`/${filename}`);
+          }
+        }
+        // If change type is add then we also need to revalidate the /api/categories route
+        if (eventType === TINA_CONTENT_CHANGE_TYPE.Added) {
+          routesToRevalidate.add("/api/categories");
+        }
       }
     }
 

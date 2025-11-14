@@ -10,7 +10,8 @@ const ChatGPTSummaryButton = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const currentUrl = window.location.href;
-      const prompt = `Read ${currentUrl}. You are to assist the user with their queries about this rule - and if they have follow up questions, make sure you always reference this content`;
+      const prompt = `Read ${currentUrl}
+You are to assist the user with their queries about this rule - and if they have follow up questions, make sure you always reference this content`;
       const chatGptUrl = `https://chatgpt.com/?prompt=${encodeURIComponent(prompt)}`;
       setUri(chatGptUrl);
     }

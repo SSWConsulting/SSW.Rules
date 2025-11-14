@@ -82,7 +82,7 @@ module.exports = {
                       `Updated by ${edge.node.lastUpdatedBy}`,
                     date: edge.node.lastUpdated,
                     url: url,
-                    guid: url,
+                    guid: rule.frontmatter.guid,
                     custom_elements: [
                       { 'dc:creator': edge.node.lastUpdatedBy },
                       { pubDate: edge.node.lastUpdated },

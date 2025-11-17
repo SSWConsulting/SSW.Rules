@@ -227,6 +227,7 @@ jobs:
                 driver-opts: |
                   env.BUILDKIT_STEP_LOG_MAX_SIZE=10485760
                   env.BUILDKIT_STEP_LOG_MAX_SPEED=10485760
+                  network=host
 
             - name: Log no-cache build strategy
               run: |
@@ -253,110 +254,85 @@ jobs:
                       org.opencontainers.image.build.commit=${{ env.COMMIT_HASH }}
                       org.opencontainers.image.build.cache=disabled
 
-            - name: Create Dockerfile (no cache optimizations)
+            - name: Check initial disk usage
               run: |
-                  cat > Dockerfile <<'EOF'
-                  FROM node:18-alpine AS base
+                echo "=== Initial Disk Usage ==="
+                df -h
+                echo ""
+                echo "=== Docker Disk Usage ==="
+                docker system df || true
+                echo ""
+                echo "=== Home directory usage ==="
+                du -h -d 2 /home/runner 2>/dev/null | head -20 || true
 
-                  FROM base AS deps
-                  RUN apk add --no-cache libc6-compat git-lfs
-                  WORKDIR /app
-                  COPY package*.json ./
-                  COPY yarn.lock* ./
-                  # Force fresh install every time (no cache)
-                  RUN if [ -f yarn.lock ]; then yarn --frozen-lockfile --cache-folder /tmp/yarn-cache; \
-                      elif [ -f package-lock.json ]; then npm ci --force --cache /tmp/npm-cache; \
-                      else npm install --force --cache /tmp/npm-cache; fi
+            - name: Aggressive disk space cleanup (pre-build)
+              timeout-minutes: 5
+              run: |
+                echo "=== Starting aggressive disk cleanup ==="
+                
+                # Clean Docker completely (with timeouts to prevent hanging)
+                echo "Cleaning Docker system..."
+                timeout 60 docker system prune -af --volumes || true
+                timeout 30 docker builder prune -af || true
+                
+                # Clean buildx cache
+                echo "Cleaning Docker buildx cache..."
+                timeout 30 docker buildx prune -af || true
+                
+                # Remove unused Docker resources
+                echo "Removing unused Docker resources..."
+                timeout 30 docker container prune -f || true
+                timeout 30 docker image prune -af || true
+                timeout 30 docker volume prune -f || true
+                timeout 30 docker network prune -f || true
+                
+                # Clean GitHub Actions runner cache
+                echo "Cleaning runner cache..."
+                sudo timeout 60 find /home/runner/.cache -mindepth 1 -delete 2>/dev/null || true
+                
+                # Aggressively clean diagnostic logs (this is where the error occurs)
+                echo "Cleaning runner diagnostic logs (critical for disk space)..."
+                # Remove large log files (>10MB) and old log files (>1 hour) to free space
+                # but keep recent small logs that might be in use
+                sudo find /home/runner/actions-runner/cached/_diag -type f -size +10M -delete 2>/dev/null || true
+                sudo find /home/runner/actions-runner/cached/_diag -type f -mmin +60 -delete 2>/dev/null || true
+                sudo mkdir -p /home/runner/actions-runner/cached/_diag || true
+                
+                # Remove large unused system packages (using find for better performance)
+                echo "Removing unused system packages..."
+                sudo timeout 60 find /usr/share/dotnet -mindepth 1 -delete 2>/dev/null || true
+                sudo timeout 60 find /usr/local/lib/android -mindepth 1 -delete 2>/dev/null || true
+                sudo timeout 30 find /opt/ghc -mindepth 1 -delete 2>/dev/null || true
+                sudo timeout 30 find /opt/hostedtoolcache/CodeQL -mindepth 1 -delete 2>/dev/null || true
+                sudo timeout 30 find /usr/local/share/boost -mindepth 1 -delete 2>/dev/null || true
+                if [ -n "$AGENT_TOOLSDIRECTORY" ]; then
+                  sudo timeout 60 find "$AGENT_TOOLSDIRECTORY" -mindepth 1 -delete 2>/dev/null || true
+                fi
+                
+                # Clean apt cache
+                echo "Cleaning apt cache..."
+                sudo timeout 30 apt-get clean || true
+                sudo timeout 30 find /var/lib/apt/lists -mindepth 1 -delete 2>/dev/null || true
+                
+                # Clean temporary files (be selective - don't remove files in use)
+                echo "Cleaning old temporary files..."
+                # Only remove files older than 1 hour to avoid breaking active processes
+                sudo find /tmp -type f -mmin +60 -delete 2>/dev/null || true
+                sudo find /var/tmp -type f -mmin +60 -delete 2>/dev/null || true
+                
+                echo "=== Cleanup completed ==="
 
-                  FROM base AS builder
-                  WORKDIR /app
-                  COPY --from=deps /app/node_modules ./node_modules
-                  COPY . .
-                  RUN git lfs pull || true
-
-                  # Build arguments for build info
-                  ARG BUILD_TIMESTAMP
-                  ARG VERSION_DEPLOYED
-                  ARG DEPLOYMENT_URL
-                  ARG BUILD_DATE
-                  ARG COMMIT_HASH
-
-                  # Existing build arguments
-                  ARG TINA_TOKEN
-                  ARG TINA_SEARCH_TOKEN
-                  ARG TINA_WEBHOOK_SECRET
-                  ARG NEXT_PUBLIC_TINA_CLIENT_ID
-                  ARG NEXT_PUBLIC_TINA_BRANCH
-                  ARG NEXT_PUBLIC_ALGOLIA_APP_ID
-                  ARG NEXT_PUBLIC_ALGOLIA_ADMIN_KEY
-                  ARG NEXT_PUBLIC_ALGOLIA_INDEX_NAME
-                  ARG NEXT_PUBLIC_ALGOLIA_API_KEY
-                  ARG NEXT_PUBLIC_API_BASE_URL
-                  ARG NEXT_PUBLIC_GITHUB_ORG
-                  ARG NEXT_PUBLIC_GITHUB_REPO
-                  ARG NEXT_PUBLIC_GISCUS_REPO_NAME
-                  ARG NEXT_PUBLIC_GISCUS_REPO_ID
-                  ARG NEXT_PUBLIC_GISCUS_CATEGORY_ID
-                  ARG NEXT_PUBLIC_GISCUS_THEME_URL
-                  ARG NEXT_PUBLIC_BASE_PATH
-
-                  # Environment variables for build info (available at build time and runtime)
-                  ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP \
-                        VERSION_DEPLOYED=$VERSION_DEPLOYED \
-                        DEPLOYMENT_URL=$DEPLOYMENT_URL \
-                        BUILD_DATE=$BUILD_DATE \
-                        COMMIT_HASH=$COMMIT_HASH \
-                        TINA_TOKEN=$TINA_TOKEN \
-                        TINA_SEARCH_TOKEN=$TINA_SEARCH_TOKEN \
-                        TINA_WEBHOOK_SECRET=$TINA_WEBHOOK_SECRET \
-                        NEXT_PUBLIC_TINA_CLIENT_ID=$NEXT_PUBLIC_TINA_CLIENT_ID \
-                        NEXT_PUBLIC_TINA_BRANCH=$NEXT_PUBLIC_TINA_BRANCH \
-                        NEXT_PUBLIC_ALGOLIA_APP_ID=$NEXT_PUBLIC_ALGOLIA_APP_ID \
-                        NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=$NEXT_PUBLIC_ALGOLIA_ADMIN_KEY \
-                        NEXT_PUBLIC_ALGOLIA_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_INDEX_NAME \
-                        NEXT_PUBLIC_ALGOLIA_API_KEY=$NEXT_PUBLIC_ALGOLIA_API_KEY \
-                        NEXT_PUBLIC_GITHUB_ORG=$NEXT_PUBLIC_GITHUB_ORG \
-                        NEXT_PUBLIC_GITHUB_REPO=$NEXT_PUBLIC_GITHUB_REPO \
-                        NEXT_PUBLIC_GISCUS_REPO_NAME=$NEXT_PUBLIC_GISCUS_REPO_NAME \
-                        NEXT_PUBLIC_GISCUS_REPO_ID=$NEXT_PUBLIC_GISCUS_REPO_ID \
-                        NEXT_PUBLIC_GISCUS_CATEGORY_ID=$NEXT_PUBLIC_GISCUS_CATEGORY_ID \
-                        NEXT_PUBLIC_GISCUS_THEME_URL=$NEXT_PUBLIC_GISCUS_THEME_URL \
-                        NEXT_PUBLIC_BASE_PATH=$NEXT_PUBLIC_BASE_PATH \
-                        NEXT_TELEMETRY_DISABLED=1
-
-                  # Fresh build every time
-                  RUN if [ -f yarn.lock ]; then yarn build; else npm run build; fi
-
-                  FROM base AS runner
-                  WORKDIR /app
-
-                  # Environment variables for runtime
-                  ENV NODE_ENV=production \
-                      NEXT_TELEMETRY_DISABLED=1 \
-                      PORT=3000 \
-                      HOSTNAME="0.0.0.0"
-
-                  # Copy build info to runtime stage
-                  ARG BUILD_TIMESTAMP
-                  ARG VERSION_DEPLOYED
-                  ARG DEPLOYMENT_URL
-                  ARG BUILD_DATE
-                  ARG COMMIT_HASH
-
-                  ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP \
-                      VERSION_DEPLOYED=$VERSION_DEPLOYED \
-                      DEPLOYMENT_URL=$DEPLOYMENT_URL \
-                      BUILD_DATE=$BUILD_DATE \
-                      COMMIT_HASH=$COMMIT_HASH
-
-                  RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001
-                  COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-                  COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-                  COPY --from=builder /app/public ./public
-                  USER nextjs
-                  EXPOSE 3000
-                  CMD ["node", "server.js"]
-                  EOF
+            - name: Check disk usage after cleanup
+              timeout-minutes: 2
+              run: |
+                echo "=== Disk Usage After Cleanup ==="
+                df -h || true
+                echo ""
+                echo "=== Docker Disk Usage After Cleanup ==="
+                timeout 30 docker system df || echo "Docker system df timed out or failed"
+                echo ""
+                AVAILABLE=$(df -h / | awk 'NR==2 {print $4}' || echo "unknown")
+                echo "Available disk space: $AVAILABLE"
 
             - name: Record build start time
               run: |
@@ -397,6 +373,35 @@ jobs:
                         NEXT_PUBLIC_BASE_PATH=${{ vars.NEXT_PUBLIC_BASE_PATH }}
                   # CACHE COMPLETELY DISABLED
                   no-cache: true
+                  # Clean up intermediate containers after build
+                  pull: true
+
+            - name: Post-build cleanup
+              if: always()
+              run: |
+                echo "=== Post-build cleanup ==="
+                
+                # Clean Docker buildx cache immediately after build
+                echo "Cleaning Docker buildx cache..."
+                docker buildx prune -af || true
+                
+                # Remove intermediate build containers and images
+                echo "Removing intermediate Docker resources..."
+                docker system prune -af --volumes || true
+                docker builder prune -af || true
+                
+                # Clean runner diagnostic logs that may have grown large
+                echo "Cleaning runner diagnostic logs..."
+                sudo find /home/runner/actions-runner/cached/_diag -name "*.log" -type f -size +100M -delete || true
+                sudo find /home/runner/actions-runner/cached/_diag -name "*.log" -type f -mtime +0 -delete || true
+                
+                # Final disk usage check
+                echo ""
+                echo "=== Final Disk Usage ==="
+                df -h
+                echo ""
+                AVAILABLE=$(df -h / | awk 'NR==2 {print $4}')
+                echo "Available disk space: $AVAILABLE"
 
             - name: Record build completion and analyze performance
               run: |

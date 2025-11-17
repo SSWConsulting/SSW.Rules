@@ -12,7 +12,7 @@ on:
           - staging
           - production
   schedule:
-    - cron: "0 3 * * *"   # Runs daily at 03:00 UTC
+    - cron: "0 3 * * 1,4"   # Runs on Monday and Thursday at 03:00 UTC
 
 jobs:
   cleanup-images:

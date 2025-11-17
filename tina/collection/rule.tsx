@@ -164,7 +164,7 @@ const Rule: Collection = {
       type: "string",
       name: "seoDescription",
       label: "SEO Description",
-      description: "A summary of the page content, used for SEO purposes. This can be generated automatically with AI.",
+      description: "A summary of the page content, used for SEO purposes. This can be generated automatically with AI - See https://www.ssw.com.au/rules/html-meta-tags/#rectifying-the-missing-meta-tags-issue",
       searchable: false,
     },
     {

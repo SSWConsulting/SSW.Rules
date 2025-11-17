@@ -97,7 +97,7 @@ export default function ArchivedClientPage(props: ArchivedClientPageProps) {
                 <li key={ruleIndex} className="mb-4">
                   <div className="flex justify-between">
                     <Link 
-                      href={rule.uri} 
+                      href={`/${rule.uri}`} 
                       className="hover:text-ssw-red"
                     >
                       {rule.title}

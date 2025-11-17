@@ -4,6 +4,7 @@ import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { CategorySelectorInput } from "../fields/CategorySelector";
 import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
+import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 
 const Rule: Collection = {
@@ -51,8 +52,9 @@ const Rule: Collection = {
       required: true,
       searchable: true,
       ui: {
-        validate: (value?: string): string | void => {
-          const v = (value ?? "").trim();
+        component: wrapFieldsWithMeta((props) => <ReadonlyUriInput {...props} />),
+        validate: (value: any) => {
+          const v = (typeof value === "string" ? value : "").trim();
           if (!v) return "URI is required";
           if (/[A-Z]/.test(v)) return "URI cannot contain uppercase letters";
           if (/\s/.test(v)) return "URI cannot contain spaces";
@@ -133,6 +135,7 @@ const Rule: Collection = {
           type: "reference",
           label: "Rule",
           name: "rule",
+          description: "This rule list may not include newly created rules for up to one hour. It is updated based on the main branch after that time.",
           collections: ["rule"],
           ui: {
             component: PaginatedRuleSelectorInput,

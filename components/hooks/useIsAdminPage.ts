@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 
-export function useIsAdminPage(): boolean {
+export function useIsAdminPage(): { isAdmin: boolean; isLoading: boolean } {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     try {
@@ -11,8 +12,10 @@ export function useIsAdminPage(): boolean {
       setIsAdmin(isAdminPath);
     } catch {
       setIsAdmin(false);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
-  return isAdmin;
+  return { isAdmin, isLoading };
 }

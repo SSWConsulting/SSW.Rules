@@ -1,9 +1,11 @@
 "use client";
 
+import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
 import NotFound from "@/app/not-found";
 import categoryTitleIndex from "@/category-uri-title-map.json";
+import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import { Section } from "@/components/layout/section";
 import ruleToCategoryIndex from "@/rule-to-categories.json";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
@@ -17,6 +19,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
   const [isNotFound, setIsNotFound] = useState(false);
+  const { isAdmin: isAdminPage, isLoading: isAdminLoading } = useIsAdminPage();
 
   // Helper function to get base path for API calls
   const getBasePath = () => {
@@ -178,6 +181,25 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
 
     fetchData();
   }, [filename, searchParams]);
+
+  // Wait for admin check to complete before deciding whether to show 404
+  if (isAdminLoading) {
+    return (
+      <Section>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ssw-red mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </Section>
+    );
+  }
+
+  // If this is not an admin page, return a not found response. This is called only when the page
+  // is not found in the actual branch. When a user is not in Tina mode and creates a new rule,
+  // it should appear only in Tina mode and should not attempt to load on the live site.
+  if (!isAdminPage) return notFound();
 
   if (loading) {
     return (

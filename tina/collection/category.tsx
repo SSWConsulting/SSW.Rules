@@ -1,8 +1,10 @@
-import { generateGuid } from "@/utils/guidGenerationUtils";
-import { Collection, Form, TinaCMS } from "tinacms";
-import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
-import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
+import React from "react";
+import { Collection, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
+import { generateGuid } from "@/utils/guidGenerationUtils";
+import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
+import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
+import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 
 const Category: Collection = {
   name: "category",
@@ -16,22 +18,13 @@ const Category: Collection = {
         if (values?._template === "main") {
           return "index";
         } else if (values?._template === "top_category") {
-          const slugifiedTitle = values?.title
-            ?.toLowerCase()
-            .trim()
-            .replace(/ /g, "-")
-            .replace("?", "");
+          const slugifiedTitle = values?.title?.toLowerCase().trim().replace(/ /g, "-").replace("?", "");
           return `${slugifiedTitle}/index`;
         } else {
-          return `${values?.title
-            ?.toLowerCase()
-            .trim()
-            .replace(/ /g, "-")
-            .replace("?", "")}`;
+          return `${values?.title?.toLowerCase().trim().replace(/ /g, "-").replace("?", "")}`;
         }
       },
-      description:
-        'Main category will be "index", top categories will be "{title}/index", and regular categories will use the title as filename',
+      description: 'Main category will be "index", top categories will be "{title}/index", and regular categories will use the title as filename',
     },
     beforeSubmit: historyBeforeSubmit,
   },
@@ -40,7 +33,7 @@ const Category: Collection = {
     {
       name: "main",
       label: "Main Category",
-          ui: {
+      ui: {
         defaultItem: () => {
           return {
             type: "main",
@@ -74,7 +67,7 @@ const Category: Collection = {
               label: "Category",
               name: "top_category",
               collections: ["category"],
-               ui: {
+              ui: {
                 optionComponent: (props: { name: string }, _internalSys) => {
                   return _internalSys.path;
                 },
@@ -116,7 +109,11 @@ const Category: Collection = {
           type: "string",
           name: "uri",
           label: "URI",
-          description: "The URI of the top category. Should match the title in lowercase with spaces replaced by dashes (e.g., 'Azure DevOps' -> 'azure-devops')",
+          description:
+            "The URI of the top category. Should match the title in lowercase with spaces replaced by dashes (e.g., 'Azure DevOps' -> 'azure-devops')",
+          ui: {
+            component: wrapFieldsWithMeta((props) => <ReadonlyUriInput {...props} />),
+          },
         },
         {
           type: "object",
@@ -127,9 +124,7 @@ const Category: Collection = {
             itemProps: (item) => {
               const name = item.category?.split("/");
               return {
-                label: name
-                  ? name[name.length - 1].split(".")[0]
-                  : "Category is not selected",
+                label: name ? name[name.length - 1].split(".")[0] : "Category is not selected",
               };
             },
           },
@@ -175,13 +170,15 @@ const Category: Collection = {
           name: "uri",
           label: "URI",
           description: "The URI of the category",
+          ui: {
+            component: wrapFieldsWithMeta((props) => <ReadonlyUriInput {...props} />),
+          },
         },
         {
           type: "string",
           name: "guid",
           label: "Guid",
-          description:
-            "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
+          description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
           ui: {
             component: "hidden",
           },
@@ -209,9 +206,11 @@ const Category: Collection = {
           label: "Rules",
           name: "index",
           list: true,
+          description:
+            "Note: The rules listed here are only used for sorting on the category page. To assign a category, open the specific rule and select the category there. This list updates automatically based on those assignments, but any rule added directly to this list will not update on its own.",
           ui: {
             itemProps: (item) => ({
-              label: item.rule?.split("/").at(-2) || "Rule is not selected"
+              label: item.rule?.split("/").at(-2) || "Rule is not selected",
             }),
           },
           fields: [
@@ -232,7 +231,7 @@ const Category: Collection = {
           label: "Body",
           isBody: true,
           description: "This is description of the category",
-          templates:embedTemplates
+          templates: embedTemplates,
         },
         ...historyFields,
       ],

@@ -8,6 +8,7 @@ import SignIn from '../auth/SignIn';
 import { CustomLink } from '../customLink';
 import { RiAddCircleFill, RiOpenaiFill, RiQuestionFill } from 'react-icons/ri';
 import { Suspense } from 'react';
+import { getSanitizedBasePath } from '@/lib/withBasePath';
 
 export function MegaMenuWrapper(props) {
     return (
@@ -26,7 +27,7 @@ export function MegaMenuWrapper(props) {
     );
 }
 
-const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
+const basePath = getSanitizedBasePath();
 
 const ActionButtons = () => {
     const { trackEvent } = useAppInsights();

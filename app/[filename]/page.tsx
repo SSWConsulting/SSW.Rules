@@ -6,6 +6,7 @@ import ruleToCategoryIndex from "@/rule-to-categories.json";
 import client from "@/tina/__generated__/client";
 import ClientFallbackPage from "./ClientFallbackPage";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
+import { getSanitizedBasePath } from "@/lib/withBasePath";
 
 // We have a Tina webhook revalidating each page individually on change
 // Leaving this as a fallback in case the above goes wrong
@@ -261,7 +262,7 @@ export default async function Page({
     }) || [];
 
   if (rule?.data) {
-    const sanitizedBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/^\/+/, "");
+    const sanitizedBasePath = getSanitizedBasePath();
     return (
       <Section>
         <TinaRuleWrapper

@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useMemo, useRef } from 'react';
 import RuleListItem from './rule-list-item';
 import RadioButton from '@/components/radio-button';
@@ -105,9 +106,9 @@ const RuleList: React.FC<RuleListProps> = ({
   return (
     <>
       <div ref={filterSectionRef} className="flex flex-col-reverse justify-between items-center mt-2 sm:flex-row sm:mt-0">
-        <div className="flex flex-col items-center sm:flex-row sm:items-center gap-2 py-4 text-center lg:grid-cols-5">
+        <div className="flex flex-col items-center sm:flex-row sm:items-center gap-2 text-center lg:grid-cols-5">
           {showFilterControls && (
-            <div className="flex items-center">
+            <div className="flex items-center py-4">
               <span className="mr-4 hidden sm:block">Show Me</span>
               <RadioButton
                 id="customRadioInline1"

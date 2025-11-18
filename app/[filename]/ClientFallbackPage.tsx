@@ -9,6 +9,7 @@ import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import { Section } from "@/components/layout/section";
 import ruleToCategoryIndex from "@/rule-to-categories.json";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
+import { getSanitizedBasePath } from "@/lib/withBasePath";
 
 interface ClientFallbackPageProps {
   filename: string;
@@ -148,7 +149,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
                   };
                 }) || [];
 
-              const sanitizedBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || "").replace(/^\/+/, "");
+              const sanitizedBasePath = getSanitizedBasePath();
 
               setData({
                 type: "rule",

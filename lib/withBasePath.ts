@@ -4,4 +4,8 @@ export function withBasePath(src: string) {
     const path = src.startsWith('/') ? src : `/${src}`;
     return `${basePath}${path}`;
 }
+
+export function getSanitizedBasePath(): string {
+    return (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
+}
   

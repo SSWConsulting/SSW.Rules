@@ -1,16 +1,16 @@
-import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Image from "next/image";
-import { formatDateLong, timeAgo } from "@/lib/dateUtils";
-import { Card } from "@/components/ui/card";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
-import Discussion from "@/components/Discussion";
 import { RiHistoryLine } from "react-icons/ri";
+import { TinaMarkdown } from "tinacms/dist/rich-text";
 import AuthorsCard from "@/components/AuthorsCard";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import CategoriesCard from "@/components/CategoriesCard";
+import Discussion from "@/components/Discussion";
 import HelpCard from "@/components/HelpCard";
 import RelatedRulesCard from "@/components/RelatedRulesCard";
 import RuleActionButtons from "@/components/RuleActionButtons";
-import CategoriesCard from "@/components/CategoriesCard";
+import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
+import { Card } from "@/components/ui/card";
+import { formatDateLong, timeAgo } from "@/lib/dateUtils";
 import { tinaField } from "tinacms/dist/react";
 
 export interface ServerRulePageProps {
@@ -22,19 +22,13 @@ export interface ServerRulePageProps {
 export type ServerRulePagePropsWithTinaProps = {
   serverRulePageProps: ServerRulePageProps;
   tinaProps: any;
-}
+};
 
-export default function ServerRulePage({
-  serverRulePageProps,
-  tinaProps,
-}: ServerRulePagePropsWithTinaProps) {
+export default function ServerRulePage({ serverRulePageProps, tinaProps }: ServerRulePagePropsWithTinaProps) {
   const { data } = tinaProps;
   const rule = data?.rule;
-  
-  const {
-    ruleCategoriesMapping,
-    sanitizedBasePath,
-  } = serverRulePageProps;
+
+  const { ruleCategoriesMapping, sanitizedBasePath } = serverRulePageProps;
 
   const relativeTime = rule?.lastUpdated ? timeAgo(rule.lastUpdated) : "";
   const created = rule?.created ? formatDateLong(rule.created) : "Unknown";
@@ -42,9 +36,7 @@ export default function ServerRulePage({
   const historyTooltip = `Created ${created}\nLast Updated ${updated}`;
 
   const primaryCategory = ruleCategoriesMapping?.[0];
-  const breadcrumbCategories = primaryCategory
-    ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }]
-    : undefined;
+  const breadcrumbCategories = primaryCategory ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }] : undefined;
 
   return (
     <>
@@ -55,16 +47,11 @@ export default function ServerRulePage({
           <div className="flex border-b-2">
             {rule?.thumbnail && (
               <div className="w-[175px] h-[175px] relative mr-4">
-                <Image
-                  src={rule.thumbnail}
-                  alt="thumbnail image for the rule"
-                  fill
-                  className="object-cover object-center"
-                />
+                <Image src={rule.thumbnail} alt="thumbnail image for the rule" fill className="object-cover object-center" />
               </div>
             )}
             <div className="flex flex-col flex-1 justify-between">
-              <h1 className="text-ssw-red text-4xl leading-[1.2] my-0 b-4 font-semibold"  data-tina-field={tinaField(rule, "title")}>
+              <h1 className="text-ssw-red text-4xl leading-[1.2] my-0 b-4 font-semibold" data-tina-field={tinaField(rule, "title")}>
                 {rule?.title}
               </h1>
 
@@ -80,8 +67,7 @@ export default function ServerRulePage({
                     See history <RiHistoryLine />
                   </a>
                 </p>
-                <RuleActionButtons rule={rule} 
-                  sanitizedBasePath={sanitizedBasePath} />
+                <RuleActionButtons rule={rule} />
               </div>
             </div>
           </div>
@@ -91,18 +77,21 @@ export default function ServerRulePage({
               <div className="flex items-start gap-3">
                 <div className="shrink-0">
                   <svg className="h-5 w-5 text-ssw-red" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                    <path
+                      fillRule="evenodd"
+                      d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-ssw-red m-0 mb-1">
-                    This rule has been archived
-                  </h3>
-                  <div className="text-sm text-ssw-red m-0"
+                  <h3 className="text-sm font-semibold text-ssw-red m-0 mb-1">This rule has been archived</h3>
+                  <div
+                    className="text-sm text-ssw-red m-0"
                     dangerouslySetInnerHTML={{
                       __html: rule.archivedreason
                         ?.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-ssw-red underline hover:opacity-80">$1</a>')
-                        ?.replace(/https?:\/\/[^\s]+/g, '<a href="$&" class="text-ssw-red underline hover:opacity-80">$&</a>')
+                        ?.replace(/https?:\/\/[^\s]+/g, '<a href="$&" class="text-ssw-red underline hover:opacity-80">$&</a>'),
                     }}
                   />
                 </div>

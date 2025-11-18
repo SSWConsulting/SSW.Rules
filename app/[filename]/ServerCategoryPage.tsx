@@ -6,6 +6,7 @@ import { IconLink } from "@/components/ui";
 import RuleListWrapper from "@/components/rule-list/rule-list-wrapper";
 import { ICON_SIZE } from "@/constants";
 import { RiPencilLine, RiGithubLine } from "react-icons/ri";
+import { getSanitizedBasePath } from "@/lib/withBasePath";
 
 interface ServerCategoryPageProps {
   category: any;
@@ -34,8 +35,6 @@ export default function ServerCategoryPage({
   const finalRules = includeArchived ? [...activeRules, ...archivedRules] : activeRules;
 
   const sidebarRules = finalRules.map((r) => ({ guid: r.guid, uri: r.uri, title: r.title }));
-
-  const sanitizedBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/^\/+/, '');
 
   return (
     <div>

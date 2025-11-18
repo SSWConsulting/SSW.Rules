@@ -11,6 +11,7 @@ import HelpCard from "@/components/HelpCard";
 import RelatedRulesCard from "@/components/RelatedRulesCard";
 import RuleActionButtons from "@/components/RuleActionButtons";
 import CategoriesCard from "@/components/CategoriesCard";
+import { tinaField } from "tinacms/dist/react";
 
 export interface ServerRulePageProps {
   rule: any;
@@ -63,7 +64,7 @@ export default function ServerRulePage({
               </div>
             )}
             <div className="flex flex-col flex-1 justify-between">
-              <h1 className="text-ssw-red text-4xl leading-[1.2] my-0 b-4 font-semibold">
+              <h1 className="text-ssw-red text-4xl leading-[1.2] my-0 b-4 font-semibold"  data-tina-field={tinaField(rule, "title")}>
                 {rule?.title}
               </h1>
 
@@ -109,7 +110,7 @@ export default function ServerRulePage({
             </div>
           )}
 
-          <div className="mt-8">
+          <div className="mt-8" data-tina-field={tinaField(rule, "body")}>
             <TinaMarkdown content={rule?.body} components={getMarkdownComponentMapping(true)} />
           </div>
 

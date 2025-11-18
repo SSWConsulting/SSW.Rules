@@ -1,5 +1,6 @@
 import React from "react";
 import { Template } from "tinacms";
+import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { getTypographyComponents } from "@/components/typography-components";
 import { YouTubePlayer } from "../shared/Youtube";
@@ -7,29 +8,24 @@ import { AsideEmbed, asideEmbedTemplate } from "./asideEmbed";
 
 const IntroInnerMarkdownComponents = {
   ...getTypographyComponents(false),
-  introYoutube: (props: any) => (
-    <YouTubePlayer url={props?.url ?? ""} description={props?.description ?? ""} />
-  ),
-  asideEmbed: (props: any) => <AsideEmbed data={props} />,
+  introYoutube: (props: any) => <YouTubePlayer url={props?.url ?? ""} description={props?.description ?? ""} />,
+  asideEmbed: (props: any) => <AsideEmbed {...props} />,
 };
 
-export function IntroEmbed({ body }: { body: any }) {
-  const content =
-    body && body.type === "root"
-      ? body
-      : { type: "root", children: Array.isArray(body) ? body : [] };
+export function IntroEmbed(props: any) {
+  const { body } = props;
+  const content = body && body.type === "root" ? body : { type: "root", children: Array.isArray(body) ? body : [] };
 
   if (!Array.isArray(content.children) || !content.children.length) return null;
 
   return (
     <section>
-      <div>
-        <TinaMarkdown content={content} components={IntroInnerMarkdownComponents as any} />
+      <div data-tina-field={tinaField(props, "body")}>
+        <TinaMarkdown content={props.body} components={IntroInnerMarkdownComponents as any} />
       </div>
     </section>
   );
 }
-
 
 const introYoutubeTemplate: Template = {
   name: "introYoutube",

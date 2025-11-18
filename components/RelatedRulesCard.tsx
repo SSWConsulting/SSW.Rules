@@ -3,6 +3,7 @@
 import { Rule } from "@/types";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
+import { tinaField } from "tinacms/dist/react";
 
 export type RelatedRule = { uri: string; title: string };
 
@@ -38,8 +39,10 @@ const RelatedRulesCard = ({ relatedRules, emptyText = "No related rules.", class
   return (
     <Card title="Related rules">
       <ul className={className ?? "pl-4"}>
-        {mapped.map((rule) => (
-          <li key={rule.uri} className="not-last:mb-2">
+        {mapped.map((rule, index) => (
+          <li key={rule.uri} className="not-last:mb-2" 
+          // @ts-expect-error tinacms types are wrong
+          data-tina-field={tinaField(relatedRules?.[index], "rule")}>
             <Link href={`/${rule.uri}`} className="no-underline">
               {rule.title}
             </Link>

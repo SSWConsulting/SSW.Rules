@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useEffect, useState, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
+import { tinaField } from 'tinacms/dist/react'
 
 interface Author {
   title?: string
@@ -88,7 +89,8 @@ export default function AuthorsCard({ authors }: AuthorsCardProps) {
               className="px-2 flex items-center my-2 justify-center"
               key={`author_${index}`}
             >
-              <div className="w-12 h-12 overflow-hidden rounded-full relative">
+         {/* @ts-expect-error tinacms types are wrong */}
+              <div className="w-12 h-12 overflow-hidden rounded-full relative" data-tina-field={tinaField(authors?.[index], "title")}>
                 <a href={author.url} target="_blank" rel="noopener noreferrer">
                   {imgSrc?.trim() && (
                     <Image

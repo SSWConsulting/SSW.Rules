@@ -3,6 +3,7 @@ import { Collection, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { CategorySelectorInput } from "../fields/CategorySelector";
+import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
@@ -73,6 +74,7 @@ const Rule: Collection = {
           const categoryTitle = item?.category ? `🔗 ${item?.category?.split("/").at(-1)?.replace(".mdx", "")}` : "Unselected Category";
           return { label: categoryTitle };
         },
+        component: ConditionalHiddenField,
       },
       fields: [
         {
@@ -102,6 +104,7 @@ const Rule: Collection = {
           title: "Bob Northwind",
           url: "https://ssw.com.au/people/bob-northwind",
         },
+        component: ConditionalHiddenField,
       },
       fields: [
         {
@@ -109,6 +112,9 @@ const Rule: Collection = {
           name: "title",
           description: "The full name of the contributor, as it should appear on the rule.",
           label: "Name",
+          ui: {
+            component: ConditionalHiddenField,
+          },
         },
         {
           type: "string",
@@ -129,6 +135,7 @@ const Rule: Collection = {
         itemProps: (item) => ({
           label: item.rule?.split("/").at(-2) || "Rule is not selected",
         }),
+        component: ConditionalHiddenField,
       },
       fields: [
         {
@@ -150,6 +157,9 @@ const Rule: Collection = {
       description: "Other URIs which will redirect to this rule.",
       list: true,
       searchable: false,
+      ui: {
+        component: ConditionalHiddenField,
+      },
     },
     {
       type: "string",
@@ -164,8 +174,12 @@ const Rule: Collection = {
       type: "string",
       name: "seoDescription",
       label: "SEO Description",
-      description: "A summary of the page content, used for SEO purposes. This can be generated automatically with AI - See https://www.ssw.com.au/rules/html-meta-tags/#rectifying-the-missing-meta-tags-issue",
+      description:
+        "A summary of the page content, used for SEO purposes. This can be generated automatically with AI - See https://www.ssw.com.au/rules/html-meta-tags/#rectifying-the-missing-meta-tags-issue",
       searchable: false,
+      ui: {
+        component: ConditionalHiddenField,
+      },
     },
     {
       type: "rich-text",
@@ -175,6 +189,9 @@ const Rule: Collection = {
       searchable: false,
       templates: embedTemplates,
       toolbarOverride: ["embed", "heading", "link", "quote", "ul", "ol", "bold", "italic", "code", "codeBlock", "mermaid", "table", "raw"],
+      ui: {
+        component: ConditionalHiddenField,
+      },
     },
     {
       type: "image",
@@ -184,6 +201,9 @@ const Rule: Collection = {
       // @ts-expect-error tinacms types are wrong
       uploadDir: (file) => {
         return `rules/${file.uri || ""}`;
+      },
+      ui: {
+        component: ConditionalHiddenField,
       },
     },
     ...historyFields,

@@ -2,15 +2,7 @@ name: Build Pull request
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-env:
-  NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-  TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-  NEXT_PUBLIC_TINA_BRANCH: tina-migration-main-content # TODO - Change to main when production is ready
-  TOKEN: ${{ secrets.POC_PAT_GILLES }}
-  NEXT_PUBLIC_ALGOLIA_APP_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
-  NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
-  NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
-  NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,8 +18,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ env.NEXT_PUBLIC_TINA_BRANCH }}
-          token: ${{ env.TOKEN }}
+          ref: ${{ vars.NEXT_PUBLIC_TINA_BRANCH }}
+          token: ${{ secrets.GH_API_PAT }}
           path: content-temp
           fetch-depth: 0
           lfs: true
@@ -35,18 +27,30 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+            python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install pyyaml
 
       - name: Generate rule‑category mapping files
         working-directory: content-temp/scripts/tina-migration
         run: python build-rule-category-map.py
 
+      - name: Generate orphaned_rules file
+        working-directory: content-temp/scripts/tina-migration
+        run: python orphaned_rules_check.py
+
+      - name: Generate redirects mapping file
+        working-directory: content-temp/scripts/tina-migration
+        run: python build-redirect-map.py
+
       - name: Copy generated mapping + content
         run: |
-          cp content-temp/scripts/tina-migration/rule-to-categories.json ./
-          cp content-temp/scripts/tina-migration/category-uri-title-map.json ./
-          cp content-temp/scripts/tina-migration/orphaned_rules.json ./
-          mv content-temp ./content
+            cp content-temp/scripts/tina-migration/rule-to-categories.json ./
+            cp content-temp/scripts/tina-migration/category-uri-title-map.json ./
+            cp content-temp/scripts/tina-migration/orphaned_rules.json ./
+            cp content-temp/scripts/tina-migration/redirects.json ./
+            mv content-temp ./content
 
       - name: Setup node
         uses: actions/setup-node@v4
@@ -79,3 +83,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+          TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
+          NEXT_PUBLIC_TINA_BRANCH: ${{ vars.NEXT_PUBLIC_TINA_BRANCH }}

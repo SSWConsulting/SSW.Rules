@@ -83,7 +83,7 @@ export default function ArchivedClientPage(props: ArchivedClientPageProps) {
     <div className="layout-two-columns">
       <div className="layout-main-section">
         <div className="h-[5.5rem]">
-          <h2 className="m-0 mb-4 text-ssw-red font-bold">Archived Rules</h2>
+          <h1 className="m-0 mb-4 text-ssw-red font-bold">Archived Rules</h1>
         </div>
 
         {groupedArchivedData.subcategoriesWithRules.map((subcategoryData, index) => (

@@ -76,9 +76,9 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
             searchResults.length > 0 && (
             <div>
               <div className="mb-4 flex justify-between items-center">
-                <h2 className="m-0 text-ssw-red font-bold">
+                <h1 className="m-0 text-ssw-red font-bold">
                   Search Results ({searchResults.length})
-                </h2>
+                </h1>
                 <div className="flex items-center space-x-2">
                   <CgSortAz className="inline" size={24} />
                   <Dropdown

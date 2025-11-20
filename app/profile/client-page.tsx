@@ -178,9 +178,9 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
                     className="rounded-full object-cover"
                   />
                 <div>
-                    <div className="text-3xl">
+                    <h1>
                     {isAuthenticated ? user?.name : ''}
-                    </div>
+                    </h1>
                     <a className="flex align-center underline"
                       href={`https://www.github.com/${user?.nickname}`}
                       target="_blank"

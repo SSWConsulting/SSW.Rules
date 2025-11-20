@@ -36,11 +36,14 @@ export default function HomeClientPage(props: HomeClientPageProps) {
 
   return (
     <>
+      <SearchBar/>
       <div className="layout-two-columns">
         <div className="layout-main-section">
-          <div className="h-[7rem]">
-            <SearchBar/>
-            <h2 className="m-0 mb-4 text-ssw-red font-bold">Categories</h2>
+          <div className="h-[3rem] max-sm:h-auto">
+            <h1 className="m-0 mb-4 flex items-end max-sm:flex-col max-sm:items-start">
+              <span className="text-ssw-red font-bold">{ruleCount.toLocaleString("en-US")}&nbsp;</span>
+              <span className="text-gray-600 text-lg font-normal">Best Practices for Better Software & Better Teams</span>
+            </h1>
           </div>
 
           {topCategories
@@ -89,10 +92,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
           ))}
         </div>
 
-        <div className="layout-sidebar">
-          <div className="h-[5.5rem]">
-            {ruleCount && <RuleCount count={ruleCount} />}
-          </div>
+        <div className="layout-sidebar mt-[3rem] max-sm:mt-0">
           <LatestRulesCard rules={latestRules} />
           <QuickLinksCard links={quickLinks} />
           <WhyRulesCard />

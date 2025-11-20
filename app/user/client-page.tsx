@@ -334,7 +334,7 @@ export default function UserRulesClientPage({ ruleCount }) {
           )}
           {author.fullName && (
             <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4">
-              <h2 className="text-ssw-red mt-1.5">{author.fullName}'s Rules</h2>
+              <h1 className="text-ssw-red mt-1.5">{author.fullName}'s Rules</h1>
             
               <a
                 target="_blank"

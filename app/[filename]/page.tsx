@@ -7,6 +7,8 @@ import client from "@/tina/__generated__/client";
 import ClientFallbackPage from "./ClientFallbackPage";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
+import { siteUrl } from "@/site-config";
+
 
 // We have a Tina webhook revalidating each page individually on change
 // Leaving this as a fallback in case the above goes wrong
@@ -290,6 +292,9 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
     if (category?.data?.category && "title" in category.data.category) {
       return {
         title: `${category.data.category.title} | SSW.Rules`,
+        alternates: {
+          canonical: `${siteUrl}/${filename}/`,
+        },
       };
     }
 
@@ -297,6 +302,9 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
     if (rule?.data?.rule?.title) {
       const metadata: any = {
         title: `${rule.data.rule.title} | SSW.Rules`,
+        alternates: {
+          canonical: `${siteUrl}/${filename}/`,
+        },
       };
 
       if (rule.data.rule.seoDescription) {

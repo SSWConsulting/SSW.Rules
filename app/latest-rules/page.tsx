@@ -3,6 +3,7 @@ import LatestRuleClientPage from './client-page';
 import { fetchRuleCount } from '@/lib/services/rules';
 import { Suspense } from 'react';
 import Spinner from '@/components/Spinner';
+import { siteUrl } from '@/site-config';
 
 export const revalidate = 300;
 
@@ -40,5 +41,8 @@ export default async function LatestRulePage({ searchParams }: LatestRulePagePro
 export async function generateMetadata() {
   return {
     title: "Latest Rules | SSW.Rules",
+    alternates: {
+      canonical: `${siteUrl}/latest-rules/`,
+    },
   }
 }

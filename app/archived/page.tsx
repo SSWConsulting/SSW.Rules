@@ -5,6 +5,7 @@ import { fetchArchivedRulesData, fetchLatestRules } from "@/lib/services/rules";
 import client from "@/tina/__generated__/client";
 import ArchivedClientPage from "./client-page";
 import { QuickLink } from "@/types/quickLink";
+import { siteUrl } from "@/site-config";
 
 export const revalidate = 300;
 
@@ -57,5 +58,8 @@ export async function generateMetadata() {
   return {
     title: "Archived Rules | SSW Rules",
     description: "Rules that have been archived",
+    alternates: {
+      canonical: `${siteUrl}/archived/`,
+    },
   };
 }

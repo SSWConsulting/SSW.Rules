@@ -6,6 +6,7 @@ import client from "@/tina/__generated__/client";
 import { Rule } from "@/models/Rule";
 import { OrphanedRulesData } from "@/models/OrphanedRule";
 import orphanedRulesData from "@/orphaned_rules.json";
+import { siteUrl } from "@/site-config";
 
 export const revalidate = 300;
 
@@ -56,5 +57,8 @@ export async function generateMetadata() {
   return {
     title: "Orphaned Rules | SSW Rules",
     description: "Rules that have no parent category",
+    alternates: {
+      canonical: `${siteUrl}/orphaned/`,
+    },
   };
 }

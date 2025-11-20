@@ -4,8 +4,10 @@ import client from "@/tina/__generated__/client";
 import HomeClientPage from "./client-page";
 import ruleToCategories from "../rule-to-categories.json";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { fetchArchivedRules, fetchArchivedRulesData, fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
+import {  fetchArchivedRulesData, fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
 import { QuickLink } from "@/types/quickLink";
+import { siteUrl } from "@/site-config";
+
 
 export const revalidate = 300;
 
@@ -72,5 +74,8 @@ export default async function Home() {
 export async function generateMetadata() {
   return {
     title: "SSW.Rules | Secret Ingredients for Quality Software (Open Source on GitHub)",
+    alternates: {
+      canonical: `${siteUrl}/`,
+    },
   }
 }

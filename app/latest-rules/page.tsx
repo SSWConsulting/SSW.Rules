@@ -1,40 +1,23 @@
-import { Section } from '@/components/layout/section';
-import LatestRuleClientPage from './client-page';
-import { fetchRuleCount } from '@/lib/services/rules';
-import { Suspense } from 'react';
-import Spinner from '@/components/Spinner';
-import { siteUrl } from '@/site-config';
+import { Section } from "@/components/layout/section";
+import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
+import { siteUrl } from "@/site-config";
+import LatestRuleClientPage from "./client-page";
 
 export const revalidate = 300;
 
-interface LatestRulePageProps {
-  searchParams: Promise<{ size?: string }>;
-}
-
 const DEFAULT_SIZE = 5;
-const MAX_SIZE = 50;
 
-export default async function LatestRulePage({ searchParams }: LatestRulePageProps) {
-  const { size: sizeStr } = await searchParams;
-
-  let size = sizeStr ? parseInt(sizeStr, 10) : DEFAULT_SIZE;
-  if (isNaN(size) || size <= 0) {
-    size = DEFAULT_SIZE;
-  } else if (size > MAX_SIZE) {
-    size = MAX_SIZE;
-  }
-
-  const ruleCount = await fetchRuleCount();
+export default async function LatestRulePage() {
+  const [ruleCount, latestRulesByUpdated, latestRulesByCreated] = await Promise.all([
+    fetchRuleCount(),
+    fetchLatestRules(DEFAULT_SIZE, "lastUpdated", true),
+    fetchLatestRules(DEFAULT_SIZE, "created", true),
+  ]);
 
   return (
-      <Section>
-        <Suspense fallback={<Spinner size="lg" />}>
-          <LatestRuleClientPage
-            ruleCount={ruleCount}
-            initialSize={size}
-          />
-        </Suspense>
-      </Section>
+    <Section>
+      <LatestRuleClientPage ruleCount={ruleCount} latestRulesByUpdated={latestRulesByUpdated} latestRulesByCreated={latestRulesByCreated} />
+    </Section>
   );
 }
 
@@ -44,5 +27,5 @@ export async function generateMetadata() {
     alternates: {
       canonical: `${siteUrl}/latest-rules/`,
     },
-  }
+  };
 }

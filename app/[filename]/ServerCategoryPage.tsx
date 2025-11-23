@@ -1,34 +1,25 @@
 import Link from "next/link";
+import { RiGithubLine, RiPencilLine } from "react-icons/ri";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
-import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { IconLink } from "@/components/ui";
 import RuleListWrapper from "@/components/rule-list/rule-list-wrapper";
+import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
+import { IconLink } from "@/components/ui";
 import { ICON_SIZE } from "@/constants";
-import { RiPencilLine, RiGithubLine } from "react-icons/ri";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
 
 interface ServerCategoryPageProps {
   category: any;
   path?: string;
   includeArchived: boolean;
-  view: 'titleOnly' | 'blurb' | 'all';
+  view: "titleOnly" | "blurb" | "all";
   page: number;
   perPage: number;
 }
 
-export default function ServerCategoryPage({
-  category,
-  path,
-  includeArchived,
-  view,
-  page,
-  perPage,
-}: ServerCategoryPageProps) {
-  const title = category?.title ?? '';
-  const baseRules: any[] = Array.isArray(category?.index)
-    ? category.index.flatMap((i: any) => i?.rule ? [i.rule] : [])
-    : [];
+export default function ServerCategoryPage({ category, path, includeArchived, view, page, perPage }: ServerCategoryPageProps) {
+  const title = category?.title ?? "";
+  const baseRules: any[] = Array.isArray(category?.index) ? category.index.flatMap((i: any) => (i?.rule ? [i.rule] : [])) : [];
 
   const activeRules = baseRules.filter((r) => r?.isArchived !== true);
   const archivedRules = baseRules.filter((r) => r?.isArchived === true);
@@ -41,26 +32,22 @@ export default function ServerCategoryPage({
       <Breadcrumbs isCategory breadcrumbText={includeArchived ? `Archived Rules - ${title}` : title} />
       <div className="flex">
         <div className="w-full lg:w-2/3 bg-white pt-4 p-6 border border-[#CCC] rounded shadow-lg">
-          <h1 className="m-0 mb-2 text-ssw-red font-bold">
-            {includeArchived ? `Archived Rules - ${title}` : title}
-          </h1>
+          <div className="flex justify-between">
+            <h1 className="m-0 text-ssw-red font-bold">{includeArchived ? `Archived Rules - ${title}` : title}</h1>
 
-          <div className="flex gap-2 justify-center my-2 md:hidden">
-            <IconLink
-              href={`admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`}
-              title="Edit category"
-              tooltipOpaque={true}
-            >
-              <RiPencilLine size={ICON_SIZE} />
-            </IconLink>
-            <IconLink
-              href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${process.env.NEXT_PUBLIC_TINA_BRANCH}/categories/${path}`}
-              target="_blank"
-              title="View category on GitHub"
-              tooltipOpaque={true}
-            >
-              <RiGithubLine size={ICON_SIZE} className="rule-icon" />
-            </IconLink>
+            <div className="flex gap-2 justify-center items-start sm:items-center">
+              <IconLink href={`admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`} title="Edit category" tooltipOpaque={true}>
+                <RiPencilLine size={ICON_SIZE} />
+              </IconLink>
+              <IconLink
+                href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${process.env.NEXT_PUBLIC_TINA_BRANCH}/categories/${path}`}
+                target="_blank"
+                title="View category on GitHub"
+                tooltipOpaque={true}
+              >
+                <RiGithubLine size={ICON_SIZE} className="rule-icon" />
+              </IconLink>
+            </div>
           </div>
 
           <div className="text-md">

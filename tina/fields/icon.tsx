@@ -1,15 +1,10 @@
 "use client";
+import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
 import React from "react";
-import { Button, wrapFieldsWithMeta } from "tinacms";
 import { BiChevronRight } from "react-icons/bi";
 import { GoCircleSlash } from "react-icons/go";
+import { Button, wrapFieldsWithMeta } from "tinacms";
 import { Icon, IconOptions } from "../../components/icon";
-import {
-  Popover,
-  PopoverButton,
-  Transition,
-  PopoverPanel,
-} from "@headlessui/react";
 import { ColorPickerInput } from "./color";
 
 const parseIconName = (name: string) => {
@@ -29,9 +24,7 @@ export const IconPickerInput = wrapFieldsWithMeta(({ input }) => {
     });
   }, [filter]);
 
-  const inputLabel = Object.keys(IconOptions).includes(input.value)
-    ? parseIconName(input.value)
-    : "Select Icon";
+  const inputLabel = Object.keys(IconOptions).includes(input.value) ? parseIconName(input.value) : "Select Icon";
   const InputIcon = IconOptions[input.value] ? IconOptions[input.value] : null;
 
   return (
@@ -41,25 +34,13 @@ export const IconPickerInput = wrapFieldsWithMeta(({ input }) => {
         {({ open }) => (
           <>
             <PopoverButton>
-              <Button
-                className={`text-sm h-11 px-4 ${InputIcon ? "h-11" : "h-10"}`}
-                size="custom"
-                rounded="full"
-                variant={open ? "secondary" : "white"}
-              >
-                {InputIcon && (
-                  <InputIcon className="w-7 mr-1 h-auto fill-current text-blue-500" />
-                )}
+              <Button className={`text-sm h-11 px-4 ${InputIcon ? "h-11" : "h-10"}`} size="custom" rounded="full" variant={open ? "secondary" : "white"}>
+                {InputIcon && <InputIcon className="w-7 mr-1 h-auto fill-current text-blue-500" />}
                 {inputLabel}
-                {!InputIcon && (
-                  <BiChevronRight className="w-5 h-auto fill-current opacity-70 ml-1" />
-                )}
+                {!InputIcon && <BiChevronRight className="w-5 h-auto fill-current opacity-70 ml-1" />}
               </Button>
             </PopoverButton>
-            <div
-              className="absolute w-full min-w-[192px] max-w-2xl -bottom-2 left-0 translate-y-full"
-              style={{ zIndex: 1000 }}
-            >
+            <div className="absolute w-full min-w-[192px] max-w-2xl -bottom-2 left-0 translate-y-full" style={{ zIndex: 1000 }}>
               <Transition
                 enter="transition duration-150 ease-out"
                 enterFrom="transform opacity-0 -translate-y-2"
@@ -87,15 +68,14 @@ export const IconPickerInput = wrapFieldsWithMeta(({ input }) => {
                         />
                       </div>
                       {filteredBlocks.length === 0 && (
-                        <span className="relative text-center text-xs px-2 py-3 text-gray-300 bg-gray-50 italic">
-                          No matches found
-                        </span>
+                        <span className="relative text-center text-xs px-2 py-3 text-gray-300 bg-gray-50 italic">No matches found</span>
                       )}
                       {filteredBlocks.length > 0 && (
                         <div className="w-full grid grid-cols-6 auto-rows-auto p-2 overflow-y-auto">
                           <button
                             className="relative rounded-lg text-center text-xs py-2 px-3 flex-1 outline-none transition-all ease-out duration-150 hover:text-blue-500 focus:text-blue-500 focus:bg-gray-50 hover:bg-gray-50"
                             key={"clear-input"}
+                            aria-label="Clear icon selection"
                             onClick={() => {
                               input.onChange("");
                               setFilter("");
@@ -109,6 +89,7 @@ export const IconPickerInput = wrapFieldsWithMeta(({ input }) => {
                               <button
                                 className="relative flex items-center justify-center rounded-lg text-center text-xs py-2 px-3 flex-1 outline-none transition-all ease-out duration-150 hover:text-blue-500 focus:text-blue-500 focus:bg-gray-50 hover:bg-gray-50"
                                 key={name}
+                                aria-label={`Icon ${name}`}
                                 onClick={() => {
                                   input.onChange(name);
                                   setFilter("");

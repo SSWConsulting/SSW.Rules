@@ -1,17 +1,7 @@
 import React from "react";
 import { wrapFieldsWithMeta } from "tinacms";
 
-export const colorOptions = [
-  "blue",
-  "teal",
-  "green",
-  "yellow",
-  "orange",
-  "red",
-  "pink",
-  "purple",
-  "white",
-];
+export const colorOptions = ["blue", "teal", "green", "yellow", "orange", "red", "pink", "purple", "white"];
 
 export const ColorPickerInput = wrapFieldsWithMeta(({ input }) => {
   const inputClasses = {
@@ -34,16 +24,13 @@ export const ColorPickerInput = wrapFieldsWithMeta(({ input }) => {
           return (
             <button
               key={color}
-              className={`w-9 h-9 rounded-full shadow border ${
-                inputClasses[color]
-              } ${
-                input.value === color
-                  ? "ring-[3px] ring-offset-2 ring-blue-400"
-                  : ""
-              }`}
+              type="button"
+              className={`w-9 h-9 rounded-full shadow border ${inputClasses[color]} ${input.value === color ? "ring-[3px] ring-offset-2 ring-blue-400" : ""}`}
               onClick={() => {
                 input.onChange(color);
               }}
+              aria-label={`Select ${color} color`}
+              aria-pressed={input.value === color}
             ></button>
           );
         })}

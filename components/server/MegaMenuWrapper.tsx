@@ -12,7 +12,7 @@ import Tooltip from "../tooltip/tooltip";
 
 export function MegaMenuWrapper(props) {
   return (
-    <div className="mx-auto max-w-7xl px-0 py-4">
+    <div className="mx-auto max-w-7xl px-0">
       <MegaMenuLayout
         title="Rules"
         menuBarItems={props.menu}
@@ -33,8 +33,8 @@ const ActionButtons = () => {
   const { trackEvent } = useAppInsights();
 
   return (
-    <div className="action-btn-container max-sm:order-2 max-sm:mt-4 flex justify-between items-center w-full">
-      <div className="flex items-center">
+    <div className="action-btn-container max-sm:order-2 max-sm:mt-4 flex justify-between items-center w-full gap-4">
+      <div className="flex items-center gap-4">
         <Tooltip text="Try out RulesGPT" showDelay={3000} hideDelay={18000}>
           <a
             target="_blank"

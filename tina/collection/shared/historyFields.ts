@@ -73,11 +73,11 @@ export const historyFields: TinaField[] = [
     description: "If this rule has been archived, summarise why here. Only required if 'Archived' is checked.",
     ui: {
       validate: (value, allValue) => {
-        if (!allValue.archived && value?.length) {
+        if (!allValue.isArchived && value?.length) {
           return "You cannot provide an archived reason if the rule is not archived.";
         }
 
-        if (allValue.archived && !value?.length) {
+        if (allValue.isArchived && !value?.length) {
           return "Please provide a reason when archiving this rule.";
         }
       },

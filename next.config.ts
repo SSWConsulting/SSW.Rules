@@ -119,7 +119,7 @@ const nextConfig: NextConfig = {
     }
 
     const encodePathSegment = (segment: string): string => {
-      const encoded = encodeURIComponent(segment);
+      const encoded = encodeURI(segment);
 
       // Escape special characters that have meaning in path-to-regexp
       // These characters need to be escaped: ( ) + * ? [ ] { } |

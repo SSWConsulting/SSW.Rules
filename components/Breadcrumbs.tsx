@@ -1,7 +1,7 @@
-import React from "react";
 import Link from "next/link";
-import { parentSiteUrl, siteUrlRelative } from "@/site-config";
+import React from "react";
 import { withBasePath } from "@/lib/withBasePath";
+import { parentSiteUrl, siteUrlRelative } from "@/site-config";
 
 interface BreadcrumbProps {
   categories?: { link: string; title: string }[];
@@ -11,10 +11,7 @@ interface BreadcrumbProps {
   iconSrc?: string;
 }
 
-const ChevronIcon: React.FC<{ className?: string; size?: number }> = ({
-  className = "",
-  size = 18,
-}) => (
+const ChevronIcon: React.FC<{ className?: string; size?: number }> = ({ className = "", size = 18 }) => (
   <svg
     aria-hidden
     width={size}
@@ -31,39 +28,17 @@ const ChevronIcon: React.FC<{ className?: string; size?: number }> = ({
   </svg>
 );
 
-export default function Breadcrumbs({
-  categories,
-  isCategory = false,
-  isHomePage = false,
-  breadcrumbText,
-  iconSrc = "/uploads/icon.png",
-}: BreadcrumbProps) {
+export default function Breadcrumbs({ categories, isCategory = false, isHomePage = false, breadcrumbText, iconSrc = "/uploads/icon.png" }: BreadcrumbProps) {
   const showCategories = typeof categories !== "undefined";
-  const categoryList =
-    showCategories && (categories?.length ?? 0) > 0
-      ? categories!
-      : showCategories
-      ? [{ link: "/orphaned", title: "Orphaned" }]
-      : [];
+  const categoryList = showCategories && (categories?.length ?? 0) > 0 ? categories! : showCategories ? [{ link: "/orphaned", title: "Orphaned" }] : [];
 
   const tailText = breadcrumbText ?? (isCategory ? "This category" : "This rule");
 
   return (
-    <nav aria-label="Breadcrumb" className="m-4 md:mx-2 md:ml-4">
+    <nav aria-label="Breadcrumb" className="m-4 mt-2">
       <div className="grid grid-cols-[auto_1fr] gap-2 items-start md:items-center">
-        <a
-          href={parentSiteUrl}
-          className="inline-flex items-center shrink-0 translate-y-[2px] md:translate-y-0 md:h-[1.5em]"
-        >
-          <img
-            alt="SSW Foursquare"
-            src={withBasePath(iconSrc)}
-            width={16}
-            height={16}
-            className="block w-4 h-4"
-            loading="lazy"
-            decoding="async"
-          />
+        <a href={parentSiteUrl} className="inline-flex items-center shrink-0 translate-y-[2px] md:translate-y-0 md:h-[1.5em]">
+          <img alt="SSW Foursquare" src={withBasePath(iconSrc)} width={16} height={16} className="block w-4 h-4" loading="lazy" decoding="async" />
           <ChevronIcon className="ml-2 hidden md:block" size={18} />
         </a>
 

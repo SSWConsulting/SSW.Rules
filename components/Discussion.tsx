@@ -5,8 +5,8 @@ import Giscus from "@giscus/react";
 const isDev = process.env.NODE_ENV === "development";
 
 export default function Discussion({ ruleGuid }: { ruleGuid: string }) {
-  if (isDev) {
-    return null;
+  if (isDev || !ruleGuid) {
+    return <></>;
   }
 
   return (

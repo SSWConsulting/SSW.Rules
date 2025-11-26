@@ -2,13 +2,12 @@ import React from "react";
 import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
+import { getSanitizedBasePath } from "@/lib/withBasePath";
 import ruleToCategoryIndex from "@/rule-to-categories.json";
+import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import ClientFallbackPage from "./ClientFallbackPage";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
-import { getSanitizedBasePath } from "@/lib/withBasePath";
-import { siteUrl } from "@/site-config";
-
 
 // We have a Tina webhook revalidating each page individually on change
 // Leaving this as a fallback in case the above goes wrong

@@ -30,7 +30,7 @@ export default async function Layout({ children, rawPageData }: LayoutProps) {
   return (
     <LayoutProvider globalSettings={globalData.global} pageData={rawPageData}>
       <MenuProvider initialMenuGroups={menuGroups}>
-        <div className="">
+        <div className="flex flex-col flex-1 min-h-full">
           <Header />
           <main className="flex-1 overflow-x-hidden main-container max-sm:p-2">{children}</main>
           <Footer />

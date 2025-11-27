@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 enum TINA_CONTENT_CHANGE_TYPE {
@@ -25,6 +25,8 @@ export async function POST(req: Request) {
     }
 
     const routesToRevalidate = new Set<string>();
+    let shouldRevalidateLatestRules = false;
+    
     for (const changedPath of changedPaths) {
       if (typeof changedPath !== "string") continue;
 
@@ -36,6 +38,8 @@ export async function POST(req: Request) {
         }
         // If change type is add then we also need to revalidate the /api/rules route
         if (eventType === TINA_CONTENT_CHANGE_TYPE.Added) {
+          // Mark that we need to revalidate latest-rules tag when any rule is added
+          shouldRevalidateLatestRules = true;
           routesToRevalidate.add("/api/rules");
         }
       }
@@ -55,6 +59,11 @@ export async function POST(req: Request) {
           routesToRevalidate.add("/api/categories");
         }
       }
+    }
+
+    // Revalidate latest-rules tag if any rule was modified or added
+    if (shouldRevalidateLatestRules) {
+      revalidateTag("latest-rules");
     }
 
     for (const route of routesToRevalidate) {

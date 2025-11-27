@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import client from "@/tina/__generated__/client";
 import ruleToCategories from "../../../rule-to-categories.json";
 import { Rule } from "@/models/Rule";
@@ -12,7 +13,8 @@ type RuleQueryVars = PaginationVars & {
   sort?: string;
 };
 
-export async function fetchLatestRules(
+// Internal function that performs the actual data fetching
+async function fetchLatestRulesData(
   size: number = 5, 
   sortOption: "lastUpdated" | "created" = "lastUpdated",
   includeBody: boolean = false
@@ -37,6 +39,23 @@ export async function fetchLatestRules(
   });
 
   return enhanced;
+}
+
+export async function fetchLatestRules(
+  size: number = 5, 
+  sortOption: "lastUpdated" | "created" = "lastUpdated",
+  includeBody: boolean = false
+) {
+  // Create a cached function with tags for revalidation
+  const getCachedLatestRules = unstable_cache(
+    fetchLatestRulesData,
+    [`latest-rules-${size}-${sortOption}-${includeBody}`], // Cache key includes all parameters
+    {
+      tags: ["latest-rules"], // Tag for revalidation
+    }
+  );
+
+  return await getCachedLatestRules(size, sortOption, includeBody);
 }
 
 // Helper: find author's URL by matching lastUpdatedBy (or createdBy) to authors[].title

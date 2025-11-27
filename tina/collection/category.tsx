@@ -5,6 +5,7 @@ import { generateGuid } from "@/utils/guidGenerationUtils";
 import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
+import { toolbarFields } from "./shared/toolbarFields";
 
 const Category: Collection = {
   name: "category",
@@ -212,6 +213,7 @@ const Category: Collection = {
             itemProps: (item) => ({
               label: item.rule?.split("/").at(-2) || "Rule is not selected",
             }),
+            max: -1, // this disable the rules to be added to the category
           },
           fields: [
             {
@@ -232,6 +234,7 @@ const Category: Collection = {
           isBody: true,
           description: "This is description of the category",
           templates: embedTemplates,
+          toolbarOverride: toolbarFields,
         },
         ...historyFields,
       ],

@@ -7,6 +7,7 @@ import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
+import { toolbarFields } from "./shared/toolbarFields";
 
 const Rule: Collection = {
   name: "rule",
@@ -188,7 +189,7 @@ const Rule: Collection = {
       isBody: true,
       searchable: false,
       templates: embedTemplates,
-      toolbarOverride: ["embed", "heading", "link", "quote", "ul", "ol", "bold", "italic", "code", "codeBlock", "mermaid", "table", "raw"],
+      toolbarOverride: toolbarFields,
       ui: {
         component: ConditionalHiddenField,
       },

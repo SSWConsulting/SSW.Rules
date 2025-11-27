@@ -72,16 +72,24 @@ export const historyFields: TinaField[] = [
     label: "Archived Reason",
     description: "If this rule has been archived, summarise why here. Only required if 'Archived' is checked.",
     ui: {
-      validate: (value, allValue) => {
-        if (!allValue.isArchived && value?.length) {
+      validate: (value: any, allValue: any) => {
+        const stringValue = Array.isArray(value) ? value[0] : value;
+        if (!allValue.isArchived && stringValue?.length) {
           return "You cannot provide an archived reason if the rule is not archived.";
         }
 
-        if (allValue.isArchived && !value?.length) {
+        if (allValue.isArchived && !stringValue?.length) {
           return "Please provide a reason when archiving this rule.";
         }
       },
       component: ConditionalHiddenField,
+      // @ts-expect-error - hideCondition and watchFields are custom properties for ConditionalHiddenField
+      hideCondition: (values: any) => {
+        // Hide the field if isArchived is false, undefined, or null
+        // Show the field only when isArchived is explicitly true
+        return values?.isArchived !== true;
+      },
+      watchFields: ["isArchived"], // Specify which fields to watch for changes
     },
   },
 ];

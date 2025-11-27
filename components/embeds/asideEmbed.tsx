@@ -5,6 +5,7 @@ import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
 import { ComponentWithFigure, withFigureEmbedTemplateFields } from "./componentWithFigure";
+import { toolbarFields } from "@/tina/collection/shared/toolbarFields";
 
 type AsideVariant = "greybox" | "info" | "todo" | "china" | "codeauditor" | "highlight" | "warning" | "tips";
 
@@ -137,6 +138,7 @@ export const asideEmbedTemplate: Template = withFigureEmbedTemplateFields({
       name: "body",
       label: "Body",
       type: "rich-text",
+      toolbarOverride: toolbarFields,
     },
   ],
 });

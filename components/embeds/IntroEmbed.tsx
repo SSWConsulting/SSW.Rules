@@ -5,6 +5,7 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { getTypographyComponents } from "@/components/typography-components";
 import { YouTubePlayer } from "../shared/Youtube";
 import { AsideEmbed, asideEmbedTemplate } from "./asideEmbed";
+import { toolbarFields } from "@/tina/collection/shared/toolbarFields";
 
 const IntroInnerMarkdownComponents = {
   ...getTypographyComponents(false),
@@ -45,6 +46,7 @@ export const introEmbedTemplate: Template = {
       name: "body",
       label: "Body",
       type: "rich-text",
+      toolbarOverride: toolbarFields,
       templates: [introYoutubeTemplate, asideEmbedTemplate],
     },
   ],

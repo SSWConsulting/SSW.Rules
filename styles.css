@@ -297,6 +297,10 @@
   td {
     @apply !px-4 !py-2;
   }
+
+  hr {
+    @apply my-8;
+  }
 }
 
 @layer components {

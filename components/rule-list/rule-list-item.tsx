@@ -16,19 +16,17 @@ export interface RuleListItemProps {
 }
 
 const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBookmarkRemoved }) => {
-  function collectIntroEmbeds(nodes: any[] = []): any[] {
-    const out: any[] = [];
-    for (const n of nodes) {
-      if (n?.name === "introEmbed") out.push(n);
-      if (Array.isArray(n?.children)) out.push(...collectIntroEmbeds(n.children));
-    }
-    return out;
-  }
+  function makeBlurbContent(body?: { children?: any[] }) {
+    if (!body || !Array.isArray(body.children)) return;
 
-  function makeBlurbContent(body?: any) {
-    const children = Array.isArray(body?.children) ? body.children : [];
-    const embeds = collectIntroEmbeds(children);
-    return { type: "root", children: embeds };
+    const index = body.children.findIndex((node) => node?.name === "endOfIntro");
+
+    const blurbChildren = index === -1 ? body.children : body.children.slice(0, index);
+
+    return {
+      ...body,
+      children: blurbChildren,
+    };
   }
 
   function getContentForViewStyle(filter: RuleListFilter, body?: any) {

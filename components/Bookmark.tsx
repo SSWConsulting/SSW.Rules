@@ -32,6 +32,7 @@ export default function Bookmark({ ruleGuid, isBookmarked, defaultIsBookmarked =
   const [initialLoading, setInitialLoading] = useState<boolean>(!controlled);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
+  const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
 
   useEffect(() => {
     if (controlled) setBookmarked(isBookmarked as boolean);
@@ -110,6 +111,7 @@ export default function Bookmark({ ruleGuid, isBookmarked, defaultIsBookmarked =
 
   const handleLoginRedirect = () => {
     const current = query ? `${pathname}?${query}` : pathname;
+    setIsRedirecting(true);
     router.push(`/auth/login?returnTo=${encodeURIComponent(current)}`);
   };
 
@@ -136,16 +138,42 @@ export default function Bookmark({ ruleGuid, isBookmarked, defaultIsBookmarked =
         </button>
       </Tooltip>
 
-      <Popup showCloseIcon isVisible={showLoginModal} className="min-w-sm max-w-lg" onClose={() => setShowLoginModal(false)}>
+      <Popup
+        showCloseIcon
+        isVisible={showLoginModal}
+        className="min-w-sm max-w-lg"
+        onClose={() => {
+          setIsRedirecting(false);
+          setShowLoginModal(false);
+        }}
+      >
         <div className="p-6">
           <h3 className="text-lg font-semibold mb-2">Sign in required</h3>
           <p className="text-gray-700">Sign in to bookmark this rule.</p>
           <div className="mt-6 flex justify-end gap-3">
-            <button onClick={() => setShowLoginModal(false)} className="px-4 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50">
+            <button
+              onClick={() => {
+                setIsRedirecting(false);
+                setShowLoginModal(false);
+              }}
+              className="px-4 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50"
+            >
               Cancel
             </button>
-            <button onClick={handleLoginRedirect} className="px-4 py-2 rounded bg-ssw-red text-white cursor-pointer hover:bg-ssw-red/90">
-              Sign in
+            <button
+              onClick={handleLoginRedirect}
+              disabled={isRedirecting}
+              aria-busy={isRedirecting}
+              className="px-4 py-2 rounded bg-ssw-red text-white cursor-pointer hover:bg-ssw-red/90"
+            >
+              {isRedirecting ? (
+                <span className="flex items-center gap-2">
+                  <span>Signing in...</span>
+                  <Spinner size="sm" inline className="text-white" />
+                </span>
+              ) : (
+                "Sign in"
+              )}
             </button>
           </div>
         </div>

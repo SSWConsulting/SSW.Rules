@@ -40,6 +40,11 @@ const Rule: Collection = {
       const result = await historyBeforeSubmit(props);
       const values = (result ?? props.values) as any;
 
+      const body = values.body;
+      if (!body || !Array.isArray(body.children) || body.children.length === 0) {
+        return values;
+      }
+
       const count = countEndOfIntro(values.body);
 
       if (count !== 1) {

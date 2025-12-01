@@ -85,3 +85,5 @@ Instead of needing:
 **7. Be instantly available**
 
 There's no scheduling, no "I'll get back to you next week." You ask, it responds. You iterate until it's "good enough," then move on.
+
+**Figure:** ChatGPT's response when asked "Why is ChatGPT cool?"

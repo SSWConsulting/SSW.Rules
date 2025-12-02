@@ -2,7 +2,7 @@ import React from "react";
 import { Collection, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
-import { countEndOfIntro, removeEndOfIntroHiddenProp } from "@/utils/mdxNodeUtils";
+import { countEndOfIntro } from "@/utils/mdxNodeUtils";
 import { CategorySelectorInput } from "../fields/CategorySelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
@@ -22,6 +22,7 @@ const Rule: Collection = {
     return {
       guid: generateGuid(),
       filename: "rule",
+      body: defaultBody,
     };
   },
   ui: {
@@ -36,29 +37,7 @@ const Rule: Collection = {
       const slug = document?._sys?.relativePath?.split("/")?.[0] ?? "";
       return `/${slug}`;
     },
-    beforeSubmit: async (props) => {
-      const result = await historyBeforeSubmit(props);
-      const values = (result ?? props.values) as any;
-
-      const body = values.body;
-      if (!body || !Array.isArray(body.children) || body.children.length === 0) {
-        return values;
-      }
-
-      const count = countEndOfIntro(values.body);
-
-      if (count !== 1) {
-        const msg =
-          count === 0
-            ? "This rule is missing an <endOfIntro /> marker. Please add one to separate the introduction from the rest of the content."
-            : "There are multiple <endOfIntro /> markers in this rule. Please keep only one.";
-
-        props.cms.alerts?.error?.(msg);
-        throw new Error("Body must contain exactly one <endOfIntro /> component.");
-      }
-
-      return values;
-    },
+    beforeSubmit: historyBeforeSubmit,
   },
   fields: [
     {
@@ -215,8 +194,16 @@ const Rule: Collection = {
       toolbarOverride: toolbarFields,
       ui: {
         component: ConditionalHiddenField,
-        parse: (value: any) => {
-          return removeEndOfIntroHiddenProp(value);
+        validate: (value: any) => {
+          const count = countEndOfIntro(value);
+          if (count !== 1) {
+            const error =
+              count === 0
+                ? "Please add an <endIntro /> embed component to separate the intro and body content."
+                : "There are multiple <endIntro /> embed components in this rule. Please keep only one.";
+
+            return error;
+          }
         },
       },
     },
@@ -233,6 +220,40 @@ const Rule: Collection = {
       },
     },
     ...historyFields,
+  ],
+};
+
+const defaultBody = {
+  type: "root",
+  children: [
+    {
+      type: "p",
+      children: [
+        {
+          type: "text",
+          text: "Intro",
+        },
+      ],
+    },
+    {
+      type: "mdxJsxFlowElement",
+      name: "endOfIntro",
+      children: [
+        {
+          type: "text",
+          text: "",
+        },
+      ],
+      props: {},
+    },
+    {
+      children: [
+        {
+          text: "Body",
+        },
+      ],
+      type: "p",
+    },
   ],
 };
 

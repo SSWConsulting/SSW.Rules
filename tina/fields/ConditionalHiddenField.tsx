@@ -23,7 +23,9 @@ import { GroupListFieldPlugin, ImageField, MdxFieldPluginExtendible, ToggleField
  *   ui: {
  *     component: ConditionalHiddenField,
  *     hideCondition: (values) => values?.someField !== true,
- *     watchFields: ["someField"] // Optional: specify which fields to watch
+ *     watchFields: ["someField"], // Optional: specify which fields to watch
+ *     textarea: true, // Optional: render as textarea instead of input (for string fields)
+ *     rows: 3 // Optional: number of rows for textarea (default: 3)
  *   }
  * }
  *
@@ -74,7 +76,7 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
    * Gets form values, with fallback to reading from DOM for specified fields
    */
   const getFormValuesWithDOMFallback = (fieldsToWatch: string[]): Record<string, any> => {
-    let formValues = getFormValues();
+    const formValues = getFormValues();
 
     // If form values don't have the watched fields, try reading from DOM
     const domValues: Record<string, any> = {};
@@ -164,10 +166,7 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
       if (!element) break;
 
       // Check if this element contains a label
-      const hasLabel =
-        element.querySelector("label") ||
-        element.querySelector('[class*="label"]') ||
-        element.getAttribute("data-tina-field");
+      const hasLabel = element.querySelector("label") || element.querySelector('[class*="label"]') || element.getAttribute("data-tina-field");
 
       // If we found a label or reached a reasonable depth, this is likely the wrapper
       if (hasLabel || depth >= 2) {
@@ -197,15 +196,10 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
       if (!element) break;
 
       // Look for direct child labels (usually from wrapFieldsWithMeta)
-      const directChildLabels = Array.from(element.children).filter(
-        (child) => child.tagName === "LABEL" || child.querySelector("label")
-      );
+      const directChildLabels = Array.from(element.children).filter((child) => child.tagName === "LABEL" || child.querySelector("label"));
 
       if (directChildLabels.length > 0) {
-        const labelToHide =
-          directChildLabels[0].tagName === "LABEL"
-            ? directChildLabels[0]
-            : directChildLabels[0].querySelector("label");
+        const labelToHide = directChildLabels[0].tagName === "LABEL" ? directChildLabels[0] : directChildLabels[0].querySelector("label");
 
         if (labelToHide) {
           (labelToHide as HTMLElement).style.display = "none";
@@ -279,10 +273,7 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
     const pollInterval = setInterval(evaluateCondition, 150);
 
     // Set up DOM event listeners for more responsive updates
-    const elementsToWatch =
-      watchFields && Array.isArray(watchFields) && watchFields.length > 0
-        ? findFieldElements(watchFields)
-        : findAllFormInputs();
+    const elementsToWatch = watchFields && Array.isArray(watchFields) && watchFields.length > 0 ? findFieldElements(watchFields) : findAllFormInputs();
 
     const handleFieldChange = () => {
       // Small delay to ensure form values are updated
@@ -304,11 +295,7 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
   // Default behavior: hide on create mode for certain field types
   const shouldHideByDefault =
     tinaForm?.crudType === "create" &&
-    (field.type === "string" ||
-      field.type === "rich-text" ||
-      field.type === "boolean" ||
-      field.type === "image" ||
-      isListField) &&
+    (field.type === "string" || field.type === "rich-text" || field.type === "boolean" || field.type === "image" || isListField) &&
     !isAlwaysVisible;
 
   // Use custom condition if provided, otherwise use default behavior
@@ -342,25 +329,30 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
 
   // Render appropriate input component based on field type
   const renderFieldInput = () => {
+    // Remove error from meta to prevent duplicate validation messages
+    // wrapFieldsWithMeta already handles validation display
+    const metaWithoutError = meta ? { ...meta, error: undefined } : {};
+    const propsWithoutError = { ...props, meta: metaWithoutError };
+
     switch (field.type) {
       case "boolean":
         return (
           <div ref={containerRef}>
-            <ToggleFieldPlugin.Component {...props} />
+            <ToggleFieldPlugin.Component {...propsWithoutError} />
           </div>
         );
 
       case "image":
         return (
           <div ref={containerRef}>
-            <ImageField {...props} />
+            <ImageField {...propsWithoutError} />
           </div>
         );
 
       case "rich-text":
         return (
           <div ref={containerRef}>
-            <MdxFieldPluginExtendible.Component {...props} />
+            <MdxFieldPluginExtendible.Component {...propsWithoutError} />
           </div>
         );
 
@@ -369,12 +361,28 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
         if (isListField) {
           return (
             <div ref={containerRef}>
-              <GroupListFieldPlugin.Component {...props} />
+              <GroupListFieldPlugin.Component {...propsWithoutError} />
             </div>
           );
         }
 
-        // Default: string input
+        // Default: string input or textarea
+        const useTextarea = (field.ui as any)?.textarea === true;
+        const textareaRows = (field.ui as any)?.rows || 3;
+
+        if (useTextarea) {
+          return (
+            <div ref={containerRef}>
+              <textarea
+                id={input.name}
+                {...input}
+                rows={textareaRows}
+                className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white resize-y"
+              />
+            </div>
+          );
+        }
+
         return (
           <div ref={containerRef}>
             <input

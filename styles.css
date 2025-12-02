@@ -331,35 +331,3 @@
     border-color: var(--color-ssw-red);
   }
 }
-
-.rule-content-table a:has(img) {
-  text-decoration: underline !important;
-}
-
-.rule-content-table a img {
-  margin: 0 !important;
-  padding: 0 !important;
-  display: inline !important;
-  vertical-align: middle !important;
-}
-
-a[href*="youtube.com"]:has(img),
-a[href^="mailto:"]:has(img),
-a[href$=".pdf"]:has(img),
-a[href$=".docx"]:has(img),
-a[href$=".xlsx"]:has(img),
-a[href$=".pptx"]:has(img),
-a[href$=".txt"]:has(img),
-a[href$=".zip"]:has(img),
-a[href$=".ics"]:has(img),
-a[href$=".vcs"]:has(img),
-a[href*="google.com/maps"]:has(img),
-a[href$=".avi"]:has(img),
-a[href$=".mov"]:has(img),
-a[href$=".mpg"]:has(img),
-a[href$=".mp4"]:has(img),
-a[href$=".wav"]:has(img),
-a[href$=".wma"]:has(img),
-a[href$=".mp3"]:has(img) {
-  text-decoration: underline !important;
-}

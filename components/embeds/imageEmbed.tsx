@@ -21,8 +21,8 @@ export function ImageEmbed({ data }: { data: any }) {
   const src = normalizeSrc(data.src);
 
   const sizeClasses = {
-    small: "max-w-sm",
-    medium: "max-w-2xl",
+    small: "max-w-xs",
+    medium: "max-w-xl",
     large: "max-w-full",
   };
 

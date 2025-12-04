@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { Template } from "tinacms";
-import { ComponentWithFigure, withFigureEmbedTemplateFields } from "./componentWithFigure";
+import { Figure, inlineFigureDefaultItem, inlineFigureFields } from "./figure";
 
 const normalizeSrc = (input?: string) => {
   if (!input) return "";
@@ -28,9 +28,11 @@ export function ImageEmbed({ data }: { data: any }) {
 
   const borderClass = data.showBorder ? "border-[10px] border-transparent" : "";
   const heightClass = data?.src?.trim() ? "h-auto" : "h-[300px]";
+  const figure: string = data?.figure || "";
+  const figurePrefix: any = data?.figurePrefix || "default";
 
   return (
-    <ComponentWithFigure data={data}>
+    <>
       <div className={`bg-gray-200 mt-4 w-auto ${sizeClasses[data.size]} ${borderClass} ${heightClass}`}>
         {data?.src?.trim() && (
           <>
@@ -40,11 +42,12 @@ export function ImageEmbed({ data }: { data: any }) {
           </>
         )}
       </div>
-    </ComponentWithFigure>
+      <Figure prefix={figurePrefix} text={figure} className="mt-2" />
+    </>
   );
 }
 
-export const imageEmbedTemplate: Template = withFigureEmbedTemplateFields({
+export const imageEmbedTemplate: Template = {
   name: "imageEmbed",
   label: "Image",
   ui: {
@@ -52,6 +55,7 @@ export const imageEmbedTemplate: Template = withFigureEmbedTemplateFields({
       alt: "Image",
       size: "small",
       showBorder: false,
+      ...inlineFigureDefaultItem,
     },
   },
   fields: [
@@ -90,8 +94,9 @@ export const imageEmbedTemplate: Template = withFigureEmbedTemplateFields({
       label: "Show Border?",
       type: "boolean",
     },
+    ...(inlineFigureFields as any),
   ],
-});
+};
 
 export const imageEmbedComponent = {
   imageEmbed: (props: any) => <ImageEmbed data={props} />,

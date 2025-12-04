@@ -19,7 +19,7 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
   function makeBlurbContent(body?: { children?: any[] }) {
     if (!body || !Array.isArray(body.children)) return;
 
-    const index = body.children.findIndex((node) => node?.name === "endOfIntro");
+    const index = body.children.findIndex((node) => node?.name === "endIntro");
 
     const blurbChildren = index === -1 ? body.children : body.children.slice(0, index);
 

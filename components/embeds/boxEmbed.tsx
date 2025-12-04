@@ -3,11 +3,11 @@ import React from "react";
 import { FaLightbulb } from "react-icons/fa6";
 import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
-import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
-import { ComponentWithFigure, withFigureEmbedTemplateFields } from "./componentWithFigure";
 import { toolbarFields } from "@/tina/collection/shared/toolbarFields";
+import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
+import { Figure, inlineFigureDefaultItem, inlineFigureFields } from "./figure";
 
-type AsideVariant = "greybox" | "info" | "todo" | "china" | "codeauditor" | "highlight" | "warning" | "tips";
+type BoxVariant = "greybox" | "info" | "todo" | "china" | "codeauditor" | "highlight" | "warning" | "tips";
 
 type VariantConfig = {
   containerClass: string;
@@ -15,7 +15,7 @@ type VariantConfig = {
   textClass?: string;
 };
 
-const variantConfig: Record<AsideVariant, VariantConfig> = {
+const variantConfig: Record<BoxVariant, VariantConfig> = {
   greybox: {
     containerClass: "bg-gray-100",
   },
@@ -73,8 +73,8 @@ const variantConfig: Record<AsideVariant, VariantConfig> = {
   },
 };
 
-export function AsideEmbed(props: any) {
-  // Handle both cases: props.data (from asideEmbedComponent) or props directly (from IntroEmbed)
+export function BoxEmbed(props: any) {
+  // Handle both cases: props.data (from BoxEmbedComponent) or props directly (from IntroEmbed)
   const data = props.data || props;
 
   // Safety check: if data is undefined or null, return null
@@ -82,11 +82,14 @@ export function AsideEmbed(props: any) {
     return null;
   }
 
-  const variant: AsideVariant = data?.variant || "info";
+  // Support both legacy 'variant' and new 'style' prop names
+  const variant: BoxVariant = (data?.style || "info") as BoxVariant;
   const config = variantConfig[variant];
+  const figure: string = data?.figure || "";
+  const figurePrefix: any = data?.figurePrefix || "default";
 
   return (
-    <ComponentWithFigure data={data}>
+    <>
       <div className={`p-4 rounded-sm my-4 ${config.containerClass}`}>
         <div className="flex items-start">
           {config.icon}
@@ -97,16 +100,17 @@ export function AsideEmbed(props: any) {
           </div>
         </div>
       </div>
-    </ComponentWithFigure>
+      <Figure prefix={figurePrefix} text={figure} />
+    </>
   );
 }
 
-export const asideEmbedTemplate: Template = withFigureEmbedTemplateFields({
-  name: "asideEmbed",
-  label: "Aside Box",
+export const boxEmbedTemplate: Template = {
+  name: "boxEmbed",
+  label: "Box",
   ui: {
     defaultItem: {
-      variant: "info",
+      style: "info",
       body: {
         type: "root",
         children: [
@@ -116,12 +120,13 @@ export const asideEmbedTemplate: Template = withFigureEmbedTemplateFields({
           },
         ],
       },
+      ...inlineFigureDefaultItem,
     },
   },
   fields: [
     {
-      name: "variant",
-      label: "Variant",
+      name: "style",
+      label: "style",
       type: "string",
       options: [
         { value: "greybox", label: "Greybox" },
@@ -140,9 +145,10 @@ export const asideEmbedTemplate: Template = withFigureEmbedTemplateFields({
       type: "rich-text",
       toolbarOverride: toolbarFields,
     },
+    ...(inlineFigureFields as any),
   ],
-});
+};
 
-export const asideEmbedComponent = {
-  asideEmbed: (props: any) => <AsideEmbed data={props} />,
+export const boxEmbedComponent = {
+  boxEmbed: (props: any) => <BoxEmbed data={props} />,
 };

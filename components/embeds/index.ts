@@ -1,25 +1,16 @@
 import { Template } from "tinacms";
-import { asideEmbedComponent, asideEmbedTemplate } from "./asideEmbed";
+import { boxEmbedComponent, boxEmbedTemplate } from "./boxEmbed";
 import { emailEmbedComponent, emailEmbedTemplate } from "./emailEmbed";
-import { endOfIntroComponent, endOfIntroTemplate } from "./endOfIntro";
-import { figureEmbedComponent, figureEmbedTemplate } from "./figureEmbed";
+import { endIntroComponent, endIntroTemplate } from "./endIntro";
 import { imageEmbedComponent, imageEmbedTemplate } from "./imageEmbed";
 import { youtubeEmbedComponent, youtubeEmbedTemplate } from "./youtubeEmbed";
 
 export const embedComponents = {
-  ...endOfIntroComponent,
+  ...endIntroComponent,
   ...emailEmbedComponent,
   ...imageEmbedComponent,
-  ...figureEmbedComponent,
-  ...asideEmbedComponent,
+  ...boxEmbedComponent,
   ...youtubeEmbedComponent,
 };
 
-export const embedTemplates: Template[] = [
-  endOfIntroTemplate,
-  emailEmbedTemplate,
-  imageEmbedTemplate,
-  figureEmbedTemplate,
-  asideEmbedTemplate,
-  youtubeEmbedTemplate,
-];
+export const embedTemplates: Template[] = [endIntroTemplate, emailEmbedTemplate, imageEmbedTemplate, boxEmbedTemplate, youtubeEmbedTemplate];

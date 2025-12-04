@@ -1,13 +1,13 @@
 import React from "react";
 import { Template } from "tinacms";
 
-export function EndOfIntro() {
+export function EndIntro() {
   return <></>;
 }
 
-export const endOfIntroTemplate: Template = {
-  name: "endOfIntro",
-  label: "End Of Intro",
+export const endIntroTemplate: Template = {
+  name: "endIntro",
+  label: "End Intro",
   fields: [
     {
       type: "string",
@@ -27,6 +27,6 @@ export const endOfIntroTemplate: Template = {
   },
 };
 
-export const endOfIntroComponent = {
-  endOfIntro: () => <EndOfIntro />,
+export const endIntroComponent = {
+  endIntro: () => <EndIntro />,
 };

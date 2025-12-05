@@ -5,14 +5,14 @@ import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
 import { CategorySelectorInput } from "../fields/CategorySelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
-import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
+import { RuleSelector } from "../fields/RuleSelector";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { toolbarFields } from "./shared/toolbarFields";
 
 const Rule: Collection = {
   name: "rule",
-  label: "Rule",
+  label: "Rules",
   path: "public/uploads/rules",
   format: "mdx",
   match: {
@@ -69,14 +69,11 @@ const Rule: Collection = {
       type: "object",
       name: "categories",
       label: "Categories",
-      description: "Assigns one or more categories to the rule",
+      description: "Assigns one or more categories to the rule.",
       list: true,
       searchable: false,
       ui: {
-        itemProps: (item) => {
-          const categoryTitle = item?.category ? `🔗 ${item?.category?.split("/").at(-1)?.replace(".mdx", "")}` : "Unselected Category";
-          return { label: categoryTitle };
-        },
+        itemProps: (item) => ({ label: item?.category ? `📂 ${item?.category?.split("/").at(-1)?.replace(".mdx", "")}` : "Select a Category" }),
         component: ConditionalHiddenField,
       },
       fields: [
@@ -100,9 +97,7 @@ const Rule: Collection = {
       list: true,
       searchable: false,
       ui: {
-        itemProps: (item) => {
-          return { label: "👤 " + (item?.title ?? "Author") };
-        },
+        itemProps: (item) => ({ label: "👤 " + (item?.title ?? "Author") }),
         defaultItem: {
           title: "Bob Northwind",
           url: "https://ssw.com.au/people/bob-northwind",
@@ -136,7 +131,7 @@ const Rule: Collection = {
       searchable: false,
       ui: {
         itemProps: (item) => ({
-          label: item.rule?.split("/").at(-2) || "Rule is not selected",
+          label: item.rule?.split("/").at(-2) || "Select a Related Rule",
         }),
         component: ConditionalHiddenField,
       },
@@ -148,7 +143,7 @@ const Rule: Collection = {
           description: "This rule list may not include newly created rules for up to one hour. It is updated based on the main branch after that time.",
           collections: ["rule"],
           ui: {
-            component: PaginatedRuleSelectorInput,
+            component: RuleSelector,
           },
         },
       ],

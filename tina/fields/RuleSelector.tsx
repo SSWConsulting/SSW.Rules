@@ -16,7 +16,7 @@ interface Rule {
 const MIN_SEARCH_LENGTH = 2;
 const INITIAL_RULES_COUNT = 20;
 
-export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
+export const RuleSelector: React.FC<any> = ({ input }) => {
   const [filter, setFilter] = useState("");
   const [allRules, setAllRules] = useState<Rule[]>([]);
   const [filteredRules, setFilteredRules] = useState<Rule[]>([]);
@@ -202,9 +202,6 @@ export const PaginatedRuleSelectorInput: React.FC<any> = ({ input }) => {
                                   <div className="flex-1 min-w-0 overflow-hidden">
                                     <div className="font-medium text-gray-900 text-sm leading-5 truncate">{rule.title}</div>
                                     <div className="text-xs text-gray-500 leading-4 truncate">{rule.uri}</div>
-                                  </div>
-                                  <div className="text-xs text-gray-500 leading-4 whitespace-nowrap text-right">
-                                    Last updated: {formatLastUpdated(rule.lastUpdated)}
                                   </div>
                                 </div>
                               </button>

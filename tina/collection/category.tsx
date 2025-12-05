@@ -2,8 +2,8 @@ import React from "react";
 import { Collection, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
-import { PaginatedRuleSelectorInput } from "../fields/paginatedRuleSelector";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
+import { RuleSelector } from "../fields/RuleSelector";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { toolbarFields } from "./shared/toolbarFields";
 
@@ -210,9 +210,7 @@ const Category: Collection = {
           description:
             "Note: The rules listed here are only used for sorting on the category page. To assign a category, open the specific rule and select the category there. This list updates automatically based on those assignments, but any rule added directly to this list will not update on its own.",
           ui: {
-            itemProps: (item) => ({
-              label: item.rule?.split("/").at(-2) || "Rule is not selected",
-            }),
+            itemProps: (item) => ({ label: item.rule?.split("/").at(-2) || "Select a Rule" }),
             max: -1, // this disable the rules to be added to the category
           },
           fields: [
@@ -222,7 +220,7 @@ const Category: Collection = {
               name: "rule",
               collections: ["rule"],
               ui: {
-                component: PaginatedRuleSelectorInput,
+                component: RuleSelector,
               },
             },
           ],

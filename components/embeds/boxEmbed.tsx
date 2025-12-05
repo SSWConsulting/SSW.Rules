@@ -93,7 +93,7 @@ export function BoxEmbed(props: any) {
       <div className={`p-4 rounded-sm my-4 ${config.containerClass}`}>
         <div className="flex items-start">
           {config.icon}
-          <div className={`${config.textClass ?? ""}`}>
+          <div className={`[&_p:last-child]:mb-0 ${config.textClass ?? ""}`}>
             <div>
               <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
             </div>

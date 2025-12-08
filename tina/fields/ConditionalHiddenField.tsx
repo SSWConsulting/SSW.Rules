@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { GroupListFieldPlugin, ImageField, MdxFieldPluginExtendible, ToggleFieldPlugin, wrapFieldsWithMeta } from "tinacms";
+import { GroupListFieldPlugin, ImageField, MdxFieldPluginExtendible, ToggleFieldPlugin, wrapFieldsWithMeta, ListFieldPlugin } from "tinacms";
 
 /**
  * Conditionally hides string, rich-text, boolean, image, and list fields (and their labels) on create mode,
@@ -224,6 +224,8 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
 
   const isListField = field.list === true;
   const isAlwaysVisible = isAlwaysVisibleField();
+  const isObjectListField = isListField && field.type === "object";
+  const isPrimitiveListField = isListField && field.type !== "object";
 
   // ============================================================================
   // CUSTOM CONDITION LOGIC
@@ -359,11 +361,23 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
       default:
         // Handle list fields
         if (isListField) {
-          return (
-            <div ref={containerRef}>
-              <GroupListFieldPlugin.Component {...propsWithoutError} />
-            </div>
-          );
+          // Object lists → GroupList
+          if (isObjectListField) {
+            return (
+              <div ref={containerRef}>
+                <GroupListFieldPlugin.Component {...propsWithoutError} />
+              </div>
+            );
+          }
+        
+          // Primitive lists (string/number) → ListField
+          if (isPrimitiveListField) {
+            return (
+              <div ref={containerRef}>
+                <ListFieldPlugin.Component {...propsWithoutError} />
+              </div>
+            );
+          }
         }
 
         // Default: string input or textarea

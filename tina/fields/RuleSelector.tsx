@@ -44,7 +44,10 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
       setLoading(true);
       try {
         // Since we are in Tina admin site, we are at /admin so need to drop down a level back to root
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/rules`, { method: "GET", cache: "no-store" });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/rules`, {
+          method: "GET",
+          cache: "no-store",
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const rules = await res.json();
         setAllRules(rules);
@@ -68,7 +71,7 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
     const matchingRule = allRules.find((r) => r._sys.relativePath === selectedRel);
 
     if (matchingRule) {
-      setSelectedRuleLabel(matchingRule.uri);
+      setSelectedRuleLabel(matchingRule.title || matchingRule.uri);
     }
   }, [allRules, input.value]);
 
@@ -123,8 +126,8 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
     setFilteredRules(includesSorted);
   }, [filter, allRules, selectedRule]);
 
-  const handleRuleSelect = (rule) => {
-    setSelectedRuleLabel(rule.uri);
+  const handleRuleSelect = (rule: Rule) => {
+    setSelectedRuleLabel(rule.title || rule.uri);
     const rulePath = `public/uploads/rules/${rule._sys.relativePath}`;
     input.onChange(rulePath);
   };
@@ -140,7 +143,9 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
         {({ open }) => (
           <>
             <PopoverButton className="text-sm h-11 px-4 justify-between w-full bg-white border border-gray-200 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors flex items-center">
-              <span>{selectedRuleLabel || "Select a rule"}</span>
+              <span className="truncate" title={selectedRuleLabel || undefined}>
+                {selectedRuleLabel || "Select a rule"}
+              </span>
               <BiChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
             </PopoverButton>
             <div className="absolute inset-x-0 -bottom-2 translate-y-full z-1000">
@@ -197,10 +202,13 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
                                   handleRuleSelect(rule);
                                   close();
                                 }}
+                                title={rule.title || rule.uri}
                               >
                                 <div className="flex items-center justify-between w-full gap-3">
                                   <div className="flex-1 min-w-0 overflow-hidden">
-                                    <div className="font-medium text-gray-900 text-sm leading-5 truncate">{rule.title}</div>
+                                    <div className="font-medium text-gray-900 text-sm leading-5 truncate" title={rule.title || rule.uri}>
+                                      {rule.title || rule.uri}
+                                    </div>
                                     <div className="text-xs text-gray-500 leading-4 truncate">{rule.uri}</div>
                                   </div>
                                 </div>

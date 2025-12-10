@@ -151,8 +151,8 @@ const Rule: Collection = {
     {
       type: "string",
       name: "redirects",
-      label: "URI Redirects",
-      description: "Other URIs which will redirect to this rule.",
+      label: "URL Redirects",
+      description: "Other URLs which will redirect to this rule.",
       list: true,
       searchable: false,
       ui: {

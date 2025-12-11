@@ -337,20 +337,28 @@
   @apply inline-block pl-1 opacity-50;
 }
 
-a[href$='.pdf']:before, 
-a[href$='.docx']:before, a[href$='.mp3']:before,  a[href$='.wav']:before,  a[href$='.wma']:before,
-a[href$='.xlsx']:before, 
-a[href$='.pptx']:before, 
-a[href$='.txt']:before, 
-a[href$='.mov']:before, a[href$='.avi']:before, a[href$='.mpg']:before, a[href$='.mp4']:before, 
-a[href$='.ics']:before, a[href$='.vsc']:before, 
-a[href$='.zip']:before,
-a[href*='mailto:']:before,
-a[href*='google.com/map']:before,
-a[href*='youtube.com']:before, a[href*='youtu.be']:before {
+.rule-content a:is(
+  [href$='.pdf'],
+  [href$='.docx'],
+  [href$='.mp3'], [href$='.wav'], [href$='.wma'],
+  [href$='.xlsx'],
+  [href$='.pptx'],
+  [href$='.txt'],
+  [href$='.mov'], [href$='.avi'], [href$='.mpg'], [href$='.mp4'],
+  [href$='.ics'], [href$='.vsc'],
+  [href$='.zip'],
+  [href*='mailto:'],
+  [href*='google.com/map'],
+  [href*='youtube.com'], [href*='youtu.be']
+)::before {
   content: "\F1C1 ";
   font-family: FontAwesome;
   @apply inline-block pr-1;
+}
+
+.rule-content a[href*='youtube.com']:before, .rule-content a[href*='youtu.be']:before {
+  content: "\F167 ";
+  color: #FF0000;
 }
 
 a[href$='.pdf']:before {
@@ -401,11 +409,6 @@ a[href$='.zip']:before {
 a[href*='mailto:']:before {
   content: "\F003 ";
   color: #0072C6;
-}
-
-a[href*='youtube.com']:before, a[href*='youtu.be']:before {
-  content: "\F167 ";
-  color: #FF0000;
 }
 
 a[href*='google.com/map']:before {

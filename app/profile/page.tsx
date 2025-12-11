@@ -1,15 +1,14 @@
 import { Section } from "@/components/layout/section";
-import ProfileClientPage from "./client-page";
-import { Suspense } from "react";
 import { siteUrl } from "@/site-config";
+import ProfileClientPage from "./client-page";
 
 export const revalidate = 300;
 
 export default function ProfilePage() {
   return (
-    <Suspense fallback={null}>
+    <Section>
       <ProfileClientPage />
-    </Suspense>
+    </Section>
   );
 }
 

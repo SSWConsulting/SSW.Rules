@@ -53,7 +53,7 @@ export function EmailEmbed({ data }: { data: any }) {
 
 export const emailEmbedTemplate: Template = {
   name: "emailEmbed",
-  label: "Email",
+  label: "Email Template",
   ui: {
     defaultItem: {
       from: "XXX",

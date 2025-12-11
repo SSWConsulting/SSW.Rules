@@ -1,15 +1,15 @@
 "use client";
 
 import { getAccessToken } from "@auth0/nextjs-auth0";
-import React, { useState, useEffect } from "react";
-import RuleList from "@/components/rule-list";
-import { BookmarkedRule, UserBookmarksResponse, Rule } from "@/types";
-import { BookmarkService } from "@/lib/bookmarkService";
 import Image from "next/image";
-import { RiGithubFill, RiBookmarkFill } from "react-icons/ri";
-import Breadcrumbs from "@/components/Breadcrumbs";
+import React, { useEffect, useState } from "react";
+import { RiBookmarkFill, RiGithubFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth/UserClientProvider";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import RuleList from "@/components/rule-list";
 import Spinner from "@/components/Spinner";
+import { BookmarkService } from "@/lib/bookmarkService";
+import { BookmarkedRule, Rule, UserBookmarksResponse } from "@/types";
 
 interface ProfileData {
   [key: string]: any;
@@ -53,7 +53,7 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
           try {
             const guids = Array.from(new Set(bookmarkResult.bookmarkedRules.map((b) => b.ruleGuid).filter((g): g is string => Boolean(g))));
 
-            const res = await fetch("/api/rules/by-guid", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/rules/by-guid`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ guids }),

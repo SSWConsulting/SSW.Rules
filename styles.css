@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 @source "src/**/*.{js,jsx,ts,tsx}";
 @source "node_modules/ssw.megamenu/**/*.js";
@@ -112,12 +113,6 @@
 
 .btn-red {
   @apply bg-ssw-red;
-}
-
-.action-btn-container {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
 }
 
 .main-container {
@@ -301,6 +296,10 @@
   hr {
     @apply my-8;
   }
+
+  table a {
+    @apply underline hover:text-ssw-red;
+  }
 }
 
 @layer components {
@@ -330,4 +329,86 @@
     background-color: var(--color-ssw-red);
     border-color: var(--color-ssw-red);
   }
+}
+
+.rule-content a[href*="//"]:not([href*="ssw.com.au"], [href*="assets.tina.io"], [href*="youtube.com"], [href*="google.com/map"], .info-btn-container, .tooltip-button, .not-external):after {
+  content: "\f08b ";
+  font-family: FontAwesome;
+  @apply inline-block pl-1 opacity-50;
+}
+
+a[href$='.pdf']:before, 
+a[href$='.docx']:before, a[href$='.mp3']:before,  a[href$='.wav']:before,  a[href$='.wma']:before,
+a[href$='.xlsx']:before, 
+a[href$='.pptx']:before, 
+a[href$='.txt']:before, 
+a[href$='.mov']:before, a[href$='.avi']:before, a[href$='.mpg']:before, a[href$='.mp4']:before, 
+a[href$='.ics']:before, a[href$='.vsc']:before, 
+a[href$='.zip']:before,
+a[href*='mailto:']:before,
+a[href*='google.com/map']:before,
+a[href*='youtube.com']:before, a[href*='youtu.be']:before {
+  content: "\F1C1 ";
+  font-family: FontAwesome;
+  @apply inline-block pr-1;
+}
+
+a[href$='.pdf']:before {
+  content: "\F1C1 ";
+  color:#ff2116;
+}
+
+a[href$='.docx']:before {
+  content: "\F1C2";
+  color: #185ABD;
+}
+
+a[href$='.mp3']:before,  a[href$='.wav']:before,  a[href$='.wma']:before {
+  content: "\F1C7 ";
+  color:#797979;
+}
+
+a[href$='.xlsx']:before {
+  content: "\F1C3 ";
+  color: #107C41;
+}
+
+a[href$='.pptx']:before {
+  content: "\F1C4 ";
+  color: #C43E1C;
+}
+
+a[href$='.txt']:before {
+  content: "\F0F6 ";
+  color:#797979;
+}
+
+a[href$='.mov']:before, a[href$='.avi']:before, a[href$='.mpg']:before, a[href$='.mp4']:before {
+  content: "\F1C8 ";
+  color:#797979;
+}
+
+a[href$='.ics']:before, a[href$='.vsc']:before  {
+  content: "\F133 ";
+  color: #0072C6;
+}
+
+a[href$='.zip']:before {
+  content: "\F1C6 ";
+  color: #f4cd49;
+}
+
+a[href*='mailto:']:before {
+  content: "\F003 ";
+  color: #0072C6;
+}
+
+a[href*='youtube.com']:before, a[href*='youtu.be']:before {
+  content: "\F167 ";
+  color: #FF0000;
+}
+
+a[href*='google.com/map']:before {
+  content: "\f041 ";
+  color: #FF0000;
 }

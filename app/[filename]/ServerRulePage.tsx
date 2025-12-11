@@ -83,7 +83,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
             </div>
           )}
 
-          <div className="mt-8" data-tina-field={tinaField(rule, "body")}>
+          <div className="mt-8 rule-content" data-tina-field={tinaField(rule, "body")}>
             <TinaMarkdown content={rule?.body} components={getMarkdownComponentMapping(true)} />
           </div>
 

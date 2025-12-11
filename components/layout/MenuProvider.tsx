@@ -1,7 +1,6 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getMegamenu } from '@/utils/get-mega-menu';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface MenuContextType {
   menuGroups: any[] | null;
@@ -34,11 +33,15 @@ export function MenuProvider({ children, initialMenuGroups }: MenuProviderProps)
         try {
           setIsLoading(true);
           setError(null);
-          const data = await getMegamenu();
+          const res = await fetch("./api/tina/megamenu");
+          if (!res.ok) {
+            throw new Error(`Failed to fetch megamenu: ${res.status} ${res.statusText}`);
+          }
+          const data = await res.json();
           setMenuGroups(data?.data?.megamenu?.menuGroups || null);
         } catch (err) {
-          console.error('Failed to fetch menu:', err);
-          setError(err instanceof Error ? err.message : 'Failed to fetch menu');
+          console.error("Failed to fetch menu:", err);
+          setError(err instanceof Error ? err.message : "Failed to fetch menu");
         } finally {
           setIsLoading(false);
         }
@@ -48,9 +51,5 @@ export function MenuProvider({ children, initialMenuGroups }: MenuProviderProps)
     }
   }, [initialMenuGroups]);
 
-  return (
-    <MenuContext.Provider value={{ menuGroups, isLoading, error }}>
-      {children}
-    </MenuContext.Provider>
-  );
+  return <MenuContext.Provider value={{ menuGroups, isLoading, error }}>{children}</MenuContext.Provider>;
 }

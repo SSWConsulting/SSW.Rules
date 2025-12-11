@@ -1,39 +1,31 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
-import client from '@/tina/__generated__/client';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import HelpCard from '@/components/HelpCard';
-import RuleCount from '@/components/RuleCount';
-import WhyRulesCard from '@/components/WhyRulesCard';
-import HelpImproveCard from '@/components/HelpImproveCard';
-import AboutSSWCard from '@/components/AboutSSWCard';
-import JoinConversationCard from '@/components/JoinConversationCard';
-import { appendNewRules } from '@/utils/appendNewRules';
-import { selectLatestRuleFilesByPath } from '@/utils/selectLatestRuleFilesByPath';
-import Spinner from '@/components/Spinner';
-import { FaUserCircle } from 'react-icons/fa';
-import RuleList from '@/components/rule-list';
-import Pagination from '@/components/ui/pagination';
+import { useEffect, useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { selectLatestRuleFilesByPath } from "@/utils/selectLatestRuleFilesByPath";
+import Spinner from "@/components/Spinner";
+import { FaUserCircle } from "react-icons/fa";
+import RuleList from "@/components/rule-list";
+import Pagination from "@/components/ui/pagination";
 
 const Tabs = {
-  MODIFIED: 'modified',
-  AUTHORED: 'authored',
+  MODIFIED: "modified",
+  AUTHORED: "authored",
 } as const;
 
-type TabKey = typeof Tabs[keyof typeof Tabs];
+type TabKey = (typeof Tabs)[keyof typeof Tabs];
 
 export default function UserRulesClientPage({ ruleCount }) {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.AUTHORED);
-  const queryStringRulesAuthor = searchParams.get('author') || '';
+  const queryStringRulesAuthor = searchParams.get("author") || "";
 
   // Last Modified
   const [lastModifiedRules, setLastModifiedRules] = useState<any[]>([]);
   const [loadingLastModified, setLoadingLastModified] = useState(false);
   const [loadingMoreLastModified, setLoadingMoreLastModified] = useState(false);
-  const [nextPageCursor, setNextPageCursor] = useState('');
+  const [nextPageCursor, setNextPageCursor] = useState("");
   const [hasNext, setHasNext] = useState(false);
   const [currentPageLastModified, setCurrentPageLastModified] = useState(1);
   const [itemsPerPageLastModified, setItemsPerPageLastModified] = useState(10);
@@ -52,7 +44,7 @@ export default function UserRulesClientPage({ ruleCount }) {
 
   const resolveAuthor = async (): Promise<string> => {
     const res = await fetch(`./api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);
-    if (!res.ok) throw new Error('Failed to resolve author');
+    if (!res.ok) throw new Error("Failed to resolve author");
     const profile = await res.json();
     setAuthor(profile);
     return profile.fullName as string;
@@ -63,10 +55,7 @@ export default function UserRulesClientPage({ ruleCount }) {
       if (queryStringRulesAuthor) {
         const resolvedAuthorName = await resolveAuthor();
         // Load BOTH in parallel for maximum speed
-        await Promise.all([
-          loadAllAuthoredRules(resolvedAuthorName as string),
-          loadAllLastModifiedRules()
-        ]);
+        await Promise.all([loadAllAuthoredRules(resolvedAuthorName as string), loadAllLastModifiedRules()]);
       }
     })();
   }, [queryStringRulesAuthor]);
@@ -75,8 +64,8 @@ export default function UserRulesClientPage({ ruleCount }) {
   const loadAllLastModifiedRules = async () => {
     setLoadingLastModified(true);
     setLastModifiedRules([]);
-    let cursor = '';
-    let previousCursor = '';
+    let cursor = "";
+    let previousCursor = "";
     let hasMore = true;
     let pageCount = 0;
     const MAX_PAGES = 100; // Safety limit to prevent infinite loops
@@ -88,9 +77,9 @@ export default function UserRulesClientPage({ ruleCount }) {
         pageCount++;
 
         const params = new URLSearchParams();
-        params.set('author', queryStringRulesAuthor);
-        if (cursor) params.set('cursor', cursor);
-        params.set('direction', 'after');
+        params.set("author", queryStringRulesAuthor);
+        if (cursor) params.set("cursor", cursor);
+        params.set("direction", "after");
 
         const url = `./api/github/rules/prs?${params.toString()}`;
         const res = await fetch(url);
@@ -104,45 +93,49 @@ export default function UserRulesClientPage({ ruleCount }) {
 
         const rules = resultList
           .flatMap((pr: any) => pr.files.nodes)
-          .filter((file: any) => file.path.endsWith('rule.mdx') || file.path.endsWith('rule.md'))
+          .filter((file: any) => file.path.endsWith("rule.mdx") || file.path.endsWith("rule.md"))
           .map((file: any) => ({
             ...file,
-            path: file.path.endsWith('rule.md') ? file.path.slice(0, -3) + '.mdx' : file.path,
+            path: file.path.endsWith("rule.md") ? file.path.slice(0, -3) + ".mdx" : file.path,
           }));
 
         allRulesFromGithub.push(...rules);
 
         const { endCursor, hasNextPage } = prSearchData.search.pageInfo;
-        const newCursor = endCursor || '';
+        const newCursor = endCursor || "";
 
         // Stop if cursor hasn't changed (prevents infinite loop)
-        if (newCursor === previousCursor && previousCursor !== '') {
+        if (newCursor === previousCursor && previousCursor !== "") {
           break;
         }
 
         previousCursor = cursor;
         cursor = newCursor;
-        hasMore = !!hasNextPage && newCursor !== '';
+        hasMore = !!hasNextPage && newCursor !== "";
       }
 
       // Step 2: Process all rules at once with TinaCMS (ONE call instead of 50+)
       if (allRulesFromGithub.length > 0) {
         const uniqueRules = selectLatestRuleFilesByPath(allRulesFromGithub);
         const uris = Array.from(
-          new Set(
-            uniqueRules
-              .map((b) => b.path.replace(/^rules\//, '').replace(/\/rule\.mdx$/, ''))
-              .filter((g): g is string => Boolean(g)),
-          ),
+          new Set(uniqueRules.map((b) => b.path.replace(/^rules\//, "").replace(/\/rule\.mdx$/, "")).filter((g): g is string => Boolean(g)))
         );
 
-        const res = await client.queries.rulesByUriQuery({ uris });
-        const edges = res?.data?.ruleConnection?.edges ?? [];
+        const tinaRes = await fetch("./api/tina/rules-by-uri", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ uris }),
+        });
+        if (!tinaRes.ok) {
+          throw new Error(`Failed to fetch rules by URI: ${tinaRes.status} ${tinaRes.statusText}`);
+        }
+        const tinaData = await tinaRes.json();
+        const edges = tinaData?.data?.ruleConnection?.edges ?? [];
         const byUri = new Map<string, any>(
           edges
             .map((e: any) => e?.node)
             .filter(Boolean)
-            .map((n: any) => [n.uri, n]),
+            .map((n: any) => [n.uri, n])
         );
 
         const matchedRules: any[] = uris
@@ -155,10 +148,7 @@ export default function UserRulesClientPage({ ruleCount }) {
             body: fullRule.body,
             lastUpdated: fullRule.lastUpdated,
             lastUpdatedBy: fullRule.lastUpdatedBy,
-            authors:
-              fullRule.authors
-                ?.map((a: any) => (a && a.title ? { title: a.title } : null))
-                .filter((a: any): a is { title: string } => a !== null) || [],
+            authors: fullRule.authors?.map((a: any) => (a && a.title ? { title: a.title } : null)).filter((a: any): a is { title: string } => a !== null) || [],
           }));
 
         // Sort by date (most recent first)
@@ -172,7 +162,7 @@ export default function UserRulesClientPage({ ruleCount }) {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error('Failed to fetch GitHub data:', err);
+      console.error("Failed to fetch GitHub data:", err);
       setGithubError(message);
     } finally {
       setLoadingLastModified(false);
@@ -195,11 +185,16 @@ export default function UserRulesClientPage({ ruleCount }) {
       while (hasMore && pageCount < MAX_PAGES) {
         pageCount++;
 
-        const res = await client.queries.rulesByAuthor({
-          authorTitle: authorName || '',
-          first: FETCH_PAGE_SIZE,
-          after: cursor || undefined,
-        });
+        const params = new URLSearchParams();
+        params.set("authorTitle", authorName || "");
+        params.set("first", FETCH_PAGE_SIZE.toString());
+        if (cursor) params.set("after", cursor);
+
+        const tinaRes = await fetch(`./api/tina/rules-by-author?${params.toString()}`);
+        if (!tinaRes.ok) {
+          throw new Error(`Failed to fetch rules by author: ${tinaRes.status} ${tinaRes.statusText}`);
+        }
+        const res = await tinaRes.json();
 
         const edges = res?.data?.ruleConnection?.edges ?? [];
         const nodes = edges.map((e: any) => e?.node).filter(Boolean);
@@ -209,12 +204,9 @@ export default function UserRulesClientPage({ ruleCount }) {
           title: fullRule.title,
           uri: fullRule.uri,
           body: fullRule.body,
-          authors:
-            fullRule.authors
-              ?.map((a: any) => (a && a.title ? { title: a.title } : null))
-              .filter((a: any): a is { title: string } => a !== null) || [],
+          authors: fullRule.authors?.map((a: any) => (a && a.title ? { title: a.title } : null)).filter((a: any): a is { title: string } => a !== null) || [],
           lastUpdated: fullRule.lastUpdated,
-          lastUpdatedBy: fullRule.lastUpdatedBy
+          lastUpdatedBy: fullRule.lastUpdatedBy,
         }));
 
         allRulesFromTina.push(...batch);
@@ -242,7 +234,7 @@ export default function UserRulesClientPage({ ruleCount }) {
 
       setAuthoredRules(sortedRules);
     } catch (err) {
-      console.error('Failed to fetch authored rules:', err);
+      console.error("Failed to fetch authored rules:", err);
     } finally {
       setLoadingAuthored(false);
     }
@@ -266,9 +258,7 @@ export default function UserRulesClientPage({ ruleCount }) {
               "px-4 py-1 text-sm transition-colors hover:cursor-pointer",
               i === 0 ? "rounded-l" : "-ml-px",
               i === 1 ? "rounded-r" : "",
-              isActive
-                ? "bg-ssw-red text-white shadow-sm border-0"
-                : "bg-white hover:text-ssw-red border",
+              isActive ? "bg-ssw-red text-white shadow-sm border-0" : "bg-white hover:text-ssw-red border",
             ].join(" ")}
           >
             {t.label}
@@ -319,10 +309,10 @@ export default function UserRulesClientPage({ ruleCount }) {
     setItemsPerPageAuthored(newItemsPerPage);
     setCurrentPageAuthored(1);
   };
-  
+
   return (
     <>
-      <Breadcrumbs breadcrumbText={author?.fullName ? `${author.fullName}'s Rules` : 'User Rules'} />
+      <Breadcrumbs breadcrumbText={author?.fullName ? `${author.fullName}'s Rules` : "User Rules"} />
 
       <div className="layout-two-columns">
         <div className="layout-main-section mt-6">
@@ -335,7 +325,7 @@ export default function UserRulesClientPage({ ruleCount }) {
           {author.fullName && (
             <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4">
               <h1 className="text-ssw-red mt-1.5">{author.fullName}'s Rules</h1>
-            
+
               <a
                 target="_blank"
                 href={`https://ssw.com.au/people/${author.slug}/`}
@@ -350,71 +340,65 @@ export default function UserRulesClientPage({ ruleCount }) {
           <TabHeader />
 
           <div className="rounded-lg border border-gray-100 bg-white p-4">
-              {activeTab === Tabs.MODIFIED && (
-                <>
-                  {lastModifiedRules.length === 0 && loadingLastModified ? (
-                    <div className="flex items-center justify-center py-8">
-                      <Spinner
-                        size="lg"
-                        text="Fetching data from GitHub... this might take a minute."
-                      />
-                    </div>
-                  ) : lastModifiedRules.length === 0 ? (
-                    <div className="py-4 text-sm text-gray-500">No rules found.</div>
-                  ) : (
-                    <>
-                      <RuleList
-                        rules={paginatedLastModifiedRules}
-                        showFilterControls={false}
-                        showPagination={false}
-                        externalCurrentPage={currentPageLastModified}
-                        externalItemsPerPage={itemsPerPageLastModified}
-                      />
-                      <Pagination
-                        currentPage={currentPageLastModified}
-                        totalPages={totalPagesLastModified}
-                        totalItems={lastModifiedRules.length}
-                        itemsPerPage={itemsPerPageLastModified}
-                        onPageChange={handlePageChangeLastModified}
-                        onItemsPerPageChange={handleItemsPerPageChangeLastModified}
-                      />
-                    </>
-                  )}
-                </>
-              )}
+            {activeTab === Tabs.MODIFIED && (
+              <>
+                {lastModifiedRules.length === 0 && loadingLastModified ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Spinner size="lg" text="Fetching data from GitHub... this might take a minute." />
+                  </div>
+                ) : lastModifiedRules.length === 0 ? (
+                  <div className="py-4 text-sm text-gray-500">No rules found.</div>
+                ) : (
+                  <>
+                    <RuleList
+                      rules={paginatedLastModifiedRules}
+                      showFilterControls={false}
+                      showPagination={false}
+                      externalCurrentPage={currentPageLastModified}
+                      externalItemsPerPage={itemsPerPageLastModified}
+                    />
+                    <Pagination
+                      currentPage={currentPageLastModified}
+                      totalPages={totalPagesLastModified}
+                      totalItems={lastModifiedRules.length}
+                      itemsPerPage={itemsPerPageLastModified}
+                      onPageChange={handlePageChangeLastModified}
+                      onItemsPerPageChange={handleItemsPerPageChangeLastModified}
+                    />
+                  </>
+                )}
+              </>
+            )}
 
-              {activeTab === Tabs.AUTHORED && (
-                <>
-                  {authoredRules.length === 0 && loadingAuthored ? (
-                    <div className="flex items-center justify-center py-8">
-                      <Spinner
-                        size="lg"
-                        text="Fetching data from GitHub... this might take a minute."
-                      />
-                    </div>
-                  ) : authoredRules.length === 0 ? (
-                    <div className="py-4 text-sm text-gray-500">No rules found.</div>
-                  ) : (
-                    <>
-                      <RuleList
-                        rules={paginatedAuthoredRules}
-                        showFilterControls={false}
-                        showPagination={false}
-                        externalCurrentPage={currentPageAuthored}
-                        externalItemsPerPage={itemsPerPageAuthored}
-                      />
-                      <Pagination
-                        currentPage={currentPageAuthored}
-                        totalPages={totalPagesAuthored}
-                        totalItems={authoredRules.length}
-                        itemsPerPage={itemsPerPageAuthored}
-                        onPageChange={handlePageChangeAuthored}
-                        onItemsPerPageChange={handleItemsPerPageChangeAuthored}
-                      />
-                    </>
-                  )}
-                </>
-              )}
+            {activeTab === Tabs.AUTHORED && (
+              <>
+                {authoredRules.length === 0 && loadingAuthored ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Spinner size="lg" text="Fetching data from GitHub... this might take a minute." />
+                  </div>
+                ) : authoredRules.length === 0 ? (
+                  <div className="py-4 text-sm text-gray-500">No rules found.</div>
+                ) : (
+                  <>
+                    <RuleList
+                      rules={paginatedAuthoredRules}
+                      showFilterControls={false}
+                      showPagination={false}
+                      externalCurrentPage={currentPageAuthored}
+                      externalItemsPerPage={itemsPerPageAuthored}
+                    />
+                    <Pagination
+                      currentPage={currentPageAuthored}
+                      totalPages={totalPagesAuthored}
+                      totalItems={authoredRules.length}
+                      itemsPerPage={itemsPerPageAuthored}
+                      onPageChange={handlePageChangeAuthored}
+                      onItemsPerPageChange={handleItemsPerPageChangeAuthored}
+                    />
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

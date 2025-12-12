@@ -1,4 +1,4 @@
-name: Build Pull request
+name: Build Pull Request
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build sample
+    name: Build Pull Request
     environment: staging
     steps:
       - uses: actions/checkout@v4

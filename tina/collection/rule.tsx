@@ -51,7 +51,7 @@ const Rule: Collection = {
     {
       type: "string",
       name: "uri",
-      label: "Uri",
+      label: "URI",
       description: "The URI of the rule - this defines the slug and references.",
       required: true,
       searchable: true,
@@ -151,8 +151,8 @@ const Rule: Collection = {
     {
       type: "string",
       name: "redirects",
-      label: "URL Redirects",
-      description: "Other URLs which will redirect to this rule.",
+      label: "URI Redirects",
+      description: "Other URIs which will redirect to this rule.",
       list: true,
       searchable: false,
       ui: {

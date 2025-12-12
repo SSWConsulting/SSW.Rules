@@ -10,7 +10,6 @@ const localContentPath = process.env.LOCAL_CONTENT_RELATIVE_PATH ?? undefined;
 const clientId = process.env.NEXT_PUBLIC_TINA_CLIENT_ID;
 const token = process.env.TINA_TOKEN;
 const searchToken = process.env.TINA_SEARCH_TOKEN;
-const basePath = process.env.TINA_BASE_PATH ?? undefined;
 
 export const config = defineConfig({
   clientId: clientId,
@@ -44,6 +43,12 @@ export const config = defineConfig({
     },
     indexBatchSize: 100,
     maxSearchIndexFieldLength: 100,
+  },
+  repoProvider: {
+    defaultBranchName: branch,
+    historyUrl: ({ relativePath, branch }) => ({
+      url: `https://github.com/${process.env.NEXT_PUBLIC_GITHUB_ORG}/${process.env.NEXT_PUBLIC_GITHUB_REPO}/commits/${branch}/${relativePath}`,
+    }),
   },
 });
 

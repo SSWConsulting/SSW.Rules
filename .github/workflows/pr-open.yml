@@ -19,7 +19,6 @@ jobs:
         with:
           repository: SSWConsulting/SSW.Rules.Content
           ref: ${{ vars.NEXT_PUBLIC_TINA_BRANCH }}
-          token: ${{ secrets.GH_API_PAT }}
           path: content-temp
           fetch-depth: 0
           lfs: true

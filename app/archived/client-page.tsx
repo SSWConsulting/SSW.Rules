@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import React, { useMemo } from "react";
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
-import RuleCount from "@/components/RuleCount";
+import React, { useMemo } from "react";
+import AboutSSWCard from "@/components/AboutSSWCard";
+import HelpCard from "@/components/HelpCard";
+import HelpImproveCard from "@/components/HelpImproveCard";
+import JoinConversationCard from "@/components/JoinConversationCard";
 import LatestRulesCard from "@/components/LatestRulesCard";
 import QuickLinksCard from "@/components/QuickLinksCard";
+import RuleCount from "@/components/RuleCount";
+import { Card } from "@/components/ui/card";
 import WhyRulesCard from "@/components/WhyRulesCard";
-import HelpImproveCard from "@/components/HelpImproveCard";
-import AboutSSWCard from "@/components/AboutSSWCard";
-import JoinConversationCard from "@/components/JoinConversationCard";
-import HelpCard from "@/components/HelpCard";
 import { Rule } from "@/models/Rule";
 import ruleToCategories from "../../rule-to-categories.json";
 
@@ -27,48 +27,48 @@ export default function ArchivedClientPage(props: ArchivedClientPageProps) {
   // Group archived rules by subcategory
   const groupedArchivedData = useMemo(() => {
     const categoryRules: Record<string, Rule[]> = {};
-    
+
     // Group archived rules by category
     archivedRules.forEach((rule) => {
-      const ruleFilename = rule.uri.replace('/', '').replace('.html', '');
+      const ruleFilename = rule.uri.replace("/", "").replace(".html", "");
       const categories = ruleToCategories[ruleFilename as keyof typeof ruleToCategories] || [];
-      
+
       if (categories.length === 0) {
-        if (!categoryRules['uncategorized']) categoryRules['uncategorized'] = [];
-        categoryRules['uncategorized'].push(rule);
+        if (!categoryRules["uncategorized"]) categoryRules["uncategorized"] = [];
+        categoryRules["uncategorized"].push(rule);
       } else {
-        categories.forEach(category => {
+        categories.forEach((category) => {
           if (!categoryRules[category]) categoryRules[category] = [];
           categoryRules[category].push(rule);
         });
       }
     });
-    
+
     // Create organized subcategories with their rules
     const subcategoriesWithRules: Array<{
       category: any;
       rules: Rule[];
       count: number;
     }> = [];
-    
-    topCategories.forEach(topCategory => {
+
+    topCategories.forEach((topCategory) => {
       topCategory.index?.forEach((item: any) => {
         if (!item.category) return;
-        
+
         const filename = item.category._sys.filename;
         const rules = categoryRules[filename] || [];
-        
+
         if (rules.length > 0) {
           subcategoriesWithRules.push({
             category: item.category,
             rules,
-            count: rules.length
+            count: rules.length,
           });
         }
       });
     });
-    
-    return { subcategoriesWithRules, totalCount: archivedRules.length };
+
+    return { subcategoriesWithRules, totalCount: subcategoriesWithRules.reduce((sum, s) => sum + s.rules.length, 0) };
   }, [archivedRules, topCategories]);
 
   if (archivedRules.length === 0) {
@@ -96,10 +96,7 @@ export default function ArchivedClientPage(props: ArchivedClientPageProps) {
               {subcategoryData.rules.map((rule, ruleIndex) => (
                 <li key={ruleIndex} className="mb-4">
                   <div className="flex justify-between">
-                    <Link 
-                      href={`/${rule.uri}`} 
-                      className="hover:text-ssw-red"
-                    >
+                    <Link href={`/${rule.uri}`} className="hover:text-ssw-red">
                       {rule.title}
                     </Link>
                   </div>

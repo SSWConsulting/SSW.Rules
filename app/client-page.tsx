@@ -22,11 +22,10 @@ export interface HomeClientPageProps {
   ruleCount: number;
   categoryRuleCounts: Record<string, number>;
   quickLinks: QuickLink[];
-  archivedRules: Rule[];
 }
 
 export default function HomeClientPage(props: HomeClientPageProps) {
-  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, archivedRules } = props;
+  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks } = props;
 
   const getTopCategoryTotal = (subCategories: any[]) => {
     return subCategories.reduce((total, category) => {

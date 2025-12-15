@@ -17,7 +17,7 @@ export const UserInfoField = wrapFieldsWithMeta((props: any) => {
 
   // Hide the field wrapper (including label and description) on create mode
   useEffect(() => {
-    const shouldHide = tinaForm?.crudType === "create";
+    const shouldHide = true;
 
     if (shouldHide) {
       // Find the field wrapper element (similar to ConditionalHiddenField)

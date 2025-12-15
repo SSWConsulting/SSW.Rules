@@ -8,7 +8,7 @@ import HelpImproveCard from "@/components/HelpImproveCard";
 import JoinConversationCard from "@/components/JoinConversationCard";
 import LatestRulesCard from "@/components/LatestRulesCard";
 import QuickLinksCard from "@/components/QuickLinksCard";
-import RuleCount from "@/components/RuleCount";
+import SearchBar from "@/components/SearchBarWrapper";
 import { Card } from "@/components/ui/card";
 import WhyRulesCard from "@/components/WhyRulesCard";
 import { Rule } from "@/models/Rule";
@@ -80,45 +80,46 @@ export default function ArchivedClientPage(props: ArchivedClientPageProps) {
   }
 
   return (
-    <div className="layout-two-columns">
-      <div className="layout-main-section">
-        <div className="h-[5.5rem]">
-          <h1 className="m-0 mb-4 text-ssw-red font-bold">Archived Rules</h1>
+    <>
+      <SearchBar />
+      <div className="max-sm:h-auto m-4">
+        <h1 className="m-0 mb-4 flex items-end max-sm:flex-col max-sm:items-start">
+          <span className="text-ssw-red font-bold">{groupedArchivedData.totalCount.toLocaleString("en-US")}&nbsp; Archived Rules</span>
+        </h1>
+      </div>
+      <div className="layout-two-columns">
+        <div className="layout-main-section">
+          {groupedArchivedData.subcategoriesWithRules.map((subcategoryData, index) => (
+            <Card key={index} className="mb-4">
+              <h2 className="m-0 mb-4 text-2xl max-sm:text-lg">
+                <span>{subcategoryData.category.title}</span>
+              </h2>
+
+              <ol>
+                {subcategoryData.rules.map((rule, ruleIndex) => (
+                  <li key={ruleIndex} className="mb-4">
+                    <div className="flex justify-between">
+                      <Link href={`/${rule.uri}`} className="hover:text-ssw-red">
+                        {rule.title}
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </Card>
+          ))}
         </div>
 
-        {groupedArchivedData.subcategoriesWithRules.map((subcategoryData, index) => (
-          <Card key={index} className="mb-4">
-            <h2 className="m-0 mb-4 text-2xl max-sm:text-lg">
-              <span>{subcategoryData.category.title}</span>
-            </h2>
-
-            <ol>
-              {subcategoryData.rules.map((rule, ruleIndex) => (
-                <li key={ruleIndex} className="mb-4">
-                  <div className="flex justify-between">
-                    <Link href={`/${rule.uri}`} className="hover:text-ssw-red">
-                      {rule.title}
-                    </Link>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </Card>
-        ))}
-      </div>
-
-      <div className="layout-sidebar">
-        <div className="h-[5.5rem]">
-          <RuleCount count={groupedArchivedData.totalCount} label="Archived Rules" />
+        <div className="layout-sidebar">
+          {latestRules.length > 0 && <LatestRulesCard rules={latestRules} />}
+          {quickLinks.length > 0 && <QuickLinksCard links={quickLinks} />}
+          <WhyRulesCard />
+          <HelpImproveCard />
+          <HelpCard />
+          <AboutSSWCard />
+          <JoinConversationCard />
         </div>
-        {latestRules.length > 0 && <LatestRulesCard rules={latestRules} />}
-        {quickLinks.length > 0 && <QuickLinksCard links={quickLinks} />}
-        <WhyRulesCard />
-        <HelpImproveCard />
-        <HelpCard />
-        <AboutSSWCard />
-        <JoinConversationCard />
       </div>
-    </div>
+    </>
   );
 }

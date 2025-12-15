@@ -26,7 +26,7 @@ const IconLink: React.FC<IconLinkProps> = ({ href, children, className = "", tit
 
   if (title) {
     return (
-      <Tooltip text={title} showDelay={1000} hideDelay={3000} opaque={tooltipOpaque}>
+      <Tooltip text={title} showDelay={0} hideDelay={0} opaque={tooltipOpaque}>
         {link}
       </Tooltip>
     );

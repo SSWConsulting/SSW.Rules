@@ -119,7 +119,7 @@ export default function Bookmark({ ruleGuid, isBookmarked, defaultIsBookmarked =
 
   return (
     <>
-      <Tooltip text={bookmarked ? "Remove bookmark" : "Add bookmark"} showDelay={1000} hideDelay={3000} opaque={true}>
+      <Tooltip text={bookmarked ? "Remove bookmark" : "Add bookmark"} showDelay={0} hideDelay={0} opaque={true}>
         <button
           onClick={handleBookmarkToggle}
           className={`rule-icon ${className}`}

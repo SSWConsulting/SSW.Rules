@@ -1,5 +1,5 @@
 import React from "react";
-import { Collection, wrapFieldsWithMeta } from "tinacms";
+import { Collection, useCMS, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
@@ -7,6 +7,7 @@ import { CategorySelectorInput } from "../fields/CategorySelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
+import { createdInfoFields } from "./shared/createdInfoFields";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { toolbarFields } from "./shared/toolbarFields";
 
@@ -19,8 +20,12 @@ const Rule: Collection = {
     include: "**/rule",
   },
   defaultItem() {
+    // User info will be set by UserInfoField component after form initialization
     return {
       guid: generateGuid(),
+      created: new Date().toISOString(),
+      createdBy: "Unknown",
+      createdByEmail: "Unknown",
       filename: "rule",
       body: defaultBody,
     };
@@ -214,6 +219,7 @@ const Rule: Collection = {
         component: ConditionalHiddenField,
       },
     },
+    ...createdInfoFields,
     ...historyFields,
   ],
 };

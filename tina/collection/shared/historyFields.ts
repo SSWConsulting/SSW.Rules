@@ -5,33 +5,6 @@ import { ConditionalHiddenField } from "../../fields/ConditionalHiddenField";
 export const historyFields: TinaField[] = [
   {
     type: "datetime",
-    name: "created",
-    description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
-    label: "Created",
-    ui: {
-      component: "hidden",
-    },
-  },
-  {
-    type: "string",
-    name: "createdBy",
-    label: "Created By",
-    description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
-    ui: {
-      component: "hidden",
-    },
-  },
-  {
-    type: "string",
-    name: "createdByEmail",
-    label: "Created By Email",
-    description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
-    ui: {
-      component: "hidden",
-    },
-  },
-  {
-    type: "datetime",
     name: "lastUpdated",
     description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
     label: "Last Updated",
@@ -157,9 +130,6 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
   if (form.crudType === "create") {
     return {
       ...values,
-      created: new Date().toISOString(),
-      createdBy: userName ?? "",
-      createdByEmail: userEmail ?? "",
       lastUpdated: new Date().toISOString(),
       lastUpdatedBy: userName ?? "",
       lastUpdatedByEmail: userEmail ?? "",

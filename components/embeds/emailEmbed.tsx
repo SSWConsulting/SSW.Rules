@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { RefObject, useRef } from "react";
 import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { useMarkHighlight } from "@/lib/useMarkHighlight";
@@ -17,7 +17,7 @@ export function EmailEmbed({ data }: { data: any }) {
   ].filter((field) => field.value?.trim());
 
   const contentRef = useRef<HTMLDivElement>(null);
-  useMarkHighlight(contentRef, "ol li div");
+  useMarkHighlight(contentRef as RefObject<HTMLElement>, "ol li div");
 
   const figure: string = data?.figure || "";
   const figurePrefix: any = data?.figurePrefix || "default";

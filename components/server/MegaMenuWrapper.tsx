@@ -50,7 +50,7 @@ const ActionButtons = () => {
           </a>
         </Tooltip>
 
-        <Tooltip text="Create an SSW Rule">
+        <Tooltip text="Create an SSW Rule" showDelay={1000} hideDelay={3000}>
           <a
             target="_blank"
             rel="noopener noreferrer"
@@ -62,7 +62,7 @@ const ActionButtons = () => {
           </a>
         </Tooltip>
 
-        <Tooltip text="SSW Rules wiki">
+        <Tooltip text="SSW Rules wiki" showDelay={1000} hideDelay={3000}>
           <a
             target="_blank"
             rel="noopener noreferrer"

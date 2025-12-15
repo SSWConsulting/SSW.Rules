@@ -4,6 +4,7 @@ import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
+import { createdInfoFields } from "./shared/createdInfoFields";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { toolbarFields } from "./shared/toolbarFields";
 
@@ -234,6 +235,7 @@ const Category: Collection = {
           templates: embedTemplates,
           toolbarOverride: toolbarFields,
         },
+        ...createdInfoFields,
         ...historyFields,
       ],
     },

@@ -52,7 +52,7 @@ const Rule: Collection = {
       type: "string",
       name: "uri",
       label: "URI",
-      description: "The URI of the rule - this defines the slug and references.",
+      description: "The URI of the rule e.g. keep-your-urls-clean",
       required: true,
       searchable: true,
       ui: {

@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useMemo, useRef } from 'react';
-import RuleListItem from './rule-list-item';
-import RadioButton from '@/components/radio-button';
-import { RiPencilLine, RiGithubLine } from 'react-icons/ri';
-import { RuleListFilter } from '@/types/ruleListFilter';
-import { IconLink } from '../ui';
-import { ICON_SIZE } from '@/constants';
-import Pagination from '@/components/ui/pagination';
+import React, { useState, useMemo, useRef } from "react";
+import { RiGithubLine, RiPencilLine } from "react-icons/ri";
+import RadioButton from "@/components/radio-button";
+import Pagination from "@/components/ui/pagination";
+import { ICON_SIZE } from "@/constants";
+import { RuleListFilter } from "@/types/ruleListFilter";
+import { IconLink } from "../ui";
+import RuleListItem from "./rule-list-item";
 
 export interface RuleListProps {
   categoryUri?: string;
@@ -22,7 +22,7 @@ export interface RuleListProps {
   initialFilter?: RuleListFilter;
   initialPage?: number;
   initialItemsPerPage?: number;
-  externalCurrentPage?: number;  // For external pagination control
+  externalCurrentPage?: number; // For external pagination control
   externalItemsPerPage?: number; // For external pagination control
 }
 
@@ -40,7 +40,7 @@ const RuleList: React.FC<RuleListProps> = ({
   initialPage = 1,
   initialItemsPerPage = 10,
   externalCurrentPage,
-  externalItemsPerPage
+  externalItemsPerPage,
 }) => {
   const [filter, setFilter] = useState<RuleListFilter>(initialFilter);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -51,10 +51,7 @@ const RuleList: React.FC<RuleListProps> = ({
   const effectiveCurrentPage = externalCurrentPage ?? currentPage;
   const effectiveItemsPerPage = externalItemsPerPage ?? itemsPerPage;
 
-  const displayItemsPerPage = useMemo(
-    () => (showPagination ? effectiveItemsPerPage : rules.length),
-    [showPagination, effectiveItemsPerPage, rules.length]
-  );
+  const displayItemsPerPage = useMemo(() => (showPagination ? effectiveItemsPerPage : rules.length), [showPagination, effectiveItemsPerPage, rules.length]);
 
   const totalPages = displayItemsPerPage >= rules.length ? 1 : Math.ceil(rules.length / displayItemsPerPage);
 
@@ -74,7 +71,7 @@ const RuleList: React.FC<RuleListProps> = ({
       if (filterSectionRef.current) {
         const rect = filterSectionRef.current.getBoundingClientRect();
         const offsetTop = window.pageYOffset + rect.top - 5; // 5px above the filter section
-        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        window.scrollTo({ top: offsetTop, behavior: "smooth" });
       }
     }, 50); // Small delay to ensure DOM is updated
   };
@@ -98,7 +95,7 @@ const RuleList: React.FC<RuleListProps> = ({
   if (rules.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-xl text-gray-600">{noContentMessage || 'No rules found.'}</p>
+        <p className="text-xl text-gray-600">{noContentMessage || "No rules found."}</p>
       </div>
     );
   }
@@ -109,20 +106,34 @@ const RuleList: React.FC<RuleListProps> = ({
         <div className="flex flex-col items-center sm:flex-row sm:items-center gap-2 text-center lg:grid-cols-5">
           {showFilterControls && (
             <div className="flex items-center py-4">
-              <span className="mr-4 hidden sm:block">Show Me</span>
+              <span className="mr-4 hidden sm:block">Show me</span>
               <RadioButton
                 id="customRadioInline1"
                 value="titleOnly"
                 selectedOption={filter}
                 handleOptionChange={handleOptionChange}
                 labelText="Titles"
-                position='first'
+                position="first"
               />
-              <RadioButton id="customRadioInline3" value="blurb" selectedOption={filter} handleOptionChange={handleOptionChange} labelText="Blurbs" position='middle'/>
-              <RadioButton id="customRadioInline2" value="all" selectedOption={filter} handleOptionChange={handleOptionChange} labelText="Everything" position='last'/>
+              <RadioButton
+                id="customRadioInline3"
+                value="blurb"
+                selectedOption={filter}
+                handleOptionChange={handleOptionChange}
+                labelText="Blurbs"
+                position="middle"
+              />
+              <RadioButton
+                id="customRadioInline2"
+                value="all"
+                selectedOption={filter}
+                handleOptionChange={handleOptionChange}
+                labelText="Everything"
+                position="last"
+              />
             </div>
           )}
-          
+
           {onIncludeArchivedChange && (
             <label className="flex items-center gap-2 px-4 py-1 text-sm cursor-pointer hover:bg-gray-50 transition-colors bg-white sm:ml-2">
               <input
@@ -135,7 +146,7 @@ const RuleList: React.FC<RuleListProps> = ({
             </label>
           )}
         </div>
-        {type === 'category' && (
+        {type === "category" && (
           <div className="hidden md:flex gap-2">
             <IconLink
               href={`admin/index.html#/collections/edit/category/${categoryUri?.slice(0, -4)}`}

@@ -145,7 +145,7 @@ jobs:
           cat .env.production
 
       - name: Cache Gatsby .cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .cache
           key: gatsby_cache | ${{ runner.os }}
@@ -153,7 +153,7 @@ jobs:
             gatsby_cache | ${{ runner.os }}
 
       - name: Cache Gatsby public
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: public
           key: gatsby_public | ${{ runner.os }}

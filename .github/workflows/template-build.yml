@@ -76,7 +76,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: commit-data
           path: static
@@ -177,7 +177,7 @@ jobs:
         timeout-minutes: 30
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: build
           path: public
@@ -199,7 +199,7 @@ jobs:
           az bicep build --file infra/main.bicep --outdir arm
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: infra
           path: infra

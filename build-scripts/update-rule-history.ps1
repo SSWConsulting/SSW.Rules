@@ -21,7 +21,7 @@ if ($IsHistoryGenerationEnabled) {
 
 $ErrorActionPreference = 'Stop'
 
-cd SSW.Rules.Content/
+Set-Location -Path (Join-Path $env:GITHUB_WORKSPACE 'SSW.Rules.Content')
 
 #Step 0: Prep the Repo for git log
 git commit-graph write --reachable --changed-paths
@@ -35,13 +35,16 @@ $startCommitHash = $Response.Content -replace '"', ''
 $filesProcessed = @{}
 $historyFileArray = @()
 
+$historyUpdated = $false
+
+
 #Step 2: Get commits within range 
 $listOfCommits = git log --pretty="<HISTORY_ENTRY>%n%h%n%ad%n%aN%n%ae%n<FILES_CHANGED>" --name-only --date=iso-strict $startCommitHash^..$endCommitHash origin/main --
 $historyChangeEntry = $listOfCommits -join "<LINE>"
 $historyArray = $historyChangeEntry -split "<HISTORY_ENTRY>"
 
 $commitSyncHash = "";
-$rulesContentFolder = "."
+$rulesContentFolder = (Get-Location).Path
 
 $historyArray | Foreach-Object {
     $historyEntry = $_ -split "<FILES_CHANGED>"
@@ -59,7 +62,7 @@ $historyArray | Foreach-Object {
         $lastUpdatedBy = $userDetails[3]
         $lastUpdatedByEmail = $userDetails[4]
         
-        $fileArray | Where-Object {$_ -Match "^*.md" } | Foreach-Object {
+        $fileArray | Where-Object { $_ -and $_.Trim() -match '\.md$' } | Foreach-Object {
             if(!$filesProcessed.ContainsKey($_))
             {
                 try {
@@ -112,13 +115,12 @@ $historyArray | Foreach-Object {
                     Write-Output $_
                 }
                 catch {
-                    Write-Output "Error processing file $_"
+                    Write-Output "Error processing file $_ : $($_.Exception.Message)"
                 }
             }
         }
     }
 }
-
 
 if ($IsHistoryGenerationEnabled) {
     #Step 3: UpdateRuleHistory - Send History Patch to AzureFunction
@@ -126,9 +128,11 @@ if ($IsHistoryGenerationEnabled) {
     $Uri = $AzFunctionBaseUrl + '/api/UpdateRuleHistory'
     $Headers = @{'x-functions-key' = $UpdateRuleHistoryKey}
     $Response = Invoke-WebRequest -Uri $Uri -Method Post -Body $historyFileContents -Headers $Headers -ContentType 'application/json; charset=utf-8'
+    $historyUpdated = $true
 }
 
-if(![string]::IsNullOrWhiteSpace($commitSyncHash))
+
+if($historyUpdated -and ![string]::IsNullOrWhiteSpace($commitSyncHash))
 {
     #Step 4: UpdateHistorySyncCommitHash - Update Commit Hash with AzureFunction
     $Uri = $AzFunctionBaseUrl + '/api/UpdateHistorySyncCommitHash'

@@ -9,27 +9,27 @@ const CategoryActionButtons: React.FC = () => {
     <div className="flex gap-4 p-4 justify-center">
       <Link
         href="/orphaned"
-        className="flex items-center gap-2 px-4 py-2 text-gray-700 bg-white rounded-md border hover:bg-gray-50 hover:text-ssw-red transition-colors duration-200 no-underline"
+        className="flex items-center justify-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 bg-white rounded-md border hover:bg-gray-50 hover:text-ssw-red transition-colors duration-200 no-underline text-center"
       >
-        <BiUser className="w-4 h-4" />
+        <BiUser className="hidden sm:block w-4 h-4" />
         <span>Orphaned Rules</span>
       </Link>
-      
+
       <Link
         href="/archived"
-        className="flex items-center gap-2 px-4 py-2 text-gray-700 bg-white rounded-md border hover:bg-gray-50 hover:text-ssw-red transition-colors duration-200 no-underline"
+        className="flex items-center justify-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 bg-white rounded-md border hover:bg-gray-50 hover:text-ssw-red transition-colors duration-200 no-underline text-center"
       >
-        <BiArchive className="w-4 h-4" />
+        <BiArchive className="hidden sm:block w-4 h-4" />
         <span>Archived Rules</span>
       </Link>
-      
+
       <a
-        href="https://www.ssw.com.au/ssw/Standards/Default.aspx" 
+        href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-2 px-4 py-2 text-gray-700 bg-white rounded-md border hover:bg-gray-50 hover:text-ssw-red transition-colors duration-200 no-underline"
+        className="flex items-center justify-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 bg-white rounded-md border hover:bg-gray-50 hover:text-ssw-red transition-colors duration-200 no-underline text-center"
       >
-        <BiLinkExternal className="w-4 h-4" />
+        <BiLinkExternal className="hidden sm:block w-4 h-4" />
         <span>Unmigrated Rules</span>
       </a>
     </div>

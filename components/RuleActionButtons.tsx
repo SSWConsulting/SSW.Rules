@@ -7,8 +7,8 @@ import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import ChatGPTSummaryButton from "@/components/OpenInChatGptButton";
 import { IconLink } from "@/components/ui";
 import { ICON_SIZE } from "@/constants";
-import { Rule } from "@/types/rule";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
+import { Rule } from "@/types/rule";
 
 interface RuleActionButtonsProps {
   rule: Rule;
@@ -33,7 +33,7 @@ export default function RuleActionButtons({ rule, showBookmark = true, showOpenI
         <RiPencilLine size={ICON_SIZE} />
       </IconLink>
       <IconLink
-        href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule.uri}/rule.md`}
+        href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule.uri}/rule.mdx`}
         target="_blank"
         title="View rule on GitHub"
         tooltipOpaque={true}

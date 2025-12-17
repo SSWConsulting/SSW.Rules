@@ -1,9 +1,9 @@
 name: Staging - build and deploy
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
     inputs:
       should_generate_commit_data:

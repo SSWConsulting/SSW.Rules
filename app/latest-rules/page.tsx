@@ -6,12 +6,29 @@ import LatestRuleClientPage from "./client-page";
 export const revalidate = 300;
 
 const DEFAULT_SIZE = 5;
+const MAX_SIZE = 50;
 
-export default async function LatestRulePage() {
+type LatestRulePageProps = {
+  searchParams?: Promise<{ size?: string | string[] }>;
+};
+
+export default async function LatestRulePage({ searchParams }: LatestRulePageProps) {
+  const sp = (await searchParams) ?? {};
+  const sizeRaw = sp.size;
+  const sizeStr = Array.isArray(sizeRaw) ? sizeRaw[0] : sizeRaw;
+
+  let size = sizeStr ? parseInt(sizeStr, 10) : DEFAULT_SIZE;
+
+  if (!Number.isFinite(size) || Number.isNaN(size) || size <= 0) {
+    size = DEFAULT_SIZE;
+  } else if (size > MAX_SIZE) {
+    size = MAX_SIZE;
+  }
+
   const [ruleCount, latestRulesByUpdated, latestRulesByCreated] = await Promise.all([
     fetchRuleCount(),
-    fetchLatestRules(DEFAULT_SIZE, "lastUpdated", true),
-    fetchLatestRules(DEFAULT_SIZE, "created", true),
+    fetchLatestRules(size, "lastUpdated", true),
+    fetchLatestRules(size, "created", true),
   ]);
 
   return (

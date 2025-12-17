@@ -414,3 +414,31 @@ a[href*='google.com/map']:before {
   content: "\f041 ";
   color: #FF0000;
 }
+
+/* Mobile header - enlarged logo and title */
+@media (max-width: 639px) {
+  header nav[aria-label="Global"] > div.flex.items-center > a {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  header nav[aria-label="Global"] > div.flex.items-center > a > div.flex.items-center {
+    max-width: 100% !important;
+    min-width: auto !important;
+  }
+
+  header nav[aria-label="Global"] > div.flex.items-center > a > div.flex.items-center > img {
+    height: 75px !important;
+    width: auto !important;
+  }
+
+  header nav[aria-label="Global"] > div.flex.items-center > a > div.flex.items-center > div.text-4xl {
+    font-size: 3rem !important;
+    line-height: 1 !important;
+  }
+
+  header nav[aria-label="Global"] > div.flex.items-center > a > p {
+    font-size: 1rem !important;
+    margin-top: 0.25rem;
+  }
+}

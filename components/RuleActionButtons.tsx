@@ -33,7 +33,7 @@ export default function RuleActionButtons({ rule, showBookmark = true, showOpenI
         <RiPencilLine size={ICON_SIZE} />
       </IconLink>
       <IconLink
-        href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/rules/${rule.uri}/rule.mdx`}
+        href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/public/uploads/rules/${rule.uri}/rule.mdx`}
         target="_blank"
         title="View rule on GitHub"
         tooltipOpaque={true}

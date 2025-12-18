@@ -73,9 +73,10 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
                   <div
                     className="text-sm text-ssw-red m-0"
                     dangerouslySetInnerHTML={{
-                      __html: rule.archivedreason
-                        ?.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-ssw-red underline hover:opacity-80">$1</a>')
-                        ?.replace(/https?:\/\/[^\s]+/g, '<a href="$&" class="text-ssw-red underline hover:opacity-80">$&</a>'),
+                      __html: rule.archivedreason?.replace(
+                        /\[([^\]]+)\]\(([^)]+)\)/g,
+                        '<a href="$2" class="text-ssw-red underline hover:opacity-80" target="_blank" rel="noopener noreferrer">$1</a>'
+                      ),
                     }}
                   />
                 </div>

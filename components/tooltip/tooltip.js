@@ -33,7 +33,7 @@ const Tooltip = ({ children, text, showDelay, hideDelay, className = '', opaque 
       {showTooltip && (
         <span
           className={
-            `absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white transition-opacity duration-200 before:absolute before:top-full before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-solid before:border-gray-800 before:border-l-transparent before:border-r-transparent before:border-b-transparent before:content-[''] ${
+            `absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white transition-opacity duration-200 before:absolute before:top-full before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-solid before:border-gray-800 before:border-l-transparent before:border-r-transparent before:border-b-transparent before:content-[''] ${
               opaque ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'
             }`
           }

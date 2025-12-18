@@ -88,6 +88,11 @@ export function BoxEmbed(props: any) {
   const figure: string = data?.figure || "";
   const figurePrefix: any = data?.figurePrefix || "default";
 
+  const components = {
+    ...MarkdownComponentMapping,
+    a: ({ children }: any) => <span>{children}</span>,
+  };
+
   return (
     <>
       <div className={`p-4 rounded-sm my-4 ${config.containerClass}`}>
@@ -95,7 +100,7 @@ export function BoxEmbed(props: any) {
           {config.icon}
           <div className={`[&_p:last-child]:mb-0 ${config.textClass ?? ""}`}>
             <div>
-              <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
+              <TinaMarkdown content={data.body} components={components} />
             </div>
           </div>
         </div>

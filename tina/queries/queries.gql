@@ -129,6 +129,7 @@ query rulesByUriQuery($uris: [String!]!) {
         }
         lastUpdated
         lastUpdatedBy
+        sidebarVideo
         categories {
           category {
             ... on CategoryCategory {
@@ -146,11 +147,7 @@ query rulesByUriQuery($uris: [String!]!) {
 }
 
 query rulesByAuthor($authorTitle: String!, $first: Float, $after: String) {
-  ruleConnection(
-    filter: { authors: { title: { eq: $authorTitle } } }
-    first: $first
-    after: $after
-  ) {
+  ruleConnection(filter: { authors: { title: { eq: $authorTitle } } }, first: $first, after: $after) {
     pageInfo {
       hasNextPage
       endCursor
@@ -172,11 +169,7 @@ query rulesByAuthor($authorTitle: String!, $first: Float, $after: String) {
 }
 
 query archivedRulesQuery($first: Float, $after: String) {
-  ruleConnection(
-    filter: { isArchived: { eq: true } }
-    first: $first
-    after: $after
-  ) {
+  ruleConnection(filter: { isArchived: { eq: true } }, first: $first, after: $after) {
     pageInfo {
       hasNextPage
       endCursor
@@ -199,22 +192,8 @@ query archivedRulesQuery($first: Float, $after: String) {
   }
 }
 
-query paginatedRulesQuery(
-  $before: String
-  $after: String
-  $first: Float
-  $last: Float
-  $sort: String
-  $filter: RuleFilter
-) {
-  ruleConnection(
-    before: $before
-    after: $after
-    first: $first
-    last: $last
-    sort: $sort
-    filter: $filter
-  ) {
+query paginatedRulesQuery($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: RuleFilter) {
+  ruleConnection(before: $before, after: $after, first: $first, last: $last, sort: $sort, filter: $filter) {
     totalCount
     pageInfo {
       hasPreviousPage
@@ -239,12 +218,18 @@ query paginatedRulesQuery(
 
 query allRulesPaths($first: Float, $after: String) {
   ruleConnection(first: $first, after: $after) {
-    pageInfo { hasNextPage endCursor }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
     edges {
       node {
         __typename
         ... on Rule {
-          _sys { relativePath filename }
+          _sys {
+            relativePath
+            filename
+          }
         }
       }
     }
@@ -301,6 +286,7 @@ query ruleData($relativePath: String!) {
       lastUpdatedByEmail
       isArchived
       archivedreason
+      sidebarVideo
     }
   }
 }

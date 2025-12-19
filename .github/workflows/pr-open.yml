@@ -1,0 +1,89 @@
+name: Build Pull Request
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Pull Request
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Checkout SSW.Rules.Content
+        uses: actions/checkout@v4
+        with:
+          repository: SSWConsulting/SSW.Rules.Content
+          ref: ${{ vars.NEXT_PUBLIC_TINA_BRANCH }}
+          path: content-temp
+          fetch-depth: 0
+          lfs: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+            python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Generate rule‑category mapping files
+        working-directory: content-temp/scripts/tina-migration
+        run: python build-rule-category-map.py
+
+      - name: Generate orphaned_rules file
+        working-directory: content-temp/scripts/tina-migration
+        run: python orphaned_rules_check.py
+
+      - name: Generate redirects mapping file
+        working-directory: content-temp/scripts/tina-migration
+        run: python build-redirect-map.py
+
+      - name: Copy generated mapping + content
+        run: |
+            cp content-temp/scripts/tina-migration/rule-to-categories.json ./
+            cp content-temp/scripts/tina-migration/category-uri-title-map.json ./
+            cp content-temp/scripts/tina-migration/orphaned_rules.json ./
+            cp content-temp/scripts/tina-migration/redirects.json ./
+            mv content-temp ./content
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 10.10.0
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+          TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
+          NEXT_PUBLIC_TINA_BRANCH: ${{ vars.NEXT_PUBLIC_TINA_BRANCH }}

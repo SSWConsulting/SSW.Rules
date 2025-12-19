@@ -1,0 +1,124 @@
+name: Cleanup ACR Untagged Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to use for secrets'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+  schedule:
+    - cron: "0 3 * * 1,4"   # Runs on Monday and Thursday at 03:00 UTC
+
+jobs:
+  cleanup-images:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'staging' }}
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Azure CLI - Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: List untagged images and manifests
+        run: |
+          echo "=== Listing untagged manifests ==="
+          total_count=0
+          az acr repository list --name ${{ vars.registry_name }} --output tsv | while read repo
+          do
+            echo ""
+            echo "Repository: $repo"
+            echo "----------------------------------------"
+            count=0
+            az acr manifest list-metadata \
+              --name $repo \
+              --registry ${{ vars.registry_name }} \
+              --query "[?tags==null].[digest]" \
+              --output tsv | while read digest
+            do
+              if [ -n "$digest" ]; then
+                echo "  - $digest"
+                count=$((count + 1))
+              fi
+            done
+            if [ $count -eq 0 ]; then
+              echo "  (no untagged manifests)"
+            else
+              echo "  Total untagged in $repo: $count"
+              total_count=$((total_count + count))
+            fi
+          done
+          echo ""
+          echo "=== Summary ==="
+          echo "Total untagged manifests found: $total_count"
+
+      - name: List tagged images and manifests
+        run: |
+          echo "=== Listing tagged manifests ==="
+          total_count=0
+          az acr repository list --name ${{ vars.registry_name }} --output tsv | while read repo
+          do
+            echo ""
+            echo "Repository: $repo"
+            echo "----------------------------------------"
+            # Get and display tagged manifests
+            manifest_data=$(az acr manifest list-metadata \
+              --name $repo \
+              --registry ${{ vars.registry_name }} \
+              --query "[?tags!=null]" \
+              --output json)
+            
+            count=$(echo "$manifest_data" | python3 -c "import sys, json; data = json.load(sys.stdin); print(len(data))" 2>/dev/null || echo "0")
+            
+            if [ "$count" = "0" ] || [ -z "$manifest_data" ] || [ "$manifest_data" = "[]" ]; then
+              echo "  (no tagged manifests)"
+            else
+              echo "$manifest_data" | python3 -c "import sys, json; [print('  - ' + item.get('digest', '') + '\n    Tags: ' + ', '.join(item.get('tags', []))) for item in json.load(sys.stdin) if item.get('digest') and item.get('tags')]"
+              echo "  Total tagged in $repo: $count"
+              total_count=$((total_count + count))
+            fi
+          done
+          echo ""
+          echo "=== Summary ==="
+          echo "Total tagged manifests found: $total_count"
+
+      - name: Remove untagged images and manifests
+        run: |
+          echo "=== Starting deletion of untagged manifests ==="
+          az acr repository list --name ${{ vars.registry_name }} --output tsv | while read repo
+          do
+            echo ""
+            echo "Processing repository: $repo"
+            echo "----------------------------------------"
+            az acr manifest list-metadata \
+              --name $repo \
+              --registry ${{ vars.registry_name }} \
+              --query "[?tags==null].[digest]" \
+              --output tsv | while read digest
+            do
+              if [ -n "$digest" ]; then
+                echo "Deleting untagged manifest $digest in $repo"
+                if az acr repository delete \
+                  --name ${{ vars.registry_name }} \
+                  --image ${repo}@${digest} \
+                  --yes; then
+                  echo "  ✅ Successfully deleted $digest"
+                else
+                  echo "  ⚠️  Failed to delete $digest"
+                fi
+              fi
+            done
+          done
+          echo ""
+          echo "=== Deletion Complete ==="
+          echo "All untagged manifests have been processed."

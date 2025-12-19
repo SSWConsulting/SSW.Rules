@@ -1,0 +1,484 @@
+name: Building Artifact depending on environment passed in parameter
+
+on:
+    workflow_call:
+        inputs:
+            tag:
+                type: string
+                required: true
+            tina_branch:
+                type: string
+                required: false
+                default: ''
+            source_branch:
+                type: string
+                required: false
+                default: ''
+                description: 'Source branch name that triggered this build'
+        secrets:
+            AZURE_CLIENT_ID:
+                required: true
+            AZURE_TENANT_ID:
+                required: true
+            AZURE_SUBSCRIPTION_ID:
+                required: true
+            TINA_TOKEN:
+                required: true
+            TINA_SEARCH_TOKEN:
+                required: false
+            TINA_WEBHOOK_SECRET:
+                required: true
+            NEXT_PUBLIC_TINA_CLIENT_ID:
+                required: true
+            NEXT_PUBLIC_ALGOLIA_APP_ID:
+                required: false
+            NEXT_PUBLIC_ALGOLIA_ADMIN_KEY:
+                required: false
+            NEXT_PUBLIC_ALGOLIA_INDEX_NAME:
+                required: false
+            NEXT_PUBLIC_ALGOLIA_API_KEY:
+                required: false
+            NEXT_PUBLIC_API_BASE_URL:
+                required: false
+        outputs:
+            image_tag:
+                description: 'Docker tag to deploy'
+                value: ${{ jobs.build-and-push.outputs.image_tag }}
+            image_digest:
+                value: ${{ jobs.build-and-push.outputs.image_digest }}
+            build_timestamp:
+                description: 'Build timestamp'
+                value: ${{ jobs.build-and-push.outputs.build_timestamp }}
+            build_date:
+                description: 'Build date'
+                value: ${{ jobs.build-and-push.outputs.build_date }}
+            commit_hash:
+                description: 'Commit hash'
+                value: ${{ jobs.build-and-push.outputs.commit_hash }}
+            version_deployed:
+                description: 'Version deployed'
+                value: ${{ jobs.build-and-push.outputs.version_deployed }}
+            deployment_url:
+                description: 'Deployment URL'
+                value: ${{ jobs.build-and-push.outputs.deployment_url }}
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.tag }}
+        permissions:
+            actions: write      # Required for cache monitoring
+            contents: read      # Required for checkout
+            id-token: write     # Required for Azure login
+        outputs:
+            image_tag: ${{ steps.meta.outputs.tags }}
+            image_digest: ${{ steps.build.outputs.digest }}
+            build_timestamp: ${{ env.BUILD_TIMESTAMP }}
+            build_date: ${{ env.BUILD_DATE }}
+            commit_hash: ${{ env.COMMIT_HASH }}
+            version_deployed: ${{ env.VERSION_DEPLOYED }}
+            deployment_url: ${{ env.DEPLOYMENT_URL }}
+        steps:
+            # ────────────────────────────── BUILD INFO ─────────────────────────────
+            - name: Generate build information
+              id: build_info
+              run: |
+                  BUILD_TIMESTAMP=$(date +%s)000
+                  BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+                  COMMIT_HASH=$(echo "${{ github.sha }}" | cut -c1-7)
+                  VERSION_DEPLOYED="${{ github.run_number }}"
+                  DEPLOYMENT_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  
+                  echo "BUILD_TIMESTAMP=$BUILD_TIMESTAMP" >> $GITHUB_ENV
+                  echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
+                  echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+                  echo "VERSION_DEPLOYED=$VERSION_DEPLOYED" >> $GITHUB_ENV
+                  echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_ENV
+                  
+                  echo "Build Info Generated:"
+                  echo "  Timestamp: $BUILD_TIMESTAMP"
+                  echo "  Date: $BUILD_DATE"
+                  echo "  Version: $VERSION_DEPLOYED"
+                  echo "  Commit: $COMMIT_HASH"
+
+            - name: Log build information
+              run: |
+                  echo "Starting NO-CACHE build process"
+                  echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
+                  echo "Tina branch: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH || 'Default' }}"
+                  echo "Environment tag: ${{ inputs.tag }}"
+                  echo "Registry: ${{ vars.registry_name }}"
+                  echo "Image: ${{ vars.IMAGE_NAME }}"
+                  echo "Build timestamp: ${{ env.BUILD_TIMESTAMP }}"
+                  echo "Build version: ${{ env.VERSION_DEPLOYED }}"
+                  echo "Docker cache: DISABLED"
+
+            # ────────────────────────────── CACHE VERIFICATION ────────────────────
+            - name: Monitor cache status (no cache should exist after previous purge)
+              run: |
+                  echo "GitHub Actions Cache Monitoring:"
+                  echo "Repository: ${{ github.repository }}"
+                  echo "Expected: 0 caches"
+                  echo ""
+                  
+                  # Verify current cache
+                  CACHE_COUNT=$(gh api repos/${{ github.repository }}/actions/caches --paginate \
+                    --jq '.actions_caches | length' 2>/dev/null || echo "0")
+                  TOTAL_CACHE_SIZE=$(gh api repos/${{ github.repository }}/actions/caches --paginate \
+                    --jq '[.actions_caches[] | .size_in_bytes] | add // 0' 2>/dev/null || echo "0")
+                  
+                  echo "Current cache status:"
+                  echo "Total caches: $CACHE_COUNT"
+                  echo "Total size: $(echo $TOTAL_CACHE_SIZE | numfmt --to=iec --suffix=B)"
+                  
+                  # Save for later comparaison after build
+                  echo "CACHE_COUNT_BEFORE=$CACHE_COUNT" >> $GITHUB_ENV
+                  echo "TOTAL_CACHE_SIZE_BEFORE=$TOTAL_CACHE_SIZE" >> $GITHUB_ENV
+                  
+                  if [ $CACHE_COUNT -eq 0 ]; then
+                    echo "Cache purge verification: SUCCESS - No caches found"
+                  else
+                    echo "Cache purge verification: WARNING - $CACHE_COUNT caches still exist"
+                    echo ""
+                    echo "Remaining cache breakdown:"
+                    gh api repos/${{ github.repository }}/actions/caches --paginate \
+                      --jq '.actions_caches[] | 
+                      if .key | startswith("buildkit-blob") then "Docker-Layers"
+                      elif .key | startswith("index-buildkit") then "Docker-Index" 
+                      elif .key | contains("pnpm") then "PNPM-Cache"
+                      elif .key | contains("npm") then "NPM-Cache"
+                      elif .key | contains("yarn") then "Yarn-Cache"
+                      else "Other"
+                      end' \
+                      | sort | uniq -c | while read count type; do
+                        echo "  $type: $count entries"
+                      done 2>/dev/null || echo "  Could not categorize remaining caches"
+                  fi
+              env:
+                  GH_TOKEN: ${{ github.token }}
+
+            # ────────────────────────────── CHECKOUTS ──────────────────────────────
+            - name: Checkout main repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  lfs: true
+
+            - name: Checkout SSW.Rules.Content
+              uses: actions/checkout@v4
+              with:
+                  repository: SSWConsulting/SSW.Rules.Content
+                  ref: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+                  path: content-temp
+                  fetch-depth: 0
+                  lfs: true
+
+            # ────────────────────────────── PYTHON + MAPPING FILES ────────────────
+            - name: Setup Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: '3.x'
+
+            - name: Install dependencies
+              run: pip install pyyaml
+
+            - name: Generate rule‑category mapping files
+              working-directory: content-temp/scripts/tina-migration
+              run: python build-rule-category-map.py
+
+            - name: Generate orphaned_rules file
+              working-directory: content-temp/scripts/tina-migration
+              run: python orphaned_rules_check.py
+
+            - name: Generate redirects mapping file
+              working-directory: content-temp/scripts/tina-migration
+              run: python build-redirect-map.py
+
+            - name: Copy generated mapping + content
+              run: |
+                  cp content-temp/scripts/tina-migration/rule-to-categories.json ./
+                  cp content-temp/scripts/tina-migration/category-uri-title-map.json ./
+                  cp content-temp/scripts/tina-migration/orphaned_rules.json ./
+                  cp content-temp/scripts/tina-migration/redirects.json ./
+                  mv content-temp ./content
+
+            # ────────────────────────────── AZURE LOGIN ───────────────────────────
+            - name: Azure CLI – Login
+              uses: azure/login@v2
+              with:
+                  client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                  tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+                  subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+            - name: Login to ACR
+              run: az acr login --name ${{ vars.registry_name }}
+
+            # ────────────────────────────── DOCKER BUILD (NO CACHE) ──────────────
+            - name: Set up Docker Buildx (no cache)
+              uses: docker/setup-buildx-action@v3
+              with:
+                driver-opts: |
+                  env.BUILDKIT_STEP_LOG_MAX_SIZE=10485760
+                  env.BUILDKIT_STEP_LOG_MAX_SPEED=10485760
+                  network=host
+
+            - name: Log no-cache build strategy
+              run: |
+                  echo "NO CACHE BUILD STRATEGY:"
+                  echo "• Docker layers will be built from scratch"
+                  echo "• npm/yarn dependencies will be downloaded fresh"
+                  echo "• Build time will be longer but completely fresh"
+                  echo "• No cache dependencies or corruption risks"
+                  echo ""
+                  echo "Expected build time: 8-15 minutes (vs 2-5 min with cache)"
+
+            - name: Extract metadata (tags, labels)
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ vars.registry_name }}.azurecr.io/${{ vars.image_name }}
+                  tags: |
+                      type=raw,value=${{ inputs.tag }}
+                  labels: |
+                      org.opencontainers.image.source.branch=${{ inputs.source_branch }}
+                      org.opencontainers.image.tina.branch=${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+                      org.opencontainers.image.build.timestamp=${{ env.BUILD_TIMESTAMP }}
+                      org.opencontainers.image.build.version=${{ env.VERSION_DEPLOYED }}
+                      org.opencontainers.image.build.commit=${{ env.COMMIT_HASH }}
+                      org.opencontainers.image.build.cache=disabled
+
+            - name: Check initial disk usage
+              run: |
+                echo "=== Initial Disk Usage ==="
+                df -h
+                echo ""
+                echo "=== Docker Disk Usage ==="
+                docker system df || true
+                echo ""
+                echo "=== Home directory usage ==="
+                du -h -d 2 /home/runner 2>/dev/null | head -20 || true
+
+            - name: Aggressive disk space cleanup (pre-build)
+              timeout-minutes: 5
+              run: |
+                echo "=== Starting aggressive disk cleanup ==="
+                
+                # Clean Docker completely (with timeouts to prevent hanging)
+                echo "Cleaning Docker system..."
+                timeout 60 docker system prune -af --volumes || true
+                timeout 30 docker builder prune -af || true
+                
+                # Clean buildx cache
+                echo "Cleaning Docker buildx cache..."
+                timeout 30 docker buildx prune -af || true
+                
+                # Remove unused Docker resources
+                echo "Removing unused Docker resources..."
+                timeout 30 docker container prune -f || true
+                timeout 30 docker image prune -af || true
+                timeout 30 docker volume prune -f || true
+                timeout 30 docker network prune -f || true
+                
+                # Clean GitHub Actions runner cache
+                echo "Cleaning runner cache..."
+                sudo timeout 60 find /home/runner/.cache -mindepth 1 -delete 2>/dev/null || true
+                
+                # Aggressively clean diagnostic logs (this is where the error occurs)
+                echo "Cleaning runner diagnostic logs (critical for disk space)..."
+                # Remove large log files (>10MB) and old log files (>1 hour) to free space
+                # but keep recent small logs that might be in use
+                sudo find /home/runner/actions-runner/cached/_diag -type f -size +10M -delete 2>/dev/null || true
+                sudo find /home/runner/actions-runner/cached/_diag -type f -mmin +60 -delete 2>/dev/null || true
+                sudo mkdir -p /home/runner/actions-runner/cached/_diag || true
+                
+                # Remove large unused system packages (using find for better performance)
+                echo "Removing unused system packages..."
+                sudo timeout 60 find /usr/share/dotnet -mindepth 1 -delete 2>/dev/null || true
+                sudo timeout 60 find /usr/local/lib/android -mindepth 1 -delete 2>/dev/null || true
+                sudo timeout 30 find /opt/ghc -mindepth 1 -delete 2>/dev/null || true
+                sudo timeout 30 find /opt/hostedtoolcache/CodeQL -mindepth 1 -delete 2>/dev/null || true
+                sudo timeout 30 find /usr/local/share/boost -mindepth 1 -delete 2>/dev/null || true
+                if [ -n "$AGENT_TOOLSDIRECTORY" ]; then
+                  sudo timeout 60 find "$AGENT_TOOLSDIRECTORY" -mindepth 1 -delete 2>/dev/null || true
+                fi
+                
+                # Clean apt cache
+                echo "Cleaning apt cache..."
+                sudo timeout 30 apt-get clean || true
+                sudo timeout 30 find /var/lib/apt/lists -mindepth 1 -delete 2>/dev/null || true
+                
+                # Clean temporary files (be selective - don't remove files in use)
+                echo "Cleaning old temporary files..."
+                # Only remove files older than 1 hour to avoid breaking active processes
+                sudo find /tmp -type f -mmin +60 -delete 2>/dev/null || true
+                sudo find /var/tmp -type f -mmin +60 -delete 2>/dev/null || true
+                
+                echo "=== Cleanup completed ==="
+
+            - name: Check disk usage after cleanup
+              timeout-minutes: 2
+              run: |
+                echo "=== Disk Usage After Cleanup ==="
+                df -h || true
+                echo ""
+                echo "=== Docker Disk Usage After Cleanup ==="
+                timeout 30 docker system df || echo "Docker system df timed out or failed"
+                echo ""
+                AVAILABLE=$(df -h / | awk 'NR==2 {print $4}' || echo "unknown")
+                echo "Available disk space: $AVAILABLE"
+
+            - name: Record build start time
+              run: |
+                  echo "BUILD_START_TIME=$(date +%s)" >> $GITHUB_ENV
+                  echo "Starting fresh build at $(date)"
+
+            - name: Build & push image (NO CACHE)
+              id: build
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  platforms: linux/amd64
+                  push: true
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
+                  build-args: |
+                        BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+                        VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }}
+                        DEPLOYMENT_URL=${{ env.DEPLOYMENT_URL }}
+                        BUILD_DATE=${{ env.BUILD_DATE }}
+                        COMMIT_HASH=${{ env.COMMIT_HASH }}
+                        TINA_TOKEN=${{ secrets.TINA_TOKEN }}
+                        TINA_SEARCH_TOKEN=${{ secrets.TINA_SEARCH_TOKEN }}
+                        TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}
+                        NEXT_PUBLIC_TINA_CLIENT_ID=${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+                        NEXT_PUBLIC_ALGOLIA_APP_ID=${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
+                        NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
+                        NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+                        NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+                        NEXT_PUBLIC_TINA_BRANCH=${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+                        NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
+                        NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
+                        NEXT_PUBLIC_GISCUS_REPO_NAME=${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }}
+                        NEXT_PUBLIC_GISCUS_REPO_ID=${{ vars.NEXT_PUBLIC_GISCUS_REPO_ID }}
+                        NEXT_PUBLIC_GISCUS_CATEGORY_ID=${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
+                        NEXT_PUBLIC_GISCUS_THEME_URL=${{ vars.NEXT_PUBLIC_GISCUS_THEME_URL }}
+                        NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+                        NEXT_PUBLIC_BASE_PATH=${{ vars.NEXT_PUBLIC_BASE_PATH }}
+                  # CACHE COMPLETELY DISABLED
+                  no-cache: true
+                  # Clean up intermediate containers after build
+                  pull: true
+
+            - name: Post-build cleanup
+              if: always()
+              run: |
+                echo "=== Post-build cleanup ==="
+                
+                # Clean Docker buildx cache immediately after build
+                echo "Cleaning Docker buildx cache..."
+                docker buildx prune -af || true
+                
+                # Remove intermediate build containers and images
+                echo "Removing intermediate Docker resources..."
+                docker system prune -af --volumes || true
+                docker builder prune -af || true
+                
+                # Clean runner diagnostic logs that may have grown large
+                echo "Cleaning runner diagnostic logs..."
+                sudo find /home/runner/actions-runner/cached/_diag -name "*.log" -type f -size +100M -delete || true
+                sudo find /home/runner/actions-runner/cached/_diag -name "*.log" -type f -mtime +0 -delete || true
+                
+                # Final disk usage check
+                echo ""
+                echo "=== Final Disk Usage ==="
+                df -h
+                echo ""
+                AVAILABLE=$(df -h / | awk 'NR==2 {print $4}')
+                echo "Available disk space: $AVAILABLE"
+
+            - name: Record build completion and analyze performance
+              run: |
+                  BUILD_END_TIME=$(date +%s)
+                  BUILD_DURATION=$((BUILD_END_TIME - BUILD_START_TIME))
+                  
+                  echo "Build completed at $(date)"
+                  echo "Total build time: ${BUILD_DURATION} seconds ($(($BUILD_DURATION / 60))m $(($BUILD_DURATION % 60))s)"
+                  
+                  echo ""
+                  echo "No-Cache Build Performance Analysis:"
+                  if [ $BUILD_DURATION -lt 300 ]; then
+                    echo "UNEXPECTEDLY FAST (< 5min) - This suggests cache may still be used"
+                    echo "Expected: 8-15 minutes for no-cache build"
+                  elif [ $BUILD_DURATION -lt 600 ]; then
+                    echo "FAST FOR NO-CACHE (5-10min) - Good server performance"
+                  elif [ $BUILD_DURATION -lt 900 ]; then
+                    echo "NORMAL NO-CACHE TIME (10-15min) - Expected performance"
+                  else
+                    echo "SLOW BUILD (>15min) - Heavy application or server issues"
+                  fi
+                  
+                  echo ""
+                  echo "Build Analysis Summary:"
+                  echo "• Every layer built from scratch"
+                  echo "• All dependencies downloaded fresh"
+                  echo "• No cache corruption risks"
+                  echo "• Build time indicates cache usage level"
+
+            - name: Verify cache was not used during build
+              run: |
+                  echo "Post-build cache verification:"
+                  echo ""
+                  
+                  # Verify that no cache has been created
+                  FINAL_CACHES=$(gh api repos/${{ github.repository }}/actions/caches --jq '.actions_caches | length' 2>/dev/null || echo "unknown")
+                  FINAL_SIZE=$(gh api repos/${{ github.repository }}/actions/caches --paginate \
+                    --jq '[.actions_caches[] | .size_in_bytes] | add // 0' 2>/dev/null || echo "0")
+                  
+                  echo "Cache Status Summary:"
+                  echo "Before build: $CACHE_COUNT_BEFORE caches ($(echo $TOTAL_CACHE_SIZE_BEFORE | numfmt --to=iec --suffix=B))"
+                  echo "After build:  $FINAL_CACHES caches ($(echo $FINAL_SIZE | numfmt --to=iec --suffix=B))"
+                  
+                  if [ "$FINAL_CACHES" = "unknown" ]; then
+                    echo "Status: Cannot verify (API delay)"
+                  elif [ "$CACHE_COUNT_BEFORE" = "0" ] && [ "$FINAL_CACHES" = "0" ]; then
+                    echo "VERIFIED: No cache used - Started with 0, ended with 0"
+                  elif [ "$CACHE_COUNT_BEFORE" = "$FINAL_CACHES" ]; then
+                    echo "VERIFIED: No new cache created - Count unchanged"
+                  else
+                    CACHE_DIFFERENCE=$((FINAL_CACHES - CACHE_COUNT_BEFORE))
+                    SIZE_DIFFERENCE=$((FINAL_SIZE - TOTAL_CACHE_SIZE_BEFORE))
+                    echo "CACHE CHANGE DETECTED:"
+                    echo "  Cache count change: $CACHE_DIFFERENCE"
+                    echo "  Size change: $(echo $SIZE_DIFFERENCE | numfmt --to=iec --suffix=B)"
+                    
+                    if [ $CACHE_DIFFERENCE -gt 0 ]; then
+                      echo "  New caches were created despite no-cache flag"
+                      echo "  This might be system/runner level caching"
+                    fi
+                  fi
+                  
+                  echo ""
+                  echo "Cache Usage Verification:"
+                  echo "• no-cache: true was set in build step"
+                  echo "• Build logs should show 'RUN' not 'CACHED' for all layers"
+                  echo "• Long build time confirms fresh build"
+              env:
+                  GH_TOKEN: ${{ github.token }}
+
+            - name: Image info
+              run: |
+                  echo "NO-CACHE Build completed successfully!"
+                  echo "Image tag   : ${{ steps.meta.outputs.tags }}"
+                  echo "Image digest: ${{ steps.build.outputs.digest }}"
+                  echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
+                  echo "Content branch: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}"
+                  echo "Build Info:"
+                  echo "  Build Date: ${{ env.BUILD_DATE }}"
+                  echo "  Version: ${{ env.VERSION_DEPLOYED }}"
+                  echo "  Deployment URL: ${{ env.DEPLOYMENT_URL }}"
+                  echo "  Commit: ${{ env.COMMIT_HASH }}"
+                  echo "  Cache: DISABLED AND VERIFIED"

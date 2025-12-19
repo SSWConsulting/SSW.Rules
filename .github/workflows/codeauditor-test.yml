@@ -1,0 +1,25 @@
+name: Scheduled CodeAuditor test
+
+# Schedule scan for SSW Rules at 1pm every Friday
+on: 
+  schedule:
+  - cron: "0 2 * * 5"
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions: 
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: CodeAuditor Workflow
+        uses: SSWConsulting/codeauditor-scan-site@1.0.0
+        with:
+          # Your CodeAuditor token
+          token: ${{ secrets.CODEAUDITOR_TOKEN }}
+          # Your Scan URL
+          url: https://www.ssw.com.au/rules/
+          # Your GitHub Token
+          GitHub_Token: ${{ github.token }}

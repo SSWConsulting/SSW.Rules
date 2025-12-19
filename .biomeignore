@@ -1,0 +1,11 @@
+**/__generated__
+**/.build*
+**/.next
+**/.vscode
+**/.yarn
+**/node_modules
+**/out
+**/.yarnrc.yml
+**/yarn.lock
+**/*.gql
+**/*.json

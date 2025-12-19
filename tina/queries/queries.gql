@@ -1,0 +1,292 @@
+query latestRulesQuery($size: Float, $sortOption: String, $includeBody: Boolean = false) {
+  ruleConnection(last: $size, sort: $sortOption) {
+    edges {
+      node {
+        id
+        title
+        lastUpdated
+        lastUpdatedBy
+        created
+        createdBy
+        uri
+        body @include(if: $includeBody)
+        authors {
+          title
+          url
+        }
+      }
+    }
+  }
+}
+
+query topCategoryWithIndexQuery($first: Float, $after: String) {
+  categoryConnection(first: $first, after: $after) {
+    edges {
+      node {
+        __typename
+        ... on CategoryTop_category {
+          title
+          _sys {
+            relativePath
+          }
+          index {
+            category {
+              ... on CategoryCategory {
+                title
+                _sys {
+                  filename
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query mainCategoryQuery {
+  category(relativePath: "index.mdx") {
+    __typename
+    ... on CategoryMain {
+      index {
+        top_category {
+          ... on CategoryTop_category {
+            title
+            uri
+            _sys {
+              filename
+            }
+            index {
+              category {
+                ... on CategoryCategory {
+                  title
+                  _sys {
+                    filename
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query categoryWithRulesQuery($relativePath: String!) {
+  category(relativePath: $relativePath) {
+    ... on CategoryCategory {
+      title
+      body
+      uri
+      index {
+        rule {
+          ... on Rule {
+            guid
+            uri
+            title
+            body
+            isArchived
+            archivedreason
+          }
+        }
+      }
+    }
+  }
+}
+
+query rulesByGuidQuery($guids: [String!]!) {
+  ruleConnection(filter: { guid: { in: $guids } }) {
+    edges {
+      node {
+        guid
+        title
+        uri
+        body
+        authors {
+          title
+        }
+      }
+    }
+  }
+}
+
+query rulesByUriQuery($uris: [String!]!) {
+  ruleConnection(filter: { uri: { in: $uris } }) {
+    edges {
+      node {
+        guid
+        title
+        uri
+        body
+        authors {
+          title
+        }
+        lastUpdated
+        lastUpdatedBy
+        sidebarVideo
+        categories {
+          category {
+            ... on CategoryCategory {
+              uri
+              title
+              _sys {
+                relativePath
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query rulesByAuthor($authorTitle: String!, $first: Float, $after: String) {
+  ruleConnection(filter: { authors: { title: { eq: $authorTitle } } }, first: $first, after: $after) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        guid
+        title
+        uri
+        body
+        authors {
+          title
+        }
+        lastUpdated
+        lastUpdatedBy
+      }
+    }
+  }
+}
+
+query archivedRulesQuery($first: Float, $after: String) {
+  ruleConnection(filter: { isArchived: { eq: true } }, first: $first, after: $after) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        guid
+        title
+        uri
+        body
+        isArchived
+        archivedreason
+        authors {
+          title
+        }
+        lastUpdated
+        lastUpdatedBy
+      }
+    }
+  }
+}
+
+query paginatedRulesQuery($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: RuleFilter) {
+  ruleConnection(before: $before, after: $after, first: $first, last: $last, sort: $sort, filter: $filter) {
+    totalCount
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        title
+        uri
+        lastUpdated
+        _sys {
+          relativePath
+        }
+      }
+    }
+  }
+}
+
+query allRulesPaths($first: Float, $after: String) {
+  ruleConnection(first: $first, after: $after) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        __typename
+        ... on Rule {
+          _sys {
+            relativePath
+            filename
+          }
+        }
+      }
+    }
+  }
+}
+
+# Minimal rule query to avoid overfetching category and related rule fields
+query ruleData($relativePath: String!) {
+  rule(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        hasReferences
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ... on Rule {
+      title
+      uri
+      body
+      authors {
+        title
+        url
+      }
+      categories {
+        category {
+          ... on CategoryCategory {
+            uri
+            title
+          }
+        }
+      }
+      related {
+        rule {
+          ... on Rule {
+            title
+            uri
+          }
+        }
+      }
+      redirects
+      guid
+      seoDescription
+      created
+      createdBy
+      createdByEmail
+      lastUpdated
+      lastUpdatedBy
+      lastUpdatedByEmail
+      isArchived
+      archivedreason
+      sidebarVideo
+    }
+  }
+}

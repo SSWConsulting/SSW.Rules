@@ -1,22 +1,38 @@
-**/.DS_Store
-node_modules/
-.env*
 
-# Logs
-logs
-*.log
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+
+# production
+/build
+
+# misc
+.DS_Store
+.env
+.env.local
+.idea
+
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-.cache/
-public
-build
-/test-results/
-/playwright-report/
-/playwright/.cache/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-.yarn/install-state.gz
+.tina/__generated__
+
+/category-uri-title-map.json
+/rule-to-categories.json
+/orphaned_rules.json
+/redirects.json
+
+# Claude Code configuration
+CLAUDE.md
+.claude/settings.local.json

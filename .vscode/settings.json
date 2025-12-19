@@ -1,4 +1,34 @@
 {
+<<<<<<< HEAD
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "quickfix.biome": "explicit",
+      "source.organizeImports.biome": "explicit"
+    },
+    "editor.formatOnPaste": false,
+    "editor.tabSize": 2,
+    "search.exclude": {
+      "**/.pnp.*": true
+    },
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "typescript.format.enable": false,
+    "prettier.enable": false,
+    "[typescript]": {
+      "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[javascriptreact]": {
+      "editor.defaultFormatter": "biomejs.biome"
+    }
+  }
+  
+=======
 	"debug.javascript.autoAttachFilter": "onlyWithFlag",
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit"
@@ -19,3 +49,4 @@
         ".cache/": true,
 	}
 }
+>>>>>>> old-gatsby/main

@@ -1,0 +1,50 @@
+@keyframes formEnterOverlayAnimation {
+    0% {
+        top: 0px;
+        margin-top: -100%;
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+        margin-top: -100%;
+    }
+}
+
+@keyframes formLeaveOverlayAnimation {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes formEnterModalAnimation {
+    0% {
+        top: 0px;
+        margin-top: -100%;
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes formLeaveModalAnimation {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1);
+        margin-top: -100%;
+    }
+}
+
+.closeButton {
+    background-color: #fff;
+    border-radius: 15px;
+}

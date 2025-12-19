@@ -162,7 +162,6 @@ The Bookmark feature uses the **[SSW.Rules.Functions](https://github.com/SSWCons
 - By default, the API is available at: `http://localhost:7248`.
 - Bookmark data is persisted to the **staging** database.
 
-=======
 - Install nodejs version specified in `.nvmrc` (Ideally use `nvm` to use the right version)
 - Ensure corepack is enabled - `corepack enable` (this allows auto-install of the correct `yarn` version)
 

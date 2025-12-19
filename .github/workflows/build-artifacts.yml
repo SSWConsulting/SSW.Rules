@@ -40,6 +40,10 @@ on:
                 required: false
             NEXT_PUBLIC_API_BASE_URL:
                 required: false
+            NEXT_PUBLIC_GOOGLE_ANALYTICS:
+                required: false
+            NEXT_PUBLIC_GTM_CONTAINER_ID:
+                required: false
         outputs:
             image_tag:
                 description: 'Docker tag to deploy'
@@ -368,6 +372,8 @@ jobs:
                         NEXT_PUBLIC_GISCUS_THEME_URL=${{ vars.NEXT_PUBLIC_GISCUS_THEME_URL }}
                         NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
                         NEXT_PUBLIC_BASE_PATH=${{ vars.NEXT_PUBLIC_BASE_PATH }}
+                        NEXT_PUBLIC_GOOGLE_ANALYTICS=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS }}
+                        NEXT_PUBLIC_GTM_CONTAINER_ID=${{ secrets.NEXT_PUBLIC_GTM_CONTAINER_ID }}
                   # CACHE COMPLETELY DISABLED
                   no-cache: true
                   # Clean up intermediate containers after build

@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import "@/styles.css";
 import UserClientProvider from "@/components/auth/UserClientProvider";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import GoogleTagManager, { GoogleTagManagerNoScript } from "@/components/analytics/GoogleTagManager";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -44,7 +46,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={cn(fontSans.variable, nunito.variable, lato.variable)}>
       <body className="min-h-screen bg-background font-sans antialiased flex flex-col">
+        <GoogleTagManagerNoScript />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <GoogleAnalytics />
+        <GoogleTagManager />
         <UserClientProvider>
           <SiteLayout>{children}</SiteLayout>
         </UserClientProvider>

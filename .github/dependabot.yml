@@ -17,3 +17,26 @@ updates:
         patterns:
           - "@tinacms/*"
           - "tinacms"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "Type: Dependencies"
+    commit-message:
+      prefix: "⬆️ NPM"
+    rebase-strategy: auto
+    ignore:
+      - dependency-name: "tinacms"
+      - dependency-name: "@tinacms/*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "Type: Dependencies"
+    commit-message:
+      prefix: "⬆️ GitHub Actions"
+    rebase-strategy: auto

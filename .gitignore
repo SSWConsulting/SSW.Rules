@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 # dependencies
 /node_modules
@@ -22,10 +23,20 @@ next-env.d.ts
 .idea
 
 # debug
+=======
+**/.DS_Store
+node_modules/
+.env*
+
+# Logs
+logs
+*.log
+>>>>>>> old-gatsby/main
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+<<<<<<< HEAD
 .tina/__generated__
 
 /category-uri-title-map.json
@@ -36,3 +47,16 @@ yarn-error.log*
 # Claude Code configuration
 CLAUDE.md
 .claude/settings.local.json
+=======
+.cache/
+public
+build
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+.yarn/install-state.gz
+>>>>>>> old-gatsby/main

@@ -97,10 +97,8 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
 
         <div className="layout-sidebar">
           {rule?.sidebarVideo && (
-            <Card dropShadow className="mb-4 p-0">
-              <div className="p-1">
-                <YouTubeShorts url={rule.sidebarVideo} />
-              </div>
+            <Card>
+              <YouTubeShorts url={rule.sidebarVideo} />
             </Card>
           )}
           <CategoriesCard categories={rule?.categories} />

@@ -7,7 +7,7 @@ export function getPrefix(prefix?: FigurePrefix): string {
     case "bad":
       return "❌ Figure: ";
     case "ok":
-      return "😐 Figure: ";
+      return "🙂 Figure: ";
     case "good":
       return "✅ Figure: ";
     case "none":
@@ -34,10 +34,10 @@ export const inlineFigureFields = [
     label: "Figure Prefix",
     type: "string",
     options: [
-      { value: "none", label: "Default" },
-      { value: "bad", label: "Bad Example" },
-      { value: "ok", label: "OK Example" },
-      { value: "good", label: "Good Example" },
+      { value: "none", label: "None" },
+      { value: "bad", label: "❌ Bad example" },
+      { value: "ok", label: "🙂 OK example" },
+      { value: "good", label: "✅ Good example" },
     ],
   },
   { name: "figure", label: "Figure", type: "string" },

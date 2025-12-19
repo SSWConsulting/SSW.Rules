@@ -83,10 +83,10 @@ export function BoxEmbed(props: any) {
   }
 
   // Support both legacy 'variant' and new 'style' prop names
-  const variant: BoxVariant = (data?.style || "info") as BoxVariant;
+  const variant: BoxVariant = (data?.style || "greybox") as BoxVariant;
   const config = variantConfig[variant];
   const figure: string = data?.figure || "";
-  const figurePrefix: any = data?.figurePrefix || "default";
+  const figurePrefix: any = data?.figurePrefix || "none";
 
   const components = {
     ...MarkdownComponentMapping,
@@ -115,7 +115,6 @@ export const boxEmbedTemplate: Template = {
   label: "Box",
   ui: {
     defaultItem: {
-      style: "info",
       body: {
         type: "root",
         children: [
@@ -131,17 +130,17 @@ export const boxEmbedTemplate: Template = {
   fields: [
     {
       name: "style",
-      label: "style",
+      label: "Style",
       type: "string",
       options: [
-        { value: "greybox", label: "Greybox" },
+        { value: "greybox", label: "Default (Greybox)" },
         { value: "info", label: "Info" },
-        { value: "todo", label: "Todo" },
+        { value: "warning", label: "Warning" },
+        { value: "tips", label: "Tip" },
+        { value: "highlight", label: "Highlight" },
         { value: "china", label: "China" },
         { value: "codeauditor", label: "Codeauditor" },
-        { value: "highlight", label: "Highlight" },
-        { value: "warning", label: "Warning" },
-        { value: "tips", label: "Tips" },
+        { value: "todo", label: "Todo" },
       ],
     },
     {

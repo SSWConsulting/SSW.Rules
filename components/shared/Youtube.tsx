@@ -8,6 +8,12 @@ export function extractYoutubeId(input?: string | null): string | null {
   return match ? match[1] : null;
 }
 
+export function isYoutubeShort(input?: string | null): boolean {
+  const value = (input ?? "").trim();
+  if (!value) return false;
+  return value.includes("/shorts/");
+}
+
 export function YouTubePlayer({ url = "", description = "" }: { url?: string; description?: string }) {
   const videoId = extractYoutubeId(url);
 
@@ -60,4 +66,23 @@ export function YouTubeShorts({ url = "", description = "" }: { url?: string; de
       {description ? <div className="text-sm sm:text-base font-bold px-2 sm:px-0">{description}</div> : null}
     </div>
   );
+}
+
+export function YouTubeVideo({ url = "", description = "" }: { url?: string; description?: string }) {
+  const videoId = extractYoutubeId(url);
+  const isShort = isYoutubeShort(url);
+
+  if (!videoId) {
+    return (
+      <div className="my-4 rounded-lg border-2 border-dashed p-4 text-sm text-gray-500">
+        Please add <strong>Video URL/ID</strong>
+      </div>
+    );
+  }
+
+  if (isShort) {
+    return <YouTubeShorts url={url} description={description} />;
+  }
+
+  return <YouTubePlayer url={url} description={description} />;
 }

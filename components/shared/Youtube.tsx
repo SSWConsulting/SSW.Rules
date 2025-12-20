@@ -11,7 +11,8 @@ export function extractYoutubeId(input?: string | null): string | null {
 export function isYoutubeShort(input?: string | null): boolean {
   const value = (input ?? "").trim();
   if (!value) return false;
-  return value.includes("/shorts/");
+  // Match YouTube Shorts URL pattern: youtube.com/shorts/{11-char-video-id}
+  return /\/shorts\/[a-zA-Z0-9_-]{11}/.test(value);
 }
 
 export function YouTubePlayer({ url = "", description = "" }: { url?: string; description?: string }) {

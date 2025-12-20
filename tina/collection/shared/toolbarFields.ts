@@ -27,4 +27,5 @@ export const toolbarFields: ToolbarOverrideType[] = [
   "codeBlock",
   "mermaid",
   "table",
+  "raw",
 ];

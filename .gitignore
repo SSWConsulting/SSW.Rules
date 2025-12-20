@@ -36,3 +36,4 @@ yarn-error.log*
 # Claude Code configuration
 CLAUDE.md
 .claude/settings.local.json
+tsconfig.tsbuildinfo

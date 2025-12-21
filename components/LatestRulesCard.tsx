@@ -1,10 +1,10 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { LatestRule } from "@/models/LatestRule";
-import { timeAgo } from "@/lib/dateUtils";
-import { RiTimeFill } from "react-icons/ri";
 import Link from "next/link";
+import { RiTimeFill } from "react-icons/ri";
+import { Card } from "@/components/ui/card";
+import { timeAgo } from "@/lib/dateUtils";
+import { LatestRule } from "@/models/LatestRule";
 
 interface LatestRulesProps {
   rules: LatestRule[];
@@ -27,10 +27,7 @@ export default function LatestRulesCard({ rules }: LatestRulesProps) {
         ))}
       </ul>
 
-      <Link
-        href="/latest-rules/?size=50"
-        className="px-4 py-2 rounded-md inline-flex items-center text-ssw-red hover:underline"
-      >
+      <Link href="/latest-rules" className="px-4 py-2 rounded-md inline-flex items-center text-ssw-red hover:underline">
         See more
       </Link>
     </Card>

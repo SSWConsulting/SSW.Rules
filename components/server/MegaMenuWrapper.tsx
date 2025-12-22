@@ -10,7 +10,26 @@ import { CustomLink } from "../customLink";
 import useAppInsights from "../hooks/useAppInsights";
 import Tooltip from "../tooltip/tooltip";
 
+const basePath = getSanitizedBasePath();
+
 export function MegaMenuWrapper(props) {
+  const linkComponent = (linkProps: any) => {
+    const { href, ...restProps } = linkProps;
+
+    let adjustedHref = href;
+    if (basePath && href && typeof href === "string") {
+      // Only adjust relative URLs (not external URLs)
+      if (!href.startsWith("http://") && !href.startsWith("https://") && href.startsWith("/")) {
+        // Convert absolute path to relative path that escapes basePath
+        // /some-path becomes ../some-path
+        const pathWithoutSlash = href.slice(1);
+        adjustedHref = `../${pathWithoutSlash}`;
+      }
+    }
+
+    return <CustomLink {...restProps} href={adjustedHref} className={classNames("unstyled", linkProps.className)} />;
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-0">
       <MegaMenuLayout
@@ -18,7 +37,7 @@ export function MegaMenuWrapper(props) {
         menuBarItems={props.menu}
         subtitle="Secret ingredients to quality software"
         rightSideActionsOverride={() => <ActionButtons />}
-        linkComponent={(props) => <CustomLink {...props} className={classNames("unstyled", props.className)} />}
+        linkComponent={linkComponent}
         url="/"
         searchUrl="https://www.ssw.com.au/rules"
         isFlagVisible={false}
@@ -26,8 +45,6 @@ export function MegaMenuWrapper(props) {
     </div>
   );
 }
-
-const basePath = getSanitizedBasePath();
 
 const ActionButtons = () => {
   const { trackEvent } = useAppInsights();

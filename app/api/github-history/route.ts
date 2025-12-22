@@ -82,6 +82,7 @@ export async function GET(request: Request) {
     }
   } catch (error) {
     console.error("Error fetching GitHub metadata:", error);
-    return NextResponse.json({ error: "Failed to fetch GitHub metadata" }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch GitHub metadata";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

@@ -18,8 +18,8 @@ export function MegaMenuWrapper(props) {
 
     let adjustedHref = href;
     if (basePath && href && typeof href === "string") {
-      // Only adjust relative URLs (not external URLs)
-      if (!href.startsWith("http://") && !href.startsWith("https://") && href.startsWith("/")) {
+      // Only adjust relative URLs (not external URLs, and not the home path "/")
+      if (!href.startsWith("http://") && !href.startsWith("https://") && href.startsWith("/") && href !== "/") {
         // Convert absolute path to relative path that escapes basePath
         // /some-path becomes ../some-path
         const pathWithoutSlash = href.slice(1);

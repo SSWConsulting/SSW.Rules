@@ -55,10 +55,10 @@ As per rule: [Done - Do you go beyond 'Done' and follow a 'Definition of Done'?]
 
 ### Builds
 - Changes made to http://github.com/SSWConsulting/SSW.Rules.Content (i.e. rule changes) trigger builds that deploy:
-  - **main** to the **staging** - check the [latest staging workflow](https://github.com/SSWConsulting/SSW.Rules/deployments/staging) for the url
-  - latest **release/xx** to the **production** site - [ssw.com.au/rules](https://www.ssw.com.au/rules)
+  - **Main** to the **Staging** - check the [latest staging workflow](https://github.com/SSWConsulting/SSW.Rules/deployments/staging) for the URL
+  - latest **release/xx** to the **Production** site: [ssw.com.au/rules](https://www.ssw.com.au/rules)
   
-- Branching off **main** to **release/xx**, or making changes to **release/xx** will build and deploy to the **production** site: https://www.ssw.com.au/rules
+- Branching off **main** to **release/xx**, or making changes to **release/xx** will build and deploy to the **Production** site: [ssw.com.au/rules](https://www.ssw.com.au/rules)
 
 ### GitHub Actions Documentation
 
@@ -72,7 +72,7 @@ Merging changes to **main** on this repo will trigger:
 - a build/release of the **main** branch in Staging - check the [latest staging workflow](https://github.com/SSWConsulting/SSW.Rules/deployments/staging) for the url
 - a build/release of the **release** branch Production - [ssw.com.au/rules](https://www.ssw.com.au/rules)
 
-### Example Rule
+### Example rule
 - An example rule is provided in the repo under `http://localhost:{{ PORT NUMBER }}/rule/`
 - This example rules shows all the different components that can be used e.g. headings, lists, boxes, etc.
 

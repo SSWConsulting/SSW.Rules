@@ -3,6 +3,7 @@ query latestRulesQuery($size: Float, $sortOption: String, $includeBody: Boolean 
     edges {
       node {
         id
+        guid
         title
         lastUpdated
         lastUpdatedBy

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { RiGithubLine, RiPencilLine } from "react-icons/ri";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import RuleListWrapper from "@/components/rule-list/rule-list-wrapper";
+import RuleList from "@/components/rule-list/rule-list";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 import { IconLink } from "@/components/ui";
 import { ICON_SIZE } from "@/constants";
@@ -54,15 +54,7 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
             <TinaMarkdown content={category?.body} components={MarkdownComponentMapping} />
           </div>
 
-          <RuleListWrapper
-            categoryUri={path}
-            rules={finalRules}
-            initialView={view}
-            initialPage={page}
-            initialPerPage={perPage}
-            includeArchived={includeArchived}
-            showFilterControls={true}
-          />
+          <RuleList categoryUri={path} rules={finalRules} initialPage={page} initialPerPage={perPage} />
         </div>
 
         <div className="hidden lg:flex lg:flex-col lg:absolute lg:top-0 lg:right-0 lg:bottom-0 lg:w-1/3 pl-6">

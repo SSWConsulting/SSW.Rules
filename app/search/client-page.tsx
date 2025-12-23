@@ -1,27 +1,26 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
-import SearchBar from "@/components/SearchBarWrapper";
+import { useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 import AboutSSWCard from "@/components/AboutSSWCard";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import HelpCard from "@/components/HelpCard";
 import HelpImproveCard from "@/components/HelpImproveCard";
 import JoinConversationCard from "@/components/JoinConversationCard";
+import LatestRulesCard from "@/components/LatestRulesCard";
 import RuleCount from "@/components/RuleCount";
+import RuleList from "@/components/rule-list/rule-list";
+import SearchBar from "@/components/SearchBarWrapper";
 import WhyRulesCard from "@/components/WhyRulesCard";
 import { LatestRule } from "@/models/LatestRule";
-import LatestRulesCard from "@/components/LatestRulesCard";
-import Dropdown from "@/components/ui/dropdown";
-import { CgSortAz } from "react-icons/cg";
-import RuleCard from "@/components/RuleCard";
-import Spinner from '@/components/Spinner';
-import { useEffect } from 'react';
-import Breadcrumbs from "@/components/Breadcrumbs";
+import { RuleListFilter } from "@/types/ruleListFilter";
 
 interface SearchResult {
   objectID: string;
   title: string;
   slug: string;
+  lastUpdated?: string;
+  lastUpdatedBy?: string;
   [key: string]: any;
 }
 
@@ -32,28 +31,22 @@ interface RuleSearchClientPageProps {
 
 export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated }: RuleSearchClientPageProps) {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const keyword = searchParams.get("keyword") || "";
   const sortBy = searchParams.get("sortBy") || "lastUpdated";
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, [searchParams]);
-
-  const handleSortChange = (newSort: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("sortBy", newSort);
-    if (keyword) params.set("keyword", keyword);
-    setIsLoading(true);
-    router.push(`/search?${params.toString()}`);
-  };
-
-  const sortOptions = [
-    { value: "lastUpdated", label: "Last Updated" },
-    { value: "created", label: "Recently Created" }
-  ];
+  // Transform search results to match RuleList expected format
+  const rulesForList = useMemo(
+    () =>
+      searchResults.map((result) => ({
+        guid: result.objectID,
+        uri: result.slug,
+        title: result.title,
+        lastUpdated: result.lastUpdated,
+        lastUpdatedBy: result.lastUpdatedBy,
+      })),
+    [searchResults]
+  );
 
   return (
     <>
@@ -61,55 +54,27 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
       <div className="layout-two-columns">
         <div className="layout-main-section">
           <div className="h-[5rem]">
-            <SearchBar 
-              keyword={keyword}
-              sortBy={sortBy}
-              onResults={setSearchResults}
-            />
+            <SearchBar keyword={keyword} sortBy={sortBy} onResults={setSearchResults} />
           </div>
-          
-          {isLoading ? (
-            <div className="py-8 flex justify-center">
-              <Spinner size="lg" />
-            </div>
-          ) : (
-            searchResults.length > 0 && (
-            <div>
-              <div className="mb-4 flex justify-between items-center">
-                <h1 className="m-0 text-ssw-red font-bold">
-                  Search Results ({searchResults.length})
-                </h1>
-                <div className="flex items-center space-x-2">
-                  <CgSortAz className="inline" size={24} />
-                  <Dropdown
-                    options={sortOptions}
-                    value={sortBy}
-                    onChange={handleSortChange}
-                  />
-                </div>
-              </div>
 
-              {searchResults.map((result, index) => (
-                <RuleCard
-                  key={result.objectID}
-                  title={result.title}
-                  slug={result.slug}
-                  lastUpdatedBy={result.lastUpdatedBy}
-                  lastUpdated={result.lastUpdated}
-                  index={index}
-                  authorUrl={result.authorUrl}
-                />
-              ))}
+          {searchResults.length > 0 && (
+            <div className="w-full bg-white pt-4 p-6 border border-[#CCC] rounded shadow-lg">
+              <h1 className="m-0 mb-4 text-ssw-red font-bold">Search Results ({searchResults.length})</h1>
+              <RuleList
+                rules={rulesForList}
+                initialView={RuleListFilter.TitleOnly}
+                showTitlesView={false}
+                showBlurbsView={false}
+                showEverythingView={false}
+                showPagination={true}
+                initialPerPage={10}
+              />
             </div>
-        )
-      )}
-            
+          )}
         </div>
 
         <div className="layout-sidebar">
-          <div className="h-[3.5rem]">
-            {ruleCount && <RuleCount count={ruleCount} />}
-          </div>
+          <div className="h-[3.5rem]">{ruleCount && <RuleCount count={ruleCount} />}</div>
           <LatestRulesCard rules={latestRulesByUpdated} />
           <WhyRulesCard />
           <HelpImproveCard />

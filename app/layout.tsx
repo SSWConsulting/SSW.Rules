@@ -1,9 +1,9 @@
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Metadata } from "next";
 import { Inter as FontSans, Lato, Nunito } from "next/font/google";
 import React from "react";
 import SiteLayout from "@/components/layout/layout";
 import { cn } from "@/lib/utils";
-
 import "@/styles.css";
 import UserClientProvider from "@/components/auth/UserClientProvider";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
@@ -45,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={cn(fontSans.variable, nunito.variable, lato.variable)}>
       <body className="min-h-screen bg-background font-sans antialiased flex flex-col">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_CONTAINER_ID!} />
         <UserClientProvider>
           <SiteLayout>{children}</SiteLayout>
         </UserClientProvider>

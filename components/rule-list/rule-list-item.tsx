@@ -45,7 +45,7 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
       <RuleListItemHeader rule={rule} index={index} currentSort={currentSort} />
 
       {rule.isArchived && rule.archivedreason && (
-        <div className="mx-2 my-4 md:mx-6 md:my-4 bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="mx-2 mb-4 md:mx-6 md:mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-start gap-3">
             <div className="shrink-0">
               <svg className="h-5 w-5 text-ssw-red" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -72,6 +72,9 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
           </div>
         </div>
       )}
+
+      <RuleListItemHeader rule={rule} index={index} />
+
       {filter !== RuleListFilter.TitleOnly && (
         <div data-tina-field={tinaField(rule, "body")} className="pt-4 pl-8 pr-2" ref={contentRef}>
           <TinaMarkdown content={getContentForViewStyle(filter, rule.body)} components={MarkdownComponentMapping} />

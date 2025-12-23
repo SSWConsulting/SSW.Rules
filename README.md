@@ -21,7 +21,6 @@ The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWCon
 ### F5 experience
 
 1. Clone this repo
-
 2. Clone [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content) and switch to the `tina-migration-dev-content` branch
 
 3. Place both repos in the same parent directory e.g.
@@ -163,3 +162,11 @@ The Bookmark feature uses the **[SSW.Rules.Functions](https://github.com/SSWCons
 - By default, the API is available at: `http://localhost:7248`.
 - Bookmark data is persisted to the **staging** database.
 
+- Install nodejs version specified in `.nvmrc` (Ideally use `nvm` to use the right version)
+- Ensure corepack is enabled - `corepack enable` (this allows auto-install of the correct `yarn` version)
+
+### Getting ready for development
+- Clone the repo from https://github.com/SSWConsulting/SSW.Rules
+- Run `yarn install` to install packages
+- Create environment files `.env.development` based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
+- For `GITHUB_API_PAT`, create a [PAT on GitHub](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)

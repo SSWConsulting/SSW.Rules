@@ -35,13 +35,18 @@ export async function GET(request: Request) {
     params.append("path", path);
   }
 
+  // Construct historyUrl that will always be returned
+  const historyUrl = path
+    ? `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}/${path}`
+    : `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}`;
+
   try {
     if (path) {
       // Fetch complete file history including migrated paths and renames
       const { commits: allCommitsWithHistory } = await findCompleteFileHistory(owner, repo, path, GITHUB_ACTIVE_BRANCH, headers);
 
       if (!allCommitsWithHistory.length) {
-        return NextResponse.json({ error: "No commits found", branch: GITHUB_ACTIVE_BRANCH }, { status: 400 });
+        return NextResponse.json({ error: "No commits found", branch: GITHUB_ACTIVE_BRANCH, historyUrl }, { status: 400 });
       }
 
       // Find the latest non-excluded commit (newest first)
@@ -50,13 +55,13 @@ export async function GET(request: Request) {
       const firstCommit = allCommitsWithHistory[allCommitsWithHistory.length - 1];
 
       if (!latestCommit) {
-        return NextResponse.json({ error: "No valid commits found" }, { status: 400 });
+        return NextResponse.json({ error: "No valid commits found", historyUrl }, { status: 400 });
       }
 
       return NextResponse.json({
         latestCommit,
         firstCommit,
-        historyUrl: `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}/${path}`,
+        historyUrl,
         otherCoAuthorName: getAlternateAuthorName(latestCommit),
       });
     } else {
@@ -64,24 +69,25 @@ export async function GET(request: Request) {
       const latestCommits = await fetchGitHub<GitHubCommit[]>(`${baseUrl}?${params}`, headers);
 
       if (!latestCommits.length) {
-        return NextResponse.json({ error: "No commits found" }, { status: 400 });
+        return NextResponse.json({ error: "No commits found", historyUrl }, { status: 400 });
       }
 
       const latestCommit = findLatestNonExcludedCommit(latestCommits);
 
       if (!latestCommit) {
-        return NextResponse.json({ error: "No valid commits found" }, { status: 400 });
+        return NextResponse.json({ error: "No valid commits found", historyUrl }, { status: 400 });
       }
 
       return NextResponse.json({
         latestCommit,
         firstCommit: null,
-        historyUrl: `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}`,
+        historyUrl,
         otherCoAuthorName: getAlternateAuthorName(latestCommit),
       });
     }
   } catch (error) {
     console.error("Error fetching GitHub metadata:", error);
-    return NextResponse.json({ error: "Failed to fetch GitHub metadata" }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch GitHub metadata";
+    return NextResponse.json({ error: errorMessage, historyUrl }, { status: 500 });
   }
 }

@@ -100,7 +100,13 @@ export async function fetchAllCommitsForPath(
       if (commits.length < perPage) break;
 
       page++;
-    } catch {
+    } catch (error) {
+      // If this is the first page and we have an error, it's a real API issue - throw it
+      if (page === 1) {
+        throw error;
+      }
+      // For subsequent pages, if there's an error, stop pagination
+      // This could be a legitimate end of results or a transient error
       break;
     }
   }
@@ -162,12 +168,24 @@ export async function findCompleteFileHistory(
   visitedPaths.add(path);
 
   // Fetch all commits for the current path
-  const currentCommits = await fetchAllCommitsForPath(owner, repo, path, branch, headers);
+  let currentCommits: GitHubCommit[];
+  try {
+    currentCommits = await fetchAllCommitsForPath(owner, repo, path, branch, headers);
+  } catch (error) {
+    // Re-throw GitHub API errors with more context
+    throw new Error(`Failed to fetch commits for path "${path}": ${error instanceof Error ? error.message : String(error)}`);
+  }
 
   // Check if this is a migrated path (public/uploads/rules/... -> rules/...)
   const migratedOldPath = constructOldPath(path);
   if (migratedOldPath) {
-    const oldPathCommits = await fetchAllCommitsForPath(owner, repo, migratedOldPath, branch, headers);
+    let oldPathCommits: GitHubCommit[];
+    try {
+      oldPathCommits = await fetchAllCommitsForPath(owner, repo, migratedOldPath, branch, headers);
+    } catch (error) {
+      // Re-throw GitHub API errors with more context
+      throw new Error(`Failed to fetch commits for migrated path "${migratedOldPath}": ${error instanceof Error ? error.message : String(error)}`);
+    }
     const mergedCommits = mergeCommits(currentCommits, oldPathCommits);
     return {
       commits: mergedCommits,
@@ -200,8 +218,10 @@ export async function findCompleteFileHistory(
           originalPath: oldPathHistory.originalPath,
         };
       }
-    } catch {
-      // If we can't fetch commit details, continue to next commit
+    } catch (error) {
+      // If we can't fetch commit details, log it but continue to next commit
+      // This is less critical than the initial commit fetch, so we're more lenient
+      console.warn(`Failed to fetch commit details for ${commit.sha}: ${error instanceof Error ? error.message : String(error)}`);
       continue;
     }
   }

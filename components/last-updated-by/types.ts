@@ -35,8 +35,9 @@ export interface GitHubMetadataProps {
 }
 
 export interface GitHubMetadataResponse {
-  latestCommit: GitHubCommit;
-  firstCommit: GitHubCommit | null;
+  latestCommit?: GitHubCommit;
+  firstCommit?: GitHubCommit | null;
   historyUrl: string;
   otherCoAuthorName?: string | null;
+  error?: string;
 }

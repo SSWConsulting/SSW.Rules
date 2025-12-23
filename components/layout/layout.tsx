@@ -24,8 +24,7 @@ export default async function Layout({ children, rawPageData }: LayoutProps) {
     }
   );
 
-  const data = await getMegamenu();
-  const menuGroups = data?.data.megamenu.menuGroups;
+  const { menuGroups } = await getMegamenu();
 
   return (
     <LayoutProvider globalSettings={globalData.global} pageData={rawPageData}>

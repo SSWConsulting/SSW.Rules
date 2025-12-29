@@ -50,7 +50,7 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
             </div>
           </div>
 
-          <div className="text-md">
+          <div className="text-md rule-content">
             <TinaMarkdown content={category?.body} components={MarkdownComponentMapping} />
           </div>
 

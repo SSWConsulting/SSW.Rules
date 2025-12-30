@@ -21,13 +21,25 @@ export default function Pagination({ currentPage, totalPages, totalItems, itemsP
   const startItem = isShowingAll ? 1 : (currentPage - 1) * itemsPerPage + 1;
   const endItem = isShowingAll ? totalItems : Math.min(currentPage * itemsPerPage, totalItems);
 
-  const itemsPerPageOptions = [
-    { value: "5", label: "5" },
-    { value: "10", label: "10" },
-    { value: "20", label: "20" },
-    { value: "50", label: "50" },
-    { value: totalItems.toString(), label: "All" },
-  ];
+  const getItemsPerPageOptions = () => {
+    if (totalItems <= 20) {
+      return [];
+    }
+    if (totalItems <= 50) {
+      return [
+        { value: "20", label: "20" },
+        { value: totalItems.toString(), label: "All" },
+      ];
+    }
+    return [
+      { value: "20", label: "20" },
+      { value: "50", label: "50" },
+      { value: totalItems.toString(), label: "All" },
+    ];
+  };
+
+  const itemsPerPageOptions = getItemsPerPageOptions();
+  const showDropdown = totalItems > 20;
 
   const getVisiblePages = () => {
     const pages: (number | string)[] = [];
@@ -112,21 +124,23 @@ export default function Pagination({ currentPage, totalPages, totalItems, itemsP
         )}
 
         {/* Items per page and count */}
-        <div className="flex items-center gap-4 text-sm text-gray-600">
-          <div className="flex items-center gap-2">
-            <Dropdown
-              options={itemsPerPageOptions}
-              value={itemsPerPage.toString()}
-              onChange={(value) => onItemsPerPageChange(parseInt(value))}
-              className="text-sm"
-              showBorder={true}
-            />
-            <span className="mr-8">per page</span>
+        {showDropdown && (
+          <div className="flex items-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <Dropdown
+                options={itemsPerPageOptions}
+                value={itemsPerPage.toString()}
+                onChange={(value) => onItemsPerPageChange(parseInt(value))}
+                className="text-sm"
+                showBorder={true}
+              />
+              <span className="mr-8">per page</span>
+            </div>
+            <span>
+              {startItem} - {endItem} of {totalItems} items
+            </span>
           </div>
-          <span>
-            {startItem} - {endItem} of {totalItems} items
-          </span>
-        </div>
+        )}
       </div>
 
       {/* Mobile layout */}
@@ -173,21 +187,23 @@ export default function Pagination({ currentPage, totalPages, totalItems, itemsP
         )}
 
         {/* Items per page and count - centered on new line */}
-        <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
-          <div className="flex items-center gap-2">
-            <Dropdown
-              options={itemsPerPageOptions}
-              value={itemsPerPage.toString()}
-              onChange={(value) => onItemsPerPageChange(parseInt(value))}
-              className="text-sm"
-              showBorder={true}
-            />
-            <span className="mr-8">per page</span>
+        {showDropdown && (
+          <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <Dropdown
+                options={itemsPerPageOptions}
+                value={itemsPerPage.toString()}
+                onChange={(value) => onItemsPerPageChange(parseInt(value))}
+                className="text-sm"
+                showBorder={true}
+              />
+              <span className="mr-8">per page</span>
+            </div>
+            <span>
+              {startItem} - {endItem} of {totalItems} items
+            </span>
           </div>
-          <span>
-            {startItem} - {endItem} of {totalItems} items
-          </span>
-        </div>
+        )}
       </div>
     </div>
   );

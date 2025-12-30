@@ -28,7 +28,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [nextPageCursor, setNextPageCursor] = useState("");
   const [hasNext, setHasNext] = useState(false);
   const [currentPageLastModified, setCurrentPageLastModified] = useState(1);
-  const [itemsPerPageLastModified, setItemsPerPageLastModified] = useState(10);
+  const [itemsPerPageLastModified, setItemsPerPageLastModified] = useState(20);
 
   // Acknowledged
   const [authoredRules, setAuthoredRules] = useState<any[]>([]);
@@ -39,7 +39,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [loadingMoreAuthored, setLoadingMoreAuthored] = useState(false);
   const [githubError, setGithubError] = useState<string | null>(null);
   const [currentPageAuthored, setCurrentPageAuthored] = useState(1);
-  const [itemsPerPageAuthored, setItemsPerPageAuthored] = useState(10);
+  const [itemsPerPageAuthored, setItemsPerPageAuthored] = useState(20);
   const FETCH_PAGE_SIZE = 10;
 
   const resolveAuthor = async (): Promise<string> => {

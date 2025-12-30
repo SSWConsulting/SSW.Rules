@@ -18,10 +18,10 @@ export interface RuleListWrapperProps {
   initialPerPage?: number;
 }
 
-const RuleListWrapper: React.FC<RuleListWrapperProps> = ({ 
+const RuleListWrapper: React.FC<RuleListWrapperProps> = ({
   initialView = 'blurb',
   initialPage = 1,
-  initialPerPage = 10,
+  initialPerPage = 20,
   ...props 
 }) => {
   const [filter, setFilter] = useState<RuleListFilter>(() => {

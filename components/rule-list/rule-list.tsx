@@ -38,7 +38,7 @@ const RuleList: React.FC<RuleListProps> = ({
   showFilterControls = true,
   initialFilter = RuleListFilter.Blurb,
   initialPage = 1,
-  initialItemsPerPage = 10,
+  initialItemsPerPage = 20,
   externalCurrentPage,
   externalItemsPerPage,
 }) => {

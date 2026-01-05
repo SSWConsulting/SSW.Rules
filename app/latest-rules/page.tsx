@@ -5,7 +5,7 @@ import LatestRuleClientPage from "./client-page";
 
 export const revalidate = 300;
 
-const DEFAULT_SIZE = 5;
+const DEFAULT_SIZE = 50;
 const MAX_SIZE = 50;
 
 type LatestRulePageProps = {

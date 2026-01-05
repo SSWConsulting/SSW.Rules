@@ -72,6 +72,12 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
             <div className="py-8 flex justify-center">
               <Spinner size="lg" />
             </div>
+          ) : keyword && searchResults.length === 0 ? (
+            <div className="py-8">
+              <p className="text-center text-gray-600">
+                No results found for "{keyword}". Please try a different search term.
+              </p>
+            </div>
           ) : (
             searchResults.length > 0 && (
             <div>

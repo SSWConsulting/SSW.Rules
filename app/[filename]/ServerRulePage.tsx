@@ -3,6 +3,7 @@ import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import AuthorsCard from "@/components/AuthorsCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BrokenReferenceBanner from "@/components/BrokenReferenceBanner";
 import CategoriesCard from "@/components/CategoriesCard";
 import Discussion from "@/components/Discussion";
 import HelpCard from "@/components/HelpCard";
@@ -12,11 +13,13 @@ import RuleActionButtons from "@/components/RuleActionButtons";
 import { YouTubeShorts } from "@/components/shared/Youtube";
 import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import { Card } from "@/components/ui/card";
+import type { BrokenReferences } from "@/app/[filename]/page";
 
 export interface ServerRulePageProps {
   rule: any;
   ruleCategoriesMapping: { title: string; uri: string }[];
   sanitizedBasePath: string;
+  brokenReferences?: BrokenReferences | null;
 }
 
 export type ServerRulePagePropsWithTinaProps = {
@@ -28,7 +31,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
   const { data } = tinaProps;
   const rule = data?.rule;
 
-  const { ruleCategoriesMapping, sanitizedBasePath } = serverRulePageProps;
+  const { ruleCategoriesMapping, sanitizedBasePath, brokenReferences } = serverRulePageProps;
 
   const primaryCategory = ruleCategoriesMapping?.[0];
   const breadcrumbCategories = primaryCategory ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }] : undefined;
@@ -36,6 +39,10 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
   return (
     <>
       <Breadcrumbs categories={breadcrumbCategories} breadcrumbText="This rule" />
+
+      {brokenReferences?.detected && (
+        <BrokenReferenceBanner brokenPaths={brokenReferences.paths} ruleUri={rule?.uri || ""} />
+      )}
 
       <div className="layout-two-columns">
         <Card dropShadow className="layout-main-section p-6">

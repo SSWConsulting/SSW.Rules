@@ -151,6 +151,13 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
 
               const sanitizedBasePath = getSanitizedBasePath();
 
+              const brokenReferences = ruleResult._brokenReferences
+                ? {
+                    detected: ruleResult._brokenReferences.detected,
+                    paths: ruleResult._brokenReferences.paths,
+                  }
+                : null;
+
               setData({
                 type: "rule",
                 rule: ruleResult.data.rule,
@@ -161,6 +168,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
                   query: ruleResult.query,
                   variables: ruleResult.variables,
                 },
+                brokenReferences,
               });
               setLoading(false);
               return;
@@ -243,6 +251,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
             rule: data.rule,
             ruleCategoriesMapping: data.ruleCategoriesMapping,
             sanitizedBasePath: data.sanitizedBasePath,
+            brokenReferences: data.brokenReferences,
           }}
         />
       </Section>

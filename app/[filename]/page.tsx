@@ -70,17 +70,50 @@ const getCategoryData = async (filename: string) => {
   }
 };
 
+export interface BrokenReferences {
+  detected: boolean;
+  paths: string[];
+}
+
 const getRuleData = async (filename: string) => {
   try {
-    const tinaProps = await client.queries.ruleData({
+    const basicProps = await client.queries.ruleDataBasic({
       relativePath: filename + "/rule.mdx",
     });
 
-    return {
-      data: tinaProps.data,
-      query: tinaProps.query,
-      variables: tinaProps.variables,
-    };
+    try {
+      const fullProps = await client.queries.ruleData({
+        relativePath: filename + "/rule.mdx",
+      });
+
+      return {
+        data: fullProps.data,
+        query: fullProps.query,
+        variables: fullProps.variables,
+        brokenReferences: null as BrokenReferences | null,
+      };
+    } catch (relatedError) {
+      const errorMessage = relatedError instanceof Error ? relatedError.message : String(relatedError);
+      const brokenPathMatch = errorMessage.match(/Unable to find record ([^\n]+)/);
+      const brokenPath = brokenPathMatch ? brokenPathMatch[1].trim() : "unknown path";
+
+
+      return {
+        data: {
+          ...basicProps.data,
+          rule: {
+            ...basicProps.data.rule,
+            related: [], // Clear broken related rules
+          },
+        },
+        query: basicProps.query,
+        variables: basicProps.variables,
+        brokenReferences: {
+          detected: true,
+          paths: [brokenPath],
+        } as BrokenReferences,
+      };
+    }
   } catch (error) {
     console.error("Error fetching rule data:", error);
     return null;
@@ -272,6 +305,7 @@ export default async function Page({
             rule: rule.data.rule,
             ruleCategoriesMapping: ruleCategoriesMapping,
             sanitizedBasePath: sanitizedBasePath,
+            brokenReferences: rule.brokenReferences,
           }}
         />
       </Section>

@@ -15,6 +15,8 @@ export interface SearchBarProps {
   sortBy?: string;
   onResults?: (results: SearchResult[]) => void;
   onLoadingChange?: (isLoading: boolean) => void;
+  onQueryChange?: (query: string) => void;
+  onInputValueChange?: (inputValue: string) => void;
 }
 
 const Inner = dynamic<SearchBarProps>(() => import("./SearchBar"), {

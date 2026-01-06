@@ -19,24 +19,33 @@ interface SearchBarProps {
   sortBy?: string;
   onResults?: (results: SearchResult[]) => void;
   onLoadingChange?: (isLoading: boolean) => void;
+  onQueryChange?: (query: string) => void;
+  onInputValueChange?: (inputValue: string) => void;
 }
 
 function SearchResults({
   onResults,
   sortBy,
   onLoadingChange,
+  onQueryChange,
 }: {
   onResults?: (results: SearchResult[]) => void;
   sortBy?: string;
   onLoadingChange?: (isLoading: boolean) => void;
+  onQueryChange?: (query: string) => void;
 }) {
   const { hits } = useHits();
   const { status } = useInstantSearch();
+  const { query } = useSearchBox();
 
   useEffect(() => {
     const isLoading = status === "loading" || status === "stalled";
     onLoadingChange?.(isLoading);
   }, [status, onLoadingChange]);
+
+  useEffect(() => {
+    onQueryChange?.(query || "");
+  }, [query, onQueryChange]);
 
   useEffect(() => {
     const sortedHits = [...hits] as unknown as SearchResult[];
@@ -53,7 +62,15 @@ function SearchResults({
   return null;
 }
 
-function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
+function CustomSearchBox({
+  onSubmit,
+  onInputValueChange,
+  keyword,
+}: {
+  onSubmit: (query: string) => void;
+  onInputValueChange?: (value: string) => void;
+  keyword?: string;
+}) {
   const { query, refine } = useSearchBox();
   const { status } = useInstantSearch();
   const [inputValue, setInputValue] = useState(query || "");
@@ -64,6 +81,11 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
   const lastSubmittedQueryRef = useRef<string>("");
 
   const isLoading = status === "loading" || status === "stalled";
+
+  // Notify parent of input value changes
+  useEffect(() => {
+    onInputValueChange?.(inputValue);
+  }, [inputValue, onInputValueChange]);
 
   // Debounce search refinement
   useEffect(() => {
@@ -79,8 +101,13 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
       if (trimmed.length >= 3) {
         refine(trimmed);
       } else if (trimmed.length === 0) {
-        // Clear search if input is empty
-        refine("");
+        // If input is empty but keyword param exists, restore keyword search
+        // Otherwise, clear search
+        if (keyword && keyword.length >= 3) {
+          refine(keyword);
+        } else {
+          refine("");
+        }
       }
       // If less than 3 characters but not empty, don't search
     }, 400);
@@ -91,7 +118,7 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [inputValue, refine]);
+  }, [inputValue, refine, keyword]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -153,7 +180,7 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
   );
 }
 
-export default function SearchBar({ keyword = "", sortBy, onResults, onLoadingChange }: SearchBarProps) {
+export default function SearchBar({ keyword = "", sortBy, onResults, onLoadingChange, onQueryChange, onInputValueChange }: SearchBarProps) {
   const [submitted, setSubmitted] = useState(false);
   const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!;
 
@@ -167,8 +194,8 @@ export default function SearchBar({ keyword = "", sortBy, onResults, onLoadingCh
         },
       }}
     >
-      <CustomSearchBox onSubmit={() => setSubmitted(true)} />
-      <SearchResults onResults={onResults} sortBy={sortBy} onLoadingChange={onLoadingChange} />
+      <CustomSearchBox onSubmit={() => setSubmitted(true)} onInputValueChange={onInputValueChange} keyword={keyword} />
+      <SearchResults onResults={onResults} sortBy={sortBy} onLoadingChange={onLoadingChange} onQueryChange={onQueryChange} />
     </InstantSearch>
   );
 }

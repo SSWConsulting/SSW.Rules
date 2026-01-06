@@ -13,7 +13,6 @@ import SearchBar from "@/components/SearchBarWrapper";
 import { Card } from "@/components/ui/card";
 import WhyRulesCard from "@/components/WhyRulesCard";
 import { LatestRule } from "@/models/LatestRule";
-import { Rule } from "@/models/Rule";
 import { QuickLink } from "@/types/quickLink";
 
 export interface HomeClientPageProps {

@@ -234,7 +234,7 @@ export default async function Page({
     const includeArchived = String(sp.archived ?? "") === "true";
     const view = String(sp.view ?? "blurb") as "titleOnly" | "blurb" | "all";
     const page = Math.max(1, parseInt(String(sp.page ?? "1"), 10) || 1);
-    const perPage = Math.max(1, Math.min(50, parseInt(String(sp.perPage ?? "10"), 10) || 10));
+    const perPage = parseInt(String(sp.perPage ?? "20"), 10) || 20;
 
     return (
       <Section>

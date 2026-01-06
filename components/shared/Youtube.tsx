@@ -35,8 +35,14 @@ export function YouTubePlayer({ url = "", description = "" }: { url?: string; de
   );
 }
 
+function isYouTubeShort(url?: string): boolean {
+  if (!url) return false;
+  return url.includes("/shorts/");
+}
+
 export function YouTubeShorts({ url = "", description = "" }: { url?: string; description?: string }) {
   const videoId = extractYoutubeId(url);
+  const isShort = isYouTubeShort(url);
 
   if (!videoId) {
     return (
@@ -48,10 +54,10 @@ export function YouTubeShorts({ url = "", description = "" }: { url?: string; de
 
   return (
     <div className="my-0 rounded-xs">
-      <div className="relative w-full max-w-md mx-auto aspect-9/16">
+      <div className={`relative w-full ${isShort ? "max-w-md mx-auto aspect-9/16" : "aspect-video"}`}>
         <iframe
           src={`https://www.youtube.com/embed/${videoId}`}
-          title={description || "YouTube Shorts video"}
+          title={description || (isShort ? "YouTube Shorts video" : "YouTube video")}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           className="absolute left-0 top-0 h-full w-full border-0 rounded-xs"

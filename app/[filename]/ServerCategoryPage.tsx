@@ -1,11 +1,9 @@
 import Link from "next/link";
-import { RiGithubLine, RiPencilLine } from "react-icons/ri";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { CategoryEdit } from "@/components/CategoryEdit";
 import RuleList from "@/components/rule-list/rule-list";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
-import { IconLink } from "@/components/ui";
-import { ICON_SIZE } from "@/constants";
 
 interface ServerCategoryPageProps {
   category: any;
@@ -34,23 +32,10 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
         <div className="w-full lg:w-2/3 bg-white pt-4 p-6 border border-[#CCC] rounded shadow-lg">
           <div className="flex justify-between">
             <h1 className="m-0 mb-4 text-ssw-red font-bold">{includeArchived ? `Archived Rules - ${title}` : title}</h1>
-
-            <div className="flex gap-2 justify-center items-start sm:items-center">
-              <IconLink href={`admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`} title="Edit category" tooltipOpaque={true}>
-                <RiPencilLine size={ICON_SIZE} />
-              </IconLink>
-              <IconLink
-                href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${process.env.NEXT_PUBLIC_TINA_BRANCH}/categories/${path}`}
-                target="_blank"
-                title="View category on GitHub"
-                tooltipOpaque={true}
-              >
-                <RiGithubLine size={ICON_SIZE} className="rule-icon" />
-              </IconLink>
-            </div>
+            <CategoryEdit path={path} />
           </div>
 
-          <div className="text-md">
+          <div className="text-md rule-content">
             <TinaMarkdown content={category?.body} components={MarkdownComponentMapping} />
           </div>
 

@@ -47,7 +47,7 @@ const RuleList: React.FC<RuleListProps> = ({
   showEverythingView = true,
   initialView = RuleListFilter.Blurb,
   initialPage = 1,
-  initialPerPage = 10,
+  initialPerPage = 20,
   sortOptions,
   initialSort,
   onSortChange,

@@ -30,12 +30,19 @@ export async function GET(request: NextRequest) {
     } catch (relatedError) {
       // Full query failed but basic succeeded - broken references detected
       const errorMessage = relatedError instanceof Error ? relatedError.message : String(relatedError);
-      const brokenPathMatch = errorMessage.match(/Unable to find record ([^\n]+)/);
-      const brokenPath = brokenPathMatch ? brokenPathMatch[1].trim() : "unknown path";
 
-      console.warn(`Broken related rule reference detected: ${brokenPath}`);
+      // Extract all broken paths from error message (there may be multiple)
+      const brokenPathMatches = errorMessage.matchAll(/Unable to find record ([^\n]+)/g);
+      const brokenPaths = Array.from(brokenPathMatches, (match) => match[1].trim());
 
-      // Return basic result with metadata about the broken reference
+      // Fallback if no paths found
+      if (brokenPaths.length === 0) {
+        brokenPaths.push("unknown path");
+      }
+
+      console.warn(`Broken related rule references detected: ${brokenPaths.join(", ")}`);
+
+      // Return basic result with metadata about the broken references
       return NextResponse.json(
         {
           ...basicResult,
@@ -48,8 +55,8 @@ export async function GET(request: NextRequest) {
           },
           _brokenReferences: {
             detected: true,
-            paths: [brokenPath],
-            message: `This rule has a broken related rule reference: ${brokenPath}. Please edit the rule to fix this.`,
+            paths: brokenPaths,
+            message: `This rule has broken related rule references. Please edit the rule to fix this.`,
           },
         },
         { status: 200 }

@@ -94,9 +94,15 @@ const getRuleData = async (filename: string) => {
       };
     } catch (relatedError) {
       const errorMessage = relatedError instanceof Error ? relatedError.message : String(relatedError);
-      const brokenPathMatch = errorMessage.match(/Unable to find record ([^\n]+)/);
-      const brokenPath = brokenPathMatch ? brokenPathMatch[1].trim() : "unknown path";
 
+      // Extract all broken paths from error message (there may be multiple)
+      const brokenPathMatches = errorMessage.matchAll(/Unable to find record ([^\n]+)/g);
+      const brokenPaths = Array.from(brokenPathMatches, (match) => match[1].trim());
+
+      // Fallback if no paths found
+      if (brokenPaths.length === 0) {
+        brokenPaths.push("unknown path");
+      }
 
       return {
         data: {
@@ -110,7 +116,7 @@ const getRuleData = async (filename: string) => {
         variables: basicProps.variables,
         brokenReferences: {
           detected: true,
-          paths: [brokenPath],
+          paths: brokenPaths,
         } as BrokenReferences,
       };
     }

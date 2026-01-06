@@ -115,7 +115,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
       <Breadcrumbs breadcrumbText="Search" />
       <div className="layout-two-columns">
         <div className="layout-main-section">
-          <div className="h-[5rem]">
+          <div className="h-20">
             <SearchBar
               keyword={keyword}
               sortBy={sortBy}
@@ -162,7 +162,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
         </div>
 
         <div className="layout-sidebar">
-          <div className="h-[3.5rem]">{ruleCount && <RuleCount count={ruleCount} />}</div>
+          <div className="h-14">{ruleCount && <RuleCount count={ruleCount} />}</div>
           <LatestRulesCard rules={latestRulesByUpdated} />
           <WhyRulesCard />
           <HelpImproveCard />

@@ -11,7 +11,7 @@ interface BrokenReferenceBannerProps {
 export default function BrokenReferenceBanner({ brokenPaths, ruleUri }: BrokenReferenceBannerProps) {
   const { isAdmin } = useIsAdminPage();
 
-  const adminUrl = `/rules/admin#/~/rules/${encodeURIComponent(ruleUri)}`;
+  const adminUrl = `/admin#/~/rules/${encodeURIComponent(ruleUri)}`;
 
   return (
     <div className="mb-8 bg-amber-50 border border-amber-200 rounded-lg p-4">

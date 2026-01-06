@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { InstantSearch, useHits, useSearchBox } from "react-instantsearch";
 import { searchClient } from "@/lib/algoliaClient";
 
@@ -41,16 +41,78 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
   const { query, refine } = useSearchBox();
   const [inputValue, setInputValue] = useState(query || "");
   const router = useRouter();
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const lastSubmitTimeRef = useRef<number>(0);
+  const lastSubmittedQueryRef = useRef<string>("");
+
+  // Debounce search refinement
+  useEffect(() => {
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new timer to refine search after 400ms of no typing
+    debounceTimerRef.current = setTimeout(() => {
+      const trimmed = inputValue.trim();
+      // Only search if there are at least 3 characters
+      if (trimmed.length >= 3) {
+        refine(trimmed);
+      } else if (trimmed.length === 0) {
+        // Clear search if input is empty
+        refine("");
+      }
+      // If less than 3 characters but not empty, don't search
+    }, 400);
+
+    // Cleanup timer on unmount or when inputValue changes
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [inputValue, refine]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+
     const trimmed = inputValue.trim();
+
+    // Prevent rapid submissions (throttle to 1000ms)
+    const now = Date.now();
+    const timeSinceLastSubmit = now - lastSubmitTimeRef.current;
+
+    // Block if already submitting, too soon since last submit, or same query
+    if (isSubmitting || timeSinceLastSubmit < 1000 || trimmed === lastSubmittedQueryRef.current) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    lastSubmitTimeRef.current = now;
+
     if (!trimmed) {
       router.push("/");
+      lastSubmittedQueryRef.current = "";
+      setIsSubmitting(false);
+    } else if (trimmed.length < 3) {
+      // Don't search if less than 3 characters
+      setIsSubmitting(false);
+      return;
     } else {
+      // Clear debounce timer and refine immediately on submit
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
       refine(trimmed);
       router.push(`/search?keyword=${encodeURIComponent(trimmed)}`);
       onSubmit(trimmed);
+      lastSubmittedQueryRef.current = trimmed;
+
+      // Reset submitting state after a short delay
+      setTimeout(() => {
+        setIsSubmitting(false);
+      }, 1000);
     }
   };
 

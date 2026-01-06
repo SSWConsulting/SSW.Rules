@@ -6,6 +6,8 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { toolbarFields } from "@/tina/collection/shared/toolbarFields";
 import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
 import { Figure, inlineFigureDefaultItem, inlineFigureFields } from "./figure";
+import { youtubeEmbedTemplate } from "./youtubeEmbed";
+import { imageEmbedTemplate } from "./imageEmbed";
 
 type BoxVariant = "greybox" | "info" | "todo" | "china" | "codeauditor" | "highlight" | "warning" | "tips";
 
@@ -88,11 +90,6 @@ export function BoxEmbed(props: any) {
   const figure: string = data?.figure || "";
   const figurePrefix: any = data?.figurePrefix || "none";
 
-  const components = {
-    ...MarkdownComponentMapping,
-    a: ({ children }: any) => <span>{children}</span>,
-  };
-
   return (
     <>
       <div className={`p-4 rounded-sm my-4 ${config.containerClass}`}>
@@ -100,7 +97,7 @@ export function BoxEmbed(props: any) {
           {config.icon}
           <div className={`[&_p:last-child]:mb-0 ${config.textClass ?? ""}`}>
             <div>
-              <TinaMarkdown content={data.body} components={components} />
+              <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
             </div>
           </div>
         </div>
@@ -148,6 +145,7 @@ export const boxEmbedTemplate: Template = {
       label: "Body",
       type: "rich-text",
       toolbarOverride: toolbarFields,
+      templates: [youtubeEmbedTemplate, imageEmbedTemplate],
     },
     ...(inlineFigureFields as any),
   ],

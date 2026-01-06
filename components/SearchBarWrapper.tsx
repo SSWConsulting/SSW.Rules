@@ -1,28 +1,27 @@
-'use client';
+"use client";
 
-import dynamic from 'next/dynamic';
-import SearchBarSkeleton from './SearchBarSkeleton';
+import dynamic from "next/dynamic";
+import SearchBarSkeleton from "./SearchBarSkeleton";
 
 export interface SearchResult {
-    objectID: string;
-    title: string;
-    slug: string;
-    [key: string]: any;
+  objectID: string;
+  title: string;
+  slug: string;
+  [key: string]: any;
 }
 
 export interface SearchBarProps {
-    keyword?: string;
-    sortBy?: string;
-    onResults?: (results: SearchResult[]) => void;
+  keyword?: string;
+  sortBy?: string;
+  onResults?: (results: SearchResult[]) => void;
+  onLoadingChange?: (isLoading: boolean) => void;
 }
 
-const Inner = dynamic<SearchBarProps>(() => import('./SearchBar'), {
-    ssr: false,
-    loading: () => <SearchBarSkeleton />,
+const Inner = dynamic<SearchBarProps>(() => import("./SearchBar"), {
+  ssr: false,
+  loading: () => <SearchBarSkeleton />,
 });
 
 export default function SearchBarWrapper(props: SearchBarProps) {
-    return <Inner {...props} />;
+  return <Inner {...props} />;
 }
-
-

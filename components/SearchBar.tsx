@@ -3,8 +3,9 @@
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { InstantSearch, useHits, useSearchBox } from "react-instantsearch";
+import { InstantSearch, useHits, useInstantSearch, useSearchBox } from "react-instantsearch";
 import { searchClient } from "@/lib/algoliaClient";
+import Spinner from "./Spinner";
 
 interface SearchResult {
   objectID: string;
@@ -17,10 +18,25 @@ interface SearchBarProps {
   keyword?: string;
   sortBy?: string;
   onResults?: (results: SearchResult[]) => void;
+  onLoadingChange?: (isLoading: boolean) => void;
 }
 
-function SearchResults({ onResults, sortBy }: { onResults?: (results: SearchResult[]) => void; sortBy?: string }) {
+function SearchResults({
+  onResults,
+  sortBy,
+  onLoadingChange,
+}: {
+  onResults?: (results: SearchResult[]) => void;
+  sortBy?: string;
+  onLoadingChange?: (isLoading: boolean) => void;
+}) {
   const { hits } = useHits();
+  const { status } = useInstantSearch();
+
+  useEffect(() => {
+    const isLoading = status === "loading" || status === "stalled";
+    onLoadingChange?.(isLoading);
+  }, [status, onLoadingChange]);
 
   useEffect(() => {
     const sortedHits = [...hits] as unknown as SearchResult[];
@@ -39,12 +55,15 @@ function SearchResults({ onResults, sortBy }: { onResults?: (results: SearchResu
 
 function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
   const { query, refine } = useSearchBox();
+  const { status } = useInstantSearch();
   const [inputValue, setInputValue] = useState(query || "");
   const router = useRouter();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const lastSubmitTimeRef = useRef<number>(0);
   const lastSubmittedQueryRef = useRef<string>("");
+
+  const isLoading = status === "loading" || status === "stalled";
 
   // Debounce search refinement
   useEffect(() => {
@@ -134,7 +153,7 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
   );
 }
 
-export default function SearchBar({ keyword = "", sortBy, onResults }: SearchBarProps) {
+export default function SearchBar({ keyword = "", sortBy, onResults, onLoadingChange }: SearchBarProps) {
   const [submitted, setSubmitted] = useState(false);
   const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!;
 
@@ -149,7 +168,7 @@ export default function SearchBar({ keyword = "", sortBy, onResults }: SearchBar
       }}
     >
       <CustomSearchBox onSubmit={() => setSubmitted(true)} />
-      <SearchResults onResults={onResults} sortBy={sortBy} />
+      <SearchResults onResults={onResults} sortBy={sortBy} onLoadingChange={onLoadingChange} />
     </InstantSearch>
   );
 }

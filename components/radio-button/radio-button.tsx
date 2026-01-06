@@ -8,10 +8,10 @@ interface RadioButtonProps {
   selectedOption: string;
   handleOptionChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   labelText: string;
-  position?: "first" | "middle" | "last";
+  className?: string;
 }
 
-const RadioButton: React.FC<RadioButtonProps> = ({ id, value, selectedOption, handleOptionChange, labelText, position }) => {
+const RadioButton: React.FC<RadioButtonProps> = ({ id, value, selectedOption, handleOptionChange, labelText, className = "" }) => {
   const isSelected = selectedOption === value;
 
   const handleButtonClick = () => {
@@ -27,27 +27,11 @@ const RadioButton: React.FC<RadioButtonProps> = ({ id, value, selectedOption, ha
     handleOptionChange(syntheticEvent);
   };
 
-  const getBorderClasses = () => {
-    if (!position) {
-      return "border rounded";
-    }
-
-    if (position === "first") {
-      return "border border-r-0 rounded-l-md rounded-r-none";
-    } else if (position === "last") {
-      return "border border-l-0 rounded-r-md rounded-l-none";
-    } else if (position === "middle") {
-      return "border rounded-none";
-    }
-
-    return "border rounded";
-  };
-
   return (
     <button
       type="button"
       id={id}
-      className={`group px-4 py-1 text-sm cursor-pointer hover:text-white transition-colors ${getBorderClasses()} ${
+      className={`group px-4 py-1 text-sm cursor-pointer hover:text-white transition-colors border ${className} ${
         isSelected ? "bg-ssw-red" : "bg-white hover:bg-ssw-red"
       }`}
       onClick={handleButtonClick}

@@ -13,9 +13,10 @@ export interface RuleListItemProps {
   index: number;
   filter: RuleListFilter;
   onBookmarkRemoved?: (ruleGuid: string) => void;
+  currentSort?: string;
 }
 
-const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBookmarkRemoved }) => {
+const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBookmarkRemoved, currentSort }) => {
   function makeBlurbContent(body?: { children?: any[] }) {
     if (!body || !Array.isArray(body.children)) return;
 
@@ -41,6 +42,8 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
 
   return (
     <li key={index} className="p-4 border rounded shadow">
+      <RuleListItemHeader rule={rule} index={index} currentSort={currentSort} />
+
       {rule.isArchived && rule.archivedreason && (
         <div className="mx-2 mb-4 md:mx-6 md:mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-start gap-3">

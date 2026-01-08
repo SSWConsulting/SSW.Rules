@@ -46,7 +46,24 @@ export async function fetchGitHub<T>(url: string, headers: Record<string, string
   }
 
   if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`);
+    // Try to get more details from the response body
+    let errorDetails = "";
+    try {
+      const errorBody = await response.json().catch(() => null);
+      if (errorBody?.message) {
+        errorDetails = `: ${errorBody.message}`;
+      }
+    } catch {
+      // Ignore JSON parsing errors
+    }
+
+    if (response.status === 401) {
+      throw new Error(
+        `GitHub API authentication failed (401)${errorDetails}. Please check that GITHUB_API_PAT is set correctly and has the required permissions.`
+      );
+    }
+
+    throw new Error(`GitHub API error: ${response.status}${errorDetails}`);
   }
 
   return response.json() as Promise<T>;

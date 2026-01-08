@@ -16,14 +16,14 @@ export async function GET(request: Request) {
 
   const githubToken = process.env.GITHUB_API_PAT;
 
-  if (!githubToken) {
-    return NextResponse.json({ error: "GitHub API token is not configured" }, { status: 500 });
+  if (!githubToken || !githubToken.trim()) {
+    return NextResponse.json({ error: "GitHub API token is not configured. Please set GITHUB_API_PAT environment variable." }, { status: 500 });
   }
 
   const headers: Record<string, string> = {
     Accept: "application/vnd.github.v3+json",
     "User-Agent": "Rules.V3",
-    Authorization: `Bearer ${githubToken}`,
+    Authorization: `Bearer ${githubToken.trim()}`,
   };
 
   const baseUrl = `https://api.github.com/repos/${owner}/${repo}/commits`;

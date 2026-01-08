@@ -223,7 +223,7 @@
   }
 
   h2 {
-    text-3xl;
+    @apply text-3xl;
   }
 
   h2:not(:first-child), h3:not(:first-child) {

@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import ArchivedReasonContent from "@/components/ArchivedReasonContent";
 import AuthorsCard from "@/components/AuthorsCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BrokenReferenceBanner from "@/components/BrokenReferenceBanner";
 import CategoriesCard from "@/components/CategoriesCard";
 import Discussion from "@/components/Discussion";
 import HelpCard from "@/components/HelpCard";
@@ -12,11 +14,13 @@ import RuleActionButtons from "@/components/RuleActionButtons";
 import { YouTubeShorts } from "@/components/shared/Youtube";
 import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import { Card } from "@/components/ui/card";
+import type { BrokenReferences } from "@/app/[filename]/page";
 
 export interface ServerRulePageProps {
   rule: any;
   ruleCategoriesMapping: { title: string; uri: string }[];
   sanitizedBasePath: string;
+  brokenReferences?: BrokenReferences | null;
 }
 
 export type ServerRulePagePropsWithTinaProps = {
@@ -28,7 +32,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
   const { data } = tinaProps;
   const rule = data?.rule;
 
-  const { ruleCategoriesMapping, sanitizedBasePath } = serverRulePageProps;
+  const { ruleCategoriesMapping, sanitizedBasePath, brokenReferences } = serverRulePageProps;
 
   const primaryCategory = ruleCategoriesMapping?.[0];
   const breadcrumbCategories = primaryCategory ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }] : undefined;
@@ -36,6 +40,10 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
   return (
     <>
       <Breadcrumbs categories={breadcrumbCategories} breadcrumbText="This rule" />
+
+      {brokenReferences?.detected && (
+        <BrokenReferenceBanner brokenPaths={brokenReferences.paths} ruleUri={rule?.uri || ""} />
+      )}
 
       <div className="layout-two-columns">
         <Card dropShadow className="layout-main-section p-6">
@@ -53,15 +61,9 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
                 </div>
                 <div className="flex-1">
                   <h3 className="text-sm font-semibold text-ssw-red m-0 mb-1">This rule has been archived</h3>
-                  <div
-                    className="text-sm text-ssw-red m-0"
-                    dangerouslySetInnerHTML={{
-                      __html: rule.archivedreason?.replace(
-                        /\[([^\]]+)\]\(([^)]+)\)/g,
-                        '<a href="$2" class="text-ssw-red underline hover:opacity-80" target="_blank" rel="noopener noreferrer">$1</a>'
-                      ),
-                    }}
-                  />
+                  <div className="text-sm text-ssw-red m-0">
+                    <ArchivedReasonContent reason={rule.archivedreason} />
+                  </div>
                 </div>
               </div>
             </div>

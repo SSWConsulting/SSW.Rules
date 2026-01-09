@@ -13,10 +13,10 @@ async function fetchCategoryData(relativePath: string, branch?: string) {
 }
 
 export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const relativePath = searchParams.get("relativePath");
+  const { searchParams } = new URL(request.url);
+  const relativePath = searchParams.get("relativePath");
 
+  try {
     if (!relativePath) {
       return NextResponse.json({ error: "relativePath is required" }, { status: 400 });
     }
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
-    console.error("Error fetching category from Tina:", error);
+    console.error(`[api/tina/category] failed for relativePath="${relativePath}":`, error);
     return NextResponse.json({ error: "Failed to fetch category", details: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
 }

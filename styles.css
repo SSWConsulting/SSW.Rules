@@ -219,11 +219,15 @@
   h4,
   h5,
   h6 {
-    @apply mt-2 mb-4 text-gray-900 leading-[1.2] font-semibold;
+    @apply mt-4 mb-4 text-gray-900 leading-[1.2] font-semibold;
   }
 
   h2 {
-    @apply mt-12 text-3xl;
+    @apply text-3xl;
+  }
+
+  h2:not(:first-child), h3:not(:first-child) {
+    @apply mt-8;
   }
 
   h3 {

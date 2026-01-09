@@ -65,7 +65,7 @@ const getCategoryData = async (filename: string) => {
       variables: res.variables,
     };
   } catch (error) {
-    console.error("Error fetching category data:", error);
+    console.error(`[getCategoryData] failed for filename="${filename}":`, error);
     return null;
   }
 };
@@ -121,7 +121,7 @@ const getRuleData = async (filename: string) => {
       };
     }
   } catch (error) {
-    console.error("Error fetching rule data:", error);
+    console.error(`[getRuleData] failed for filename="${filename}":`, error);
     return null;
   }
 };

@@ -2,9 +2,10 @@
 
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
-import { InstantSearch, useHits, useSearchBox } from "react-instantsearch";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { InstantSearch, useHits, useInstantSearch, useSearchBox } from "react-instantsearch";
 import { searchClient } from "@/lib/algoliaClient";
+import Spinner from "./Spinner";
 
 interface SearchResult {
   objectID: string;
@@ -17,10 +18,34 @@ interface SearchBarProps {
   keyword?: string;
   sortBy?: string;
   onResults?: (results: SearchResult[]) => void;
+  onLoadingChange?: (isLoading: boolean) => void;
+  onQueryChange?: (query: string) => void;
+  onInputValueChange?: (inputValue: string) => void;
 }
 
-function SearchResults({ onResults, sortBy }: { onResults?: (results: SearchResult[]) => void; sortBy?: string }) {
+function SearchResults({
+  onResults,
+  sortBy,
+  onLoadingChange,
+  onQueryChange,
+}: {
+  onResults?: (results: SearchResult[]) => void;
+  sortBy?: string;
+  onLoadingChange?: (isLoading: boolean) => void;
+  onQueryChange?: (query: string) => void;
+}) {
   const { hits } = useHits();
+  const { status } = useInstantSearch();
+  const { query } = useSearchBox();
+
+  useEffect(() => {
+    const isLoading = status === "loading" || status === "stalled";
+    onLoadingChange?.(isLoading);
+  }, [status, onLoadingChange]);
+
+  useEffect(() => {
+    onQueryChange?.(query || "");
+  }, [query, onQueryChange]);
 
   useEffect(() => {
     const sortedHits = [...hits] as unknown as SearchResult[];
@@ -37,20 +62,103 @@ function SearchResults({ onResults, sortBy }: { onResults?: (results: SearchResu
   return null;
 }
 
-function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
+function CustomSearchBox({
+  onSubmit,
+  onInputValueChange,
+  keyword,
+}: {
+  onSubmit: (query: string) => void;
+  onInputValueChange?: (value: string) => void;
+  keyword?: string;
+}) {
   const { query, refine } = useSearchBox();
+  const { status } = useInstantSearch();
   const [inputValue, setInputValue] = useState(query || "");
   const router = useRouter();
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const lastSubmitTimeRef = useRef<number>(0);
+  const lastSubmittedQueryRef = useRef<string>("");
+
+  const isLoading = status === "loading" || status === "stalled";
+
+  // Notify parent of input value changes
+  useEffect(() => {
+    onInputValueChange?.(inputValue);
+  }, [inputValue, onInputValueChange]);
+
+  // Debounce search refinement
+  useEffect(() => {
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new timer to refine search after 400ms of no typing
+    debounceTimerRef.current = setTimeout(() => {
+      const trimmed = inputValue.trim();
+      // Only search if there are at least 3 characters
+      if (trimmed.length >= 3) {
+        refine(trimmed);
+      } else if (trimmed.length === 0) {
+        // If input is empty but keyword param exists, restore keyword search
+        // Otherwise, clear search
+        if (keyword && keyword.length >= 3) {
+          refine(keyword);
+        } else {
+          refine("");
+        }
+      }
+      // If less than 3 characters but not empty, don't search
+    }, 400);
+
+    // Cleanup timer on unmount or when inputValue changes
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [inputValue, refine, keyword]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+
     const trimmed = inputValue.trim();
+
+    // Prevent rapid submissions (throttle to 1000ms)
+    const now = Date.now();
+    const timeSinceLastSubmit = now - lastSubmitTimeRef.current;
+
+    // Block if already submitting, too soon since last submit, or same query
+    if (isSubmitting || timeSinceLastSubmit < 1000 || trimmed === lastSubmittedQueryRef.current) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    lastSubmitTimeRef.current = now;
+
     if (!trimmed) {
       router.push("/");
+      lastSubmittedQueryRef.current = "";
+      setIsSubmitting(false);
+    } else if (trimmed.length < 3) {
+      // Don't search if less than 3 characters
+      setIsSubmitting(false);
+      return;
     } else {
+      // Clear debounce timer and refine immediately on submit
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
       refine(trimmed);
       router.push(`/search?keyword=${encodeURIComponent(trimmed)}`);
       onSubmit(trimmed);
+      lastSubmittedQueryRef.current = trimmed;
+
+      // Reset submitting state after a short delay
+      setTimeout(() => {
+        setIsSubmitting(false);
+      }, 1000);
     }
   };
 
@@ -72,7 +180,7 @@ function CustomSearchBox({ onSubmit }: { onSubmit: (query: string) => void }) {
   );
 }
 
-export default function SearchBar({ keyword = "", sortBy, onResults }: SearchBarProps) {
+export default function SearchBar({ keyword = "", sortBy, onResults, onLoadingChange, onQueryChange, onInputValueChange }: SearchBarProps) {
   const [submitted, setSubmitted] = useState(false);
   const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!;
 
@@ -86,8 +194,8 @@ export default function SearchBar({ keyword = "", sortBy, onResults }: SearchBar
         },
       }}
     >
-      <CustomSearchBox onSubmit={() => setSubmitted(true)} />
-      <SearchResults onResults={onResults} sortBy={sortBy} />
+      <CustomSearchBox onSubmit={() => setSubmitted(true)} onInputValueChange={onInputValueChange} keyword={keyword} />
+      <SearchResults onResults={onResults} sortBy={sortBy} onLoadingChange={onLoadingChange} onQueryChange={onQueryChange} />
     </InstantSearch>
   );
 }

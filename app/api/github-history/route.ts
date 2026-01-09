@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { GitHubCommit } from "@/components/last-updated-by/types";
+import { getGitHubAppToken } from "@/lib/services/github/github.utils";
 import { fetchGitHub, findCompleteFileHistory, findLatestNonExcludedCommit, getAlternateAuthorName } from "./util";
 
 const GITHUB_ACTIVE_BRANCH = process.env.NEXT_PUBLIC_TINA_BRANCH || "main";
@@ -14,16 +15,23 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing owner or repo parameters" }, { status: 400 });
   }
 
-  const githubToken = process.env.GITHUB_API_PAT;
-
-  if (!githubToken || !githubToken.trim()) {
-    return NextResponse.json({ error: "GitHub API token is not configured. Please set GITHUB_API_PAT environment variable." }, { status: 500 });
+  let githubToken: string;
+  try {
+    githubToken = await getGitHubAppToken();
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Failed to get GitHub App token";
+    return NextResponse.json(
+      {
+        error: `GitHub App authentication failed: ${errorMessage}. Please check that GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY, and optionally GITHUB_APP_INSTALLATION_ID are set correctly.`,
+      },
+      { status: 500 }
+    );
   }
 
   const headers: Record<string, string> = {
     Accept: "application/vnd.github.v3+json",
     "User-Agent": "Rules.V3",
-    Authorization: `Bearer ${githubToken.trim()}`,
+    Authorization: `Bearer ${githubToken}`,
   };
 
   const baseUrl = `https://api.github.com/repos/${owner}/${repo}/commits`;

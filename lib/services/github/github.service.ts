@@ -9,6 +9,7 @@ import {
   GITHUB_PULL_REQUESTS_QUERY, 
   DEFAULT_RESULTS_PER_PAGE 
 } from './github.constants';
+import { getGitHubAppToken } from './github.utils';
 
 export class GitHubService {
   private config: GitHubServiceConfig;
@@ -121,14 +122,19 @@ export function getRuleLastModifiedFromAuthors(authors: string[]): string {
   return last;
 }
 
-export function createGitHubService(): GitHubService {
+export async function createGitHubService(): Promise<GitHubService> {
   const owner = process.env.NEXT_PUBLIC_GITHUB_ORG || 'SSWConsulting';
   const repo = process.env.NEXT_PUBLIC_GITHUB_REPO || 'SSW.Rules.Content';
   const branch = 'main';
-  const token = process.env.GITHUB_API_PAT;
-
-  if (!token) {
-    throw new Error('GitHub API token is required. Set GITHUB_API_PAT (server-only).');
+  
+  let token: string;
+  try {
+    token = await getGitHubAppToken();
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to get GitHub App token';
+    throw new Error(
+      `GitHub App authentication failed: ${errorMessage}. Please check that GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY, and optionally GITHUB_APP_INSTALLATION_ID are set correctly.`
+    );
   }
 
   return new GitHubService({ owner, repo, branch, token });

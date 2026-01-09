@@ -55,6 +55,7 @@ jobs:
             NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
             NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
             NEXT_PUBLIC_GTM_CONTAINER_ID: ${{ secrets.NEXT_PUBLIC_GTM_CONTAINER_ID }}
+            NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
 
     deploy:
         name: Deploy to Azure Web App
@@ -143,6 +144,7 @@ jobs:
                     CRM_VIEW_PAST=${{ vars.CRM_VIEW_PAST }} \
                     CRM_APP_SECRET=${{ secrets.CRM_APP_SECRET }} \
                     NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }} \
+                    NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }} \
                     BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }} \
                     VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }} \
                     DEPLOYMENT_URL="${{ env.DEPLOYMENT_URL }}" \

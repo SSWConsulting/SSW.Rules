@@ -42,6 +42,8 @@ on:
                 required: false
             NEXT_PUBLIC_GTM_CONTAINER_ID:
                 required: false
+            NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING:
+                required: false
         outputs:
             image_tag:
                 description: 'Docker tag to deploy'
@@ -371,6 +373,7 @@ jobs:
                         NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
                         NEXT_PUBLIC_BASE_PATH=${{ vars.NEXT_PUBLIC_BASE_PATH }}
                         NEXT_PUBLIC_GTM_CONTAINER_ID=${{ secrets.NEXT_PUBLIC_GTM_CONTAINER_ID }}
+                        NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
                   # CACHE COMPLETELY DISABLED
                   no-cache: true
                   # Clean up intermediate containers after build

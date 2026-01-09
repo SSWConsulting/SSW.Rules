@@ -7,9 +7,9 @@ import NotFound from "@/app/not-found";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import { Section } from "@/components/layout/section";
+import { getSanitizedBasePath } from "@/lib/withBasePath";
 import ruleToCategoryIndex from "@/rule-to-categories.json";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
-import { getSanitizedBasePath } from "@/lib/withBasePath";
 
 interface ClientFallbackPageProps {
   filename: string;
@@ -122,7 +122,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
               }
             }
           } catch (error) {
-            console.error("Error fetching category data:", error);
+            console.error(`[ClientFallbackPage] fetch category failed for filename="${filename}":`, error);
           }
         }
 
@@ -167,10 +167,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
             }
           }
         } catch (error) {
-          console.error(
-            `[ClientFallbackPage] fetch rule failed for filename="${filename}":`,
-            error
-          );
+          console.error(`[ClientFallbackPage] fetch rule failed for filename="${filename}":`, error);
         }
 
         // If we get here, nothing was found

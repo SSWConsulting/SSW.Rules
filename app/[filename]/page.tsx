@@ -65,7 +65,7 @@ const getCategoryData = async (filename: string) => {
       variables: res.variables,
     };
   } catch (error) {
-    console.error("Error fetching category data:", error);
+    console.error(`[getCategoryData] failed for filename="${filename}":`, error);
     return null;
   }
 };
@@ -82,10 +82,7 @@ const getRuleData = async (filename: string) => {
       variables: tinaProps.variables,
     };
   } catch (error) {
-    console.error(
-      `[getRuleData] failed for filename="${filename}":`,
-      error?.message || error
-    );
+    console.error(`[getRuleData] failed for filename="${filename}":`, error);
     return null;
   }
 };

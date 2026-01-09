@@ -101,11 +101,31 @@ jobs:
                   tenant-id: ${{ secrets.AZURE_TENANT_ID }}
                   subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+            - name: Set deployment slot
+              id: slot
+              run: |
+                  ENVIRONMENT="${{ github.event.inputs.environment || 'staging' }}"
+                  if [ "$ENVIRONMENT" = "production" ]; then
+                      echo "slot_name=pre-production" >> $GITHUB_OUTPUT
+                      echo "Deploying to pre-production slot for production environment"
+                  else
+                      echo "slot_name=" >> $GITHUB_OUTPUT
+                      echo "Deploying without slot (staging environment)"
+                  fi
+
             - name: Configure Auth0 and Build Info app settings
               run: |
+                SLOT_NAME="${{ steps.slot.outputs.slot_name }}"
+                if [ -n "$SLOT_NAME" ]; then
+                  SLOT_FLAG="--slot $SLOT_NAME"
+                else
+                  SLOT_FLAG=""
+                fi
+                
                 az webapp config appsettings set \
                     --name ${{ secrets.AZURE_WEBAPP_NAME }} \
                     --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+                    $SLOT_FLAG \
                     --settings \
                     TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }} \
                     AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }} \
@@ -131,11 +151,31 @@ jobs:
                     COMMIT_HASH=${{ env.COMMIT_HASH }} \
                     --output none
 
-            - name: Deploy to Azure Web App
+            - name: Deploy to Azure Web App (Production with slot)
+              if: github.event.inputs.environment == 'production'
               uses: azure/webapps-deploy@v3
               with:
                   app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
                   images: ${{ needs.build.outputs.image_tag }}
+                  slot-name: ${{ steps.slot.outputs.slot_name }}
+
+            - name: Deploy to Azure Web App (Staging)
+              if: github.event.inputs.environment != 'production'
+              uses: azure/webapps-deploy@v3
+              with:
+                  app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+                  images: ${{ needs.build.outputs.image_tag }}
+
+            - name: Swap slots (production only)
+              if: github.event.inputs.environment == 'production'
+              run: |
+                  echo "🔄 Swapping pre-production slot with production slot..."
+                  az webapp deployment slot swap \
+                      --name ${{ secrets.AZURE_WEBAPP_NAME }} \
+                      --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+                      --slot pre-production \
+                      --target-slot production
+                  echo "✅ Slot swap completed successfully!"
 
             - name: Verify deployment
               run: |

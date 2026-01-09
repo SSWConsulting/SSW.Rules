@@ -167,7 +167,10 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
             }
           }
         } catch (error) {
-          console.error("Error fetching rule data:", error);
+          console.error(
+            `[ClientFallbackPage] fetch rule failed for filename="${filename}":`,
+            error
+          );
         }
 
         // If we get here, nothing was found

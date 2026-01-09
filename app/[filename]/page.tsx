@@ -82,7 +82,10 @@ const getRuleData = async (filename: string) => {
       variables: tinaProps.variables,
     };
   } catch (error) {
-    console.error("Error fetching rule data:", error);
+    console.error(
+      `[getRuleData] failed for filename="${filename}":`,
+      error?.message || error
+    );
     return null;
   }
 };

@@ -398,10 +398,24 @@ async function main() {
     };
 
     let processed = 0;
-    const batchSize = 10; // Process 10 URLs concurrently
+    // Throttling configuration: conservative defaults to avoid overwhelming the server
+    // - Lower concurrency (5 instead of 10) reduces peak load
+    // - Longer delay (250ms instead of 100ms) gives server time to process
+    // - This results in ~20 requests/second max, which is reasonable for most servers
+    const batchSize = parseInt(process.env.SITEMAP_BATCH_SIZE || "5", 10);
+    const delayBetweenBatches = parseInt(process.env.SITEMAP_DELAY_MS || "250", 10);
+    const maxRequestsPerSecond = parseInt(process.env.SITEMAP_MAX_RPS || "20", 10);
+
+    console.log(`\nThrottling configuration:`);
+    console.log(`  - Batch size (concurrent requests): ${batchSize}`);
+    console.log(`  - Delay between batches: ${delayBetweenBatches}ms`);
+    console.log(`  - Max requests per second: ~${maxRequestsPerSecond}`);
+    console.log(`  - Estimated duration: ~${Math.ceil((urls.length / maxRequestsPerSecond) / 60)} minutes\n`);
 
     for (let i = 0; i < urls.length; i += batchSize) {
       const batch = urls.slice(i, i + batchSize);
+      const batchStartTime = Date.now();
+      
       const promises = batch.map((url) => checkUrlStatus(url));
       const batchResults = await Promise.all(promises);
 
@@ -424,9 +438,15 @@ async function main() {
         }
       }
 
-      // Small delay between batches to avoid overwhelming the server
+      // Adaptive throttling: ensure we don't exceed max requests per second
+      const batchDuration = Date.now() - batchStartTime;
+      const minBatchTime = (batchSize / maxRequestsPerSecond) * 1000; // Minimum time for this batch
+      const remainingDelay = Math.max(0, minBatchTime - batchDuration);
+      
+      // Apply delay between batches, ensuring we respect max RPS
       if (i + batchSize < urls.length) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        const totalDelay = Math.max(delayBetweenBatches, remainingDelay);
+        await new Promise((resolve) => setTimeout(resolve, totalDelay));
       }
     }
 
@@ -449,6 +469,21 @@ async function main() {
     const htmlReport = generateHtmlReport(reportData);
     const reportPath = join(__dirname, "../sitemap-crawl-report.html");
     fs.writeFileSync(reportPath, htmlReport, "utf-8");
+
+    // Generate JSON report for easy parsing
+    const jsonReport = {
+      sitemapUrl,
+      totalPages: urls.length,
+      status200: results.status200,
+      status404: results.status404,
+      otherStatuses: results.otherStatuses.length,
+      errors: results.errors.length,
+      successRate: urls.length > 0 ? ((results.status200 / urls.length) * 100).toFixed(2) : "0.00",
+      duration: ((endTime - startTime) / 1000).toFixed(2),
+      timestamp: new Date(endTime).toISOString(),
+    };
+    const jsonReportPath = join(__dirname, "../sitemap-crawl-report.json");
+    fs.writeFileSync(jsonReportPath, JSON.stringify(jsonReport, null, 2), "utf-8");
 
     // Print summary
     console.log("\n" + "=".repeat(60));

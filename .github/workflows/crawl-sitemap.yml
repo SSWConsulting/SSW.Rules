@@ -1,0 +1,140 @@
+name: Crawl Sitemap
+
+on:
+    workflow_call:
+        inputs:
+            sitemap_url:
+                type: string
+                required: true
+                description: 'URL of the sitemap to crawl'
+        outputs:
+            total_pages:
+                description: 'Total number of pages crawled'
+                value: ${{ jobs.crawl.outputs.total_pages }}
+            status_200:
+                description: 'Number of pages with status 200'
+                value: ${{ jobs.crawl.outputs.status_200 }}
+            status_404:
+                description: 'Number of pages with status 404'
+                value: ${{ jobs.crawl.outputs.status_404 }}
+            other_statuses:
+                description: 'Number of pages with other status codes'
+                value: ${{ jobs.crawl.outputs.other_statuses }}
+            success_rate:
+                description: 'Success rate percentage'
+                value: ${{ jobs.crawl.outputs.success_rate }}
+            report_exists:
+                description: 'Whether the report was generated'
+                value: ${{ jobs.crawl.outputs.report_exists }}
+    workflow_dispatch:
+        inputs:
+            sitemap_url:
+                type: string
+                required: true
+                description: 'URL of the sitemap to crawl'
+                default: 'https://www.ssw.com.au/rules/sitemap-index-0.xml'
+
+jobs:
+    crawl:
+        name: Crawl Sitemap
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        outputs:
+            total_pages: ${{ steps.extract_stats.outputs.total_pages }}
+            status_200: ${{ steps.extract_stats.outputs.status_200 }}
+            status_404: ${{ steps.extract_stats.outputs.status_404 }}
+            other_statuses: ${{ steps.extract_stats.outputs.other_statuses }}
+            success_rate: ${{ steps.extract_stats.outputs.success_rate }}
+            report_exists: ${{ steps.extract_stats.outputs.report_exists }}
+        steps:
+            - name: Set sitemap URL
+              id: set_url
+              run: |
+                  # Handle both workflow_call and workflow_dispatch inputs
+                  if [ -n "${{ inputs.sitemap_url }}" ]; then
+                      SITEMAP_URL="${{ inputs.sitemap_url }}"
+                  else
+                      SITEMAP_URL="${{ github.event.inputs.sitemap_url }}"
+                  fi
+                  echo "sitemap_url=$SITEMAP_URL" >> $GITHUB_OUTPUT
+                  echo "Using sitemap URL: $SITEMAP_URL"
+
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: .nvmrc
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 10.10.0
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run sitemap crawler
+              id: crawl_sitemap
+              continue-on-error: true
+              run: |
+                  echo "🔍 Running sitemap crawler..."
+                  echo "Sitemap URL: ${{ steps.set_url.outputs.sitemap_url }}"
+                  pnpm crawl-sitemap "${{ steps.set_url.outputs.sitemap_url }}" || true
+
+            - name: Extract statistics
+              id: extract_stats
+              continue-on-error: true
+              run: |
+                  # Extract statistics from the JSON report if it exists
+                  if [ -f "sitemap-crawl-report.json" ]; then
+                      node -e "
+                      const fs = require('fs');
+                      const data = JSON.parse(fs.readFileSync('sitemap-crawl-report.json', 'utf8'));
+                      console.log('total_pages=' + (data.totalPages || 0));
+                      console.log('status_200=' + (data.status200 || 0));
+                      console.log('status_404=' + (data.status404 || 0));
+                      console.log('other_statuses=' + (data.otherStatuses || 0));
+                      console.log('success_rate=' + (data.successRate || '0.00'));
+                      console.log('report_exists=true');
+                      " >> $GITHUB_OUTPUT
+                  else
+                      echo "total_pages=0" >> $GITHUB_OUTPUT
+                      echo "status_200=0" >> $GITHUB_OUTPUT
+                      echo "status_404=0" >> $GITHUB_OUTPUT
+                      echo "other_statuses=0" >> $GITHUB_OUTPUT
+                      echo "success_rate=0" >> $GITHUB_OUTPUT
+                      echo "report_exists=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Upload sitemap crawl report
+              if: steps.extract_stats.outputs.report_exists == 'true'
+              uses: actions/upload-artifact@v4
+              with:
+                  name: sitemap-crawl-report
+                  path: sitemap-crawl-report.html
+                  retention-days: 30
+
+            - name: Add sitemap crawl summary
+              run: |
+                  echo "## 🔍 Sitemap Crawl Results" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**Sitemap URL:** ${{ steps.set_url.outputs.sitemap_url }}" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  if [ "${{ steps.extract_stats.outputs.report_exists }}" == "true" ]; then
+                      echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+                      echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+                      echo "| **Total Pages Crawled** | ${{ steps.extract_stats.outputs.total_pages }} |" >> $GITHUB_STEP_SUMMARY
+                      echo "| **Status 200** | ✅ ${{ steps.extract_stats.outputs.status_200 }} |" >> $GITHUB_STEP_SUMMARY
+                      echo "| **Status 404** | ❌ ${{ steps.extract_stats.outputs.status_404 }} |" >> $GITHUB_STEP_SUMMARY
+                      echo "| **Other Statuses** | ⚠️ ${{ steps.extract_stats.outputs.other_statuses }} |" >> $GITHUB_STEP_SUMMARY
+                      echo "| **Success Rate** | ${{ steps.extract_stats.outputs.success_rate }}% |" >> $GITHUB_STEP_SUMMARY
+                      echo "" >> $GITHUB_STEP_SUMMARY
+                      echo "📄 **Full report available as artifact: sitemap-crawl-report**" >> $GITHUB_STEP_SUMMARY
+                  else
+                      echo "⚠️ Sitemap crawl report not generated. Check logs for errors." >> $GITHUB_STEP_SUMMARY
+                  fi

@@ -7,6 +7,10 @@
 # testing
 /coverage
 
+# sitemap crawl report
+/sitemap-crawl-report.html
+/sitemap-crawl-report.json
+
 # next.js
 /.next/
 /out/

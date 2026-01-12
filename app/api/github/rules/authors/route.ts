@@ -12,7 +12,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Missing ruleUri parameter' }, { status: 400 });
     }
 
-    const service = createGitHubService();
+    const service = await createGitHubService();
     const authors = await service.getRuleAuthors(ruleUri);
     return NextResponse.json({ authors });
   } catch (error: any) {

@@ -81,14 +81,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  experimental: {
-    // This concurrency is used to speed up the static generation of the app.
-    // Without it, the static generation of the app will take a 52 minutes.
-    // With it, the static generation of the app will take a 11 minutes.
-    staticGenerationRetryCount: 2,
-    staticGenerationMaxConcurrency: 50,
-    staticGenerationMinPagesPerWorker: 25,
-  },
   async rewrites() {
     return [
       {

@@ -290,3 +290,52 @@ query ruleData($relativePath: String!) {
     }
   }
 }
+
+# Fallback rule query that doesn't resolve related rule references
+# Used when ruleData fails due to broken/missing related rule paths
+query ruleDataBasic($relativePath: String!) {
+  rule(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        hasReferences
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ... on Rule {
+      title
+      uri
+      body
+      authors {
+        title
+        url
+      }
+      categories {
+        category {
+          ... on CategoryCategory {
+            uri
+            title
+          }
+        }
+      }
+      # Note: related field omitted - this query is used when related rules are broken
+      redirects
+      guid
+      seoDescription
+      created
+      createdBy
+      createdByEmail
+      lastUpdated
+      lastUpdatedBy
+      lastUpdatedByEmail
+      isArchived
+      archivedreason
+      sidebarVideo
+    }
+  }
+}

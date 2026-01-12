@@ -65,24 +65,63 @@ const getCategoryData = async (filename: string) => {
       variables: res.variables,
     };
   } catch (error) {
-    console.error("Error fetching category data:", error);
+    console.error(`[getCategoryData] failed for filename="${filename}":`, error);
     return null;
   }
 };
 
+export interface BrokenReferences {
+  detected: boolean;
+  paths: string[];
+}
+
 const getRuleData = async (filename: string) => {
   try {
-    const tinaProps = await client.queries.ruleData({
+    const basicProps = await client.queries.ruleDataBasic({
       relativePath: filename + "/rule.mdx",
     });
 
-    return {
-      data: tinaProps.data,
-      query: tinaProps.query,
-      variables: tinaProps.variables,
-    };
+    try {
+      const fullProps = await client.queries.ruleData({
+        relativePath: filename + "/rule.mdx",
+      });
+
+      return {
+        data: fullProps.data,
+        query: fullProps.query,
+        variables: fullProps.variables,
+        brokenReferences: null as BrokenReferences | null,
+      };
+    } catch (relatedError) {
+      const errorMessage = relatedError instanceof Error ? relatedError.message : String(relatedError);
+
+      // Extract all broken paths from error message (there may be multiple)
+      const brokenPathMatches = errorMessage.matchAll(/Unable to find record ([^\n]+)/g);
+      const brokenPaths = Array.from(brokenPathMatches, (match) => match[1].trim());
+
+      // Fallback if no paths found
+      if (brokenPaths.length === 0) {
+        brokenPaths.push("unknown path");
+      }
+
+      return {
+        data: {
+          ...basicProps.data,
+          rule: {
+            ...basicProps.data.rule,
+            related: [], // Clear broken related rules
+          },
+        },
+        query: basicProps.query,
+        variables: basicProps.variables,
+        brokenReferences: {
+          detected: true,
+          paths: brokenPaths,
+        } as BrokenReferences,
+      };
+    }
   } catch (error) {
-    console.error("Error fetching rule data:", error);
+    console.error(`[getRuleData] failed for filename="${filename}":`, error);
     return null;
   }
 };
@@ -272,6 +311,7 @@ export default async function Page({
             rule: rule.data.rule,
             ruleCategoriesMapping: ruleCategoriesMapping,
             sanitizedBasePath: sanitizedBasePath,
+            brokenReferences: rule.brokenReferences,
           }}
         />
       </Section>

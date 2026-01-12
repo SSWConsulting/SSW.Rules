@@ -7,9 +7,9 @@ import NotFound from "@/app/not-found";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import { Section } from "@/components/layout/section";
+import { getSanitizedBasePath } from "@/lib/withBasePath";
 import ruleToCategoryIndex from "@/rule-to-categories.json";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
-import { getSanitizedBasePath } from "@/lib/withBasePath";
 
 interface ClientFallbackPageProps {
   filename: string;
@@ -122,7 +122,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
               }
             }
           } catch (error) {
-            console.error("Error fetching category data:", error);
+            console.error(`[ClientFallbackPage] fetch category failed for filename="${filename}":`, error);
           }
         }
 
@@ -151,6 +151,13 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
 
               const sanitizedBasePath = getSanitizedBasePath();
 
+              const brokenReferences = ruleResult._brokenReferences
+                ? {
+                    detected: ruleResult._brokenReferences.detected,
+                    paths: ruleResult._brokenReferences.paths,
+                  }
+                : null;
+
               setData({
                 type: "rule",
                 rule: ruleResult.data.rule,
@@ -161,13 +168,14 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
                   query: ruleResult.query,
                   variables: ruleResult.variables,
                 },
+                brokenReferences,
               });
               setLoading(false);
               return;
             }
           }
         } catch (error) {
-          console.error("Error fetching rule data:", error);
+          console.error(`[ClientFallbackPage] fetch rule failed for filename="${filename}":`, error);
         }
 
         // If we get here, nothing was found
@@ -243,6 +251,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
             rule: data.rule,
             ruleCategoriesMapping: data.ruleCategoriesMapping,
             sanitizedBasePath: data.sanitizedBasePath,
+            brokenReferences: data.brokenReferences,
           }}
         />
       </Section>

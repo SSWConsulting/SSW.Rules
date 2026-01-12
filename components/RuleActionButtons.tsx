@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import { RiGithubLine, RiPencilLine } from "react-icons/ri";
+import { RiGithubFill, RiPencilLine } from "react-icons/ri";
 import Bookmark from "@/components/Bookmark";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import ChatGPTSummaryButton from "@/components/OpenInChatGptButton";
@@ -38,7 +38,7 @@ export default function RuleActionButtons({ rule, showBookmark = true, showOpenI
         title="View rule on GitHub"
         tooltipOpaque={true}
       >
-        <RiGithubLine size={ICON_SIZE} className="rule-icon" />
+        <RiGithubFill size={ICON_SIZE} className="rule-icon" />
       </IconLink>
       {showOpenInChatGpt && <ChatGPTSummaryButton />}
     </div>

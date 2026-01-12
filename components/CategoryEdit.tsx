@@ -1,5 +1,5 @@
 "use client";
-import { RiGithubLine, RiPencilLine } from "react-icons/ri";
+import { RiGithubFill, RiPencilLine } from "react-icons/ri";
 import { ICON_SIZE } from "@/constants";
 import { useIsAdminPage } from "./hooks/useIsAdminPage";
 import { IconLink } from "./ui";
@@ -19,7 +19,7 @@ export const CategoryEdit = ({ path }: { path?: string }) => {
         title="View category on GitHub"
         tooltipOpaque={true}
       >
-        <RiGithubLine size={ICON_SIZE} className="rule-icon" />
+        <RiGithubFill size={ICON_SIZE} />
       </IconLink>
     </div>
   );

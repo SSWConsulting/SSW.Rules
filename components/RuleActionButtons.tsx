@@ -29,8 +29,8 @@ export default function RuleActionButtons({ rule, showBookmark = true, showOpenI
           <Bookmark ruleGuid={rule.guid} />
         </Suspense>
       )}
-      <IconLink href={`/admin#/~/${sanitizedBasePath}/${rule.uri}`} title="Edit rule" tooltipOpaque={true}>
-        <RiPencilLine size={ICON_SIZE} />
+      <IconLink href={`/admin#/~/${sanitizedBasePath}/${rule.uri}`} title="Edit rule with TinaCMS" tooltipOpaque={true}>
+        <RiPencilLine className="hover:text-tinacms" size={ICON_SIZE} />
       </IconLink>
       <IconLink
         href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/main/public/uploads/rules/${rule.uri}/rule.mdx`}

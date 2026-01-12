@@ -10,8 +10,8 @@ export const CategoryEdit = ({ path }: { path?: string }) => {
 
   return (
     <div className="flex gap-2 justify-center items-start sm:items-center">
-      <IconLink href={`admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`} title="Edit category" tooltipOpaque={true}>
-        <RiPencilLine size={ICON_SIZE} />
+      <IconLink href={`admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`} title="Edit category with TinaCMS" tooltipOpaque={true}>
+        <RiPencilLine className="hover:text-tinacms" size={ICON_SIZE} />
       </IconLink>
       <IconLink
         href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${process.env.NEXT_PUBLIC_TINA_BRANCH}/categories/${path}`}

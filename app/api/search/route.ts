@@ -1,5 +1,6 @@
 import { algoliasearch } from "algoliasearch";
 import { NextRequest, NextResponse } from "next/server";
+import * as appInsights from "applicationinsights";
 
 // Simple in-memory rate limiter
 // In production, consider using Redis or a service like Upstash for distributed rate limiting
@@ -47,10 +48,23 @@ if (typeof setInterval !== "undefined") {
 }
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  let searchQuery = "";
+
   try {
     // Check rate limit
     const rateLimitKey = getRateLimitKey(request);
     if (!checkRateLimit(rateLimitKey)) {
+      // Track rate limit exceeded
+      appInsights.defaultClient?.trackEvent({
+        name: "RateLimitExceeded",
+        properties: {
+          endpoint: "/api/search",
+          ip: rateLimitKey,
+          limit: MAX_REQUESTS_PER_WINDOW,
+          windowMs: RATE_LIMIT_WINDOW
+        }
+      });
       return NextResponse.json({ error: "Rate limit exceeded. Please try again later." }, { status: 429 });
     }
 
@@ -59,8 +73,18 @@ export async function POST(request: NextRequest) {
     const { requests } = body;
 
     if (!requests || !Array.isArray(requests)) {
+      appInsights.defaultClient?.trackEvent({
+        name: "SearchApiError",
+        properties: {
+          error: "Invalid request format",
+          endpoint: "/api/search"
+        }
+      });
       return NextResponse.json({ error: "Invalid request format" }, { status: 400 });
     }
+
+    // Extract search query for tracking
+    searchQuery = requests[0]?.params?.query || "";
 
     // Validate query length (minimum 3 characters)
     const hasValidQuery = requests.some((req: any) => {
@@ -91,15 +115,45 @@ export async function POST(request: NextRequest) {
 
     if (!appId || !apiKey) {
       console.error("Algolia credentials not configured");
+      appInsights.defaultClient?.trackException({
+        exception: new Error("Algolia credentials not configured"),
+        properties: {
+          endpoint: "/api/search",
+          severityLevel: 3
+        }
+      });
       return NextResponse.json({ error: "Search service not configured" }, { status: 500 });
     }
 
     const client = algoliasearch(appId, apiKey);
     const result = await client.search(requests);
 
+    // Track successful search
+    const duration = Date.now() - startTime;
+    appInsights.defaultClient?.trackEvent({
+      name: "SearchApiSuccess",
+      properties: {
+        query: searchQuery,
+        resultCount: result.results?.[0]?.nbHits || 0,
+        duration,
+        ip: rateLimitKey
+      }
+    });
+
     return NextResponse.json(result);
   } catch (error) {
     console.error("Search API error:", error);
+
+    // Track search error
+    appInsights.defaultClient?.trackException({
+      exception: error instanceof Error ? error : new Error(String(error)),
+      properties: {
+        endpoint: "/api/search",
+        query: searchQuery,
+        duration: Date.now() - startTime
+      }
+    });
+
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

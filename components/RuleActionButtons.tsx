@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { RiGithubLine, RiPencilLine } from "react-icons/ri";
 import Bookmark from "@/components/Bookmark";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
+import useAppInsights from "@/components/hooks/useAppInsights";
 import ChatGPTSummaryButton from "@/components/OpenInChatGptButton";
 import { IconLink } from "@/components/ui";
 import { ICON_SIZE } from "@/constants";
@@ -19,8 +20,25 @@ interface RuleActionButtonsProps {
 export default function RuleActionButtons({ rule, showBookmark = true, showOpenInChatGpt = true }: RuleActionButtonsProps) {
   const sanitizedBasePath = getSanitizedBasePath();
   const { isAdmin: isAdminPage } = useIsAdminPage();
+  const { trackEvent } = useAppInsights();
 
   if (isAdminPage) return null;
+
+  const handleEditClick = () => {
+    trackEvent("EditRuleClicked", {
+      ruleUri: rule.uri,
+      ruleTitle: rule.title,
+      ruleGuid: rule.guid
+    });
+  };
+
+  const handleGitHubClick = () => {
+    trackEvent("ViewOnGitHubClicked", {
+      ruleUri: rule.uri,
+      ruleTitle: rule.title,
+      ruleGuid: rule.guid
+    });
+  };
 
   return (
     <div className="mt-4 md:mt-0 flex items-center gap-4 text-2xl">
@@ -29,7 +47,12 @@ export default function RuleActionButtons({ rule, showBookmark = true, showOpenI
           <Bookmark ruleGuid={rule.guid} />
         </Suspense>
       )}
-      <IconLink href={`/admin#/~/${sanitizedBasePath}/${rule.uri}`} title="Edit rule" tooltipOpaque={true}>
+      <IconLink
+        href={`/admin#/~/${sanitizedBasePath}/${rule.uri}`}
+        title="Edit rule"
+        tooltipOpaque={true}
+        onClick={handleEditClick}
+      >
         <RiPencilLine size={ICON_SIZE} />
       </IconLink>
       <IconLink
@@ -37,6 +60,7 @@ export default function RuleActionButtons({ rule, showBookmark = true, showOpenI
         target="_blank"
         title="View rule on GitHub"
         tooltipOpaque={true}
+        onClick={handleGitHubClick}
       >
         <RiGithubLine size={ICON_SIZE} className="rule-icon" />
       </IconLink>

@@ -130,11 +130,14 @@ export async function POST(request: NextRequest) {
 
     // Track successful search
     const duration = Date.now() - startTime;
+    const firstResult = result.results?.[0];
+    const resultCount = firstResult && 'nbHits' in firstResult ? firstResult.nbHits : 0;
+
     appInsights.defaultClient?.trackEvent({
       name: "SearchApiSuccess",
       properties: {
         query: searchQuery,
-        resultCount: result.results?.[0]?.nbHits || 0,
+        resultCount,
         duration,
         ip: rateLimitKey
       }

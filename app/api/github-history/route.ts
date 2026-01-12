@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     const errorMessage = error instanceof Error ? error.message : "Failed to get GitHub App token";
     return NextResponse.json(
       {
-        error: `GitHub App authentication failed: ${errorMessage}. Please check that GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY, and optionally GITHUB_APP_INSTALLATION_ID are set correctly.`,
+        error: `GitHub App authentication failed: ${errorMessage}. Please check that GH_APP_ID, GH_APP_PRIVATE_KEY, and optionally GITHUB_APP_INSTALLATION_ID are set correctly.`,
       },
       { status: 500 }
     );

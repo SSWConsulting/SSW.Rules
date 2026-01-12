@@ -59,7 +59,7 @@ export async function fetchGitHub<T>(url: string, headers: Record<string, string
 
     if (response.status === 401) {
       throw new Error(
-        `GitHub API authentication failed (401)${errorDetails}. Please check that GitHub App credentials (GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY) are set correctly and the app has the required permissions.`
+        `GitHub API authentication failed (401)${errorDetails}. Please check that GitHub App credentials (GH_APP_ID, GH_APP_PRIVATE_KEY) are set correctly and the app has the required permissions.`
       );
     }
 

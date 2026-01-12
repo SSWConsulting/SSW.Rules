@@ -54,12 +54,12 @@ function normalizePrivateKey(privateKey: string): string {
         ".env files don't support multi-line values. You must use one of these formats:\n\n" +
         "OPTION 1 - Base64-encoded (RECOMMENDED):\n" +
         "  Convert your PEM key to base64, then use:\n" +
-        "  GITHUB_APP_PRIVATE_KEY=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVB...\n\n" +
+        "  GH_APP_PRIVATE_KEY=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVB...\n\n" +
         "  To convert on Windows PowerShell:\n" +
         "  [Convert]::ToBase64String([System.IO.File]::ReadAllBytes('your-key.pem'))\n\n" +
         "OPTION 2 - Escaped newlines:\n" +
         "  Replace all actual newlines with \\n:\n" +
-        "  GITHUB_APP_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\\nMIIEpAIBAAKCAQEA...\\n-----END RSA PRIVATE KEY-----"
+        "  GH_APP_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\\nMIIEpAIBAAKCAQEA...\\n-----END RSA PRIVATE KEY-----"
     );
   }
 
@@ -205,12 +205,12 @@ async function getInstallationToken(appId: string, privateKey: string, installat
  * @returns Installation access token
  */
 export async function getGitHubAppToken(): Promise<string> {
-  const appId = process.env.GITHUB_APP_ID;
-  const privateKey = process.env.GITHUB_APP_PRIVATE_KEY;
+  const appId = process.env.GH_APP_ID;
+  const privateKey = process.env.GH_APP_PRIVATE_KEY;
   const installationId = process.env.GITHUB_APP_INSTALLATION_ID;
 
   if (!appId || !privateKey) {
-    throw new Error("GitHub App credentials are not configured. Please set GITHUB_APP_ID and GITHUB_APP_PRIVATE_KEY environment variables.");
+    throw new Error("GitHub App credentials are not configured. Please set GH_APP_ID and GH_APP_PRIVATE_KEY environment variables.");
   }
 
   // Check if the private key appears to be truncated (only first line loaded)
@@ -251,7 +251,7 @@ export async function getGitHubAppToken(): Promise<string> {
 
     if (errorMessage.includes("DECODER") || errorMessage.includes("unsupported")) {
       throw new Error(
-        `Invalid private key format. The GITHUB_APP_PRIVATE_KEY must be in PEM format ` +
+        `Invalid private key format. The GH_APP_PRIVATE_KEY must be in PEM format ` +
           `(starting with -----BEGIN RSA PRIVATE KEY----- or -----BEGIN PRIVATE KEY-----) ` +
           `or base64-encoded PEM. If your key has escaped newlines (\\n), they will be handled automatically. ` +
           `Original error: ${errorMessage}`

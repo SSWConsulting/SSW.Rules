@@ -55,7 +55,7 @@ jobs:
             NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
             NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
             NEXT_PUBLIC_GTM_CONTAINER_ID: ${{ secrets.NEXT_PUBLIC_GTM_CONTAINER_ID }}
-            GH_APP_ID: ${{ secrets.GH_APP_ID }}
+            GH_APP_ID: ${{ vars.GH_APP_ID }}
             GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
             GITHUB_APP_INSTALLATION_ID: ${{ secrets.GITHUB_APP_INSTALLATION_ID }}
 
@@ -117,7 +117,7 @@ jobs:
                     AUTH0_SECRET=${{ secrets.AUTH0_SECRET }} \
                     AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }} \
                     AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }} \
-                    GH_APP_ID=${{ secrets.GH_APP_ID }} \
+                    GH_APP_ID=${{ vars.GH_APP_ID }} \
                     GH_APP_PRIVATE_KEY="${{ secrets.GH_APP_PRIVATE_KEY }}" \
                     GITHUB_APP_INSTALLATION_ID=${{ secrets.GITHUB_APP_INSTALLATION_ID }} \
                     CRM_TENANT=${{ vars.CRM_TENANT }} \

@@ -117,41 +117,46 @@ jobs:
             - name: Configure Auth0 and Build Info app settings
               run: |
                 SLOT_NAME="${{ steps.slot.outputs.slot_name }}"
+
+                # Build the base command
+                CMD="az webapp config appsettings set"
+                CMD="$CMD --name ${{ secrets.AZURE_WEBAPP_NAME }}"
+                CMD="$CMD --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}"
+
+                # Add slot parameter only if slot name is provided
                 if [ -n "$SLOT_NAME" ]; then
-                  SLOT_FLAG="--slot $SLOT_NAME"
-                else
-                  SLOT_FLAG=""
+                  CMD="$CMD --slot $SLOT_NAME"
                 fi
-                
-                az webapp config appsettings set \
-                    --name ${{ secrets.AZURE_WEBAPP_NAME }} \
-                    --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                    $SLOT_FLAG \
-                    --settings \
-                    TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }} \
-                    AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }} \
-                    AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }} \
-                    AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
-                    AUTH0_SECRET=${{ secrets.AUTH0_SECRET }} \
-                    AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }} \
-                    AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }} \
-                    GITHUB_API_PAT=${{ secrets.GH_API_PAT }} \
-                    CRM_TENANT=${{ vars.CRM_TENANT }} \
-                    CRM_TENANT_ID=${{ vars.CRM_TENANT_ID }} \
-                    CRM_APP_ID=${{ vars.CRM_APP_ID }} \
-                    CRM_SCOPE=${{ vars.CRM_SCOPE }} \
-                    CRM_VIEW_CURRENT=${{ vars.CRM_VIEW_CURRENT }} \
-                    CRM_VIEW_PAST=${{ vars.CRM_VIEW_PAST }} \
-                    CRM_APP_SECRET=${{ secrets.CRM_APP_SECRET }} \
-                    NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }} \
-                    NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }} \
-                    BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }} \
-                    VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }} \
-                    DEPLOYMENT_URL="${{ env.DEPLOYMENT_URL }}" \
-                    BUILD_DATE="${{ env.BUILD_DATE }}" \
-                    NEXT_PUBLIC_TINA_BRANCH=${{ vars.NEXT_PUBLIC_TINA_BRANCH }} \
-                    COMMIT_HASH=${{ env.COMMIT_HASH }} \
-                    --output none
+
+                # Add settings
+                CMD="$CMD --settings"
+                CMD="$CMD TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}"
+                CMD="$CMD AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }}"
+                CMD="$CMD AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }}"
+                CMD="$CMD AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }}"
+                CMD="$CMD AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}"
+                CMD="$CMD AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }}"
+                CMD="$CMD AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }}"
+                CMD="$CMD GITHUB_API_PAT=${{ secrets.GH_API_PAT }}"
+                CMD="$CMD CRM_TENANT=${{ vars.CRM_TENANT }}"
+                CMD="$CMD CRM_TENANT_ID=${{ vars.CRM_TENANT_ID }}"
+                CMD="$CMD CRM_APP_ID=${{ vars.CRM_APP_ID }}"
+                CMD="$CMD CRM_SCOPE=${{ vars.CRM_SCOPE }}"
+                CMD="$CMD CRM_VIEW_CURRENT=${{ vars.CRM_VIEW_CURRENT }}"
+                CMD="$CMD CRM_VIEW_PAST=${{ vars.CRM_VIEW_PAST }}"
+                CMD="$CMD CRM_APP_SECRET=${{ secrets.CRM_APP_SECRET }}"
+                CMD="$CMD NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }}"
+                CMD="$CMD NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}"
+                CMD="$CMD BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}"
+                CMD="$CMD VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }}"
+                CMD="$CMD DEPLOYMENT_URL='${{ env.DEPLOYMENT_URL }}'"
+                CMD="$CMD BUILD_DATE='${{ env.BUILD_DATE }}'"
+                CMD="$CMD NEXT_PUBLIC_TINA_BRANCH=${{ vars.NEXT_PUBLIC_TINA_BRANCH }}"
+                CMD="$CMD COMMIT_HASH=${{ env.COMMIT_HASH }}"
+                CMD="$CMD --output none"
+
+                # Execute the command
+                eval $CMD
 
             - name: Deploy to Azure Web App (Production with slot)
               if: github.event.inputs.environment == 'production'

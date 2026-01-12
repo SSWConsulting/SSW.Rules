@@ -15,14 +15,27 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing owner or repo parameters" }, { status: 400 });
   }
 
+  // Construct historyUrl that will always be returned (even on errors)
+  const historyUrl = path
+    ? `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}/${path}`
+    : `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}`;
+
   let githubToken: string;
   try {
     githubToken = await getGitHubAppToken();
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Failed to get GitHub App token";
+    // Log error for debugging
+    console.error("GitHub App authentication error:", {
+      message: error instanceof Error ? error.message : "Failed to get GitHub App token",
+      stack: error instanceof Error ? error.stack : undefined,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Always return historyUrl even on authentication error
     return NextResponse.json(
       {
-        error: `GitHub App authentication failed: ${errorMessage}. Please check that GH_APP_ID, GH_APP_PRIVATE_KEY, and optionally GITHUB_APP_INSTALLATION_ID are set correctly.`,
+        error: "GitHub App authentication failed",
+        historyUrl,
       },
       { status: 500 }
     );
@@ -42,11 +55,6 @@ export async function GET(request: Request) {
   if (path) {
     params.append("path", path);
   }
-
-  // Construct historyUrl that will always be returned
-  const historyUrl = path
-    ? `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}/${path}`
-    : `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}`;
 
   try {
     if (path) {

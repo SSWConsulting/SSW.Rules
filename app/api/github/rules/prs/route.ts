@@ -14,7 +14,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Missing author parameter' }, { status: 400 });
     }
 
-    const service = createGitHubService();
+    const service = await createGitHubService();
     const data = await service.searchPullRequestsByAuthor(author, cursor, direction);
     return NextResponse.json(data);
   } catch (error: any) {

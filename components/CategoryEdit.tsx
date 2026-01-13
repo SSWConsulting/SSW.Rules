@@ -9,7 +9,7 @@ export const CategoryEdit = ({ path }: { path?: string }) => {
   if (!path || isAdminPage) return null;
 
   return (
-    <div className="flex gap-2 justify-center items-start sm:items-center">
+    <div className="flex gap-2 justify-center items-start mt-2 pr-4">
       <IconLink href={`admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`} title="Edit category with TinaCMS" tooltipOpaque={true}>
         <RiPencilLine className="hover:text-tinacms" size={ICON_SIZE} />
       </IconLink>

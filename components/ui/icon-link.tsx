@@ -21,12 +21,19 @@ const IconLink: React.FC<IconLinkProps> = ({ href, children, className = "", tit
   const baseClasses =
     "inline-flex items-center justify-center rounded-md font-medium transition-colors hover:text-[var(--ssw-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
+  let adjustedHref = href;
+
+  if (href.startsWith("http")) {
+    adjustedHref = href;
+  } else {
+    adjustedHref = `${basePath}${href}`;
+  }
+
   const link = (
-    <a href={`${basePath}${href}`} className={`${baseClasses} ${className}`} title={title} target={target} rel={rel} onClick={onClick}>
+    <a href={adjustedHref} className={`${baseClasses} ${className}`} title={title} target={target} rel={rel} onClick={onClick}>
       {children}
     </a>
   );
-
   if (title) {
     return (
       <Tooltip text={title} showDelay={0} hideDelay={0} opaque={tooltipOpaque}>

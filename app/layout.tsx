@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import "@/styles.css";
 import UserClientProvider from "@/components/auth/UserClientProvider";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
+import AppInsightsProvider from "@/components/providers/AppInsightsProvider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -46,9 +47,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-background font-sans antialiased flex flex-col">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_CONTAINER_ID!} />
-        <UserClientProvider>
-          <SiteLayout>{children}</SiteLayout>
-        </UserClientProvider>
+        <AppInsightsProvider>
+          <UserClientProvider>
+            <SiteLayout>{children}</SiteLayout>
+          </UserClientProvider>
+        </AppInsightsProvider>
         <TailwindIndicator />
       </body>
     </html>

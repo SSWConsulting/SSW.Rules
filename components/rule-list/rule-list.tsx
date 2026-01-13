@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { RiGithubLine, RiPencilLine } from "react-icons/ri";
 import RadioButton from "@/components/radio-button";
 import Pagination from "@/components/ui/pagination";
@@ -150,9 +150,9 @@ const RuleList: React.FC<RuleListProps> = ({
           <div className="hidden md:flex gap-2">
             <IconLink
               href={`admin/index.html#/collections/edit/category/${categoryUri?.slice(0, -4)}`}
-              title="Edit category"
+              title="Edit category with TinaCMS"
               tooltipOpaque={true}
-              children={<RiPencilLine size={ICON_SIZE} />}
+              children={<RiPencilLine className="hover:text-tinacms" size={ICON_SIZE} />}
             />
             <IconLink
               href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${process.env.NEXT_PUBLIC_TINA_BRANCH}/categories/${categoryUri}`}

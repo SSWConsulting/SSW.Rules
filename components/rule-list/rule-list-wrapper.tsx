@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import RuleList from './rule-list';
-import { RuleListFilter } from '@/types/ruleListFilter';
+import React, { useEffect, useState } from "react";
+import { RuleListFilter } from "@/types/ruleListFilter";
+import RuleList from "./rule-list";
 
 export interface RuleListWrapperProps {
   categoryUri?: string;
@@ -13,25 +13,20 @@ export interface RuleListWrapperProps {
   onIncludeArchivedChange?: (include: boolean) => void;
   showPagination?: boolean;
   showFilterControls?: boolean;
-  initialView?: 'titleOnly' | 'blurb' | 'all';
+  initialView?: "titleOnly" | "blurb" | "all";
   initialPage?: number;
   initialPerPage?: number;
 }
 
-const RuleListWrapper: React.FC<RuleListWrapperProps> = ({
-  initialView = 'blurb',
-  initialPage = 1,
-  initialPerPage = 20,
-  ...props 
-}) => {
+const RuleListWrapper: React.FC<RuleListWrapperProps> = ({ initialView = "blurb", initialPage = 1, initialPerPage = 20, ...props }) => {
   const [filter, setFilter] = useState<RuleListFilter>(() => {
     // Map the view prop to RuleListFilter enum
     switch (initialView) {
-      case 'titleOnly':
+      case "titleOnly":
         return RuleListFilter.TitleOnly;
-      case 'blurb':
+      case "blurb":
         return RuleListFilter.Blurb;
-      case 'all':
+      case "all":
         return RuleListFilter.All;
       default:
         return RuleListFilter.Blurb;
@@ -44,13 +39,13 @@ const RuleListWrapper: React.FC<RuleListWrapperProps> = ({
   // Update state when props change (for URL navigation)
   useEffect(() => {
     switch (initialView) {
-      case 'titleOnly':
+      case "titleOnly":
         setFilter(RuleListFilter.TitleOnly);
         break;
-      case 'blurb':
+      case "blurb":
         setFilter(RuleListFilter.Blurb);
         break;
-      case 'all':
+      case "all":
         setFilter(RuleListFilter.All);
         break;
     }
@@ -64,14 +59,7 @@ const RuleListWrapper: React.FC<RuleListWrapperProps> = ({
     setItemsPerPage(initialPerPage);
   }, [initialPerPage]);
 
-  return (
-    <RuleList
-      {...props}
-      initialFilter={filter}
-      initialPage={currentPage}
-      initialItemsPerPage={itemsPerPage}
-    />
-  );
+  return <RuleList {...props} initialFilter={filter} initialPage={currentPage} initialItemsPerPage={itemsPerPage} />;
 };
 
 export default RuleListWrapper;

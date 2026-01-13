@@ -14,7 +14,7 @@ export const CategoryEdit = ({ path }: { path?: string }) => {
         <RiPencilLine className="hover:text-tinacms" size={ICON_SIZE} />
       </IconLink>
       <IconLink
-        href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${process.env.NEXT_PUBLIC_TINA_BRANCH}/categories/${path}`}
+        href={`https://github.com/SSWConsulting/SSW.Rules.Content/commits/${process.env.NEXT_PUBLIC_TINA_BRANCH}/categories/${path}`}
         target="_blank"
         title="View category on GitHub"
         tooltipOpaque={true}

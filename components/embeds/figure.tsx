@@ -29,6 +29,7 @@ export function Figure({ prefix = "none", text, className }: { prefix?: FigurePr
 }
 
 export const inlineFigureFields = [
+  { name: "figure", label: "Figure", type: "string" },
   {
     name: "figurePrefix",
     label: "Figure Prefix",
@@ -40,7 +41,6 @@ export const inlineFigureFields = [
       { value: "good", label: "✅ Good example" },
     ],
   },
-  { name: "figure", label: "Figure", type: "string" },
 ] as const;
 
 export const inlineFigureDefaultItem = {

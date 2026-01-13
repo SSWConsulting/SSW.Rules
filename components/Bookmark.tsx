@@ -137,7 +137,6 @@ export default function Bookmark({ ruleGuid, isBookmarked, defaultIsBookmarked =
         <button
           onClick={handleBookmarkToggle}
           className={`rule-icon ${className}`}
-          title={bookmarked ? "Remove bookmark" : "Add bookmark"}
           disabled={disabled}
           aria-busy={disabled}
           aria-label={bookmarked ? "Remove bookmark" : "Add bookmark"}

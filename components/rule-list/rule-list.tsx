@@ -149,7 +149,7 @@ const RuleList: React.FC<RuleListProps> = ({
         {type === "category" && (
           <div className="hidden md:flex gap-2">
             <IconLink
-              href={`admin/index.html#/collections/edit/category/${categoryUri?.slice(0, -4)}`}
+              href={`/admin/index.html#/collections/edit/category/${categoryUri?.slice(0, -4)}`}
               title="Edit category with TinaCMS"
               tooltipOpaque={true}
               children={<RiPencilLine className="hover:text-tinacms" size={ICON_SIZE} />}

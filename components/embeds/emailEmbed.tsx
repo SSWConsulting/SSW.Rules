@@ -17,7 +17,7 @@ export function EmailEmbed({ data }: { data: any }) {
   ].filter((field) => field.value?.trim());
 
   const contentRef = useRef<HTMLDivElement>(null);
-  useMarkHighlight(contentRef as RefObject<HTMLElement>, "ol li div");
+  useMarkHighlight(contentRef as RefObject<HTMLElement>);
 
   const figure: string = data?.figure || "";
   const figurePrefix: any = data?.figurePrefix || "default";

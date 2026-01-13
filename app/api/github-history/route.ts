@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { GitHubCommit } from "@/components/last-updated-by/types";
+import { getGitHubAppToken } from "@/lib/services/github/github.utils";
 import { fetchGitHub, findCompleteFileHistory, findLatestNonExcludedCommit, getAlternateAuthorName } from "./util";
 
 const GITHUB_ACTIVE_BRANCH = process.env.NEXT_PUBLIC_TINA_BRANCH || "main";
@@ -14,10 +15,30 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing owner or repo parameters" }, { status: 400 });
   }
 
-  const githubToken = process.env.GITHUB_API_PAT;
+  // Construct historyUrl that will always be returned (even on errors)
+  const historyUrl = path
+    ? `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}/${path}`
+    : `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}`;
 
-  if (!githubToken) {
-    return NextResponse.json({ error: "GitHub API token is not configured" }, { status: 500 });
+  let githubToken: string;
+  try {
+    githubToken = await getGitHubAppToken();
+  } catch (error) {
+    // Log error for debugging
+    console.error("GitHub App authentication error:", {
+      message: error instanceof Error ? error.message : "Failed to get GitHub App token",
+      stack: error instanceof Error ? error.stack : undefined,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Always return historyUrl even on authentication error
+    return NextResponse.json(
+      {
+        error: "GitHub App authentication failed",
+        historyUrl,
+      },
+      { status: 500 }
+    );
   }
 
   const headers: Record<string, string> = {
@@ -34,11 +55,6 @@ export async function GET(request: Request) {
   if (path) {
     params.append("path", path);
   }
-
-  // Construct historyUrl that will always be returned
-  const historyUrl = path
-    ? `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}/${path}`
-    : `https://github.com/${owner}/${repo}/commits/${GITHUB_ACTIVE_BRANCH}`;
 
   try {
     if (path) {

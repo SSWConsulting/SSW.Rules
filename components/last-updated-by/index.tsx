@@ -1,7 +1,6 @@
 "use client";
 
 import { formatDate } from "date-fns";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaHistory } from "react-icons/fa";
 import { getRelativeTime } from "./get-relative-time";
@@ -10,13 +9,11 @@ import type { GitHubMetadataProps, GitHubMetadataResponse } from "./types";
 export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", path, className = "" }: GitHubMetadataProps) {
   const [data, setData] = useState<GitHubMetadataResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchGitHubMetadata = async () => {
       try {
         setLoading(true);
-        setError(null);
 
         const params = new URLSearchParams({
           owner,
@@ -30,19 +27,26 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/github-history?${params.toString()}`);
         const result: GitHubMetadataResponse = await response.json();
 
+        // Log errors for debugging but don't show them to users
         if (!response.ok) {
-          // Even if there's an error, we might have historyUrl
-          if (result.historyUrl) {
-            setData(result);
-          } else {
-            throw new Error(result.error || `API error: ${response.status}`);
-          }
-        } else {
+          console.error("GitHub history API error:", {
+            status: response.status,
+            error: result.error,
+            hasHistoryUrl: !!result.historyUrl,
+          });
+        }
+
+        // Always use the result if it has historyUrl (even on errors)
+        // This ensures historyUrl is always shown
+        if (result.historyUrl) {
           setData(result);
+        } else {
+          setData(null);
         }
       } catch (err) {
+        // Log error but don't show it to users
         console.error("Error fetching GitHub metadata:", err);
-        setError(err instanceof Error ? err.message : "Failed to fetch commit data");
+        setData(null);
       } finally {
         setLoading(false);
       }
@@ -125,10 +129,6 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
     );
   }
 
-  // No data at all
-  if (error) {
-    return <div className={`text-slate-400 text-sm mb-2 ${className}`}>Unable to load last updated info</div>;
-  }
-
+  // No data at all - silently return nothing (don't show error to users)
   return null;
 }

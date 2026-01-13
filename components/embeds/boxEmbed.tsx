@@ -1,6 +1,8 @@
 import { CodeXml, Info, TriangleAlert } from "lucide-react";
 import React from "react";
+import ReactCountryFlag from "react-country-flag";
 import { FaLightbulb } from "react-icons/fa6";
+import { withBasePath } from "@/lib/withBasePath";
 import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { toolbarFields } from "@/tina/collection/shared/toolbarFields";
@@ -9,7 +11,15 @@ import { Figure, inlineFigureDefaultItem, inlineFigureFields } from "./figure";
 import { youtubeEmbedTemplate } from "./youtubeEmbed";
 import { imageEmbedTemplate } from "./imageEmbed";
 
-type BoxVariant = "greybox" | "info" | "todo" | "china" | "codeauditor" | "highlight" | "warning" | "tips";
+function YakShaveIcon() {
+  return (
+    <div className="w-8 h-8 mr-4 flex items-start justify-center">
+      <img src={withBasePath("/icons/yakshaver.png")} alt="Yak Shave" className="w-6 h-6" />
+    </div>
+  );
+}
+
+type BoxVariant = "greybox" | "info" | "todo" | "china" | "codeauditor" | "highlight" | "warning" | "tips" | "yakshave";
 
 type VariantConfig = {
   containerClass: string;
@@ -36,15 +46,14 @@ const variantConfig: Record<BoxVariant, VariantConfig> = {
   china: {
     containerClass: "bg-white border",
     icon: (
-      <div
-        className="w-7 h-6 mt-1 mr-4 shrink-0 rounded"
-        style={{
-          backgroundImage: 'url("https://raw.githubusercontent.com/SSWConsulting/SSW.Rules/main/static/assets/china-flag-icon.png")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
+      <div className="w-8 h-8 mr-4 flex items-start justify-center">
+        <ReactCountryFlag countryCode="CN" svg style={{ width: "1.5em", height: "1.5em" }} />
+      </div>
     ),
+  },
+  yakshave: {
+    containerClass: "bg-white border",
+    icon: <YakShaveIcon />,
   },
   codeauditor: {
     containerClass: "bg-white border",
@@ -136,8 +145,9 @@ export const boxEmbedTemplate: Template = {
         { value: "tips", label: "Tip" },
         { value: "highlight", label: "Highlight" },
         { value: "china", label: "China" },
-        { value: "codeauditor", label: "Codeauditor" },
+        { value: "codeauditor", label: "CodeAuditor" },
         { value: "todo", label: "Todo" },
+        { value: "yakshave", label: "YakShave" },
       ],
     },
     {

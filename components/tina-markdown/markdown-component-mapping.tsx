@@ -34,23 +34,62 @@ export function renderTextWithHighlight(content: string): React.ReactNode {
   });
 }
 
+// Helper to extract text from TinaCMS content structure and check for highlights
+function getTextFromContent(props: any): string | null {
+  const content = props?.children?.props?.content;
+
+  if (Array.isArray(content)) {
+    const fullText = content
+      .map((node: any) => (typeof node.text === "string" ? node.text : ""))
+      .join("");
+
+    if (fullText.includes("==")) {
+      return fullText;
+    }
+  }
+
+  return null;
+}
+
+// Helper to create a component that processes highlights
+function withHighlightProcessing(
+  Tag: keyof React.JSX.IntrinsicElements,
+  className?: string
+) {
+  return (props: any) => {
+    const textWithHighlight = getTextFromContent(props);
+
+    if (textWithHighlight) {
+      return React.createElement(Tag, { className }, renderTextWithHighlight(textWithHighlight));
+    }
+
+    return React.createElement(Tag, { className, ...props });
+  };
+}
+
 export const getMarkdownComponentMapping = (enableAnchors = false): Components<any> => ({
   ...embedComponents,
   ...getTypographyComponents(enableAnchors),
-  p: (props) => {
-    const content = props?.children?.props?.content;
+  p: withHighlightProcessing("p"),
+  li: withHighlightProcessing("li"),
+  h1: withHighlightProcessing("h1"),
+  h2: withHighlightProcessing("h2"),
+  h3: withHighlightProcessing("h3"),
+  h4: withHighlightProcessing("h4"),
+  h5: withHighlightProcessing("h5"),
+  h6: withHighlightProcessing("h6"),
+  blockquote: (props: any) => {
+    const textWithHighlight = getTextFromContent(props);
 
-    if (Array.isArray(content)) {
-      const fullText = content
-        .map((node) => (typeof node.text === "string" ? node.text : ""))
-        .join("");
-
-      if (fullText.includes("==")) {
-        return <p>{renderTextWithHighlight(fullText)}</p>;
-      }
+    if (textWithHighlight) {
+      return (
+        <blockquote className="border-l-2 border-gray-900 my-4 pl-4 italic text-gray-600">
+          {renderTextWithHighlight(textWithHighlight)}
+        </blockquote>
+      );
     }
 
-    return <p {...props} />;
+    return <blockquote className="border-l-2 border-gray-900 my-4 pl-4 italic text-gray-600" {...props} />;
   }
 });
 

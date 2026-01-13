@@ -14,6 +14,7 @@
   --color-ssw-gray: #797979;
   --color-ssw-black: #333333;
   --color-table-odd: #f6f8fa;
+  --color-tinacms: #ea4d1c;
 }
 
 @theme inline {
@@ -256,7 +257,7 @@
   }
 
   ul {
-   @apply list-[square]
+   @apply list-[square];
   }
 
   ul > li > ul {

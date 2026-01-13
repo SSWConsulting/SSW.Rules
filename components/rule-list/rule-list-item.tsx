@@ -37,7 +37,7 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
   }
 
   const contentRef = useRef<HTMLDivElement>(null);
-  useMarkHighlight(contentRef as RefObject<HTMLElement>, "ul li div");
+  useMarkHighlight(contentRef as RefObject<HTMLElement>);
 
   return (
     <li key={index} className="p-4 border rounded shadow">

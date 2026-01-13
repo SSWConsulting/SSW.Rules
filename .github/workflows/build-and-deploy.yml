@@ -6,22 +6,22 @@ on:
     workflow_dispatch:
         inputs:
             environment:
-                description: 'Environment to deploy to'
+                description: "Environment to deploy to"
                 required: true
-                default: 'staging'
+                default: "staging"
                 type: choice
                 options:
                     - staging
                     - production
             tina_branch:
-                description: 'Tina branch to use'
+                description: "Tina branch to use"
                 required: false
-                default: ''
+                default: ""
                 type: string
             branch_name:
-                description: 'Source branch name that triggered this deployment'
+                description: "Source branch name that triggered this deployment"
                 required: false
-                default: ''
+                default: ""
                 type: string
 
 concurrency:
@@ -55,6 +55,7 @@ jobs:
             NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
             NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
             NEXT_PUBLIC_GTM_CONTAINER_ID: ${{ secrets.NEXT_PUBLIC_GTM_CONTAINER_ID }}
+            NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
             GH_APP_ID: ${{ vars.GH_APP_ID }}
             GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
             GITHUB_APP_INSTALLATION_ID: ${{ secrets.GITHUB_APP_INSTALLATION_ID }}
@@ -74,13 +75,13 @@ jobs:
                   COMMIT_HASH="${{ needs.build.outputs.commit_hash }}"
                   VERSION_DEPLOYED="${{ needs.build.outputs.version_deployed }}"
                   DEPLOYMENT_URL="${{ needs.build.outputs.deployment_url }}"
-                  
+
                   echo "BUILD_TIMESTAMP=$BUILD_TIMESTAMP" >> $GITHUB_ENV
                   echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
                   echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
                   echo "VERSION_DEPLOYED=$VERSION_DEPLOYED" >> $GITHUB_ENV
                   echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_ENV
-                  
+
                   echo "🏗️ Using Build Info from Build Job:"
                   echo "  Timestamp: $BUILD_TIMESTAMP"
                   echo "  Date: $BUILD_DATE" 
@@ -118,43 +119,54 @@ jobs:
 
             - name: Configure Auth0 and Build Info app settings
               run: |
-                SLOT_NAME="${{ steps.slot.outputs.slot_name }}"
-                if [ -n "$SLOT_NAME" ]; then
-                  SLOT_FLAG="--slot $SLOT_NAME"
-                else
-                  SLOT_FLAG=""
-                fi
-                
-                az webapp config appsettings set \
-                    --name ${{ secrets.AZURE_WEBAPP_NAME }} \
-                    --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                    $SLOT_FLAG \
-                    --settings \
-                    TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }} \
-                    AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }} \
-                    AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }} \
-                    AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
-                    AUTH0_SECRET=${{ secrets.AUTH0_SECRET }} \
-                    AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }} \
-                    AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }} \
-                    GH_APP_ID=${{ vars.GH_APP_ID }} \
-                    GH_APP_PRIVATE_KEY="${{ secrets.GH_APP_PRIVATE_KEY }}" \
-                    GITHUB_APP_INSTALLATION_ID=${{ secrets.GITHUB_APP_INSTALLATION_ID }} \
-                    CRM_TENANT=${{ vars.CRM_TENANT }} \
-                    CRM_TENANT_ID=${{ vars.CRM_TENANT_ID }} \
-                    CRM_APP_ID=${{ vars.CRM_APP_ID }} \
-                    CRM_SCOPE=${{ vars.CRM_SCOPE }} \
-                    CRM_VIEW_CURRENT=${{ vars.CRM_VIEW_CURRENT }} \
-                    CRM_VIEW_PAST=${{ vars.CRM_VIEW_PAST }} \
-                    CRM_APP_SECRET=${{ secrets.CRM_APP_SECRET }} \
-                    NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }} \
-                    BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }} \
-                    VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }} \
-                    DEPLOYMENT_URL="${{ env.DEPLOYMENT_URL }}" \
-                    BUILD_DATE="${{ env.BUILD_DATE }}" \
-                    NEXT_PUBLIC_TINA_BRANCH=${{ vars.NEXT_PUBLIC_TINA_BRANCH }} \
-                    COMMIT_HASH=${{ env.COMMIT_HASH }} \
+                  SLOT_NAME="${{ steps.slot.outputs.slot_name }}"
+
+                  # Build command as array for safe execution
+                  CMD=(
+                    az webapp config appsettings set
+                    --name "${{ secrets.AZURE_WEBAPP_NAME }}"
+                    --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}"
+                  )
+
+                  # Add slot parameter only if slot name is provided
+                  if [ -n "$SLOT_NAME" ]; then
+                    CMD+=(--slot "$SLOT_NAME")
+                  fi
+
+                  # Add settings and output flag
+                  CMD+=(
+                    --settings
+                    "TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}"
+                    "AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }}"
+                    "AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }}"
+                    "AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }}"
+                    "AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}"
+                    "AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }}"
+                    "AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }}"
+                    "GITHUB_API_PAT=${{ secrets.GH_API_PAT }}"
+                    "GH_APP_ID=${{ vars.GH_APP_ID }}"
+                    "GH_APP_PRIVATE_KEY=${{ secrets.GH_APP_PRIVATE_KEY }}"
+                    "GITHUB_APP_INSTALLATION_ID=${{ secrets.GITHUB_APP_INSTALLATION_ID }}"
+                    "CRM_TENANT=${{ vars.CRM_TENANT }}"
+                    "CRM_TENANT_ID=${{ vars.CRM_TENANT_ID }}"
+                    "CRM_APP_ID=${{ vars.CRM_APP_ID }}"
+                    "CRM_SCOPE=${{ vars.CRM_SCOPE }}"
+                    "CRM_VIEW_CURRENT=${{ vars.CRM_VIEW_CURRENT }}"
+                    "CRM_VIEW_PAST=${{ vars.CRM_VIEW_PAST }}"
+                    "CRM_APP_SECRET=${{ secrets.CRM_APP_SECRET }}"
+                    "NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }}"
+                    "NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}"
+                    "BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}"
+                    "VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }}"
+                    "DEPLOYMENT_URL=${{ env.DEPLOYMENT_URL }}"
+                    "BUILD_DATE=${{ env.BUILD_DATE }}"
+                    "NEXT_PUBLIC_TINA_BRANCH=${{ vars.NEXT_PUBLIC_TINA_BRANCH }}"
+                    "COMMIT_HASH=${{ env.COMMIT_HASH }}"
                     --output none
+                  )
+
+                  # Execute the command
+                  "${CMD[@]}"
 
             - name: Deploy to Azure Web App (Production with slot)
               if: github.event.inputs.environment == 'production'

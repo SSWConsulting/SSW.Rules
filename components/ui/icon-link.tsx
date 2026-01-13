@@ -19,7 +19,7 @@ const IconLink: React.FC<IconLinkProps> = ({ href, children, className = "", tit
     "inline-flex items-center justify-center rounded-md font-medium transition-colors hover:text-[var(--ssw-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
   const link = (
-    <Link href={href} className={`${baseClasses} ${className}`} title={title} target={target} rel={rel}>
+    <Link href={href} className={`${baseClasses} ${className}`} target={target} rel={rel}>
       {children}
     </Link>
   );

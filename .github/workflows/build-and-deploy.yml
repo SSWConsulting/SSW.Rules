@@ -194,6 +194,7 @@ jobs:
                       --target-slot production
                   echo "✅ Slot swap completed successfully!"
 
+
             - name: Verify deployment
               run: |
                   echo "✅ Application deployed successfully!"
@@ -204,3 +205,11 @@ jobs:
                   echo "  📅 Deployed: ${{ env.BUILD_DATE }}"
                   echo "  🏷️ Version: ${{ env.VERSION_DEPLOYED }}"
                   echo "  🔗 Build Details: ${{ env.DEPLOYMENT_URL }}"
+
+    crawl_sitemap:
+        name: Crawl Sitemap
+        if: github.event.inputs.environment == 'production'
+        needs: deploy
+        uses: ./.github/workflows/crawl-sitemap.yml
+        with:
+            sitemap_url: https://www.ssw.com.au/rules/sitemap-index-0.xml

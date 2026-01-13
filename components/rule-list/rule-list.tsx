@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { RiGithubLine, RiPencilLine } from "react-icons/ri";
 import RadioButton from "@/components/radio-button";
 import Pagination from "@/components/ui/pagination";
@@ -149,7 +149,7 @@ const RuleList: React.FC<RuleListProps> = ({
         {type === "category" && (
           <div className="hidden md:flex gap-2">
             <IconLink
-              href={`admin/index.html#/collections/edit/category/${categoryUri?.slice(0, -4)}`}
+              href={`/admin/index.html#/collections/edit/category/${categoryUri?.slice(0, -4)}`}
               title="Edit category"
               tooltipOpaque={true}
               children={<RiPencilLine size={ICON_SIZE} />}

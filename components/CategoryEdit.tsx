@@ -10,7 +10,7 @@ export const CategoryEdit = ({ path }: { path?: string }) => {
 
   return (
     <div className="flex gap-2 justify-center items-start sm:items-center">
-      <IconLink href={`admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`} title="Edit category" tooltipOpaque={true}>
+      <IconLink href={`/admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`} title="Edit category" tooltipOpaque={true}>
         <RiPencilLine size={ICON_SIZE} />
       </IconLink>
       <IconLink

@@ -52,8 +52,8 @@ function getTextFromContent(props: any): string | null {
 }
 
 // Helper to create a component that processes highlights
-function withHighlightProcessing<T extends keyof JSX.IntrinsicElements>(
-  Tag: T,
+function withHighlightProcessing(
+  Tag: keyof React.JSX.IntrinsicElements,
   className?: string
 ) {
   return (props: any) => {

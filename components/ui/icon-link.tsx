@@ -12,16 +12,19 @@ export interface IconLinkProps {
   tooltipOpaque?: boolean;
   target?: string;
   rel?: string;
+  onClick?: () => void;
 }
 
-const IconLink: React.FC<IconLinkProps> = ({ href, children, className = "", title, tooltipOpaque = false, target, rel }) => {
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+const IconLink: React.FC<IconLinkProps> = ({ href, children, className = "", title, tooltipOpaque = false, target, rel, onClick }) => {
   const baseClasses =
     "inline-flex items-center justify-center rounded-md font-medium transition-colors hover:text-[var(--ssw-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
   const link = (
-    <Link href={href} className={`${baseClasses} ${className}`} title={title} target={target} rel={rel}>
+    <a href={`${basePath}${href}`} className={`${baseClasses} ${className}`} title={title} target={target} rel={rel} onClick={onClick}>
       {children}
-    </Link>
+    </a>
   );
 
   if (title) {

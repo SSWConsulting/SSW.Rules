@@ -8,7 +8,7 @@ const colorClasses: Record<string, string> = {
 
 export function useMarkHighlight(
   rootRef: React.RefObject<HTMLElement>,
-  selector = "ul li div, ol li div, p"
+  selector = "ul li div, ol li div, p, h1, h2, h3, h4, h5, h6"
 ) {
   useEffect(() => {
     const root = rootRef.current;

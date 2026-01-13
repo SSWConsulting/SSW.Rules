@@ -72,6 +72,12 @@ export const getMarkdownComponentMapping = (enableAnchors = false): Components<a
   ...getTypographyComponents(enableAnchors),
   p: withHighlightProcessing("p"),
   li: withHighlightProcessing("li"),
+  h1: withHighlightProcessing("h1"),
+  h2: withHighlightProcessing("h2"),
+  h3: withHighlightProcessing("h3"),
+  h4: withHighlightProcessing("h4"),
+  h5: withHighlightProcessing("h5"),
+  h6: withHighlightProcessing("h6"),
   blockquote: (props: any) => {
     const textWithHighlight = getTextFromContent(props);
 

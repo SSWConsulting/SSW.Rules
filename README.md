@@ -169,4 +169,9 @@ The Bookmark feature uses the **[SSW.Rules.Functions](https://github.com/SSWCons
 - Clone the repo from https://github.com/SSWConsulting/SSW.Rules
 - Run `yarn install` to install packages
 - Create environment files `.env.development` based off `.env.template` - get the values from Keeper (SSW.Rules Environment Variables)
-- For `GITHUB_API_PAT`, create a [PAT on GitHub](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+- For GitHub App authentication, set the following environment variables:
+  - `GH_APP_ID`: Your GitHub App ID
+  - `GH_APP_PRIVATE_KEY`: Your GitHub App private key (PEM format, can be base64 encoded)
+  - `GITHUB_APP_INSTALLATION_ID`: (Optional) The installation ID. If not provided, the first installation will be used.
+  
+  See [GitHub App authentication documentation](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-as-a-github-app-installation) for more details.

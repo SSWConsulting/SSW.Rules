@@ -40,6 +40,12 @@ on:
                 required: false
             NEXT_PUBLIC_API_BASE_URL:
                 required: false
+            GH_APP_ID:
+                required: true
+            GH_APP_PRIVATE_KEY:
+                required: true
+            GITHUB_APP_INSTALLATION_ID:
+                required: false
             NEXT_PUBLIC_GTM_CONTAINER_ID:
                 required: false
         outputs:
@@ -371,6 +377,9 @@ jobs:
                         NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
                         NEXT_PUBLIC_BASE_PATH=${{ vars.NEXT_PUBLIC_BASE_PATH }}
                         NEXT_PUBLIC_GTM_CONTAINER_ID=${{ secrets.NEXT_PUBLIC_GTM_CONTAINER_ID }}
+                        GH_APP_ID=${{ vars.GH_APP_ID }}
+                        GH_APP_PRIVATE_KEY="${{ secrets.GH_APP_PRIVATE_KEY }}"
+                        GITHUB_APP_INSTALLATION_ID=${{ secrets.GITHUB_APP_INSTALLATION_ID }}
                   # CACHE COMPLETELY DISABLED
                   no-cache: true
                   # Clean up intermediate containers after build

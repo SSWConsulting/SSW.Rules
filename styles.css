@@ -257,7 +257,7 @@
   }
 
   ul {
-   @apply list-[square]
+   @apply list-[square];
   }
 
   ul > li > ul {

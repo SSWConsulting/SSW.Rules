@@ -4,6 +4,7 @@ import { QueryResult } from "@/models/QueryResult";
 import { Rule } from "@/models/Rule";
 import client from "@/tina/__generated__/client";
 import ruleToCategories from "../../../rule-to-categories.json";
+import { toSlug } from "@/lib/utils";
 
 type RuleSearchField = "title" | "uri";
 
@@ -23,9 +24,11 @@ async function fetchLatestRulesData(size: number = 5, sortOption: "lastUpdated" 
 
   const results = res?.data?.ruleConnection?.edges?.filter((edge: any) => edge && edge.node).map((edge: any) => edge.node) || [];
 
-  // Attach an authorUrl (if found) to each result object
   const enhanced = results.map((r: any) => {
-    const authorUrl = findAuthorUrlForResult(r);
+    const displayName = r.lastUpdatedBy || r.createdBy;
+    const authorUrl = displayName
+      ? `https://ssw.com.au/people/${toSlug(displayName)}/`
+      : null;
     return {
       ...r,
       authorUrl,
@@ -46,77 +49,6 @@ export async function fetchLatestRules(size: number = 5, sortOption: "lastUpdate
   );
 
   return await getCachedLatestRules(size, sortOption, includeBody);
-}
-
-// Helper: find author's URL by matching lastUpdatedBy (or createdBy) to authors[].title
-export function findAuthorUrlForResult(result: any): string | null {
-  if (!result) return null;
-
-  const candidates = Array.isArray(result.authors) ? result.authors : [];
-
-  // Choose the primary name to match: prefer lastUpdated, fall back to created
-  const primaryName = (result.lastUpdatedBy || result.createdBy || "").trim();
-  if (!primaryName || candidates.length === 0) return null;
-
-  // Normalize helper
-  const normalize = (s: string) =>
-    s
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, "")
-      .trim();
-
-  const primaryNorm = normalize(primaryName);
-  const primaryWords = primaryNorm.split(/\s+/).filter(Boolean);
-
-  let bestMatch: { score: number; url: string | null } = { score: 0, url: null };
-
-  for (const a of candidates) {
-    if (!a || !a.title) continue;
-    const title = String(a.title || "");
-    const titleNorm = normalize(title);
-
-    // Exact match quick path
-    if (titleNorm === primaryNorm) {
-      return a.url || null;
-    }
-
-    // Score by word overlap (number of shared words)
-    const titleWords = titleNorm.split(/\s+/).filter(Boolean);
-    const sharedWords = primaryWords.filter((w) => titleWords.includes(w)).length;
-
-    // Secondary score: longest common substring length between the two normalized strings
-    const lcsLen = longestCommonSubstring(primaryNorm, titleNorm);
-
-    // Combine scores: give more weight to shared words, but include lcs
-    const score = sharedWords * 100 + lcsLen;
-
-    if (score > bestMatch.score) {
-      bestMatch = { score, url: a.url || null };
-    }
-  }
-
-  return bestMatch.url;
-}
-
-// Compute length of longest common substring between two strings (simple DP)
-function longestCommonSubstring(a: string, b: string): number {
-  if (!a || !b) return 0;
-  const m = a.length;
-  const n = b.length;
-  // Use typed arrays for performance
-  let prev = new Uint16Array(n + 1);
-  let max = 0;
-  for (let i = 1; i <= m; i++) {
-    const cur = new Uint16Array(n + 1);
-    for (let j = 1; j <= n; j++) {
-      if (a.charCodeAt(i - 1) === b.charCodeAt(j - 1)) {
-        cur[j] = prev[j - 1] + 1;
-        if (cur[j] > max) max = cur[j];
-      }
-    }
-    prev = cur;
-  }
-  return max;
 }
 
 export async function fetchRuleCount() {

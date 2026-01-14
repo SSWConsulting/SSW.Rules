@@ -11,7 +11,7 @@ export const CategoryEdit = ({ path }: { path?: string }) => {
   return (
     <div className="flex gap-4 justify-center items-start mt-2 pr-0 sm:pr-4">
       <IconLink href={`/admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`} title="Edit category with TinaCMS" tooltipOpaque={true}>
-        <RiPencilLine className="hover:text-tinacms" size={ICON_SIZE} />
+        <RiPencilLine size={ICON_SIZE} />
       </IconLink>
       <IconLink
         href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${process.env.NEXT_PUBLIC_TINA_BRANCH}/categories/${path}`}

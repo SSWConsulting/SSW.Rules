@@ -4,8 +4,8 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { InstantSearch, useHits, useInstantSearch, useSearchBox } from "react-instantsearch";
-import { searchClient } from "@/lib/algoliaClient";
 import useAppInsights from "@/components/hooks/useAppInsights";
+import { searchClient } from "@/lib/algoliaClient";
 import Spinner from "./Spinner";
 
 interface SearchResult {
@@ -40,6 +40,8 @@ function SearchResults({
   const { query } = useSearchBox();
   const { trackEvent } = useAppInsights();
   const hasTrackedRef = useRef<string>("");
+  const lastIdsRef = useRef<string[]>([]);
+  const lastSortRef = useRef<string>("relevance");
 
   useEffect(() => {
     const isLoading = status === "loading" || status === "stalled";
@@ -59,14 +61,25 @@ function SearchResults({
       sortedHits.sort((a, b) => new Date(b.lastUpdated || 0).getTime() - new Date(a.lastUpdated || 0).getTime());
     }
 
-    onResults?.(sortedHits);
+    const sortLabel = sortBy ?? "relevance";
+    const ids = sortedHits.map((h) => h.objectID);
+
+    const sortChanged = sortLabel !== lastSortRef.current;
+    const idsChanged = ids.length !== lastIdsRef.current.length || ids.some((id, i) => id !== lastIdsRef.current[i]);
+
+    // Prevent infinite re-render loops caused by repeatedly pushing the same results
+    if (sortChanged || idsChanged) {
+      lastSortRef.current = sortLabel;
+      lastIdsRef.current = ids;
+      onResults?.(sortedHits);
+    }
 
     // Track search results (only once per query to avoid duplicates)
     if (query && query.length >= 3 && status === "idle" && hasTrackedRef.current !== query) {
       trackEvent("SearchCompleted", {
         query: query,
         resultCount: sortedHits.length,
-        sortBy: sortBy || "relevance",
+        sortBy: sortLabel,
         hasResults: sortedHits.length > 0,
       });
       hasTrackedRef.current = query;
@@ -111,6 +124,7 @@ function CustomSearchBox({
     // Set new timer to refine search after 400ms of no typing
     debounceTimerRef.current = setTimeout(() => {
       const trimmed = inputValue.trim();
+
       // Only search if there are at least 3 characters
       if (trimmed.length >= 3) {
         refine(trimmed);

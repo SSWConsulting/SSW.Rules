@@ -15,6 +15,7 @@ import SearchBar from "@/components/SearchBarWrapper";
 import Spinner from "@/components/Spinner";
 import Dropdown from "@/components/ui/dropdown";
 import WhyRulesCard from "@/components/WhyRulesCard";
+import { toSlug } from "@/lib/utils";
 import { LatestRule } from "@/models/LatestRule";
 
 interface SearchResult {
@@ -110,6 +111,11 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
     { value: "created", label: "Recently Created" },
   ];
 
+  const getAuthorUrl = (r: any) => {
+    const displayName = r.lastUpdatedBy || r.createdBy;
+    return displayName ? `https://ssw.com.au/people/${toSlug(displayName)}/` : null;
+  };
+
   return (
     <>
       <Breadcrumbs breadcrumbText="Search" />
@@ -153,7 +159,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
                     lastUpdatedBy={result.lastUpdatedBy}
                     lastUpdated={result.lastUpdated}
                     index={index}
-                    authorUrl={result.authors?.[0]?.url ?? null}
+                    authorUrl={getAuthorUrl(result)}
                   />
                 ))}
               </div>

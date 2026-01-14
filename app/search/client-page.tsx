@@ -153,7 +153,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
                     lastUpdatedBy={result.lastUpdatedBy}
                     lastUpdated={result.lastUpdated}
                     index={index}
-                    authorUrl={result.authorUrl}
+                    authorUrl={result.authors?.[0]?.url ?? null}
                   />
                 ))}
               </div>

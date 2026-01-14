@@ -40,8 +40,8 @@ function SearchResults({
   const { query } = useSearchBox();
   const { trackEvent } = useAppInsights();
   const hasTrackedRef = useRef<string>("");
-
-  const lastResultsKeyRef = useRef<string>("");
+  const lastIdsRef = useRef<string[]>([]);
+  const lastSortRef = useRef<string>("relevance");
 
   useEffect(() => {
     const isLoading = status === "loading" || status === "stalled";
@@ -61,10 +61,16 @@ function SearchResults({
       sortedHits.sort((a, b) => new Date(b.lastUpdated || 0).getTime() - new Date(a.lastUpdated || 0).getTime());
     }
 
-    const key = `${sortBy || "relevance"}::${sortedHits.map((h) => h.objectID).join(",")}`;
+    const sortLabel = sortBy ?? "relevance";
+    const ids = sortedHits.map((h) => h.objectID);
 
-    if (key !== lastResultsKeyRef.current) {
-      lastResultsKeyRef.current = key;
+    const sortChanged = sortLabel !== lastSortRef.current;
+    const idsChanged = ids.length !== lastIdsRef.current.length || ids.some((id, i) => id !== lastIdsRef.current[i]);
+
+    // Prevent infinite re-render loops caused by repeatedly pushing the same results
+    if (sortChanged || idsChanged) {
+      lastSortRef.current = sortLabel;
+      lastIdsRef.current = ids;
       onResults?.(sortedHits);
     }
 
@@ -73,7 +79,7 @@ function SearchResults({
       trackEvent("SearchCompleted", {
         query: query,
         resultCount: sortedHits.length,
-        sortBy: sortBy || "relevance",
+        sortBy: sortLabel,
         hasResults: sortedHits.length > 0,
       });
       hasTrackedRef.current = query;
@@ -118,6 +124,7 @@ function CustomSearchBox({
     // Set new timer to refine search after 400ms of no typing
     debounceTimerRef.current = setTimeout(() => {
       const trimmed = inputValue.trim();
+
       // Only search if there are at least 3 characters
       if (trimmed.length >= 3) {
         refine(trimmed);

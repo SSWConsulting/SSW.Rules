@@ -4,8 +4,8 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { InstantSearch, useHits, useInstantSearch, useSearchBox } from "react-instantsearch";
-import { searchClient } from "@/lib/algoliaClient";
 import useAppInsights from "@/components/hooks/useAppInsights";
+import { searchClient } from "@/lib/algoliaClient";
 import Spinner from "./Spinner";
 
 interface SearchResult {
@@ -41,6 +41,8 @@ function SearchResults({
   const { trackEvent } = useAppInsights();
   const hasTrackedRef = useRef<string>("");
 
+  const lastResultsKeyRef = useRef<string>("");
+
   useEffect(() => {
     const isLoading = status === "loading" || status === "stalled";
     onLoadingChange?.(isLoading);
@@ -59,7 +61,12 @@ function SearchResults({
       sortedHits.sort((a, b) => new Date(b.lastUpdated || 0).getTime() - new Date(a.lastUpdated || 0).getTime());
     }
 
-    onResults?.(sortedHits);
+    const key = `${sortBy || "relevance"}::${sortedHits.map((h) => h.objectID).join(",")}`;
+
+    if (key !== lastResultsKeyRef.current) {
+      lastResultsKeyRef.current = key;
+      onResults?.(sortedHits);
+    }
 
     // Track search results (only once per query to avoid duplicates)
     if (query && query.length >= 3 && status === "idle" && hasTrackedRef.current !== query) {

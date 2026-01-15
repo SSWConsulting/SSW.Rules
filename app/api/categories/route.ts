@@ -10,13 +10,17 @@ const cacheMetadata = new Map<string, { lastFetchTime: number }>();
 // Helper function to fetch main category data (will be wrapped with cache)
 async function fetchMainCategoryData(branch?: string) {
   const cacheKey = `main-category-${branch || "main"}`;
+  console.log("[fetchMainCategoryData] Called with branch:", branch, "cacheKey:", cacheKey);
 
   // Mark that we're fetching fresh data (cache miss)
   cacheMetadata.set(cacheKey, { lastFetchTime: Date.now() });
 
   if (branch) {
-    return await client.queries.mainCategoryQuery({}, await getFetchOptions());
+    const fetchOptions = await getFetchOptions();
+    console.log("[fetchMainCategoryData] Branch provided, using fetchOptions:", JSON.stringify(fetchOptions));
+    return await client.queries.mainCategoryQuery({}, fetchOptions);
   } else {
+    console.log("[fetchMainCategoryData] No branch provided, using default query (main branch)");
     return await client.queries.mainCategoryQuery({});
   }
 }
@@ -27,6 +31,11 @@ export async function GET() {
     const branch = cookieStore.get("x-branch")?.value || undefined;
     const branchName = branch || "main";
     const cacheKey = `main-category-${branchName}`;
+    
+    console.log("[GET /api/categories] Cookie x-branch value:", cookieStore.get("x-branch")?.value);
+    console.log("[GET /api/categories] Extracted branch:", branch);
+    console.log("[GET /api/categories] Branch name:", branchName);
+    console.log("[GET /api/categories] Cache key:", cacheKey);
 
     // Create a cached function that fetches main category data
     // Cache key includes branch to ensure different branches get different cache entries
@@ -43,7 +52,9 @@ export async function GET() {
     const existingMetadata = cacheMetadata.get(cacheKey);
     const beforeFetchTime = Date.now();
 
+    console.log("[GET /api/categories] Calling getCachedMainCategory with branch:", branch);
     const result = await getCachedMainCategory(branch);
+    console.log("[GET /api/categories] Result received, has data:", !!result?.data);
 
     // Check if metadata was updated (meaning fresh fetch happened)
     const afterMetadata = cacheMetadata.get(cacheKey);

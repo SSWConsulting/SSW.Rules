@@ -66,6 +66,7 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
         }
         const categoriesData = await categoriesRes.json();
         const items: CategoryItem[] = categoriesData?.categories || [];
+        console.log("categoriesRes", items);
 
         setAllCategories(items);
       } catch (e) {

@@ -237,8 +237,9 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
                           }}
                           disabled={revalidating || isDisabled || !currentBranch}
                           className="w-full text-xs px-3 py-1.5 bg-blue-500 text-white rounded-sm hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          title="The category list may be showing stale data. If you're not seeing the latest categories, click here to refresh and fetch the most up-to-date list."
                         >
-                          {revalidating ? "Revalidating..." : "Revalidate Cache"}
+                          {revalidating ? "Refreshing..." : "Refresh Categories"}
                         </button>
                         {revalidateStatus && (
                           <div

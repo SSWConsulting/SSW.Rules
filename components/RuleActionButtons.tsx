@@ -10,6 +10,7 @@ import { IconLink } from "@/components/ui";
 import { ICON_SIZE } from "@/constants";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
 import { Rule } from "@/types/rule";
+import { setTinaBranchToMainIfExists } from "@/utils/tina/set-branch";
 
 interface RuleActionButtonsProps {
   rule: Rule;
@@ -25,6 +26,8 @@ export default function RuleActionButtons({ rule, showBookmark = true, showOpenI
   if (isAdminPage) return null;
 
   const handleEditClick = () => {
+    setTinaBranchToMainIfExists();
+
     trackEvent("EditRuleClicked", {
       ruleUri: rule.uri,
       ruleTitle: rule.title,

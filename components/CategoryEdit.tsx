@@ -1,6 +1,7 @@
 "use client";
 import { RiGithubFill, RiPencilLine } from "react-icons/ri";
 import { ICON_SIZE } from "@/constants";
+import { setTinaBranchToMainIfExists } from "@/utils/tina/set-branch";
 import { useIsAdminPage } from "./hooks/useIsAdminPage";
 import { IconLink } from "./ui";
 
@@ -10,7 +11,12 @@ export const CategoryEdit = ({ path }: { path?: string }) => {
 
   return (
     <div className="flex gap-4 justify-center items-start mt-2 pr-0 sm:pr-4">
-      <IconLink href={`/admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`} title="Edit category with TinaCMS" tooltipOpaque={true}>
+      <IconLink
+        href={`/admin/index.html#/collections/edit/category/${path?.slice(0, -4)}`}
+        title="Edit category with TinaCMS"
+        tooltipOpaque={true}
+        onClick={setTinaBranchToMainIfExists}
+      >
         <RiPencilLine size={ICON_SIZE} />
       </IconLink>
       <IconLink

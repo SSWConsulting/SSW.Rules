@@ -6,6 +6,7 @@ import RadioButton from "@/components/radio-button";
 import Pagination from "@/components/ui/pagination";
 import { ICON_SIZE } from "@/constants";
 import { RuleListFilter } from "@/types/ruleListFilter";
+import { setTinaBranchToMainIfExists } from "@/utils/tina/set-branch";
 import { IconLink } from "../ui";
 import RuleListItem from "./rule-list-item";
 
@@ -148,12 +149,13 @@ const RuleList: React.FC<RuleListProps> = ({
         </div>
         {type === "category" && (
           <div className="hidden md:flex gap-2">
-            <IconLink
+            {/* <IconLink
               href={`/admin/index.html#/collections/edit/category/${categoryUri?.slice(0, -4)}`}
               title="Edit category with TinaCMS"
               tooltipOpaque={true}
+              onClick={setTinaBranchToMainIfExists}
               children={<RiPencilLine size={ICON_SIZE} />}
-            />
+            /> */}
             <IconLink
               href={`https://github.com/SSWConsulting/SSW.Rules.Content/blob/${process.env.NEXT_PUBLIC_TINA_BRANCH}/categories/${categoryUri}`}
               target="_blank"

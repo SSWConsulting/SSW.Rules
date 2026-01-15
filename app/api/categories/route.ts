@@ -34,7 +34,7 @@ export async function GET() {
       fetchMainCategoryData,
       [cacheKey], // Cache key includes branch
       {
-        revalidate: 3600, // Revalidate every 1 hour (3600 seconds)
+        revalidate: 84600, // Revalidate every 12 hours (84600 seconds)
         tags: ["main-category-categories", `branch-${branchName}-categories`],
       }
     );

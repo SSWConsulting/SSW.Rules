@@ -3,8 +3,14 @@ export const setTinaBranchToMainIfExists = () => {
     if (typeof window === "undefined") return;
 
     const key = "tinacms-current-branch";
-    if (window.localStorage.getItem(key) !== null) {
-      window.localStorage.setItem(key, "main");
+    const current = window.localStorage.getItem(key);
+
+    if (current === null) return;
+
+    const mainJson = JSON.stringify("main");
+
+    if (current !== mainJson) {
+      window.localStorage.setItem(key, mainJson);
     }
   } catch (e) {
     console.warn("Unable to access localStorage:", e);

@@ -19,17 +19,13 @@ function getAppInsights(): ApplicationInsights | null {
 
   // Skip Application Insights in local development
   if (process.env.NODE_ENV === "development") {
-    console.log("🔧 Local development mode - Application Insights disabled");
     return null;
   }
 
-  const connectionString =
-    process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING;
+  const connectionString = process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING;
 
   if (!connectionString) {
-    console.warn(
-      "⚠️ NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING not set - client telemetry disabled"
-    );
+    console.warn("⚠️ NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING not set - client telemetry disabled");
     return null;
   }
 
@@ -62,8 +58,7 @@ function getAppInsights(): ApplicationInsights | null {
       // Fix Google Analytics CORS errors being marked as failures
       // See: https://github.com/SSWConsulting/SSW.Rules/issues/1589#issuecomment-2437107468
       if (
-        (item.baseData?.target?.includes("analytics.google.com") ||
-          item.baseData?.target?.includes("www.google-analytics.com")) &&
+        (item.baseData?.target?.includes("analytics.google.com") || item.baseData?.target?.includes("www.google-analytics.com")) &&
         item.baseData?.responseCode === 0
       ) {
         item.baseData.success = true;

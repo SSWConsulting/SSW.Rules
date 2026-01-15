@@ -2,7 +2,7 @@
 
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
 import React, { useEffect, useMemo, useState } from "react";
-import { BiChevronDown, BiSearch } from "react-icons/bi";
+import { BiChevronDown, BiRefresh, BiSearch } from "react-icons/bi";
 
 interface CategoryItem {
   title: string;
@@ -22,6 +22,10 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
 
   const [selectedCategoryLabel, setSelectedCategoryLabel] = useState<string | null>(null);
   const [isProtectedBranch, setIsProtectedBranch] = useState<boolean | null>(null);
+  const [currentBranch, setCurrentBranch] = useState<string | null>(null);
+  const [revalidating, setRevalidating] = useState(false);
+  const [revalidateStatus, setRevalidateStatus] = useState<string | null>(null);
+  const [refetching, setRefetching] = useState(false);
 
   const selectedValue = useMemo(() => {
     return input.value || null;
@@ -43,11 +47,15 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
           if (branchRes.ok) {
             const branchData = await branchRes.json();
             const branch = branchData?.branch || "";
+            setCurrentBranch(branch || "main");
             branchProtected = !!branch && PROTECTED_BRANCHES.includes(branch);
+          } else {
+            setCurrentBranch("main");
           }
         } catch (branchError) {
           // If branch check fails, assume not protected and continue
           console.warn("Failed to check branch status, proceeding with category fetch:", branchError);
+          setCurrentBranch("main");
         }
 
         setIsProtectedBranch(branchProtected);
@@ -114,6 +122,58 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
     input.onChange(categoryPath);
   };
 
+  const refetchCategories = async () => {
+    try {
+      setRefetching(true);
+      const categoriesRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/categories`, { method: "GET", cache: "no-store" });
+      if (!categoriesRes.ok) {
+        throw new Error(`HTTP ${categoriesRes.status}`);
+      }
+      const categoriesData = await categoriesRes.json();
+      const items: CategoryItem[] = categoriesData?.categories || [];
+      setAllCategories(items);
+    } catch (e) {
+      console.error("Failed to refetch categories:", e);
+    } finally {
+      setRefetching(false);
+    }
+  };
+
+  const handleRevalidate = async () => {
+    if (!currentBranch) return;
+
+    setRevalidating(true);
+    setRevalidateStatus(null);
+
+    try {
+      const branchName = currentBranch || "main";
+      const tag = `branch-${branchName}-categories`;
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/revalidate-tag`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tag }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setRevalidateStatus("Successfully refreshed categories");
+        // Refetch categories after revalidation
+        await refetchCategories();
+      } else {
+        setRevalidateStatus(`Failed: ${data.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Failed to revalidate tag:", error);
+      setRevalidateStatus(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
+    } finally {
+      setRevalidating(false);
+    }
+  };
+
   if (loading) {
     return <div className="p-4 text-center text-gray-500">Loading categories...</div>;
   }
@@ -150,7 +210,7 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
                     <div className="max-h-[70vh] flex flex-col w-full">
                       {/* Search header */}
                       <div className="bg-gray-50 p-2 border-b border-gray-100 z-10 shadow-sm">
-                        <div className="relative">
+                        <div className="relative mb-2">
                           <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                           <input
                             type="text"
@@ -167,14 +227,38 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
                             placeholder="Enter category path, e.g. azure-devops/branch-policies"
                           />
                         </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            handleRevalidate();
+                          }}
+                          disabled={revalidating || isDisabled || !currentBranch}
+                          className="w-full text-xs px-3 py-1.5 bg-blue-500 text-white rounded-sm hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5"
+                          title="The category list may be showing stale data. If you're not seeing the latest categories, click here to refresh and fetch the most up-to-date list."
+                        >
+                          <BiRefresh className={`w-4.5 h-4.5 ${revalidating ? "animate-spin" : ""}`} />
+                          {revalidating ? "Refreshing..." : "Refresh Categories"}
+                        </button>
+                        {revalidateStatus && (
+                          <div
+                            className={`mt-1 text-xs px-2 py-1 rounded ${revalidateStatus.includes("Successfully") ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}
+                          >
+                            {revalidateStatus}
+                          </div>
+                        )}
                       </div>
+
+                      {/* Refetching indicator */}
+                      {refetching && <div className="p-2 bg-blue-50 border-b border-blue-200 text-xs text-blue-700 text-center">Refreshing categories...</div>}
 
                       {/* Empty state */}
                       {!loading && !isDisabled && filteredCategories.length === 0 && <div className="p-4 text-center text-gray-400">No categories found</div>}
 
                       {/* Category list */}
                       {!loading && !isDisabled && filteredCategories.length > 0 && (
-                        <div className="flex-1 overflow-y-auto">
+                        <div className={`flex-1 overflow-y-auto ${refetching ? "opacity-50 pointer-events-none" : ""}`}>
                           {filteredCategories.map((category) => {
                             const selectedRel = selectedValue ? selectedValue.replace(/^public\/uploads\/categories\//, "").replace(/^categories\//, "") : null;
                             const isSelected = selectedRel === category._sys.relativePath;

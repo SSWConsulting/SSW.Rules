@@ -14,14 +14,16 @@ export const getBranch = async () => {
   }
 };
 
-export const getFetchOptions = async () => {
-  const branch = await getBranch();
-  console.log("[getFetchOptions] Branch from getBranch():", branch);
-  const options = branch
+export const getFetchOptions = async (branch?: string) => {
+  // If branch is provided, use it directly (for use in cached functions)
+  // Otherwise, read from cookies (for backward compatibility)
+  const branchValue = branch !== undefined ? branch : await getBranch();
+  console.log("[getFetchOptions] Branch value:", branchValue, branch !== undefined ? "(provided as param)" : "(from cookies)");
+  const options = branchValue
     ? {
         fetchOptions: {
           headers: {
-            "x-branch": branch,
+            "x-branch": branchValue,
           },
         },
       }

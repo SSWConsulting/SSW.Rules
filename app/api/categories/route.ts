@@ -16,7 +16,8 @@ async function fetchMainCategoryData(branch?: string) {
   cacheMetadata.set(cacheKey, { lastFetchTime: Date.now() });
 
   if (branch) {
-    const fetchOptions = await getFetchOptions();
+    // Pass branch directly to avoid reading cookies inside cached function
+    const fetchOptions = await getFetchOptions(branch);
     console.log("[fetchMainCategoryData] Branch provided, using fetchOptions:", JSON.stringify(fetchOptions));
     return await client.queries.mainCategoryQuery({}, fetchOptions);
   } else {
@@ -31,7 +32,7 @@ export async function GET() {
     const branch = cookieStore.get("x-branch")?.value || undefined;
     const branchName = branch || "main";
     const cacheKey = `main-category-${branchName}`;
-    
+
     console.log("[GET /api/categories] Cookie x-branch value:", cookieStore.get("x-branch")?.value);
     console.log("[GET /api/categories] Extracted branch:", branch);
     console.log("[GET /api/categories] Branch name:", branchName);

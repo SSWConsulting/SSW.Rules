@@ -1,5 +1,5 @@
-import { Components } from "tinacms/dist/rich-text";
 import React from "react";
+import { Components } from "tinacms/dist/rich-text";
 
 import { embedComponents } from "@/components/embeds";
 import { getTypographyComponents } from "@/components/typography-components";
@@ -21,7 +21,7 @@ export function renderTextWithHighlight(content: string): React.ReactNode {
 
     const colorClasses: Record<string, string> = {
       yellow: "bg-yellow-200",
-      red: "bg-ssw-red text-white"
+      red: "bg-ssw-red text-white",
     };
 
     const bgClass = colorClasses[color] || colorClasses["yellow"];
@@ -39,9 +39,7 @@ function getTextFromContent(props: any): string | null {
   const content = props?.children?.props?.content;
 
   if (Array.isArray(content)) {
-    const fullText = content
-      .map((node: any) => (typeof node.text === "string" ? node.text : ""))
-      .join("");
+    const fullText = content.map((node: any) => (typeof node.text === "string" ? node.text : "")).join("");
 
     if (fullText.includes("==")) {
       return fullText;
@@ -52,46 +50,42 @@ function getTextFromContent(props: any): string | null {
 }
 
 // Helper to create a component that processes highlights
-function withHighlightProcessing(
-  Tag: keyof React.JSX.IntrinsicElements,
-  className?: string
-) {
-  return (props: any) => {
-    const textWithHighlight = getTextFromContent(props);
+type TagOrComponent = React.ElementType;
 
-    if (textWithHighlight) {
-      return React.createElement(Tag, { className }, renderTextWithHighlight(textWithHighlight));
-    }
+export const withHighlightProcessing = (TagOrComp: TagOrComponent) => (props: any) => {
+  const textWithHighlight = getTextFromContent(props);
+  const children = textWithHighlight ? renderTextWithHighlight(textWithHighlight) : props.children;
 
-    return React.createElement(Tag, { className, ...props });
+  const Comp: any = TagOrComp;
+  return <Comp {...props}>{children}</Comp>;
+};
+
+export const getMarkdownComponentMapping = (enableAnchors = false): Components<any> => {
+  const typography = getTypographyComponents(enableAnchors);
+
+  return {
+    ...embedComponents,
+    ...typography,
+
+    p: withHighlightProcessing(typography.p ?? "p"),
+    li: withHighlightProcessing(typography.li ?? "li"),
+
+    h1: withHighlightProcessing("h1"),
+    h2: withHighlightProcessing(typography.h2),
+    h3: withHighlightProcessing(typography.h3),
+    h4: withHighlightProcessing(typography.h4),
+    h5: withHighlightProcessing("h5"),
+    h6: withHighlightProcessing("h6"),
+
+    blockquote: (props: any) => {
+      const textWithHighlight = getTextFromContent(props);
+      if (textWithHighlight) {
+        return <blockquote className="border-l-2 border-gray-900 my-4 pl-4 italic text-gray-600">{renderTextWithHighlight(textWithHighlight)}</blockquote>;
+      }
+      return <blockquote className="border-l-2 border-gray-900 my-4 pl-4 italic text-gray-600" {...props} />;
+    },
   };
-}
-
-export const getMarkdownComponentMapping = (enableAnchors = false): Components<any> => ({
-  ...embedComponents,
-  ...getTypographyComponents(enableAnchors),
-  p: withHighlightProcessing("p"),
-  li: withHighlightProcessing("li"),
-  h1: withHighlightProcessing("h1"),
-  h2: withHighlightProcessing("h2"),
-  h3: withHighlightProcessing("h3"),
-  h4: withHighlightProcessing("h4"),
-  h5: withHighlightProcessing("h5"),
-  h6: withHighlightProcessing("h6"),
-  blockquote: (props: any) => {
-    const textWithHighlight = getTextFromContent(props);
-
-    if (textWithHighlight) {
-      return (
-        <blockquote className="border-l-2 border-gray-900 my-4 pl-4 italic text-gray-600">
-          {renderTextWithHighlight(textWithHighlight)}
-        </blockquote>
-      );
-    }
-
-    return <blockquote className="border-l-2 border-gray-900 my-4 pl-4 italic text-gray-600" {...props} />;
-  }
-});
+};
 
 // Default export without anchors for backwards compatibility
 export const MarkdownComponentMapping: Components<any> = getMarkdownComponentMapping(false);

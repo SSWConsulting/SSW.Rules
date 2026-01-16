@@ -2,14 +2,14 @@ import { CodeXml, Info, TriangleAlert } from "lucide-react";
 import React from "react";
 import ReactCountryFlag from "react-country-flag";
 import { FaLightbulb } from "react-icons/fa6";
-import { withBasePath } from "@/lib/withBasePath";
 import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import { withBasePath } from "@/lib/withBasePath";
 import { toolbarFields } from "@/tina/collection/shared/toolbarFields";
 import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
 import { Figure, inlineFigureDefaultItem, inlineFigureFields } from "./figure";
-import { youtubeEmbedTemplate } from "./youtubeEmbed";
 import { imageEmbedTemplate } from "./imageEmbed";
+import { youtubeEmbedTemplate } from "./youtubeEmbed";
 
 function YakShaveIcon() {
   return (
@@ -104,10 +104,16 @@ export function BoxEmbed(props: any) {
       <div className={`p-4 rounded-sm my-4 ${config.containerClass}`}>
         <div className="flex items-start">
           {config.icon}
-          <div className={`[&_p:last-child]:mb-0 ${config.textClass ?? ""}`}>
-            <div>
-              <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
-            </div>
+          <div
+            className="
+              min-w-0 w-0 flex-1 break-words whitespace-normal
+              [&_pre]:max-w-full
+              [&_pre]:overflow-x-auto
+              [&_pre]:whitespace-pre
+              [&_img]:max-w-full [&_img]:h-auto
+              [&_p:last-child]:mb-0"
+          >
+            <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
           </div>
         </div>
       </div>

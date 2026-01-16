@@ -47,7 +47,7 @@ const variantConfig: Record<BoxVariant, VariantConfig> = {
     containerClass: "bg-white border",
     icon: (
       <div className="w-8 h-8 mr-4 flex items-start justify-center">
-        <ReactCountryFlag countryCode="CN" svg style={{ width: "1.5em", height: "1.5em" }} />
+        <ReactCountryFlag countryCode="CN" svg className="w-8! h-8!" />
       </div>
     ),
   },

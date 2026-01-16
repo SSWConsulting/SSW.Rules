@@ -67,8 +67,8 @@ export const getMarkdownComponentMapping = (enableAnchors = false): Components<a
     ...embedComponents,
     ...typography,
 
-    p: withHighlightProcessing(typography.p ?? "p"),
-    li: withHighlightProcessing(typography.li ?? "li"),
+    p: withHighlightProcessing("p"),
+    li: withHighlightProcessing("li"),
 
     h1: withHighlightProcessing("h1"),
     h2: withHighlightProcessing(typography.h2),

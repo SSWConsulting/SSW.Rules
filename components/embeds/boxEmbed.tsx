@@ -11,15 +11,15 @@ import { Figure, inlineFigureDefaultItem, inlineFigureFields } from "./figure";
 import { imageEmbedTemplate } from "./imageEmbed";
 import { youtubeEmbedTemplate } from "./youtubeEmbed";
 
-function YakShaveIcon() {
+function YakShaverIcon() {
   return (
     <div className="w-8 h-8 mr-4 flex items-start justify-center">
-      <img src={withBasePath("/icons/yakshaver.png")} alt="Yak Shave" className="w-6 h-6" />
+      <img src={withBasePath("/icons/yakshaver.svg")} alt="Yak Shave" className="w-8 h-8" />
     </div>
   );
 }
 
-type BoxVariant = "greybox" | "info" | "todo" | "china" | "codeauditor" | "highlight" | "warning" | "tips" | "yakshave";
+type BoxVariant = "greybox" | "info" | "todo" | "china" | "codeauditor" | "highlight" | "warning" | "tips" | "yakshaver";
 
 type VariantConfig = {
   containerClass: string;
@@ -51,9 +51,9 @@ const variantConfig: Record<BoxVariant, VariantConfig> = {
       </div>
     ),
   },
-  yakshave: {
+  yakshaver: {
     containerClass: "bg-white border",
-    icon: <YakShaveIcon />,
+    icon: <YakShaverIcon />,
   },
   codeauditor: {
     containerClass: "bg-white border",
@@ -152,8 +152,8 @@ export const boxEmbedTemplate: Template = {
         { value: "highlight", label: "Highlight" },
         { value: "china", label: "China" },
         { value: "codeauditor", label: "CodeAuditor" },
+        { value: "yakshaver", label: "YakShaver" },
         { value: "todo", label: "Todo" },
-        { value: "yakshave", label: "YakShave" },
       ],
     },
     {

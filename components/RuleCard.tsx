@@ -12,30 +12,18 @@ interface RuleCardProps {
   authorUrl?: string | null;
 }
 
-export default function RuleCard({
-  title,
-  slug,
-  lastUpdatedBy,
-  lastUpdated,
-  index,
-  authorUrl
-}: RuleCardProps) {
+export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, index, authorUrl }: RuleCardProps) {
   return (
     <Card className="mb-4">
       <div className="flex">
-        {index !== undefined && (
-          <span className="text-gray-500 mr-2">#{index + 1}</span>
-        )}
+        {index !== undefined && <span className="text-gray-500 mr-2">#{index + 1}</span>}
         <div className="flex flex-col">
           <Link href={`/${slug}`} className="no-underline">
-            <h2 className="m-0 mb-2 text-2xl max-sm:text-lg hover:text-ssw-red">
-              {title}
-            </h2>
+            <h2 className="m-0 mb-2 text-2xl max-sm:text-lg hover:text-ssw-red">{title}</h2>
           </Link>
           <h4 className="flex m-0 content-center text-lg text-gray-400">
             <span className="font-medium">
-              {authorUrl ? (
-                // Always treat authorUrl as external
+              {authorUrl && (lastUpdatedBy || "Unknown") !== "Unknown" ? (
                 <a href={authorUrl} target="_blank" rel="noopener noreferrer" className="underline">
                   {lastUpdatedBy || "Unknown"}
                 </a>

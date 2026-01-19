@@ -41,7 +41,7 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
 
           <RuleListWrapper
             categoryUri={path}
-            rules={finalRules}
+            rules={baseRules}
             initialView={view}
             initialPage={page}
             initialPerPage={perPage}

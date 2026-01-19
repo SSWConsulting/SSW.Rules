@@ -23,13 +23,11 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, index }) 
               <Link href={`/${rule.uri}`} title={rule.title} ref={linkRef} className="no-underline">
                 {rule.title}
               </Link>
+              {rule.isArchived && (
+                <span className="inline-block bg-ssw-red text-white text-sm px-2 py-1 ml-2 rounded font-medium relative -top-0.5">Archived</span>
+              )}
             </h2>
           </div>
-          {rule.isArchived && (
-            <div className="ml-8 md:ml-6">
-              <span className="inline-block bg-red-600 text-white text-sm px-2 py-1 rounded font-medium">Archived</span>
-            </div>
-          )}
         </div>
 
         <RuleActionButtons rule={rule} showOpenInChatGpt={false} />

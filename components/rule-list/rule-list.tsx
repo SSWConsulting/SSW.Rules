@@ -136,12 +136,12 @@ const RuleList: React.FC<RuleListProps> = ({
           )}
 
           {onIncludeArchivedChange && (
-            <label className="flex items-center gap-2 px-4 py-1 text-sm cursor-pointer hover:bg-gray-50 transition-colors bg-white sm:ml-2">
+            <label className="flex items-center gap-2 px-4 py-1 text-sm cursor-pointer transition-colors bg-white sm:ml-2">
               <input
                 type="checkbox"
                 checked={includeArchived}
                 onChange={(e) => handleIncludeArchivedChange(e.target.checked)}
-                className="w-4 h-4 border-gray-300 rounded focus:ring-ssw-red focus:ring-2 accent-ssw-red"
+                className="w-4 h-4 border-gray-300 rounded accent-ssw-red focus:outline-none focus:ring-0 focus:ring-offset-0 cursor-pointer"
               />
               <span className="text-gray-700">Include Archived</span>
             </label>

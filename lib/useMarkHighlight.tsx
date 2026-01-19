@@ -6,10 +6,7 @@ const colorClasses: Record<string, string> = {
   red: "bg-[var(--ssw-red)] text-white px-1 py-0.5 rounded-sm",
 };
 
-export function useMarkHighlight(
-  rootRef: React.RefObject<HTMLElement>,
-  selector = "ul li div, ol li div, p, h1, h2, h3, h4, h5, h6"
-) {
+export function useMarkHighlight(rootRef: React.RefObject<HTMLElement>, selector = "ul li div, ol li div, p, h1, h2, h3, h4, h5, h6, td") {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -19,26 +16,23 @@ export function useMarkHighlight(
         if (el.dataset.markProcessed === "1") return;
         if (!el.innerHTML.includes("==")) return;
 
-        el.innerHTML = el.innerHTML.replace(
-          /==([^=]+)==/g,
-          (_, inner) => {
-            const trimmed = inner.trim();
-            const colonIndex = trimmed.indexOf(":");
+        el.innerHTML = el.innerHTML.replace(/==([^=]+)==/g, (_, inner) => {
+          const trimmed = inner.trim();
+          const colonIndex = trimmed.indexOf(":");
 
-            let color = "yellow";
-            let text = trimmed;
+          let color = "yellow";
+          let text = trimmed;
 
-            if (colonIndex > 0 && colonIndex < 10) {
-              const maybeColor = trimmed.substring(0, colonIndex).toLowerCase();
-              if (colorClasses[maybeColor]) {
-                color = maybeColor;
-                text = trimmed.substring(colonIndex + 1).trim();
-              }
+          if (colonIndex > 0 && colonIndex < 10) {
+            const maybeColor = trimmed.substring(0, colonIndex).toLowerCase();
+            if (colorClasses[maybeColor]) {
+              color = maybeColor;
+              text = trimmed.substring(colonIndex + 1).trim();
             }
-
-            return `<mark class="${colorClasses[color]}">${text}</mark>`;
           }
-        );
+
+          return `<mark class="${colorClasses[color]}">${text}</mark>`;
+        });
         el.dataset.markProcessed = "1";
       });
     };

@@ -18,7 +18,7 @@ interface AuthorsCardProps {
 
 export default function AuthorsCard({ authors }: AuthorsCardProps) {
   const resolvedAuthors: Author[] = useMemo(() => authors || [], [authors]);
-  const placeholderImg = "/uploads/ssw-employee-profile-placeholder-sketch.jpg";
+  const placeholderImg = `${process.env.NEXT_PUBLIC_BASE_PATH}/uploads/ssw-employee-profile-placeholder-sketch.jpg`;
 
   const getImgSource = useCallback(
     (author: Author): string => {
@@ -75,6 +75,11 @@ export default function AuthorsCard({ authors }: AuthorsCardProps) {
   const handleImageError = (index: number) => {
     setImgSrcList((prev) => {
       const updated = [...prev];
+      // If the placeholder image also fails, set to empty string to prevent infinite loop
+      if (updated[index] === placeholderImg) {
+        updated[index] = "";
+        return updated;
+      }
       updated[index] = placeholderImg;
       return updated;
     });

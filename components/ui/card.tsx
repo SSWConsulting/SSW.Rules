@@ -9,7 +9,7 @@ type CardProps = {
 
 export function Card({ children,title,dropShadow, className = "" }: CardProps) {
   return (
-    <div className={`border-2 border-border rounded-sm p-4 bg-card ${dropShadow?'drop-shadow-lg':''} ${className}`}>
+    <div className={`border border-border rounded-sm p-4 bg-card ${dropShadow?'drop-shadow-lg':''} ${className}`}>
       {title && <h3 className="mt-0 text-lg">{title}</h3>}
       {children}
     </div>

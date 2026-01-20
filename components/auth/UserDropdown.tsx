@@ -102,7 +102,7 @@ export default function UserDropdown() {
         <a
           href={`https://www.github.com/${u.nickname}`}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer nofollow"
           className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800"
         >
           <FaGithub size="18" /> GitHub Profile

@@ -9,7 +9,7 @@ export default function WhyRulesCard() {
           className="underline"
           href="https://www.codemag.com/article/0605091"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener noreferrer nofollow"
         >
           History of SSW Rules
         </a>

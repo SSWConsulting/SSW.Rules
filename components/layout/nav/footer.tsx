@@ -20,7 +20,7 @@ export const Footer = () => {
           </span>
           <span>
             Loving SSW Rules?{" "}
-            <a href="https://github.com/SSWConsulting/SSW.Rules" target="_blank" rel="noreferrer" className="action-button-label underline hover:underline">
+            <a href="https://github.com/SSWConsulting/SSW.Rules" target="_blank" rel="noopener noreferrer nofollow" className="action-button-label underline hover:underline">
               Star us on GitHub.
             </a>{" "}
           </span>
@@ -36,6 +36,8 @@ export const Footer = () => {
                 <a
                   className="inline-block text-white visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red max-sm:mb-3"
                   href="https://github.com/SSWConsulting/SSW.Rules/issues"
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
                 >
                   FEEDBACK / SUGGEST A FEATURE
                 </a>
@@ -43,6 +45,8 @@ export const Footer = () => {
                 <a
                   className="inline-block text-white visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red max-sm:mb-3"
                   href="https://www.ssw.com.au/terms-and-conditions"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   TERMS AND CONDITIONS
                 </a>
@@ -54,7 +58,7 @@ export const Footer = () => {
                     title="SSW on TikTok"
                     href="https://www.tiktok.com/@ssw_tv"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer nofollow"
                   >
                     <FaTiktok size={24} />
                   </a>
@@ -64,7 +68,7 @@ export const Footer = () => {
                     title="SSW on Twitter"
                     href="https://twitter.com/SSW_TV"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer nofollow"
                   >
                     <FaXTwitter size={24} />
                   </a>
@@ -74,7 +78,7 @@ export const Footer = () => {
                     title="SSW on Instagram"
                     href="https://www.instagram.com/ssw_tv"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer nofollow"
                   >
                     <FaInstagram size={24} />
                   </a>
@@ -84,7 +88,7 @@ export const Footer = () => {
                     title="SSW on Facebook"
                     href="https://www.facebook.com/SSW.page"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer nofollow"
                   >
                     <FaFacebook size={24} />
                   </a>
@@ -94,7 +98,7 @@ export const Footer = () => {
                     title="SSW on LinkedIn"
                     href="https://www.linkedin.com/company/ssw"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer nofollow"
                   >
                     <FaLinkedin size={24} />
                   </a>
@@ -104,7 +108,7 @@ export const Footer = () => {
                     title="SSW on YouTube"
                     href="https://www.youtube.com/user/sswtechtalks"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer nofollow"
                   >
                     <FaYoutube size={24} />
                   </a>
@@ -127,7 +131,7 @@ export const Footer = () => {
                   className="inline-block text-white visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
                   href={deploymentUrl}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer nofollow"
                 >
                   {versionDeployed}
                 </a>

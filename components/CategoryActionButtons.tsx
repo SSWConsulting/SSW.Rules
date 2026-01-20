@@ -26,7 +26,7 @@ const CategoryActionButtons: React.FC = () => {
       <a
         href="https://www.ssw.com.au/ssw/Standards/Default.aspx"
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener noreferrer nofollow"
         className="flex items-center justify-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 bg-white rounded-md border hover:bg-gray-50 hover:text-ssw-red transition-colors duration-200 no-underline text-center"
       >
         <BiLinkExternal className="hidden sm:block w-4 h-4" />

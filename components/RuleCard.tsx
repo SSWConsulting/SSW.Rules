@@ -24,7 +24,7 @@ export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, inde
           <h4 className="flex m-0 content-center text-lg text-gray-400">
             <span className="font-medium">
               {authorUrl && (lastUpdatedBy || "Unknown") !== "Unknown" ? (
-                <a href={authorUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                <a href={authorUrl} target="_blank" rel="noopener noreferrer nofollow" className="underline">
                   {lastUpdatedBy || "Unknown"}
                 </a>
               ) : (

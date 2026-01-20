@@ -3,6 +3,7 @@
 import { formatDate } from "date-fns";
 import { useEffect, useState } from "react";
 import { FaHistory } from "react-icons/fa";
+import Tooltip from "../tooltip/tooltip";
 import { getRelativeTime } from "./get-relative-time";
 import type { GitHubMetadataProps, GitHubMetadataResponse } from "./types";
 
@@ -89,7 +90,9 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
                   displayAuthorName
                 )}
               </span>
-              {` ${lastUpdateInRelativeTime}.`}
+              <Tooltip text={lastUpdateInAbsoluteTime} showDelay={0} hideDelay={0} opaque={true}>
+                <span>{` ${lastUpdateInRelativeTime}.`}</span>
+              </Tooltip>
             </span>
             <div className="relative group text-black">
               <a

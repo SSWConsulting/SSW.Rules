@@ -100,7 +100,7 @@ export default function AuthorsCard({ authors }: AuthorsCardProps) {
             <div className="px-2 flex items-center my-2 justify-center" key={`author_${index}`}>
               {/* @ts-expect-error tinacms types are wrong */}
               <div className="w-12 h-12 overflow-hidden rounded-full relative" data-tina-field={tinaField(authors?.[index], "title")}>
-                <a href={author.url} target="_blank" rel="noopener noreferrer">
+                <a href={author.url} target="_blank" rel="noopener noreferrer nofollow">
                   {imgSrc?.trim() && (
                     <Image
                       src={imgSrc}

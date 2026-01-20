@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { Prism } from "tinacms/dist/rich-text/prism";
 import { toSlug } from "@/lib/utils";
+import { CustomLink } from "@/components/customLink";
 
 // Helper function to extract text content from TinaCMS props structure
 const getTextContent = (props: any): string => {
@@ -106,9 +107,9 @@ export const getTypographyComponents = (enableAnchors = false) => ({
     }
 
     return (
-      <a className="underline hover:text-ssw-red" href={href} {...props}>
+      <CustomLink className="underline hover:text-ssw-red" href={href || ""}>
         {props.children}
-      </a>
+      </CustomLink>
     );
   },
   li: (props) => <li {...props} />,

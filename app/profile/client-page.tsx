@@ -167,7 +167,7 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
                 />
                 <div>
                   <h1>{isAuthenticated ? user?.name : ""}</h1>
-                  <a className="flex align-center underline" href={`https://www.github.com/${user?.nickname}`} target="_blank" rel="noreferrer">
+                  <a className="flex align-center underline" href={`https://www.github.com/${user?.nickname}`} target="_blank" rel="noopener noreferrer nofollow">
                     <RiGithubFill size={20} className=" my-2 mx-1" />
                     <span className="my-2">GitHub Profile</span>
                   </a>

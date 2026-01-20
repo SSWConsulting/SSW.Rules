@@ -152,7 +152,7 @@ export default function ArchivedReasonContent({ reason, className = "" }: Archiv
         }
 
         return (
-          <a key={index} href={href} className={linkClassName} target="_blank" rel="noopener noreferrer">
+          <a key={index} href={href} className={linkClassName} target="_blank" rel="noopener noreferrer nofollow">
             {segment.content}
           </a>
         );

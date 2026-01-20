@@ -55,7 +55,7 @@ const ActionButtons = () => {
         <Tooltip text="Try out RulesGPT" showDelay={3000} hideDelay={18000}>
           <a
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer nofollow"
             href="https://rulesgpt.ssw.com.au"
             className="action-btn-link-underlined"
             onClick={() => {
@@ -70,7 +70,7 @@ const ActionButtons = () => {
         <Tooltip text="Create an SSW Rule" showDelay={1000} hideDelay={3000}>
           <a
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer nofollow"
             href={`/${basePath}/admin/index.html#/collections/rule/~`}
             className="action-btn-link-underlined"
             aria-label="Create an SSW Rule"
@@ -82,7 +82,7 @@ const ActionButtons = () => {
         <Tooltip text="SSW Rules wiki" showDelay={1000} hideDelay={3000}>
           <a
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer nofollow"
             href="https://github.com/SSWConsulting/SSW.Rules.Content/wiki"
             className="action-btn-link-underlined"
             aria-label="SSW Rules wiki"

@@ -14,7 +14,7 @@ export default function HelpImproveCard() {
           className="underline"
           href="https://twitter.com/adamcogan"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener noreferrer nofollow"
         >
           tweet me
         </a>

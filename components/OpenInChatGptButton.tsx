@@ -18,7 +18,7 @@ You are to assist the user with their queries about this rule - and if they have
   }, []);
 
   return (
-    <Link href={uri} target="_blank" aria-label="Open in ChatGPT" className="flex items-center px-2 py-1 border rounded-md hover:bg-ssw-red hover:text-white">
+    <Link href={uri} target="_blank" rel="noopener noreferrer nofollow" aria-label="Open in ChatGPT" className="flex items-center px-2 py-1 border rounded-md hover:bg-ssw-red hover:text-white">
       <RiOpenaiFill />
       <span className="ml-1 text-sm font-semibold">Open in ChatGPT</span>
     </Link>

@@ -12,7 +12,7 @@ const QuickLinksCard = ({ links } : QuickLinksProps) => {
             <ul>
                 {links.map((link) => (
                     <li key={link.uri}>
-                        <Link href={link.uri} target="_blank" rel="noopener noreferrer">{link.linkText}</Link>
+                        <Link href={link.uri} target="_blank" rel="noopener noreferrer nofollow">{link.linkText}</Link>
                     </li>
                 ))}
             </ul>

@@ -83,7 +83,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
               Last updated by{" "}
               <span className="font-bold text-black">
                 {shouldShowLink ? (
-                  <a href={`https://github.com/${latestCommit.author?.login}`} target="_blank" rel="noopener noreferrer">
+                  <a href={`https://github.com/${latestCommit.author?.login}`} target="_blank" rel="noopener noreferrer nofollow">
                     {displayAuthorName}
                   </a>
                 ) : (
@@ -99,7 +99,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
                 href={historyUrl}
                 target="_blank"
                 title={tooltipContent}
-                rel="noopener noreferrer"
+                rel="noopener noreferrer nofollow"
                 className="underline flex flex-row items-center gap-1.5 mb-2 md:mb-0"
               >
                 See history
@@ -120,7 +120,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
               href={historyUrl}
               target="_blank"
               title="View commit history on GitHub"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               className="underline flex flex-row items-center gap-1.5 mb-2 md:mb-0"
             >
               See history

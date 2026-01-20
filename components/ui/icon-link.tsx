@@ -30,7 +30,7 @@ const IconLink: React.FC<IconLinkProps> = ({ href, children, className = "", tit
   }
 
   const link = (
-    <a href={adjustedHref} className={`${baseClasses} ${className}`} title={title} target={target} rel={rel} onClick={onClick}>
+    <a href={adjustedHref} className={`${baseClasses} ${className}`} target={target} rel={rel} onClick={onClick}>
       {children}
     </a>
   );

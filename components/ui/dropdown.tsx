@@ -32,6 +32,14 @@ export default function Dropdown({ options, value, onChange, className = '', sho
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleScroll = () => setIsOpen(false);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isOpen]);
+
   const selectedOption = options.find(option => option.value === value);
 
   const handleSelect = (optionValue: string) => {

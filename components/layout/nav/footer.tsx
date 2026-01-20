@@ -36,6 +36,8 @@ export const Footer = () => {
                 <a
                   className="inline-block text-white visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red max-sm:mb-3"
                   href="https://github.com/SSWConsulting/SSW.Rules/issues"
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
                 >
                   FEEDBACK / SUGGEST A FEATURE
                 </a>
@@ -43,6 +45,8 @@ export const Footer = () => {
                 <a
                   className="inline-block text-white visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red max-sm:mb-3"
                   href="https://www.ssw.com.au/terms-and-conditions"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   TERMS AND CONDITIONS
                 </a>

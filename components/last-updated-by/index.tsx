@@ -90,7 +90,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
                   displayAuthorName
                 )}
               </span>
-              <Tooltip text={lastUpdateInAbsoluteTime} showDelay={0} hideDelay={0} opaque={true}>
+              {" "}<Tooltip text={lastUpdateInAbsoluteTime} showDelay={0} hideDelay={0} opaque={true}>
                 <span>{` ${lastUpdateInRelativeTime}.`}</span>
               </Tooltip>
             </span>

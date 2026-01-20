@@ -32,11 +32,6 @@ yarn-error.log*
 
 .tina/__generated__
 
-/category-uri-title-map.json
-/rule-to-categories.json
-/orphaned_rules.json
-/redirects.json
-
 # Claude Code configuration
 CLAUDE.md
 .claude/settings.local.json

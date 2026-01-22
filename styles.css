@@ -226,14 +226,10 @@
     @apply text-3xl;
   }
 
-  h2:not(:first-child), h3:not(:first-child) {
-    @apply mt-8;
-  }
-
   h3 {
     @apply text-2xl;
   }
-
+  
   h4 {
     @apply text-xl;
   }
@@ -244,6 +240,14 @@
 
   h6 {
     @apply text-base;
+  }
+
+  h2:first-child, h3:first-child, h4:first-child, h5:first-child {
+    @apply mt-0;
+  }
+
+  h2:not(:first-child), h3:not(:first-child) {
+    @apply mt-8;
   }
 
   p {

@@ -49,7 +49,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
         console.error("Error fetching GitHub metadata:", err);
         setData(null);
       } finally {
-        setLoading(false);
+        //setLoading(false);
       }
     };
 
@@ -57,7 +57,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
   }, [owner, repo, path]);
 
   if (loading) {
-    return <div className={`text-slate-500 text-sm mb-2 ${className}`}>Loading last updated info...</div>;
+    return <div className={`text-slate-500 text-sm ${className}`}>Loading last updated info...</div>;
   }
 
   // If we have data with historyUrl, show it even if there's an error
@@ -89,8 +89,8 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
                 ) : (
                   displayAuthorName
                 )}
-              </span>
-              {" "}<Tooltip text={lastUpdateInAbsoluteTime} showDelay={0} hideDelay={0} opaque={true}>
+              </span>{" "}
+              <Tooltip text={lastUpdateInAbsoluteTime} showDelay={0} hideDelay={0} opaque={true}>
                 <span>{` ${lastUpdateInRelativeTime}.`}</span>
               </Tooltip>
             </span>

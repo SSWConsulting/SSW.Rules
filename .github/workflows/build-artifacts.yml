@@ -232,7 +232,7 @@ jobs:
 
       - name: Generate search index with content
         env:
-          LOCAL_CONTENT_RELATIVE_PATH: ./content
+          LOCAL_CONTENT_RELATIVE_PATH: ../content
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
           TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}

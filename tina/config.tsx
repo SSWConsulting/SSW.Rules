@@ -40,6 +40,8 @@ export const config = defineConfig({
       indexerToken: searchToken,
       stopwordLanguages: ["eng"],
     },
+    indexBatchSize: 100,
+    maxSearchIndexFieldLength: 100,
   },
   repoProvider: {
     defaultBranchName: branch,

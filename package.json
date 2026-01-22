@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm tinacms dev -c \"next dev --turbopack\"",
-    "build": "tinacms build && next build",
+    "build": "tinacms build && tinacms search-index && next build",
     "postbuild": "next-sitemap",
     "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
     "start": "next start",

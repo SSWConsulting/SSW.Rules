@@ -13,18 +13,21 @@ interface LatestRulesListProps {
   title?: string;
 }
 
+type ApiResult = { path: string; authorName: string | null; date: string | null; sha: string | null } | { path: string; error: string };
+
 type ApiResponse = {
   ok: boolean;
-  mode: "latest" | "creator";
+  mode: "updated" | "created";
   ref: string;
-  results: Array<{ path: string; authorName: string | null; date: string | null; sha: string | null } | { path: string; error: string }>;
+  results: ApiResult[];
 };
 
 export default function LatestRulesList({ rulesByUpdated, rulesByCreated, title }: LatestRulesListProps) {
   const [currentSort, setCurrentSort] = useState<"lastUpdated" | "created">("lastUpdated");
 
-  // uri -> authorName
   const [authorNameByUri, setAuthorNameByUri] = useState<Record<string, string | null>>({});
+  const [dateByUri, setDateByUri] = useState<Record<string, string | null>>({});
+  const [loadedByUri, setLoadedByUri] = useState<Record<string, boolean>>({});
 
   const currentRules = currentSort === "lastUpdated" ? rulesByUpdated : rulesByCreated;
 
@@ -33,55 +36,124 @@ export default function LatestRulesList({ rulesByUpdated, rulesByCreated, title 
     { value: "created", label: "Recently Created" },
   ];
 
-  const { mode, paths, pathToUri } = useMemo(() => {
-    const mode: "latest" | "creator" = currentSort === "lastUpdated" ? "latest" : "creator";
+  const { mode, paths, pathToUri, uris } = useMemo(() => {
+    const mode: "updated" | "created" = currentSort === "lastUpdated" ? "updated" : "created";
 
     const pathToUri = new Map<string, string>();
-    const paths = currentRules.slice(0, 50).map((rule) => {
-      const p = `public/uploads/rules/${rule.uri}/rule.mdx`;
-      pathToUri.set(p, rule.uri);
-      return p;
-    });
+    const uris = currentRules.slice(0, 50).map((rule) => rule.uri);
 
-    return { mode, paths, pathToUri };
+    const paths = currentRules
+      .slice(0, 50)
+      .map((rule) => (rule.uri ?? "").trim())
+      .filter(Boolean)
+      .map((trimmedUri) => {
+        const p = `public/uploads/rules/${trimmedUri}/rule.mdx`.trim();
+        pathToUri.set(p, trimmedUri);
+        return p;
+      });
+
+    return { mode, paths, pathToUri, uris };
   }, [currentRules, currentSort]);
 
   useEffect(() => {
     let cancelled = false;
+    const ac = new AbortController();
 
     async function run() {
       if (!paths.length) return;
 
+      setLoadedByUri((prev) => {
+        const next = { ...prev };
+        for (const uri of uris) next[uri] = false;
+        return next;
+      });
+
       try {
-        const res = await fetch(`/api/github-history?mode=${mode}&owner=SSWConsulting&repo=SSW.Rules.Content`, {
+        const res = await fetch(`/api/github-history?mode=${mode}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            paths,
-          }),
+          body: JSON.stringify({ paths }),
+          signal: ac.signal,
         });
 
         const json = (await res.json()) as ApiResponse;
-        if (!json.ok) return;
+        if (!json.ok) {
+          if (!cancelled) {
+            setLoadedByUri((prev) => {
+              const next = { ...prev };
+              for (const uri of uris) next[uri] = true;
+              return next;
+            });
+          }
+          return;
+        }
         if (cancelled) return;
 
-        const updates: Record<string, string | null> = {};
+        const authorUpdates: Record<string, string | null> = {};
+        const dateUpdates: Record<string, string | null> = {};
+        const loadedUpdates: Record<string, boolean> = {};
+
         for (const item of json.results) {
-          if ("error" in item) continue;
           const uri = pathToUri.get(item.path);
           if (!uri) continue;
-          updates[uri] = item.authorName ?? null;
+
+          loadedUpdates[uri] = true;
+
+          if ("error" in item) {
+            authorUpdates[uri] = null;
+            dateUpdates[uri] = null;
+            continue;
+          }
+
+          authorUpdates[uri] = item.authorName ?? null;
+          dateUpdates[uri] = item.date ?? null;
         }
 
-        setAuthorNameByUri((prev) => ({ ...prev, ...updates }));
-      } catch {}
+        setAuthorNameByUri((prev) => ({ ...prev, ...authorUpdates }));
+        setDateByUri((prev) => ({ ...prev, ...dateUpdates }));
+
+        setLoadedByUri((prev) => {
+          const next = { ...prev };
+          for (const uri of uris) next[uri] = true;
+          for (const [uri, val] of Object.entries(loadedUpdates)) next[uri] = val;
+          return next;
+        });
+      } catch (error) {
+        if (cancelled) return;
+        if ((error as any)?.name === "AbortError") return;
+
+        console.error("Error fetching GitHub history:", error);
+        setLoadedByUri((prev) => {
+          const next = { ...prev };
+          for (const uri of uris) next[uri] = true;
+          return next;
+        });
+      }
     }
 
     run();
     return () => {
       cancelled = true;
+      ac.abort();
     };
-  }, [mode, paths, pathToUri]);
+  }, [mode, paths, pathToUri, uris]);
+
+  function normalizeAuthorName(authorName: string | null): string | null {
+    if (!authorName) return null;
+
+    const trimmedName = authorName.trim();
+    if (!trimmedName) return null;
+
+    const nameWithoutBrackets = trimmedName.replace(/\s*\[[^\]]*\]/g, "").trim();
+
+    const nicknameMatch = nameWithoutBrackets.match(/"([^"]+)"/);
+    if (nicknameMatch) {
+      const nickname = nicknameMatch[1].trim();
+      if (nickname) return nickname;
+    }
+
+    return nameWithoutBrackets;
+  }
 
   return (
     <div>
@@ -94,15 +166,22 @@ export default function LatestRulesList({ rulesByUpdated, rulesByCreated, title 
       </div>
 
       {currentRules.map((rule, index) => {
-        const authorName = authorNameByUri[rule.uri] ?? rule.lastUpdatedBy ?? null;
+        const uri = rule.uri;
+
+        const loaded = loadedByUri[uri] === true;
+        const authorName = loaded ? normalizeAuthorName(authorNameByUri[uri] ?? null) : null;
+
+        const displayDate = loaded ? (dateByUri[uri] ?? null) : null;
+
         return (
           <RuleCard
             key={rule.id}
             title={rule.title}
             slug={rule.uri}
+            skeletonMeta={!loaded}
             lastUpdatedBy={authorName}
-            lastUpdated={rule.lastUpdated}
-            authorUrl={authorName ? `https://ssw.com.au/people/${toSlug(authorName)}/` : null}
+            lastUpdated={displayDate}
+            authorUrl={authorName ? `https://ssw.com.au/people/${toSlug(authorName)}` : null}
             index={index}
           />
         );

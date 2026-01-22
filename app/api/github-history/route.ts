@@ -8,7 +8,7 @@ const CACHE_TTL = 3600;
 const MAX_PATHS = 50;
 const CONCURRENCY = 5;
 
-type Mode = "latest" | "creator";
+type Mode = "updated" | "created";
 
 type BatchRequestBody = {
   mode?: Mode;
@@ -63,13 +63,11 @@ function buildHistoryUrl(owner: string, repo: string, branch: string, path?: str
 
 async function runWithConcurrency<T, R>(items: T[], limit: number, fn: (item: T, index: number) => Promise<R>): Promise<R[]> {
   const results: R[] = new Array(items.length);
-  let next = 0;
+  const iterator = items.entries();
 
   async function worker() {
-    while (true) {
-      const i = next++;
-      if (i >= items.length) return;
-      results[i] = await fn(items[i], i);
+    for (const [index, item] of iterator) {
+      results[index] = await fn(item, index);
     }
   }
 
@@ -212,10 +210,10 @@ export async function POST(request: Request) {
 
   const body = (await request.json().catch(() => null)) as BatchRequestBody | null;
   if (!body || !Array.isArray(body.paths)) {
-    return NextResponse.json({ error: "Invalid JSON body. Expected { paths: string[], mode?: 'latest'|'creator', ref?: string }" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid JSON body. Expected { paths: string[], mode?: 'updated'|'created', ref?: string }" }, { status: 400 });
   }
 
-  const mode: Mode = body.mode === "creator" ? "creator" : "latest";
+  const mode: Mode = body.mode === "created" ? "created" : "updated";
   const ref = (body.ref && body.ref.trim()) || GITHUB_ACTIVE_BRANCH;
 
   const normalizedPaths = body.paths.map((p) => normalizePath(p)).filter(Boolean) as string[];
@@ -261,66 +259,75 @@ export async function POST(request: Request) {
     }
   });
 
-  const computed = await runWithConcurrency(missList, CONCURRENCY, async ({ index, path }): Promise<{ index: number; item: BatchResultItem }> => {
-    const historyUrl = buildHistoryUrl(owner, repo, ref, path);
+  const batchSize = 10; // Define batch size to limit API calls
+  const computed: Array<{ index: number; item: BatchResultItem }> = [];
 
-    try {
-      const { commits: allCommitsWithHistory } = await findCompleteFileHistory(owner, repo, path, ref, headers);
+  for (let i = 0; i < missList.length; i += batchSize) {
+    const batch = missList.slice(i, i + batchSize);
 
-      if (!allCommitsWithHistory.length) {
-        return { index, item: { path, error: "No commits found", historyUrl } };
-      }
+    const batchResults = await runWithConcurrency(batch, CONCURRENCY, async ({ index, path }): Promise<{ index: number; item: BatchResultItem }> => {
+      const historyUrl = buildHistoryUrl(owner, repo, ref, path);
 
-      if (mode === "latest") {
-        const latestCommit = findLatestNonExcludedCommit(allCommitsWithHistory);
+      try {
+        const { commits: allCommitsWithHistory } = await findCompleteFileHistory(owner, repo, path, ref, headers);
 
-        if (!latestCommit) {
-          return { index, item: { path, authorName: null, sha: null, date: null, historyUrl } };
+        if (!allCommitsWithHistory.length) {
+          return { index, item: { path, error: "No commits found", historyUrl } };
         }
 
-        const authorName = pickAuthorNameOrNull(latestCommit);
-        return {
-          index,
-          item: {
-            path,
-            authorName,
-            sha: latestCommit.sha ?? null,
-            date: latestCommit.commit?.author?.date ?? null,
-            historyUrl,
-          },
-        };
-      } else {
-        const firstCommit = allCommitsWithHistory[allCommitsWithHistory.length - 1] ?? null;
+        if (mode === "updated") {
+          const latestCommit = findLatestNonExcludedCommit(allCommitsWithHistory);
 
-        const alt = firstCommit ? getAlternateAuthorName(firstCommit) : null;
-        if (alt) {
+          if (!latestCommit) {
+            return { index, item: { path, authorName: null, sha: null, date: null, historyUrl } };
+          }
+
+          const authorName = pickAuthorNameOrNull(latestCommit);
           return {
             index,
             item: {
               path,
-              authorName: alt,
-              sha: firstCommit.sha ?? null,
-              date: firstCommit.commit?.author?.date ?? null,
+              authorName,
+              sha: latestCommit.sha ?? null,
+              date: latestCommit.commit?.author?.date ?? null,
+              historyUrl,
+            },
+          };
+        } else {
+          const firstCommit = allCommitsWithHistory[allCommitsWithHistory.length - 1] ?? null;
+
+          const alt = firstCommit ? getAlternateAuthorName(firstCommit) : null;
+          if (alt) {
+            return {
+              index,
+              item: {
+                path,
+                authorName: alt,
+                sha: firstCommit.sha ?? null,
+                date: firstCommit.commit?.author?.date ?? null,
+                historyUrl,
+              },
+            };
+          }
+
+          return {
+            index,
+            item: {
+              path,
+              authorName: null,
+              sha: firstCommit?.sha ?? null,
+              date: firstCommit?.commit?.author?.date ?? null,
               historyUrl,
             },
           };
         }
-
-        return {
-          index,
-          item: {
-            path,
-            authorName: null,
-            sha: firstCommit?.sha ?? null,
-            date: firstCommit?.commit?.author?.date ?? null,
-            historyUrl,
-          },
-        };
+      } catch (e: any) {
+        return { index, item: { path, error: e?.message ?? String(e), historyUrl } };
       }
-    } catch (e: any) {
-      return { index, item: { path, error: e?.message ?? String(e), historyUrl } };
-    }
-  });
+    });
+
+    computed.push(...batchResults);
+  }
 
   for (const { index, item } of computed) {
     results[index] = item;

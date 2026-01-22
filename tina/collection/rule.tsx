@@ -99,6 +99,7 @@ const Rule: Collection = {
       name: "sidebarVideo",
       label: "Sidebar Video",
       description: "Add Sidebar Video here. e.g. YouTube Shorts",
+      searchable: false,
       ui: {
         component: ConditionalHiddenField,
       },

@@ -39,12 +39,7 @@ export const config = defineConfig({
     tina: {
       indexerToken: searchToken,
       stopwordLanguages: ["eng"],
-      fuzzyOptions: {
-        maxDistance: 2, // max edit distance (0-10)
-        minSimilarity: 0.6, // min similarity score (0-1)
-        maxTermExpansions: 10, // max similar terms per word
-        useTranspositions: true, // allow letter swaps
-      },
+      fuzzyEnabled: false,
     },
   },
   repoProvider: {

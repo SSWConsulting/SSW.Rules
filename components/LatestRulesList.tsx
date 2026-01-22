@@ -69,7 +69,7 @@ export default function LatestRulesList({ rulesByUpdated, rulesByCreated, title 
       });
 
       try {
-        const res = await fetch(`/api/github-history?mode=${mode}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/github-history?mode=${mode}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ paths }),

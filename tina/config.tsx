@@ -39,7 +39,6 @@ export const config = defineConfig({
     tina: {
       indexerToken: searchToken,
       stopwordLanguages: ["eng"],
-      fuzzyEnabled: false,
     },
   },
   repoProvider: {

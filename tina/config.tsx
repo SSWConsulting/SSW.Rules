@@ -46,8 +46,6 @@ export const config = defineConfig({
         useTranspositions: true, // allow letter swaps
       },
     },
-    indexBatchSize: 100,
-    maxSearchIndexFieldLength: 100,
   },
   repoProvider: {
     defaultBranchName: branch,

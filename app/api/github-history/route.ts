@@ -87,11 +87,6 @@ function pickAuthorNameOrNull(commit: GitHubCommit | null): string | null {
   const alt = getAlternateAuthorName(commit);
   if (alt) return alt;
 
-  // If primary author is excluded AND alt is null => excluded with no allowed co-author => return null
-  // We don't have isPrimaryAuthorExcluded exported, but getAlternateAuthorName only returns non-null when excluded.
-  // So if alt is null, we just return primary name.
-  // However: this would still return bot name if your util does NOT treat it as excluded.
-  // => ensure EXCLUDED_AUTHORS includes any names you want filtered (e.g., "SSW.Rules", "ssw.rules@local").
   const primaryName = commit.commit?.author?.name ?? null;
   return primaryName;
 }

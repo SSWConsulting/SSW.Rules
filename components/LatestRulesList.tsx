@@ -166,7 +166,7 @@ export default function LatestRulesList({ rulesByUpdated, rulesByCreated, title 
       </div>
 
       {currentRules.map((rule, index) => {
-        const uri = rule.uri;
+        const uri = rule.uri.trim();
 
         const loaded = loadedByUri[uri] === true;
         const authorName = loaded ? normalizeAuthorName(authorNameByUri[uri] ?? null) : null;

@@ -217,15 +217,6 @@ jobs:
           mv content-temp ./content
 
       # ────────────────────────────── GENERATE SEARCH INDEX ─────────────────
-      - name: Checkout SSW.Rules.Content to tina directory
-        uses: actions/checkout@v4
-        with:
-          repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
-          path: tina
-          fetch-depth: 0
-          lfs: true
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -241,7 +232,7 @@ jobs:
 
       - name: Generate search index with content
         env:
-          LOCAL_CONTENT_RELATIVE_PATH: ./tina
+          LOCAL_CONTENT_RELATIVE_PATH: ./content
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
           TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}

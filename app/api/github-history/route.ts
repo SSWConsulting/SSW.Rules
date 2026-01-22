@@ -52,6 +52,13 @@ function cacheSet(key: string, value: BatchResultItem) {
   routeCache.set(key, { value, expiresAt: Date.now() + CACHE_TTL * 1000 });
 }
 
+function purgeExpiredCacheEntries() {
+  const now = Date.now();
+  for (const [key, entry] of routeCache) {
+    if (entry.expiresAt <= now) routeCache.delete(key);
+  }
+}
+
 function normalizePath(path: string | null | undefined) {
   if (!path) return null;
   return path.replace(/\\/g, "/").replace(/^\/+/, "").trim();
@@ -241,6 +248,7 @@ export async function POST(request: Request) {
   const results: BatchResultItem[] = new Array(normalizedPaths.length);
 
   let cacheHits = 0;
+  purgeExpiredCacheEntries();
   const missList: Array<{ index: number; path: string }> = [];
 
   normalizedPaths.forEach((path, index) => {

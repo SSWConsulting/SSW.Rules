@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import type { BrokenReferences } from "@/app/[filename]/page";
 import ArchivedReasonContent from "@/components/ArchivedReasonContent";
 import AuthorsCard from "@/components/AuthorsCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -14,7 +15,7 @@ import RuleActionButtons from "@/components/RuleActionButtons";
 import { YouTubeShorts } from "@/components/shared/Youtube";
 import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import { Card } from "@/components/ui/card";
-import type { BrokenReferences } from "@/app/[filename]/page";
+import IsrStatusBadge from "@/components/ui/isr-status-badge";
 
 export interface ServerRulePageProps {
   rule: any;
@@ -41,9 +42,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
     <>
       <Breadcrumbs categories={breadcrumbCategories} breadcrumbText="This rule" />
 
-      {brokenReferences?.detected && (
-        <BrokenReferenceBanner brokenPaths={brokenReferences.paths} ruleUri={rule?.uri || ""} />
-      )}
+      {brokenReferences?.detected && <BrokenReferenceBanner brokenPaths={brokenReferences.paths} ruleUri={rule?.uri || ""} />}
 
       <div className="layout-two-columns">
         <Card dropShadow className="layout-main-section p-6">
@@ -80,8 +79,11 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
                 {rule?.title}
               </h1>
 
-              <div className="flex justify-between my-2 flex-col md:flex-row">
-                <GitHubMetadata owner="SSWConsulting" repo="SSW.Rules.Content" path={rule?.id} className="mt-2" />
+              <div className="flex justify-between my-2 flex-col items-center md:flex-row">
+                <div className="flex gap-2 items-center">
+                  <IsrStatusBadge />
+                  <GitHubMetadata owner="SSWConsulting" repo="SSW.Rules.Content" path={rule?.id} />
+                </div>
                 <RuleActionButtons rule={rule} />
               </div>
             </div>

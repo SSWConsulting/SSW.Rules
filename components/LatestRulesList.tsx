@@ -181,7 +181,7 @@ export default function LatestRulesList({ rulesByUpdated, rulesByCreated, title 
             skeletonMeta={!loaded}
             lastUpdatedBy={authorName}
             lastUpdated={displayDate}
-            authorUrl={authorName ? `https://ssw.com.au/people/${toSlug(authorName)}` : null}
+            authorUrl={authorName ? `https://ssw.com.au/people/${toSlug(authorName)}/` : null}
             index={index}
           />
         );

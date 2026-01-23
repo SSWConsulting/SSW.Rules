@@ -32,6 +32,10 @@ yarn-error.log*
 
 .tina/__generated__
 
+# Generated files
+people-index.json
+public/uploads/people/
+
 # Claude Code configuration
 CLAUDE.md
 .claude/settings.local.json

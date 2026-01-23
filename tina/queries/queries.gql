@@ -10,10 +10,7 @@ query latestRulesQuery($size: Float, $sortOption: String, $includeBody: Boolean 
         createdBy
         uri
         body @include(if: $includeBody)
-        authors {
-          title
-          url
-        }
+        authors
       }
     }
   }
@@ -108,9 +105,7 @@ query rulesByGuidQuery($guids: [String!]!) {
         title
         uri
         body
-        authors {
-          title
-        }
+        authors
       }
     }
   }
@@ -124,9 +119,7 @@ query rulesByUriQuery($uris: [String!]!) {
         title
         uri
         body
-        authors {
-          title
-        }
+        authors
         lastUpdated
         lastUpdatedBy
         sidebarVideo
@@ -146,8 +139,8 @@ query rulesByUriQuery($uris: [String!]!) {
   }
 }
 
-query rulesByAuthor($authorTitle: String!, $first: Float, $after: String) {
-  ruleConnection(filter: { authors: { title: { eq: $authorTitle } } }, first: $first, after: $after) {
+query rulesByAuthor($authorSlug: String!, $first: Float, $after: String) {
+  ruleConnection(filter: { authors: { eq: $authorSlug } }, first: $first, after: $after) {
     pageInfo {
       hasNextPage
       endCursor
@@ -158,9 +151,7 @@ query rulesByAuthor($authorTitle: String!, $first: Float, $after: String) {
         title
         uri
         body
-        authors {
-          title
-        }
+        authors
         lastUpdated
         lastUpdatedBy
       }
@@ -182,9 +173,7 @@ query archivedRulesQuery($first: Float, $after: String) {
         body
         isArchived
         archivedreason
-        authors {
-          title
-        }
+        authors
         lastUpdated
         lastUpdatedBy
       }
@@ -255,10 +244,7 @@ query ruleData($relativePath: String!) {
       title
       uri
       body
-      authors {
-        title
-        url
-      }
+      authors
       categories {
         category {
           ... on CategoryCategory {
@@ -311,10 +297,7 @@ query ruleDataBasic($relativePath: String!) {
       title
       uri
       body
-      authors {
-        title
-        url
-      }
+      authors
       categories {
         category {
           ... on CategoryCategory {

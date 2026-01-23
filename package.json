@@ -6,14 +6,17 @@
     "dev": "pnpm prepare:content && tinacms dev -c \"next dev --turbopack\"",
     "build": "tinacms build && next build",
     "postbuild": "next-sitemap",
-    "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
+    "build-local": "npm run generate:people && tinacms build --local --skip-indexing --skip-cloud-checks && next build",
     "start": "next start",
     "export": "npm run build && next export",
     "lint": "biome lint",
     "dev:build": "next build",
     "prepare:content": "cross-env node ./scripts/prepare-content.js",
     "update-categories": "cross-env node ./scripts/update-categories.js",
-    "crawl-sitemap": "node ./scripts/crawl-sitemap.js"
+    "crawl-sitemap": "node ./scripts/crawl-sitemap.js",
+    "generate:people": "node ./scripts/generate-people-index.js",
+    "migrate:authors": "node ./scripts/migrate-authors-to-slugs.js",
+    "migrate:authors:dry-run": "node ./scripts/migrate-authors-to-slugs.js --dry-run --verbose"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.3",

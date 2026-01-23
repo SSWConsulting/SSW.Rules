@@ -5,6 +5,7 @@ import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
 import { CategorySelectorInput } from "../fields/CategorySelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
+import { PeopleSelector } from "../fields/PeopleSelector";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
 import { createdInfoFields } from "./shared/createdInfoFields";
@@ -105,37 +106,20 @@ const Rule: Collection = {
       },
     },
     {
-      type: "object",
+      type: "string",
       name: "authors",
       label: "Authors",
-      description: "The list of contributors for this rule.",
+      description: "The list of contributors for this rule. Select from the People index.",
       list: true,
       searchable: false,
       ui: {
-        itemProps: (item) => ({ label: "👤 " + (item?.title ?? "Author") }),
-        defaultItem: {
-          title: "Bob Northwind",
-          url: "https://ssw.com.au/people/bob-northwind",
-        },
-        component: ConditionalHiddenField,
+        component: wrapFieldsWithMeta((props) => {
+          // For list items, we need to handle the field differently
+          // The ConditionalHiddenField wrapper handles admin page detection
+          const { field, input, meta } = props;
+          return <PeopleSelector input={input} field={field} meta={meta} />;
+        }),
       },
-      fields: [
-        {
-          type: "string",
-          name: "title",
-          description: "The full name of the contributor, as it should appear on the rule.",
-          label: "Name",
-          ui: {
-            component: ConditionalHiddenField,
-          },
-        },
-        {
-          type: "string",
-          description: "The SSW People link for the contributor - e.g. https://ssw.com.au/people/bob-northwind",
-          name: "url",
-          label: "Url",
-        },
-      ],
     },
     {
       type: "object",

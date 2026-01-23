@@ -42,20 +42,26 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [itemsPerPageAuthored, setItemsPerPageAuthored] = useState(20);
   const FETCH_PAGE_SIZE = 10;
 
-  const resolveAuthor = async (): Promise<string> => {
+  const resolveAuthor = async (): Promise<{ slug: string; fullName: string }> => {
     const res = await fetch(`./api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);
     if (!res.ok) throw new Error("Failed to resolve author");
     const profile = await res.json();
     setAuthor(profile);
-    return profile.fullName as string;
+    // Return both slug (for new format) and fullName (for display/legacy)
+    return {
+      slug: profile.slug || profile.fullName?.toLowerCase().replace(/\s+/g, "-") || "",
+      fullName: profile.fullName || "",
+    };
   };
 
   useEffect(() => {
     (async () => {
       if (queryStringRulesAuthor) {
-        const resolvedAuthorName = await resolveAuthor();
+        const resolvedAuthor = await resolveAuthor();
+        // Use slug for querying (new format), fall back to fullName for legacy data
+        const authorIdentifier = resolvedAuthor.slug || resolvedAuthor.fullName;
         // Load BOTH in parallel for maximum speed
-        await Promise.all([loadAllAuthoredRules(resolvedAuthorName as string), loadAllLastModifiedRules()]);
+        await Promise.all([loadAllAuthoredRules(authorIdentifier), loadAllLastModifiedRules()]);
       }
     })();
   }, [queryStringRulesAuthor]);
@@ -148,7 +154,14 @@ export default function UserRulesClientPage({ ruleCount }) {
             body: fullRule.body,
             lastUpdated: fullRule.lastUpdated,
             lastUpdatedBy: fullRule.lastUpdatedBy,
-            authors: fullRule.authors?.map((a: any) => (a && a.title ? { title: a.title } : null)).filter((a: any): a is { title: string } => a !== null) || [],
+            // Handle both new format (string[]) and legacy format (object[])
+            authors: Array.isArray(fullRule.authors)
+              ? fullRule.authors.map((a: any) => {
+                  if (typeof a === "string") return a;
+                  if (a && a.title) return a.title;
+                  return null;
+                }).filter(Boolean)
+              : [],
           }));
 
         // Sort by date (most recent first)
@@ -170,7 +183,8 @@ export default function UserRulesClientPage({ ruleCount }) {
   };
 
   // Function to load ALL authored rules (not just one page) - WITH BATCHING
-  const loadAllAuthoredRules = async (authorName: string) => {
+  // Accepts either authorSlug (new format) or authorName (legacy format)
+  const loadAllAuthoredRules = async (authorSlugOrName: string) => {
     setLoadingAuthored(true);
     setAuthoredRules([]);
     let cursor: string | null = null;
@@ -186,7 +200,8 @@ export default function UserRulesClientPage({ ruleCount }) {
         pageCount++;
 
         const params = new URLSearchParams();
-        params.set("authorTitle", authorName || "");
+        // Use authorSlug for new format, API also accepts authorTitle for backwards compatibility
+        params.set("authorSlug", authorSlugOrName || "");
         params.set("first", FETCH_PAGE_SIZE.toString());
         if (cursor) params.set("after", cursor);
 
@@ -204,7 +219,14 @@ export default function UserRulesClientPage({ ruleCount }) {
           title: fullRule.title,
           uri: fullRule.uri,
           body: fullRule.body,
-          authors: fullRule.authors?.map((a: any) => (a && a.title ? { title: a.title } : null)).filter((a: any): a is { title: string } => a !== null) || [],
+          // Handle both new format (string[]) and legacy format (object[])
+          authors: Array.isArray(fullRule.authors)
+            ? fullRule.authors.map((a: any) => {
+                if (typeof a === "string") return a; // New format: slug string
+                if (a && a.title) return a.title; // Legacy format: object with title
+                return null;
+              }).filter(Boolean)
+            : [],
           lastUpdated: fullRule.lastUpdated,
           lastUpdatedBy: fullRule.lastUpdatedBy,
         }));

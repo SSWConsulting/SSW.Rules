@@ -20,7 +20,14 @@ export async function POST(request: NextRequest) {
         title: node.title,
         uri: node.uri,
         body: node.body,
-        authors: node.authors?.map((a: any) => (a && a.title ? { title: a.title } : null)).filter((a: any): a is { title: string } => a !== null) || [],
+        // Handle both new format (string[]) and legacy format (object[])
+        authors: Array.isArray(node.authors)
+          ? node.authors.map((a: any) => {
+              if (typeof a === "string") return a;
+              if (a && a.title) return a.title;
+              return null;
+            }).filter(Boolean)
+          : [],
       }));
 
     return NextResponse.json({ rules }, { status: 200 });

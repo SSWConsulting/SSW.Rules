@@ -30,3 +30,38 @@ export const GITHUB_PULL_REQUESTS_QUERY = `
 
 export const DEFAULT_RESULTS_PER_PAGE = 6;
 export const DEFAULT_FILES_PER_PULL_REQUEST = 20;
+
+// Query for TinaCMS bot PRs - includes commit messages to extract co-authors
+export const GITHUB_TINA_BOT_PRS_QUERY = `
+  query SearchTinaBotPRs($query: String!, $first: Int!, $after: String) {
+    search(
+      query: $query
+      type: ISSUE
+      first: $first
+      after: $after
+    ) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      nodes {
+        ... on PullRequest {
+          number
+          mergedAt
+          files(first: 20) {
+            nodes {
+              path
+            }
+          }
+          commits(first: 10) {
+            nodes {
+              commit {
+                message
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;

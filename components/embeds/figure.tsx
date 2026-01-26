@@ -7,7 +7,7 @@ export function getPrefix(prefix?: FigurePrefix): string {
     case "bad":
       return "❌ Figure: Bad example - ";
     case "ok":
-      return "🙂 Figure: Ok example - ";
+      return "🙂 Figure: OK example - ";
     case "good":
       return "✅ Figure: Good example - ";
     case "none":

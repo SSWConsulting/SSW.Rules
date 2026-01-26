@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { RuleListFilter } from "@/types/ruleListFilter";
 import RuleList from "./rule-list";
 
@@ -9,8 +9,10 @@ export interface RuleListWrapperProps {
   type?: string;
   noContentMessage?: string;
   onBookmarkRemoved?: (ruleGuid: string) => void;
+
   includeArchived?: boolean;
   onIncludeArchivedChange?: (include: boolean) => void;
+
   showPagination?: boolean;
   showFilterControls?: boolean;
   initialView?: "titleOnly" | "blurb" | "all";
@@ -18,9 +20,18 @@ export interface RuleListWrapperProps {
   initialPerPage?: number;
 }
 
-const RuleListWrapper: React.FC<RuleListWrapperProps> = ({ initialView = "blurb", initialPage = 1, initialPerPage = 20, ...props }) => {
+const isArchivedRule = (r: any) => r?.isArchived === true || r?.isArchived === "true" || r?.isArchived === 1;
+
+const RuleListWrapper: React.FC<RuleListWrapperProps> = ({
+  rules,
+  includeArchived: includeArchivedProp,
+  onIncludeArchivedChange: onIncludeArchivedChangeProp,
+  initialView = "blurb",
+  initialPage = 1,
+  initialPerPage = 20,
+  ...rest
+}) => {
   const [filter, setFilter] = useState<RuleListFilter>(() => {
-    // Map the view prop to RuleListFilter enum
     switch (initialView) {
       case "titleOnly":
         return RuleListFilter.TitleOnly;
@@ -36,7 +47,15 @@ const RuleListWrapper: React.FC<RuleListWrapperProps> = ({ initialView = "blurb"
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [itemsPerPage, setItemsPerPage] = useState(initialPerPage);
 
-  // Update state when props change (for URL navigation)
+  const externallyControlled = typeof onIncludeArchivedChangeProp === "function";
+  const [includeArchivedState, setIncludeArchivedState] = useState<boolean>(includeArchivedProp ?? false);
+
+  useEffect(() => {
+    if (externallyControlled) {
+      setIncludeArchivedState(includeArchivedProp ?? false);
+    }
+  }, [externallyControlled, includeArchivedProp]);
+
   useEffect(() => {
     switch (initialView) {
       case "titleOnly":
@@ -51,15 +70,42 @@ const RuleListWrapper: React.FC<RuleListWrapperProps> = ({ initialView = "blurb"
     }
   }, [initialView]);
 
-  useEffect(() => {
-    setCurrentPage(initialPage);
-  }, [initialPage]);
+  useEffect(() => setCurrentPage(initialPage), [initialPage]);
+  useEffect(() => setItemsPerPage(initialPerPage), [initialPerPage]);
 
-  useEffect(() => {
-    setItemsPerPage(initialPerPage);
-  }, [initialPerPage]);
+  const { activeRules, archivedRules } = useMemo(() => {
+    const active: any[] = [];
+    const archived: any[] = [];
+    for (const r of rules ?? []) (isArchivedRule(r) ? archived : active).push(r);
+    return { activeRules: active, archivedRules: archived };
+  }, [rules]);
 
-  return <RuleList {...props} initialFilter={filter} initialPage={currentPage} initialItemsPerPage={itemsPerPage} />;
+  const effectiveIncludeArchived = externallyControlled ? (includeArchivedProp ?? false) : includeArchivedState;
+
+  const displayRules = useMemo(
+    () => (effectiveIncludeArchived ? [...activeRules, ...archivedRules] : activeRules),
+    [effectiveIncludeArchived, activeRules, archivedRules]
+  );
+
+  const handleIncludeArchivedChange = (include: boolean) => {
+    if (externallyControlled && onIncludeArchivedChangeProp) {
+      onIncludeArchivedChangeProp(include);
+      return;
+    }
+    setIncludeArchivedState(include);
+  };
+
+  return (
+    <RuleList
+      {...rest}
+      rules={displayRules}
+      includeArchived={effectiveIncludeArchived}
+      onIncludeArchivedChange={handleIncludeArchivedChange}
+      initialFilter={filter}
+      initialPage={currentPage}
+      initialItemsPerPage={itemsPerPage}
+    />
+  );
 };
 
 export default RuleListWrapper;

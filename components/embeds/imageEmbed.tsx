@@ -42,7 +42,7 @@ export function ImageEmbed({ data }: { data: any }) {
           </>
         )}
       </div>
-      <Figure prefix={figurePrefix} text={figure} className="mt-2" />
+      <Figure prefix={figurePrefix} text={figure} className="mt-2 wrap-break-word" />
     </>
   );
 }

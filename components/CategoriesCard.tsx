@@ -30,7 +30,7 @@ export default function CategoriesCard({ categories }: CategoriesCardProps) {
           <Link
             key={c.uri}
             href={`/${c.uri}`}
-            className="border-2 no-underline border-ssw-red text-ssw-red py-1 px-2 rounded-xs font-semibold hover:text-white hover:bg-ssw-red transition-colors duration-200"
+            className="border no-underline border-ssw-red text-ssw-red py-1 px-2 rounded-xs font-semibold hover:text-white hover:bg-ssw-red transition-colors duration-200"
             // @ts-expect-error tinacms types are wrong
             data-tina-field={tinaField(categories?.[index], "category")}
           >

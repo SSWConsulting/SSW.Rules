@@ -31,7 +31,10 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
       <div className="relative">
         <div className="w-full lg:w-2/3 bg-white pt-4 p-6 border border-[#CCC] rounded shadow-lg">
           <div className="flex justify-between">
-            <h1 className="m-0 mb-4 text-ssw-red font-bold">{includeArchived ? `Archived Rules - ${title}` : title}</h1>
+            <h1 className="m-0 mb-4 text-3xl text-ssw-red font-bold">
+              {includeArchived ? `Archived Rules - ${title}` : title}
+              <span className="text-2xl text-gray-400 font-normal"> - {finalRules.length} Rules</span>
+            </h1>
             <CategoryEdit path={path} />
           </div>
 
@@ -41,7 +44,7 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
 
           <RuleListWrapper
             categoryUri={path}
-            rules={finalRules}
+            rules={baseRules}
             initialView={view}
             initialPage={page}
             initialPerPage={perPage}

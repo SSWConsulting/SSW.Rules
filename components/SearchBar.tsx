@@ -193,16 +193,16 @@ function CustomSearchBox({
   return (
     <form onSubmit={handleSubmit}>
       <div className="relative">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true">
+          <Search className="w-5 h-5" />
+        </span>
         <input
           type="text"
-          className="block w-full h-10 pl-3 pr-10 py-2 mb-4 bg-white border placeholder-slate-400 focus:ring-gray-400 rounded-md"
+          className="block w-full h-10 pl-10 pr-3 py-2 mb-4 bg-white border placeholder-slate-400 focus:ring-gray-400 rounded-md"
           placeholder="Search..."
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
-        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true">
-          <Search className="w-5 h-5" />
-        </span>
       </div>
     </form>
   );

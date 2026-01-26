@@ -21,16 +21,20 @@ const IconLink: React.FC<IconLinkProps> = ({ href, children, className = "", tit
   const baseClasses =
     "inline-flex items-center justify-center rounded-md font-medium transition-colors hover:text-[var(--ssw-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
+  const isExternal = href.startsWith("http");
   let adjustedHref = href;
 
-  if (href.startsWith("http")) {
+  if (isExternal) {
     adjustedHref = href;
   } else {
     adjustedHref = `${basePath}${href}`;
   }
 
+  const effectiveRel = rel ?? (isExternal ? "noopener noreferrer nofollow" : undefined);
+  const effectiveTarget = target ?? (isExternal ? "_blank" : undefined);
+
   const link = (
-    <a href={adjustedHref} className={`${baseClasses} ${className}`} title={title} target={target} rel={rel} onClick={onClick}>
+    <a href={adjustedHref} className={`${baseClasses} ${className}`} target={effectiveTarget} rel={effectiveRel} onClick={onClick}>
       {children}
     </a>
   );

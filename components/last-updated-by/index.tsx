@@ -3,6 +3,7 @@
 import { formatDate } from "date-fns";
 import { useEffect, useState } from "react";
 import { FaHistory } from "react-icons/fa";
+import Tooltip from "../tooltip/tooltip";
 import { getRelativeTime } from "./get-relative-time";
 import type { GitHubMetadataProps, GitHubMetadataResponse } from "./types";
 
@@ -82,21 +83,23 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
               Last updated by{" "}
               <span className="font-bold text-black">
                 {shouldShowLink ? (
-                  <a href={`https://github.com/${latestCommit.author?.login}`} target="_blank" rel="noopener noreferrer">
+                  <a href={`https://github.com/${latestCommit.author?.login}`} target="_blank" rel="noopener noreferrer nofollow">
                     {displayAuthorName}
                   </a>
                 ) : (
                   displayAuthorName
                 )}
               </span>
-              {` ${lastUpdateInRelativeTime}.`}
+              {" "}<Tooltip text={lastUpdateInAbsoluteTime} showDelay={0} hideDelay={0} opaque={true}>
+                <span>{` ${lastUpdateInRelativeTime}.`}</span>
+              </Tooltip>
             </span>
             <div className="relative group text-black">
               <a
                 href={historyUrl}
                 target="_blank"
                 title={tooltipContent}
-                rel="noopener noreferrer"
+                rel="noopener noreferrer nofollow"
                 className="underline flex flex-row items-center gap-1.5 mb-2 md:mb-0"
               >
                 See history
@@ -117,7 +120,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
               href={historyUrl}
               target="_blank"
               title="View commit history on GitHub"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               className="underline flex flex-row items-center gap-1.5 mb-2 md:mb-0"
             >
               See history

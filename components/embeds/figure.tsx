@@ -5,11 +5,11 @@ export type FigurePrefix = "none" | "bad" | "ok" | "good";
 export function getPrefix(prefix?: FigurePrefix): string {
   switch (prefix) {
     case "bad":
-      return "❌ Figure: ";
+      return "❌ Figure: Bad example - ";
     case "ok":
-      return "🙂 Figure: ";
+      return "🙂 Figure: OK example - ";
     case "good":
-      return "✅ Figure: ";
+      return "✅ Figure: Good example - ";
     case "none":
     default:
       return "Figure: ";

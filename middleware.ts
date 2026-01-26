@@ -18,8 +18,11 @@ export function middleware(request: NextRequest) {
   // Check if this is an image request that might be from TinaCMS
   // Only proxy content images from /uploads/rules/ to avoid interfering with site assets
   const isTinaCMSImage = /^\/uploads\/rules\/.*\.(jpg|jpeg|png|gif|webp|svg)$/i.test(pathname)
-  
-  if (isTinaCMSImage && process.env.LOCAL_CONTENT_RELATIVE_PATH) {
+
+  // Check if this is a downloadable file request from /uploads/rules/
+  const isDownloadableFile = /^\/uploads\/rules\/.*\.(pdf|txt|zip|mp4|mp3|ics|doc|docx|ppt|pptx|xls|xlsx|sql|cs|json|xml|csv)$/i.test(pathname)
+
+  if ((isTinaCMSImage || isDownloadableFile) && process.env.LOCAL_CONTENT_RELATIVE_PATH) {
     // Proxy to our API route to serve from content repo
     const url = request.nextUrl.clone()
     url.pathname = `/api/local-images${pathname}`

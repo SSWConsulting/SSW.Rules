@@ -37,7 +37,7 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
   return (
     <nav aria-label="Breadcrumb" className="m-4 mt-2">
       <div className="grid grid-cols-[auto_1fr] gap-2 items-start md:items-center">
-        <a href={parentSiteUrl} className="inline-flex items-center shrink-0 translate-y-[2px] md:translate-y-0 md:h-[1.5em]">
+        <a href={parentSiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center shrink-0 translate-y-[2px] md:translate-y-0 md:h-[1.5em]">
           <img alt="SSW Foursquare" src={withBasePath(iconSrc)} width={16} height={16} className="block w-4 h-4" loading="lazy" decoding="async" />
           <ChevronIcon className="ml-2 hidden md:block" size={18} />
         </a>

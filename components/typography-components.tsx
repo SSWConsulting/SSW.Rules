@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { Prism } from "tinacms/dist/rich-text/prism";
 import { toSlug } from "@/lib/utils";
+import { CustomLink } from "@/components/customLink";
 
 // Helper function to extract text content from TinaCMS props structure
 const getTextContent = (props: any): string => {
@@ -48,9 +49,22 @@ const createHeading =
     );
   };
 
+// File extensions that should be served as downloadable files
+const DOWNLOADABLE_EXTS = new Set(["pdf", "txt", "zip", "mp4", "mp3", "ics", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "sql", "cs", "json", "xml", "csv"]);
+
+const isDownloadableFile = (href?: string): boolean => {
+  if (!href) return false;
+  const ext = href.split(".").pop()?.toLowerCase() || "";
+  return DOWNLOADABLE_EXTS.has(ext);
+};
+
+const getFilenameFromHref = (href: string): string => {
+  return href.split("/").pop() || "";
+};
+
 const rewriteUploadsToAssets = (href?: string) => {
   const TINA_CLIENT_ID = process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "";
-  const ALLOWED_EXTS = new Set(["pdf", "txt", "zip", "mp4", "mp3", "ics", "doc", "docx", "ppt", "pptx", "xls", "xlsx"]);
+  const ALLOWED_EXTS = DOWNLOADABLE_EXTS;
 
   if (!href || !TINA_CLIENT_ID || !href.startsWith("/uploads/rules/")) {
     return href;
@@ -63,9 +77,10 @@ const rewriteUploadsToAssets = (href?: string) => {
 export const getTypographyComponents = (enableAnchors = false) => ({
   p: (props: any) => <p className="mb-4" {...props} />,
   a: (props: any) => {
-    let href = props?.url || props?.href || "";
-    href = rewriteUploadsToAssets(href);
+    const originalHref = props?.url || props?.href || "";
+    const href = rewriteUploadsToAssets(originalHref);
     const isInternal = typeof href === "string" && href.startsWith("/") && !href.startsWith("//") && !href.startsWith("/_next");
+    const isDownloadable = isDownloadableFile(originalHref);
 
     if (isInternal) {
       return (
@@ -75,10 +90,26 @@ export const getTypographyComponents = (enableAnchors = false) => ({
       );
     }
 
+    // Add download attribute for downloadable files to trigger browser download
+    if (isDownloadable) {
+      const filename = getFilenameFromHref(originalHref);
+      return (
+        <a
+          className="underline hover:text-ssw-red"
+          href={href}
+          download={filename}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {props.children}
+        </a>
+      );
+    }
+
     return (
-      <a className="underline hover:text-ssw-red" href={href} {...props}>
+      <CustomLink className="underline hover:text-ssw-red" href={href || ""}>
         {props.children}
-      </a>
+      </CustomLink>
     );
   },
   li: (props) => <li {...props} />,

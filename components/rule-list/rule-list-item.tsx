@@ -60,8 +60,8 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
                 <span
                   dangerouslySetInnerHTML={{
                     __html: rule.archivedreason
-                      ?.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-ssw-red underline hover:opacity-80">$1</a>')
-                      ?.replace(/https?:\/\/[^\s]+/g, '<a href="$&" class="text-ssw-red underline hover:opacity-80">$&</a>'),
+                      ?.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-ssw-red underline hover:opacity-80" target="_blank" rel="noopener noreferrer nofollow">$1</a>')
+                      ?.replace(/https?:\/\/[^\s]+/g, '<a href="$&" class="text-ssw-red underline hover:opacity-80" target="_blank" rel="noopener noreferrer nofollow">$&</a>'),
                   }}
                 />
               </div>

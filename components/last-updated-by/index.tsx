@@ -49,7 +49,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
         console.error("Error fetching GitHub metadata:", err);
         setData(null);
       } finally {
-        //setLoading(false);
+        setLoading(false);
       }
     };
 

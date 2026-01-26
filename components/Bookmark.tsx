@@ -8,7 +8,6 @@ import { ICON_SIZE } from "@/constants";
 import { BookmarkService } from "@/lib/bookmarkService";
 import { BookmarkData } from "@/types";
 import { useAuth } from "./auth/UserClientProvider";
-import useAppInsights from "./hooks/useAppInsights";
 import Popup from "./Popup";
 import Spinner from "./Spinner";
 import Tooltip from "./tooltip/tooltip";
@@ -25,7 +24,6 @@ export default function Bookmark({ ruleGuid, isBookmarked, defaultIsBookmarked =
   const controlled = useMemo(() => typeof isBookmarked === "boolean", [isBookmarked]);
 
   const { user } = useAuth();
-  const { trackEvent, trackException } = useAppInsights();
   const router = useRouter();
   const pathname = usePathname() ?? "/";
   const query = useSearchParams()?.toString();
@@ -74,18 +72,15 @@ export default function Bookmark({ ruleGuid, isBookmarked, defaultIsBookmarked =
 
     if (!userId) {
       setShowLoginModal(true);
-      trackEvent("BookmarkAttemptWithoutLogin", { ruleGuid });
       return;
     }
 
     setIsLoading(true);
-    const operation = bookmarked ? "remove" : "add";
 
     try {
       const accessToken = await getAccessToken();
       if (!accessToken) {
         console.error("No access token available");
-        trackException("No access token available for bookmark operation", 2);
         return;
       }
 
@@ -96,28 +91,20 @@ export default function Bookmark({ ruleGuid, isBookmarked, defaultIsBookmarked =
         if (!result.error) {
           if (!controlled) setBookmarked(false);
           onBookmarkToggle?.(false);
-          trackEvent("BookmarkRemoved", { ruleGuid, userId });
         } else {
           console.error("Failed to remove bookmark:", result.message);
-          trackException(`Failed to remove bookmark: ${result.message}`, 2);
         }
       } else {
         const result = await BookmarkService.addBookmark(data, accessToken);
         if (!result.error) {
           if (!controlled) setBookmarked(true);
           onBookmarkToggle?.(true);
-          trackEvent("BookmarkAdded", { ruleGuid, userId });
         } else {
           console.error("Failed to add bookmark:", result.message);
-          trackException(`Failed to add bookmark: ${result.message}`, 2);
         }
       }
     } catch (error) {
       console.error("Error toggling bookmark:", error);
-      trackException(
-        error instanceof Error ? error : `Error toggling bookmark: ${String(error)}`,
-        3
-      );
     } finally {
       setIsLoading(false);
     }

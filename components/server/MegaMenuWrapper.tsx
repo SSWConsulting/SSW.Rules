@@ -7,7 +7,6 @@ import { MegaMenuLayout } from "ssw.megamenu";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
 import SignIn from "../auth/SignIn";
 import { CustomLink } from "../customLink";
-import useAppInsights from "../hooks/useAppInsights";
 import Tooltip from "../tooltip/tooltip";
 
 const basePath = getSanitizedBasePath();
@@ -47,8 +46,6 @@ export function MegaMenuWrapper(props) {
 }
 
 const ActionButtons = () => {
-  const { trackEvent } = useAppInsights();
-
   return (
     <div className="action-btn-container max-sm:order-2 max-sm:mt-4 flex justify-between items-center w-full gap-4">
       <div className="flex items-center gap-4">
@@ -58,9 +55,6 @@ const ActionButtons = () => {
             rel="noopener noreferrer nofollow"
             href="https://rulesgpt.ssw.com.au"
             className="action-btn-link-underlined"
-            onClick={() => {
-              trackEvent("RulesGPTButtonPressed");
-            }}
             aria-label="Try out RulesGPT"
           >
             <RiOpenaiFill className="header-icon" />

@@ -37,8 +37,6 @@ const tooltipCopy: Record<NextCacheState, string> = {
 };
 
 function getStyle(state: NextCacheState, isLoading: boolean) {
-  if (isLoading) return "";
-
   switch (state) {
     case "HIT":
       return "bg-green-500";

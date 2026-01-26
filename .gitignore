@@ -36,3 +36,9 @@ yarn-error.log*
 CLAUDE.md
 .claude/settings.local.json
 .mcp.json
+
+# local dev / generated data
+category-uri-title-map.json
+rule-to-categories.json
+orphaned_rules.json
+redirects.json

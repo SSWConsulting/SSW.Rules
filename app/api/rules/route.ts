@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
-import * as appInsights from "applicationinsights";
 
 export const revalidate = 3600; // 1 hour
 // Helper function to fetch rules data (will be wrapped with cache)
@@ -44,20 +43,8 @@ async function fetchRulesData() {
 }
 
 export async function GET() {
-  const startTime = Date.now();
-
   try {
     const data = await fetchRulesData();
-    const duration = Date.now() - startTime;
-
-    // Track successful rules fetch
-    appInsights.defaultClient?.trackEvent({
-      name: "RulesApiFetchSuccess",
-      properties: {
-        ruleCount: data.length,
-        duration
-      }
-    });
 
     return new NextResponse(JSON.stringify(data), {
       status: 200,
@@ -67,16 +54,6 @@ export async function GET() {
     });
   } catch (err) {
     console.error("[/api/rules] error:", err);
-
-    // Track rules fetch error
-    appInsights.defaultClient?.trackException({
-      exception: err instanceof Error ? err : new Error(String(err)),
-      properties: {
-        endpoint: "/api/rules",
-        duration: Date.now() - startTime
-      }
-    });
-
     return NextResponse.json({ message: "Failed to fetch rules" }, { status: 500 });
   }
 }

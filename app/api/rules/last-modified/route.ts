@@ -36,11 +36,40 @@ function ruleUriFromPath(path?: string): string | null {
   );
 }
 
-async function collectRecentChangedRuleFiles(username: string, minUniqueRules: number): Promise<ChangedRuleFile[]> {
-  const service = await createGitHubService();
+/**
+ * Extract rule files from PR nodes
+ */
+function extractRuleFilesFromPRs(
+  prs: any[],
+  seen: Set<string>,
+  collected: ChangedRuleFile[]
+): void {
+  for (const pr of prs) {
+    const mergedAt = typeof pr?.mergedAt === "string" ? pr.mergedAt : null;
+    const files = Array.isArray(pr?.files?.nodes) ? pr.files.nodes : [];
 
-  const seen = new Set<string>();
-  const collected: ChangedRuleFile[] = [];
+    for (const f of files) {
+      const path = typeof f?.path === "string" ? f.path : undefined;
+      if (!path) continue;
+      if (!path.endsWith("rule.mdx") && !path.endsWith("rule.md")) continue;
+      if (seen.has(path)) continue;
+
+      seen.add(path);
+      collected.push({ path, mergedAt });
+    }
+  }
+}
+
+/**
+ * Collect PRs authored directly by the user
+ */
+async function collectDirectAuthoredFiles(
+  service: Awaited<ReturnType<typeof createGitHubService>>,
+  username: string,
+  minUniqueRules: number,
+  seen: Set<string>,
+  collected: ChangedRuleFile[]
+): Promise<void> {
   let cursor: string | undefined;
 
   for (let page = 0; page < MAX_PR_PAGES; page++) {
@@ -52,26 +81,54 @@ async function collectRecentChangedRuleFiles(username: string, minUniqueRules: n
 
     cursor = typeof pageInfo?.endCursor === "string" ? pageInfo.endCursor : undefined;
 
-    for (const pr of prs) {
-      const mergedAt = typeof pr?.mergedAt === "string" ? pr.mergedAt : null;
-
-      const files = Array.isArray(pr?.files?.nodes) ? pr.files.nodes : [];
-
-      for (const f of files) {
-        const path = typeof f?.path === "string" ? f.path : undefined;
-        if (!path) continue;
-        if (!path.endsWith("rule.mdx") && !path.endsWith("rule.md")) continue;
-        if (seen.has(path)) continue;
-
-        seen.add(path);
-        collected.push({ path, mergedAt });
-      }
-    }
+    extractRuleFilesFromPRs(prs, seen, collected);
 
     const unique = selectLatestRuleFilesByPath(collected);
     if (unique.length >= minUniqueRules) break;
     if (!pageInfo?.hasNextPage || !cursor) break;
   }
+}
+
+/**
+ * Collect PRs by TinaCMS bot where the user is a co-author
+ */
+async function collectTinaBotCoAuthoredFiles(
+  service: Awaited<ReturnType<typeof createGitHubService>>,
+  username: string,
+  minUniqueRules: number,
+  seen: Set<string>,
+  collected: ChangedRuleFile[]
+): Promise<void> {
+  let cursor: string | undefined;
+
+  for (let page = 0; page < MAX_PR_PAGES; page++) {
+    const result = await service.searchTinaBotPRsByCoAuthor(username, cursor);
+
+    const prs = result.search.nodes;
+    const pageInfo = result.search.pageInfo;
+
+    cursor = typeof pageInfo?.endCursor === "string" ? pageInfo.endCursor : undefined;
+
+    extractRuleFilesFromPRs(prs, seen, collected);
+
+    const unique = selectLatestRuleFilesByPath(collected);
+    if (unique.length >= minUniqueRules) break;
+    if (!pageInfo?.hasNextPage || !cursor) break;
+  }
+}
+
+async function collectRecentChangedRuleFiles(username: string, minUniqueRules: number): Promise<ChangedRuleFile[]> {
+  const service = await createGitHubService();
+
+  const seen = new Set<string>();
+  const collected: ChangedRuleFile[] = [];
+
+  // 1. Collect PRs authored directly by the user
+  await collectDirectAuthoredFiles(service, username, minUniqueRules, seen, collected);
+
+  // 2. Also collect PRs by TinaCMS bot where the user is a co-author
+  // This ensures rules updated via TinaCMS admin panel are attributed correctly
+  await collectTinaBotCoAuthoredFiles(service, username, minUniqueRules, seen, collected);
 
   return selectLatestRuleFilesByPath(collected);
 }

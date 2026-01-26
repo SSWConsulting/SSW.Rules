@@ -1,6 +1,7 @@
-import { DEFAULT_RESULTS_PER_PAGE, GITHUB_API_BASE_URL, GITHUB_PULL_REQUESTS_QUERY } from "./github.constants";
+import { DEFAULT_RESULTS_PER_PAGE, GITHUB_API_BASE_URL, GITHUB_PULL_REQUESTS_QUERY, GITHUB_TINA_BOT_PRS_QUERY } from "./github.constants";
 import { GitHubPullRequest, GitHubSearchParams, GitHubSearchResponse, GitHubServiceConfig } from "./github.types";
 import { getGitHubAppToken } from "./github.utils";
+import { extractCoAuthors } from "@/app/api/github-history/util";
 
 export class GitHubService {
   private config: GitHubServiceConfig;
@@ -57,6 +58,84 @@ export class GitHubService {
     }
 
     return variables;
+  }
+
+  /**
+   * Search for TinaCMS bot PRs and filter by co-author
+   * Returns PRs where the target GitHub username is listed as a co-author in commit messages
+   * Matches by GitHub noreply email pattern (e.g., "username@users.noreply.github.com")
+   */
+  async searchTinaBotPRsByCoAuthor(
+    targetGitHubUsername: string,
+    cursor?: string
+  ): Promise<{ search: { pageInfo: { endCursor?: string; hasNextPage: boolean }; nodes: any[] } }> {
+    const query = `repo:${this.config.owner}/${this.config.repo} is:pr base:${this.config.branch} is:merged sort:updated-desc author:app/tina-cloud-app`;
+
+    const variables: any = {
+      query,
+      first: DEFAULT_RESULTS_PER_PAGE,
+    };
+
+    if (cursor) {
+      variables.after = cursor;
+    }
+
+    const response = await fetch(GITHUB_API_BASE_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `bearer ${this.config.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: GITHUB_TINA_BOT_PRS_QUERY,
+        variables,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`GitHub API request failed with status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.errors) {
+      throw new Error(`GitHub GraphQL errors: ${JSON.stringify(data.errors)}`);
+    }
+
+    // Filter PRs to only those where the target user is a co-author
+    const allNodes = data.data?.search?.nodes || [];
+    const targetUserLower = targetGitHubUsername.toLowerCase();
+
+    const filteredNodes = allNodes.filter((pr: any) => {
+      if (!pr?.commits?.nodes) return false;
+
+      // Check each commit's message for co-author matching the target user
+      for (const commitNode of pr.commits.nodes) {
+        const message = commitNode?.commit?.message || "";
+        const coAuthors = extractCoAuthors(message);
+
+        for (const coAuthor of coAuthors) {
+          const emailLower = coAuthor.email.toLowerCase();
+
+          // Match GitHub noreply email patterns:
+          // - "username@users.noreply.github.com"
+          // - "12345+username@users.noreply.github.com"
+          const noReplyMatch = emailLower.includes(`+${targetUserLower}@users.noreply.github.com`) || emailLower === `${targetUserLower}@users.noreply.github.com`;
+
+          if (noReplyMatch) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+
+    return {
+      search: {
+        pageInfo: data.data?.search?.pageInfo || { hasNextPage: false },
+        nodes: filteredNodes,
+      },
+    };
   }
 
   async getRuleAuthors(ruleUri: string): Promise<string[]> {

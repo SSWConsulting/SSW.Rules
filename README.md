@@ -52,7 +52,11 @@ To test changes to MDX rules:
 
 3. If there are any changes to categories, re-run `pnpm prepare:content`
 
-4. Run `pnpm dev` in this project to see the changes reflected locally
+4. Run `pnpm dev` in this project to start SSW.Rules locally
+
+5. Navigate to http://localhost:3000/rules/ to see your changes
+
+> Note: `pnpm dev` does not track changes in SSW.Rules.Content, therefore, you will need to re-run the command after you make changes
 
 ### Branches
 

@@ -32,7 +32,6 @@ export type ServerRulePagePropsWithTinaProps = {
 export default function ServerRulePage({ serverRulePageProps, tinaProps }: ServerRulePagePropsWithTinaProps) {
   const { data } = tinaProps;
   const rule = data?.rule;
-  console.log(rule);
 
   const { ruleCategoriesMapping, sanitizedBasePath, brokenReferences } = serverRulePageProps;
 

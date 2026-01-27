@@ -47,7 +47,6 @@ export default function UserRulesClientPage({ ruleCount }) {
     if (!res.ok) throw new Error("Failed to resolve author");
     const profile = await res.json();
     setAuthor(profile);
-    // Return both slug (for new format) and fullName (for display/legacy)
     return {
       slug: profile.slug || profile.fullName?.toLowerCase().replace(/\s+/g, "-") || "",
       fullName: profile.fullName || "",
@@ -58,10 +57,9 @@ export default function UserRulesClientPage({ ruleCount }) {
     (async () => {
       if (queryStringRulesAuthor) {
         const resolvedAuthor = await resolveAuthor();
-        // Use slug for querying (new format), fall back to fullName for legacy data
-        const authorIdentifier = resolvedAuthor.slug || resolvedAuthor.fullName;
+        const authorSlug = resolvedAuthor.slug;
         // Load BOTH in parallel for maximum speed
-        await Promise.all([loadAllAuthoredRules(authorIdentifier), loadAllLastModifiedRules()]);
+        await Promise.all([loadAllAuthoredRules(authorSlug), loadAllLastModifiedRules()]);
       }
     })();
   }, [queryStringRulesAuthor]);
@@ -178,8 +176,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   };
 
   // Function to load ALL authored rules (not just one page) - WITH BATCHING
-  // Accepts either authorSlug (new format) or authorName (legacy format)
-  const loadAllAuthoredRules = async (authorSlugOrName: string) => {
+  const loadAllAuthoredRules = async (authorSlug: string) => {
     setLoadingAuthored(true);
     setAuthoredRules([]);
     let cursor: string | null = null;
@@ -195,8 +192,7 @@ export default function UserRulesClientPage({ ruleCount }) {
         pageCount++;
 
         const params = new URLSearchParams();
-        // Use authorSlug for new format, API also accepts authorTitle for backwards compatibility
-        params.set("authorSlug", authorSlugOrName || "");
+        params.set("authorSlug", authorSlug || "");
         params.set("first", FETCH_PAGE_SIZE.toString());
         if (cursor) params.set("after", cursor);
 

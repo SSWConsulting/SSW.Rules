@@ -27,9 +27,7 @@ interface AuthorSelectorProps {
 /**
  * AuthorSelector - TinaCMS custom field component for selecting people
  *
- * Stores authors as plain slugs (e.g., "bob-northwind") for consistency
- * with the migration script. Also handles reading legacy reference path
- * format ("people/slug.mdx") for backward compatibility.
+ * Stores authors as plain slugs (e.g., "bob-northwind").
  *
  * @param showRefresh - Whether to show the refresh button (default: false)
  */

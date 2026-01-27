@@ -56,7 +56,7 @@ const Rule: Collection = {
     {
       type: "string",
       name: "uri",
-      label: "Slug",
+      label: "TestURL",
       description: "The slug of the rule e.g. keep-your-urls-clean",
       required: true,
       searchable: true,

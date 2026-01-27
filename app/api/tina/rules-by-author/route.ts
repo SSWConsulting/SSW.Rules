@@ -4,8 +4,7 @@ import client from "@/tina/__generated__/client";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    // Support both new 'authorSlug' and legacy 'authorTitle' parameters
-    const authorSlug = searchParams.get("authorSlug") || searchParams.get("authorTitle");
+    const authorSlug = searchParams.get("authorSlug");
     const firstStr = searchParams.get("first");
     const after = searchParams.get("after") || undefined;
 

@@ -20,13 +20,8 @@ export async function POST(request: NextRequest) {
         title: node.title,
         uri: node.uri,
         body: node.body,
-        // Handle both new format (string[]) and legacy format (object[])
         authors: Array.isArray(node.authors)
-          ? node.authors.map((a: any) => {
-              if (typeof a === "string") return a;
-              if (a && a.title) return a.title;
-              return null;
-            }).filter(Boolean)
+          ? node.authors.map((a: any) => a?.author).filter(Boolean)
           : [],
       }));
 

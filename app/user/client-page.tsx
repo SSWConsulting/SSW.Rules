@@ -154,13 +154,8 @@ export default function UserRulesClientPage({ ruleCount }) {
             body: fullRule.body,
             lastUpdated: fullRule.lastUpdated,
             lastUpdatedBy: fullRule.lastUpdatedBy,
-            // Handle both new format (string[]) and legacy format (object[])
             authors: Array.isArray(fullRule.authors)
-              ? fullRule.authors.map((a: any) => {
-                  if (typeof a === "string") return a;
-                  if (a && a.title) return a.title;
-                  return null;
-                }).filter(Boolean)
+              ? fullRule.authors.map((a: any) => a?.author).filter(Boolean)
               : [],
           }));
 
@@ -219,13 +214,8 @@ export default function UserRulesClientPage({ ruleCount }) {
           title: fullRule.title,
           uri: fullRule.uri,
           body: fullRule.body,
-          // Handle both new format (string[]) and legacy format (object[])
           authors: Array.isArray(fullRule.authors)
-            ? fullRule.authors.map((a: any) => {
-                if (typeof a === "string") return a; // New format: slug string
-                if (a && a.title) return a.title; // Legacy format: object with title
-                return null;
-              }).filter(Boolean)
+            ? fullRule.authors.map((a: any) => a?.author).filter(Boolean)
             : [],
           lastUpdated: fullRule.lastUpdated,
           lastUpdatedBy: fullRule.lastUpdatedBy,

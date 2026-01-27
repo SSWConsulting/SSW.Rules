@@ -67,10 +67,23 @@ To test changes to MDX rules:
   
 ## Builds & Deployment
 
-### SSW.Rules.Content
-- Changes made to [SSW.Rules.Content](http://github.com/SSWConsulting/SSW.Rules.Content) (i.e. rule changes) trigger builds that deploy:
-  - **main** to the **staging** - https://ssw-rules-tina-staging-c5bwbjc4a8d2g8gm.australiaeast-01.azurewebsites.net/rules
-  - latest **release/xx** to the **production** site - https://www.ssw.com.au/rules
+### Content Changes (SSW.Rules.Content)
+
+Changes made in **SSW.Rules.Content** (e.g. rule MDX, categories, images) will **go live after the PR is merged**.
+
+🎥 Watch the video: [TinaCMS for GitHub - The SSW Rules Migration | Jake Bayliss | SSW Consulting](https://www.youtube.com/watch?v=lqqduKKhH_o)
+
+---
+
+### Code Changes (SSW.Rules)
+
+Code changes made to **SSW.Rules** are deployed as follows:
+
+- **main** deploys to **staging**: https://ssw-rules-tina-staging-c5bwbjc4a8d2g8gm.australiaeast-01.azurewebsites.net/rules
+- To deploy to **production**:
+  - Create a `release/xx` branch from the current `main` commit you want to ship
+  - Manually run the production deployment workflow in [GitHub Actions](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-and-deploy.yml)
+  - **production**: https://www.ssw.com.au/rules
 
 
 ---

@@ -8,15 +8,7 @@ export const revalidate = 3600; // Revalidate every hour
 interface Person {
   slug: string;
   name: string;
-  folderName: string;
-  role: string | null;
-  location: string | null;
-  profileUrl: string;
   imageUrl: string;
-  email: string | null;
-  github: string | null;
-  linkedin: string | null;
-  twitter: string | null;
 }
 
 type PeopleIndex = Record<string, Person>;
@@ -71,11 +63,11 @@ export async function GET(request: NextRequest) {
   // Convert to array for easier filtering and sorting
   let people = Object.values(peopleIndex);
 
-  // If search is provided, filter by name
+  // If search is provided, filter by name or slug
   if (search) {
     const searchLower = search.toLowerCase();
     people = people.filter(
-      (person) => person.name.toLowerCase().includes(searchLower) || person.slug.includes(searchLower) || person.role?.toLowerCase().includes(searchLower)
+      (person) => person.name.toLowerCase().includes(searchLower) || person.slug.includes(searchLower)
     );
   }
 

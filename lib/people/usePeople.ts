@@ -11,15 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 export interface Person {
   slug: string;
   name: string;
-  folderName: string;
-  role: string | null;
-  location: string | null;
-  profileUrl: string;
   imageUrl: string;
-  email: string | null;
-  github: string | null;
-  linkedin: string | null;
-  twitter: string | null;
 }
 
 export type PeopleIndex = Record<string, Person>;
@@ -78,15 +70,7 @@ function createFallbackPerson(slug: string): Person {
   return {
     slug,
     name,
-    folderName: slug,
-    role: null,
-    location: null,
-    profileUrl: `https://ssw.com.au/people/${slug}`,
     imageUrl: "",
-    email: null,
-    github: null,
-    linkedin: null,
-    twitter: null,
   };
 }
 
@@ -201,8 +185,7 @@ export function useSearchPeople(query: string): {
     return peopleList.filter(
       (person) =>
         person.name.toLowerCase().includes(queryLower) ||
-        person.slug.includes(queryLower) ||
-        person.role?.toLowerCase().includes(queryLower)
+        person.slug.includes(queryLower)
     );
   }, [query, peopleList]);
 

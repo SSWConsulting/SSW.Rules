@@ -13,58 +13,57 @@ The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWCon
 ## Getting Started
 
 ### Required Tools
-- Node.js (version defined in .nvmrc) – recommended to use nvm
+- Node.js (version defined in [.nvmrc](.nvmrc)) – recommended to use nvm
 - [corepack](https://github.com/nodejs/corepack) (run corepack enable to manage correct pnpm version)
 - [pnpm](https://pnpm.io/installation) package manager
+- [python](https://www.python.org/downloads/)
 
 
 ### F5 experience
 
 1. Clone this repo
-2. Clone [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content) and switch to the `tina-migration-dev-content` branch
+2. Clone [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content)
 
 3. Place both repos in the same parent directory e.g.
 ```
-📁 SSW.Rules/
+📁 SSW-dev/
 ├── 📁 SSW.Rules.Content/
-└── 📁 SSW.Rules.Tina.Nextjs.POC/
+└── 📁 SSW.Rules/ <--- This repo
 ```
 
 4. Create a `.env` file based off `.env.example` in the root of this repo - get the values from Keeper (SSW.Rules.PoC Environment Variables)
 
 5. Run `pnpm install` to install packages
 
-6. Run `pnpm dev` to start the development server
+6. Run `pnpm prepare:content` to generate required mapping JSON files (they are gitignored)
+
+7. Run `pnpm dev` to start the development server
 
 
 ### Syncing and Updating Content
+
 To test changes to MDX rules:
 
-1. Go to the `tina-migration-dev-content` branch of SSW.Rules.Content
+1. Go to your branch in [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content)
 
 2. Modify the rule MDX as needed
 
-3. Run `pnpm dev` in this project to see the changes reflected locally
+3. If there are any changes to categories, re-run `pnpm prepare:content`
+
+4. Run `pnpm dev` in this project to see the changes reflected locally
 
 ### Branches
+
 - Always create a new branch for your PBIs 
 - Always delete your branch once your PR has been merged
 - To create a new **content branch** (in `SSW.Rules.Content`), follow the setup steps in the [Wiki](https://github.com/SSWConsulting/SSW.Rules.Content/wiki/How-to-Recreate-the-tina-main-Branch-(If-Deleted))
   
-
 ## Builds & Deployment
-
-### SSW.Rules.Tina.Nextjs.POC
-- Changes made to [SSW.Rules.Tina.Nextjs.POC]() trigger builds that deploy to Azure
 
 ### SSW.Rules.Content
 - Changes made to [SSW.Rules.Content](http://github.com/SSWConsulting/SSW.Rules.Content) (i.e. rule changes) trigger builds that deploy:
   - **main** to the **staging** - https://ssw-rules-tina-staging-c5bwbjc4a8d2g8gm.australiaeast-01.azurewebsites.net/
   - latest **release/xx** to the **production** site - https://www.ssw.com.au/rules-beta/
-
-
-
-
 
 ## POC Progress Checklist
 

@@ -12,7 +12,6 @@
     "lint": "biome lint",
     "dev:build": "next build",
     "prepare:content": "cross-env node ./scripts/prepare-content.js",
-    "update-categories": "cross-env node ./scripts/update-categories.js",
     "crawl-sitemap": "node ./scripts/crawl-sitemap.js"
   },
   "devDependencies": {

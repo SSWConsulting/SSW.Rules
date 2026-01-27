@@ -35,9 +35,11 @@ The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWCon
 
 5. Run `pnpm install` to install packages
 
-6. Run `pnpm prepare:content` to generate required mapping JSON files (they are gitignored)
+6. Install `pyyaml` python package: `py -3 -m pip install pyyaml`
 
-7. Run `pnpm dev` to start the development server
+7. Run `pnpm prepare:content` to generate required mapping JSON files (they are gitignored)
+
+8. Run `pnpm dev` to start the development server
 
 
 ### Syncing and Updating Content

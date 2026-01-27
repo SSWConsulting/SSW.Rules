@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "pnpm prepare:content && tinacms dev -c \"next dev --turbopack\"",
+    "dev": "pnpm tinacms dev -c \"next dev --turbopack\"",
     "build": "tinacms build && next build",
     "postbuild": "next-sitemap",
     "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
@@ -12,7 +12,6 @@
     "lint": "biome lint",
     "dev:build": "next build",
     "prepare:content": "cross-env node ./scripts/prepare-content.js",
-    "update-categories": "cross-env node ./scripts/update-categories.js",
     "crawl-sitemap": "node ./scripts/crawl-sitemap.js"
   },
   "devDependencies": {

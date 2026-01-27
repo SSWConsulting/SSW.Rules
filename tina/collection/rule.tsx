@@ -3,9 +3,9 @@ import { Collection, useCMS, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
+import { AuthorSelector } from "../fields/AuthorSelector";
 import { CategorySelectorInput } from "../fields/CategorySelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
-import { PeopleSelector } from "../fields/PeopleSelector";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
 import { createdInfoFields } from "./shared/createdInfoFields";
@@ -105,20 +105,34 @@ const Rule: Collection = {
       },
     },
     {
-      type: "string",
+      type: "object",
       name: "authors",
       label: "Authors",
       description: "The list of contributors for this rule. Select from the People index.",
       list: true,
       searchable: false,
       ui: {
-        component: wrapFieldsWithMeta((props) => {
-          // For list items, we need to handle the field differently
-          // The ConditionalHiddenField wrapper handles admin page detection
-          const { field, input, meta } = props;
-          return <PeopleSelector input={input} field={field} meta={meta} />;
-        }),
+        itemProps: (item) => {
+          const slug = item?.author;
+          if (!slug) return { label: "Select an Author" };
+          const displayName = slug
+            .split("-")
+            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+          return { label: displayName };
+        },
+        component: ConditionalHiddenField,
       },
+      fields: [
+        {
+          type: "string",
+          name: "author",
+          label: "Author",
+          ui: {
+            component: wrapFieldsWithMeta((props) => <AuthorSelector {...props} />),
+          },
+        },
+      ],
     },
     {
       type: "object",

@@ -10,15 +10,7 @@ import path from "path";
 export interface Person {
   slug: string;
   name: string;
-  folderName: string;
-  role: string | null;
-  location: string | null;
-  profileUrl: string;
   imageUrl: string;
-  email: string | null;
-  github: string | null;
-  linkedin: string | null;
-  twitter: string | null;
 }
 
 export type PeopleIndex = Record<string, Person>;
@@ -97,15 +89,7 @@ export function createFallbackPerson(slug: string): Person {
   return {
     slug,
     name,
-    folderName: slug,
-    role: null,
-    location: null,
-    profileUrl: `https://ssw.com.au/people/${slug}`,
     imageUrl: "", // Will fall back to placeholder
-    email: null,
-    github: null,
-    linkedin: null,
-    twitter: null,
   };
 }
 
@@ -160,8 +144,7 @@ export function searchPeople(query: string): Person[] {
     .filter(
       (person) =>
         person.name.toLowerCase().includes(queryLower) ||
-        person.slug.includes(queryLower) ||
-        person.role?.toLowerCase().includes(queryLower)
+        person.slug.includes(queryLower)
     )
     .sort((a, b) => a.name.localeCompare(b.name));
 }

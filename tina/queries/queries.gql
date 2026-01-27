@@ -10,7 +10,9 @@ query latestRulesQuery($size: Float, $sortOption: String, $includeBody: Boolean 
         createdBy
         uri
         body @include(if: $includeBody)
-        authors
+        authors {
+          author
+        }
       }
     }
   }
@@ -105,7 +107,9 @@ query rulesByGuidQuery($guids: [String!]!) {
         title
         uri
         body
-        authors
+        authors {
+          author
+        }
       }
     }
   }
@@ -119,7 +123,9 @@ query rulesByUriQuery($uris: [String!]!) {
         title
         uri
         body
-        authors
+        authors {
+          author
+        }
         lastUpdated
         lastUpdatedBy
         sidebarVideo
@@ -140,7 +146,7 @@ query rulesByUriQuery($uris: [String!]!) {
 }
 
 query rulesByAuthor($authorSlug: String!, $first: Float, $after: String) {
-  ruleConnection(filter: { authors: { eq: $authorSlug } }, first: $first, after: $after) {
+  ruleConnection(filter: { authors: { author: { eq: $authorSlug } } }, first: $first, after: $after) {
     pageInfo {
       hasNextPage
       endCursor
@@ -151,7 +157,9 @@ query rulesByAuthor($authorSlug: String!, $first: Float, $after: String) {
         title
         uri
         body
-        authors
+        authors {
+          author
+        }
         lastUpdated
         lastUpdatedBy
       }
@@ -173,7 +181,9 @@ query archivedRulesQuery($first: Float, $after: String) {
         body
         isArchived
         archivedreason
-        authors
+        authors {
+          author
+        }
         lastUpdated
         lastUpdatedBy
       }
@@ -244,7 +254,9 @@ query ruleData($relativePath: String!) {
       title
       uri
       body
-      authors
+      authors {
+        author
+      }
       categories {
         category {
           ... on CategoryCategory {
@@ -297,7 +309,9 @@ query ruleDataBasic($relativePath: String!) {
       title
       uri
       body
-      authors
+      authors {
+        author
+      }
       categories {
         category {
           ... on CategoryCategory {

@@ -25,7 +25,6 @@ const PEOPLE_REPO = process.env.PEOPLE_REPO || "SSWConsulting/SSW.People.Profile
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
 const GITHUB_API_BASE = "https://api.github.com";
 const RAW_GITHUB_BASE = "https://raw.githubusercontent.com";
-const SSW_PEOPLE_URL_BASE = "https://ssw.com.au/people";
 
 // Output directories
 const PROJECT_ROOT = path.resolve(__dirname, "..");
@@ -107,13 +106,6 @@ function getImageUrl(folderName) {
 }
 
 /**
- * Get the SSW People profile URL for a person
- */
-function getProfileUrl(slug) {
-  return `${SSW_PEOPLE_URL_BASE}/${slug}`;
-}
-
-/**
  * Fetch the list of people directories from the repo
  */
 async function fetchPeopleDirectories() {
@@ -153,6 +145,7 @@ async function fetchPersonMarkdown(folderName) {
 
 /**
  * Parse person data from markdown frontmatter
+ * Only extracts essential fields: slug, name, imageUrl
  */
 function parsePersonData(folderName, markdownContent) {
   try {
@@ -170,15 +163,7 @@ function parsePersonData(folderName, markdownContent) {
     return {
       slug,
       name,
-      folderName,
-      role: frontmatter.role || frontmatter.jobTitle || frontmatter.position || null,
-      location: frontmatter.location || frontmatter.office || null,
-      profileUrl: getProfileUrl(slug),
       imageUrl: getImageUrl(folderName),
-      email: frontmatter.email || null,
-      github: frontmatter.github || frontmatter.githubUrl || null,
-      linkedin: frontmatter.linkedin || frontmatter.linkedinUrl || null,
-      twitter: frontmatter.twitter || frontmatter.twitterUrl || null,
     };
   } catch (error) {
     console.warn(`   ⚠️  Failed to parse frontmatter for ${folderName}: ${error.message}`);
@@ -191,20 +176,10 @@ function parsePersonData(folderName, markdownContent) {
  */
 function generatePersonMdx(personData) {
   const frontmatter = {
-    name: personData.name,
     slug: personData.slug,
-    role: personData.role,
-    location: personData.location,
-    profileUrl: personData.profileUrl,
+    name: personData.name,
     imageUrl: personData.imageUrl,
   };
-
-  // Remove null values
-  Object.keys(frontmatter).forEach((key) => {
-    if (frontmatter[key] === null) {
-      delete frontmatter[key];
-    }
-  });
 
   return matter.stringify("", frontmatter);
 }

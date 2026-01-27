@@ -5,148 +5,23 @@ import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useResolveAuthors } from "@/lib/people/usePeople";
 
-/**
- * Legacy author format (object with title and url)
- */
-interface LegacyAuthor {
-  title?: string | null;
-  url?: string | null;
+interface Author {
+  author?: string | null;
 }
-
-/**
- * New reference format (object with person reference path)
- */
-interface AuthorReference {
-  person?: string | null;
-}
-
-type AuthorItem = string | LegacyAuthor | AuthorReference | null;
 
 interface AuthorsCardProps {
-  /**
-   * Authors - can be:
-   * - New reference format: { person: "people/bob-northwind.mdx" }[]
-   * - Slug format: string[] of slugs (e.g., ["bob-northwind"])
-   * - Legacy format: { title, url }[]
-   */
-  authors?: AuthorItem[] | null;
-}
-
-/**
- * Check if an item is in reference format
- */
-function isReferenceFormat(item: AuthorItem): item is AuthorReference {
-  return item !== null && typeof item === "object" && "person" in item;
-}
-
-/**
- * Check if an item is in legacy format
- */
-function isLegacyFormat(item: AuthorItem): item is LegacyAuthor {
-  return item !== null && typeof item === "object" && ("title" in item || "url" in item) && !("person" in item);
-}
-
-/**
- * Extract slug from reference path
- * e.g., "people/bob-northwind.mdx" -> "bob-northwind"
- */
-function extractSlugFromPath(path: string | null | undefined): string | null {
-  if (!path) return null;
-  const match = path.match(/people\/([^/]+)\.mdx$/);
-  return match ? match[1] : null;
-}
-
-/**
- * Extract slug from a legacy author URL
- */
-function extractSlugFromUrl(url: string | null | undefined): string | null {
-  if (!url) return null;
-
-  if (url.includes("ssw.com.au/people/")) {
-    const match = url.match(/people\/([^/?#]+)/);
-    return match ? match[1] : null;
-  }
-
-  if (url.includes("github.com/")) {
-    const username = url.split("github.com/").pop()?.split("/")[0];
-    return username ? `gh-${username}` : null;
-  }
-
-  return null;
-}
-
-/**
- * Get image URL from legacy author format
- */
-function getImageUrlFromLegacyAuthor(author: LegacyAuthor, placeholderImg: string): string {
-  const { url } = author;
-
-  if (url?.includes("ssw.com.au/people")) {
-    const match = url.match(/people\/([^/?#]+)/);
-    const slug = match ? match[1] : null;
-
-    if (slug) {
-      const formattedTitle = slug
-        .split("-")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join("-");
-
-      return `https://raw.githubusercontent.com/SSWConsulting/SSW.People.Profiles/main/${formattedTitle}/Images/${formattedTitle}-Profile.jpg`;
-    }
-  }
-
-  if (url?.includes("github.com/")) {
-    const gitHubUsername = url.split("github.com/").pop();
-    return `https://avatars.githubusercontent.com/${gitHubUsername}`;
-  }
-
-  return placeholderImg;
+  authors?: Author[] | null;
 }
 
 export default function AuthorsCard({ authors }: AuthorsCardProps) {
   const placeholderImg = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/uploads/ssw-employee-profile-placeholder-sketch.jpg`;
 
-  // Determine format and extract slugs
-  const { slugs, legacyAuthors, isLegacy } = useMemo(() => {
-    if (!authors || authors.length === 0) {
-      return { slugs: [], legacyAuthors: [], isLegacy: false };
-    }
-
-    const extractedSlugs: string[] = [];
-    const legacy: LegacyAuthor[] = [];
-    let hasLegacy = false;
-
-    for (const author of authors) {
-      if (author === null) continue;
-
-      // New reference format: { person: "people/slug.mdx" }
-      if (isReferenceFormat(author)) {
-        const slug = extractSlugFromPath(author.person);
-        if (slug) extractedSlugs.push(slug);
-        continue;
-      }
-
-      // String format (just the slug)
-      if (typeof author === "string") {
-        extractedSlugs.push(author);
-        continue;
-      }
-
-      // Legacy format: { title, url }
-      if (isLegacyFormat(author)) {
-        hasLegacy = true;
-        legacy.push(author);
-        // Also try to extract slug for resolution
-        const slug = extractSlugFromUrl(author.url);
-        if (slug) extractedSlugs.push(slug);
-      }
-    }
-
-    return {
-      slugs: extractedSlugs,
-      legacyAuthors: legacy,
-      isLegacy: hasLegacy && extractedSlugs.length === 0,
-    };
+  // Extract slugs from authors array
+  const slugs = useMemo(() => {
+    if (!authors || authors.length === 0) return [];
+    return authors
+      .filter((a) => a?.author)
+      .map((a) => a.author as string);
   }, [authors]);
 
   // Resolve slugs to full person data
@@ -154,22 +29,12 @@ export default function AuthorsCard({ authors }: AuthorsCardProps) {
 
   // Build display authors
   const displayAuthors = useMemo(() => {
-    // If we only have legacy authors with no resolvable slugs, use them directly
-    if (isLegacy && legacyAuthors.length > 0) {
-      return legacyAuthors.map((author) => ({
-        name: author.title ?? "Unknown",
-        url: author.url ?? undefined,
-        imageUrl: getImageUrlFromLegacyAuthor(author, placeholderImg),
-      }));
-    }
-
-    // Use resolved authors from people index
     return resolvedAuthors.map((person) => ({
       name: person.name,
-      url: person.profileUrl,
+      url: `https://ssw.com.au/people/${person.slug}`,
       imageUrl: person.imageUrl || placeholderImg,
     }));
-  }, [isLegacy, legacyAuthors, resolvedAuthors, placeholderImg]);
+  }, [resolvedAuthors, placeholderImg]);
 
   const [imgSrcList, setImgSrcList] = useState<string[]>([]);
 
@@ -195,7 +60,7 @@ export default function AuthorsCard({ authors }: AuthorsCardProps) {
     return null;
   }
 
-  if (loading && !isLegacy) {
+  if (loading) {
     return (
       <Card title="Authors">
         <div className="flex flex-row flex-wrap p-2">

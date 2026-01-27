@@ -15,8 +15,7 @@
     "update-categories": "cross-env node ./scripts/update-categories.js",
     "crawl-sitemap": "node ./scripts/crawl-sitemap.js",
     "generate:people": "node ./scripts/generate-people-index.js",
-    "migrate:authors": "node ./scripts/migrate-authors-to-slugs.js",
-    "migrate:authors:dry-run": "node ./scripts/migrate-authors-to-slugs.js --dry-run --verbose"
+    "migrate:authors": "python ./scripts/migrate-authors-to-slugs.py"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.3",

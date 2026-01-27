@@ -196,6 +196,20 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml
 
+      # ────────────────────────────── NODE + PEOPLE INDEX ───────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate people index
+        run: |
+          npm ci
+          npm run generate:people
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ────────────────────────────── CONTENT MAPPING FILES ─────────────────
       - name: Generate rule‑category mapping files
         working-directory: content-temp/scripts/tina-migration
         run: python build-rule-category-map.py

@@ -1,17 +1,12 @@
-import { unstable_cache } from "next/cache";
 import { NextResponse } from "next/server";
 import { createGitHubService } from "@/lib/services/github";
 import client from "@/tina/__generated__/client";
-import { selectLatestRuleFilesByPath } from "@/utils/selectLatestRuleFilesByPath";
 
 export const dynamic = "force-dynamic";
 
 type RuleItem = { title: string; uri: string; lastModifiedAt: string | null };
-type ChangedRuleFile = { path: string; mergedAt: string | null };
 
 const ALLOWED_ORIGIN = "https://ssw.com.au";
-const CACHE_SECONDS = 60 * 60 * 2;
-const MAX_PR_PAGES = 20;
 
 function addCors(res: NextResponse) {
   res.headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
@@ -27,7 +22,6 @@ export async function OPTIONS() {
 
 function ruleUriFromPath(path?: string): string | null {
   if (!path) return null;
-
   return (
     path
       .replace(/\/rule\.md$/, "/rule.mdx")
@@ -36,166 +30,97 @@ function ruleUriFromPath(path?: string): string | null {
   );
 }
 
-/**
- * Extract rule files from PR nodes
- */
-function extractRuleFilesFromPRs(
-  prs: any[],
-  seen: Set<string>,
-  collected: ChangedRuleFile[]
-): void {
+function getRuleFilesFromPRs(prs: any[]): Array<{ path: string; mergedAt: string }> {
+  const ruleMap = new Map<string, { path: string; mergedAt: string }>();
+
   for (const pr of prs) {
-    const mergedAt = typeof pr?.mergedAt === "string" ? pr.mergedAt : null;
-    const files = Array.isArray(pr?.files?.nodes) ? pr.files.nodes : [];
+    const mergedAt = pr.mergedAt;
+    if (!mergedAt) continue;
 
-    for (const f of files) {
-      const path = typeof f?.path === "string" ? f.path : undefined;
-      if (!path) continue;
-      if (!path.endsWith("rule.mdx") && !path.endsWith("rule.md")) continue;
-      if (seen.has(path)) continue;
+    const files = pr.files?.nodes || [];
+    for (const file of files) {
+      const path = file.path;
+      if (!path || (!path.endsWith('rule.md') && !path.endsWith('rule.mdx'))) continue;
 
-      seen.add(path);
-      collected.push({ path, mergedAt });
+      const uri = ruleUriFromPath(path);
+      if (!uri) continue;
+
+      const existing = ruleMap.get(uri);
+      if (!existing || new Date(mergedAt) > new Date(existing.mergedAt)) {
+        ruleMap.set(uri, { path, mergedAt });
+      }
     }
   }
+
+  return Array.from(ruleMap.values());
 }
 
-/**
- * Collect PRs authored directly by the user
- */
-async function collectDirectAuthoredFiles(
-  service: Awaited<ReturnType<typeof createGitHubService>>,
-  username: string,
-  minUniqueRules: number,
-  seen: Set<string>,
-  collected: ChangedRuleFile[]
-): Promise<void> {
-  let cursor: string | undefined;
-
-  for (let page = 0; page < MAX_PR_PAGES; page++) {
-    const raw = (await service.searchPullRequestsByAuthor(username, cursor, "after")) as unknown;
-
-    const search = typeof raw === "object" && raw !== null ? (raw as any).search : undefined;
-    const prs = Array.isArray(search?.nodes) ? search.nodes : [];
-    const pageInfo = search?.pageInfo;
-
-    cursor = typeof pageInfo?.endCursor === "string" ? pageInfo.endCursor : undefined;
-
-    extractRuleFilesFromPRs(prs, seen, collected);
-
-    const unique = selectLatestRuleFilesByPath(collected);
-    if (unique.length >= minUniqueRules) break;
-    if (!pageInfo?.hasNextPage || !cursor) break;
-  }
-}
-
-/**
- * Collect PRs by TinaCMS bot where the user is a co-author
- */
-async function collectTinaBotCoAuthoredFiles(
-  service: Awaited<ReturnType<typeof createGitHubService>>,
-  username: string,
-  minUniqueRules: number,
-  seen: Set<string>,
-  collected: ChangedRuleFile[]
-): Promise<void> {
-  let cursor: string | undefined;
-
-  for (let page = 0; page < MAX_PR_PAGES; page++) {
-    const result = await service.searchTinaBotPRsByCoAuthor(username, cursor);
-
-    const prs = result.search.nodes;
-    const pageInfo = result.search.pageInfo;
-
-    cursor = typeof pageInfo?.endCursor === "string" ? pageInfo.endCursor : undefined;
-
-    extractRuleFilesFromPRs(prs, seen, collected);
-
-    const unique = selectLatestRuleFilesByPath(collected);
-    if (unique.length >= minUniqueRules) break;
-    if (!pageInfo?.hasNextPage || !cursor) break;
-  }
-}
-
-async function collectRecentChangedRuleFiles(username: string, minUniqueRules: number): Promise<ChangedRuleFile[]> {
+async function getRecentRulesForUser(username: string, limit: number): Promise<RuleItem[]> {
   const service = await createGitHubService();
+  const prs = await service.getPRsForUser(username);
+  const ruleFiles = getRuleFilesFromPRs(prs);
 
-  const seen = new Set<string>();
-  const collected: ChangedRuleFile[] = [];
-
-  // 1. Collect PRs authored directly by the user
-  await collectDirectAuthoredFiles(service, username, minUniqueRules, seen, collected);
-
-  // 2. Also collect PRs by TinaCMS bot where the user is a co-author
-  // This ensures rules updated via TinaCMS admin panel are attributed correctly
-  await collectTinaBotCoAuthoredFiles(service, username, minUniqueRules, seen, collected);
-
-  return selectLatestRuleFilesByPath(collected);
-}
-
-function buildUriToLastModified(files: ChangedRuleFile[]) {
-  const uriToLastModified = new Map<string, string>();
+  const uriToDate = new Map<string, string>();
   const uris: string[] = [];
 
-  for (const f of files) {
-    const uri = ruleUriFromPath(f.path);
+  for (const file of ruleFiles) {
+    const uri = ruleUriFromPath(file.path);
     if (!uri) continue;
 
-    if (!uriToLastModified.has(uri)) uris.push(uri);
-
-    if (!f.mergedAt) continue;
-
-    const prev = uriToLastModified.get(uri);
-    if (!prev || Date.parse(f.mergedAt) > Date.parse(prev)) {
-      uriToLastModified.set(uri, f.mergedAt);
+    if (!uriToDate.has(uri)) uris.push(uri);
+    if (file.mergedAt) {
+      const current = uriToDate.get(uri);
+      if (!current || new Date(file.mergedAt) > new Date(current)) {
+        uriToDate.set(uri, file.mergedAt);
+      }
     }
   }
 
-  return { uris, uriToLastModified };
-}
+  if (uris.length === 0) return [];
 
-async function fetchRuleItemsByUris(uris: string[], uriToLastModified: Map<string, string>, limit: number): Promise<RuleItem[]> {
-  if (!uris.length) return [];
+  try {
+    const res = await client.queries.rulesByUriQuery({ uris });
+    const edges = res.data?.ruleConnection?.edges || [];
 
-  const res = await client.queries.rulesByUriQuery({ uris });
-  const edges = Array.isArray(res.data?.ruleConnection?.edges) ? res.data.ruleConnection.edges : [];
-
-  return edges
-    .map((e) => e?.node)
-    .filter((r): r is { title: string; uri: string } => typeof r?.title === "string" && typeof r?.uri === "string")
-    .map((r) => ({
-      title: r.title,
-      uri: r.uri,
-      lastModifiedAt: uriToLastModified.get(r.uri) ?? null,
-    }))
-    .sort((a, b) => (b.lastModifiedAt ? Date.parse(b.lastModifiedAt) : 0) - (a.lastModifiedAt ? Date.parse(a.lastModifiedAt) : 0))
-    .slice(0, limit);
+    return edges
+      .map(e => e?.node)
+      .filter((node): node is { title: string; uri: string } => 
+        !!node && typeof node.title === 'string' && typeof node.uri === 'string'
+      )
+      .map(node => ({
+        title: node.title,
+        uri: node.uri,
+        lastModifiedAt: uriToDate.get(node.uri) || null
+      }))
+      .sort((a, b) => {
+        const dateA = a.lastModifiedAt ? new Date(a.lastModifiedAt).getTime() : 0;
+        const dateB = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0;
+        return dateB - dateA;
+      })
+      .slice(0, limit);
+  } catch (error) {
+    return [];
+  }
 }
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const username = (searchParams.get("username") || "").trim();
+    const username = searchParams.get("username")?.trim();
     const limit = Math.max(1, Math.min(50, Number(searchParams.get("limit") || 10)));
 
     if (!username) {
       return addCors(NextResponse.json({ error: "Missing username" }, { status: 400 }));
     }
 
-    const getCachedResult = unstable_cache(
-      async (u: string, lim: number) => {
-        const changedFiles = await collectRecentChangedRuleFiles(u, lim);
-        const { uris, uriToLastModified } = buildUriToLastModified(changedFiles);
-        const items = await fetchRuleItemsByUris(uris, uriToLastModified, lim);
-        return { items };
-      },
-      [`last-modified-rules-items-v1-${username}-${limit}`],
-      { revalidate: CACHE_SECONDS }
+    const items = await getRecentRulesForUser(username, limit);
+    return addCors(NextResponse.json({ username, limit, items }));
+  } catch (error) {
+    return addCors(
+      NextResponse.json(
+        { error: error instanceof Error ? error.message : "Unknown error" },
+        { status: 500 }
+      )
     );
-
-    const result = await getCachedResult(username, limit);
-    return addCors(NextResponse.json({ username, limit, ...result }));
-  } catch (e) {
-    return addCors(NextResponse.json({ error: e instanceof Error ? e.message : "Unknown error" }, { status: 500 }));
   }
 }

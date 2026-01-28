@@ -395,7 +395,6 @@ if (-not $WhatIf) {
   App Service ID:         $($outputs.appServiceId.value)
   App Service Name:       $($outputs.appServiceName.value)
   App Service Hostname:   $($outputs.appServiceHostName.value)
-  Managed Identity ID:    $($outputs.managedIdentityPrincipalId.value)
   ACR Login Server:       $($outputs.containerRegistryLoginServer.value)
 ================================================================================
 
@@ -407,7 +406,6 @@ if (-not $WhatIf) {
         
         "appServiceName=$($outputs.appServiceName.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "appServiceHostName=$($outputs.appServiceHostName.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-        "managedIdentityPrincipalId=$($outputs.managedIdentityPrincipalId.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "acrName=$($outputs.containerRegistryNameOutput.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "acrLoginServer=$($outputs.containerRegistryLoginServer.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "appInsightsConnectionString=$($outputs.appInsightsConnectionString.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append

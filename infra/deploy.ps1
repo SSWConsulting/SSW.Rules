@@ -56,17 +56,18 @@ if ($Environment -eq 'production') {
     $Environment = 'prod'
 }
 
-# All resource names derived from project + environment
-$ResourceGroup = "rg-$ProjectName-$Environment"
+# Resource names derived from project + environment
 $AppServiceName = "app-$ProjectName-$Environment"
 $AppInsightsName = "appi-$ProjectName-$Environment"
 $ContainerRegistryName = "acr$ProjectName$Environment"
 
-# App Service Plan - different per environment
+# Resource Group and App Service Plan - different per environment
 if ($Environment -eq 'staging') {
+    $ResourceGroup = 'SSW.Rules.Staging'
     $AppServicePlanName = 'plan-ssw-shared-dev-linux'
     $AppServicePlanResourceGroup = 'SSW.AppServicePlans'
 } else {
+    $ResourceGroup = 'SSW.Rules'
     $AppServicePlanName = "asp-$ProjectName-$Environment"
     $AppServicePlanResourceGroup = $ResourceGroup
 }

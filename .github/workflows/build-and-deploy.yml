@@ -34,8 +34,51 @@ permissions:
     actions: write
 
 jobs:
+    # ============================================================================
+    # INFRASTRUCTURE DEPLOYMENT
+    # ============================================================================
+    infrastructure:
+        name: Deploy Infrastructure
+        runs-on: ubuntu-latest
+        environment: ${{ github.event.inputs.environment || 'staging' }}
+        outputs:
+            appServiceName: ${{ steps.deploy.outputs.appServiceName }}
+            appServiceHostName: ${{ steps.deploy.outputs.appServiceHostName }}
+            acrName: ${{ steps.deploy.outputs.acrName }}
+            acrLoginServer: ${{ steps.deploy.outputs.acrLoginServer }}
+            appInsightsConnectionString: ${{ steps.deploy.outputs.appInsightsConnectionString }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Azure CLI - Login
+              uses: azure/login@v2
+              with:
+                  client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                  tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+                  subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+            - name: Deploy Infrastructure
+              id: deploy
+              shell: pwsh
+              run: |
+                  ./infra/deploy.ps1 `
+                    -Environment "${{ github.event.inputs.environment || 'staging' }}" `
+                    -ServicePrincipalObjectId "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}"
+
+            - name: Log infrastructure outputs
+              run: |
+                  echo "Infrastructure Deployment Complete"
+                  echo "App Service: ${{ steps.deploy.outputs.appServiceName }}"
+                  echo "App Service Host: ${{ steps.deploy.outputs.appServiceHostName }}"
+                  echo "ACR: ${{ steps.deploy.outputs.acrLoginServer }}"
+
+    # ============================================================================
+    # BUILD AND PUSH CONTAINER
+    # ============================================================================
     build:
         name: Build and Push Container
+        needs: infrastructure
         uses: ./.github/workflows/build-artifacts.yml
         with:
             tag: ${{ github.event.inputs.environment || 'staging' }}
@@ -60,6 +103,9 @@ jobs:
             GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
             GITHUB_APP_INSTALLATION_ID: ${{ secrets.GITHUB_APP_INSTALLATION_ID }}
 
+    # ============================================================================
+    # DEPLOY TO AZURE WEB APP
+    # ============================================================================
     deploy:
         name: Deploy to Azure Web App
         runs-on: ubuntu-latest
@@ -206,6 +252,9 @@ jobs:
                   echo "  🏷️ Version: ${{ env.VERSION_DEPLOYED }}"
                   echo "  🔗 Build Details: ${{ env.DEPLOYMENT_URL }}"
 
+    # ============================================================================
+    # POST-DEPLOYMENT SITEMAP CRAWL
+    # ============================================================================
     crawl_sitemap:
         name: Crawl Sitemap
         if: github.event.inputs.environment == 'production'

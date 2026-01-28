@@ -404,6 +404,7 @@ if (-not $WhatIf) {
     if ($env:GITHUB_OUTPUT) {
         Write-Step "Setting GitHub Actions outputs..."
         
+        "resourceGroup=$ResourceGroup" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "appServiceName=$($outputs.appServiceName.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "appServiceHostName=$($outputs.appServiceHostName.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "acrName=$($outputs.containerRegistryNameOutput.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append

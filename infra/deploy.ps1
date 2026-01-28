@@ -233,6 +233,14 @@ else {
     Write-Info "Container Registry '$ContainerRegistryName' - will create"
 }
 
+# Check if App Service exists
+if (Test-ResourceExists -ResourceType 'Microsoft.Web/sites' -ResourceName $AppServiceName -ResourceGroup $ResourceGroup) {
+    Write-Info "App Service '$AppServiceName' already exists - will update"
+}
+else {
+    Write-Info "App Service '$AppServiceName' - will create"
+}
+
 # Verify App Service Plan exists
 Write-Step "Verifying App Service Plan: $AppServicePlanName"
 $planCheck = az appservice plan show --name $AppServicePlanName --resource-group $AppServicePlanResourceGroup 2>&1

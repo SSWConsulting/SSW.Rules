@@ -35,8 +35,8 @@ param appServicePlanResourceGroup string
 @description('Service Principal Object ID for granting AcrPush role (for GitHub Actions)')
 param servicePrincipalObjectId string = ''
 
-@description('Resource ID of the Log Analytics Workspace to link Application Insights to')
-param logAnalyticsWorkspaceId string
+@description('Name of the Log Analytics Workspace')
+param logAnalyticsWorkspaceName string
 
 @description('Whether to create Application Insights (set to false if it already exists)')
 param createAppInsights bool = true
@@ -78,14 +78,14 @@ resource existingAppServicePlan 'Microsoft.Web/serverfarms@2025-03-01' existing 
 // MODULES
 // ============================================================================
 
-// Application Insights (conditional)
+// Application Insights and Log Analytics Workspace (conditional)
 module appInsightsModule 'modules/appInsights.bicep' = if (createAppInsights) {
   name: 'appInsights-${environment}'
   params: {
     appInsightsName: appInsightsName
+    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
     location: location
     environment: environment
-    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
     tags: tags
   }
 }
@@ -170,6 +170,9 @@ output appInsightsConnectionString string = createAppInsights ? appInsightsModul
 
 @description('Application Insights instrumentation key')
 output appInsightsInstrumentationKey string = createAppInsights ? appInsightsModule.outputs.instrumentationKey : ''
+
+@description('Log Analytics Workspace resource ID')
+output logAnalyticsWorkspaceId string = createAppInsights ? appInsightsModule.outputs.logAnalyticsWorkspaceId : ''
 
 @description('Container Registry login server')
 output containerRegistryLoginServer string = createContainerRegistry ? containerRegistryModule.outputs.loginServer : '${containerRegistryName}.azurecr.io'

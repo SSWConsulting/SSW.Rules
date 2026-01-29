@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import type { BrokenReferences } from "@/app/[filename]/page";
 import ArchivedReasonContent from "@/components/ArchivedReasonContent";
 import AuthorsCard from "@/components/AuthorsCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -8,13 +9,14 @@ import BrokenReferenceBanner from "@/components/BrokenReferenceBanner";
 import CategoriesCard from "@/components/CategoriesCard";
 import Discussion from "@/components/Discussion";
 import HelpCard from "@/components/HelpCard";
+import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
+import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import GitHubMetadata from "@/components/last-updated-by";
 import RelatedRulesCard from "@/components/RelatedRulesCard";
 import RuleActionButtons from "@/components/RuleActionButtons";
 import { YouTubeShorts } from "@/components/shared/Youtube";
 import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import { Card } from "@/components/ui/card";
-import type { BrokenReferences } from "@/app/[filename]/page";
 
 export interface ServerRulePageProps {
   rule: any;
@@ -31,19 +33,20 @@ export type ServerRulePagePropsWithTinaProps = {
 export default function ServerRulePage({ serverRulePageProps, tinaProps }: ServerRulePagePropsWithTinaProps) {
   const { data } = tinaProps;
   const rule = data?.rule;
+  const { isAdmin: isAdminPage, isLoading: isAdminLoading } = useIsAdminPage();
 
   const { ruleCategoriesMapping, sanitizedBasePath, brokenReferences } = serverRulePageProps;
 
   const primaryCategory = ruleCategoriesMapping?.[0];
   const breadcrumbCategories = primaryCategory ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }] : undefined;
 
+  useAdminBackBlock({ isAdminPage });
+
   return (
     <>
       <Breadcrumbs categories={breadcrumbCategories} breadcrumbText="This rule" />
 
-      {brokenReferences?.detected && (
-        <BrokenReferenceBanner brokenPaths={brokenReferences.paths} ruleUri={rule?.uri || ""} />
-      )}
+      {brokenReferences?.detected && <BrokenReferenceBanner brokenPaths={brokenReferences.paths} ruleUri={rule?.uri || ""} />}
 
       <div className="layout-two-columns">
         <Card dropShadow className="layout-main-section p-6">

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
 import NotFound from "@/app/not-found";
 import categoryTitleIndex from "@/category-uri-title-map.json";
+import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import { Section } from "@/components/layout/section";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
@@ -81,6 +82,8 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
 
     return null;
   };
+
+  useAdminBackBlock({ isAdminPage });
 
   useEffect(() => {
     const fetchData = async () => {

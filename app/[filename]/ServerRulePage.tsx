@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { useEffect, useRef } from "react";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import type { BrokenReferences } from "@/app/[filename]/page";
@@ -10,6 +9,7 @@ import BrokenReferenceBanner from "@/components/BrokenReferenceBanner";
 import CategoriesCard from "@/components/CategoriesCard";
 import Discussion from "@/components/Discussion";
 import HelpCard from "@/components/HelpCard";
+import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import GitHubMetadata from "@/components/last-updated-by";
 import RelatedRulesCard from "@/components/RelatedRulesCard";
@@ -40,82 +40,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
   const primaryCategory = ruleCategoriesMapping?.[0];
   const breadcrumbCategories = primaryCategory ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }] : undefined;
 
-  // Track if the Tina form has unsaved changes. In the admin iframe the parent sends "updateData"
-  // when the user edits the form, so we set this to true when we receive that message.
-  const formHasUnsavedChangesRef = useRef(false);
-
-  useEffect(() => {
-    if (!isAdminPage || typeof window === "undefined") return;
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === "updateData") {
-        formHasUnsavedChangesRef.current = true;
-      }
-    };
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [isAdminPage]);
-
-  // Block back button when there are unsaved changes. In Tina admin the preview runs in an iframe;
-  // the browser back button navigates the top window, so we must use window.top.
-  useEffect(() => {
-    const LOG = "[AdminBackBlock]";
-    // Unconditional: confirms this effect ran. Most rule pages use ServerRulePage (not ClientFallbackPage).
-    console.log(LOG, "[ServerRulePage] Effect ran.", {
-      isAdminPage,
-      hasWindow: typeof window !== "undefined",
-      inIframe: typeof window !== "undefined" && window !== window.top,
-    });
-    if (typeof window !== "undefined" && window !== window.top) {
-      console.log(LOG, "Tip: In Tina admin, select the PREVIEW IFRAME in DevTools (Console frame dropdown) to see these logs.");
-    }
-
-    if (!isAdminPage || typeof window === "undefined") {
-      console.log(LOG, "Skipping setup:", { isAdminPage, hasWindow: typeof window !== "undefined" });
-      return;
-    }
-
-    let win: Window;
-    try {
-      win = window.top ?? window;
-      void win.location.href;
-      console.log(LOG, "Using window: top (iframe preview)");
-    } catch {
-      win = window;
-      console.log(LOG, "Using window: self (fallback)");
-    }
-
-    const currentHref = win.location.href;
-    win.history.pushState({ blockBack: true }, "", currentHref);
-    console.log(LOG, "pushState done, href:", currentHref);
-
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (formHasUnsavedChangesRef.current) {
-        console.log(LOG, "beforeunload fired – user closing tab or navigating away");
-        event.preventDefault();
-        event.returnValue = "";
-      }
-    };
-
-    const handlePopState = () => {
-      if (formHasUnsavedChangesRef.current) {
-        win.alert(
-          "If you go back you'll lose your changes you have made so far. Please save before leaving. Click OK to stay on this page.",
-        );
-        console.log(LOG, "popstate fired – user confirmed, re-blocking back");
-        win.history.pushState({ blockBack: true }, "", win.location.href);
-      }
-    };
-
-    win.addEventListener("beforeunload", handleBeforeUnload);
-    win.addEventListener("popstate", handlePopState);
-    console.log(LOG, "Listeners attached on", win === window ? "self" : "top");
-
-    return () => {
-      console.log(LOG, "Cleanup: removing listeners");
-      win.removeEventListener("beforeunload", handleBeforeUnload);
-      win.removeEventListener("popstate", handlePopState);
-    };
-  }, [isAdminPage]);
+  useAdminBackBlock({ isAdminPage });
 
   return (
     <>

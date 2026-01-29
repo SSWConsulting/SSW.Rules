@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
 import NotFound from "@/app/not-found";
 import categoryTitleIndex from "@/category-uri-title-map.json";
+import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import { Section } from "@/components/layout/section";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
@@ -82,64 +83,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
     return null;
   };
 
-  // Block back button before it navigates. In Tina admin the preview runs in an iframe;
-  // the browser back button navigates the top window, so we must use window.top.
-  useEffect(() => {
-    const LOG = "[AdminBackBlock]";
-    // Unconditional: confirms this effect ran (ClientFallbackPage only mounts when rule/category not found statically).
-    console.log(LOG, "[ClientFallbackPage] Effect ran.", {
-      isAdminPage,
-      hasWindow: typeof window !== "undefined",
-      inIframe: typeof window !== "undefined" && window !== window.top,
-    });
-    if (typeof window !== "undefined" && window !== window.top) {
-      console.log(LOG, "Tip: In Tina admin, select the PREVIEW IFRAME in DevTools (Console frame dropdown) to see these logs.");
-    }
-
-    if (!isAdminPage || typeof window === "undefined") {
-      console.log(LOG, "Skipping setup:", { isAdminPage, hasWindow: typeof window !== "undefined" });
-      return;
-    }
-
-    let win: Window;
-    try {
-      win = window.top ?? window;
-      void win.location.href;
-      console.log(LOG, "Using window: top (iframe preview)");
-    } catch {
-      win = window;
-      console.log(LOG, "Using window: self (fallback)");
-    }
-
-    const currentHref = win.location.href;
-    win.history.pushState({ blockBack: true }, "", currentHref);
-    console.log(LOG, "pushState done, href:", currentHref);
-
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      console.log(LOG, "beforeunload fired – user closing tab or navigating away");
-      event.preventDefault();
-      event.returnValue = "";
-    };
-
-    const handlePopState = () => {
-      // Use win.alert (top window) so the dialog is visible when we're in an iframe; window.alert can be lost when the top navigates.
-      win.alert(
-        "If you go back you'll lose your changes you have made so far. Please save before leaving. Click OK to stay on this page.",
-      );
-      console.log(LOG, "popstate fired – user confirmed, re-blocking back");
-      win.history.pushState({ blockBack: true }, "", win.location.href);
-    };
-
-    win.addEventListener("beforeunload", handleBeforeUnload);
-    win.addEventListener("popstate", handlePopState);
-    console.log(LOG, "Listeners attached on", win === window ? "self" : "top");
-
-    return () => {
-      console.log(LOG, "Cleanup: removing listeners");
-      win.removeEventListener("beforeunload", handleBeforeUnload);
-      win.removeEventListener("popstate", handlePopState);
-    };
-  }, [isAdminPage]);
+  useAdminBackBlock({ isAdminPage });
 
   useEffect(() => {
     const fetchData = async () => {

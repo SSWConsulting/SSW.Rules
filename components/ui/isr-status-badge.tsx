@@ -50,15 +50,12 @@ function getStyle(state: NextCacheState, isLoading: boolean) {
 }
 
 export default function IsrStatusBadge() {
-  const enabled = process.env.NEXT_PUBLIC_SHOW_ISR_BADGE === "true";
   const pathname = usePathname();
 
   const [cacheState, setCacheState] = React.useState<NextCacheState>("unknown");
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (!enabled) return;
-
     let cancelled = false;
 
     // Hide the dot on route change until we get the first response for the new page.
@@ -93,9 +90,7 @@ export default function IsrStatusBadge() {
     return () => {
       cancelled = true;
     };
-  }, [enabled, pathname]);
-
-  if (!enabled) return null;
+  }, [pathname]);
 
   if (isLoading) {
     return <span className="inline-block h-2 w-2 rounded-full bg-zinc-300 animate-pulse" aria-hidden="true" />;

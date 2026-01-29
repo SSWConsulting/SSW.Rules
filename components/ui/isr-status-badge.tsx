@@ -24,26 +24,26 @@ function getCacheHeaderValue(headers: Headers): { name: string; value: string | 
 
 const copy: Record<NextCacheState, { label: string; detail?: string }> = {
   HIT: { label: "Live", detail: "cached" },
-  STALE: { label: "Stale", detail: "revalidating…" },
-  MISS: { label: "Generating", detail: "first render" },
+  STALE: { label: "Rebuilding", detail: "revalidating…" },
+  MISS: { label: "Stale", detail: "not yet rebuilt" },
   unknown: { label: "Unknown" },
 };
 
 const tooltipCopy: Record<NextCacheState, string> = {
-  HIT: "Live",
-  STALE: "Stale - Refresh for live updates",
-  MISS: "Generating - Refresh for live updates",
+  HIT: "Live - Page is fresh",
+  STALE: "Rebuilding - Refresh for live updates",
+  MISS: "Stale - Not yet rebuilt, refresh for live updates",
   unknown: "Unknown",
 };
 
-function getStyle(state: NextCacheState, isLoading: boolean) {
+function getStyle(state: NextCacheState) {
   switch (state) {
     case "HIT":
-      return "bg-green-500";
+      return "bg-green-500"; // Green - Live
     case "STALE":
-      return "bg-amber-300";
+      return "bg-yellow-400"; // Yellow - Currently rebuilding
     case "MISS":
-      return "bg-sky-300";
+      return "bg-orange-500"; // Orange - Old, not yet started rebuilding
     default:
       return "bg-zinc-300";
   }
@@ -98,7 +98,7 @@ export default function IsrStatusBadge() {
 
   return (
     <Tooltip text={tooltipCopy[cacheState]} showDelay={false} hideDelay={false} opaque={true}>
-      <span className={cn("inline-block h-2 w-2 rounded-full", getStyle(cacheState, isLoading))} aria-label={tooltipCopy[cacheState]} />
+      <span className={cn("inline-block h-2 w-2 rounded-full", getStyle(cacheState))} aria-label={tooltipCopy[cacheState]} />
     </Tooltip>
   );
 }

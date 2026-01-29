@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import type { BrokenReferences } from "@/app/[filename]/page";
@@ -40,7 +40,22 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
   const primaryCategory = ruleCategoriesMapping?.[0];
   const breadcrumbCategories = primaryCategory ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }] : undefined;
 
-  // Block back button before it navigates. In Tina admin the preview runs in an iframe;
+  // Track if the Tina form has unsaved changes. In the admin iframe the parent sends "updateData"
+  // when the user edits the form, so we set this to true when we receive that message.
+  const formHasUnsavedChangesRef = useRef(false);
+
+  useEffect(() => {
+    if (!isAdminPage || typeof window === "undefined") return;
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === "updateData") {
+        formHasUnsavedChangesRef.current = true;
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [isAdminPage]);
+
+  // Block back button when there are unsaved changes. In Tina admin the preview runs in an iframe;
   // the browser back button navigates the top window, so we must use window.top.
   useEffect(() => {
     const LOG = "[AdminBackBlock]";
@@ -74,18 +89,21 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
     console.log(LOG, "pushState done, href:", currentHref);
 
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      console.log(LOG, "beforeunload fired – user closing tab or navigating away");
-      event.preventDefault();
-      event.returnValue = "";
+      if (formHasUnsavedChangesRef.current) {
+        console.log(LOG, "beforeunload fired – user closing tab or navigating away");
+        event.preventDefault();
+        event.returnValue = "";
+      }
     };
 
     const handlePopState = () => {
-      // Use win.alert (top window) so the dialog is visible when we're in an iframe; window.alert can be lost when the top navigates.
-      win.alert(
-        "If you go back you'll lose your changes you have made so far. Please save before leaving. Click OK to stay on this page.",
-      );
-      console.log(LOG, "popstate fired – user confirmed, re-blocking back");
-      win.history.pushState({ blockBack: true }, "", win.location.href);
+      if (formHasUnsavedChangesRef.current) {
+        win.alert(
+          "If you go back you'll lose your changes you have made so far. Please save before leaving. Click OK to stay on this page.",
+        );
+        console.log(LOG, "popstate fired – user confirmed, re-blocking back");
+        win.history.pushState({ blockBack: true }, "", win.location.href);
+      }
     };
 
     win.addEventListener("beforeunload", handleBeforeUnload);

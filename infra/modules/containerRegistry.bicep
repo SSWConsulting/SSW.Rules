@@ -31,7 +31,7 @@ param environment string
 param tags object = {}
 
 // Container Registry
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-11-01' = {
   name: containerRegistryName
   location: location
   tags: union(tags, {
@@ -48,27 +48,46 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' =
   }
 }
 
-// Role definitions
-var acrPullRoleId = '7f951dda-4ed3-4680-a7ca-43fe172d538d'  // AcrPull
-var acrPushRoleId = '8311e382-0749-4cb8-b61a-304f252e45ec'  // AcrPush
+// ============================================================================
+// BUILT-IN ROLE DEFINITIONS
+// ============================================================================
 
-// AcrPull role assignments (for App Service to pull images)
+// AcrPull - Pull artifacts from a container registry
+// https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/containers#acrpull
+resource acrPullRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  scope: subscription()
+  name: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+}
+
+// AcrPush - Push artifacts to a container registry (includes pull permissions)
+// https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/containers#acrpush
+resource acrPushRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  scope: subscription()
+  name: '8311e382-0749-4cb8-b61a-304f252e45ec'
+}
+
+// ============================================================================
+// ROLE ASSIGNMENTS
+// ============================================================================
+
+// AcrPull role assignments (for App Service managed identities to pull images)
 resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (principalId, i) in acrPullPrincipalIds: if (!empty(principalId)) {
-  name: guid(containerRegistry.id, principalId, acrPullRoleId)
+  name: guid(containerRegistry.id, principalId, acrPullRole.id)
   scope: containerRegistry
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', acrPullRoleId)
+    roleDefinitionId: acrPullRole.id
     principalId: principalId
     principalType: 'ServicePrincipal'
   }
 }]
 
-// AcrPush role assignments (for GitHub Actions/Service Principal to push images)
+// AcrPush role assignments (for CI/CD service principals to push images)
+// Note: AcrPush includes pull permissions, so these principals don't need AcrPull
 resource acrPushRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (principalId, i) in acrPushPrincipalIds: if (!empty(principalId)) {
-  name: guid(containerRegistry.id, principalId, acrPushRoleId)
+  name: guid(containerRegistry.id, principalId, acrPushRole.id)
   scope: containerRegistry
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', acrPushRoleId)
+    roleDefinitionId: acrPushRole.id
     principalId: principalId
     principalType: 'ServicePrincipal'
   }

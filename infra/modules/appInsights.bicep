@@ -10,11 +10,11 @@ param location string = resourceGroup().location
 @description('Environment name (staging/prod)')
 param environment string
 
+@description('Resource ID of the Log Analytics Workspace to link to')
+param logAnalyticsWorkspaceId string
+
 @description('Tags to apply to the resources')
 param tags object = {}
-
-// Existing shared Log Analytics Workspace
-var logAnalyticsWorkspaceId = '/subscriptions/b8b18dcf-d83b-47e2-9886-00c2e983629e/resourcegroups/ssw.logs/providers/microsoft.operationalinsights/workspaces/defaultworkspace-b8b18dcf-d83b-47e2-9886-00c2e983629e-eau'
 
 // Application Insights resource
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
@@ -26,8 +26,6 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   kind: 'web'
   properties: {
     Application_Type: 'web'
-    Flow_Type: 'Bluefield'
-    Request_Source: 'rest'
     WorkspaceResourceId: logAnalyticsWorkspaceId
     IngestionMode: 'LogAnalytics'
     publicNetworkAccessForIngestion: 'Enabled'

@@ -22,8 +22,59 @@ param environment string
 @description('Tags to apply to the resource')
 param tags object = {}
 
+@description('Optional: Name of the deployment slot (e.g., pr-123). If empty, no slot is created.')
+param slotName string = ''
+
+// ============================================================================
+// VARIABLES
+// ============================================================================
+
+// Determine the effective slot name:
+// - For prod: always 'pre-production' (for blue-green swap deployments)
+// - For staging: use provided slotName (for PR deployments), or empty for no slot
+var effectiveSlotName = environment == 'prod' ? 'pre-production' : slotName
+
+// Determine the Docker image tag for the slot:
+// - For prod pre-production: use environment tag (same as main, for swap deployments)
+// - For staging PR slots: use the slotName as the tag
+var slotImageTag = environment == 'prod' ? environment : slotName
+
+// Shared app settings used by both the main App Service and deployment slots
+var baseAppSettings = [
+  {
+    name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
+    value: 'false'
+  }
+  {
+    name: 'DOCKER_REGISTRY_SERVER_URL'
+    value: 'https://${containerRegistryName}.azurecr.io'
+  }
+  {
+    name: 'WEBSITES_PORT'
+    value: '3000'
+  }
+  {
+    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+    value: appInsightsConnectionString
+  }
+]
+
+// Shared site configuration properties
+var baseSiteConfig = {
+  acrUseManagedIdentityCreds: true
+  alwaysOn: true
+  ftpsState: 'Disabled'
+  minTlsVersion: '1.2'
+  http20Enabled: true
+  appSettings: baseAppSettings
+}
+
+// ============================================================================
+// RESOURCES
+// ============================================================================
+
 // App Service with Linux container configuration
-resource appService 'Microsoft.Web/sites@2023-12-01' = {
+resource appService 'Microsoft.Web/sites@2025-03-01' = {
   name: appServiceName
   location: location
   tags: union(tags, {
@@ -36,42 +87,21 @@ resource appService 'Microsoft.Web/sites@2023-12-01' = {
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
-    siteConfig: {
+    siteConfig: union(baseSiteConfig, {
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/ssw-rules:${environment}'
-      acrUseManagedIdentityCreds: true
-      alwaysOn: true
-      ftpsState: 'Disabled'
-      minTlsVersion: '1.2'
-      http20Enabled: true
-      appSettings: [
-        {
-          name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
-          value: 'false'
-        }
-        {
-          name: 'DOCKER_REGISTRY_SERVER_URL'
-          value: 'https://${containerRegistryName}.azurecr.io'
-        }
-        {
-          name: 'WEBSITES_PORT'
-          value: '3000'
-        }
-        {
-          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: appInsightsConnectionString
-        }
-      ]
-    }
+    })
   }
 }
 
-// Pre-production deployment slot for prod environment
-resource preProductionSlot 'Microsoft.Web/sites/slots@2023-12-01' = if (environment == 'prod') {
+// Deployment slot:
+// - For prod: always created as 'pre-production' for blue-green deployments
+// - For staging: created only when slotName is provided (for PR deployments)
+resource deploymentSlot 'Microsoft.Web/sites/slots@2025-03-01' = if (!empty(effectiveSlotName)) {
   parent: appService
-  name: 'pre-production'
+  name: effectiveSlotName
   location: location
   tags: union(tags, {
-    environment: '${environment}-preprod'
+    environment: '${environment}-${effectiveSlotName}'
   })
   kind: 'app,linux,container'
   identity: {
@@ -80,34 +110,17 @@ resource preProductionSlot 'Microsoft.Web/sites/slots@2023-12-01' = if (environm
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
-    siteConfig: {
-      linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/ssw-rules:${environment}'
-      acrUseManagedIdentityCreds: true
-      alwaysOn: true
-      ftpsState: 'Disabled'
-      minTlsVersion: '1.2'
-      http20Enabled: true
-      appSettings: [
-        {
-          name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
-          value: 'false'
-        }
-        {
-          name: 'DOCKER_REGISTRY_SERVER_URL'
-          value: 'https://${containerRegistryName}.azurecr.io'
-        }
-        {
-          name: 'WEBSITES_PORT'
-          value: '3000'
-        }
-        {
-          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: appInsightsConnectionString
-        }
-      ]
-    }
+    siteConfig: union(baseSiteConfig, {
+      // For prod: uses environment tag (same as main app, ready for swap)
+      // For staging PR slots: uses slotName as the tag (e.g., ssw-rules:pr-123)
+      linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/ssw-rules:${slotImageTag}'
+    })
   }
 }
+
+// ============================================================================
+// OUTPUTS
+// ============================================================================
 
 @description('The resource ID of the App Service')
 output appServiceId string = appService.id
@@ -121,5 +134,11 @@ output appServiceHostName string = appService.properties.defaultHostName
 @description('The principal ID of the System-assigned Managed Identity')
 output managedIdentityPrincipalId string = appService.identity.principalId
 
-@description('The principal ID of the pre-production slot Managed Identity (if created)')
-output slotManagedIdentityPrincipalId string = environment == 'prod' ? preProductionSlot.identity.principalId : ''
+@description('The principal ID of the deployment slot Managed Identity (if created)')
+output slotManagedIdentityPrincipalId string = !empty(effectiveSlotName) ? deploymentSlot.identity.principalId : ''
+
+@description('The name of the deployment slot (if created)')
+output slotName string = effectiveSlotName
+
+@description('The hostname of the deployment slot (if created)')
+output slotHostName string = !empty(effectiveSlotName) ? deploymentSlot.properties.defaultHostName : ''

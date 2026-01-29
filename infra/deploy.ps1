@@ -15,17 +15,23 @@
 .PARAMETER ServicePrincipalObjectId
     Object ID of the Service Principal to grant AcrPush role (for GitHub Actions)
 
+.PARAMETER ResourceGroup
+    The Azure resource group name to deploy resources to.
+
+.PARAMETER LogAnalyticsWorkspaceId
+    The resource ID of the Log Analytics Workspace to link Application Insights to.
+
 .PARAMETER WhatIf
     Show what would be deployed without actually deploying
 
 .EXAMPLE
-    ./deploy.ps1 -Environment staging
+    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging" -LogAnalyticsWorkspaceId "/subscriptions/.../workspaces/myworkspace"
 
 .EXAMPLE
-    ./deploy.ps1 -Environment staging -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012"
+    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging" -LogAnalyticsWorkspaceId "/subscriptions/.../workspaces/myworkspace" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012"
     
 .EXAMPLE
-    ./deploy.ps1 -Environment prod -WhatIf
+    ./deploy.ps1 -Environment prod -ResourceGroup "SSW.Rules" -LogAnalyticsWorkspaceId "/subscriptions/.../workspaces/myworkspace" -WhatIf
 #>
 
 [CmdletBinding()]
@@ -33,6 +39,12 @@ param(
     [Parameter(Mandatory = $true)]
     [ValidateSet('staging', 'production')]
     [string]$Environment,
+
+    [Parameter(Mandatory = $true)]
+    [string]$ResourceGroup,
+
+    [Parameter(Mandatory = $true)]
+    [string]$LogAnalyticsWorkspaceId,
 
     [Parameter(Mandatory = $false)]
     [string]$ServicePrincipalObjectId = '',
@@ -61,13 +73,11 @@ $AppServiceName = "app-$ProjectName-$Environment"
 $AppInsightsName = "appi-$ProjectName-$Environment"
 $ContainerRegistryName = "acr$ProjectName$Environment"
 
-# Resource Group and App Service Plan - different per environment
+# App Service Plan - different per environment
 if ($Environment -eq 'staging') {
-    $ResourceGroup = 'SSW.Rules.Staging'
     $AppServicePlanName = 'plan-ssw-shared-dev-linux'
     $AppServicePlanResourceGroup = 'SSW.AppServicePlans'
 } else {
-    $ResourceGroup = 'SSW.Rules'
     $AppServicePlanName = "asp-$ProjectName-$Environment"
     $AppServicePlanResourceGroup = $ResourceGroup
 }
@@ -277,6 +287,7 @@ $deploymentParams = @{
     containerRegistryName = $ContainerRegistryName
     appServicePlanName = $AppServicePlanName
     appServicePlanResourceGroup = $AppServicePlanResourceGroup
+    logAnalyticsWorkspaceId = $LogAnalyticsWorkspaceId
     createAppInsights = $createAppInsights
     createContainerRegistry = $createContainerRegistry
 }

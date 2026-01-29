@@ -65,6 +65,8 @@ jobs:
               run: |
                   ./infra/deploy.ps1 `
                     -Environment "${{ github.event.inputs.environment || 'staging' }}" `
+                    -ResourceGroup "${{ vars.AZURE_RESOURCE_GROUP }}" `
+                    -LogAnalyticsWorkspaceId "${{ vars.LOG_ANALYTICS_WORKSPACE_ID }}" `
                     -ServicePrincipalObjectId "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}"
 
             - name: Log infrastructure outputs
@@ -72,7 +74,7 @@ jobs:
                   echo "Infrastructure Deployment Complete"
                   echo "Resource Group: ${{ steps.deploy.outputs.resourceGroup }}"
                   echo "App Service: ${{ steps.deploy.outputs.appServiceName }}"
-                  echo "App Service Host: ${{ steps.deploy.outputs.appServiceHostName }}"
+                  echo "App Service URL: https://${{ steps.deploy.outputs.appServiceHostName }}"
                   echo "ACR: ${{ steps.deploy.outputs.acrLoginServer }}"
 
     # ============================================================================

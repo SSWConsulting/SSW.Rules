@@ -35,6 +35,9 @@ param appServicePlanResourceGroup string
 @description('Service Principal Object ID for granting AcrPush role (for GitHub Actions)')
 param servicePrincipalObjectId string = ''
 
+@description('Resource ID of the Log Analytics Workspace to link Application Insights to')
+param logAnalyticsWorkspaceId string
+
 @description('Whether to create Application Insights (set to false if it already exists)')
 param createAppInsights bool = true
 
@@ -58,12 +61,15 @@ param tags object = {
   managedBy: 'Bicep'
 }
 
+@description('Optional: Name of the deployment slot (e.g., pr-123). If empty, no slot is created.')
+param slotName string = ''
+
 // ============================================================================
 // EXISTING RESOURCES
 // ============================================================================
 
 // Reference to existing App Service Plan in another resource group
-resource existingAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' existing = {
+resource existingAppServicePlan 'Microsoft.Web/serverfarms@2025-03-01' existing = {
   name: appServicePlanName
   scope: resourceGroup(appServicePlanResourceGroup)
 }
@@ -79,6 +85,7 @@ module appInsightsModule 'modules/appInsights.bicep' = if (createAppInsights) {
     appInsightsName: appInsightsName
     location: location
     environment: environment
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
     tags: tags
   }
 }
@@ -108,6 +115,7 @@ module appServiceModule 'modules/appService.bicep' = {
     appInsightsConnectionString: createAppInsights ? appInsightsModule.outputs.connectionString : existingAppInsightsConnectionString
     environment: environment
     tags: tags
+    slotName: slotName
   }
   dependsOn: [
     appInsightsModule
@@ -130,8 +138,8 @@ module acrRoleAssignments 'modules/containerRegistry.bicep' = if (createContaine
     tags: tags
     acrPullPrincipalIds: [
       appServiceModule.outputs.managedIdentityPrincipalId
-      // Include slot identity for prod
-      environment == 'prod' ? appServiceModule.outputs.slotManagedIdentityPrincipalId : ''
+      // Include slot identity if a slot was created (prod always has pre-production, staging has PR slots)
+      (environment == 'prod' || !empty(slotName)) ? appServiceModule.outputs.slotManagedIdentityPrincipalId : ''
     ]
     acrPushPrincipalIds: !empty(servicePrincipalObjectId) ? [servicePrincipalObjectId] : []
   }
@@ -168,3 +176,9 @@ output containerRegistryLoginServer string = createContainerRegistry ? container
 
 @description('Container Registry name')
 output containerRegistryNameOutput string = containerRegistryName
+
+@description('Deployment slot name (if created)')
+output slotName string = appServiceModule.outputs.slotName
+
+@description('Deployment slot hostname (if created)')
+output slotHostName string = appServiceModule.outputs.slotHostName

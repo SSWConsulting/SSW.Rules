@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { useEffect } from "react";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import type { BrokenReferences } from "@/app/[filename]/page";
 import ArchivedReasonContent from "@/components/ArchivedReasonContent";
 import AuthorsCard from "@/components/AuthorsCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -8,13 +10,13 @@ import BrokenReferenceBanner from "@/components/BrokenReferenceBanner";
 import CategoriesCard from "@/components/CategoriesCard";
 import Discussion from "@/components/Discussion";
 import HelpCard from "@/components/HelpCard";
+import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import GitHubMetadata from "@/components/last-updated-by";
 import RelatedRulesCard from "@/components/RelatedRulesCard";
 import RuleActionButtons from "@/components/RuleActionButtons";
 import { YouTubeShorts } from "@/components/shared/Youtube";
 import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import { Card } from "@/components/ui/card";
-import type { BrokenReferences } from "@/app/[filename]/page";
 
 export interface ServerRulePageProps {
   rule: any;
@@ -31,19 +33,77 @@ export type ServerRulePagePropsWithTinaProps = {
 export default function ServerRulePage({ serverRulePageProps, tinaProps }: ServerRulePagePropsWithTinaProps) {
   const { data } = tinaProps;
   const rule = data?.rule;
+  const { isAdmin: isAdminPage, isLoading: isAdminLoading } = useIsAdminPage();
 
   const { ruleCategoriesMapping, sanitizedBasePath, brokenReferences } = serverRulePageProps;
 
   const primaryCategory = ruleCategoriesMapping?.[0];
   const breadcrumbCategories = primaryCategory ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }] : undefined;
 
+  // Block back button before it navigates. In Tina admin the preview runs in an iframe;
+  // the browser back button navigates the top window, so we must use window.top.
+  useEffect(() => {
+    const LOG = "[AdminBackBlock]";
+    // Unconditional: confirms this effect ran. Most rule pages use ServerRulePage (not ClientFallbackPage).
+    console.log(LOG, "[ServerRulePage] Effect ran.", {
+      isAdminPage,
+      hasWindow: typeof window !== "undefined",
+      inIframe: typeof window !== "undefined" && window !== window.top,
+    });
+    if (typeof window !== "undefined" && window !== window.top) {
+      console.log(LOG, "Tip: In Tina admin, select the PREVIEW IFRAME in DevTools (Console frame dropdown) to see these logs.");
+    }
+
+    if (!isAdminPage || typeof window === "undefined") {
+      console.log(LOG, "Skipping setup:", { isAdminPage, hasWindow: typeof window !== "undefined" });
+      return;
+    }
+
+    let win: Window;
+    try {
+      win = window.top ?? window;
+      void win.location.href;
+      console.log(LOG, "Using window: top (iframe preview)");
+    } catch {
+      win = window;
+      console.log(LOG, "Using window: self (fallback)");
+    }
+
+    const currentHref = win.location.href;
+    win.history.pushState({ blockBack: true }, "", currentHref);
+    console.log(LOG, "pushState done, href:", currentHref);
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      console.log(LOG, "beforeunload fired – user closing tab or navigating away");
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    const handlePopState = () => {
+      // Use win.alert (top window) so the dialog is visible when we're in an iframe; window.alert can be lost when the top navigates.
+      win.alert(
+        "If you go back you'll lose your changes you have made so far. Please save before leaving. Click OK to stay on this page.",
+      );
+      console.log(LOG, "popstate fired – user confirmed, re-blocking back");
+      win.history.pushState({ blockBack: true }, "", win.location.href);
+    };
+
+    win.addEventListener("beforeunload", handleBeforeUnload);
+    win.addEventListener("popstate", handlePopState);
+    console.log(LOG, "Listeners attached on", win === window ? "self" : "top");
+
+    return () => {
+      console.log(LOG, "Cleanup: removing listeners");
+      win.removeEventListener("beforeunload", handleBeforeUnload);
+      win.removeEventListener("popstate", handlePopState);
+    };
+  }, [isAdminPage]);
+
   return (
     <>
       <Breadcrumbs categories={breadcrumbCategories} breadcrumbText="This rule" />
 
-      {brokenReferences?.detected && (
-        <BrokenReferenceBanner brokenPaths={brokenReferences.paths} ruleUri={rule?.uri || ""} />
-      )}
+      {brokenReferences?.detected && <BrokenReferenceBanner brokenPaths={brokenReferences.paths} ruleUri={rule?.uri || ""} />}
 
       <div className="layout-two-columns">
         <Card dropShadow className="layout-main-section p-6">

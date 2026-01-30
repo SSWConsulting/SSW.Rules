@@ -38,21 +38,6 @@ param servicePrincipalObjectId string = ''
 @description('Name of the Log Analytics Workspace')
 param logAnalyticsWorkspaceName string
 
-@description('Whether to create Log Analytics Workspace (set to false if it already exists)')
-param createLogAnalytics bool = true
-
-@description('Whether to create Application Insights (set to false if it already exists)')
-param createAppInsights bool = true
-
-@description('Whether to create Container Registry (set to false if it already exists)')
-param createContainerRegistry bool = true
-
-@description('Existing Log Analytics Workspace ID (if not creating new)')
-param existingLogAnalyticsWorkspaceId string = ''
-
-@description('Existing Application Insights connection string (if not creating new)')
-param existingAppInsightsConnectionString string = ''
-
 @description('SKU for Container Registry')
 @allowed([
   'Basic'
@@ -92,8 +77,8 @@ resource existingAppServicePlan 'Microsoft.Web/serverfarms@2025-03-01' existing 
 // MODULES
 // ============================================================================
 
-// Log Analytics Workspace (conditional)
-module logAnalyticsModule 'modules/logAnalytics.bicep' = if (createLogAnalytics) {
+// Log Analytics Workspace
+module logAnalyticsModule 'modules/logAnalytics.bicep' = {
   name: 'logAnalytics-${environment}'
   params: {
     logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
@@ -103,20 +88,20 @@ module logAnalyticsModule 'modules/logAnalytics.bicep' = if (createLogAnalytics)
   }
 }
 
-// Application Insights (conditional)
-module appInsightsModule 'modules/appInsights.bicep' = if (createAppInsights) {
+// Application Insights
+module appInsightsModule 'modules/appInsights.bicep' = {
   name: 'appInsights-${environment}'
   params: {
     appInsightsName: appInsightsName
-    logAnalyticsWorkspaceId: createLogAnalytics ? logAnalyticsModule.outputs.logAnalyticsWorkspaceId : existingLogAnalyticsWorkspaceId
+    logAnalyticsWorkspaceId: logAnalyticsModule.outputs.logAnalyticsWorkspaceId
     location: location
     environment: environment
     tags: tags
   }
 }
 
-// Container Registry (conditional)
-module containerRegistryModule 'modules/containerRegistry.bicep' = if (createContainerRegistry) {
+// Container Registry
+module containerRegistryModule 'modules/containerRegistry.bicep' = {
   name: 'containerRegistry-${environment}'
   params: {
     containerRegistryName: containerRegistryName
@@ -135,7 +120,7 @@ module appServiceModule 'modules/appService.bicep' = {
     location: location
     appServicePlanId: existingAppServicePlan.id
     containerRegistryName: containerRegistryName
-    appInsightsConnectionString: createAppInsights ? appInsightsModule.outputs.connectionString : existingAppInsightsConnectionString
+    appInsightsConnectionString: appInsightsModule.outputs.connectionString
     environment: environment
     tags: tags
     slotName: slotName
@@ -151,7 +136,7 @@ module appServiceModule 'modules/appService.bicep' = {
 // ============================================================================
 
 // AcrPull for App Service Managed Identity
-module acrPullAppService 'modules/acrRoleAssignment.bicep' = if (createContainerRegistry) {
+module acrPullAppService 'modules/acrRoleAssignment.bicep' = {
   name: 'acr-pull-appservice-${environment}'
   params: {
     containerRegistryName: containerRegistryName
@@ -164,7 +149,7 @@ module acrPullAppService 'modules/acrRoleAssignment.bicep' = if (createContainer
 }
 
 // AcrPull for Deployment Slot Managed Identity (if slot exists)
-module acrPullSlot 'modules/acrRoleAssignment.bicep' = if (createContainerRegistry && (environment == 'prod' || !empty(slotName))) {
+module acrPullSlot 'modules/acrRoleAssignment.bicep' = if (environment == 'prod' || !empty(slotName)) {
   name: 'acr-pull-slot-${environment}'
   params: {
     containerRegistryName: containerRegistryName
@@ -177,7 +162,7 @@ module acrPullSlot 'modules/acrRoleAssignment.bicep' = if (createContainerRegist
 }
 
 // AcrPush for CI/CD Service Principal (if provided)
-module acrPushServicePrincipal 'modules/acrRoleAssignment.bicep' = if (createContainerRegistry && !empty(servicePrincipalObjectId)) {
+module acrPushServicePrincipal 'modules/acrRoleAssignment.bicep' = if (!empty(servicePrincipalObjectId)) {
   name: 'acr-push-cicd-${environment}'
   params: {
     containerRegistryName: containerRegistryName
@@ -206,16 +191,16 @@ output appServiceHostName string = appServiceModule.outputs.appServiceHostName
 output appServiceIdentityPrincipalId string = appServiceModule.outputs.managedIdentityPrincipalId
 
 @description('Application Insights connection string')
-output appInsightsConnectionString string = createAppInsights ? appInsightsModule.outputs.connectionString : existingAppInsightsConnectionString
+output appInsightsConnectionString string = appInsightsModule.outputs.connectionString
 
 @description('Application Insights instrumentation key')
-output appInsightsInstrumentationKey string = createAppInsights ? appInsightsModule.outputs.instrumentationKey : ''
+output appInsightsInstrumentationKey string = appInsightsModule.outputs.instrumentationKey
 
 @description('Log Analytics Workspace resource ID')
-output logAnalyticsWorkspaceId string = createLogAnalytics ? logAnalyticsModule.outputs.logAnalyticsWorkspaceId : existingLogAnalyticsWorkspaceId
+output logAnalyticsWorkspaceId string = logAnalyticsModule.outputs.logAnalyticsWorkspaceId
 
 @description('Container Registry login server')
-output containerRegistryLoginServer string = createContainerRegistry ? containerRegistryModule.outputs.loginServer : '${containerRegistryName}.azurecr.io'
+output containerRegistryLoginServer string = containerRegistryModule.outputs.loginServer
 
 @description('Container Registry name')
 output containerRegistryNameOutput string = containerRegistryName

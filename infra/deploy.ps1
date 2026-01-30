@@ -6,6 +6,7 @@
     This script deploys Azure resources using a consistent naming pattern:
     - app-{project}-{env}     (App Service)
     - appi-{project}-{env}    (Application Insights)
+    - log-{project}-{env}     (Log Analytics Workspace)
     - acr{project}{env}       (Container Registry - no hyphens allowed)
     - rg-{project}-{env}      (Resource Group)
 
@@ -18,20 +19,17 @@
 .PARAMETER ResourceGroup
     The Azure resource group name to deploy resources to.
 
-.PARAMETER LogAnalyticsWorkspaceId
-    The resource ID of the Log Analytics Workspace to link Application Insights to.
-
 .PARAMETER WhatIf
     Show what would be deployed without actually deploying
 
 .EXAMPLE
-    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging" -LogAnalyticsWorkspaceId "/subscriptions/.../workspaces/myworkspace"
+    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging"
 
 .EXAMPLE
-    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging" -LogAnalyticsWorkspaceId "/subscriptions/.../workspaces/myworkspace" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012"
+    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012"
     
 .EXAMPLE
-    ./deploy.ps1 -Environment prod -ResourceGroup "SSW.Rules" -LogAnalyticsWorkspaceId "/subscriptions/.../workspaces/myworkspace" -WhatIf
+    ./deploy.ps1 -Environment prod -ResourceGroup "SSW.Rules" -WhatIf
 #>
 
 [CmdletBinding()]
@@ -42,9 +40,6 @@ param(
 
     [Parameter(Mandatory = $true)]
     [string]$ResourceGroup,
-
-    [Parameter(Mandatory = $true)]
-    [string]$LogAnalyticsWorkspaceId,
 
     [Parameter(Mandatory = $false)]
     [string]$ServicePrincipalObjectId = '',
@@ -71,6 +66,7 @@ if ($Environment -eq 'production') {
 # Resource names derived from project + environment
 $AppServiceName = "app-$ProjectName-$Environment"
 $AppInsightsName = "appi-$ProjectName-$Environment"
+$LogAnalyticsWorkspaceName = "log-$ProjectName-$Environment"
 $ContainerRegistryName = "acr$ProjectName$Environment"
 
 # App Service Plan - different per environment
@@ -188,6 +184,7 @@ Write-Host @"
   Resource Group:     $ResourceGroup
   App Service:        $AppServiceName
   App Insights:       $AppInsightsName
+  Log Analytics:      $LogAnalyticsWorkspaceName
   Container Registry: $ContainerRegistryName
   App Service Plan:   $AppServicePlanName (in $AppServicePlanResourceGroup)
   Service Principal:  $spDisplay
@@ -284,10 +281,10 @@ $deploymentParams = @{
     environment = $Environment
     appServiceName = $AppServiceName
     appInsightsName = $AppInsightsName
+    logAnalyticsWorkspaceName = $LogAnalyticsWorkspaceName
     containerRegistryName = $ContainerRegistryName
     appServicePlanName = $AppServicePlanName
     appServicePlanResourceGroup = $AppServicePlanResourceGroup
-    logAnalyticsWorkspaceId = $LogAnalyticsWorkspaceId
     createAppInsights = $createAppInsights
     createContainerRegistry = $createContainerRegistry
 }
@@ -335,7 +332,8 @@ if ($WhatIf -and -not $resourceGroupExists) {
   1. Resource Group: $ResourceGroup (does not exist)
   2. App Service: $AppServiceName
   3. Application Insights: $(if ($createAppInsights) { $AppInsightsName } else { 'SKIPPED (already exists)' })
-  4. Container Registry: $(if ($createContainerRegistry) { $ContainerRegistryName } else { 'SKIPPED (already exists)' })
+  4. Log Analytics Workspace: $(if ($createAppInsights) { $LogAnalyticsWorkspaceName } else { 'SKIPPED (App Insights exists)' })
+  5. Container Registry: $(if ($createContainerRegistry) { $ContainerRegistryName } else { 'SKIPPED (already exists)' })
   
   Note: Bicep what-if analysis requires the resource group to exist.
         Run without -WhatIf to create the resource group first, or create it manually.
@@ -357,6 +355,7 @@ $azArgs = @(
     '--parameters', "environment=$Environment"
     '--parameters', "appServiceName=$AppServiceName"
     '--parameters', "appInsightsName=$AppInsightsName"
+    '--parameters', "logAnalyticsWorkspaceName=$LogAnalyticsWorkspaceName"
     '--parameters', "containerRegistryName=$ContainerRegistryName"
     '--parameters', "appServicePlanName=$AppServicePlanName"
     '--parameters', "appServicePlanResourceGroup=$AppServicePlanResourceGroup"

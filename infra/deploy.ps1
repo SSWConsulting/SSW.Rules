@@ -56,7 +56,7 @@ $ErrorActionPreference = 'Stop'
 # CONFIGURATION
 # ============================================================================
 
-$ProjectName = 'rules'
+$ProjectName = 'sswrules'
 
 # Normalize 'production' to 'prod' for naming
 if ($Environment -eq 'production') {

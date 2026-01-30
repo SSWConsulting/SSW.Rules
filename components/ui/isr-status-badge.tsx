@@ -1,36 +1,57 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import React from "react";
 import { cn } from "@/lib/utils";
 import Tooltip from "../tooltip/tooltip";
 
-// Threshold in ms - if the page was generated within this time, it's fresh
-const FRESH_THRESHOLD_MS = 10000; // 10 seconds
+// x-nextjs-cache header values:
+// - HIT: Served from cache (valid)
+// - MISS: Just generated (fresh)
+// - STALE: Serving old content while rebuilding
+type CacheStatus = "live" | "stale" | "loading";
 
-interface IsrStatusBadgeProps {
-  /** Timestamp (Date.now()) from when the page was rendered on the server */
-  generatedAt: number;
-}
-
-export default function IsrStatusBadge({ generatedAt }: IsrStatusBadgeProps) {
-  const [isLive, setIsLive] = React.useState<boolean | null>(null);
+export default function IsrStatusBadge() {
+  const pathname = usePathname();
+  const [status, setStatus] = React.useState<CacheStatus>("loading");
 
   React.useEffect(() => {
-    const pageAge = Date.now() - generatedAt;
-    setIsLive(pageAge < FRESH_THRESHOLD_MS);
-  }, [generatedAt]);
+    let cancelled = false;
+    setStatus("loading");
 
-  if (isLive === null) {
+    const checkCache = async () => {
+      try {
+        const res = await fetch(window.location.href, {
+          method: "HEAD",
+          cache: "no-store",
+        });
+
+        const cacheHeader = res.headers.get("x-nextjs-cache")?.toUpperCase();
+
+        if (cancelled) return;
+
+        // HIT or MISS = Live (green), STALE = Stale (orange)
+        if (cacheHeader === "STALE") {
+          setStatus("stale");
+        } else {
+          setStatus("live");
+        }
+      } catch {
+        if (!cancelled) setStatus("live"); // Default to live on error
+      }
+    };
+
+    checkCache();
+    return () => { cancelled = true; };
+  }, [pathname]);
+
+  if (status === "loading") {
     return <span className="inline-block h-2 w-2 rounded-full bg-zinc-300 animate-pulse" aria-hidden="true" />;
   }
 
-  const tooltip = isLive
-    ? "Live - Page is fresh"
-    : "Cached - Refresh for latest";
-
-  const style = isLive
-    ? "bg-green-500" // Green - Live
-    : "bg-yellow-400"; // Yellow - Cached, may need refresh
+  const isLive = status === "live";
+  const tooltip = isLive ? "Live" : "Stale - Refresh for latest";
+  const style = isLive ? "bg-green-500" : "bg-orange-500";
 
   return (
     <Tooltip text={tooltip} showDelay={false} hideDelay={false} opaque={true}>

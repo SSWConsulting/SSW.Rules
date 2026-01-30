@@ -65,6 +65,14 @@ param tags object = {
 param slotName string = ''
 
 // ============================================================================
+// VARIABLES - Well-known Azure Role Definition IDs
+// ============================================================================
+
+// https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/containers
+var acrPullRoleId = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+var acrPushRoleId = '8311e382-0749-4cb8-b61a-304f252e45ec'
+
+// ============================================================================
 // EXISTING RESOURCES
 // ============================================================================
 
@@ -99,8 +107,6 @@ module containerRegistryModule 'modules/containerRegistry.bicep' = if (createCon
     sku: containerRegistrySku
     environment: environment
     tags: tags
-    acrPullPrincipalIds: []
-    acrPushPrincipalIds: !empty(servicePrincipalObjectId) ? [servicePrincipalObjectId] : []
   }
 }
 
@@ -127,25 +133,42 @@ module appServiceModule 'modules/appService.bicep' = {
 // ACR ROLE ASSIGNMENTS (after App Service is created)
 // ============================================================================
 
-// Grant AcrPull to App Service Managed Identity, AcrPush to Service Principal
-module acrRoleAssignments 'modules/containerRegistry.bicep' = if (createContainerRegistry) {
-  name: 'acr-roles-${environment}'
+// AcrPull for App Service Managed Identity
+module acrPullAppService 'modules/acrRoleAssignment.bicep' = if (createContainerRegistry) {
+  name: 'acr-pull-appservice-${environment}'
   params: {
     containerRegistryName: containerRegistryName
-    location: location
-    sku: containerRegistrySku
-    environment: environment
-    tags: tags
-    acrPullPrincipalIds: [
-      appServiceModule.outputs.managedIdentityPrincipalId
-      // Include slot identity if a slot was created (prod always has pre-production, staging has PR slots)
-      (environment == 'prod' || !empty(slotName)) ? appServiceModule.outputs.slotManagedIdentityPrincipalId : ''
-    ]
-    acrPushPrincipalIds: !empty(servicePrincipalObjectId) ? [servicePrincipalObjectId] : []
+    roleDefinitionId: acrPullRoleId
+    principalId: appServiceModule.outputs.managedIdentityPrincipalId
   }
   dependsOn: [
     containerRegistryModule
-    appServiceModule
+  ]
+}
+
+// AcrPull for Deployment Slot Managed Identity (if slot exists)
+module acrPullSlot 'modules/acrRoleAssignment.bicep' = if (createContainerRegistry && (environment == 'prod' || !empty(slotName))) {
+  name: 'acr-pull-slot-${environment}'
+  params: {
+    containerRegistryName: containerRegistryName
+    roleDefinitionId: acrPullRoleId
+    principalId: appServiceModule.outputs.slotManagedIdentityPrincipalId
+  }
+  dependsOn: [
+    containerRegistryModule
+  ]
+}
+
+// AcrPush for CI/CD Service Principal (if provided)
+module acrPushServicePrincipal 'modules/acrRoleAssignment.bicep' = if (createContainerRegistry && !empty(servicePrincipalObjectId)) {
+  name: 'acr-push-cicd-${environment}'
+  params: {
+    containerRegistryName: containerRegistryName
+    roleDefinitionId: acrPushRoleId
+    principalId: servicePrincipalObjectId
+  }
+  dependsOn: [
+    containerRegistryModule
   ]
 }
 

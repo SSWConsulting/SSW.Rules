@@ -78,7 +78,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
                 <Image src={rule.thumbnail} alt="thumbnail image for the rule" fill className="object-cover object-center" />
               </div>
             )}
-            <div className="flex flex-col flex-1 justify-between">
+            <div className="flex flex-1 justify-between">
               <h1 className="text-ssw-red text-4xl leading-[1.2] my-0 b-4 font-semibold" data-tina-field={tinaField(rule, "title")}>
                 {rule?.title}
               </h1>

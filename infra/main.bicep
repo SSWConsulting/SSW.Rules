@@ -38,11 +38,17 @@ param servicePrincipalObjectId string = ''
 @description('Name of the Log Analytics Workspace')
 param logAnalyticsWorkspaceName string
 
+@description('Whether to create Log Analytics Workspace (set to false if it already exists)')
+param createLogAnalytics bool = true
+
 @description('Whether to create Application Insights (set to false if it already exists)')
 param createAppInsights bool = true
 
 @description('Whether to create Container Registry (set to false if it already exists)')
 param createContainerRegistry bool = true
+
+@description('Existing Log Analytics Workspace ID (if not creating new)')
+param existingLogAnalyticsWorkspaceId string = ''
 
 @description('Existing Application Insights connection string (if not creating new)')
 param existingAppInsightsConnectionString string = ''
@@ -86,12 +92,23 @@ resource existingAppServicePlan 'Microsoft.Web/serverfarms@2025-03-01' existing 
 // MODULES
 // ============================================================================
 
-// Application Insights and Log Analytics Workspace (conditional)
+// Log Analytics Workspace (conditional)
+module logAnalyticsModule 'modules/logAnalytics.bicep' = if (createLogAnalytics) {
+  name: 'logAnalytics-${environment}'
+  params: {
+    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    location: location
+    environment: environment
+    tags: tags
+  }
+}
+
+// Application Insights (conditional)
 module appInsightsModule 'modules/appInsights.bicep' = if (createAppInsights) {
   name: 'appInsights-${environment}'
   params: {
     appInsightsName: appInsightsName
-    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    logAnalyticsWorkspaceId: createLogAnalytics ? logAnalyticsModule.outputs.logAnalyticsWorkspaceId : existingLogAnalyticsWorkspaceId
     location: location
     environment: environment
     tags: tags
@@ -195,7 +212,7 @@ output appInsightsConnectionString string = createAppInsights ? appInsightsModul
 output appInsightsInstrumentationKey string = createAppInsights ? appInsightsModule.outputs.instrumentationKey : ''
 
 @description('Log Analytics Workspace resource ID')
-output logAnalyticsWorkspaceId string = createAppInsights ? appInsightsModule.outputs.logAnalyticsWorkspaceId : ''
+output logAnalyticsWorkspaceId string = createLogAnalytics ? logAnalyticsModule.outputs.logAnalyticsWorkspaceId : existingLogAnalyticsWorkspaceId
 
 @description('Container Registry login server')
 output containerRegistryLoginServer string = createContainerRegistry ? containerRegistryModule.outputs.loginServer : '${containerRegistryName}.azurecr.io'

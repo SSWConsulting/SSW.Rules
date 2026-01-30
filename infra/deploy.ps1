@@ -133,6 +133,10 @@ function Test-ResourceExists {
                 $result = az monitor app-insights component show --app $ResourceName --resource-group $ResourceGroup 2>&1
                 return $LASTEXITCODE -eq 0
             }
+            'Microsoft.OperationalInsights/workspaces' {
+                $result = az monitor log-analytics workspace show --workspace-name $ResourceName --resource-group $ResourceGroup 2>&1
+                return $LASTEXITCODE -eq 0
+            }
             'Microsoft.Web/sites' {
                 $result = az webapp show --name $ResourceName --resource-group $ResourceGroup 2>&1
                 return $LASTEXITCODE -eq 0
@@ -216,9 +220,22 @@ else {
 # Check for existing resources
 Write-Step "Checking for existing resources..."
 
+$createLogAnalytics = $true
 $createAppInsights = $true
 $createContainerRegistry = $true
+$existingLogAnalyticsWorkspaceId = ''
 $existingAppInsightsConnectionString = ''
+
+# Check if Log Analytics Workspace exists
+if (Test-ResourceExists -ResourceType 'Microsoft.OperationalInsights/workspaces' -ResourceName $LogAnalyticsWorkspaceName -ResourceGroup $ResourceGroup) {
+    Write-Info "Log Analytics Workspace '$LogAnalyticsWorkspaceName' already exists - will skip creation"
+    $createLogAnalytics = $false
+    $logAnalyticsInfo = az monitor log-analytics workspace show --workspace-name $LogAnalyticsWorkspaceName --resource-group $ResourceGroup 2>&1 | ConvertFrom-Json
+    $existingLogAnalyticsWorkspaceId = $logAnalyticsInfo.id
+}
+else {
+    Write-Info "Log Analytics Workspace '$LogAnalyticsWorkspaceName' - will create"
+}
 
 # Check if App Insights exists
 if (Test-ResourceExists -ResourceType 'Microsoft.Insights/components' -ResourceName $AppInsightsName -ResourceGroup $ResourceGroup) {
@@ -285,8 +302,13 @@ $deploymentParams = @{
     containerRegistryName = $ContainerRegistryName
     appServicePlanName = $AppServicePlanName
     appServicePlanResourceGroup = $AppServicePlanResourceGroup
+    createLogAnalytics = $createLogAnalytics
     createAppInsights = $createAppInsights
     createContainerRegistry = $createContainerRegistry
+}
+
+if (-not $createLogAnalytics -and $existingLogAnalyticsWorkspaceId) {
+    $deploymentParams.existingLogAnalyticsWorkspaceId = $existingLogAnalyticsWorkspaceId
 }
 
 if ($ServicePrincipalObjectId) {
@@ -331,8 +353,8 @@ if ($WhatIf -and -not $resourceGroupExists) {
   
   1. Resource Group: $ResourceGroup (does not exist)
   2. App Service: $AppServiceName
-  3. Application Insights: $(if ($createAppInsights) { $AppInsightsName } else { 'SKIPPED (already exists)' })
-  4. Log Analytics Workspace: $(if ($createAppInsights) { $LogAnalyticsWorkspaceName } else { 'SKIPPED (App Insights exists)' })
+  3. Log Analytics Workspace: $(if ($createLogAnalytics) { $LogAnalyticsWorkspaceName } else { 'SKIPPED (already exists)' })
+  4. Application Insights: $(if ($createAppInsights) { $AppInsightsName } else { 'SKIPPED (already exists)' })
   5. Container Registry: $(if ($createContainerRegistry) { $ContainerRegistryName } else { 'SKIPPED (already exists)' })
   
   Note: Bicep what-if analysis requires the resource group to exist.
@@ -359,12 +381,17 @@ $azArgs = @(
     '--parameters', "containerRegistryName=$ContainerRegistryName"
     '--parameters', "appServicePlanName=$AppServicePlanName"
     '--parameters', "appServicePlanResourceGroup=$AppServicePlanResourceGroup"
+    '--parameters', "createLogAnalytics=$($createLogAnalytics.ToString().ToLower())"
     '--parameters', "createAppInsights=$($createAppInsights.ToString().ToLower())"
     '--parameters', "createContainerRegistry=$($createContainerRegistry.ToString().ToLower())"
 )
 
 if ($ServicePrincipalObjectId) {
     $azArgs += '--parameters', "servicePrincipalObjectId=$ServicePrincipalObjectId"
+}
+
+if (-not $createLogAnalytics -and $existingLogAnalyticsWorkspaceId) {
+    $azArgs += '--parameters', "existingLogAnalyticsWorkspaceId=$existingLogAnalyticsWorkspaceId"
 }
 
 if (-not $createAppInsights -and $existingAppInsightsConnectionString) {

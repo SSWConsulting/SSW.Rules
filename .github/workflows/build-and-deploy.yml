@@ -86,7 +86,7 @@ jobs:
         with:
             tag: ${{ github.event.inputs.environment || 'staging' }}
             acr_name: ${{ needs.infrastructure.outputs.acrName }}
-            image_name: rules
+            image_name: ssw-rules
             tina_branch: ${{ github.event.inputs.tina_branch }}
             source_branch: ${{ github.event.inputs.branch_name }}
         secrets:

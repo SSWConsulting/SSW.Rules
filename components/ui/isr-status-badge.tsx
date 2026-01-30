@@ -1,104 +1,40 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import React from "react";
 import { cn } from "@/lib/utils";
 import Tooltip from "../tooltip/tooltip";
 
-type NextCacheState = "HIT" | "STALE" | "MISS" | "unknown";
+// Threshold in ms - if the page was generated within this time, it's fresh
+const FRESH_THRESHOLD_MS = 10000; // 10 seconds
 
-function normalizeCacheState(value: string | null): NextCacheState {
-  if (!value) return "unknown";
-  const upper = value.toUpperCase();
-  if (upper === "HIT" || upper === "STALE" || upper === "MISS") return upper;
-  return "unknown";
+interface IsrStatusBadgeProps {
+  /** Timestamp (Date.now()) from when the page was rendered on the server */
+  generatedAt: number;
 }
 
-function getCacheHeaderValue(headers: Headers): { name: string; value: string | null } {
-  // Primary header emitted by Next.js ISR (varies by platform/version).
-  const next = headers.get("x-nextjs-cache");
-  if (next) return { name: "x-nextjs-cache", value: next };
-
-  return { name: "x-nextjs-cache", value: null };
-}
-
-const copy: Record<NextCacheState, { label: string; detail?: string }> = {
-  HIT: { label: "Live", detail: "cached" },
-  STALE: { label: "Rebuilding", detail: "revalidating…" },
-  MISS: { label: "Stale", detail: "not yet rebuilt" },
-  unknown: { label: "Unknown" },
-};
-
-const tooltipCopy: Record<NextCacheState, string> = {
-  HIT: "Live - Page is fresh",
-  STALE: "Rebuilding - Refresh for live updates",
-  MISS: "Stale - Not yet rebuilt, refresh for live updates",
-  unknown: "Unknown",
-};
-
-function getStyle(state: NextCacheState) {
-  switch (state) {
-    case "HIT":
-      return "bg-green-500"; // Green - Live
-    case "STALE":
-      return "bg-yellow-400"; // Yellow - Currently rebuilding
-    case "MISS":
-      return "bg-orange-500"; // Orange - Old, not yet started rebuilding
-    default:
-      return "bg-zinc-300";
-  }
-}
-
-export default function IsrStatusBadge() {
-  const pathname = usePathname();
-
-  const [cacheState, setCacheState] = React.useState<NextCacheState>("unknown");
-  const [isLoading, setIsLoading] = React.useState(true);
+export default function IsrStatusBadge({ generatedAt }: IsrStatusBadgeProps) {
+  const [isLive, setIsLive] = React.useState<boolean | null>(null);
 
   React.useEffect(() => {
-    let cancelled = false;
+    const pageAge = Date.now() - generatedAt;
+    setIsLive(pageAge < FRESH_THRESHOLD_MS);
+  }, [generatedAt]);
 
-    // Hide the dot on route change until we get the first response for the new page.
-    setIsLoading(true);
-
-    const check = async () => {
-      try {
-        const url = window.location.href;
-
-        // Prefer HEAD (cheapest). Some setups may not support it, so fall back to GET.
-        let res = await fetch(url, { method: "HEAD", cache: "no-store", redirect: "follow" });
-        if (res.status === 405 || res.status === 501) {
-          res = await fetch(url, { method: "GET", cache: "no-store", redirect: "follow" });
-        }
-
-        const header = getCacheHeaderValue(res.headers);
-        const state = normalizeCacheState(header.value);
-
-        if (!cancelled) {
-          setCacheState(state);
-          setIsLoading(false);
-        }
-      } catch {
-        if (!cancelled) {
-          setCacheState("unknown");
-          setIsLoading(false);
-        }
-      }
-    };
-
-    check();
-    return () => {
-      cancelled = true;
-    };
-  }, [pathname]);
-
-  if (isLoading) {
+  if (isLive === null) {
     return <span className="inline-block h-2 w-2 rounded-full bg-zinc-300 animate-pulse" aria-hidden="true" />;
   }
 
+  const tooltip = isLive
+    ? "Live - Page is fresh"
+    : "Cached - Refresh for latest";
+
+  const style = isLive
+    ? "bg-green-500" // Green - Live
+    : "bg-yellow-400"; // Yellow - Cached, may need refresh
+
   return (
-    <Tooltip text={tooltipCopy[cacheState]} showDelay={false} hideDelay={false} opaque={true}>
-      <span className={cn("inline-block h-2 w-2 rounded-full", getStyle(cacheState))} aria-label={tooltipCopy[cacheState]} />
+    <Tooltip text={tooltip} showDelay={false} hideDelay={false} opaque={true}>
+      <span className={cn("inline-block h-2 w-2 rounded-full", style)} aria-label={tooltip} />
     </Tooltip>
   );
 }

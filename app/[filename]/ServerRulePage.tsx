@@ -81,7 +81,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
 
               <div className="flex justify-between my-2 flex-col items-center md:flex-row">
                 <div className="flex gap-2 items-center">
-                  <IsrStatusBadge />
+                  <IsrStatusBadge generatedAt={Date.now()} />
                   <GitHubMetadata owner="SSWConsulting" repo="SSW.Rules.Content" path={rule?.id} />
                 </div>
                 <RuleActionButtons rule={rule} />

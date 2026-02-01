@@ -26,11 +26,29 @@ param appInsightsName string
 @description('Name of the Container Registry (must be globally unique, alphanumeric only)')
 param containerRegistryName string
 
-@description('Name of the existing App Service Plan')
+@description('Name of the App Service Plan')
 param appServicePlanName string
 
-@description('Resource Group containing the existing App Service Plan')
+@description('Resource Group containing the App Service Plan (only used when referencing existing plan)')
 param appServicePlanResourceGroup string
+
+@description('SKU for the App Service Plan (only used when creating new plan for production)')
+@allowed([
+  'B1'
+  'B2'
+  'B3'
+  'S1'
+  'S2'
+  'S3'
+  'P0v3'
+  'P1v2'
+  'P2v2'
+  'P3v2'
+  'P1v3'
+  'P2v3'
+  'P3v3'
+])
+param appServicePlanSku string = 'P0v3'
 
 @description('Service Principal Object ID for granting AcrPush role (for GitHub Actions)')
 param servicePrincipalObjectId string = ''
@@ -64,13 +82,26 @@ var acrPullRoleId = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var acrPushRoleId = '8311e382-0749-4cb8-b61a-304f252e45ec'
 
 // ============================================================================
-// EXISTING RESOURCES
+// APP SERVICE PLAN
 // ============================================================================
 
-// Reference to existing App Service Plan in another resource group
-resource existingAppServicePlan 'Microsoft.Web/serverfarms@2025-03-01' existing = {
+// For staging: Reference existing shared App Service Plan in another resource group
+// For production: Create a new dedicated App Service Plan
+resource existingAppServicePlan 'Microsoft.Web/serverfarms@2025-03-01' existing = if (environment == 'staging') {
   name: appServicePlanName
   scope: resourceGroup(appServicePlanResourceGroup)
+}
+
+// Create App Service Plan for production
+module appServicePlanModule 'modules/appServicePlan.bicep' = if (environment == 'prod') {
+  name: 'appServicePlan-${environment}'
+  params: {
+    appServicePlanName: appServicePlanName
+    location: location
+    environment: environment
+    skuName: appServicePlanSku
+    tags: tags
+  }
 }
 
 // ============================================================================
@@ -118,7 +149,8 @@ module appServiceModule 'modules/appService.bicep' = {
   params: {
     appServiceName: appServiceName
     location: location
-    appServicePlanId: existingAppServicePlan.id
+    // Use existing plan for staging, newly created plan for production
+    appServicePlanId: environment == 'staging' ? existingAppServicePlan.id : appServicePlanModule.outputs.appServicePlanId
     containerRegistryName: containerRegistryName
     appInsightsConnectionString: appInsightsModule.outputs.connectionString
     environment: environment
@@ -126,7 +158,6 @@ module appServiceModule 'modules/appService.bicep' = {
     slotName: slotName
   }
   dependsOn: [
-    appInsightsModule
     containerRegistryModule
   ]
 }

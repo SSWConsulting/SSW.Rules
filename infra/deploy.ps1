@@ -5,19 +5,27 @@
 .DESCRIPTION
     This script deploys Azure resources using a consistent naming pattern:
     - app-{project}-{env}     (App Service)
+    - asp-{project}-{env}     (App Service Plan - production only, staging uses shared plan)
     - appi-{project}-{env}    (Application Insights)
     - log-{project}-{env}     (Log Analytics Workspace)
     - acr{project}{env}       (Container Registry - no hyphens allowed)
     - rg-{project}-{env}      (Resource Group)
 
+    For staging: Uses existing shared App Service Plan (plan-ssw-shared-dev-linux)
+    For production: Creates a dedicated App Service Plan
+
 .PARAMETER Environment
-    The target environment (staging or prod)
+    The target environment (staging, prod, or production)
+
+.PARAMETER ResourceGroup
+    The Azure resource group name to deploy resources to.
 
 .PARAMETER ServicePrincipalObjectId
     Object ID of the Service Principal to grant AcrPush role (for GitHub Actions)
 
-.PARAMETER ResourceGroup
-    The Azure resource group name to deploy resources to.
+.PARAMETER AppServicePlanSku
+    SKU for the App Service Plan (only used for production). Default: P0v3 for prod, B1 for staging
+    Valid values: B1, B2, B3, S1, S2, S3, P0v3, P1v2, P2v2, P3v2, P1v3, P2v3, P3v3
 
 .PARAMETER WhatIf
     Show what would be deployed without actually deploying
@@ -26,10 +34,10 @@
     ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging"
 
 .EXAMPLE
-    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012"
-    
+    ./deploy.ps1 -Environment prod -ResourceGroup "SSW.Rules" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012"
+
 .EXAMPLE
-    ./deploy.ps1 -Environment prod -ResourceGroup "SSW.Rules" -WhatIf
+    ./deploy.ps1 -Environment prod -ResourceGroup "SSW.Rules" -AppServicePlanSku "S1" -WhatIf
 #>
 
 [CmdletBinding()]
@@ -43,6 +51,10 @@ param(
 
     [Parameter(Mandatory = $false)]
     [string]$ServicePrincipalObjectId = '',
+
+    [Parameter(Mandatory = $false)]
+    [ValidateSet('B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P0v3', 'P1v2', 'P2v2', 'P3v2', 'P1v3', 'P2v3', 'P3v3')]
+    [string]$AppServicePlanSku = '',
 
     [Parameter(Mandatory = $false)]
     [switch]$WhatIf
@@ -61,6 +73,11 @@ $ProjectName = 'sswrules'
 # Normalize 'production' to 'prod' for naming
 if ($Environment -eq 'production') {
     $Environment = 'prod'
+}
+
+# Set default App Service Plan SKU if not provided
+if (-not $AppServicePlanSku) {
+    $AppServicePlanSku = if ($Environment -eq 'prod') { 'P0v3' } else { 'B1' }
 }
 
 # Resource names derived from project + environment
@@ -252,31 +269,41 @@ else {
     Write-Info "App Service '$AppServiceName' - will create"
 }
 
-# Verify App Service Plan exists
-Write-Step "Verifying App Service Plan: $AppServicePlanName"
-$planCheck = az appservice plan show --name $AppServicePlanName --resource-group $AppServicePlanResourceGroup 2>&1
-if ($LASTEXITCODE -ne 0) {
-    Write-Host ""
-    Write-Host "=================================================================================" -ForegroundColor Red
-    Write-Host "  ERROR: App Service Plan not found!" -ForegroundColor Red
-    Write-Host "=================================================================================" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "  Plan Name:      $AppServicePlanName" -ForegroundColor Yellow
-    Write-Host "  Resource Group: $AppServicePlanResourceGroup" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "  Possible causes:" -ForegroundColor White
-    Write-Host "    - Wrong Azure subscription (check with 'az account show')" -ForegroundColor Gray
-    Write-Host "    - App Service Plan doesn't exist" -ForegroundColor Gray
-    Write-Host "    - Resource group name is incorrect" -ForegroundColor Gray
-    Write-Host ""
-    Write-Host "  Current subscription:" -ForegroundColor White
-    $currentSub = az account show --query "{name:name, id:id}" -o tsv 2>&1
-    Write-Host "    $currentSub" -ForegroundColor Gray
-    Write-Host ""
-    Write-Host "=================================================================================" -ForegroundColor Red
-    exit 1
+# Verify App Service Plan exists (staging only - production creates its own)
+if ($Environment -eq 'staging') {
+    Write-Step "Verifying existing App Service Plan: $AppServicePlanName"
+    $planCheck = az appservice plan show --name $AppServicePlanName --resource-group $AppServicePlanResourceGroup 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "=================================================================================" -ForegroundColor Red
+        Write-Host "  ERROR: App Service Plan not found!" -ForegroundColor Red
+        Write-Host "=================================================================================" -ForegroundColor Red
+        Write-Host ""
+        Write-Host "  Plan Name:      $AppServicePlanName" -ForegroundColor Yellow
+        Write-Host "  Resource Group: $AppServicePlanResourceGroup" -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "  Possible causes:" -ForegroundColor White
+        Write-Host "    - Wrong Azure subscription (check with 'az account show')" -ForegroundColor Gray
+        Write-Host "    - App Service Plan doesn't exist" -ForegroundColor Gray
+        Write-Host "    - Resource group name is incorrect" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "  Current subscription:" -ForegroundColor White
+        $currentSub = az account show --query "{name:name, id:id}" -o tsv 2>&1
+        Write-Host "    $currentSub" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "=================================================================================" -ForegroundColor Red
+        exit 1
+    }
+    Write-Success "App Service Plan found"
+} else {
+    Write-Step "App Service Plan: $AppServicePlanName"
+    $planCheck = az appservice plan show --name $AppServicePlanName --resource-group $AppServicePlanResourceGroup 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Info "App Service Plan '$AppServicePlanName' - will create"
+    } else {
+        Write-Success "App Service Plan exists - will update if needed"
+    }
 }
-Write-Success "App Service Plan found"
 
 # Build deployment parameters
 Write-Step "Preparing deployment parameters..."
@@ -289,6 +316,7 @@ $deploymentParams = @{
     containerRegistryName = $ContainerRegistryName
     appServicePlanName = $AppServicePlanName
     appServicePlanResourceGroup = $AppServicePlanResourceGroup
+    appServicePlanSku = $AppServicePlanSku
 }
 
 if ($ServicePrincipalObjectId) {
@@ -359,6 +387,7 @@ $azArgs = @(
     '--parameters', "containerRegistryName=$ContainerRegistryName"
     '--parameters', "appServicePlanName=$AppServicePlanName"
     '--parameters', "appServicePlanResourceGroup=$AppServicePlanResourceGroup"
+    '--parameters', "appServicePlanSku=$AppServicePlanSku"
 )
 
 if ($ServicePrincipalObjectId) {

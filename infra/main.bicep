@@ -37,16 +37,8 @@ param appServicePlanResourceGroup string
   'B1'
   'B2'
   'B3'
-  'S1'
-  'S2'
-  'S3'
   'P0v3'
-  'P1v2'
-  'P2v2'
-  'P3v2'
   'P1v3'
-  'P2v3'
-  'P3v3'
 ])
 param appServicePlanSku string = 'P0v3'
 

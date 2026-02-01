@@ -25,7 +25,7 @@
 
 .PARAMETER AppServicePlanSku
     SKU for the App Service Plan (only used for production). Default: P0v3 for prod, B1 for staging
-    Valid values: B1, B2, B3, S1, S2, S3, P0v3, P1v2, P2v2, P3v2, P1v3, P2v3, P3v3
+    Valid values: B1, B2, B3, P0v3, P1v3
 
 .PARAMETER WhatIf
     Show what would be deployed without actually deploying
@@ -53,7 +53,7 @@ param(
     [string]$ServicePrincipalObjectId = '',
 
     [Parameter(Mandatory = $false)]
-    [ValidateSet('B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P0v3', 'P1v2', 'P2v2', 'P3v2', 'P1v3', 'P2v3', 'P3v3')]
+    [ValidateSet('B1', 'B2', 'B3', 'P0v3', 'P1v3')]
     [string]$AppServicePlanSku = '',
 
     [Parameter(Mandatory = $false)]

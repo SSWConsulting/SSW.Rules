@@ -16,12 +16,13 @@ export const GITHUB_PULL_REQUESTS_QUERY = `
       }
       nodes {
         ... on PullRequest {
-          files(first: 6) {
+          number
+          mergedAt
+          files(first: 20) {
             nodes {
               path
             }
           }
-          mergedAt
         }
       }
     }

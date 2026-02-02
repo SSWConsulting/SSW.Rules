@@ -1,4 +1,4 @@
-import { GITHUB_API_BASE_URL, GITHUB_TINA_BOT_PRS_QUERY, GITHUB_PULL_REQUESTS_QUERY } from "./github.constants";
+import { GITHUB_API_BASE_URL, GITHUB_PULL_REQUESTS_QUERY, GITHUB_TINA_BOT_PRS_QUERY } from "./github.constants";
 import { GitHubServiceConfig } from "./github.types";
 import { getGitHubAppToken } from "./github.utils";
 
@@ -43,39 +43,16 @@ export class GitHubService {
     throw new Error(`Failed after ${maxRetries} attempts`);
   }
 
-  async searchDirectPRs(username: string): Promise<any[]> {
-    const query = `repo:${this.config.owner}/${this.config.repo} is:pr is:merged author:${username} sort:merged-desc`;
-    const variables = { query, first: 50 };
-
-    try {
-      const response = await this.fetchWithRetry(GITHUB_API_BASE_URL, {
-        method: "POST",
-        headers: {
-          Authorization: `bearer ${this.config.token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query: GITHUB_PULL_REQUESTS_QUERY, variables }),
-      }, 2, 10000);
-
-      if (!response.ok) throw new Error(`Direct PR search failed: ${response.status}`);
-
-      const data = await response.json();
-      return data.data?.search?.nodes || [];
-    } catch (error) {
-      console.error(`[GitHub] Direct PR search failed:`, error);
-      return [];
-    }
-  }
-
-  async searchTinaBotPRs(username: string, maxPages = 3): Promise<any[]> {
-    const targetLower = username.toLowerCase();
+  async searchDirectPRs(username: string, targetCount = 50): Promise<any[]> {
     const allPRs: any[] = [];
-    let cursor: string | undefined;
+    const seenPRNumbers = new Set<number>();
+    let cursor: string | null = null;
+    const maxPages = 20;
 
     for (let page = 0; page < maxPages; page++) {
       try {
-        const query = `repo:${this.config.owner}/${this.config.repo} is:pr is:merged author:tina-cloud-app[bot] sort:merged-desc`;
-        const variables: any = { query, first: 30 };
+        const query = `repo:${this.config.owner}/${this.config.repo} is:pr is:merged author:${username} sort:merged-desc`;
+        const variables: any = { query, first: 50 };
         if (cursor) variables.after = cursor;
 
         const response = await this.fetchWithRetry(GITHUB_API_BASE_URL, {
@@ -84,21 +61,74 @@ export class GitHubService {
             Authorization: `bearer ${this.config.token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ query: GITHUB_TINA_BOT_PRS_QUERY, variables }),
+          body: JSON.stringify({ query: GITHUB_PULL_REQUESTS_QUERY, variables }),
         }, 2, 10000);
 
-        if (!response.ok) throw new Error(`Tina bot search failed: ${response.status}`);
+        if (!response.ok) throw new Error(`Direct PR search failed: ${response.status}`);
 
         const data = await response.json();
         const nodes = data.data?.search?.nodes || [];
-        const pageInfo = data.data?.search?.pageInfo || { hasNextPage: false };
+        const pageInfo = data.data?.search?.pageInfo || { hasNextPage: false, endCursor: null };
 
-        // Filter for co-authors by checking commit authors' GitHub login
-        const filtered = nodes.filter((pr: any) => {
-          if (!pr?.commits?.nodes) return false;
+        for (const pr of nodes) {
+          if (pr?.number && !seenPRNumbers.has(pr.number)) {
+            seenPRNumbers.add(pr.number);
+            allPRs.push(pr);
+          }
+        }
+
+        if (allPRs.length >= targetCount || !pageInfo.hasNextPage) break;
+        cursor = pageInfo.endCursor;
+      } catch (error) {
+        console.error(`[GitHub] Direct PR search failed on page ${page}:`, error);
+        break;
+      }
+    }
+
+    return allPRs;
+  }
+
+  async fetchTinaBotPage(cursor: string | null): Promise<{ nodes: any[], pageInfo: any }> {
+    const query = `repo:${this.config.owner}/${this.config.repo} is:pr is:merged author:tina-cloud-app[bot] sort:merged-desc`;
+    const variables: any = { query, first: 100 };
+    if (cursor) variables.after = cursor;
+
+    const response = await this.fetchWithRetry(GITHUB_API_BASE_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `bearer ${this.config.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query: GITHUB_TINA_BOT_PRS_QUERY, variables }),
+    }, 2, 15000);
+
+    if (!response.ok) throw new Error(`Tina bot search failed: ${response.status}`);
+
+    const data = await response.json();
+    return {
+      nodes: data.data?.search?.nodes || [],
+      pageInfo: data.data?.search?.pageInfo || { hasNextPage: false, endCursor: null }
+    };
+  }
+
+  async searchTinaBotPRs(username: string, targetCount = 20): Promise<any[]> {
+    const targetLower = username.toLowerCase();
+    const allPRs: any[] = [];
+    const seenPRNumbers = new Set<number>();
+    let cursor: string | null = null;
+
+    // Keep fetching until we find enough PRs for this user or run out of pages
+    while (true) {
+      try {
+        const { nodes, pageInfo } = await this.fetchTinaBotPage(cursor);
+
+        // Filter for this user's PRs
+        for (const pr of nodes) {
+          if (!pr?.commits?.nodes || seenPRNumbers.has(pr.number)) continue;
 
           for (const commit of pr.commits.nodes) {
             const authors = commit?.commit?.authors?.nodes || [];
+            let matched = false;
 
             for (const author of authors) {
               const login = author?.user?.login?.toLowerCase() || '';
@@ -107,25 +137,32 @@ export class GitHubService {
 
               if (login === targetLower || login.includes(targetLower) ||
                   email.includes(targetLower) || name.includes(targetLower)) {
-                return true;
+                matched = true;
+                break;
               }
             }
 
-            // Fallback: also check commit message for co-authored-by lines
-            const message = commit?.commit?.message || '';
-            if (message.toLowerCase().includes(targetLower)) {
-              return true;
+            if (!matched) {
+              const message = commit?.commit?.message || '';
+              if (message.toLowerCase().includes(targetLower)) {
+                matched = true;
+              }
+            }
+
+            if (matched) {
+              seenPRNumbers.add(pr.number);
+              allPRs.push(pr);
+              break;
             }
           }
-          return false;
-        });
+        }
 
-        allPRs.push(...filtered);
-        cursor = pageInfo?.endCursor;
-        if (!pageInfo?.hasNextPage) break;
+        // Stop if we have enough PRs for this user or no more pages
+        if (allPRs.length >= targetCount || !pageInfo.hasNextPage) break;
+        cursor = pageInfo.endCursor;
 
       } catch (error) {
-        console.error(`[GitHub] Error fetching Tina bot PRs page ${page + 1}:`, error);
+        console.error(`[GitHub] Error fetching Tina bot PRs:`, error);
         break;
       }
     }
@@ -134,29 +171,27 @@ export class GitHubService {
   }
 
   async getPRsForUser(username: string): Promise<any[]> {
-    const strategies = [
-      () => this.searchTinaBotPRs(username),
-      () => this.searchDirectPRs(username),
-    ];
+    // Run both searches in parallel - we need results from both
+    const [tinaBotPRs, directPRs] = await Promise.all([
+      this.searchTinaBotPRs(username).catch(err => {
+        console.error(`[GitHub] Tina bot search failed:`, err);
+        return [];
+      }),
+      this.searchDirectPRs(username).catch(err => {
+        console.error(`[GitHub] Direct PR search failed:`, err);
+        return [];
+      }),
+    ]);
 
-    let results: any[] = [];
-
-    for (const strategy of strategies) {
-      try {
-        const prs = await strategy();
-        results = [...results, ...prs];
-        
-        if (results.length >= 20) break;
-      } catch (error) {
-        console.error(`[GitHub] Strategy failed:`, error);
-      }
-    }
+    // Combine results
+    const allPRs = [...tinaBotPRs, ...directPRs];
 
     // Remove duplicates
-    const uniquePRs = results.filter((pr, index, self) =>
+    const uniquePRs = allPRs.filter((pr, index, self) =>
       index === self.findIndex(p => p.number === pr.number)
     );
 
+    // Sort by merge date (newest first)
     uniquePRs.sort((a, b) => new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime());
     return uniquePRs;
   }

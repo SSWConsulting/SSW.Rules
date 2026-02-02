@@ -1,0 +1,85 @@
+name: Cleanup PR Deployment
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  cleanup:
+    name: Delete PR Slot
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Azure CLI - Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Delete deployment slot
+        run: |
+          SLOT_NAME="pr-${{ github.event.pull_request.number }}"
+          APP_SERVICE_NAME="app-sswrules-staging"
+          RESOURCE_GROUP="${{ vars.AZURE_RESOURCE_GROUP }}"
+
+          echo "Cleaning up PR deployment..."
+          echo "  Slot: $SLOT_NAME"
+          echo "  App Service: $APP_SERVICE_NAME"
+          echo "  Resource Group: $RESOURCE_GROUP"
+
+          # Check if slot exists before attempting to delete
+          SLOT_EXISTS=$(az webapp deployment slot list \
+            --name "$APP_SERVICE_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --query "[?name=='$SLOT_NAME'].name" \
+            --output tsv 2>/dev/null || echo "")
+
+          if [ -n "$SLOT_EXISTS" ]; then
+            echo "Deleting slot: $SLOT_NAME..."
+            az webapp deployment slot delete \
+              --name "$APP_SERVICE_NAME" \
+              --resource-group "$RESOURCE_GROUP" \
+              --slot "$SLOT_NAME"
+            echo "Slot deleted successfully!"
+          else
+            echo "Slot '$SLOT_NAME' does not exist. Nothing to delete."
+          fi
+
+      - name: Delete container image from ACR
+        run: |
+          TAG="pr-${{ github.event.pull_request.number }}"
+          ACR_NAME="acrsswrulesstaging"
+          IMAGE_NAME="ssw-rules"
+
+          echo "Cleaning up container image..."
+          echo "  Image: $IMAGE_NAME:$TAG"
+          echo "  ACR: $ACR_NAME"
+
+          # Check if image exists before attempting to delete
+          IMAGE_EXISTS=$(az acr repository show-tags \
+            --name "$ACR_NAME" \
+            --repository "$IMAGE_NAME" \
+            --query "[?contains(@, '$TAG')]" \
+            --output tsv 2>/dev/null || echo "")
+
+          if [ -n "$IMAGE_EXISTS" ]; then
+            echo "Deleting image: $IMAGE_NAME:$TAG..."
+            az acr repository delete \
+              --name "$ACR_NAME" \
+              --image "$IMAGE_NAME:$TAG" \
+              --yes
+            echo "Image deleted successfully!"
+          else
+            echo "Image '$IMAGE_NAME:$TAG' does not exist. Nothing to delete."
+          fi
+
+      - name: Cleanup summary
+        run: |
+          echo ""
+          echo "PR #${{ github.event.pull_request.number }} cleanup complete!"
+          echo "  - Deployment slot deleted"
+          echo "  - Container image deleted"

@@ -198,6 +198,7 @@ jobs:
     name: Post Preview URL Comment
     runs-on: ubuntu-latest
     needs: [infrastructure, deploy]
+    environment: staging
     steps:
       - name: Find existing comment
         uses: peter-evans/find-comment@v3

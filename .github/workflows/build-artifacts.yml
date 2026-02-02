@@ -6,6 +6,14 @@ on:
       tag:
         type: string
         required: true
+      acr_name:
+        type: string
+        required: true
+        description: "Azure Container Registry name (without .azurecr.io)"
+      image_name:
+        type: string
+        required: true
+        description: "Docker image name"
       tina_branch:
         type: string
         required: false
@@ -121,8 +129,8 @@ jobs:
           echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
           echo "Tina branch: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH || 'Default' }}"
           echo "Environment tag: ${{ inputs.tag }}"
-          echo "Registry: ${{ vars.registry_name }}"
-          echo "Image: ${{ vars.IMAGE_NAME }}"
+          echo "Registry: ${{ inputs.acr_name }}"
+          echo "Image: ${{ inputs.image_name }}"
           echo "Build timestamp: ${{ env.BUILD_TIMESTAMP }}"
           echo "Build version: ${{ env.VERSION_DEPLOYED }}"
           echo "Docker cache: DISABLED"
@@ -239,7 +247,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Login to ACR
-        run: az acr login --name ${{ vars.registry_name }}
+        run: az acr login --name ${{ inputs.acr_name }}
 
       # ────────────────────────────── DOCKER BUILD (NO CACHE) ──────────────
       - name: Set up Docker Buildx (no cache)
@@ -264,7 +272,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ vars.registry_name }}.azurecr.io/${{ vars.image_name }}
+          images: ${{ inputs.acr_name }}.azurecr.io/${{ inputs.image_name }}
           tags: |
             type=raw,value=${{ inputs.tag }}
           labels: |

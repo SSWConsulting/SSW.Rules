@@ -34,11 +34,59 @@ permissions:
     actions: write
 
 jobs:
+    # ============================================================================
+    # INFRASTRUCTURE DEPLOYMENT
+    # ============================================================================
+    infrastructure:
+        name: Deploy Infrastructure
+        runs-on: ubuntu-latest
+        environment: ${{ github.event.inputs.environment || 'staging' }}
+        outputs:
+            resourceGroup: ${{ steps.deploy.outputs.resourceGroup }}
+            appServiceName: ${{ steps.deploy.outputs.appServiceName }}
+            appServiceHostName: ${{ steps.deploy.outputs.appServiceHostName }}
+            acrName: ${{ steps.deploy.outputs.acrName }}
+            acrLoginServer: ${{ steps.deploy.outputs.acrLoginServer }}
+            appInsightsConnectionString: ${{ steps.deploy.outputs.appInsightsConnectionString }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Azure CLI - Login
+              uses: azure/login@v2
+              with:
+                  client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                  tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+                  subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+            - name: Deploy Infrastructure
+              id: deploy
+              shell: pwsh
+              run: |
+                  ./infra/deploy.ps1 `
+                    -Environment "${{ github.event.inputs.environment || 'staging' }}" `
+                    -ResourceGroup "${{ vars.AZURE_RESOURCE_GROUP }}" `
+                    -ServicePrincipalObjectId "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}"
+
+            - name: Log infrastructure outputs
+              run: |
+                  echo "Infrastructure Deployment Complete"
+                  echo "Resource Group: ${{ steps.deploy.outputs.resourceGroup }}"
+                  echo "App Service: ${{ steps.deploy.outputs.appServiceName }}"
+                  echo "App Service URL: https://${{ steps.deploy.outputs.appServiceHostName }}"
+                  echo "ACR: ${{ steps.deploy.outputs.acrLoginServer }}"
+
+    # ============================================================================
+    # BUILD AND PUSH CONTAINER
+    # ============================================================================
     build:
         name: Build and Push Container
+        needs: infrastructure
         uses: ./.github/workflows/build-artifacts.yml
         with:
             tag: ${{ github.event.inputs.environment || 'staging' }}
+            acr_name: ${{ needs.infrastructure.outputs.acrName }}
+            image_name: ssw-rules
             tina_branch: ${{ github.event.inputs.tina_branch }}
             source_branch: ${{ github.event.inputs.branch_name }}
         secrets:
@@ -60,10 +108,13 @@ jobs:
             GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
             GITHUB_APP_INSTALLATION_ID: ${{ secrets.GITHUB_APP_INSTALLATION_ID }}
 
+    # ============================================================================
+    # DEPLOY TO AZURE WEB APP
+    # ============================================================================
     deploy:
         name: Deploy to Azure Web App
         runs-on: ubuntu-latest
-        needs: build
+        needs: [infrastructure, build]
         environment: ${{ github.event.inputs.environment || 'staging' }}
         steps:
             - name: Use build info from build job
@@ -124,8 +175,8 @@ jobs:
                   # Build command as array for safe execution
                   CMD=(
                     az webapp config appsettings set
-                    --name "${{ secrets.AZURE_WEBAPP_NAME }}"
-                    --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}"
+                    --name "${{ needs.infrastructure.outputs.appServiceName }}"
+                    --resource-group "${{ needs.infrastructure.outputs.resourceGroup }}"
                   )
 
                   # Add slot parameter only if slot name is provided
@@ -172,7 +223,7 @@ jobs:
               if: github.event.inputs.environment == 'production'
               uses: azure/webapps-deploy@v3
               with:
-                  app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+                  app-name: ${{ needs.infrastructure.outputs.appServiceName }}
                   images: ${{ needs.build.outputs.image_tag }}
                   slot-name: ${{ steps.slot.outputs.slot_name }}
 
@@ -180,7 +231,7 @@ jobs:
               if: github.event.inputs.environment != 'production'
               uses: azure/webapps-deploy@v3
               with:
-                  app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+                  app-name: ${{ needs.infrastructure.outputs.appServiceName }}
                   images: ${{ needs.build.outputs.image_tag }}
 
             - name: Swap slots (production only)
@@ -188,8 +239,8 @@ jobs:
               run: |
                   echo "🔄 Swapping pre-production slot with production slot..."
                   az webapp deployment slot swap \
-                      --name ${{ secrets.AZURE_WEBAPP_NAME }} \
-                      --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+                      --name ${{ needs.infrastructure.outputs.appServiceName }} \
+                      --resource-group ${{ needs.infrastructure.outputs.resourceGroup }} \
                       --slot pre-production \
                       --target-slot production
                   echo "✅ Slot swap completed successfully!"
@@ -199,13 +250,16 @@ jobs:
               run: |
                   echo "✅ Application deployed successfully!"
                   echo "Image: ${{ needs.build.outputs.image_tag }}"
-                  echo "App URL: https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+                  echo "App URL: https://${{ needs.infrastructure.outputs.appServiceHostName }}"
                   echo "Source: ${{ github.event.inputs.branch_name || github.ref_name }}"
                   echo "Build Info:"
                   echo "  📅 Deployed: ${{ env.BUILD_DATE }}"
                   echo "  🏷️ Version: ${{ env.VERSION_DEPLOYED }}"
                   echo "  🔗 Build Details: ${{ env.DEPLOYMENT_URL }}"
 
+    # ============================================================================
+    # POST-DEPLOYMENT SITEMAP CRAWL
+    # ============================================================================
     crawl_sitemap:
         name: Crawl Sitemap
         if: github.event.inputs.environment == 'production'

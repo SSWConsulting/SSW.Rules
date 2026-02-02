@@ -1,3 +1,15 @@
+const fs = require("fs");
+const path = require("path");
+
+let archivedSlugs = [];
+try {
+  archivedSlugs = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "archived-rules.json"), "utf-8")
+  );
+} catch {
+  console.warn("⚠️ archived-rules.json not found — archived rules will not be excluded from sitemap");
+}
+
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.ssw.com.au"}${process.env.NEXT_PUBLIC_BASE_PATH}`,
@@ -10,6 +22,12 @@ module.exports = {
   outDir: "public/",
   transform: async (config, path) => {
      if (path.includes("/api") || path.includes("/icon.ico")) {
+      return null;
+    }
+
+    // Exclude archived rules from sitemap
+    const slug = path.replace(/^\//, "").replace(/\/$/, "");
+    if (archivedSlugs.includes(slug)) {
       return null;
     }
     return {

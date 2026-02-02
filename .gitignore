@@ -41,4 +41,5 @@ CLAUDE.md
 category-uri-title-map.json
 rule-to-categories.json
 orphaned_rules.json
+archived-rules.json
 redirects.json

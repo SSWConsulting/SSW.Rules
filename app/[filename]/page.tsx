@@ -1,8 +1,11 @@
 import React from "react";
+import fs from "node:fs";
+import path from "node:path";
 import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
+import { fetchAllArchivedRules } from "@/lib/services/rules/rules.service";
 import ruleToCategoryIndex from "@/rule-to-categories.json";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
@@ -250,6 +253,19 @@ export async function generateStaticParams() {
 
     const paths = Array.from(filenames || []).map((filename) => ({ filename }));
 
+    // Write archived rule slugs to JSON for sitemap exclusion
+    try {
+      const archivedRules = await fetchAllArchivedRules();
+      const archivedSlugs = archivedRules.map((r) => r.uri).filter(Boolean);
+      fs.writeFileSync(
+        path.join(process.cwd(), "archived-rules.json"),
+        JSON.stringify(archivedSlugs)
+      );
+      console.log(`📋 Wrote ${archivedSlugs.length} archived rule slugs to archived-rules.json`);
+    } catch (err) {
+      console.warn("⚠️ Failed to write archived-rules.json:", err);
+    }
+
     console.log(`🚀 generateStaticParams: rules + categories total=${paths.length}`);
     return paths;
   } catch (error) {
@@ -348,6 +364,10 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
 
       if (rule.data.rule.seoDescription) {
         metadata.description = rule.data.rule.seoDescription;
+      }
+
+      if (rule.data.rule.isArchived) {
+        metadata.robots = { index: false, follow: true };
       }
 
       return metadata;

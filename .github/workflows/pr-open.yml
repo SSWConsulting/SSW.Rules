@@ -1,89 +1,227 @@
-name: Build Pull Request
+name: Deploy Pull Request to Staging Slot
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+  actions: write
+  pull-requests: write
+
 jobs:
-  build:
+  # ============================================================================
+  # INFRASTRUCTURE DEPLOYMENT
+  # ============================================================================
+  infrastructure:
+    name: Deploy Infrastructure
     runs-on: ubuntu-latest
-    name: Build Pull Request
+    environment: staging
+    outputs:
+      resourceGroup: ${{ steps.deploy.outputs.resourceGroup }}
+      appServiceName: ${{ steps.deploy.outputs.appServiceName }}
+      slotName: ${{ steps.deploy.outputs.slotName }}
+      slotHostName: ${{ steps.deploy.outputs.slotHostName }}
+      acrName: ${{ steps.deploy.outputs.acrName }}
+      acrLoginServer: ${{ steps.deploy.outputs.acrLoginServer }}
+      appInsightsConnectionString: ${{ steps.deploy.outputs.appInsightsConnectionString }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure CLI - Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Infrastructure with PR Slot
+        id: deploy
+        shell: pwsh
+        run: |
+          ./infra/deploy.ps1 `
+            -Environment "staging" `
+            -ResourceGroup "${{ vars.AZURE_RESOURCE_GROUP }}" `
+            -ServicePrincipalObjectId "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}" `
+            -SlotName "pr-${{ github.event.pull_request.number }}"
+
+      - name: Log infrastructure outputs
+        run: |
+          echo "Infrastructure Deployment Complete"
+          echo "Resource Group: ${{ steps.deploy.outputs.resourceGroup }}"
+          echo "App Service: ${{ steps.deploy.outputs.appServiceName }}"
+          echo "Slot Name: ${{ steps.deploy.outputs.slotName }}"
+          echo "Slot URL: https://${{ steps.deploy.outputs.slotHostName }}"
+          echo "ACR: ${{ steps.deploy.outputs.acrLoginServer }}"
+
+  # ============================================================================
+  # BUILD AND PUSH CONTAINER
+  # ============================================================================
+  build:
+    name: Build and Push Container
+    needs: infrastructure
+    uses: ./.github/workflows/build-artifacts.yml
+    with:
+      tag: pr-${{ github.event.pull_request.number }}
+      acr_name: ${{ needs.infrastructure.outputs.acrName }}
+      image_name: ssw-rules
+      source_branch: ${{ github.head_ref }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+      TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
+      TINA_WEBHOOK_SECRET: ${{ secrets.TINA_WEBHOOK_SECRET }}
+      NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+      NEXT_PUBLIC_ALGOLIA_APP_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
+      NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
+      NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+      NEXT_PUBLIC_ALGOLIA_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+      NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
+      NEXT_PUBLIC_GTM_CONTAINER_ID: ${{ secrets.NEXT_PUBLIC_GTM_CONTAINER_ID }}
+      NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
+      GH_APP_ID: ${{ vars.GH_APP_ID }}
+      GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      GITHUB_APP_INSTALLATION_ID: ${{ secrets.GITHUB_APP_INSTALLATION_ID }}
+
+  # ============================================================================
+  # DEPLOY TO PR SLOT
+  # ============================================================================
+  deploy:
+    name: Deploy to PR Slot
+    runs-on: ubuntu-latest
+    needs: [infrastructure, build]
     environment: staging
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          lfs: true
-
-      - name: Checkout SSW.Rules.Content
-        uses: actions/checkout@v4
-        with:
-          repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ vars.NEXT_PUBLIC_TINA_BRANCH }}
-          path: content-temp
-          fetch-depth: 0
-          lfs: true
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-            python-version: '3.x'
-
-      - name: Install dependencies
-        run: pip install pyyaml
-
-      - name: Generate rule‑category mapping files
-        working-directory: content-temp/scripts/tina-migration
-        run: python build-rule-category-map.py
-
-      - name: Generate orphaned_rules file
-        working-directory: content-temp/scripts/tina-migration
-        run: python orphaned_rules_check.py
-
-      - name: Generate redirects mapping file
-        working-directory: content-temp/scripts/tina-migration
-        run: python build-redirect-map.py
-
-      - name: Copy generated mapping + content
+      - name: Use build info from build job
+        id: build_info
         run: |
-            cp content-temp/scripts/tina-migration/rule-to-categories.json ./
-            cp content-temp/scripts/tina-migration/category-uri-title-map.json ./
-            cp content-temp/scripts/tina-migration/orphaned_rules.json ./
-            cp content-temp/scripts/tina-migration/redirects.json ./
-            mv content-temp ./content
+          BUILD_TIMESTAMP="${{ needs.build.outputs.build_timestamp }}"
+          BUILD_DATE="${{ needs.build.outputs.build_date }}"
+          COMMIT_HASH="${{ needs.build.outputs.commit_hash }}"
+          VERSION_DEPLOYED="${{ needs.build.outputs.version_deployed }}"
+          DEPLOYMENT_URL="${{ needs.build.outputs.deployment_url }}"
 
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
+          echo "BUILD_TIMESTAMP=$BUILD_TIMESTAMP" >> $GITHUB_ENV
+          echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+          echo "VERSION_DEPLOYED=$VERSION_DEPLOYED" >> $GITHUB_ENV
+          echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_ENV
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 10.10.0
-          run_install: false
+          echo "Using Build Info from Build Job:"
+          echo "  Timestamp: $BUILD_TIMESTAMP"
+          echo "  Date: $BUILD_DATE"
+          echo "  Version: $VERSION_DEPLOYED"
+          echo "  Commit: $COMMIT_HASH"
+          echo "  Deployment URL: $DEPLOYMENT_URL"
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
+      - name: Log deployment info
         run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          echo "Deploying PR Preview"
+          echo "PR Number: ${{ github.event.pull_request.number }}"
+          echo "Source branch: ${{ github.head_ref }}"
+          echo "Slot name: ${{ needs.infrastructure.outputs.slotName }}"
+          echo "Build timestamp: ${{ env.BUILD_TIMESTAMP }}"
+          echo "Build version: ${{ env.VERSION_DEPLOYED }}"
 
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
+      - name: Azure CLI - Login
+        uses: azure/login@v2
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Configure app settings for PR slot
+        run: |
+          az webapp config appsettings set \
+            --name "${{ needs.infrastructure.outputs.appServiceName }}" \
+            --resource-group "${{ needs.infrastructure.outputs.resourceGroup }}" \
+            --slot "${{ needs.infrastructure.outputs.slotName }}" \
+            --settings \
+            "TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}" \
+            "AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }}" \
+            "AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }}" \
+            "AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }}" \
+            "AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}" \
+            "AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }}" \
+            "AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }}" \
+            "GITHUB_API_PAT=${{ secrets.GH_API_PAT }}" \
+            "GH_APP_ID=${{ vars.GH_APP_ID }}" \
+            "GH_APP_PRIVATE_KEY=${{ secrets.GH_APP_PRIVATE_KEY }}" \
+            "GITHUB_APP_INSTALLATION_ID=${{ secrets.GITHUB_APP_INSTALLATION_ID }}" \
+            "CRM_TENANT=${{ vars.CRM_TENANT }}" \
+            "CRM_TENANT_ID=${{ vars.CRM_TENANT_ID }}" \
+            "CRM_APP_ID=${{ vars.CRM_APP_ID }}" \
+            "CRM_SCOPE=${{ vars.CRM_SCOPE }}" \
+            "CRM_VIEW_CURRENT=${{ vars.CRM_VIEW_CURRENT }}" \
+            "CRM_VIEW_PAST=${{ vars.CRM_VIEW_PAST }}" \
+            "CRM_APP_SECRET=${{ secrets.CRM_APP_SECRET }}" \
+            "NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }}" \
+            "NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}" \
+            "BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}" \
+            "VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }}" \
+            "DEPLOYMENT_URL=${{ env.DEPLOYMENT_URL }}" \
+            "BUILD_DATE=${{ env.BUILD_DATE }}" \
+            "NEXT_PUBLIC_TINA_BRANCH=${{ vars.NEXT_PUBLIC_TINA_BRANCH }}" \
+            "COMMIT_HASH=${{ env.COMMIT_HASH }}" \
+            --output none
 
-      - name: Build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-          TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
-          NEXT_PUBLIC_TINA_BRANCH: ${{ vars.NEXT_PUBLIC_TINA_BRANCH }}
+      - name: Deploy to PR Slot
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ needs.infrastructure.outputs.appServiceName }}
+          images: ${{ needs.build.outputs.image_tag }}
+          slot-name: ${{ needs.infrastructure.outputs.slotName }}
+
+      - name: Verify deployment
+        run: |
+          echo "PR Preview deployed successfully!"
+          echo "Image: ${{ needs.build.outputs.image_tag }}"
+          echo "Preview URL: https://${{ needs.infrastructure.outputs.slotHostName }}"
+          echo "Source branch: ${{ github.head_ref }}"
+          echo "Build Info:"
+          echo "  Deployed: ${{ env.BUILD_DATE }}"
+          echo "  Version: ${{ env.VERSION_DEPLOYED }}"
+          echo "  Build Details: ${{ env.DEPLOYMENT_URL }}"
+
+  # ============================================================================
+  # POST PR COMMENT WITH PREVIEW URL
+  # ============================================================================
+  comment:
+    name: Post Preview URL Comment
+    runs-on: ubuntu-latest
+    needs: [infrastructure, deploy]
+    steps:
+      - name: Find existing comment
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '<!-- pr-preview-comment -->'
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            <!-- pr-preview-comment -->
+            ## 🚀 PR Preview Deployed
+
+            | | |
+            |---|---|
+            | **Preview URL** | https://${{ needs.infrastructure.outputs.slotHostName }} |
+            | **Slot Name** | `${{ needs.infrastructure.outputs.slotName }}` |
+            | **Branch** | `${{ github.head_ref }}` |
+            | **Commit** | `${{ github.event.pull_request.head.sha }}` |
+
+            ---
+            <sub>This preview will be automatically deleted when the PR is closed.</sub>

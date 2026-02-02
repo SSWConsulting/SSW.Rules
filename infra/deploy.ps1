@@ -27,6 +27,9 @@
     SKU for the App Service Plan (only used for production). Default: P0v3 for prod, B1 for staging
     Valid values: B1, B2, B3, P0v3, P1v3
 
+.PARAMETER SlotName
+    Optional deployment slot name (e.g., pr-123). Only used for staging PR deployments.
+
 .PARAMETER WhatIf
     Show what would be deployed without actually deploying
 
@@ -55,6 +58,9 @@ param(
     [Parameter(Mandatory = $false)]
     [ValidateSet('B1', 'B2', 'B3', 'P0v3', 'P1v3')]
     [string]$AppServicePlanSku = '',
+
+    [Parameter(Mandatory = $false)]
+    [string]$SlotName = '',
 
     [Parameter(Mandatory = $false)]
     [switch]$WhatIf
@@ -195,6 +201,7 @@ function New-ResourceGroup {
 # ============================================================================
 
 $spDisplay = if ($ServicePrincipalObjectId) { $ServicePrincipalObjectId } else { '(not provided - no AcrPush role)' }
+$slotDisplay = if ($SlotName) { $SlotName } else { '(none)' }
 
 Write-Host @"
 
@@ -208,6 +215,7 @@ Write-Host @"
   Log Analytics:      $LogAnalyticsWorkspaceName
   Container Registry: $ContainerRegistryName
   App Service Plan:   $AppServicePlanName (in $AppServicePlanResourceGroup)
+  Deployment Slot:    $slotDisplay
   Service Principal:  $spDisplay
 ================================================================================
 
@@ -394,6 +402,10 @@ if ($ServicePrincipalObjectId) {
     $azArgs += '--parameters', "servicePrincipalObjectId=$ServicePrincipalObjectId"
 }
 
+if ($SlotName) {
+    $azArgs += '--parameters', "slotName=$SlotName"
+}
+
 if ($WhatIf) {
     $azArgs += '--what-if'
     Write-Info "Running in What-If mode (resource group exists, running Bicep what-if)..."
@@ -420,6 +432,14 @@ if (-not $WhatIf) {
     Write-Host "`n" -NoNewline
     Write-Success "Deployment completed successfully!"
     
+    $slotInfo = ""
+    if ($outputs.slotName.value) {
+        $slotInfo = @"
+  Deployment Slot:        $($outputs.slotName.value)
+  Slot Hostname:          $($outputs.slotHostName.value)
+"@
+    }
+
     Write-Host @"
 
 ================================================================================
@@ -429,7 +449,7 @@ if (-not $WhatIf) {
   App Service Name:       $($outputs.appServiceName.value)
   App Service Hostname:   $($outputs.appServiceHostName.value)
   ACR Login Server:       $($outputs.containerRegistryLoginServer.value)
-================================================================================
+$slotInfo================================================================================
 
 "@ -ForegroundColor Green
 
@@ -443,6 +463,12 @@ if (-not $WhatIf) {
         "acrName=$($outputs.containerRegistryNameOutput.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "acrLoginServer=$($outputs.containerRegistryLoginServer.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "appInsightsConnectionString=$($outputs.appInsightsConnectionString.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        
+        # Slot outputs (for PR deployments)
+        if ($outputs.slotName.value) {
+            "slotName=$($outputs.slotName.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            "slotHostName=$($outputs.slotHostName.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        }
         
         Write-Success "GitHub Actions outputs set"
     }

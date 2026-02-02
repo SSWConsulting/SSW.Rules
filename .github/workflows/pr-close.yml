@@ -23,7 +23,7 @@ jobs:
       - name: Delete deployment slot
         run: |
           SLOT_NAME="pr-${{ github.event.pull_request.number }}"
-          APP_SERVICE_NAME="app-sswrules-staging"
+          APP_SERVICE_NAME="${{ vars.AZURE_APP_SERVICE_NAME }}"
           RESOURCE_GROUP="${{ vars.AZURE_RESOURCE_GROUP }}"
 
           echo "Cleaning up PR deployment..."
@@ -52,7 +52,7 @@ jobs:
       - name: Delete container image from ACR
         run: |
           TAG="pr-${{ github.event.pull_request.number }}"
-          ACR_NAME="acrsswrulesstaging"
+          ACR_NAME="${{ vars.AZURE_CONTAINER_REGISTRY_NAME }}"
           IMAGE_NAME="ssw-rules"
 
           echo "Cleaning up container image..."

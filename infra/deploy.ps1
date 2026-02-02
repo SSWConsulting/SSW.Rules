@@ -449,8 +449,8 @@ if (-not $WhatIf) {
   App Service Name:       $($outputs.appServiceName.value)
   App Service Hostname:   $($outputs.appServiceHostName.value)
   ACR Login Server:       $($outputs.containerRegistryLoginServer.value)
-$slotInfo================================================================================
-
+$slotInfo
+================================================================================
 "@ -ForegroundColor Green
 
     # Set GitHub Actions outputs if running in CI

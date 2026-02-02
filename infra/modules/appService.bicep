@@ -87,6 +87,7 @@ resource appService 'Microsoft.Web/sites@2025-03-01' = {
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
+    clientAffinityEnabled: false
     siteConfig: union(baseSiteConfig, {
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/ssw-rules:${environment}'
     })
@@ -110,6 +111,7 @@ resource deploymentSlot 'Microsoft.Web/sites/slots@2025-03-01' = if (!empty(effe
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
+    clientAffinityEnabled: false
     siteConfig: union(baseSiteConfig, {
       // For prod: uses environment tag (same as main app, ready for swap)
       // For staging PR slots: uses slotName as the tag (e.g., ssw-rules:pr-123)

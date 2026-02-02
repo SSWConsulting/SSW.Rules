@@ -70,6 +70,10 @@ export const historyFields: TinaField[] = [
 ];
 
 export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; cms: TinaCMS; values: Record<string, any> }) => {
+  if (typeof values.uri === "string") {
+    values = { ...values, uri: values.uri.trim() };
+  }
+
   let userEmail: string | undefined;
   let userName: string | undefined;
 

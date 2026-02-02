@@ -74,7 +74,6 @@ export class GitHubService {
 
     for (let page = 0; page < maxPages; page++) {
       try {
-        // Simple query - just get Tina bot PRs
         const query = `repo:${this.config.owner}/${this.config.repo} is:pr is:merged author:tina-cloud-app[bot] sort:merged-desc`;
         const variables: any = { query, first: 30 };
         if (cursor) variables.after = cursor;
@@ -135,7 +134,6 @@ export class GitHubService {
   }
 
   async getPRsForUser(username: string): Promise<any[]> {
-    // Try multiple strategies in sequence
     const strategies = [
       () => this.searchTinaBotPRs(username),
       () => this.searchDirectPRs(username),
@@ -148,7 +146,6 @@ export class GitHubService {
         const prs = await strategy();
         results = [...results, ...prs];
         
-        // If we found enough PRs, we can stop
         if (results.length >= 20) break;
       } catch (error) {
         console.error(`[GitHub] Strategy failed:`, error);

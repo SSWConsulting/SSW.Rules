@@ -1,7 +1,6 @@
 import { GITHUB_API_BASE_URL, GITHUB_TINA_BOT_PRS_QUERY, GITHUB_PULL_REQUESTS_QUERY } from "./github.constants";
 import { GitHubServiceConfig } from "./github.types";
 import { getGitHubAppToken } from "./github.utils";
-import { extractCoAuthors } from "@/app/api/github-history/util";
 
 export class GitHubService {
   private config: GitHubServiceConfig;
@@ -16,7 +15,6 @@ export class GitHubService {
       const timeoutId = setTimeout(() => controller.abort(), timeout);
 
       try {
-        console.log(`[GitHub] Attempt ${attempt}/${maxRetries} to ${url}`);
         const response = await fetch(url, { ...options, signal: controller.signal });
         clearTimeout(timeoutId);
 
@@ -96,24 +94,28 @@ export class GitHubService {
         const nodes = data.data?.search?.nodes || [];
         const pageInfo = data.data?.search?.pageInfo || { hasNextPage: false };
 
-        console.log(`[GitHub] Page ${page + 1}: Found ${nodes.length} Tina bot PRs`);
-
-        // Filter for co-authors
+        // Filter for co-authors by checking commit authors' GitHub login
         const filtered = nodes.filter((pr: any) => {
           if (!pr?.commits?.nodes) return false;
 
           for (const commit of pr.commits.nodes) {
-            const message = commit?.commit?.message || '';
-            if (message.toLowerCase().includes(targetLower)) return true;
+            const authors = commit?.commit?.authors?.nodes || [];
 
-            const coAuthors = extractCoAuthors(message);
-            for (const coAuthor of coAuthors) {
-              const email = coAuthor.email.toLowerCase();
-              const name = coAuthor.name.toLowerCase();
-              if (email.includes(targetLower) || name.includes(targetLower) ||
-                  email.includes('ulysses') || name.includes('ulysses')) {
+            for (const author of authors) {
+              const login = author?.user?.login?.toLowerCase() || '';
+              const name = (author?.name || '').toLowerCase();
+              const email = (author?.email || '').toLowerCase();
+
+              if (login === targetLower || login.includes(targetLower) ||
+                  email.includes(targetLower) || name.includes(targetLower)) {
                 return true;
               }
+            }
+
+            // Fallback: also check commit message for co-authored-by lines
+            const message = commit?.commit?.message || '';
+            if (message.toLowerCase().includes(targetLower)) {
+              return true;
             }
           }
           return false;
@@ -133,8 +135,6 @@ export class GitHubService {
   }
 
   async getPRsForUser(username: string): Promise<any[]> {
-    console.log(`[GitHub] Starting PR search for ${username}`);
-
     // Try multiple strategies in sequence
     const strategies = [
       () => this.searchTinaBotPRs(username),
@@ -147,7 +147,6 @@ export class GitHubService {
       try {
         const prs = await strategy();
         results = [...results, ...prs];
-        console.log(`[GitHub] Strategy found ${prs.length} PRs, total: ${results.length}`);
         
         // If we found enough PRs, we can stop
         if (results.length >= 20) break;
@@ -161,7 +160,6 @@ export class GitHubService {
       index === self.findIndex(p => p.number === pr.number)
     );
 
-    console.log(`[GitHub] Found ${uniquePRs.length} unique PRs for ${username}`);
     uniquePRs.sort((a, b) => new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime());
     return uniquePRs;
   }
@@ -175,7 +173,6 @@ export async function createGitHubService(): Promise<GitHubService> {
   let token: string;
   try {
     token = await getGitHubAppToken();
-    console.log(`[GitHub] Token obtained successfully`);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Failed to get GitHub App token";
     throw new Error(

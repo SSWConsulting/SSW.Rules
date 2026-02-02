@@ -170,6 +170,32 @@ export class GitHubService {
     return allPRs;
   }
 
+  async getRuleAuthors(ruleUri: string): Promise<string[]> {
+    const filePath = `rules/${ruleUri}/rule.md`;
+    const apiUrl = `https://api.github.com/repos/${this.config.owner}/${this.config.repo}/commits?path=${filePath}`;
+
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `bearer ${this.config.token}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`GitHub API request failed with status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      throw new Error("No commits found for the specified file path");
+    }
+
+    const chronological = [...data].reverse();
+    const authors = chronological.map((c: any) => c?.author?.login).filter((login: any): login is string => Boolean(login));
+    return authors;
+  }
+
   async getPRsForUser(username: string): Promise<any[]> {
     // Run both searches in parallel - we need results from both
     const [tinaBotPRs, directPRs] = await Promise.all([

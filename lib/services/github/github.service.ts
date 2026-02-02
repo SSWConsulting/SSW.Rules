@@ -170,6 +170,38 @@ export class GitHubService {
     return allPRs;
   }
 
+  async searchPullRequestsByAuthor(author: string, cursor?: string, direction: "after" | "before" = "after"): Promise<any> {
+    const query = `repo:${this.config.owner}/${this.config.repo} is:pr base:${this.config.branch} is:merged sort:updated-desc author:${author}`;
+    const variables: any = { query, first: 6 };
+    if (cursor) {
+      if (direction === "after") {
+        variables.after = cursor;
+      } else {
+        variables.before = cursor;
+      }
+    }
+
+    const response = await fetch(GITHUB_API_BASE_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `bearer ${this.config.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query: GITHUB_PULL_REQUESTS_QUERY, variables }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`GitHub API request failed with status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (data.errors) {
+      throw new Error(`GitHub GraphQL errors: ${JSON.stringify(data.errors)}`);
+    }
+
+    return data.data;
+  }
+
   async getRuleAuthors(ruleUri: string): Promise<string[]> {
     const filePath = `rules/${ruleUri}/rule.md`;
     const apiUrl = `https://api.github.com/repos/${this.config.owner}/${this.config.repo}/commits?path=${filePath}`;

@@ -23,6 +23,11 @@ on:
         required: false
         default: ""
         description: "Source branch name that triggered this build"
+      environment:
+        type: string
+        required: false
+        default: ""
+        description: "GitHub environment to use (defaults to tag value if not specified)"
     secrets:
       AZURE_CLIENT_ID:
         required: true
@@ -87,7 +92,7 @@ defaults:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.tag }}
+    environment: ${{ inputs.environment || inputs.tag }}
     permissions:
       actions: write # Required for cache monitoring
       contents: read # Required for checkout

@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
+import { unstable_cache } from "next/cache";
 import { createGitHubService } from "@/lib/services/github";
 import client from "@/tina/__generated__/client";
-
-export const dynamic = "force-dynamic";
 
 type RuleItem = { title: string; uri: string; lastModifiedAt: string | null };
 
 const ALLOWED_ORIGIN = "https://ssw.com.au";
+const CACHE_SECONDS = 60 * 60 * 2;
 
 function addCors(res: NextResponse) {
   res.headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
@@ -113,8 +113,17 @@ export async function GET(request: Request) {
       return addCors(NextResponse.json({ error: "Missing username" }, { status: 400 }));
     }
 
-    const items = await getRecentRulesForUser(username, limit);
-    return addCors(NextResponse.json({ username, limit, items }));
+    const getCachedResult = unstable_cache(
+      async (u: string, lim: number) => {
+        const items = await getRecentRulesForUser(u, lim);
+        return { items };
+      },
+      [`last-modified-rules-${username}-${limit}`],
+      { revalidate: CACHE_SECONDS }
+    );
+
+    const result = await getCachedResult(username, limit);
+    return addCors(NextResponse.json({ username, limit, ...result }));
   } catch (error) {
     return addCors(
       NextResponse.json(

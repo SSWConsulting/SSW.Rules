@@ -114,11 +114,13 @@ export const getTypographyComponents = (enableAnchors = false) => ({
     );
   },
   img: (props: any) => {
-    const src = props?.url || props?.src || "";
+    const src = props?.src || props?.url || "";
     // Apply basePath to local image URLs to ensure they work correctly with Next.js basePath configuration
     const adjustedSrc = withBasePath(src);
+    // Destructure to exclude non-standard properties
+    const { url, ...imgProps } = props;
     // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-    return <img {...props} src={adjustedSrc} />;
+    return <img {...imgProps} src={adjustedSrc} />;
   },
   li: (props) => <li {...props} />,
   mark: (props: any) => <mark {...props} />,

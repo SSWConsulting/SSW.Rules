@@ -194,6 +194,8 @@ const Rule: Collection = {
       searchable: false,
       ui: {
         component: ConditionalHiddenField,
+        textarea: true,
+        rows: 3,
       },
     },
     {

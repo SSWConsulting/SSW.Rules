@@ -4,6 +4,7 @@ import React from "react";
 import { Prism } from "tinacms/dist/rich-text/prism";
 import { toSlug } from "@/lib/utils";
 import { CustomLink } from "@/components/customLink";
+import { withBasePath } from "@/lib/withBasePath";
 
 // Helper function to extract text content from TinaCMS props structure
 const getTextContent = (props: any): string => {
@@ -111,6 +112,13 @@ export const getTypographyComponents = (enableAnchors = false) => ({
         {props.children}
       </CustomLink>
     );
+  },
+  img: (props: any) => {
+    const src = props?.url || props?.src || "";
+    // Apply basePath to local image URLs to ensure they work correctly with Next.js basePath configuration
+    const adjustedSrc = withBasePath(src);
+    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+    return <img {...props} src={adjustedSrc} />;
   },
   li: (props) => <li {...props} />,
   mark: (props: any) => <mark {...props} />,

@@ -3,6 +3,8 @@
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { BiChevronDown, BiRefresh, BiSearch } from "react-icons/bi";
+import { useCMS } from "tinacms";
+import BranchCreationModal from "@/components/BranchCreationModal";
 
 interface CategoryItem {
   title: string;
@@ -15,6 +17,7 @@ const PROTECTED_BRANCHES = ["main", "tina-migration-main-content"];
 
 export const CategorySelectorInput: React.FC<any> = (props) => {
   const { field, input, meta, form, tinaForm } = props;
+  const cms = useCMS();
   const [filter, setFilter] = useState("");
   const [allCategories, setAllCategories] = useState<CategoryItem[]>([]);
   const [filteredCategories, setFilteredCategories] = useState<CategoryItem[]>([]);
@@ -26,13 +29,39 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
   const [revalidating, setRevalidating] = useState(false);
   const [revalidateStatus, setRevalidateStatus] = useState<string | null>(null);
   const [refetching, setRefetching] = useState(false);
+  const [showBranchModal, setShowBranchModal] = useState(false);
 
   const selectedValue = useMemo(() => {
     return input.value || null;
   }, [input.value]);
 
-  // If creating a new rule, disable the selector
-  const isDisabled = isProtectedBranch === true;
+  // Handler for when user clicks on selector while on protected branch
+  const handleProtectedBranchClick = (e: React.MouseEvent) => {
+    if (isProtectedBranch) {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowBranchModal(true);
+    }
+  };
+
+  // Handler for when branch is created
+  const handleBranchCreated = (newBranchName: string) => {
+    // Update TinaCMS localStorage to switch branch
+    window.localStorage.setItem("tinacms-current-branch", JSON.stringify(newBranchName));
+    setShowBranchModal(false);
+    // Reload page to switch to new branch context
+    window.location.reload();
+  };
+
+  // Create branch function using TinaCMS API
+  const createBranch = async (data: { baseBranch: string; branchName: string }): Promise<string> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tinaApi = (cms as any).api?.tina;
+    if (!tinaApi?.createBranch) {
+      throw new Error("Branch creation is not available");
+    }
+    return await tinaApi.createBranch(data);
+  };
 
   // Determine current branch and fetch categories
   useEffect(() => {
@@ -60,14 +89,7 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
 
         setIsProtectedBranch(branchProtected);
 
-        // If branch is protected, don't fetch categories
-        if (branchProtected) {
-          setAllCategories([]);
-          setFilteredCategories([]);
-          return;
-        }
-
-        // Fetch categories via API route
+        // Fetch categories via API route (even on protected branches, so they're ready after branch switch)
         const categoriesRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/categories`, { method: "GET", cache: "no-store" });
         if (!categoriesRes.ok) {
           throw new Error(`HTTP ${categoriesRes.status}`);
@@ -181,14 +203,23 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
   return (
     <div className="relative z-1000">
       <input type="hidden" id={input.name} {...input} />
+
+      {/* Branch Creation Modal */}
+      <BranchCreationModal
+        isVisible={showBranchModal}
+        onClose={() => setShowBranchModal(false)}
+        onBranchCreated={handleBranchCreated}
+        createBranch={createBranch}
+        currentBranch={currentBranch || "main"}
+      />
+
       <Popover>
         {({ open }) => (
           <>
             <PopoverButton
-              disabled={isDisabled}
-              className={`text-sm h-11 px-4 justify-between w-full bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors flex items-center ${
-                isDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
-              }`}
+              disabled={false}
+              onClick={isProtectedBranch ? handleProtectedBranchClick : undefined}
+              className={`text-sm h-11 px-4 justify-between w-full bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors flex items-center hover:bg-gray-50`}
               title={selectedCategoryLabel || undefined}
             >
               <span className="truncate" title={selectedCategoryLabel || undefined}>
@@ -196,103 +227,105 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
               </span>
               <BiChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
             </PopoverButton>
-            <div className="absolute inset-x-0 -bottom-2 translate-y-full z-1000">
-              <Transition
-                enter="transition duration-150 ease-out"
-                enterFrom="transform opacity-0 -translate-y-2"
-                enterTo="transform opacity-100 translate-y-0"
-                leave="transition duration-75 ease-in"
-                leaveFrom="transform opacity-100 translate-y-0"
-                leaveTo="transform opacity-0 -translate-y-2"
-              >
-                <PopoverPanel className="relative overflow-hidden rounded-lg shadow-lg bg-white border border-gray-150 z-50">
-                  {({ close }) => (
-                    <div className="max-h-[70vh] flex flex-col w-full">
-                      {/* Search header */}
-                      <div className="bg-gray-50 p-2 border-b border-gray-100 z-10 shadow-sm">
-                        <div className="relative mb-2">
-                          <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                          <input
-                            type="text"
-                            className="bg-white text-sm rounded-sm border border-gray-100 shadow-inner py-1.5 pl-10 pr-3 w-full block placeholder-gray-400"
-                            disabled={isDisabled}
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              event.preventDefault();
+            {/* Only show popover panel when NOT on protected branch */}
+            {!isProtectedBranch && (
+              <div className="absolute inset-x-0 -bottom-2 translate-y-full z-1000">
+                <Transition
+                  enter="transition duration-150 ease-out"
+                  enterFrom="transform opacity-0 -translate-y-2"
+                  enterTo="transform opacity-100 translate-y-0"
+                  leave="transition duration-75 ease-in"
+                  leaveFrom="transform opacity-100 translate-y-0"
+                  leaveTo="transform opacity-0 -translate-y-2"
+                >
+                  <PopoverPanel className="relative overflow-hidden rounded-lg shadow-lg bg-white border border-gray-150 z-50">
+                    {({ close }) => (
+                      <div className="max-h-[70vh] flex flex-col w-full">
+                        {/* Search header */}
+                        <div className="bg-gray-50 p-2 border-b border-gray-100 z-10 shadow-sm">
+                          <div className="relative mb-2">
+                            <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input
+                              type="text"
+                              className="bg-white text-sm rounded-sm border border-gray-100 shadow-inner py-1.5 pl-10 pr-3 w-full block placeholder-gray-400"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                event.preventDefault();
+                              }}
+                              value={filter}
+                              onChange={(event) => {
+                                setFilter(event.target.value);
+                              }}
+                              placeholder="Enter category path, e.g. azure-devops/branch-policies"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              handleRevalidate();
                             }}
-                            value={filter}
-                            onChange={(event) => {
-                              setFilter(event.target.value);
-                            }}
-                            placeholder="Enter category path, e.g. azure-devops/branch-policies"
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            handleRevalidate();
-                          }}
-                          disabled={revalidating || isDisabled || !currentBranch}
-                          className="w-full text-xs px-3 py-1.5 bg-blue-500 text-white rounded-sm hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5"
-                          title="The category list may be showing stale data. If you're not seeing the latest categories, click here to refresh and fetch the most up-to-date list."
-                        >
-                          <BiRefresh className={`w-4.5 h-4.5 ${revalidating ? "animate-spin" : ""}`} />
-                          {revalidating ? "Refreshing..." : "Refresh Categories"}
-                        </button>
-                        {revalidateStatus && (
-                          <div
-                            className={`mt-1 text-xs px-2 py-1 rounded ${revalidateStatus.includes("Successfully") ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}
+                            disabled={revalidating || !currentBranch}
+                            className="w-full text-xs px-3 py-1.5 bg-blue-500 text-white rounded-sm hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5"
+                            title="The category list may be showing stale data. If you're not seeing the latest categories, click here to refresh and fetch the most up-to-date list."
                           >
-                            {revalidateStatus}
+                            <BiRefresh className={`w-4.5 h-4.5 ${revalidating ? "animate-spin" : ""}`} />
+                            {revalidating ? "Refreshing..." : "Refresh Categories"}
+                          </button>
+                          {revalidateStatus && (
+                            <div
+                              className={`mt-1 text-xs px-2 py-1 rounded ${revalidateStatus.includes("Successfully") ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}
+                            >
+                              {revalidateStatus}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Refetching indicator */}
+                        {refetching && <div className="p-2 bg-blue-50 border-b border-blue-200 text-xs text-blue-700 text-center">Refreshing categories...</div>}
+
+                        {/* Empty state */}
+                        {!loading && filteredCategories.length === 0 && <div className="p-4 text-center text-gray-400">No categories found</div>}
+
+                        {/* Category list */}
+                        {!loading && filteredCategories.length > 0 && (
+                          <div className={`flex-1 overflow-y-auto ${refetching ? "opacity-50 pointer-events-none" : ""}`}>
+                            {filteredCategories.map((category) => {
+                              const selectedRel = selectedValue ? selectedValue.replace(/^public\/uploads\/categories\//, "").replace(/^categories\//, "") : null;
+                              const isSelected = selectedRel === category._sys.relativePath;
+
+                              return (
+                                <button
+                                  key={`${category._sys.relativePath}`}
+                                  className={`w-full text-left py-2 px-3 hover:bg-gray-50 border-b border-gray-100 transition-colors block ${
+                                    isSelected ? "bg-blue-50 border-blue-200" : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleCategorySelect(category);
+                                    close();
+                                  }}
+                                  title={category.title}
+                                >
+                                  <div className="flex items-center justify-between w-full gap-3">
+                                    <div className="flex-1 min-w-0 overflow-hidden">
+                                      <div className="font-medium text-gray-900 text-sm leading-5 truncate" title={category.title}>
+                                        {category.title}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </button>
+                              );
+                            })}
                           </div>
                         )}
                       </div>
-
-                      {/* Refetching indicator */}
-                      {refetching && <div className="p-2 bg-blue-50 border-b border-blue-200 text-xs text-blue-700 text-center">Refreshing categories...</div>}
-
-                      {/* Empty state */}
-                      {!loading && !isDisabled && filteredCategories.length === 0 && <div className="p-4 text-center text-gray-400">No categories found</div>}
-
-                      {/* Category list */}
-                      {!loading && !isDisabled && filteredCategories.length > 0 && (
-                        <div className={`flex-1 overflow-y-auto ${refetching ? "opacity-50 pointer-events-none" : ""}`}>
-                          {filteredCategories.map((category) => {
-                            const selectedRel = selectedValue ? selectedValue.replace(/^public\/uploads\/categories\//, "").replace(/^categories\//, "") : null;
-                            const isSelected = selectedRel === category._sys.relativePath;
-
-                            return (
-                              <button
-                                key={`${category._sys.relativePath}`}
-                                className={`w-full text-left py-2 px-3 hover:bg-gray-50 border-b border-gray-100 transition-colors block ${
-                                  isSelected ? "bg-blue-50 border-blue-200" : ""
-                                }`}
-                                onClick={() => {
-                                  handleCategorySelect(category);
-                                  close();
-                                }}
-                                title={category.title}
-                              >
-                                <div className="flex items-center justify-between w-full gap-3">
-                                  <div className="flex-1 min-w-0 overflow-hidden">
-                                    <div className="font-medium text-gray-900 text-sm leading-5 truncate" title={category.title}>
-                                      {category.title}
-                                    </div>
-                                  </div>
-                                </div>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </PopoverPanel>
-              </Transition>
-            </div>
-            {isDisabled && <div className="mt-1 text-xs text-gray-400">{"Switch to a non-protected branch to enable category selection."}</div>}
+                    )}
+                  </PopoverPanel>
+                </Transition>
+              </div>
+            )}
+            {isProtectedBranch && <div className="mt-1 text-xs text-blue-600">Click to create a new branch for editing categories.</div>}
           </>
         )}
       </Popover>

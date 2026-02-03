@@ -12,10 +12,12 @@ export function selectLatestRuleFilesByPath(files: Array<{ path: string; mergedA
         
         const existing = ruleMap.get(normalizedPath);
         
-        // If no existing entry, or if new entry has later mergedAt
-        if (!existing || 
-            (file.mergedAt && existing.mergedAt && 
-             new Date(file.mergedAt) > new Date(existing.mergedAt))) {
+        // If no existing entry, or if new entry should be preferred based on mergedAt
+        if (
+            !existing || // no existing entry
+            (file.mergedAt && !existing.mergedAt) || // prefer dated over undated
+            (file.mergedAt && existing.mergedAt && new Date(file.mergedAt) > new Date(existing.mergedAt)) // later date wins
+        ) {
             ruleMap.set(normalizedPath, file);
         }
     });

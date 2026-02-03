@@ -1,5 +1,5 @@
 import { GITHUB_API_BASE_URL, GITHUB_PULL_REQUESTS_QUERY, GITHUB_TINA_BOT_PRS_QUERY } from "./github.constants";
-import { GitHubServiceConfig } from "./github.types";
+import { GitHubServiceConfig, GitHubSearchResponse } from "./github.types";
 import { getGitHubAppToken } from "./github.utils";
 
 export class GitHubService {
@@ -116,9 +116,10 @@ export class GitHubService {
     const allPRs: any[] = [];
     const seenPRNumbers = new Set<number>();
     let cursor: string | null = null;
+    const maxPages = 500;
 
-    // Keep fetching until we find enough PRs for this user or run out of pages
-    while (true) {
+    // Keep fetching until we find enough PRs for this user or run out of pages (limit to 500 pages to avoid infinite loops)
+    for (let page = 0; page < maxPages; page++) {
       try {
         const { nodes, pageInfo } = await this.fetchTinaBotPage(cursor);
 
@@ -135,8 +136,14 @@ export class GitHubService {
               const name = (author?.name || '').toLowerCase();
               const email = (author?.email || '').toLowerCase();
 
-              if (login === targetLower || login.includes(targetLower) ||
-                  email.includes(targetLower) || name.includes(targetLower)) {
+              const loginMatches = login === targetLower;
+              const atIndex = email.indexOf('@');
+              const emailLocalPart = atIndex > 0 ? email.substring(0, atIndex) : email;
+              const emailMatches = email === targetLower || emailLocalPart === targetLower;
+              const nameTokens = name.split(/\s+/).filter(Boolean);
+              const nameMatches = nameTokens.includes(targetLower);
+
+              if (loginMatches || emailMatches || nameMatches) {
                 matched = true;
                 break;
               }
@@ -162,7 +169,7 @@ export class GitHubService {
         cursor = pageInfo.endCursor;
 
       } catch (error) {
-        console.error(`[GitHub] Error fetching Tina bot PRs:`, error);
+        console.error(`[GitHub] Error fetching Tina bot PRs on page ${page}:`, error);
         break;
       }
     }
@@ -170,9 +177,9 @@ export class GitHubService {
     return allPRs;
   }
 
-  async searchPullRequestsByAuthor(author: string, cursor?: string, direction: "after" | "before" = "after"): Promise<any> {
+  async searchPullRequestsByAuthor(author: string, cursor?: string, direction: "after" | "before" = "after"): Promise<GitHubSearchResponse> {
     const query = `repo:${this.config.owner}/${this.config.repo} is:pr base:${this.config.branch} is:merged sort:updated-desc author:${author}`;
-    const variables: any = { query, first: 6 };
+    const variables: { query: string; first: number; after?: string; before?: string } = { query, first: 6 };
     if (cursor) {
       if (direction === "after") {
         variables.after = cursor;
@@ -244,10 +251,15 @@ export class GitHubService {
     // Combine results
     const allPRs = [...tinaBotPRs, ...directPRs];
 
-    // Remove duplicates
-    const uniquePRs = allPRs.filter((pr, index, self) =>
-      index === self.findIndex(p => p.number === pr.number)
-    );
+     // Remove duplicates (keep first occurrence of each PR number)
+    const seenNumbers = new Set<number>();
+    const uniquePRs: any[] = [];
+    for (const pr of allPRs) {
+      if (!seenNumbers.has(pr.number)) {
+        seenNumbers.add(pr.number);
+        uniquePRs.push(pr);
+      }
+    }
 
     // Sort by merge date (newest first)
     uniquePRs.sort((a, b) => new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime());

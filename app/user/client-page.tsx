@@ -91,13 +91,15 @@ export default function UserRulesClientPage({ ruleCount }) {
         const prSearchData = await res.json();
         const resultList = prSearchData.search.nodes;
 
-        const rules = resultList
-          .flatMap((pr: any) => pr.files.nodes)
-          .filter((file: any) => file.path.endsWith("rule.mdx") || file.path.endsWith("rule.md"))
-          .map((file: any) => ({
-            ...file,
-            path: file.path.endsWith("rule.md") ? file.path.slice(0, -3) + ".mdx" : file.path,
-          }));
+        const rules = resultList.flatMap((pr: any) =>
+          pr.files.nodes
+            .filter((file: any) => file.path.endsWith("rule.mdx") || file.path.endsWith("rule.md"))
+            .map((file: any) => ({
+              ...file,
+              path: file.path.endsWith("rule.md") ? file.path.slice(0, -3) + ".mdx" : file.path,
+              mergedAt: pr.mergedAt,
+            }))
+        );
 
         allRulesFromGithub.push(...rules);
 

@@ -99,7 +99,10 @@ async function getRecentRulesForUser(username: string, limit: number): Promise<R
       })
       .slice(0, limit);
   } catch (error) {
-    return [];
+    console.error("Failed to fetch rule metadata from TinaCMS in getRecentRulesForUser:", error);
+    throw error instanceof Error
+      ? error
+      : new Error("Failed to fetch rule metadata from TinaCMS");
   }
 }
 

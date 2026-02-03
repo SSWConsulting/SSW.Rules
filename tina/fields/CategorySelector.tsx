@@ -217,7 +217,6 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
         {({ open }) => (
           <>
             <PopoverButton
-              disabled={false}
               onClick={isProtectedBranch ? handleProtectedBranchClick : undefined}
               className={`text-sm h-11 px-4 justify-between w-full bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors flex items-center hover:bg-gray-50`}
               title={selectedCategoryLabel || undefined}
@@ -227,8 +226,8 @@ export const CategorySelectorInput: React.FC<any> = (props) => {
               </span>
               <BiChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
             </PopoverButton>
-            {/* Only show popover panel when NOT on protected branch */}
-            {!isProtectedBranch && (
+            {/* Only show popover panel when explicitly NOT on protected branch (avoid flash while checking) */}
+            {isProtectedBranch === false && (
               <div className="absolute inset-x-0 -bottom-2 translate-y-full z-1000">
                 <Transition
                   enter="transition duration-150 ease-out"

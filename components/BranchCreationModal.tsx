@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Popup from "./Popup";
 import Spinner from "./Spinner";
 
@@ -22,6 +22,15 @@ const BranchCreationModal: React.FC<BranchCreationModalProps> = ({
   const [branchName, setBranchName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Reset state when modal opens
+  useEffect(() => {
+    if (isVisible) {
+      setBranchName("");
+      setError(null);
+      setIsCreating(false);
+    }
+  }, [isVisible]);
 
   const formatBranchName = (str: string): string => {
     // Remove invalid characters and convert to lowercase

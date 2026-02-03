@@ -6,7 +6,6 @@ import { getSanitizedBasePath } from "@/lib/withBasePath";
 import ruleToCategoryIndex from "@/rule-to-categories.json";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
-import * as appInsights from "applicationinsights";
 import ClientFallbackPage from "./ClientFallbackPage";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
 
@@ -67,17 +66,6 @@ const getCategoryData = async (filename: string) => {
     };
   } catch (error) {
     console.error(`[getCategoryData] failed for filename="${filename}":`, error);
-
-    // Track category fetch error
-    appInsights.defaultClient?.trackException({
-      exception: error instanceof Error ? error : new Error(String(error)),
-      properties: {
-        context: "getCategoryData",
-        filename,
-        fullPath: fullPath || "unknown"
-      }
-    });
-
     return null;
   }
 };
@@ -116,16 +104,6 @@ const getRuleData = async (filename: string) => {
         brokenPaths.push("unknown path");
       }
 
-      // Track broken references
-      appInsights.defaultClient?.trackEvent({
-        name: "RuleBrokenReferencesDetected",
-        properties: {
-          filename,
-          brokenPaths: brokenPaths.join(", "),
-          brokenCount: brokenPaths.length
-        }
-      });
-
       return {
         data: {
           ...basicProps.data,
@@ -144,16 +122,6 @@ const getRuleData = async (filename: string) => {
     }
   } catch (error) {
     console.error(`[getRuleData] failed for filename="${filename}":`, error);
-
-    // Track rule fetch error
-    appInsights.defaultClient?.trackException({
-      exception: error instanceof Error ? error : new Error(String(error)),
-      properties: {
-        context: "getRuleData",
-        filename
-      }
-    });
-
     return null;
   }
 };

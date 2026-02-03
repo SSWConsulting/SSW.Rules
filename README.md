@@ -1,10 +1,11 @@
-# SSW.Rules.Tina.Nextjs.POC
+# SSW.Rules
 
-[![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square)](https://gitmoji.dev) [![Scheduled CodeAuditor test](https://github.com/SSWConsulting/SSW.Rules.Tina.Nextjs.POC/actions/workflows/codeauditor-test.yml/badge.svg?event=schedule)](https://github.com/SSWConsulting/SSW.Rules.Tina.Nextjs.POC/actions/workflows/codeauditor-test.yml)
+[![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square)](https://gitmoji.dev) [![Scheduled CodeAuditor test](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/codeauditor-test.yml/badge.svg?event=schedule)](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/codeauditor-test.yml)
 
-A POC that will validate the compatibility between Rules and Tina – using Next.js.  
+This is a Next.js + TinaCMS website pulling data from: 
 
-The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWConsulting/SSW.Rules.Content)
+* [SSW Rules Content Repo 📜](https://github.com/SSWConsulting/SSW.Rules.Content)
+
 ## Architecture Diagram
 
 ![architecture diagram](./docs/architecture-diagram-ssw-rules.drawio.png)
@@ -13,83 +14,83 @@ The site pulls data from [SSW Rules Content Repo 📜](https://github.com/SSWCon
 ## Getting Started
 
 ### Required Tools
-- Node.js (version defined in .nvmrc) – recommended to use nvm
+- Node.js (version defined in [.nvmrc](.nvmrc)) – recommended to use nvm
 - [corepack](https://github.com/nodejs/corepack) (run corepack enable to manage correct pnpm version)
 - [pnpm](https://pnpm.io/installation) package manager
+- [python](https://www.python.org/downloads/)
 
 
 ### F5 experience
 
 1. Clone this repo
-2. Clone [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content) and switch to the `tina-migration-dev-content` branch
+2. Clone [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content)
 
 3. Place both repos in the same parent directory e.g.
 ```
-📁 SSW.Rules/
+📁 SSW-dev/
 ├── 📁 SSW.Rules.Content/
-└── 📁 SSW.Rules.Tina.Nextjs.POC/
+└── 📁 SSW.Rules/ <--- This repo
 ```
 
-4. Create a `.env` file based off `.env.example` in the root of this repo - get the values from Keeper (SSW.Rules.PoC Environment Variables)
+4. Create a `.env` file based off `.env.example` in the root of this repo - get the values from Keeper (SSW.Rules Environment Variables)
 
 5. Run `pnpm install` to install packages
 
-6. Run `pnpm dev` to start the development server
+6. Install `pyyaml` python package: `py -3 -m pip install pyyaml`
+
+7. Run `pnpm prepare:content` to generate required mapping JSON files (they are gitignored)
+
+8. Run `pnpm dev` to start the development server
 
 
 ### Syncing and Updating Content
+
 To test changes to MDX rules:
 
-1. Go to the `tina-migration-dev-content` branch of SSW.Rules.Content
+1. Go to your branch in [SSW.Rules.Content](https://github.com/SSWConsulting/SSW.Rules.content)
 
 2. Modify the rule MDX as needed
 
-3. Run `pnpm dev` in this project to see the changes reflected locally
+3. If there are any changes to categories, re-run `pnpm prepare:content`
+
+4. Run `pnpm dev` in this project to start SSW.Rules locally
+
+5. Navigate to http://localhost:3000/rules/ to see your changes
+
+> Note: `pnpm dev` does not track changes in SSW.Rules.Content, therefore, you will need to re-run the command after you make changes
 
 ### Branches
+
 - Always create a new branch for your PBIs 
 - Always delete your branch once your PR has been merged
 - To create a new **content branch** (in `SSW.Rules.Content`), follow the setup steps in the [Wiki](https://github.com/SSWConsulting/SSW.Rules.Content/wiki/How-to-Recreate-the-tina-main-Branch-(If-Deleted))
   
-
 ## Builds & Deployment
 
-### SSW.Rules.Tina.Nextjs.POC
-- Changes made to [SSW.Rules.Tina.Nextjs.POC]() trigger builds that deploy to Azure
+### Content Changes (SSW.Rules.Content)
 
-### SSW.Rules.Content
-- Changes made to [SSW.Rules.Content](http://github.com/SSWConsulting/SSW.Rules.Content) (i.e. rule changes) trigger builds that deploy:
-  - **main** to the **staging** - https://ssw-rules-tina-staging-c5bwbjc4a8d2g8gm.australiaeast-01.azurewebsites.net/
-  - latest **release/xx** to the **production** site - https://www.ssw.com.au/rules-beta/
+Changes made in **SSW.Rules.Content** (e.g. rule MDX, categories, images) will **go live after the PR is merged**.
 
+🎥 Watch the video: [TinaCMS for GitHub - The SSW Rules Migration | Jake Bayliss | SSW Consulting](https://www.youtube.com/watch?v=lqqduKKhH_o)
 
+---
 
+### Code Changes (SSW.Rules)
 
+Code changes made to **SSW.Rules** are deployed as follows:
 
-## POC Progress Checklist
-
-- [x] Content editing UI working with Tina
-- [x] Deployment pipeline for PoC website
-- [x] Migration scripts for rule content (Markdown → MDX)
-- [x] Rule-to-category JSON generation
-- [x] Category URI-title mapping
-- [x] Automated content processing via GitHub Actions
-- [x] Media content management
-- [x] Basic component creation (e.g. Email, YouTube)
-- [x] Algolia search integration
-- [x] Editorial workflow enabled
-- [x] Vercel deployment setup
-- [x] Azure deployment setup
-- [x] Full deployment with all rules
-- [x] Migration script all rules md to mdx
-- [ ] Preview deployment on Azure
+- **main** deploys to **staging**: https://ssw-rules-tina-staging-c5bwbjc4a8d2g8gm.australiaeast-01.azurewebsites.net/rules
+- To deploy to **production**:
+  - Create a `release/xx` branch from the current `main` commit you want to ship
+  - Manually run the production deployment workflow in [GitHub Actions](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-and-deploy.yml)
+  - **production**: https://www.ssw.com.au/rules
 
 
 ---
 
 ### Python Scripts
 
-#### In the PoC Repository
+#### In this Repository (Website)
 
 - **`build-rule-category-map.py`**  
   Generates two JSON files:
@@ -124,7 +125,9 @@ To test changes to MDX rules:
 
 ### 📁 Public Content Folder
 
-**We moved all rule content (including .mdx files and images) into the public/ folder. Check this PBI for more details: [Media - Implement Media Management Option C](https://github.com/SSWConsulting/SSW.Rules/issues/1775)**
+**All rule content (including .mdx files and images) live into the public/ folder.**
+
+🎥 [The 3 options for storing markdown in GitHub for TinaCMS](https://www.youtube.com/watch?v=JX90jbgAvRw&t=7s)
 
 ```
 public/
@@ -137,9 +140,8 @@ public/
             ├── rule.mdx
             └── img.png
 ```
-🎥 [The 3 options for storing markdown in GitHub for TinaCMS](https://www.youtube.com/watch?v=JX90jbgAvRw&t=7s)
----
 
+---
 
 ### 📝 Adding Editorial Workflow
 We've integrated TinaCMS with an editorial workflow to support content editing in a more structured way. If you're unfamiliar with how editorial workflows work in Tina, please refer to the official documentation:

@@ -9,6 +9,8 @@ import BrokenReferenceBanner from "@/components/BrokenReferenceBanner";
 import CategoriesCard from "@/components/CategoriesCard";
 import Discussion from "@/components/Discussion";
 import HelpCard from "@/components/HelpCard";
+import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
+import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import GitHubMetadata from "@/components/last-updated-by";
 import RelatedRulesCard from "@/components/RelatedRulesCard";
 import RuleActionButtons from "@/components/RuleActionButtons";
@@ -32,11 +34,14 @@ export type ServerRulePagePropsWithTinaProps = {
 export default function ServerRulePage({ serverRulePageProps, tinaProps }: ServerRulePagePropsWithTinaProps) {
   const { data } = tinaProps;
   const rule = data?.rule;
+  const { isAdmin: isAdminPage, isLoading: isAdminLoading } = useIsAdminPage();
 
   const { ruleCategoriesMapping, sanitizedBasePath, brokenReferences } = serverRulePageProps;
 
   const primaryCategory = ruleCategoriesMapping?.[0];
   const breadcrumbCategories = primaryCategory ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }] : undefined;
+
+  useAdminBackBlock({ isAdminPage });
 
   return (
     <>

@@ -56,17 +56,17 @@ const Rule: Collection = {
     {
       type: "string",
       name: "uri",
-      label: "URI",
-      description: "The URI of the rule e.g. keep-your-urls-clean",
+      label: "Slug",
+      description: "The slug for the rule e.g. keep-your-urls-clean",
       required: true,
       searchable: true,
       ui: {
         component: wrapFieldsWithMeta((props) => <ReadonlyUriInput {...props} />),
         validate: (value: any) => {
           const v = (typeof value === "string" ? value : "").trim();
-          if (!v) return "URI is required";
-          if (/[A-Z]/.test(v)) return "URI cannot contain uppercase letters";
-          if (/\s/.test(v)) return "URI cannot contain spaces";
+          if (!v) return "Slug is required";
+          if (/[A-Z]/.test(v)) return "Slug cannot contain uppercase letters";
+          if (/\s/.test(v)) return "Slug cannot contain spaces";
         },
       },
     },
@@ -99,6 +99,7 @@ const Rule: Collection = {
       name: "sidebarVideo",
       label: "Sidebar Video",
       description: "Add Sidebar Video here. e.g. YouTube Shorts",
+      searchable: false,
       ui: {
         component: ConditionalHiddenField,
       },

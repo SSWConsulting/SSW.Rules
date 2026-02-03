@@ -6,6 +6,14 @@ on:
       tag:
         type: string
         required: true
+      acr_name:
+        type: string
+        required: true
+        description: "Azure Container Registry name (without .azurecr.io)"
+      image_name:
+        type: string
+        required: true
+        description: "Docker image name"
       tina_branch:
         type: string
         required: false
@@ -15,6 +23,11 @@ on:
         required: false
         default: ""
         description: "Source branch name that triggered this build"
+      environment:
+        type: string
+        required: false
+        default: ""
+        description: "GitHub environment to use (defaults to tag value if not specified)"
     secrets:
       AZURE_CLIENT_ID:
         required: true
@@ -79,7 +92,7 @@ defaults:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.tag }}
+    environment: ${{ inputs.environment || inputs.tag }}
     permissions:
       actions: write # Required for cache monitoring
       contents: read # Required for checkout
@@ -121,8 +134,8 @@ jobs:
           echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
           echo "Tina branch: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH || 'Default' }}"
           echo "Environment tag: ${{ inputs.tag }}"
-          echo "Registry: ${{ vars.registry_name }}"
-          echo "Image: ${{ vars.IMAGE_NAME }}"
+          echo "Registry: ${{ inputs.acr_name }}"
+          echo "Image: ${{ inputs.image_name }}"
           echo "Build timestamp: ${{ env.BUILD_TIMESTAMP }}"
           echo "Build version: ${{ env.VERSION_DEPLOYED }}"
           echo "Docker cache: DISABLED"
@@ -225,7 +238,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Login to ACR
-        run: az acr login --name ${{ vars.registry_name }}
+        run: az acr login --name ${{ inputs.acr_name }}
 
       # ────────────────────────────── DOCKER BUILD (NO CACHE) ──────────────
       - name: Set up Docker Buildx (no cache)
@@ -250,7 +263,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ vars.registry_name }}.azurecr.io/${{ vars.image_name }}
+          images: ${{ inputs.acr_name }}.azurecr.io/${{ inputs.image_name }}
           tags: |
             type=raw,value=${{ inputs.tag }}
           labels: |
@@ -497,3 +510,37 @@ jobs:
           echo "  Deployment URL: ${{ env.DEPLOYMENT_URL }}"
           echo "  Commit: ${{ env.COMMIT_HASH }}"
           echo "  Cache: DISABLED AND VERIFIED"
+
+      # ────────────────────────────── GENERATE SEARCH INDEX ─────────────────
+      - name: Checkout SSW.Rules.Content for search index
+        uses: actions/checkout@v4
+        with:
+          repository: SSWConsulting/SSW.Rules.Content
+          ref: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          path: content
+          fetch-depth: 0
+          lfs: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate search index with content
+        env:
+          LOCAL_CONTENT_RELATIVE_PATH: ../content
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+          TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
+          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+          NEXT_PUBLIC_TINA_BRANCH: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          NEXT_PUBLIC_GITHUB_ORG: ${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
+          NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
+        run: pnpm tinacms search-index

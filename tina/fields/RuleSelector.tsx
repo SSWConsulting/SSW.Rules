@@ -148,7 +148,7 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
               </span>
               <BiChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
             </PopoverButton>
-            <div className="absolute inset-x-0 -bottom-2 translate-y-full z-1000">
+            <div className="absolute left-0 right-0 -bottom-2 translate-y-full z-1000 min-w-[600px]">
               <Transition
                 enter="transition duration-150 ease-out"
                 enterFrom="transform opacity-0 -translate-y-2"
@@ -157,7 +157,7 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
                 leaveFrom="transform opacity-100 translate-y-0"
                 leaveTo="transform opacity-0 -translate-y-2"
               >
-                <PopoverPanel className="relative overflow-hidden rounded-lg shadow-lg bg-white border border-gray-150 z-50">
+                <PopoverPanel className="relative overflow-hidden rounded-lg shadow-lg bg-white border border-gray-150 z-50 min-w-full">
                   {({ close }) => (
                     <div className="max-h-[70vh] flex flex-col w-full">
                       {/* Search header */}
@@ -205,11 +205,11 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
                                 title={rule.title || rule.uri}
                               >
                                 <div className="flex items-center justify-between w-full gap-3">
-                                  <div className="flex-1 min-w-0 overflow-hidden">
-                                    <div className="font-medium text-gray-900 text-sm leading-5 truncate" title={rule.title || rule.uri}>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-medium text-gray-900 text-sm leading-5" title={rule.title || rule.uri}>
                                       {rule.title || rule.uri}
                                     </div>
-                                    <div className="text-xs text-gray-500 leading-4 truncate">{rule.uri}</div>
+                                    <div className="text-xs text-gray-500 leading-4">{rule.uri}</div>
                                   </div>
                                 </div>
                               </button>

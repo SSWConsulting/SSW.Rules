@@ -17,7 +17,6 @@ interface AuthorResponse {
 }
 
 const MIN_SEARCH_LENGTH = 2;
-const INITIAL_PEOPLE_COUNT = 30;
 
 interface AuthorSelectorProps {
   input: any;
@@ -107,17 +106,7 @@ export const AuthorSelector: React.FC<AuthorSelectorProps> = ({ input, showRefre
     const isSearch = q.length >= MIN_SEARCH_LENGTH;
 
     if (!isSearch) {
-      // Show first N people alphabetically when no search query
-      // Ensure selected person is always included if they exist
-      const selectedAuthor = selectedSlug ? allAuthors.find((p) => p.slug === selectedSlug) : null;
-      const sorted = [...allAuthors].slice(0, INITIAL_PEOPLE_COUNT);
-
-      if (selectedAuthor && !sorted.find((p) => p.slug === selectedSlug)) {
-        sorted.unshift(selectedAuthor);
-        sorted.pop();
-      }
-
-      setFilteredAuthors(sorted);
+      setFilteredAuthors([...allAuthors]);
       return;
     }
 

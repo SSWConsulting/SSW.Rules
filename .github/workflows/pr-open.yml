@@ -71,6 +71,7 @@ jobs:
       acr_name: ${{ needs.infrastructure.outputs.acrName }}
       image_name: ssw-rules
       source_branch: ${{ github.head_ref }}
+      tina_branch: ${{ github.head_ref }}
       environment: staging
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}

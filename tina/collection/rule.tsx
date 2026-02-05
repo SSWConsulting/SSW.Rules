@@ -49,8 +49,7 @@ const Rule: Collection = {
       type: "string",
       label: "Title",
       name: "title",
-      description:
-        "The title should start with \"Do you\" and end with a question mark.",
+      description: 'The title should start with "Do you" and end with a question mark.',
       isTitle: true,
       required: true,
       searchable: true,
@@ -194,6 +193,7 @@ const Rule: Collection = {
       searchable: false,
       ui: {
         component: ConditionalHiddenField,
+        ...({ textarea: true, rows: 3 } as any),
       },
     },
     {

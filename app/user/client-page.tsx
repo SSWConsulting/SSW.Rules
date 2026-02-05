@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import { selectLatestRuleFilesByPath } from "@/utils/selectLatestRuleFilesByPath";
-import Spinner from "@/components/Spinner";
+import { useEffect, useMemo, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import RuleList from "@/components/rule-list";
+import Spinner from "@/components/Spinner";
 import Pagination from "@/components/ui/pagination";
+import { selectLatestRuleFilesByPath } from "@/utils/selectLatestRuleFilesByPath";
 
 const Tabs = {
   MODIFIED: "modified",
@@ -42,20 +42,24 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [itemsPerPageAuthored, setItemsPerPageAuthored] = useState(20);
   const FETCH_PAGE_SIZE = 10;
 
-  const resolveAuthor = async (): Promise<string> => {
+  const resolveAuthor = async (): Promise<{ slug: string; fullName: string }> => {
     const res = await fetch(`./api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);
     if (!res.ok) throw new Error("Failed to resolve author");
     const profile = await res.json();
     setAuthor(profile);
-    return profile.fullName as string;
+    return {
+      slug: profile.slug || profile.fullName?.toLowerCase().replace(/\s+/g, "-") || "",
+      fullName: profile.fullName || "",
+    };
   };
 
   useEffect(() => {
     (async () => {
       if (queryStringRulesAuthor) {
-        const resolvedAuthorName = await resolveAuthor();
+        const resolvedAuthor = await resolveAuthor();
+        const authorSlug = resolvedAuthor.slug;
         // Load BOTH in parallel for maximum speed
-        await Promise.all([loadAllAuthoredRules(resolvedAuthorName as string), loadAllLastModifiedRules()]);
+        await Promise.all([loadAllAuthoredRules(authorSlug), loadAllLastModifiedRules()]);
       }
     })();
   }, [queryStringRulesAuthor]);
@@ -148,7 +152,7 @@ export default function UserRulesClientPage({ ruleCount }) {
             body: fullRule.body,
             lastUpdated: fullRule.lastUpdated,
             lastUpdatedBy: fullRule.lastUpdatedBy,
-            authors: fullRule.authors?.map((a: any) => (a && a.title ? { title: a.title } : null)).filter((a: any): a is { title: string } => a !== null) || [],
+            authors: Array.isArray(fullRule.authors) ? fullRule.authors.map((a: any) => a?.author).filter(Boolean) : [],
           }));
 
         // Sort by date (most recent first)
@@ -170,7 +174,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   };
 
   // Function to load ALL authored rules (not just one page) - WITH BATCHING
-  const loadAllAuthoredRules = async (authorName: string) => {
+  const loadAllAuthoredRules = async (authorSlug: string) => {
     setLoadingAuthored(true);
     setAuthoredRules([]);
     let cursor: string | null = null;
@@ -186,7 +190,7 @@ export default function UserRulesClientPage({ ruleCount }) {
         pageCount++;
 
         const params = new URLSearchParams();
-        params.set("authorTitle", authorName || "");
+        params.set("authorSlug", authorSlug || "");
         params.set("first", FETCH_PAGE_SIZE.toString());
         if (cursor) params.set("after", cursor);
 
@@ -204,7 +208,7 @@ export default function UserRulesClientPage({ ruleCount }) {
           title: fullRule.title,
           uri: fullRule.uri,
           body: fullRule.body,
-          authors: fullRule.authors?.map((a: any) => (a && a.title ? { title: a.title } : null)).filter((a: any): a is { title: string } => a !== null) || [],
+          authors: Array.isArray(fullRule.authors) ? fullRule.authors.map((a: any) => a?.author).filter(Boolean) : [],
           lastUpdated: fullRule.lastUpdated,
           lastUpdatedBy: fullRule.lastUpdatedBy,
         }));

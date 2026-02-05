@@ -3,6 +3,7 @@ import { Collection, useCMS, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
+import { AuthorSelector } from "../fields/AuthorSelector";
 import { CategorySelectorInput } from "../fields/CategorySelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
@@ -49,8 +50,7 @@ const Rule: Collection = {
       type: "string",
       label: "Title",
       name: "title",
-      description:
-        "The title should start with \"Do you\" and end with a question mark.",
+      description: 'The title should start with "Do you" and end with a question mark.',
       isTitle: true,
       required: true,
       searchable: true,
@@ -110,32 +110,29 @@ const Rule: Collection = {
       type: "object",
       name: "authors",
       label: "Authors",
-      description: "The list of contributors for this rule.",
+      description: "The list of contributors for this rule. Select from the People index.",
       list: true,
       searchable: false,
       ui: {
-        itemProps: (item) => ({ label: "👤 " + (item?.title ?? "Author") }),
-        defaultItem: {
-          title: "Bob Northwind",
-          url: "https://ssw.com.au/people/bob-northwind",
+        itemProps: (item) => {
+          const slug = item?.author;
+          if (!slug) return { label: "Select an Author" };
+          const displayName = slug
+            .split("-")
+            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+          return { label: displayName };
         },
         component: ConditionalHiddenField,
       },
       fields: [
         {
           type: "string",
-          name: "title",
-          description: "The full name of the contributor, as it should appear on the rule.",
-          label: "Name",
+          name: "author",
+          label: "Author",
           ui: {
-            component: ConditionalHiddenField,
+            component: wrapFieldsWithMeta((props) => <AuthorSelector {...props} />),
           },
-        },
-        {
-          type: "string",
-          description: "The SSW People link for the contributor - e.g. https://ssw.com.au/people/bob-northwind",
-          name: "url",
-          label: "Url",
         },
       ],
     },

@@ -42,3 +42,5 @@ category-uri-title-map.json
 rule-to-categories.json
 orphaned_rules.json
 redirects.json
+people-index.json
+public/uploads/people/

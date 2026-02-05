@@ -28,6 +28,11 @@ on:
         required: false
         default: ""
         description: "GitHub environment to use (defaults to tag value if not specified)"
+      ref:
+        type: string
+        required: false
+        default: ""
+        description: "Git ref to checkout (defaults to github.sha if not specified)"
     secrets:
       AZURE_CLIENT_ID:
         required: true
@@ -188,8 +193,15 @@ jobs:
       - name: Checkout main repo
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.ref || github.sha }}
           fetch-depth: 0
           lfs: true
+
+      - name: Update commit hash from checkout
+        run: |
+          COMMIT_HASH=$(git rev-parse --short=7 HEAD)
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+          echo "Commit hash (from checkout): $COMMIT_HASH"
 
       - name: Resolve SSW.Rules.Content branch
         id: resolve_content_branch

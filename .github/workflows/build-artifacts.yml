@@ -84,6 +84,9 @@ on:
       deployment_url:
         description: "Deployment URL"
         value: ${{ jobs.build-and-push.outputs.deployment_url }}
+      resolved_tina_branch:
+        description: "Resolved Tina content branch (with fallback to main)"
+        value: ${{ jobs.build-and-push.outputs.resolved_tina_branch }}
 
 defaults:
   run:
@@ -105,6 +108,7 @@ jobs:
       commit_hash: ${{ env.COMMIT_HASH }}
       version_deployed: ${{ env.VERSION_DEPLOYED }}
       deployment_url: ${{ env.DEPLOYMENT_URL }}
+      resolved_tina_branch: ${{ steps.resolve_tina.outputs.resolved_tina_branch }}
     steps:
       # ────────────────────────────── BUILD INFO ─────────────────────────────
       - name: Generate build information
@@ -132,7 +136,7 @@ jobs:
         run: |
           echo "Starting NO-CACHE build process"
           echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
-          echo "Tina branch: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH || 'Default' }}"
+          echo "Tina branch (resolved): ${{ steps.resolve_tina.outputs.resolved_tina_branch }}"
           echo "Environment tag: ${{ inputs.tag }}"
           echo "Registry: ${{ inputs.acr_name }}"
           echo "Image: ${{ inputs.image_name }}"
@@ -191,11 +195,41 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      - name: Resolve Tina content branch (fallback to main)
+        id: resolve_tina
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          DESIRED="${{ inputs.tina_branch }}"
+          if [ -z "$DESIRED" ]; then
+            DESIRED="${{ vars.NEXT_PUBLIC_TINA_BRANCH }}"
+          fi
+          if [ -z "$DESIRED" ]; then
+            DESIRED="main"
+          fi
+
+          REPO_URL="https://github.com/SSWConsulting/SSW.Rules.Content.git"
+
+          echo "Desired content branch: $DESIRED"
+
+          if git ls-remote --heads "$REPO_URL" "$DESIRED" | grep -q .; then
+            RESOLVED="$DESIRED"
+            echo "✅ Content branch exists: $RESOLVED"
+          else
+            RESOLVED="main"
+            echo "⚠️ Content branch NOT found: $DESIRED"
+            echo "➡️ Fallback to: $RESOLVED"
+          fi
+
+          echo "resolved_tina_branch=$RESOLVED" >> "$GITHUB_OUTPUT"
+          echo "RESOLVED_TINA_BRANCH=$RESOLVED" >> "$GITHUB_ENV"
+
       - name: Checkout SSW.Rules.Content
         uses: actions/checkout@v4
         with:
           repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          ref: ${{ steps.resolve_tina.outputs.resolved_tina_branch }}
           path: content-temp
           fetch-depth: 0
           lfs: true
@@ -268,7 +302,7 @@ jobs:
             type=raw,value=${{ inputs.tag }}
           labels: |
             org.opencontainers.image.source.branch=${{ inputs.source_branch }}
-            org.opencontainers.image.tina.branch=${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+            org.opencontainers.image.tina.branch=${{ steps.resolve_tina.outputs.resolved_tina_branch }}
             org.opencontainers.image.build.timestamp=${{ env.BUILD_TIMESTAMP }}
             org.opencontainers.image.build.version=${{ env.VERSION_DEPLOYED }}
             org.opencontainers.image.build.commit=${{ env.COMMIT_HASH }}
@@ -382,7 +416,7 @@ jobs:
             NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
             NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
             NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
-            NEXT_PUBLIC_TINA_BRANCH=${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+            NEXT_PUBLIC_TINA_BRANCH=${{ steps.resolve_tina.outputs.resolved_tina_branch }}
             NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
             NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
             NEXT_PUBLIC_GISCUS_REPO_NAME=${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }}
@@ -503,7 +537,7 @@ jobs:
           echo "Image tag   : ${{ steps.meta.outputs.tags }}"
           echo "Image digest: ${{ steps.build.outputs.digest }}"
           echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
-          echo "Content branch: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}"
+          echo "Content branch (resolved): ${{ steps.resolve_tina.outputs.resolved_tina_branch }}"
           echo "Build Info:"
           echo "  Build Date: ${{ env.BUILD_DATE }}"
           echo "  Version: ${{ env.VERSION_DEPLOYED }}"
@@ -516,7 +550,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          ref: ${{ steps.resolve_tina.outputs.resolved_tina_branch }}
           path: content
           fetch-depth: 0
           lfs: true
@@ -540,7 +574,7 @@ jobs:
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
           TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          NEXT_PUBLIC_TINA_BRANCH: ${{ steps.resolve_tina.outputs.resolved_tina_branch }}
           NEXT_PUBLIC_GITHUB_ORG: ${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
           NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
         run: pnpm tinacms search-index

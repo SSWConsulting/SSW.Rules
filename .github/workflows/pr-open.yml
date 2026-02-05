@@ -170,7 +170,7 @@ jobs:
             "VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }}" \
             "DEPLOYMENT_URL=${{ env.DEPLOYMENT_URL }}" \
             "BUILD_DATE=${{ env.BUILD_DATE }}" \
-            "NEXT_PUBLIC_TINA_BRANCH=${{ vars.NEXT_PUBLIC_TINA_BRANCH }}" \
+            "NEXT_PUBLIC_TINA_BRANCH=${{ needs.build.outputs.resolved_tina_branch }}" \
             "COMMIT_HASH=${{ env.COMMIT_HASH }}" \
             --output none
 

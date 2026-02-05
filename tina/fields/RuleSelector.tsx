@@ -137,7 +137,7 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
   }
 
   return (
-    <div className="relative z-1000">
+    <div className="relative z-1000 w-full">
       <input type="hidden" id={input.name} {...input} />
       <Popover>
         {({ open }) => (

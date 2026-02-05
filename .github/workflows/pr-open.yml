@@ -224,6 +224,7 @@ jobs:
             | **Preview URL** | https://${{ needs.infrastructure.outputs.slotHostName }}${{ vars.NEXT_PUBLIC_BASE_PATH }} |
             | **Slot Name** | `${{ needs.infrastructure.outputs.slotName }}` |
             | **Branch** | `${{ github.head_ref }}` |
+            | **Content Branch** | `${{ needs.build.outputs.resolved_tina_branch }}` |
             | **Commit** | `${{ github.event.pull_request.head.sha }}` |
 
             ---

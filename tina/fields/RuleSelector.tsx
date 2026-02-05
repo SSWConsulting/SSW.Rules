@@ -206,7 +206,10 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
                               >
                                 <div className="flex items-center justify-between w-full gap-3">
                                   <div className="flex-1 min-w-0 overflow-hidden">
-                                    <div className="font-medium text-gray-900 text-sm leading-5 truncate" title={rule.title || rule.uri}>
+                                    <div
+                                      className="font-medium text-gray-900 text-sm leading-5 whitespace-normal break-words line-clamp-2"
+                                      title={rule.title || rule.uri}
+                                    >
                                       {rule.title || rule.uri}
                                     </div>
                                     <div className="text-xs text-gray-500 leading-4 truncate">{rule.uri}</div>

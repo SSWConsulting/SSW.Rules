@@ -15,7 +15,7 @@
     For production: Creates a dedicated App Service Plan
 
 .PARAMETER Environment
-    The target environment (staging, prod, or production)
+    The target environment (staging or production)
 
 .PARAMETER ResourceGroup
     The Azure resource group name to deploy resources to.
@@ -37,16 +37,16 @@
     ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging"
 
 .EXAMPLE
-    ./deploy.ps1 -Environment prod -ResourceGroup "SSW.Rules" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012"
+    ./deploy.ps1 -Environment production -ResourceGroup "SSW.Rules" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012"
 
 .EXAMPLE
-    ./deploy.ps1 -Environment prod -ResourceGroup "SSW.Rules" -AppServicePlanSku "S1" -WhatIf
+    ./deploy.ps1 -Environment production -ResourceGroup "SSW.Rules" -AppServicePlanSku "P0v3" -WhatIf
 #>
 
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('staging', 'prod', 'production')]
+    [ValidateSet('staging', 'production')]
     [string]$Environment,
 
     [Parameter(Mandatory = $true)]
@@ -76,7 +76,11 @@ $ErrorActionPreference = 'Stop'
 
 $ProjectName = 'sswrules'
 
-# Normalize 'production' to 'prod' for naming
+# Preserve original environment name for Docker image tagging (e.g., 'production')
+# Resource names use 'prod' but the container image tag must match what the build pipeline pushes
+$ImageTag = $Environment
+
+# Normalize 'production' to 'prod' for resource naming
 if ($Environment -eq 'production') {
     $Environment = 'prod'
 }
@@ -318,6 +322,7 @@ Write-Step "Preparing deployment parameters..."
 
 $deploymentParams = @{
     environment = $Environment
+    imageTag = $ImageTag
     appServiceName = $AppServiceName
     appInsightsName = $AppInsightsName
     logAnalyticsWorkspaceName = $LogAnalyticsWorkspaceName
@@ -389,6 +394,7 @@ $azArgs = @(
     '--resource-group', $ResourceGroup
     '--template-file', $templatePath
     '--parameters', "environment=$Environment"
+    '--parameters', "imageTag=$ImageTag"
     '--parameters', "appServiceName=$AppServiceName"
     '--parameters', "appInsightsName=$AppInsightsName"
     '--parameters', "logAnalyticsWorkspaceName=$LogAnalyticsWorkspaceName"

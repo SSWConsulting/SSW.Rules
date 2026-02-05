@@ -198,7 +198,7 @@ jobs:
   comment:
     name: Post Preview URL Comment
     runs-on: ubuntu-latest
-    needs: [infrastructure, deploy]
+    needs: [infrastructure, build, deploy]
     environment: staging
     steps:
       - name: Find existing comment

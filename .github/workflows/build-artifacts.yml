@@ -140,6 +140,38 @@ jobs:
           echo "Build version: ${{ env.VERSION_DEPLOYED }}"
           echo "Docker cache: DISABLED"
 
+      - name: Determine Tina content branch
+        id: determine_tina_branch
+        run: |
+          set -euo pipefail
+
+          INPUT_TINA_BRANCH="${{ inputs.tina_branch }}"
+          SOURCE_BRANCH="${{ inputs.source_branch }}"
+          DEFAULT_TINA_BRANCH="${{ vars.NEXT_PUBLIC_TINA_BRANCH }}"
+          CONTENT_REPO="SSWConsulting/SSW.Rules.Content"
+          TINA_CONTENT_BRANCH=""
+
+          if [ -n "$INPUT_TINA_BRANCH" ]; then
+            echo "Explicit Tina branch '${INPUT_TINA_BRANCH}' provided. Using it."
+            TINA_CONTENT_BRANCH="$INPUT_TINA_BRANCH"
+          elif [ -n "$SOURCE_BRANCH" ]; then
+            echo "No explicit Tina branch. Checking for source branch '$SOURCE_BRANCH' in '$CONTENT_REPO'..."
+            if gh api repos/$CONTENT_REPO/branches/$SOURCE_BRANCH > /dev/null 2>&1; then
+              echo "Branch '$SOURCE_BRANCH' found in content repo. Using it for Tina."
+              TINA_CONTENT_BRANCH="$SOURCE_BRANCH"
+            else
+              echo "Branch '$SOURCE_BRANCH' not found in content repo. Falling back to default Tina branch: $DEFAULT_TINA_BRANCH"
+              TINA_CONTENT_BRANCH="$DEFAULT_TINA_BRANCH"
+            fi
+          else
+            echo "Neither explicit Tina branch nor source branch provided. Falling back to default Tina branch: $DEFAULT_TINA_BRANCH"
+            TINA_CONTENT_BRANCH="$DEFAULT_TINA_BRANCH"
+          fi
+
+          echo "determined_tina_branch=$TINA_CONTENT_BRANCH" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       # ────────────────────────────── CACHE VERIFICATION ────────────────────
       - name: Monitor cache status (no cache should exist after previous purge)
         run: |
@@ -195,7 +227,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          ref: ${{ steps.determine_tina_branch.outputs.determined_tina_branch }}
           path: content-temp
           fetch-depth: 0
           lfs: true
@@ -382,7 +414,7 @@ jobs:
             NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
             NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
             NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
-            NEXT_PUBLIC_TINA_BRANCH=${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+            NEXT_PUBLIC_TINA_BRANCH=${{ steps.determine_tina_branch.outputs.determined_tina_branch }}
             NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
             NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
             NEXT_PUBLIC_GISCUS_REPO_NAME=${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }}
@@ -516,7 +548,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          ref: ${{ steps.determine_tina_branch.outputs.determined_tina_branch }}
           path: content
           fetch-depth: 0
           lfs: true

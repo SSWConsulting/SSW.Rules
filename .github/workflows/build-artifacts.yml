@@ -281,7 +281,7 @@ jobs:
             type=raw,value=${{ inputs.tag }}
           labels: |
             org.opencontainers.image.source.branch=${{ inputs.source_branch }}
-            org.opencontainers.image.tina.branch=${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+            org.opencontainers.image.tina.branch=${{ steps.resolve_content_branch.outputs.content_branch }}
             org.opencontainers.image.build.timestamp=${{ env.BUILD_TIMESTAMP }}
             org.opencontainers.image.build.version=${{ env.VERSION_DEPLOYED }}
             org.opencontainers.image.build.commit=${{ env.COMMIT_HASH }}
@@ -395,7 +395,7 @@ jobs:
             NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
             NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
             NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
-            NEXT_PUBLIC_TINA_BRANCH=${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+            NEXT_PUBLIC_TINA_BRANCH=${{ steps.resolve_content_branch.outputs.content_branch }}
             NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
             NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
             NEXT_PUBLIC_GISCUS_REPO_NAME=${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }}
@@ -553,7 +553,7 @@ jobs:
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
           TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          NEXT_PUBLIC_TINA_BRANCH: ${{ steps.resolve_content_branch.outputs.content_branch }}
           NEXT_PUBLIC_GITHUB_ORG: ${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
           NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
         run: pnpm tinacms search-index

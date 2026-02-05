@@ -131,12 +131,43 @@ jobs:
           echo "  Date: $BUILD_DATE"
           echo "  Version: $VERSION_DEPLOYED"
           echo "  Commit: $COMMIT_HASH"
+      
+      - name: Resolve Tina content branch (fallback to main)
+        id: resolve_tina
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          DESIRED="${{ inputs.tina_branch }}"
+          if [ -z "$DESIRED" ]; then
+            DESIRED="${{ vars.NEXT_PUBLIC_TINA_BRANCH }}"
+          fi
+          if [ -z "$DESIRED" ]; then
+            DESIRED="main"
+          fi
+
+          REPO_URL="https://github.com/SSWConsulting/SSW.Rules.Content.git"
+
+          echo "Desired content branch: $DESIRED"
+
+          if git ls-remote --heads "$REPO_URL" "$DESIRED" | grep -q .; then
+            RESOLVED="$DESIRED"
+            echo "✅ Content branch exists: $RESOLVED"
+          else
+            RESOLVED="main"
+            echo "⚠️ Content branch NOT found: $DESIRED"
+            echo "➡️ Fallback to: $RESOLVED"
+          fi
+
+          echo "resolved_tina_branch=$RESOLVED" >> "$GITHUB_OUTPUT"
+          echo "RESOLVED_TINA_BRANCH=$RESOLVED" >> "$GITHUB_ENV"
 
       - name: Log build information
         run: |
           echo "Starting NO-CACHE build process"
           echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
-          echo "Tina branch (resolved): ${{ steps.resolve_tina.outputs.resolved_tina_branch }}"
+          echo "Tina branch (requested): ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH || 'main' }}"
+          echo "Tina branch (resolved):  ${{ steps.resolve_tina.outputs.resolved_tina_branch }}"
           echo "Environment tag: ${{ inputs.tag }}"
           echo "Registry: ${{ inputs.acr_name }}"
           echo "Image: ${{ inputs.image_name }}"
@@ -194,36 +225,6 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-
-      - name: Resolve Tina content branch (fallback to main)
-        id: resolve_tina
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          DESIRED="${{ inputs.tina_branch }}"
-          if [ -z "$DESIRED" ]; then
-            DESIRED="${{ vars.NEXT_PUBLIC_TINA_BRANCH }}"
-          fi
-          if [ -z "$DESIRED" ]; then
-            DESIRED="main"
-          fi
-
-          REPO_URL="https://github.com/SSWConsulting/SSW.Rules.Content.git"
-
-          echo "Desired content branch: $DESIRED"
-
-          if git ls-remote --heads "$REPO_URL" "$DESIRED" | grep -q .; then
-            RESOLVED="$DESIRED"
-            echo "✅ Content branch exists: $RESOLVED"
-          else
-            RESOLVED="main"
-            echo "⚠️ Content branch NOT found: $DESIRED"
-            echo "➡️ Fallback to: $RESOLVED"
-          fi
-
-          echo "resolved_tina_branch=$RESOLVED" >> "$GITHUB_OUTPUT"
-          echo "RESOLVED_TINA_BRANCH=$RESOLVED" >> "$GITHUB_ENV"
 
       - name: Checkout SSW.Rules.Content
         uses: actions/checkout@v4

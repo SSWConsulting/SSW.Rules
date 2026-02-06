@@ -217,8 +217,8 @@ jobs:
 
       - name: Generate people index
         run: |
-          npm ci
-          npm run generate:people
+          pnpm install --frozen-lockfile
+          pnpm run generate:people
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

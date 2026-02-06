@@ -49,8 +49,7 @@ const Rule: Collection = {
       type: "string",
       label: "Title",
       name: "title",
-      description:
-        "Should start with \"Do you\" and end with a question mark.",
+      description: "Should start with \"Do you\" and end with a question mark.",
       isTitle: true,
       required: true,
       searchable: true,

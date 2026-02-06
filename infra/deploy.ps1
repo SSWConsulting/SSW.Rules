@@ -46,7 +46,6 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('staging', 'production')]
     [string]$Environment,
 
     [Parameter(Mandatory = $true)]

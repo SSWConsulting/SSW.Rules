@@ -1,3 +1,5 @@
+import { Author } from "@/types/author";
+
 export interface Rule {
   guid: string;
   title: string;
@@ -5,7 +7,7 @@ export interface Rule {
   body: any;
   isArchived?: boolean;
   archivedreason?: string;
-  authors?: ({ title?: string | null; url?: string | null } | null)[] | null;
+  authors?: (Author | null)[] | null;
   lastUpdated?: string;
   lastUpdatedBy?: string;
 }

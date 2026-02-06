@@ -4,18 +4,18 @@ import client from "@/tina/__generated__/client";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const authorTitle = searchParams.get("authorTitle");
+    const authorSlug = searchParams.get("authorSlug");
     const firstStr = searchParams.get("first");
     const after = searchParams.get("after") || undefined;
 
-    if (!authorTitle) {
-      return NextResponse.json({ error: "authorTitle is required" }, { status: 400 });
+    if (!authorSlug) {
+      return NextResponse.json({ error: "authorSlug is required" }, { status: 400 });
     }
 
     const first = firstStr ? Number(firstStr) : undefined;
 
     const result = await client.queries.rulesByAuthor({
-      authorTitle,
+      authorSlug,
       first,
       after,
     });

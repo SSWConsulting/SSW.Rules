@@ -16,7 +16,7 @@ export interface Person {
 export type PeopleIndex = Record<string, Person>;
 
 // Cache the people index in memory for the duration of the server process
-let cachedPeopleIndex: PeopleIndex | null = null;
+let cachedPeopleIndex: PeopleIndex;
 
 /**
  * Load and cache the people index from the generated JSON file

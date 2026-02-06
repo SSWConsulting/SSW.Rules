@@ -1,3 +1,5 @@
+import { Author } from "@/types/author";
+
 export interface Rule {
   guid: string;
   title: string;

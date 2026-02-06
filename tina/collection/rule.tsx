@@ -168,7 +168,7 @@ const Rule: Collection = {
       type: "string",
       name: "redirects",
       label: "Redirects",
-      description: "Alternate URLs that redirect to this rule."",
+      description: "Alternate URLs that redirect to this rule.",
       list: true,
       searchable: false,
       ui: {

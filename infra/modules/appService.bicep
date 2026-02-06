@@ -16,8 +16,11 @@ param containerRegistryName string
 @description('Application Insights Connection String')
 param appInsightsConnectionString string = ''
 
-@description('Environment name (staging/prod)')
+@description('Environment name for resource naming (staging/prod)')
 param environment string
+
+@description('Docker image tag pushed by the build pipeline (e.g., staging, production). Defaults to environment if not specified.')
+param imageTag string = environment
 
 @description('Tags to apply to the resource')
 param tags object = {}
@@ -35,9 +38,9 @@ param slotName string = ''
 var effectiveSlotName = environment == 'prod' ? 'pre-production' : slotName
 
 // Determine the Docker image tag for the slot:
-// - For prod pre-production: use environment tag (same as main, for swap deployments)
+// - For prod pre-production: use imageTag (same as main, for swap deployments)
 // - For staging PR slots: use the slotName as the tag
-var slotImageTag = environment == 'prod' ? environment : slotName
+var slotImageTag = environment == 'prod' ? imageTag : slotName
 
 // Shared app settings used by both the main App Service and deployment slots
 var baseAppSettings = [
@@ -89,7 +92,7 @@ resource appService 'Microsoft.Web/sites@2025-03-01' = {
     httpsOnly: true
     clientAffinityEnabled: false
     siteConfig: union(baseSiteConfig, {
-      linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/ssw-rules:${environment}'
+      linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/ssw-rules:${imageTag}'
     })
   }
 }

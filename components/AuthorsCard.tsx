@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { useResolveAuthors } from "@/lib/people/usePeople";
+import { usePeopleIndex, useResolveAuthors } from "@/lib/people/usePeople";
 
 interface Author {
   author?: string | null;
@@ -23,16 +23,17 @@ export default function AuthorsCard({ authors }: AuthorsCardProps) {
   }, [authors]);
 
   // Resolve slugs to full person data
+  const { people: peopleIndex } = usePeopleIndex();
   const { authors: resolvedAuthors, loading } = useResolveAuthors(slugs);
 
-  // Build display authors
+  // Build display authors - only link to indexed people
   const displayAuthors = useMemo(() => {
     return resolvedAuthors.map((person) => ({
       name: person.name,
-      url: `https://ssw.com.au/people/${person.slug}`,
+      url: person.slug in peopleIndex ? `https://ssw.com.au/people/${person.slug}` : null,
       imageUrl: person.imageUrl || placeholderImg,
     }));
-  }, [resolvedAuthors, placeholderImg]);
+  }, [resolvedAuthors, placeholderImg, peopleIndex]);
 
   const [imgSrcList, setImgSrcList] = useState<string[]>([]);
 

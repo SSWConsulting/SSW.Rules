@@ -3,7 +3,7 @@
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { BiChevronDown, BiRefresh, BiSearch, BiUser } from "react-icons/bi";
+import { BiChevronDown, BiPlus, BiRefresh, BiSearch, BiUser } from "react-icons/bi";
 
 interface Author {
   slug: string;
@@ -17,6 +17,20 @@ interface AuthorResponse {
 }
 
 const MIN_SEARCH_LENGTH = 2;
+
+/**
+ * Convert a name to a URL-friendly slug
+ * e.g. "John Smith" → "john-smith"
+ */
+function nameToSlug(name: string): string {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
 interface AuthorSelectorProps {
   input: any;
@@ -131,6 +145,27 @@ export const AuthorSelector: React.FC<AuthorSelectorProps> = ({ input, showRefre
     setRefreshing(false);
   };
 
+  // Check if the current filter text could be added as a custom author
+  const customAuthorSlug = useMemo(() => {
+    const q = filter.trim();
+    if (q.length < MIN_SEARCH_LENGTH) return null;
+    const slug = nameToSlug(q);
+    if (!slug) return null;
+    // Don't offer custom add if exact slug already exists
+    const exists = allAuthors.some((p) => p.slug === slug);
+    if (exists) return null;
+    return slug;
+  }, [filter, allAuthors]);
+
+  const handleCustomAuthorAdd = (close: () => void) => {
+    if (!customAuthorSlug) return;
+    const name = filter.trim();
+    setSelectedAuthorLabel(name);
+    input.onChange(customAuthorSlug);
+    setFilter("");
+    close();
+  };
+
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.src = placeholderImg;
   };
@@ -211,7 +246,7 @@ export const AuthorSelector: React.FC<AuthorSelectorProps> = ({ input, showRefre
                       )}
 
                       {/* Empty state */}
-                      {!loading && filteredAuthors.length === 0 && filter.length >= MIN_SEARCH_LENGTH && (
+                      {!loading && filteredAuthors.length === 0 && filter.length >= MIN_SEARCH_LENGTH && !customAuthorSlug && (
                         <div className="p-4 text-center text-gray-400">No people found matching "{filter}"</div>
                       )}
 
@@ -255,6 +290,29 @@ export const AuthorSelector: React.FC<AuthorSelectorProps> = ({ input, showRefre
                             );
                           })}
                         </div>
+                      )}
+
+                      {/* Add custom author option */}
+                      {!loading && customAuthorSlug && (
+                        <button
+                          type="button"
+                          className="w-full text-left py-2 px-3 hover:bg-green-50 border-b border-gray-100 transition-colors block"
+                          onClick={() => handleCustomAuthorAdd(close)}
+                        >
+                          <div className="flex items-center gap-3 w-full">
+                            <div className="w-8 h-8 rounded-full overflow-hidden bg-green-100 shrink-0 flex items-center justify-center">
+                              <BiPlus className="w-5 h-5 text-green-600" />
+                            </div>
+                            <div className="flex-1 min-w-0 overflow-hidden">
+                              <div className="font-medium text-gray-900 text-sm leading-5 truncate">
+                                Add &quot;{filter.trim()}&quot; as custom author
+                              </div>
+                              <div className="text-xs text-gray-400 truncate">
+                                {customAuthorSlug}
+                              </div>
+                            </div>
+                          </div>
+                        </button>
                       )}
                     </div>
                   )}

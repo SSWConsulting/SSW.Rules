@@ -85,7 +85,6 @@ export async function processCategories(
   ruleUri: string,
   tgc: TinaGraphQLClient,
   action: "add" | "delete",
-  branch?: string,
   skipExistenceCheck: boolean = false
 ): Promise<CategoryProcessingResult> {
   const processed: string[] = [];
@@ -134,13 +133,8 @@ export function extractCategoriesByStatus(
  * Handles category updates for create forms.
  * Adds all provided categories directly without existence checks.
  */
-export async function handleCreateForm(
-  categories: Array<string | { category?: string }>,
-  ruleUri: string,
-  token: string,
-  activeBranch?: string
-): Promise<NextResponse> {
-  const tgc = new TinaGraphQLClient(token, activeBranch);
+export async function handleCreateForm(categories: Array<string | { category?: string }>, ruleUri: string, token: string): Promise<NextResponse> {
+  const tgc = new TinaGraphQLClient(token);
 
   // Normalize categories to extract category paths
   const normalizedCategories = categories
@@ -156,7 +150,6 @@ export async function handleCreateForm(
     ruleUri,
     tgc,
     "add",
-    activeBranch,
     true // skipExistenceCheck = true for create forms
   );
 
@@ -176,14 +169,9 @@ export async function handleCreateForm(
  * Handles category updates for update forms.
  * Compares current rule categories with requested categories and processes changes.
  */
-export async function handleUpdateForm(
-  categories: Array<string | { category?: string }>,
-  ruleUri: string,
-  token: string,
-  activeBranch?: string
-): Promise<NextResponse> {
+export async function handleUpdateForm(categories: Array<string | { category?: string }>, ruleUri: string, token: string): Promise<NextResponse> {
   // Get current rule and its categories
-  const { rule, currentRuleCategories } = await getRuleCategories(ruleUri, activeBranch);
+  const { rule, currentRuleCategories } = await getRuleCategories(ruleUri);
 
   if (!rule) {
     return NextResponse.json({ error: `Rule not found for URI: ${ruleUri}` }, { status: 404 });
@@ -196,10 +184,10 @@ export async function handleUpdateForm(
   // Process add and delete operations in parallel
   // Skip existence check because categories may contain non-existent rules.
   // The updateTheCategoryRuleList function will read from file to preserve existing rules.
-  const tgc = new TinaGraphQLClient(token, activeBranch);
+  const tgc = new TinaGraphQLClient(token);
   const [addResult, deleteResult] = await Promise.all([
-    processCategories(toAdd, ruleUri, tgc, "add", activeBranch, true), // skipExistenceCheck = true
-    processCategories(toDelete, ruleUri, tgc, "delete", activeBranch, true), // skipExistenceCheck = true
+    processCategories(toAdd, ruleUri, tgc, "add", true), // skipExistenceCheck = true
+    processCategories(toDelete, ruleUri, tgc, "delete", true), // skipExistenceCheck = true
   ]);
 
   const response: UpdateCategoryResponse = {

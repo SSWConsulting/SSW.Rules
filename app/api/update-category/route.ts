@@ -34,11 +34,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Step 3: Handle create forms (simpler flow - just add all categories)
     if (isCreateForm) {
-      return await handleCreateForm(categories, ruleUri, token, activeBranch);
+      return await handleCreateForm(categories, ruleUri, token);
     }
 
     // Step 4: Handle update forms (compare current vs requested, then add/delete)
-    return await handleUpdateForm(categories, ruleUri, token, activeBranch);
+    return await handleUpdateForm(categories, ruleUri, token);
   } catch (error) {
     console.error("Error processing category update:", error);
     return NextResponse.json(

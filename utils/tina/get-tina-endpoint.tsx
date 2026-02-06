@@ -13,6 +13,8 @@ export const getTinaEndpoint = (activeBranch?: string): string | null => {
     process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF || // Vercel branch env
     process.env.HEAD; // Netlify branch env
 
+  console.log("[getTinaEndpoint] activeBranch=", activeBranch, "resolvedBranch=", branch);
+
   if (!clientId || !branch) {
     return null;
   }

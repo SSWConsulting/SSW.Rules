@@ -8,7 +8,7 @@ import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
 import { createdInfoFields } from "./shared/createdInfoFields";
-import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
+import { historyAfterSubmit, historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { toolbarFields } from "./shared/toolbarFields";
 
 const Rule: Collection = {
@@ -42,7 +42,33 @@ const Rule: Collection = {
       const slug = document?._sys?.relativePath?.split("/")?.[0] ?? "";
       return `/${slug}`;
     },
-    beforeSubmit: historyBeforeSubmit,
+    beforeSubmit: async (args) => {
+      const { form, cms, values } = args;
+
+      const f: any = form as any;
+      if (!f.__historyAfterSubmitPatched) {
+        const originalSubmit = f.submit?.bind(form);
+
+        if (typeof originalSubmit === "function") {
+          f.submit = async (...submitArgs: any[]) => {
+            const result = await originalSubmit(...submitArgs);
+
+            try {
+              const latestValues = f.values ?? values ?? {};
+              await historyAfterSubmit({ form, cms, values: latestValues });
+            } catch (e) {
+              console.error("historyAfterSubmit failed:", e);
+            }
+
+            return result;
+          };
+        }
+
+        f.__historyAfterSubmitPatched = true;
+      }
+
+      return historyBeforeSubmit(args);
+    },
   },
   fields: [
     {

@@ -77,48 +77,6 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
   let userEmail: string | undefined;
   let userName: string | undefined;
 
-  // Update categories for both create and update forms
-  // The API will read the category index from file to preserve existing rules (including non-existent ones)
-  // For create forms, the API constructs the rule path from URI without validation
-  // For update forms, the API uses GraphQL but falls back to file-based index if needed
-  // For update forms, empty categories array (or undefined/null) means remove rule from all categories
-  // For create forms, we only call the API if there are categories to add
-  if (values.uri) {
-    const formType = form.crudType === "create" ? "create" : "update";
-
-    // Normalize categories - ensure it's always an array
-    const categories = Array.isArray(values.categories) ? values.categories : [];
-
-    const shouldCallAPI =
-      formType === "create"
-        ? categories.length > 0 // For create, only call if there are categories to add
-        : true; // For update, always call (even if empty, to remove from all categories)
-
-    if (shouldCallAPI) {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/update-category`, {
-          method: "POST",
-          headers: {
-            ...getBearerAuthHeader(),
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            categories: categories,
-            ruleUri: values.uri,
-            formType: formType,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
-          console.error(`Failed to update categories for ${formType} form:`, errorData);
-        }
-      } catch (error) {
-        console.error(`Error updating categories for ${form.crudType} form:`, error);
-        // Don't throw - allow form submission to continue even if category update fails
-      }
-    }
-  }
   try {
     const user = await cms.api.tina?.authProvider?.getUser();
     if (user) {
@@ -131,19 +89,46 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
     userName = undefined;
   }
 
-  if (form.crudType === "create") {
-    return {
-      ...values,
-      lastUpdated: new Date().toISOString(),
-      lastUpdatedBy: userName ?? "",
-      lastUpdatedByEmail: userEmail ?? "",
-    };
-  }
-
   return {
     ...values,
     lastUpdated: new Date().toISOString(),
     lastUpdatedBy: userName ?? "",
     lastUpdatedByEmail: userEmail ?? "",
   };
+};
+
+export const historyAfterSubmit = async ({ form, cms, values }: { form: Form; cms: TinaCMS; values: Record<string, any> }) => {
+  if (!values?.uri) return;
+
+  const formType = form.crudType === "create" ? "create" : "update";
+  const categories = Array.isArray(values.categories) ? values.categories : [];
+
+  const shouldCallAPI = formType === "create" ? categories.length > 0 : true;
+
+  if (!shouldCallAPI) return;
+
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/update-category`, {
+      method: "POST",
+      headers: {
+        ...getBearerAuthHeader(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        categories,
+        ruleUri: values.uri,
+        formType,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+      console.error(`Failed to update categories for ${formType} form (after submit):`, errorData);
+    } else {
+      console.log(`[update-category] success for ${formType} form, uri=${values.uri}`);
+    }
+  } catch (error) {
+    console.error(`Error updating categories for ${formType} form (after submit):`, error);
+  }
 };

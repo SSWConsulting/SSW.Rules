@@ -3,10 +3,11 @@ export interface GitHubFile {
 }
 
 export interface GitHubPullRequest {
+  number: number;
+  mergedAt: string;
   files: {
     nodes: GitHubFile[];
   };
-  mergedAt: string;
 }
 
 export interface GitHubPageInfo {

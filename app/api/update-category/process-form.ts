@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
-import { getFetchOptions } from "@/utils/tina/get-branch";
 import { TinaGraphQLClient } from "@/utils/tina/tina-graphql-client";
 import { CategoryProcessingResult, UpdateCategoryResponse } from "./types";
 import { updateTheCategoryRuleList } from "./update-the-category-rule-list";
@@ -13,7 +12,6 @@ import { categorizeCategories, getRelativePathForCategory, getRuleCategories, ru
  * @param ruleUri - URI of the rule to add/delete
  * @param tgc - Tina GraphQL client instance
  * @param action - Action to perform: "add" or "delete"
- * @param branch - Optional branch name
  * @param skipExistenceCheck - Skip GraphQL existence check (for create forms or when category has non-existent rules)
  * @returns Whether the operation was successful
  */
@@ -22,7 +20,6 @@ async function processSingleCategory(
   ruleUri: string,
   tgc: TinaGraphQLClient,
   action: "add" | "delete",
-  branch?: string,
   skipExistenceCheck: boolean = false
 ): Promise<boolean> {
   try {
@@ -33,7 +30,7 @@ async function processSingleCategory(
     // This causes errors when the category index contains references to rules that don't exist yet.
     if (!skipExistenceCheck) {
       try {
-        const categoryQueryResult = await client.queries.categoryWithRulesQuery({ relativePath }, branch ? await getFetchOptions() : undefined);
+        const categoryQueryResult = await client.queries.categoryWithRulesQuery({ relativePath });
         const ruleAlreadyExists = ruleExistsByUriInCategory(categoryQueryResult, ruleUri);
 
         // Early return if no change is needed
@@ -94,7 +91,7 @@ export async function processCategories(
   await Promise.all(
     categories.map(async (category) => {
       const relativePath = getRelativePathForCategory(category);
-      const success = await processSingleCategory(category, ruleUri, tgc, action, branch, skipExistenceCheck);
+      const success = await processSingleCategory(category, ruleUri, tgc, action, skipExistenceCheck);
 
       if (success) {
         processed.push(relativePath);

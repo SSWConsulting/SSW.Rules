@@ -84,6 +84,7 @@ export default function UserRulesClientPage({ ruleCount }) {
         title: item.title,
         uri: item.uri,
         lastUpdated: item.lastModifiedAt,
+        body: item.body,
       }));
 
       setLastModifiedRules(rules);

@@ -3,7 +3,7 @@ import { unstable_cache } from "next/cache";
 import { createGitHubService } from "@/lib/services/github";
 import client from "@/tina/__generated__/client";
 
-type RuleItem = { title: string; uri: string; lastModifiedAt: string | null };
+type RuleItem = { title: string; uri: string; lastModifiedAt: string | null; body: any };
 
 const ALLOWED_ORIGIN = "https://ssw.com.au";
 const CACHE_SECONDS = 60 * 60 * 2;
@@ -84,14 +84,17 @@ async function getRecentRulesForUser(username: string, limit: number): Promise<R
 
     return edges
       .map(e => e?.node)
-      .filter((node): node is { title: string; uri: string } => 
+      .filter((node): node is { title: string; uri: string, body: any } => 
         !!node && typeof node.title === 'string' && typeof node.uri === 'string'
       )
-      .map(node => ({
-        title: node.title,
-        uri: node.uri,
-        lastModifiedAt: uriToDate.get(node.uri) || null
-      }))
+      .map(node => {
+        return {
+          title: node.title,
+          uri: node.uri,
+          lastModifiedAt: uriToDate.get(node.uri) || null,
+          body: node.body
+      }
+      })
       .sort((a, b) => {
         const dateA = a.lastModifiedAt ? new Date(a.lastModifiedAt).getTime() : 0;
         const dateB = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0;

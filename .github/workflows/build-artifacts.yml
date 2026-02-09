@@ -28,6 +28,11 @@ on:
         required: false
         default: ""
         description: "GitHub environment to use (defaults to tag value if not specified)"
+      ref:
+        type: string
+        required: false
+        default: ""
+        description: "Git ref to checkout (defaults to github.sha if not specified)"
     secrets:
       AZURE_CLIENT_ID:
         required: true
@@ -188,14 +193,34 @@ jobs:
       - name: Checkout main repo
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.ref || github.sha }}
           fetch-depth: 0
           lfs: true
+
+      - name: Update commit hash from checkout
+        run: |
+          COMMIT_HASH=$(git rev-parse --short=7 HEAD)
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+          echo "Commit hash (from checkout): $COMMIT_HASH"
+
+      - name: Resolve SSW.Rules.Content branch
+        id: resolve_content_branch
+        run: |
+          DESIRED_BRANCH="${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}"
+          echo "Checking if branch '$DESIRED_BRANCH' exists in SSW.Rules.Content..."
+          if git ls-remote --exit-code --heads "https://github.com/SSWConsulting/SSW.Rules.Content.git" "$DESIRED_BRANCH" > /dev/null 2>&1; then
+            echo "Branch '$DESIRED_BRANCH' found"
+            echo "content_branch=$DESIRED_BRANCH" >> $GITHUB_OUTPUT
+          else
+            echo "Branch '$DESIRED_BRANCH' not found, falling back to 'main'"
+            echo "content_branch=main" >> $GITHUB_OUTPUT
+          fi
 
       - name: Checkout SSW.Rules.Content
         uses: actions/checkout@v4
         with:
           repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          ref: ${{ steps.resolve_content_branch.outputs.content_branch }}
           path: content-temp
           fetch-depth: 0
           lfs: true
@@ -268,7 +293,7 @@ jobs:
             type=raw,value=${{ inputs.tag }}
           labels: |
             org.opencontainers.image.source.branch=${{ inputs.source_branch }}
-            org.opencontainers.image.tina.branch=${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+            org.opencontainers.image.tina.branch=${{ steps.resolve_content_branch.outputs.content_branch }}
             org.opencontainers.image.build.timestamp=${{ env.BUILD_TIMESTAMP }}
             org.opencontainers.image.build.version=${{ env.VERSION_DEPLOYED }}
             org.opencontainers.image.build.commit=${{ env.COMMIT_HASH }}
@@ -382,7 +407,7 @@ jobs:
             NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
             NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
             NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
-            NEXT_PUBLIC_TINA_BRANCH=${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+            NEXT_PUBLIC_TINA_BRANCH=${{ steps.resolve_content_branch.outputs.content_branch }}
             NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
             NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
             NEXT_PUBLIC_GISCUS_REPO_NAME=${{ vars.NEXT_PUBLIC_GISCUS_REPO_NAME }}
@@ -516,7 +541,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          ref: ${{ steps.resolve_content_branch.outputs.content_branch }}
           path: content
           fetch-depth: 0
           lfs: true
@@ -540,7 +565,7 @@ jobs:
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
           TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
+          NEXT_PUBLIC_TINA_BRANCH: ${{ steps.resolve_content_branch.outputs.content_branch }}
           NEXT_PUBLIC_GITHUB_ORG: ${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
           NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
         run: pnpm tinacms search-index

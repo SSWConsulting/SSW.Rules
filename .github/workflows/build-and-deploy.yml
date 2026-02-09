@@ -1,4 +1,4 @@
-name: Deploy POC application on Azure Web App x Docker Container
+name: Deploy Application to Azure Web App (Container)
 
 on:
     push:
@@ -39,42 +39,14 @@ jobs:
     # ============================================================================
     infrastructure:
         name: Deploy Infrastructure
-        runs-on: ubuntu-latest
-        environment: ${{ github.event.inputs.environment || 'staging' }}
-        outputs:
-            resourceGroup: ${{ steps.deploy.outputs.resourceGroup }}
-            appServiceName: ${{ steps.deploy.outputs.appServiceName }}
-            appServiceHostName: ${{ steps.deploy.outputs.appServiceHostName }}
-            acrName: ${{ steps.deploy.outputs.acrName }}
-            acrLoginServer: ${{ steps.deploy.outputs.acrLoginServer }}
-            appInsightsConnectionString: ${{ steps.deploy.outputs.appInsightsConnectionString }}
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
-
-            - name: Azure CLI - Login
-              uses: azure/login@v2
-              with:
-                  client-id: ${{ secrets.AZURE_CLIENT_ID }}
-                  tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-                  subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-            - name: Deploy Infrastructure
-              id: deploy
-              shell: pwsh
-              run: |
-                  ./infra/deploy.ps1 `
-                    -Environment "${{ github.event.inputs.environment || 'staging' }}" `
-                    -ResourceGroup "${{ vars.AZURE_RESOURCE_GROUP }}" `
-                    -ServicePrincipalObjectId "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}"
-
-            - name: Log infrastructure outputs
-              run: |
-                  echo "Infrastructure Deployment Complete"
-                  echo "Resource Group: ${{ steps.deploy.outputs.resourceGroup }}"
-                  echo "App Service: ${{ steps.deploy.outputs.appServiceName }}"
-                  echo "App Service URL: https://${{ steps.deploy.outputs.appServiceHostName }}"
-                  echo "ACR: ${{ steps.deploy.outputs.acrLoginServer }}"
+        uses: ./.github/workflows/deploy-infrastructure.yml
+        with:
+            environment: ${{ github.event.inputs.environment || 'staging' }}
+        secrets:
+            AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+            AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+            AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            AZURE_SERVICE_PRINCIPAL_OBJECT_ID: ${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}
 
     # ============================================================================
     # BUILD AND PUSH CONTAINER

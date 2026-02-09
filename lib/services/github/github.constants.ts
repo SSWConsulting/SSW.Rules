@@ -54,7 +54,7 @@ export const GITHUB_TINA_BOT_PRS_QUERY = `
               path
             }
           }
-          commits(first: 10) {
+          commits(first: 100) {
             nodes {
               commit {
                 message

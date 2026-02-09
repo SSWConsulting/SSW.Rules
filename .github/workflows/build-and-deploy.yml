@@ -1,4 +1,4 @@
-name: Deploy POC application on Azure Web App x Docker Container
+name: Deploy Application to Azure Web App (Container)
 
 on:
     push:

@@ -50,7 +50,7 @@ const Rule: Collection = {
       type: "string",
       label: "Title",
       name: "title",
-      description: 'The title should start with "Do you" and end with a question mark.',
+      description: "Should start with \"Do you\" and end with a question mark.",
       isTitle: true,
       required: true,
       searchable: true,
@@ -58,8 +58,8 @@ const Rule: Collection = {
     {
       type: "string",
       name: "uri",
-      label: "Slug",
-      description: "The slug for the rule e.g. keep-your-urls-clean",
+      label: "URL Slug",
+      description: "Identifies this page in the URL. Should be short and not include \"Do you\". E.g. \"keep-urls-clean\"",
       required: true,
       searchable: true,
       ui: {
@@ -76,7 +76,7 @@ const Rule: Collection = {
       type: "object",
       name: "categories",
       label: "Categories",
-      description: "Assigns one or more categories to the rule.",
+      description: "Select one or more categories for this rule.",
       list: true,
       searchable: false,
       ui: {
@@ -100,7 +100,7 @@ const Rule: Collection = {
       type: "string",
       name: "sidebarVideo",
       label: "Sidebar Video",
-      description: "Add Sidebar Video here. e.g. YouTube Shorts",
+      description: "Displays a video in the sidebar. Works better with YouTube Shorts.",
       searchable: false,
       ui: {
         component: ConditionalHiddenField,
@@ -110,7 +110,7 @@ const Rule: Collection = {
       type: "object",
       name: "authors",
       label: "Authors",
-      description: "The list of contributors for this rule. Select from the People index.",
+      description: "Select one or more contributors for this rule.",
       list: true,
       searchable: false,
       ui: {
@@ -134,13 +134,19 @@ const Rule: Collection = {
             component: wrapFieldsWithMeta((props) => <AuthorSelector {...props} />),
           },
         },
+        {
+          type: "string",
+          description: "The SSW People link for the contributor. E.g. \"https://ssw.com.au/people/bob-northwind\"",
+          name: "url",
+          label: "Url",
+        },
       ],
     },
     {
       type: "object",
       label: "Related Rules",
       name: "related",
-      description: "URIs of related rules to suggest.",
+      description: "Select related rules. E.g. \"keep-urls-clean\"",
       list: true,
       searchable: false,
       ui: {
@@ -154,7 +160,7 @@ const Rule: Collection = {
           type: "reference",
           label: "Rule",
           name: "rule",
-          description: "This rule list may not include newly created rules for up to one hour. It is updated based on the main branch after that time.",
+          description: "This list may not include newly created rules (up to one hour). Updated from the main branch after that time.",
           collections: ["rule"],
           ui: {
             component: RuleSelector,
@@ -165,8 +171,8 @@ const Rule: Collection = {
     {
       type: "string",
       name: "redirects",
-      label: "URI Redirects",
-      description: "Other URIs which will redirect to this rule.",
+      label: "Redirects",
+      description: "Alternate URLs that redirect to this rule.",
       list: true,
       searchable: false,
       ui: {
@@ -176,7 +182,7 @@ const Rule: Collection = {
     {
       type: "string",
       name: "guid",
-      label: "Guid",
+      label: "GUID",
       description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
       ui: {
         component: "hidden",
@@ -187,7 +193,7 @@ const Rule: Collection = {
       name: "seoDescription",
       label: "SEO Description",
       description:
-        "A summary of the page content, used for SEO purposes. This can be generated automatically with AI - See https://www.ssw.com.au/rules/html-meta-tags/#rectifying-the-missing-meta-tags-issue",
+        "Page summary used for SEO. Can be generated with AI. See https://www.ssw.com.au/rules/html-meta-tags/#rectifying-the-missing-meta-tags-issue",
       searchable: false,
       ui: {
         component: ConditionalHiddenField,
@@ -219,9 +225,9 @@ const Rule: Collection = {
     },
     {
       type: "image",
-      label: "Rule thumbnail",
+      label: "Rule Thumbnail",
       name: "thumbnail",
-      description: "Use a JPG or PNG image that is at least 175 x 175px",
+      description: "Use JPG or PNG (min. 175×175px).",
       uploadDir: (file) => {
         return `rules/${file.uri || ""}`;
       },

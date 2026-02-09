@@ -50,7 +50,7 @@ const Rule: Collection = {
       type: "string",
       label: "Title",
       name: "title",
-      description: "Should start with \"Do you\" and end with a question mark.",
+      description: 'Should start with "Do you" and end with a question mark.',
       isTitle: true,
       required: true,
       searchable: true,
@@ -59,7 +59,7 @@ const Rule: Collection = {
       type: "string",
       name: "uri",
       label: "URL Slug",
-      description: "Identifies this page in the URL. Should be short and not include \"Do you\". E.g. \"keep-urls-clean\"",
+      description: 'Identifies this page in the URL. Should be short and not include "Do you". E.g. "keep-urls-clean"',
       required: true,
       searchable: true,
       ui: {
@@ -134,19 +134,13 @@ const Rule: Collection = {
             component: wrapFieldsWithMeta((props) => <AuthorSelector {...props} />),
           },
         },
-        {
-          type: "string",
-          description: "The SSW People link for the contributor. E.g. \"https://ssw.com.au/people/bob-northwind\"",
-          name: "url",
-          label: "Url",
-        },
       ],
     },
     {
       type: "object",
       label: "Related Rules",
       name: "related",
-      description: "Select related rules. E.g. \"keep-urls-clean\"",
+      description: 'Select related rules. E.g. "keep-urls-clean"',
       list: true,
       searchable: false,
       ui: {

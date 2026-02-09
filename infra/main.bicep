@@ -7,12 +7,15 @@ targetScope = 'resourceGroup'
 // PARAMETERS
 // ============================================================================
 
-@description('Environment name')
+@description('Environment name used for resource naming (staging/prod)')
 @allowed([
   'staging'
   'prod'
 ])
 param environment string
+
+@description('Docker image tag pushed by the build pipeline (e.g., staging, production). Defaults to environment if not specified.')
+param imageTag string = environment
 
 @description('Location for all resources')
 param location string = resourceGroup().location
@@ -146,6 +149,7 @@ module appServiceModule 'modules/appService.bicep' = {
     containerRegistryName: containerRegistryName
     appInsightsConnectionString: appInsightsModule.outputs.connectionString
     environment: environment
+    imageTag: imageTag
     tags: tags
     slotName: slotName
   }

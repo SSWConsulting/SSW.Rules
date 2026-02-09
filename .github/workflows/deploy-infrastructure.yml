@@ -1,0 +1,109 @@
+name: Deploy Infrastructure
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+        description: "Target environment (staging or production)"
+      slot_name:
+        type: string
+        required: false
+        default: ""
+        description: "Deployment slot name (e.g., pr-123). Only used for PR deployments."
+      ref:
+        type: string
+        required: false
+        default: ""
+        description: "Git ref to checkout (defaults to github.sha if not specified)"
+    secrets:
+      AZURE_CLIENT_ID:
+        required: true
+      AZURE_TENANT_ID:
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        required: true
+      AZURE_SERVICE_PRINCIPAL_OBJECT_ID:
+        required: true
+    outputs:
+      resourceGroup:
+        description: "Deployed resource group name"
+        value: ${{ jobs.deploy.outputs.resourceGroup }}
+      appServiceName:
+        description: "App Service name"
+        value: ${{ jobs.deploy.outputs.appServiceName }}
+      appServiceHostName:
+        description: "App Service hostname"
+        value: ${{ jobs.deploy.outputs.appServiceHostName }}
+      slotName:
+        description: "Deployment slot name (empty if no slot)"
+        value: ${{ jobs.deploy.outputs.slotName }}
+      slotHostName:
+        description: "Deployment slot hostname (empty if no slot)"
+        value: ${{ jobs.deploy.outputs.slotHostName }}
+      acrName:
+        description: "Azure Container Registry name"
+        value: ${{ jobs.deploy.outputs.acrName }}
+      acrLoginServer:
+        description: "Azure Container Registry login server"
+        value: ${{ jobs.deploy.outputs.acrLoginServer }}
+      appInsightsConnectionString:
+        description: "Application Insights connection string"
+        value: ${{ jobs.deploy.outputs.appInsightsConnectionString }}
+
+jobs:
+  deploy:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    outputs:
+      resourceGroup: ${{ steps.deploy.outputs.resourceGroup }}
+      appServiceName: ${{ steps.deploy.outputs.appServiceName }}
+      appServiceHostName: ${{ steps.deploy.outputs.appServiceHostName }}
+      slotName: ${{ steps.deploy.outputs.slotName }}
+      slotHostName: ${{ steps.deploy.outputs.slotHostName }}
+      acrName: ${{ steps.deploy.outputs.acrName }}
+      acrLoginServer: ${{ steps.deploy.outputs.acrLoginServer }}
+      appInsightsConnectionString: ${{ steps.deploy.outputs.appInsightsConnectionString }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+
+      - name: Azure CLI - Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Infrastructure
+        id: deploy
+        shell: pwsh
+        run: |
+          $params = @{}
+          $params['Environment'] = "${{ inputs.environment }}"
+          $params['ResourceGroup'] = "${{ vars.AZURE_RESOURCE_GROUP }}"
+          $params['ServicePrincipalObjectId'] = "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}"
+
+          $slotName = "${{ inputs.slot_name }}"
+          if ($slotName) {
+              $params['SlotName'] = $slotName
+          }
+
+          ./infra/deploy.ps1 @params
+
+      - name: Log infrastructure outputs
+        run: |
+          echo "Infrastructure Deployment Complete"
+          echo "Resource Group: ${{ steps.deploy.outputs.resourceGroup }}"
+          echo "App Service: ${{ steps.deploy.outputs.appServiceName }}"
+          echo "App Service URL: https://${{ steps.deploy.outputs.appServiceHostName }}"
+          echo "ACR: ${{ steps.deploy.outputs.acrLoginServer }}"
+          SLOT_NAME="${{ steps.deploy.outputs.slotName }}"
+          if [ -n "$SLOT_NAME" ]; then
+            echo "Slot Name: $SLOT_NAME"
+            echo "Slot URL: https://${{ steps.deploy.outputs.slotHostName }}"
+          fi

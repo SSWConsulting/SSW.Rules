@@ -86,6 +86,12 @@ Code changes made to **SSW.Rules** are deployed as follows:
   - **production**: https://www.ssw.com.au/rules
 
 
+### PR Preview Deploy
+
+To deploy a PR preview, add a comment to the PR: **`/deploy`**. This creates/updates a preview deployment (slot `pr-<number>`) and posts a comment with the preview URL.
+
+
+
 ---
 
 ### Python Scripts

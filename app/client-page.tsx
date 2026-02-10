@@ -8,7 +8,6 @@ import HelpImproveCard from "@/components/HelpImproveCard";
 import JoinConversationCard from "@/components/JoinConversationCard";
 import LatestRulesCard from "@/components/LatestRulesCard";
 import QuickLinksCard from "@/components/QuickLinksCard";
-import RuleCount from "@/components/RuleCount";
 import SearchBar from "@/components/SearchBarWrapper";
 import { Card } from "@/components/ui/card";
 import WhyRulesCard from "@/components/WhyRulesCard";

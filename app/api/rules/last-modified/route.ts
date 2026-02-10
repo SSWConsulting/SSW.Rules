@@ -57,7 +57,7 @@ function getRuleFilesFromPRs(prs: any[]): Array<{ path: string; mergedAt: string
 
 async function getRecentRulesForUser(username: string, limit: number): Promise<RuleItem[]> {
   const service = await createGitHubService();
-  const prs = await service.getPRsForUser(username);
+  const prs = await service.getPRsForUser(username, limit);
   const ruleFiles = getRuleFilesFromPRs(prs);
 
   const uriToDate = new Map<string, string>();
@@ -113,7 +113,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const username = searchParams.get("username")?.trim();
-    const limit = Math.max(1, Math.min(50, Number(searchParams.get("limit") || 10)));
+    const limit = Math.max(1, Math.min(50, Number(searchParams.get("limit") || 5)));
 
     if (!username) {
       return addCors(NextResponse.json({ error: "Missing username" }, { status: 400 }));

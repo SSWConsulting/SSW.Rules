@@ -111,12 +111,12 @@ export class GitHubService {
     };
   }
 
-  async searchTinaBotPRs(username: string, targetCount = 20): Promise<any[]> {
+  async searchTinaBotPRs(username: string, targetCount = 50): Promise<any[]> {
     const targetLower = username.toLowerCase();
     const allPRs: any[] = [];
     const seenPRNumbers = new Set<number>();
     let cursor: string | null = null;
-    const maxPages = 500;
+    const maxPages = 250;
 
     // Keep fetching until we find enough PRs for this user or run out of pages (limit to 500 pages to avoid infinite loops)
     for (let page = 0; page < maxPages; page++) {
@@ -235,14 +235,14 @@ export class GitHubService {
     return authors;
   }
 
-  async getPRsForUser(username: string): Promise<any[]> {
+  async getPRsForUser(username: string, limit: number): Promise<any[]> {
     // Run both searches in parallel - we need results from both
     const [tinaBotPRs, directPRs] = await Promise.all([
-      this.searchTinaBotPRs(username).catch(err => {
+      this.searchTinaBotPRs(username, limit).catch(err => {
         console.error(`[GitHub] Tina bot search failed:`, err);
         return [];
       }),
-      this.searchDirectPRs(username).catch(err => {
+      this.searchDirectPRs(username, limit).catch(err => {
         console.error(`[GitHub] Direct PR search failed:`, err);
         return [];
       }),

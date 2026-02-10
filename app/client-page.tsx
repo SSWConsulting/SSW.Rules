@@ -64,7 +64,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
                     ?.map((item: any, subIndex: number) => (
                       <li key={subIndex} className="mb-4 last:mb-2">
                         <div className=" flex justify-between">
-                          <Link href={`/${item.category._sys.filename}`}>{item.category.title}</Link>
+                          <Link href={`/${item.category.uri || item.category._sys.filename}`}>{item.category.title}</Link>
                           <span className="text-gray-300">{categoryRuleCounts[item.category._sys.filename] || 0}</span>
                         </div>
                       </li>

@@ -3,7 +3,6 @@ import { PaginationResult, PaginationVars } from "@/models/Pagination";
 import { QueryResult } from "@/models/QueryResult";
 import { Rule } from "@/models/Rule";
 import client from "@/tina/__generated__/client";
-import ruleToCategories from "../../../rule-to-categories.json";
 import { toSlug } from "@/lib/utils";
 
 type RuleSearchField = "title" | "uri";
@@ -51,8 +50,19 @@ export async function fetchLatestRules(size: number = 5, sortOption: "lastUpdate
   return await getCachedLatestRules(size, sortOption, includeBody);
 }
 
+async function fetchRuleCountData(): Promise<number> {
+  const res = await client.queries.ruleConnection({ first: 0 });
+  const count = res?.data?.ruleConnection?.totalCount;
+  return typeof count === "number" ? count : 0;
+}
+
 export async function fetchRuleCount() {
-  return Object.keys(ruleToCategories).length;
+  const getCachedRuleCount = unstable_cache(fetchRuleCountData, ["rule-count"], {
+    revalidate: 300,
+    tags: ["rule-count"],
+  });
+
+  return await getCachedRuleCount();
 }
 
 export async function fetchArchivedRules(variables: { first?: number; after?: string } = {}): Promise<QueryResult<Rule>> {

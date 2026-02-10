@@ -5,7 +5,6 @@ import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import { QuickLink } from "@/types/quickLink";
-import ruleToCategories from "../rule-to-categories.json";
 import HomeClientPage from "./client-page";
 
 export const revalidate = 300;
@@ -32,24 +31,25 @@ async function fetchQuickLinks(): Promise<QuickLink[]> {
   return Array.isArray(res.data.global.quickLinks?.links) ? (res.data.global.quickLinks.links as QuickLink[]) : [];
 }
 
-function buildCategoryRuleCounts(): Record<string, number> {
-  const counts: Record<string, number> = {};
-
-  Object.values(ruleToCategories).forEach((categories) => {
-    categories.forEach((category) => {
-      counts[category] = (counts[category] || 0) + 1;
+async function fetchCategoryRuleCounts(topCategories: any[]): Promise<Record<string, number>> {
+  const entries = (topCategories || []).flatMap((topCategory) => {
+    return (topCategory?.index || []).map((item: any) => {
+      const key = item?.category?._sys?.filename;
+      const count = Array.isArray(item?.category?.index) ? item.category.index.length : 0;
+      return typeof key === "string" && key.length > 0 ? ([key, count] as const) : null;
     });
   });
 
-  return counts;
+  return Object.fromEntries(entries.filter(Boolean) as Array<readonly [string, number]>);
 }
 
 export default async function Home() {
-  const [topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks] = await Promise.all([
-    fetchTopCategoriesWithSubcategories(),
+  const topCategories = await fetchTopCategoriesWithSubcategories();
+
+  const [latestRules, ruleCount, categoryRuleCounts, quickLinks] = await Promise.all([
     fetchLatestRules(),
     fetchRuleCount(),
-    Promise.resolve(buildCategoryRuleCounts()),
+    fetchCategoryRuleCounts(topCategories),
     fetchQuickLinks(),
   ]);
 

@@ -65,8 +65,12 @@ query mainCategoryQuery {
               category {
                 ... on CategoryCategory {
                   title
+                  uri
                   _sys {
                     filename
+                  }
+                  index {
+                    __typename
                   }
                 }
               }

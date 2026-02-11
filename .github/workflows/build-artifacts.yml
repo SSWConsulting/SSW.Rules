@@ -535,37 +535,3 @@ jobs:
           echo "  Deployment URL: ${{ env.DEPLOYMENT_URL }}"
           echo "  Commit: ${{ env.COMMIT_HASH }}"
           echo "  Cache: DISABLED AND VERIFIED"
-
-      # ────────────────────────────── GENERATE SEARCH INDEX ─────────────────
-      - name: Checkout SSW.Rules.Content for search index
-        uses: actions/checkout@v4
-        with:
-          repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ steps.resolve_content_branch.outputs.content_branch }}
-          path: content
-          fetch-depth: 0
-          lfs: true
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.10.0
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Generate search index with content
-        env:
-          LOCAL_CONTENT_RELATIVE_PATH: ../content
-          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-          TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
-          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH: ${{ steps.resolve_content_branch.outputs.content_branch }}
-          NEXT_PUBLIC_GITHUB_ORG: ${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
-          NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
-        run: pnpm tinacms search-index

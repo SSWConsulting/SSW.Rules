@@ -1,9 +1,9 @@
 import { unstable_cache } from "next/cache";
+import { toSlug } from "@/lib/utils";
 import { PaginationResult, PaginationVars } from "@/models/Pagination";
 import { QueryResult } from "@/models/QueryResult";
 import { Rule } from "@/models/Rule";
 import client from "@/tina/__generated__/client";
-import { toSlug } from "@/lib/utils";
 
 type RuleSearchField = "title" | "uri";
 
@@ -25,9 +25,7 @@ async function fetchLatestRulesData(size: number = 5, sortOption: "lastUpdated" 
 
   const enhanced = results.map((r: any) => {
     const displayName = r.lastUpdatedBy || r.createdBy;
-    const authorUrl = displayName
-      ? `https://ssw.com.au/people/${toSlug(displayName)}/`
-      : null;
+    const authorUrl = displayName ? `https://ssw.com.au/people/${toSlug(displayName)}/` : null;
     return {
       ...r,
       authorUrl,
@@ -51,9 +49,35 @@ export async function fetchLatestRules(size: number = 5, sortOption: "lastUpdate
 }
 
 async function fetchRuleCountData(): Promise<number> {
-  const res = await client.queries.ruleConnection({ first: 0 });
-  const count = res?.data?.ruleConnection?.totalCount;
-  return typeof count === "number" ? count : 0;
+  const uniqueRules = new Set<string>();
+
+  let after: string | undefined = undefined;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    const res = await client.queries.categoryRuleRefsForCount({
+      first: 200,
+      after,
+    });
+
+    const conn = res?.data?.categoryConnection;
+    const nodes = (conn?.edges ?? []).map((e: any) => e?.node).filter(Boolean);
+
+    for (const n of nodes) {
+      if (n.__typename !== "CategoryCategory") continue;
+
+      const idx = Array.isArray(n.index) ? n.index : [];
+      for (const item of idx) {
+        const ref = item?.rule;
+        if (typeof ref === "string" && ref.length > 0) uniqueRules.add(ref);
+      }
+    }
+
+    hasNextPage = !!conn?.pageInfo?.hasNextPage;
+    after = conn?.pageInfo?.endCursor ?? undefined;
+  }
+
+  return uniqueRules.size;
 }
 
 export async function fetchRuleCount() {

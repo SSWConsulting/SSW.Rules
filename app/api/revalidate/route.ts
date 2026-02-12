@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
     const routesToRevalidate = new Set<string>();
     let shouldRevalidateLatestRules = false;
-    
+
     for (const changedPath of changedPaths) {
       if (typeof changedPath !== "string") continue;
 
@@ -47,9 +47,13 @@ export async function POST(req: Request) {
       // Example: categories/communication/rules-to-better-email.mdx -> /rules-to-better-email
       if (changedPath.startsWith("categories/")) {
         const rel = changedPath.replace("categories/", "");
+        routesToRevalidate.add("/");
         // Ignore main/top index files like categories/index.mdx or categories/<top>/index.mdx
         if (!rel.endsWith("/index.mdx") && rel.endsWith(".mdx")) {
-          const filename = rel.replace(/\.mdx$/, "").split("/").pop();
+          const filename = rel
+            .replace(/\.mdx$/, "")
+            .split("/")
+            .pop();
           if (filename) {
             routesToRevalidate.add(`/${filename}`);
           }

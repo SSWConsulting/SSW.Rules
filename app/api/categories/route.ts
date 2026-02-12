@@ -28,6 +28,7 @@ async function fetchMainCategoryData(branch?: string) {
 
 export async function GET() {
   try {
+    console.log("[GET /api/categories] STACKTRACE:\n", new Error("api/categories called").stack);
     const cookieStore = await cookies();
     const branch = cookieStore.get("x-branch")?.value || undefined;
     const branchName = branch || "main";

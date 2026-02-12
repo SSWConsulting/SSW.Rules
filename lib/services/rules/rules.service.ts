@@ -56,7 +56,7 @@ async function fetchRuleCountData(): Promise<number> {
 
   while (hasNextPage) {
     const res = await client.queries.categoryRuleRefsForCount({
-      first: 200,
+      first: 50,
       after,
     });
 

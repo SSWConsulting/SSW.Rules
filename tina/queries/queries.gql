@@ -121,7 +121,7 @@ query rulesByGuidQuery($guids: [String!]!) {
 }
 
 query rulesByUriQuery($uris: [String!]!) {
-  ruleConnection(filter: { uri: { in: $uris } }, first: 100) {
+  ruleConnection(filter: { uri: { in: $uris } } first: 100) {
     edges {
       node {
         guid
@@ -344,35 +344,6 @@ query ruleDataBasic($relativePath: String!) {
       isArchived
       archivedreason
       sidebarVideo
-    }
-  }
-}
-
-query categoryRuleRefsForCount($first: Float, $after: String) {
-  categoryConnection(first: $first, after: $after) {
-    edges {
-      node {
-        __typename
-        ... on CategoryCategory {
-          _sys {
-            filename
-          }
-          index {
-            rule {
-              ... on Rule {
-                _sys {
-                  relativePath
-                  filename
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    pageInfo {
-      hasNextPage
-      endCursor
     }
   }
 }

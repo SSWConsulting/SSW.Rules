@@ -353,11 +353,11 @@ query categoryRuleCountsQuery($first: Float, $after: String) {
           _sys {
             filename
           }
-          # index {
-          #   rule {
-          #     __typename
-          #   }
-          # }
+          index {
+            rule {
+              __typename
+            }
+          }
         }
       }
     }

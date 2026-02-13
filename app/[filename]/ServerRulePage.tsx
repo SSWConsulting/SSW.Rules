@@ -34,7 +34,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
   const { isAdmin: isAdminPage, isLoading: isAdminLoading } = useIsAdminPage();
 
   const { brokenReferences } = serverRulePageProps;
-  const primaryCategory = rule.categories[0].category;
+  const primaryCategory = rule.categories?.[0]?.category;
   const breadcrumbCategories = primaryCategory ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }] : undefined;
 
   useAdminBackBlock({ isAdminPage });

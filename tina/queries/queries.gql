@@ -186,6 +186,14 @@ query archivedRulesQuery($first: Float, $after: String) {
         body
         isArchived
         archivedreason
+        categories {
+          category {
+            ... on CategoryCategory {
+              uri
+              title
+            }
+          }
+        }
         authors {
           title
         }

@@ -47,6 +47,20 @@ jobs:
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
             AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
             AZURE_SERVICE_PRINCIPAL_OBJECT_ID: ${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}
+            AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+            AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+            AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+            AUTH0_SECRET: ${{ secrets.AUTH0_SECRET }}
+            GH_APP_ID: ${{ vars.GH_APP_ID }}
+            GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+            GITHUB_APP_INSTALLATION_ID: ${{ secrets.GITHUB_APP_INSTALLATION_ID }}
+            GITHUB_API_PAT: ${{ secrets.GITHUB_API_PAT }}
+            CRM_APP_SECRET: ${{ secrets.CRM_APP_SECRET }}
+            CRM_CLIENT_ID: ${{ secrets.CRM_CLIENT_ID }}
+            CRM_TENANT: ${{ secrets.CRM_TENANT }}
+            TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+            ALGOLIA_SEARCH_KEY: ${{ secrets.ALGOLIA_SEARCH_KEY }}
+            ALGOLIA_APP_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
 
     # ============================================================================
     # BUILD AND PUSH CONTAINER

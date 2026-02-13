@@ -28,6 +28,63 @@ param tags object = {}
 @description('Optional: Name of the deployment slot (e.g., pr-123). If empty, no slot is created.')
 param slotName string = ''
 
+// Runtime environment variables (secrets and configuration)
+@secure()
+@description('Auth0 Domain')
+param auth0Domain string
+
+@secure()
+@description('Auth0 Client ID')
+param auth0ClientId string
+
+@secure()
+@description('Auth0 Client Secret')
+param auth0ClientSecret string
+
+@secure()
+@description('Auth0 Secret')
+param auth0Secret string
+
+@secure()
+@description('GitHub App ID')
+param ghAppId string
+
+@secure()
+@description('GitHub App Private Key')
+param ghAppPrivateKey string
+
+@secure()
+@description('GitHub App Installation ID')
+param githubAppInstallationId string
+
+@secure()
+@description('GitHub API Personal Access Token')
+param githubApiPat string
+
+@secure()
+@description('CRM App Secret')
+param crmAppSecret string
+
+@secure()
+@description('CRM Client ID')
+param crmClientId string
+
+@secure()
+@description('CRM Tenant')
+param crmTenant string
+
+@secure()
+@description('Tina Token')
+param tinaToken string
+
+@secure()
+@description('Algolia Search Key')
+param algoliaSearchKey string
+
+@secure()
+@description('Algolia App ID')
+param algoliaAppId string
+
 // ============================================================================
 // VARIABLES
 // ============================================================================
@@ -59,6 +116,63 @@ var baseAppSettings = [
   {
     name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
     value: appInsightsConnectionString
+  }
+  // Runtime environment variables
+  {
+    name: 'AUTH0_DOMAIN'
+    value: auth0Domain
+  }
+  {
+    name: 'AUTH0_CLIENT_ID'
+    value: auth0ClientId
+  }
+  {
+    name: 'AUTH0_CLIENT_SECRET'
+    value: auth0ClientSecret
+  }
+  {
+    name: 'AUTH0_SECRET'
+    value: auth0Secret
+  }
+  {
+    name: 'GH_APP_ID'
+    value: ghAppId
+  }
+  {
+    name: 'GH_APP_PRIVATE_KEY'
+    value: ghAppPrivateKey
+  }
+  {
+    name: 'GITHUB_APP_INSTALLATION_ID'
+    value: githubAppInstallationId
+  }
+  {
+    name: 'GITHUB_API_PAT'
+    value: githubApiPat
+  }
+  {
+    name: 'CRM_APP_SECRET'
+    value: crmAppSecret
+  }
+  {
+    name: 'CRM_CLIENT_ID'
+    value: crmClientId
+  }
+  {
+    name: 'CRM_TENANT'
+    value: crmTenant
+  }
+  {
+    name: 'TINA_TOKEN'
+    value: tinaToken
+  }
+  {
+    name: 'ALGOLIA_SEARCH_KEY'
+    value: algoliaSearchKey
+  }
+  {
+    name: 'ALGOLIA_APP_ID'
+    value: algoliaAppId
   }
 ]
 

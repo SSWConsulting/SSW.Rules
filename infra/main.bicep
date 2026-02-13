@@ -68,6 +68,63 @@ param tags object = {
 @description('Optional: Name of the deployment slot (e.g., pr-123). If empty, no slot is created.')
 param slotName string = ''
 
+// Runtime environment variables (secrets and configuration)
+@secure()
+@description('Auth0 Domain')
+param auth0Domain string
+
+@secure()
+@description('Auth0 Client ID')
+param auth0ClientId string
+
+@secure()
+@description('Auth0 Client Secret')
+param auth0ClientSecret string
+
+@secure()
+@description('Auth0 Secret')
+param auth0Secret string
+
+@secure()
+@description('GitHub App ID')
+param ghAppId string
+
+@secure()
+@description('GitHub App Private Key')
+param ghAppPrivateKey string
+
+@secure()
+@description('GitHub App Installation ID')
+param githubAppInstallationId string
+
+@secure()
+@description('GitHub API Personal Access Token')
+param githubApiPat string
+
+@secure()
+@description('CRM App Secret')
+param crmAppSecret string
+
+@secure()
+@description('CRM Client ID')
+param crmClientId string
+
+@secure()
+@description('CRM Tenant')
+param crmTenant string
+
+@secure()
+@description('Tina Token')
+param tinaToken string
+
+@secure()
+@description('Algolia Search Key')
+param algoliaSearchKey string
+
+@secure()
+@description('Algolia App ID')
+param algoliaAppId string
+
 // ============================================================================
 // VARIABLES - Well-known Azure Role Definition IDs
 // ============================================================================
@@ -152,6 +209,21 @@ module appServiceModule 'modules/appService.bicep' = {
     imageTag: imageTag
     tags: tags
     slotName: slotName
+    // Runtime environment variables
+    auth0Domain: auth0Domain
+    auth0ClientId: auth0ClientId
+    auth0ClientSecret: auth0ClientSecret
+    auth0Secret: auth0Secret
+    ghAppId: ghAppId
+    ghAppPrivateKey: ghAppPrivateKey
+    githubAppInstallationId: githubAppInstallationId
+    githubApiPat: githubApiPat
+    crmAppSecret: crmAppSecret
+    crmClientId: crmClientId
+    crmTenant: crmTenant
+    tinaToken: tinaToken
+    algoliaSearchKey: algoliaSearchKey
+    algoliaAppId: algoliaAppId
   }
   dependsOn: [
     containerRegistryModule

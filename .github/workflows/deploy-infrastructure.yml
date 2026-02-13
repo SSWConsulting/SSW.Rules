@@ -26,6 +26,35 @@ on:
         required: true
       AZURE_SERVICE_PRINCIPAL_OBJECT_ID:
         required: true
+      # Runtime environment variables
+      AUTH0_DOMAIN:
+        required: true
+      AUTH0_CLIENT_ID:
+        required: true
+      AUTH0_CLIENT_SECRET:
+        required: true
+      AUTH0_SECRET:
+        required: true
+      GH_APP_ID:
+        required: true
+      GH_APP_PRIVATE_KEY:
+        required: true
+      GITHUB_APP_INSTALLATION_ID:
+        required: true
+      GITHUB_API_PAT:
+        required: true
+      CRM_APP_SECRET:
+        required: true
+      CRM_CLIENT_ID:
+        required: true
+      CRM_TENANT:
+        required: true
+      TINA_TOKEN:
+        required: true
+      ALGOLIA_SEARCH_KEY:
+        required: true
+      ALGOLIA_APP_ID:
+        required: true
     outputs:
       resourceGroup:
         description: "Deployed resource group name"
@@ -87,6 +116,22 @@ jobs:
           $params['Environment'] = "${{ inputs.environment }}"
           $params['ResourceGroup'] = "${{ vars.AZURE_RESOURCE_GROUP }}"
           $params['ServicePrincipalObjectId'] = "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}"
+          
+          # Runtime environment variables
+          $params['Auth0Domain'] = "${{ secrets.AUTH0_DOMAIN }}"
+          $params['Auth0ClientId'] = "${{ secrets.AUTH0_CLIENT_ID }}"
+          $params['Auth0ClientSecret'] = "${{ secrets.AUTH0_CLIENT_SECRET }}"
+          $params['Auth0Secret'] = "${{ secrets.AUTH0_SECRET }}"
+          $params['GhAppId'] = "${{ secrets.GH_APP_ID }}"
+          $params['GhAppPrivateKey'] = "${{ secrets.GH_APP_PRIVATE_KEY }}"
+          $params['GithubAppInstallationId'] = "${{ secrets.GITHUB_APP_INSTALLATION_ID }}"
+          $params['GithubApiPat'] = "${{ secrets.GITHUB_API_PAT }}"
+          $params['CrmAppSecret'] = "${{ secrets.CRM_APP_SECRET }}"
+          $params['CrmClientId'] = "${{ secrets.CRM_CLIENT_ID }}"
+          $params['CrmTenant'] = "${{ secrets.CRM_TENANT }}"
+          $params['TinaToken'] = "${{ secrets.TINA_TOKEN }}"
+          $params['AlgoliaSearchKey'] = "${{ secrets.ALGOLIA_SEARCH_KEY }}"
+          $params['AlgoliaAppId'] = "${{ secrets.ALGOLIA_APP_ID }}"
 
           $slotName = "${{ inputs.slot_name }}"
           if ($slotName) {

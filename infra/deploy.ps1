@@ -84,9 +84,6 @@ param(
     [string]$GithubAppInstallationId,
 
     [Parameter(Mandatory = $true)]
-    [string]$GithubApiPat,
-
-    [Parameter(Mandatory = $true)]
     [string]$CrmAppSecret,
 
     [Parameter(Mandatory = $true)]
@@ -451,7 +448,6 @@ $azArgs = @(
     '--parameters', "ghAppId=$GhAppId"
     '--parameters', "ghAppPrivateKey=$GhAppPrivateKey"
     '--parameters', "githubAppInstallationId=$GithubAppInstallationId"
-    '--parameters', "githubApiPat=$GithubApiPat"
     '--parameters', "crmAppSecret=$CrmAppSecret"
     '--parameters', "crmClientId=$CrmClientId"
     '--parameters', "crmTenant=$CrmTenant"

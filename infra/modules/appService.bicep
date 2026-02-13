@@ -57,9 +57,6 @@ param ghAppPrivateKey string
 @description('GitHub App Installation ID')
 param githubAppInstallationId string
 
-@secure()
-@description('GitHub API Personal Access Token')
-param githubApiPat string
 
 @secure()
 @description('CRM App Secret')
@@ -145,10 +142,6 @@ var baseAppSettings = [
   {
     name: 'GITHUB_APP_INSTALLATION_ID'
     value: githubAppInstallationId
-  }
-  {
-    name: 'GITHUB_API_PAT'
-    value: githubApiPat
   }
   {
     name: 'CRM_APP_SECRET'

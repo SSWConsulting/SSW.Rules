@@ -41,8 +41,6 @@ on:
         required: true
       GITHUB_APP_INSTALLATION_ID:
         required: true
-      GITHUB_API_PAT:
-        required: true
       CRM_APP_SECRET:
         required: true
       CRM_CLIENT_ID:
@@ -125,7 +123,6 @@ jobs:
           $params['GhAppId'] = "${{ secrets.GH_APP_ID }}"
           $params['GhAppPrivateKey'] = "${{ secrets.GH_APP_PRIVATE_KEY }}"
           $params['GithubAppInstallationId'] = "${{ secrets.GITHUB_APP_INSTALLATION_ID }}"
-          $params['GithubApiPat'] = "${{ secrets.GITHUB_API_PAT }}"
           $params['CrmAppSecret'] = "${{ secrets.CRM_APP_SECRET }}"
           $params['CrmClientId'] = "${{ secrets.CRM_CLIENT_ID }}"
           $params['CrmTenant'] = "${{ secrets.CRM_TENANT }}"

@@ -98,10 +98,6 @@ param ghAppPrivateKey string
 param githubAppInstallationId string
 
 @secure()
-@description('GitHub API Personal Access Token')
-param githubApiPat string
-
-@secure()
 @description('CRM App Secret')
 param crmAppSecret string
 
@@ -217,7 +213,6 @@ module appServiceModule 'modules/appService.bicep' = {
     ghAppId: ghAppId
     ghAppPrivateKey: ghAppPrivateKey
     githubAppInstallationId: githubAppInstallationId
-    githubApiPat: githubApiPat
     crmAppSecret: crmAppSecret
     crmClientId: crmClientId
     crmTenant: crmTenant

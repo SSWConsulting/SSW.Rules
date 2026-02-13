@@ -49,8 +49,6 @@ on:
         required: true
       TINA_TOKEN:
         required: true
-      ALGOLIA_SEARCH_KEY:
-        required: true
       ALGOLIA_APP_ID:
         required: true
     outputs:
@@ -126,7 +124,6 @@ jobs:
           $params['CrmAppSecret'] = "${{ secrets.CRM_APP_SECRET }}"
           $params['CrmClientId'] = "${{ secrets.CRM_CLIENT_ID }}"
           $params['TinaToken'] = "${{ secrets.TINA_TOKEN }}"
-          $params['AlgoliaSearchKey'] = "${{ secrets.ALGOLIA_SEARCH_KEY }}"
           $params['AlgoliaAppId'] = "${{ secrets.ALGOLIA_APP_ID }}"
 
           $slotName = "${{ inputs.slot_name }}"

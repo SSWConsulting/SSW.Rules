@@ -152,10 +152,6 @@ var baseAppSettings = [
     value: tinaToken
   }
   {
-    name: 'ALGOLIA_SEARCH_KEY'
-    value: algoliaSearchKey
-  }
-  {
     name: 'ALGOLIA_APP_ID'
     value: algoliaAppId
   }

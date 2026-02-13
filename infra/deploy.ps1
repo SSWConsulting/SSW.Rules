@@ -90,9 +90,6 @@ param(
     [string]$CrmClientId,
 
     [Parameter(Mandatory = $true)]
-    [string]$CrmTenant,
-
-    [Parameter(Mandatory = $true)]
     [string]$TinaToken,
 
     [Parameter(Mandatory = $true)]
@@ -450,7 +447,6 @@ $azArgs = @(
     '--parameters', "githubAppInstallationId=$GithubAppInstallationId"
     '--parameters', "crmAppSecret=$CrmAppSecret"
     '--parameters', "crmClientId=$CrmClientId"
-    '--parameters', "crmTenant=$CrmTenant"
     '--parameters', "tinaToken=$TinaToken"
     '--parameters', "algoliaSearchKey=$AlgoliaSearchKey"
     '--parameters', "algoliaAppId=$AlgoliaAppId"

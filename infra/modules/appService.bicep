@@ -67,10 +67,6 @@ param crmAppSecret string
 param crmClientId string
 
 @secure()
-@description('CRM Tenant')
-param crmTenant string
-
-@secure()
 @description('Tina Token')
 param tinaToken string
 
@@ -150,10 +146,6 @@ var baseAppSettings = [
   {
     name: 'CRM_CLIENT_ID'
     value: crmClientId
-  }
-  {
-    name: 'CRM_TENANT'
-    value: crmTenant
   }
   {
     name: 'TINA_TOKEN'

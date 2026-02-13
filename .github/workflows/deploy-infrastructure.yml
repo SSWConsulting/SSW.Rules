@@ -125,7 +125,6 @@ jobs:
           $params['GithubAppInstallationId'] = "${{ secrets.GITHUB_APP_INSTALLATION_ID }}"
           $params['CrmAppSecret'] = "${{ secrets.CRM_APP_SECRET }}"
           $params['CrmClientId'] = "${{ secrets.CRM_CLIENT_ID }}"
-          $params['CrmTenant'] = "${{ secrets.CRM_TENANT }}"
           $params['TinaToken'] = "${{ secrets.TINA_TOKEN }}"
           $params['AlgoliaSearchKey'] = "${{ secrets.ALGOLIA_SEARCH_KEY }}"
           $params['AlgoliaAppId'] = "${{ secrets.ALGOLIA_APP_ID }}"

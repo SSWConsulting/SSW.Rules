@@ -106,10 +106,6 @@ param crmAppSecret string
 param crmClientId string
 
 @secure()
-@description('CRM Tenant')
-param crmTenant string
-
-@secure()
 @description('Tina Token')
 param tinaToken string
 
@@ -215,7 +211,6 @@ module appServiceModule 'modules/appService.bicep' = {
     githubAppInstallationId: githubAppInstallationId
     crmAppSecret: crmAppSecret
     crmClientId: crmClientId
-    crmTenant: crmTenant
     tinaToken: tinaToken
     algoliaSearchKey: algoliaSearchKey
     algoliaAppId: algoliaAppId

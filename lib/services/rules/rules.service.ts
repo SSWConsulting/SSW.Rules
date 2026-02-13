@@ -104,6 +104,7 @@ async function fetchCategoryRuleData(): Promise<{
 }
 
 // Cached version of the shared fetch function
+// Both fetchRuleCount() and fetchCategoryRuleCounts() use this same cache to avoid duplicate API calls
 const getCachedCategoryRuleData = unstable_cache(fetchCategoryRuleData, ["category-rule-data"], {
   tags: ["category-rule-data", "rule-count"],
 });

@@ -1,9 +1,9 @@
 import { unstable_cache } from "next/cache";
+import { toSlug } from "@/lib/utils";
 import { PaginationResult, PaginationVars } from "@/models/Pagination";
 import { QueryResult } from "@/models/QueryResult";
 import { Rule } from "@/models/Rule";
 import client from "@/tina/__generated__/client";
-import { toSlug } from "@/lib/utils";
 
 type RuleSearchField = "title" | "uri";
 
@@ -25,9 +25,7 @@ async function fetchLatestRulesData(size: number = 5, sortOption: "lastUpdated" 
 
   const enhanced = results.map((r: any) => {
     const displayName = r.lastUpdatedBy || r.createdBy;
-    const authorUrl = displayName
-      ? `https://ssw.com.au/people/${toSlug(displayName)}/`
-      : null;
+    const authorUrl = displayName ? `https://ssw.com.au/people/${toSlug(displayName)}/` : null;
     return {
       ...r,
       authorUrl,
@@ -50,8 +48,13 @@ export async function fetchLatestRules(size: number = 5, sortOption: "lastUpdate
   return await getCachedLatestRules(size, sortOption, includeBody);
 }
 
-async function fetchRuleCountData(): Promise<number> {
+// Shared function that fetches category rule data and computes both total unique rules and per-category counts
+async function fetchCategoryRuleData(): Promise<{
+  totalUniqueRules: number;
+  categoryRuleCounts: Record<string, number>;
+}> {
   const uniqueRulePaths = new Set<string>();
+  const counts: Record<string, number> = {};
 
   let after: string | null = null;
   let hasNextPage = true;
@@ -63,18 +66,30 @@ async function fetchRuleCountData(): Promise<number> {
     });
 
     const conn: any = res?.data?.categoryConnection;
+    const edges = conn?.edges ?? [];
 
-    for (const edge of conn?.edges ?? []) {
+    for (const edge of edges) {
       const categoryNode: any = edge?.node;
       if (!categoryNode || categoryNode.__typename !== "CategoryCategory") continue;
+
+      const filename = categoryNode._sys?.filename;
+      let categoryRuleCount = 0;
 
       for (const indexItem of categoryNode.index ?? []) {
         const rule: any = indexItem?.rule;
         if (!rule || rule.__typename !== "Rule") continue;
         if (rule.isArchived) continue;
 
+        categoryRuleCount++;
+
         const relativePath = rule?._sys?.relativePath;
-        if (typeof relativePath === "string" && relativePath) uniqueRulePaths.add(relativePath);
+        if (typeof relativePath === "string" && relativePath) {
+          uniqueRulePaths.add(relativePath);
+        }
+      }
+
+      if (filename) {
+        counts[filename] = categoryRuleCount;
       }
     }
 
@@ -82,15 +97,25 @@ async function fetchRuleCountData(): Promise<number> {
     after = conn?.pageInfo?.endCursor ?? null;
   }
 
-  return uniqueRulePaths.size;
+  return {
+    totalUniqueRules: uniqueRulePaths.size,
+    categoryRuleCounts: counts,
+  };
 }
 
-export async function fetchRuleCount() {
-  const getCachedRuleCount = unstable_cache(fetchRuleCountData, ["rule-count"], {
-    tags: ["rule-count"],
-  });
+// Cached version of the shared fetch function
+const getCachedCategoryRuleData = unstable_cache(fetchCategoryRuleData, ["category-rule-data"], {
+  tags: ["category-rule-data", "rule-count"],
+});
 
-  return await getCachedRuleCount();
+export async function fetchRuleCount(): Promise<number> {
+  const data = await getCachedCategoryRuleData();
+  return data.totalUniqueRules;
+}
+
+export async function fetchCategoryRuleCounts(): Promise<Record<string, number>> {
+  const data = await getCachedCategoryRuleData();
+  return data.categoryRuleCounts;
 }
 
 export async function fetchArchivedRules(variables: { first?: number; after?: string } = {}): Promise<QueryResult<Rule>> {

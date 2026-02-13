@@ -48,6 +48,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
                 topCategory.index &&
                 topCategory.index.length > 0 &&
                 topCategory.index.some((item: any) => item.category && categoryRuleCounts[item.category._sys.filename] > 0)
+              // topCategory.index.some((item: any) => item.category)
             )
             .map((topCategory, index) => (
               <Card key={index} className="mb-4">
@@ -61,10 +62,11 @@ export default function HomeClientPage(props: HomeClientPageProps) {
                 <ol className="text-lg mb-0">
                   {topCategory.index
                     ?.filter((item: any) => item.category && categoryRuleCounts[item.category._sys.filename] > 0)
+                    // ?.filter((item: any) => item.category)
                     ?.map((item: any, subIndex: number) => (
                       <li key={subIndex} className="mb-4 last:mb-2">
                         <div className=" flex justify-between">
-                          <Link href={`/${item.category._sys.filename}`}>{item.category.title}</Link>
+                          <Link href={`/${item.category.uri || item.category._sys.filename}`}>{item.category.title}</Link>
                           <span className="text-gray-300">{categoryRuleCounts[item.category._sys.filename] || 0}</span>
                         </div>
                       </li>

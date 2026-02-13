@@ -20,8 +20,6 @@ import { Card } from "@/components/ui/card";
 
 export interface ServerRulePageProps {
   rule: any;
-  ruleCategoriesMapping: { title: string; uri: string }[];
-  sanitizedBasePath: string;
   brokenReferences?: BrokenReferences | null;
 }
 
@@ -35,9 +33,8 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
   const rule = data?.rule;
   const { isAdmin: isAdminPage, isLoading: isAdminLoading } = useIsAdminPage();
 
-  const { ruleCategoriesMapping, sanitizedBasePath, brokenReferences } = serverRulePageProps;
-
-  const primaryCategory = ruleCategoriesMapping?.[0];
+  const { brokenReferences } = serverRulePageProps;
+  const primaryCategory = rule.categories[0].category;
   const breadcrumbCategories = primaryCategory ? [{ title: primaryCategory.title, link: `/${primaryCategory.uri}` }] : undefined;
 
   useAdminBackBlock({ isAdminPage });

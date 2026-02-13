@@ -2,8 +2,6 @@ import React from "react";
 import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
-import { getSanitizedBasePath } from "@/lib/withBasePath";
-import ruleToCategoryIndex from "@/rule-to-categories.json";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import ClientFallbackPage from "./ClientFallbackPage";
@@ -291,26 +289,14 @@ export default async function Page({
 
   const rule = await getRuleData(filename);
   const ruleUri = rule?.data.rule.uri;
-  const ruleCategories = ruleUri ? (ruleToCategoryIndex as Record<string, string[]>)[ruleUri] : undefined;
-
-  const ruleCategoriesMapping =
-    ruleCategories?.map((categoryUri: string) => {
-      return {
-        title: (categoryTitleIndex as any).categories[categoryUri],
-        uri: categoryUri,
-      };
-    }) || [];
 
   if (rule?.data) {
-    const sanitizedBasePath = getSanitizedBasePath();
     return (
       <Section>
         <TinaRuleWrapper
           tinaQueryProps={rule}
           serverRulePageProps={{
             rule: rule.data.rule,
-            ruleCategoriesMapping: ruleCategoriesMapping,
-            sanitizedBasePath: sanitizedBasePath,
             brokenReferences: rule.brokenReferences,
           }}
         />

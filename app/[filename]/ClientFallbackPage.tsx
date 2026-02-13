@@ -9,7 +9,6 @@ import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import { Section } from "@/components/layout/section";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
-import ruleToCategoryIndex from "@/rule-to-categories.json";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
 
 interface ClientFallbackPageProps {
@@ -141,17 +140,6 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
             const ruleResult = await ruleRes.json();
 
             if (ruleResult?.data?.rule) {
-              const ruleUri = ruleResult.data.rule.uri;
-              const ruleCategories = ruleUri ? (ruleToCategoryIndex as Record<string, string[]>)[ruleUri] : undefined;
-
-              const ruleCategoriesMapping =
-                ruleCategories?.map((categoryUri: string) => {
-                  return {
-                    title: (categoryTitleIndex as any).categories[categoryUri],
-                    uri: categoryUri,
-                  };
-                }) || [];
-
               const sanitizedBasePath = getSanitizedBasePath();
 
               const brokenReferences = ruleResult._brokenReferences
@@ -164,7 +152,6 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
               setData({
                 type: "rule",
                 rule: ruleResult.data.rule,
-                ruleCategoriesMapping,
                 sanitizedBasePath,
                 tinaQueryProps: {
                   data: ruleResult.data,
@@ -252,8 +239,6 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
           tinaQueryProps={data.tinaQueryProps}
           serverRulePageProps={{
             rule: data.rule,
-            ruleCategoriesMapping: data.ruleCategoriesMapping,
-            sanitizedBasePath: data.sanitizedBasePath,
             brokenReferences: data.brokenReferences,
           }}
         />

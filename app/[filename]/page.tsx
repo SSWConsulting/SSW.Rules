@@ -18,13 +18,18 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
   let after: string | null = null;
 
   while (hasNextPage) {
-    const res = await client.queries.topCategoryWithIndexQuery({
-      first: 50,
-      after,
-    });
+    let res;
+    try {
+      res = await client.queries.topCategoryWithIndexQuery({
+        first: 50,
+        after,
+      });
+    } catch (err: any) {
+      console.warn(`[getFullRelativePathFromFilename] topCategoryWithIndexQuery failed for filename="${filename}":`, err?.message || err);
+      return null;
+    }
 
-    const topCategories = res?.data.categoryConnection?.edges || [];
-
+    const topCategories = res?.data?.categoryConnection?.edges || [];
     for (const edge of topCategories) {
       const node = edge?.node;
       if (node?.__typename === "CategoryTop_category") {
@@ -33,7 +38,6 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
 
         const children = node.index || [];
         for (const child of children) {
-          // @ts-ignore
           if (child?.category?._sys?.filename === filename) {
             return `${topDir}/${filename}.mdx`;
           }
@@ -41,8 +45,8 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
       }
     }
 
-    hasNextPage = res?.data?.categoryConnection?.pageInfo?.hasNextPage;
-    after = res?.data?.categoryConnection?.pageInfo?.endCursor;
+    hasNextPage = !!res?.data?.categoryConnection?.pageInfo?.hasNextPage;
+    after = res?.data?.categoryConnection?.pageInfo?.endCursor ?? null;
   }
 
   return null;

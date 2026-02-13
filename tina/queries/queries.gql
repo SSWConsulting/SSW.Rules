@@ -356,6 +356,12 @@ query categoryRuleCountsQuery($first: Float, $after: String) {
           index {
             rule {
               __typename
+              ... on Rule {
+                isArchived
+                _sys {
+                  relativePath
+                }
+              }
             }
           }
         }

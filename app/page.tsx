@@ -53,7 +53,7 @@ async function fetchCategoryRuleCountsFromTina(): Promise<Record<string, number>
       if (node.__typename !== "CategoryCategory") continue;
 
       const filename = node._sys?.filename;
-      const ruleCount = Array.isArray(node.index) ? node.index.length : 0;
+      const ruleCount = Array.isArray(node.index) ? node.index.filter((item: any) => item?.rule?.__typename === "Rule" && !item.rule.isArchived).length : 0;
 
       if (filename) counts[filename] = ruleCount;
     }

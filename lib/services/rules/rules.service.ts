@@ -3,7 +3,6 @@ import { PaginationResult, PaginationVars } from "@/models/Pagination";
 import { QueryResult } from "@/models/QueryResult";
 import { Rule } from "@/models/Rule";
 import client from "@/tina/__generated__/client";
-import ruleToCategories from "../../../rule-to-categories.json";
 import { toSlug } from "@/lib/utils";
 
 type RuleSearchField = "title" | "uri";
@@ -51,8 +50,47 @@ export async function fetchLatestRules(size: number = 5, sortOption: "lastUpdate
   return await getCachedLatestRules(size, sortOption, includeBody);
 }
 
+async function fetchRuleCountData(): Promise<number> {
+  const uniqueRulePaths = new Set<string>();
+
+  let after: string | null = null;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    const res: any = await client.queries.categoryRuleCountsQuery({
+      first: 50,
+      after,
+    });
+
+    const conn: any = res?.data?.categoryConnection;
+
+    for (const edge of conn?.edges ?? []) {
+      const categoryNode: any = edge?.node;
+      if (!categoryNode || categoryNode.__typename !== "CategoryCategory") continue;
+
+      for (const indexItem of categoryNode.index ?? []) {
+        const rule: any = indexItem?.rule;
+        if (!rule || rule.__typename !== "Rule") continue;
+        if (rule.isArchived) continue;
+
+        const relativePath = rule?._sys?.relativePath;
+        if (typeof relativePath === "string" && relativePath) uniqueRulePaths.add(relativePath);
+      }
+    }
+
+    hasNextPage = !!conn?.pageInfo?.hasNextPage;
+    after = conn?.pageInfo?.endCursor ?? null;
+  }
+
+  return uniqueRulePaths.size;
+}
+
 export async function fetchRuleCount() {
-  return Object.keys(ruleToCategories).length;
+  const getCachedRuleCount = unstable_cache(fetchRuleCountData, ["rule-count"], {
+    tags: ["rule-count"],
+  });
+
+  return await getCachedRuleCount();
 }
 
 export async function fetchArchivedRules(variables: { first?: number; after?: string } = {}): Promise<QueryResult<Rule>> {

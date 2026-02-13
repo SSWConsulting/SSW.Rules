@@ -48,17 +48,14 @@ jobs:
             AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
             AZURE_SERVICE_PRINCIPAL_OBJECT_ID: ${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}
             AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-            AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+            AUTH0_CLIENT_ID: ${{ vars.AUTH0_CLIENT_ID }}
             AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
             AUTH0_SECRET: ${{ secrets.AUTH0_SECRET }}
             GH_APP_ID: ${{ vars.GH_APP_ID }}
             GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
             GITHUB_APP_INSTALLATION_ID: ${{ secrets.GITHUB_APP_INSTALLATION_ID }}
             CRM_APP_SECRET: ${{ secrets.CRM_APP_SECRET }}
-            CRM_CLIENT_ID: ${{ secrets.CRM_CLIENT_ID }}
-            CRM_TENANT: ${{ secrets.CRM_TENANT }}
-            TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-            ALGOLIA_APP_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
+            TINA_WEBHOOK_SECRET: ${{ secrets.TINA_WEBHOOK_SECRET }}
 
     # ============================================================================
     # BUILD AND PUSH CONTAINER
@@ -152,55 +149,32 @@ jobs:
                       echo "Deploying without slot (staging environment)"
                   fi
 
-            - name: Configure Auth0 and Build Info app settings
+            - name: Configure deployment metadata
               run: |
                   SLOT_NAME="${{ steps.slot.outputs.slot_name }}"
 
-                  # Build command as array for safe execution
                   CMD=(
                     az webapp config appsettings set
                     --name "${{ needs.infrastructure.outputs.appServiceName }}"
                     --resource-group "${{ needs.infrastructure.outputs.resourceGroup }}"
                   )
 
-                  # Add slot parameter only if slot name is provided
                   if [ -n "$SLOT_NAME" ]; then
                     CMD+=(--slot "$SLOT_NAME")
                   fi
 
-                  # Add settings and output flag
                   CMD+=(
                     --settings
-                    "TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}"
-                    "AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }}"
-                    "AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }}"
-                    "AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }}"
-                    "AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}"
-                    "AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }}"
-                    "AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }}"
-                    "GH_APP_ID=${{ vars.GH_APP_ID }}"
-                    "GH_APP_PRIVATE_KEY=${{ secrets.GH_APP_PRIVATE_KEY }}"
-                    "GITHUB_APP_INSTALLATION_ID=${{ secrets.GITHUB_APP_INSTALLATION_ID }}"
-                    "CRM_TENANT=${{ vars.CRM_TENANT }}"
-                    "CRM_TENANT_ID=${{ vars.CRM_TENANT_ID }}"
-                    "CRM_APP_ID=${{ vars.CRM_APP_ID }}"
-                    "CRM_SCOPE=${{ vars.CRM_SCOPE }}"
-                    "CRM_VIEW_CURRENT=${{ vars.CRM_VIEW_CURRENT }}"
-                    "CRM_VIEW_PAST=${{ vars.CRM_VIEW_PAST }}"
-                    "CRM_APP_SECRET=${{ secrets.CRM_APP_SECRET }}"
-                    "NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }}"
-                    "NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}"
                     "BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}"
                     "VERSION_DEPLOYED=${{ env.VERSION_DEPLOYED }}"
                     "DEPLOYMENT_URL=${{ env.DEPLOYMENT_URL }}"
                     "BUILD_DATE=${{ env.BUILD_DATE }}"
-                    "NEXT_PUBLIC_TINA_BRANCH=${{ vars.NEXT_PUBLIC_TINA_BRANCH }}"
                     "COMMIT_HASH=${{ env.COMMIT_HASH }}"
                     --output none
                   )
 
-                  # Execute the command
                   "${CMD[@]}"
+                  echo "✅ Deployment metadata configured"
 
             - name: Deploy to Azure Web App (Production with slot)
               if: github.event.inputs.environment == 'production'

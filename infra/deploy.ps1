@@ -61,43 +61,6 @@ param(
     [Parameter(Mandatory = $false)]
     [string]$SlotName = '',
 
-    # Runtime environment variables (secrets)
-    [Parameter(Mandatory = $true)]
-    [string]$Auth0Domain,
-
-    [Parameter(Mandatory = $true)]
-    [string]$Auth0ClientId,
-
-    [Parameter(Mandatory = $true)]
-    [string]$Auth0ClientSecret,
-
-    [Parameter(Mandatory = $true)]
-    [string]$Auth0Secret,
-
-    [Parameter(Mandatory = $true)]
-    [string]$GhAppId,
-
-    [Parameter(Mandatory = $true)]
-    [string]$GhAppPrivateKey,
-
-    [Parameter(Mandatory = $true)]
-    [string]$GithubAppInstallationId,
-
-    [Parameter(Mandatory = $true)]
-    [string]$CrmAppSecret,
-
-    [Parameter(Mandatory = $true)]
-    [string]$CrmClientId,
-
-    [Parameter(Mandatory = $true)]
-    [string]$TinaToken,
-
-    [Parameter(Mandatory = $true)]
-    [string]$AlgoliaSearchKey,
-
-    [Parameter(Mandatory = $true)]
-    [string]$AlgoliaAppId,
-
     [Parameter(Mandatory = $false)]
     [switch]$WhatIf
 )
@@ -438,18 +401,6 @@ $azArgs = @(
     '--parameters', "appServicePlanName=$AppServicePlanName"
     '--parameters', "appServicePlanResourceGroup=$AppServicePlanResourceGroup"
     '--parameters', "appServicePlanSku=$AppServicePlanSku"
-    '--parameters', "auth0Domain=$Auth0Domain"
-    '--parameters', "auth0ClientId=$Auth0ClientId"
-    '--parameters', "auth0ClientSecret=$Auth0ClientSecret"
-    '--parameters', "auth0Secret=$Auth0Secret"
-    '--parameters', "ghAppId=$GhAppId"
-    '--parameters', "ghAppPrivateKey=$GhAppPrivateKey"
-    '--parameters', "githubAppInstallationId=$GithubAppInstallationId"
-    '--parameters', "crmAppSecret=$CrmAppSecret"
-    '--parameters', "crmClientId=$CrmClientId"
-    '--parameters', "tinaToken=$TinaToken"
-    '--parameters', "algoliaSearchKey=$AlgoliaSearchKey"
-    '--parameters', "algoliaAppId=$AlgoliaAppId"
 )
 
 if ($ServicePrincipalObjectId) {

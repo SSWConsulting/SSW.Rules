@@ -112,19 +112,6 @@ jobs:
           $params['Environment'] = "${{ inputs.environment }}"
           $params['ResourceGroup'] = "${{ vars.AZURE_RESOURCE_GROUP }}"
           $params['ServicePrincipalObjectId'] = "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}"
-          
-          # Runtime environment variables
-          $params['Auth0Domain'] = "${{ secrets.AUTH0_DOMAIN }}"
-          $params['Auth0ClientId'] = "${{ secrets.AUTH0_CLIENT_ID }}"
-          $params['Auth0ClientSecret'] = "${{ secrets.AUTH0_CLIENT_SECRET }}"
-          $params['Auth0Secret'] = "${{ secrets.AUTH0_SECRET }}"
-          $params['GhAppId'] = "${{ secrets.GH_APP_ID }}"
-          $params['GhAppPrivateKey'] = "${{ secrets.GH_APP_PRIVATE_KEY }}"
-          $params['GithubAppInstallationId'] = "${{ secrets.GITHUB_APP_INSTALLATION_ID }}"
-          $params['CrmAppSecret'] = "${{ secrets.CRM_APP_SECRET }}"
-          $params['CrmClientId'] = "${{ secrets.CRM_CLIENT_ID }}"
-          $params['TinaToken'] = "${{ secrets.TINA_TOKEN }}"
-          $params['AlgoliaAppId'] = "${{ secrets.ALGOLIA_APP_ID }}"
 
           $slotName = "${{ inputs.slot_name }}"
           if ($slotName) {
@@ -132,6 +119,48 @@ jobs:
           }
 
           ./infra/deploy.ps1 @params
+
+      - name: Configure all app settings
+        run: |
+          SLOT_NAME="${{ inputs.slot_name }}"
+          
+          CMD=(
+            az webapp config appsettings set
+            --name "${{ steps.deploy.outputs.appServiceName }}"
+            --resource-group "${{ steps.deploy.outputs.resourceGroup }}"
+          )
+          
+          if [ -n "$SLOT_NAME" ]; then
+            CMD+=(--slot "$SLOT_NAME")
+          fi
+          
+          CMD+=(
+            --settings
+            "AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }}"
+            "AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }}"
+            "AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }}"
+            "AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}"
+            "AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }}"
+            "AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }}"
+            "GH_APP_ID=${{ vars.GH_APP_ID }}"
+            "GH_APP_PRIVATE_KEY=${{ secrets.GH_APP_PRIVATE_KEY }}"
+            "GITHUB_APP_INSTALLATION_ID=${{ secrets.GITHUB_APP_INSTALLATION_ID }}"
+            "CRM_TENANT=${{ vars.CRM_TENANT }}"
+            "CRM_TENANT_ID=${{ vars.CRM_TENANT_ID }}"
+            "CRM_APP_ID=${{ vars.CRM_APP_ID }}"
+            "CRM_SCOPE=${{ vars.CRM_SCOPE }}"
+            "CRM_VIEW_CURRENT=${{ vars.CRM_VIEW_CURRENT }}"
+            "CRM_VIEW_PAST=${{ vars.CRM_VIEW_PAST }}"
+            "CRM_APP_SECRET=${{ secrets.CRM_APP_SECRET }}"
+            "TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}"
+            "NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }}"
+            "NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ steps.deploy.outputs.appInsightsConnectionString }}"
+            "NEXT_PUBLIC_TINA_BRANCH=${{ vars.NEXT_PUBLIC_TINA_BRANCH }}"
+            --output none
+          )
+          
+          "${CMD[@]}"
+          echo "✅ App settings configured successfully"
 
       - name: Log infrastructure outputs
         run: |

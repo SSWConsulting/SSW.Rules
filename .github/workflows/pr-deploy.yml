@@ -173,7 +173,6 @@ jobs:
             "AUTH0_SECRET=${{ secrets.AUTH0_SECRET }}" \
             "AUTH0_REDIRECT_URI=${{ vars.AUTH0_REDIRECT_URI }}" \
             "AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }}" \
-            "GITHUB_API_PAT=${{ secrets.GH_API_PAT }}" \
             "GH_APP_ID=${{ vars.GH_APP_ID }}" \
             "GH_APP_PRIVATE_KEY=${{ secrets.GH_APP_PRIVATE_KEY }}" \
             "GITHUB_APP_INSTALLATION_ID=${{ secrets.GITHUB_APP_INSTALLATION_ID }}" \

@@ -1,11 +1,10 @@
 import React from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Section } from "@/components/layout/section";
-import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
+import { fetchCategoryRuleCounts, fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import { QuickLink } from "@/types/quickLink";
-import ruleToCategories from "../rule-to-categories.json";
 import HomeClientPage from "./client-page";
 
 export const revalidate = 300;
@@ -32,24 +31,12 @@ async function fetchQuickLinks(): Promise<QuickLink[]> {
   return Array.isArray(res.data.global.quickLinks?.links) ? (res.data.global.quickLinks.links as QuickLink[]) : [];
 }
 
-function buildCategoryRuleCounts(): Record<string, number> {
-  const counts: Record<string, number> = {};
-
-  Object.values(ruleToCategories).forEach((categories) => {
-    categories.forEach((category) => {
-      counts[category] = (counts[category] || 0) + 1;
-    });
-  });
-
-  return counts;
-}
-
 export default async function Home() {
   const [topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks] = await Promise.all([
     fetchTopCategoriesWithSubcategories(),
     fetchLatestRules(),
     fetchRuleCount(),
-    Promise.resolve(buildCategoryRuleCounts()),
+    fetchCategoryRuleCounts(),
     fetchQuickLinks(),
   ]);
 

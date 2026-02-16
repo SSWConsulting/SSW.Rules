@@ -12,64 +12,42 @@ import SearchBar from "@/components/SearchBarWrapper";
 import { Card } from "@/components/ui/card";
 import WhyRulesCard from "@/components/WhyRulesCard";
 import { Rule } from "@/models/Rule";
-import ruleToCategories from "../../rule-to-categories.json";
 
 export interface ArchivedClientPageProps {
   archivedRules: Rule[];
-  topCategories: any[];
   latestRules?: any[];
   quickLinks?: any[];
 }
 
 export default function ArchivedClientPage(props: ArchivedClientPageProps) {
-  const { archivedRules, topCategories, latestRules = [], quickLinks = [] } = props;
+  const { archivedRules, latestRules = [], quickLinks = [] } = props;
 
-  // Group archived rules by subcategory
   const groupedArchivedData = useMemo(() => {
     const categoryRules: Record<string, Rule[]> = {};
-
-    // Group archived rules by category
     archivedRules.forEach((rule) => {
-      const ruleFilename = rule.uri.replace("/", "").replace(".html", "");
-      const categories = ruleToCategories[ruleFilename as keyof typeof ruleToCategories] || [];
+      const categoryPaths = (rule.categories ?? []).map((c) => c?.category?.title).filter((p): p is string => typeof p === "string" && p.length > 0);
+      const keys = categoryPaths.length > 0 ? categoryPaths : ["Orphaned Rules"];
 
-      if (categories.length === 0) {
-        if (!categoryRules["uncategorized"]) categoryRules["uncategorized"] = [];
-        categoryRules["uncategorized"].push(rule);
-      } else {
-        categories.forEach((category) => {
-          if (!categoryRules[category]) categoryRules[category] = [];
-          categoryRules[category].push(rule);
-        });
+      for (const key of keys) {
+        if (!categoryRules[key]) categoryRules[key] = [];
+        categoryRules[key].push(rule);
       }
     });
 
-    // Create organized subcategories with their rules
-    const subcategoriesWithRules: Array<{
-      category: any;
-      rules: Rule[];
-      count: number;
-    }> = [];
-
-    topCategories.forEach((topCategory) => {
-      topCategory.index?.forEach((item: any) => {
-        if (!item.category) return;
-
-        const filename = item.category._sys.filename;
-        const rules = categoryRules[filename] || [];
-
-        if (rules.length > 0) {
-          subcategoriesWithRules.push({
-            category: item.category,
-            rules,
-            count: rules.length,
-          });
-        }
+    const subcategoriesWithRules = Object.entries(categoryRules)
+      .map(([categoryPath, rules]) => ({
+        categoryPath,
+        rules,
+        count: rules.length,
+      }))
+      .sort((a, b) => {
+        if (a.categoryPath === "Orphaned Rules") return 1;
+        if (b.categoryPath === "Orphaned Rules") return -1;
+        return a.categoryPath.localeCompare(b.categoryPath);
       });
-    });
 
     return { subcategoriesWithRules, totalCount: subcategoriesWithRules.reduce((sum, s) => sum + s.rules.length, 0) };
-  }, [archivedRules, topCategories]);
+  }, [archivedRules]);
 
   if (archivedRules.length === 0) {
     return (
@@ -92,7 +70,7 @@ export default function ArchivedClientPage(props: ArchivedClientPageProps) {
           {groupedArchivedData.subcategoriesWithRules.map((subcategoryData, index) => (
             <Card key={index} className="mb-4">
               <h2 className="m-0 mb-4 text-2xl max-sm:text-lg">
-                <span>{subcategoryData.category.title}</span>
+                <span>{subcategoryData.categoryPath}</span>
               </h2>
 
               <ol>

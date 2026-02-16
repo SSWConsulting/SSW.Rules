@@ -26,7 +26,8 @@ export async function POST(req: Request) {
 
     const routesToRevalidate = new Set<string>();
     let shouldRevalidateLatestRules = false;
-    
+    let shouldRevalidateRuleCount = false;
+
     for (const changedPath of changedPaths) {
       if (typeof changedPath !== "string") continue;
 
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
         if (eventType === TINA_CONTENT_CHANGE_TYPE.Added) {
           // Mark that we need to revalidate latest-rules tag when any rule is added
           shouldRevalidateLatestRules = true;
+          shouldRevalidateRuleCount = true;
           routesToRevalidate.add("/api/rules");
         }
       }
@@ -47,9 +49,13 @@ export async function POST(req: Request) {
       // Example: categories/communication/rules-to-better-email.mdx -> /rules-to-better-email
       if (changedPath.startsWith("categories/")) {
         const rel = changedPath.replace("categories/", "");
+        routesToRevalidate.add("/");
         // Ignore main/top index files like categories/index.mdx or categories/<top>/index.mdx
         if (!rel.endsWith("/index.mdx") && rel.endsWith(".mdx")) {
-          const filename = rel.replace(/\.mdx$/, "").split("/").pop();
+          const filename = rel
+            .replace(/\.mdx$/, "")
+            .split("/")
+            .pop();
           if (filename) {
             routesToRevalidate.add(`/${filename}`);
           }
@@ -64,6 +70,11 @@ export async function POST(req: Request) {
     // Revalidate latest-rules tag if any rule was modified or added
     if (shouldRevalidateLatestRules) {
       revalidateTag("latest-rules");
+    }
+
+    // Revalidate rule-count tag if any rule was added
+    if (shouldRevalidateRuleCount) {
+      revalidateTag("rule-count");
     }
 
     for (const route of routesToRevalidate) {

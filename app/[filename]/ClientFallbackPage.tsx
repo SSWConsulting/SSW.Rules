@@ -2,13 +2,13 @@
 
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
-import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
 import NotFound from "@/app/not-found";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import { Section } from "@/components/layout/section";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
+import { TinaCategoryWrapper } from "./TinaCategoryWrapper";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
 
 interface ClientFallbackPageProps {
@@ -118,6 +118,11 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
                   view,
                   page,
                   perPage,
+                  tinaQueryProps: {
+                    data: categoryResult.data,
+                    query: categoryResult.query,
+                    variables: categoryResult.variables,
+                  },
                 });
                 setLoading(false);
                 return;
@@ -220,13 +225,15 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
   if (data.type === "category") {
     return (
       <Section>
-        <ServerCategoryPage
-          category={data.category}
-          path={data.path}
-          includeArchived={data.includeArchived}
-          view={data.view}
-          page={data.page}
-          perPage={data.perPage}
+        <TinaCategoryWrapper
+          tinaQueryProps={data.tinaQueryProps}
+          serverCategoryPageProps={{
+            path: data.path,
+            includeArchived: data.includeArchived,
+            view: data.view,
+            page: data.page,
+            perPage: data.perPage,
+          }}
         />
       </Section>
     );

@@ -1,10 +1,10 @@
 import React from "react";
-import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import ClientFallbackPage from "./ClientFallbackPage";
+import { TinaCategoryWrapper } from "./TinaCategoryWrapper";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
 
 // We have a Tina webhook revalidating each page individually on change
@@ -279,13 +279,15 @@ export default async function Page({
 
     return (
       <Section>
-        <ServerCategoryPage
-          category={category.data.category}
-          path={category.variables?.relativePath}
-          includeArchived={includeArchived}
-          view={view}
-          page={page}
-          perPage={perPage}
+        <TinaCategoryWrapper
+          tinaQueryProps={category}
+          serverCategoryPageProps={{
+            path: category.variables?.relativePath,
+            includeArchived,
+            view,
+            page,
+            perPage,
+          }}
         />
       </Section>
     );

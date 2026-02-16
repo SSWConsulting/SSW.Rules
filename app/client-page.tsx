@@ -36,7 +36,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
       <SearchBar />
       <div className="max-sm:h-auto m-4">
         <h1 className="m-0 mb-4 flex items-end max-sm:flex-col max-sm:items-start">
-          <span className="text-ssw-red font-bold">{ruleCount.toLocaleString("en-US")}&nbsp;</span>
+          <span className="text-ssw-red font-bold text-[2rem]">{ruleCount.toLocaleString("en-US")}&nbsp;</span>
           <span className="text-gray-600 text-lg font-normal">Best Practices for Better Software & Better Teams</span>
         </h1>
       </div>

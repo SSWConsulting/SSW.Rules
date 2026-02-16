@@ -60,13 +60,6 @@ pnpm build
 - ✅ DO use `unstable_cache` with tags for server-side caching
 - ❌ DON'T fetch data in Client Components - pass it from Server Components
 
-### Formatting (Biome)
-
-- Indent: 2 spaces
-- Line width: 160 characters
-- Quotes: double
-- Semicolons: always
-
 ## Key Patterns
 
 ### Dynamic Routing

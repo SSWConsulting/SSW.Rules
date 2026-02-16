@@ -3,7 +3,6 @@
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import NotFound from "@/app/not-found";
-import categoryTitleIndex from "@/category-uri-title-map.json";
 import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import { Section } from "@/components/layout/section";

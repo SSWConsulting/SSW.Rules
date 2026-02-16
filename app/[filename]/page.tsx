@@ -294,7 +294,6 @@ export default async function Page({
   }
 
   const rule = await getRuleData(filename);
-  const ruleUri = rule?.data.rule.uri;
 
   if (rule?.data) {
     return (

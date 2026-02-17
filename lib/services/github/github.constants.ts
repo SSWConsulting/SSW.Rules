@@ -16,12 +16,13 @@ export const GITHUB_PULL_REQUESTS_QUERY = `
       }
       nodes {
         ... on PullRequest {
-          files(first: 6) {
+          number
+          mergedAt
+          files(first: 20) {
             nodes {
               path
             }
           }
-          mergedAt
         }
       }
     }
@@ -30,3 +31,47 @@ export const GITHUB_PULL_REQUESTS_QUERY = `
 
 export const DEFAULT_RESULTS_PER_PAGE = 6;
 export const DEFAULT_FILES_PER_PULL_REQUEST = 20;
+
+// Query for TinaCMS bot PRs - includes commit authors with GitHub login
+export const GITHUB_TINA_BOT_PRS_QUERY = `
+  query SearchTinaBotPRs($query: String!, $first: Int!, $after: String) {
+    search(
+      query: $query
+      type: ISSUE
+      first: $first
+      after: $after
+    ) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      nodes {
+        ... on PullRequest {
+          number
+          mergedAt
+          files(first: 20) {
+            nodes {
+              path
+            }
+          }
+          commits(first: 100) {
+            nodes {
+              commit {
+                message
+                authors(first: 5) {
+                  nodes {
+                    user {
+                      login
+                    }
+                    name
+                    email
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;

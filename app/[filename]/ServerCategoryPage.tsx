@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { CategoryEdit } from "@/components/CategoryEdit";
@@ -38,7 +39,7 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
             <CategoryEdit path={path} />
           </div>
 
-          <div className="text-md rule-content">
+          <div className="text-md rule-content" data-tina-field={tinaField(category, "body")}>
             <TinaMarkdown content={category?.body} components={MarkdownComponentMapping} />
           </div>
 

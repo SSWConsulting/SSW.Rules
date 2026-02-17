@@ -1,15 +1,13 @@
-import React from "react";
 import fs from "node:fs";
 import path from "node:path";
-import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
+import React from "react";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
-import { getSanitizedBasePath } from "@/lib/withBasePath";
 import { fetchAllArchivedRules } from "@/lib/services/rules/rules.service";
-import ruleToCategoryIndex from "@/rule-to-categories.json";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import ClientFallbackPage from "./ClientFallbackPage";
+import { TinaCategoryWrapper } from "./TinaCategoryWrapper";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
 
 // We have a Tina webhook revalidating each page individually on change
@@ -23,13 +21,18 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
   let after: string | null = null;
 
   while (hasNextPage) {
-    const res = await client.queries.topCategoryWithIndexQuery({
-      first: 50,
-      after,
-    });
+    let res;
+    try {
+      res = await client.queries.topCategoryWithIndexQuery({
+        first: 50,
+        after,
+      });
+    } catch (err: any) {
+      console.warn(`[getFullRelativePathFromFilename] topCategoryWithIndexQuery failed for filename="${filename}":`, err?.message || err);
+      return null;
+    }
 
-    const topCategories = res?.data.categoryConnection?.edges || [];
-
+    const topCategories = res?.data?.categoryConnection?.edges || [];
     for (const edge of topCategories) {
       const node = edge?.node;
       if (node?.__typename === "CategoryTop_category") {
@@ -38,7 +41,6 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
 
         const children = node.index || [];
         for (const child of children) {
-          // @ts-ignore
           if (child?.category?._sys?.filename === filename) {
             return `${topDir}/${filename}.mdx`;
           }
@@ -46,8 +48,8 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
       }
     }
 
-    hasNextPage = res?.data?.categoryConnection?.pageInfo?.hasNextPage;
-    after = res?.data?.categoryConnection?.pageInfo?.endCursor;
+    hasNextPage = !!res?.data?.categoryConnection?.pageInfo?.hasNextPage;
+    after = res?.data?.categoryConnection?.pageInfo?.endCursor ?? null;
   }
 
   return null;
@@ -257,10 +259,7 @@ export async function generateStaticParams() {
     try {
       const archivedRules = await fetchAllArchivedRules();
       const archivedSlugs = archivedRules.map((r) => r.uri).filter(Boolean);
-      fs.writeFileSync(
-        path.join(process.cwd(), "archived-rules.json"),
-        JSON.stringify(archivedSlugs)
-      );
+      fs.writeFileSync(path.join(process.cwd(), "archived-rules.json"), JSON.stringify(archivedSlugs));
       console.log(`📋 Wrote ${archivedSlugs.length} archived rule slugs to archived-rules.json`);
     } catch (err) {
       console.warn("⚠️ Failed to write archived-rules.json:", err);
@@ -293,40 +292,29 @@ export default async function Page({
 
     return (
       <Section>
-        <ServerCategoryPage
-          category={category.data.category}
-          path={category.variables?.relativePath}
-          includeArchived={includeArchived}
-          view={view}
-          page={page}
-          perPage={perPage}
+        <TinaCategoryWrapper
+          tinaQueryProps={category}
+          serverCategoryPageProps={{
+            path: category.variables?.relativePath,
+            includeArchived,
+            view,
+            page,
+            perPage,
+          }}
         />
       </Section>
     );
   }
 
   const rule = await getRuleData(filename);
-  const ruleUri = rule?.data.rule.uri;
-  const ruleCategories = ruleUri ? (ruleToCategoryIndex as Record<string, string[]>)[ruleUri] : undefined;
-
-  const ruleCategoriesMapping =
-    ruleCategories?.map((categoryUri: string) => {
-      return {
-        title: (categoryTitleIndex as any).categories[categoryUri],
-        uri: categoryUri,
-      };
-    }) || [];
 
   if (rule?.data) {
-    const sanitizedBasePath = getSanitizedBasePath();
     return (
       <Section>
         <TinaRuleWrapper
           tinaQueryProps={rule}
           serverRulePageProps={{
             rule: rule.data.rule,
-            ruleCategoriesMapping: ruleCategoriesMapping,
-            sanitizedBasePath: sanitizedBasePath,
             brokenReferences: rule.brokenReferences,
           }}
         />

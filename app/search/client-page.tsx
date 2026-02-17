@@ -113,7 +113,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
 
   const getAuthorUrl = (r: any) => {
     const displayName = r.lastUpdatedBy || r.createdBy;
-    return displayName ? `https://ssw.com.au/people/${toSlug(displayName)}/` : null;
+    return displayName ? `https://www.ssw.com.au/people/${toSlug(displayName)}/` : null;
   };
 
   return (

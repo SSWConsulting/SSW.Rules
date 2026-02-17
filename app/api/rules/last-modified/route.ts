@@ -5,7 +5,7 @@ import client from "@/tina/__generated__/client";
 
 type RuleItem = { title: string; uri: string; lastModifiedAt: string | null; body: any };
 
-const ALLOWED_ORIGIN = "https://ssw.com.au";
+const ALLOWED_ORIGIN = "https://www.ssw.com.au";
 const CACHE_SECONDS = 60 * 60 * 2;
 
 function addCors(res: NextResponse) {

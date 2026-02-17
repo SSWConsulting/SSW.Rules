@@ -257,7 +257,7 @@ export default function UserRulesClientPage({ ruleCount }) {
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href={`https://ssw.com.au/people/${author.slug}/`}
+                href={`https://www.ssw.com.au/people/${author.slug}/`}
                 className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-800 border border-gray-400 rounded-md hover:border-ssw-red hover:text-ssw-red transition-colors leading-5"
               >
                 <FaUserCircle className="w-4 h-4 mr-1" />

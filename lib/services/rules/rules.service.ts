@@ -25,7 +25,7 @@ async function fetchLatestRulesData(size: number = 5, sortOption: "lastUpdated" 
 
   const enhanced = results.map((r: any) => {
     const displayName = r.lastUpdatedBy || r.createdBy;
-    const authorUrl = displayName ? `https://ssw.com.au/people/${toSlug(displayName)}/` : null;
+    const authorUrl = displayName ? `https://www.ssw.com.au/people/${toSlug(displayName)}/` : null;
     return {
       ...r,
       authorUrl,

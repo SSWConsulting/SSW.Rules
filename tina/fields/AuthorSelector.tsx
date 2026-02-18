@@ -304,12 +304,8 @@ export const AuthorSelector: React.FC<AuthorSelectorProps> = ({ input, showRefre
                               <BiPlus className="w-5 h-5 text-green-600" />
                             </div>
                             <div className="flex-1 min-w-0 overflow-hidden">
-                              <div className="font-medium text-gray-900 text-sm leading-5 truncate">
-                                Add &quot;{filter.trim()}&quot; as custom author
-                              </div>
-                              <div className="text-xs text-gray-400 truncate">
-                                {customAuthorSlug}
-                              </div>
+                              <div className="font-medium text-gray-900 text-sm leading-5 truncate">Add &quot;{filter.trim()}&quot;</div>
+                              <div className="text-xs text-gray-400 truncate">{customAuthorSlug}</div>
                             </div>
                           </div>
                         </button>

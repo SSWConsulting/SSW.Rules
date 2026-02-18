@@ -9,6 +9,7 @@ interface Person {
   slug: string;
   name: string;
   imageUrl: string;
+  sortWeight?: number;
 }
 
 type PeopleIndex = Record<string, Person>;
@@ -66,11 +67,17 @@ export async function GET(request: NextRequest) {
   // If search is provided, filter by name or slug
   if (search) {
     const searchLower = search.toLowerCase();
-    people = people.filter((person) => person.name.toLowerCase().includes(searchLower) || person.slug.includes(searchLower));
+    people = people.filter((person) => person.name.toLowerCase().includes(searchLower) || person.slug.toLowerCase().includes(searchLower));
   }
 
-  // Sort by name
-  people.sort((a, b) => a.name.localeCompare(b.name));
+  // ✅ Sort by sortWeight DESC, tie-breaker: name alphabetical
+  people.sort((a, b) => {
+    const wa = a.sortWeight ?? 0;
+    const wb = b.sortWeight ?? 0;
+
+    if (wb !== wa) return wb - wa; // bigger first
+    return a.name.localeCompare(b.name); // alphabetical
+  });
 
   return NextResponse.json({
     people,

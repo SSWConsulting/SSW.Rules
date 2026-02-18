@@ -11,10 +11,13 @@
  * Environment Variables:
  *   GITHUB_TOKEN - GitHub personal access token (optional, increases rate limit)
  *   PEOPLE_REPO - Override the repo (default: SSWConsulting/SSW.People.Profiles)
+ *   LOCAL_CONTENT_RELATIVE_PATH - Path to SSW.Rules.Content (used to compute popularity ordering)
  */
 
 import fs from "fs";
+import fg from "fast-glob";
 import matter from "gray-matter";
+import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -29,6 +32,139 @@ const RAW_GITHUB_BASE = "https://raw.githubusercontent.com";
 // Output directories
 const PROJECT_ROOT = path.resolve(__dirname, "..");
 const PEOPLE_OUTPUT_DIR = path.join(PROJECT_ROOT, "public/uploads/people");
+
+// Node scripts don't automatically load Next.js .env files
+dotenv.config({ path: path.join(PROJECT_ROOT, ".env.local") });
+dotenv.config({ path: path.join(PROJECT_ROOT, ".env") });
+
+const RECENCY_WINDOW_MONTHS = 12;
+
+function resolveContentRoot() {
+  const relPath = process.env.LOCAL_CONTENT_RELATIVE_PATH?.trim();
+  if (relPath) {
+    // Match scripts/prepare-content.js behavior (relative to the scripts folder)
+    const absPath = path.resolve(__dirname, relPath);
+    if (fs.existsSync(absPath)) return absPath;
+  }
+
+  // CI (see .github/workflows/build-artifacts.yml)
+  const ciPath = path.join(PROJECT_ROOT, "content-temp");
+  if (fs.existsSync(ciPath)) return ciPath;
+
+  // Common local sibling checkout
+  const siblingPath = path.resolve(PROJECT_ROOT, "..", "SSW.Rules.Content");
+  if (fs.existsSync(siblingPath)) return siblingPath;
+
+  return null;
+}
+
+function extractAuthorSlugs(frontmatter) {
+  const authors = Array.isArray(frontmatter?.authors) ? frontmatter.authors : [];
+  const slugs = new Set();
+
+  for (const author of authors) {
+    if (typeof author === "string") {
+      slugs.add(author);
+      continue;
+    }
+
+    if (author && typeof author === "object") {
+      // New Tina format: { author: "ash-anil" }
+      if (typeof author.author === "string") slugs.add(author.author);
+      if (typeof author.slug === "string") slugs.add(author.slug);
+
+      // Legacy format: { title: "Ash Anil", url: "https://www.ssw.com.au/people/ash-anil" }
+      if (typeof author.url === "string") {
+        try {
+          const u = new URL(author.url);
+          const parts = u.pathname.split("/").filter(Boolean);
+          const last = parts[parts.length - 1];
+          if (last) slugs.add(last);
+        } catch {
+          // ignore invalid URL
+        }
+      }
+      if (typeof author.title === "string") slugs.add(nameToSlug(author.title));
+    }
+  }
+
+  return [...slugs];
+}
+
+function parseFrontmatterDate(value) {
+  if (value instanceof Date && !Number.isNaN(value.valueOf())) return value;
+  if (typeof value !== "string") return null;
+
+  const trimmed = value.trim();
+
+  // Fast path for ISO 8601
+  const direct = new Date(trimmed);
+  if (!Number.isNaN(direct.valueOf())) return direct;
+
+  // Common Content formats:
+  // - "2021-03-17 05:01:20.730000"
+  // - "2013-06-24 07:41:13+00:00"
+  let normalized = trimmed.replace(" ", "T");
+  normalized = normalized.replace(/\.(\d{3})\d+/, ".$1");
+
+  // If there's no timezone info, assume UTC for consistency
+  if (!/[zZ]|[+-]\d{2}:?\d{2}$/.test(normalized)) normalized = `${normalized}Z`;
+
+  const parsed = new Date(normalized);
+  if (!Number.isNaN(parsed.valueOf())) return parsed;
+
+  return null;
+}
+
+function computeSortWeights(contentRoot) {
+  if (!contentRoot) return {};
+
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - RECENCY_WINDOW_MONTHS);
+  console.log(`📊 Sort weight window: last ${RECENCY_WINDOW_MONTHS} months (cutoff: ${cutoff.toISOString()})`);
+
+  const candidateRoots = [
+    path.join(contentRoot, "public", "uploads", "rules"),
+    path.join(contentRoot, "public", "rules"),
+    path.join(contentRoot, "rules"),
+    contentRoot,
+  ];
+
+  const rulesRoot = candidateRoots.find((p) => fs.existsSync(p)) || contentRoot;
+
+  const ruleFiles = fg.sync(["**/rule.mdx", "**/rule.md"], {
+    cwd: rulesRoot,
+    absolute: true,
+    ignore: ["**/.git/**", "**/node_modules/**"],
+  });
+
+  console.log(`📊 Found ${ruleFiles.length} rule files under: ${rulesRoot}`);
+
+  const sortWeights = {};
+
+  for (const filePath of ruleFiles) {
+    try {
+      const file = fs.readFileSync(filePath, "utf8");
+      const { data } = matter(file);
+
+      if (data?.isArchived === true || data?.archived === true) continue;
+
+      const activityRaw = data?.lastUpdated ?? data?.created ?? null;
+      const activityDate = parseFrontmatterDate(activityRaw);
+      const isRecent = activityDate instanceof Date && activityDate >= cutoff;
+      if (!isRecent) continue;
+
+      const authorSlugs = extractAuthorSlugs(data);
+      for (const slug of authorSlugs) {
+        sortWeights[slug] = (sortWeights[slug] || 0) + 1;
+      }
+    } catch {
+      // ignore malformed files
+    }
+  }
+
+  return sortWeights;
+}
 
 /**
  * Fetch with GitHub authentication if token is available
@@ -208,7 +344,7 @@ async function generatePeopleIndex() {
 
     // Process each person
     console.log("\n👤 Processing people...");
-    const peopleIndex = {};
+    const people = [];
     let successCount = 0;
     let errorCount = 0;
 
@@ -231,8 +367,7 @@ async function generatePeopleIndex() {
             const personData = parsePersonData(dir.name, markdown.content);
 
             if (personData) {
-              // Add to index
-              peopleIndex[personData.slug] = personData;
+              people.push(personData);
 
               // Generate MDX file for TinaCMS
               const mdxContent = generatePersonMdx(personData);
@@ -257,12 +392,39 @@ async function generatePeopleIndex() {
 
     console.log("\n");
 
+    const contentRoot = resolveContentRoot();
+    if (!contentRoot) {
+      console.warn("⚠️  Could not locate SSW.Rules.Content; sortWeight will be 0 for all people.");
+    } else {
+      console.log(`📊 Computing sortWeight from: ${contentRoot}`);
+    }
+
+    const sortWeights = computeSortWeights(contentRoot);
+    console.log(`📊 Sort weight scan complete. Matched ${Object.keys(sortWeights).length} author slugs.`);
+
+    for (const person of people) {
+      person.sortWeight = sortWeights[person.slug] || 0;
+    }
+
+    // Sort people by weight (desc) then name (asc)
+    people.sort((a, b) => {
+      const scoreB = b.sortWeight || 0;
+      const scoreA = a.sortWeight || 0;
+      return scoreB - scoreA || a.name.localeCompare(b.name);
+    });
+
+    // Build the JSON index in the sorted insertion order
+    const peopleIndex = {};
+    for (const person of people) {
+      peopleIndex[person.slug] = person;
+    }
+
     // Write the JSON index file
     const indexPath = path.join(PROJECT_ROOT, "people-index.json");
     fs.writeFileSync(indexPath, JSON.stringify(peopleIndex, null, 2));
 
     console.log("✅ People Index Generation Complete!");
-    console.log(`   Total people: ${Object.keys(peopleIndex).length}`);
+    console.log(`   Total people: ${people.length}`);
     console.log(`   Successful: ${successCount}`);
     console.log(`   Errors: ${errorCount}`);
     console.log(`   JSON Index: ${indexPath}`);

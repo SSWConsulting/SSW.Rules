@@ -341,6 +341,10 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
         metadata.description = rule.data.rule.seoDescription;
       }
 
+      if (rule.data.rule.isArchived) {
+        metadata.robots = { index: false, follow: true };
+      }
+
       return metadata;
     }
   } catch (error) {

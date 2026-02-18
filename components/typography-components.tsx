@@ -4,6 +4,7 @@ import React from "react";
 import { Prism } from "tinacms/dist/rich-text/prism";
 import { toSlug } from "@/lib/utils";
 import { CustomLink } from "@/components/customLink";
+import MermaidElement from "@/components/mermaid/MermaidElement";
 import { withBasePath } from "@/lib/withBasePath";
 
 // Helper function to extract text content from TinaCMS props structure
@@ -129,6 +130,9 @@ export const getTypographyComponents = (enableAnchors = false) => ({
   code_block: (props) => {
     if (!props) {
       return <></>;
+    }
+    if (props.lang === "mermaid") {
+      return <MermaidElement value={props.value} />;
     }
     return (
       <div className="[&_.prism-code]:p-4">

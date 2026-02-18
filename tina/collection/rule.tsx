@@ -100,7 +100,7 @@ const Rule: Collection = {
       type: "string",
       name: "sidebarVideo",
       label: "Sidebar Video",
-      description: "Displays a video in the sidebar. Works better with YouTube Shorts.",
+      description: "Primarily for promoting Shorts. For videos relevant to the rule, embed them directly in the body instead.",
       searchable: false,
       ui: {
         component: ConditionalHiddenField,

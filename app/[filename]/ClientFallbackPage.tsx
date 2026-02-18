@@ -2,14 +2,12 @@
 
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
-import ServerCategoryPage from "@/app/[filename]/ServerCategoryPage";
 import NotFound from "@/app/not-found";
-import categoryTitleIndex from "@/category-uri-title-map.json";
 import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import { Section } from "@/components/layout/section";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
-import ruleToCategoryIndex from "@/rule-to-categories.json";
+import { TinaCategoryWrapper } from "./TinaCategoryWrapper";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
 
 interface ClientFallbackPageProps {
@@ -119,6 +117,11 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
                   view,
                   page,
                   perPage,
+                  tinaQueryProps: {
+                    data: categoryResult.data,
+                    query: categoryResult.query,
+                    variables: categoryResult.variables,
+                  },
                 });
                 setLoading(false);
                 return;
@@ -141,17 +144,6 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
             const ruleResult = await ruleRes.json();
 
             if (ruleResult?.data?.rule) {
-              const ruleUri = ruleResult.data.rule.uri;
-              const ruleCategories = ruleUri ? (ruleToCategoryIndex as Record<string, string[]>)[ruleUri] : undefined;
-
-              const ruleCategoriesMapping =
-                ruleCategories?.map((categoryUri: string) => {
-                  return {
-                    title: (categoryTitleIndex as any).categories[categoryUri],
-                    uri: categoryUri,
-                  };
-                }) || [];
-
               const sanitizedBasePath = getSanitizedBasePath();
 
               const brokenReferences = ruleResult._brokenReferences
@@ -164,7 +156,6 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
               setData({
                 type: "rule",
                 rule: ruleResult.data.rule,
-                ruleCategoriesMapping,
                 sanitizedBasePath,
                 tinaQueryProps: {
                   data: ruleResult.data,
@@ -233,13 +224,15 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
   if (data.type === "category") {
     return (
       <Section>
-        <ServerCategoryPage
-          category={data.category}
-          path={data.path}
-          includeArchived={data.includeArchived}
-          view={data.view}
-          page={data.page}
-          perPage={data.perPage}
+        <TinaCategoryWrapper
+          tinaQueryProps={data.tinaQueryProps}
+          serverCategoryPageProps={{
+            path: data.path,
+            includeArchived: data.includeArchived,
+            view: data.view,
+            page: data.page,
+            perPage: data.perPage,
+          }}
         />
       </Section>
     );
@@ -252,8 +245,6 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
           tinaQueryProps={data.tinaQueryProps}
           serverRulePageProps={{
             rule: data.rule,
-            ruleCategoriesMapping: data.ruleCategoriesMapping,
-            sanitizedBasePath: data.sanitizedBasePath,
             brokenReferences: data.brokenReferences,
           }}
         />

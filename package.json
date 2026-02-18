@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "pnpm tinacms dev -c \"next dev --turbopack\"",
     "build": "tinacms build && next build",
-    "postbuild": "next-sitemap",
+    "generate:archived-rules": "node ./scripts/generate-archived-rules.js",
+    "postbuild": "npm run -s generate:archived-rules && next-sitemap",
     "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
     "start": "next start",
     "export": "npm run build && next export",

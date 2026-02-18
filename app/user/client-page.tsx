@@ -24,9 +24,6 @@ export default function UserRulesClientPage({ ruleCount }) {
   // Last Modified
   const [lastModifiedRules, setLastModifiedRules] = useState<any[]>([]);
   const [loadingLastModified, setLoadingLastModified] = useState(false);
-  const [loadingMoreLastModified, setLoadingMoreLastModified] = useState(false);
-  const [nextPageCursor, setNextPageCursor] = useState("");
-  const [hasNext, setHasNext] = useState(false);
   const [currentPageLastModified, setCurrentPageLastModified] = useState(1);
   const [itemsPerPageLastModified, setItemsPerPageLastModified] = useState(20);
 
@@ -56,117 +53,49 @@ export default function UserRulesClientPage({ ruleCount }) {
   useEffect(() => {
     (async () => {
       if (queryStringRulesAuthor) {
-        const resolvedAuthor = await resolveAuthor();
-        const authorSlug = resolvedAuthor.slug;
-        // Load BOTH in parallel for maximum speed
-        await Promise.all([loadAllAuthoredRules(authorSlug), loadAllLastModifiedRules()]);
+        // Load last modified rules immediately (doesn't need CRM)
+        const lastModifiedPromise = loadAllLastModifiedRules();
+
+        // Try to resolve author for authored rules (needs CRM)
+        try {
+          const resolvedAuthor = await resolveAuthor();
+          const authorSlug = resolvedAuthor.slug;
+          await Promise.all([loadAllAuthoredRules(authorSlug), lastModifiedPromise]);
+        } catch (err) {
+          // CRM failed, but still wait for last modified rules
+          console.error("Failed to resolve author from CRM:", err);
+          await lastModifiedPromise;
+        }
       }
     })();
   }, [queryStringRulesAuthor]);
 
-  // Function to load ALL last modified rules (not just one page)
+  // Function to load last modified rules using the new API
   const loadAllLastModifiedRules = async () => {
     setLoadingLastModified(true);
     setLastModifiedRules([]);
-    let cursor = "";
-    let previousCursor = "";
-    let hasMore = true;
-    let pageCount = 0;
-    const MAX_PAGES = 100; // Safety limit to prevent infinite loops
-    const allRulesFromGithub: any[] = [];
 
     try {
-      // Step 1: Fetch ALL pages from GitHub API (collect paths only)
-      while (hasMore && pageCount < MAX_PAGES) {
-        pageCount++;
+      const res = await fetch(`/rules/api/rules/last-modified?username=${encodeURIComponent(queryStringRulesAuthor)}&limit=50`);
 
-        const params = new URLSearchParams();
-        params.set("author", queryStringRulesAuthor);
-        if (cursor) params.set("cursor", cursor);
-        params.set("direction", "after");
-
-        const url = `./api/github/rules/prs?${params.toString()}`;
-        const res = await fetch(url);
-
-        if (!res.ok) {
-          throw new Error(`Failed to fetch GitHub PR search: ${res.status} ${res.statusText}`);
-        }
-
-        const prSearchData = await res.json();
-        const resultList = prSearchData.search.nodes;
-
-        const rules = resultList
-          .flatMap((pr: any) => pr.files.nodes)
-          .filter((file: any) => file.path.endsWith("rule.mdx") || file.path.endsWith("rule.md"))
-          .map((file: any) => ({
-            ...file,
-            path: file.path.endsWith("rule.md") ? file.path.slice(0, -3) + ".mdx" : file.path,
-          }));
-
-        allRulesFromGithub.push(...rules);
-
-        const { endCursor, hasNextPage } = prSearchData.search.pageInfo;
-        const newCursor = endCursor || "";
-
-        // Stop if cursor hasn't changed (prevents infinite loop)
-        if (newCursor === previousCursor && previousCursor !== "") {
-          break;
-        }
-
-        previousCursor = cursor;
-        cursor = newCursor;
-        hasMore = !!hasNextPage && newCursor !== "";
+      if (!res.ok) {
+        throw new Error(`Failed to fetch last modified rules: ${res.status}`);
       }
 
-      // Step 2: Process all rules at once with TinaCMS (ONE call instead of 50+)
-      if (allRulesFromGithub.length > 0) {
-        const uniqueRules = selectLatestRuleFilesByPath(allRulesFromGithub);
-        const uris = Array.from(
-          new Set(uniqueRules.map((b) => b.path.replace(/^rules\//, "").replace(/\/rule\.mdx$/, "")).filter((g): g is string => Boolean(g)))
-        );
+      const data = await res.json();
 
-        const tinaRes = await fetch("./api/tina/rules-by-uri", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ uris }),
-        });
-        if (!tinaRes.ok) {
-          throw new Error(`Failed to fetch rules by URI: ${tinaRes.status} ${tinaRes.statusText}`);
-        }
-        const tinaData = await tinaRes.json();
-        const edges = tinaData?.data?.ruleConnection?.edges ?? [];
-        const byUri = new Map<string, any>(
-          edges
-            .map((e: any) => e?.node)
-            .filter(Boolean)
-            .map((n: any) => [n.uri, n])
-        );
+      // Transform API response to match RuleList expected format
+      const rules = (data.items || []).map((item: any) => ({
+        title: item.title,
+        uri: item.uri,
+        lastUpdated: item.lastModifiedAt,
+        body: item.body,
+      }));
 
-        const matchedRules: any[] = uris
-          .map((g) => byUri.get(g))
-          .filter(Boolean)
-          .map((fullRule: any) => ({
-            guid: fullRule.guid,
-            title: fullRule.title,
-            uri: fullRule.uri,
-            body: fullRule.body,
-            lastUpdated: fullRule.lastUpdated,
-            lastUpdatedBy: fullRule.lastUpdatedBy,
-            authors: Array.isArray(fullRule.authors) ? fullRule.authors.map((a: any) => a?.author).filter(Boolean) : [],
-          }));
-
-        // Sort by date (most recent first)
-        const sortedRules = matchedRules.sort((a, b) => {
-          const dateA = a.lastUpdated ? new Date(a.lastUpdated).getTime() : 0;
-          const dateB = b.lastUpdated ? new Date(b.lastUpdated).getTime() : 0;
-          return dateB - dateA; // Descending order (newest first)
-        });
-
-        setLastModifiedRules(sortedRules);
-      }
+      setLastModifiedRules(rules);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error("Failed to fetch GitHub data:", err);
+      console.error("Failed to fetch last modified rules:", err);
       setGithubError(message);
     } finally {
       setLoadingLastModified(false);

@@ -3,7 +3,10 @@
 .github
 
 content-temp
+# scripts are needed during build (postbuild runs generate-archived-rules.js)
+# so keep scripts excluded by default, but include the one required file
 scripts
+!scripts/generate-archived-rules.js
 coverage
 tests
 tmp

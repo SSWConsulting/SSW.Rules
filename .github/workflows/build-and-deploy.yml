@@ -196,7 +196,7 @@ jobs:
               uses: azure/webapps-deploy@v3
               with:
                   app-name: ${{ needs.infrastructure.outputs.appServiceName }}
-                  images: ${{ needs.build.outputs.image_tag }}
+                  images: ${{ needs.build.outputs.image_tag }}@${{ needs.build.outputs.image_digest }}
                   slot-name: ${{ steps.slot.outputs.slot_name }}
 
             - name: Deploy to Azure Web App (Staging)
@@ -204,7 +204,7 @@ jobs:
               uses: azure/webapps-deploy@v3
               with:
                   app-name: ${{ needs.infrastructure.outputs.appServiceName }}
-                  images: ${{ needs.build.outputs.image_tag }}
+                  images: ${{ needs.build.outputs.image_tag }}@${{ needs.build.outputs.image_digest }}
 
             - name: Swap slots (production only)
               if: github.event.inputs.environment == 'production'

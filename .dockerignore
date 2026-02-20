@@ -19,3 +19,6 @@ dist
 .vscode
 .idea
 .DS_Store
+
+# Ensure generated people index is included in docker build context
+!public/people-index.json

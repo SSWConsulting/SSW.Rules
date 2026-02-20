@@ -43,5 +43,5 @@ rule-to-categories.json
 orphaned_rules.json
 archived-rules.json
 redirects.json
-people-index.json
+public/people-index.json
 public/uploads/people/

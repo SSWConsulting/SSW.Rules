@@ -27,10 +27,10 @@ export function getPeopleIndex(): PeopleIndex {
   }
 
   try {
-    const indexPath = path.join(process.cwd(), "people-index.json");
+    const indexPath = path.join(process.cwd(), "public", "people-index.json");
 
     if (!fs.existsSync(indexPath)) {
-      console.warn("people-index.json not found. Run 'npm run generate:people' first.");
+      console.warn("public/people-index.json not found. Run 'npm run generate:people' first.");
       return {};
     }
 

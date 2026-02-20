@@ -3,7 +3,7 @@
  *
  * Fetches People markdown files from the SSW.People.Profiles GitHub repository
  * and generates:
- * 1. people-index.json - Quick lookup index
+ * 1. public/people-index.json - Quick lookup index
  * 2. public/uploads/people/*.mdx - TinaCMS-compatible people files for references
  *
  * Usage: node scripts/generate-people-index.js
@@ -14,15 +14,11 @@
  *   LOCAL_CONTENT_RELATIVE_PATH - Path to SSW.Rules.Content (used to compute popularity ordering)
  */
 
-import fs from "fs";
-import fg from "fast-glob";
-import matter from "gray-matter";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const fs = require("fs");
+const fg = require("fast-glob");
+const matter = require("gray-matter");
+const dotenv = require("dotenv");
+const path = require("path");
 
 const PEOPLE_REPO = process.env.PEOPLE_REPO || "SSWConsulting/SSW.People.Profiles";
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
@@ -420,7 +416,7 @@ async function generatePeopleIndex() {
     }
 
     // Write the JSON index file
-    const indexPath = path.join(PROJECT_ROOT, "people-index.json");
+    const indexPath = path.join(PROJECT_ROOT, "public", "people-index.json");
     fs.writeFileSync(indexPath, JSON.stringify(peopleIndex, null, 2));
 
     console.log("✅ People Index Generation Complete!");

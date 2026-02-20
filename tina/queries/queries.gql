@@ -267,6 +267,7 @@ query ruleData($relativePath: String!) {
       title
       uri
       body
+      thumbnail
       authors {
         title
         url
@@ -323,6 +324,7 @@ query ruleDataBasic($relativePath: String!) {
       title
       uri
       body
+      thumbnail
       authors {
         title
         url

@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import Spinner from "@/components/Spinner";
+import { useEffect, useMemo, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import RuleList from "@/components/rule-list";
+import Spinner from "@/components/Spinner";
 import Pagination from "@/components/ui/pagination";
 
 const Tabs = {
@@ -15,7 +15,7 @@ const Tabs = {
 
 type TabKey = (typeof Tabs)[keyof typeof Tabs];
 
-export default function UserRulesClientPage({ ruleCount }) {
+export default function UserRulesClientPage() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.AUTHORED);
   const queryStringRulesAuthor = searchParams.get("author") || "";
@@ -30,13 +30,10 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [authoredRules, setAuthoredRules] = useState<any[]>([]);
   const [author, setAuthor] = useState<{ fullName?: string; slug?: string; gitHubUrl?: string }>({});
   const [loadingAuthored, setLoadingAuthored] = useState(false);
-  const [authoredNextCursor, setAuthoredNextCursor] = useState<string | null>(null);
-  const [authoredHasNext, setAuthoredHasNext] = useState(false);
-  const [loadingMoreAuthored, setLoadingMoreAuthored] = useState(false);
   const [githubError, setGithubError] = useState<string | null>(null);
   const [currentPageAuthored, setCurrentPageAuthored] = useState(1);
   const [itemsPerPageAuthored, setItemsPerPageAuthored] = useState(20);
-  const FETCH_PAGE_SIZE = 10;
+  const FETCH_PAGE_SIZE = 100;
 
   const resolveAuthor = async (): Promise<string> => {
     const res = await fetch(`./api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);

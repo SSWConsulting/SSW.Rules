@@ -88,4 +88,8 @@ copyAndMoveJsonFile("category-uri-title-map.json", scriptsPath, destDir);
 copyAndMoveJsonFile("orphaned_rules.json", scriptsPath, destDir);
 copyAndMoveJsonFile("redirects.json", scriptsPath, destDir);
 
+const generateAuthorRulesMapScript = join(destDir, "scripts", "generate-author-rules-map.js");
+const outFile = join(destDir, "public", "author-title-to-rules-map.json");
+execSync(`node "${generateAuthorRulesMapScript}" --contentRoot "${tempDir}" --outFile "${outFile}"`, { stdio: "inherit" });
+
 console.log("Content preparation completed successfully!");

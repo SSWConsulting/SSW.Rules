@@ -60,3 +60,7 @@ execSync(`${python} "${buildRedirectMapScript}"`, { stdio: "inherit", cwd: scrip
 copyAndMoveJsonFile("category-uri-title-map.json", scriptsPath);
 copyAndMoveJsonFile("orphaned_rules.json", scriptsPath);
 copyAndMoveJsonFile("redirects.json", scriptsPath);
+
+const generateAuthorRulesMapScript = resolve(__dirname, "generate-author-rules-map.js");
+const outFile = resolve(__dirname, "../public/author-title-to-rules-map.json");
+execSync(`node "${generateAuthorRulesMapScript}" --contentRoot "${contentAbsPath}" --outFile "${outFile}"`, { stdio: "inherit" });

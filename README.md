@@ -99,14 +99,15 @@ To deploy a PR preview, add a comment to the PR: **`/deploy`**. This creates/upd
 #### In this Repository (Website)
 
 - **`build-rule-category-map.py`**  
-  Generates two JSON files:
+  Generates JSON files used by the website:
   - `rule-to-categories.json` (maps rules to categories)  
   - `category-uri-title-map.json` (maps category URIs to titles)  
-  - `orphaned_rules.json` (maps category URIs to titles)  
+  - `orphaned_rules.json` (orphaned rules report)  
+  - `redirects.json` (old -> new URI redirects)  
   Reads rule data from the `SSW.Rules.Content` repo and runs during the build process (via GitHub Actions) or manually from `scripts/tina-migration`.
 
 - **`prepare-content.js`**  
-  A Node.js script that runs `build-rule-category-map.py` and moves the JSON files to the correct location for use by the website.  
+  A Node.js script that runs the content repo Python scripts, moves the generated JSON files into this repo, and runs `pnpm run generate:author-rules` to create `public/author-title-to-rules-map.json` for `/api/tina/rules-by-author`.  
   Uses the `LOCAL_CONTENT_RELATIVE_PATH` environment variable to locate the content repo.
 
 #### In the Content Repository

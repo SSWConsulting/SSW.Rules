@@ -154,7 +154,7 @@ export default function UserRulesClientPage({ ruleCount }) {
         allRulesFromTina.push(...batch);
 
         // Render as soon as we have the first page.
-        // Backend returns results sorted by lastUpdated, so we can append without re-sorting.
+        // Backend returns results sorted by created, so we can append without re-sorting.
         setAuthoredRules([...allRulesFromTina]);
         if (pageCount === 1) {
           setLoadingAuthored(false);

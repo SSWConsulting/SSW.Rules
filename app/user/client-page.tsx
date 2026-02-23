@@ -190,8 +190,8 @@ export default function UserRulesClientPage({ ruleCount }) {
   const TabHeader = () => (
     <div role="tablist" aria-label="User Rules Tabs" className="flex mt-2 mb-4 divide-x divide-gray-200 rounded">
       {[
-        { key: Tabs.AUTHORED, label: `Authored (${authoredRules.length})` },
-        { key: Tabs.MODIFIED, label: `Last Modified (${lastModifiedRules.length})` },
+        { key: Tabs.AUTHORED, label: authoredFullyLoaded ? `Authored (${authoredRules.length})` : "Authored" },
+        { key: Tabs.MODIFIED, label: loadingLastModified ? "Last Modified" : `Last Modified (${lastModifiedRules.length})` },
       ].map((t, i) => {
         const isActive = activeTab === t.key;
         return (

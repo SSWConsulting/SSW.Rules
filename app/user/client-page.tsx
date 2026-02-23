@@ -37,7 +37,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [githubError, setGithubError] = useState<string | null>(null);
   const [currentPageAuthored, setCurrentPageAuthored] = useState(1);
   const [itemsPerPageAuthored, setItemsPerPageAuthored] = useState(20);
-  const FETCH_PAGE_SIZE = 20;
+  const FETCH_PAGE_SIZE = 100;
 
   const resolveAuthor = async (): Promise<string> => {
     const res = await fetch(`./api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);

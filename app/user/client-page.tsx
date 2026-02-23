@@ -31,8 +31,6 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [author, setAuthor] = useState<{ fullName?: string; slug?: string; gitHubUrl?: string }>({});
   const [loadingAuthored, setLoadingAuthored] = useState(false);
   const [authoredFullyLoaded, setAuthoredFullyLoaded] = useState(false);
-  const [authoredNextCursor, setAuthoredNextCursor] = useState<string | null>(null);
-  const [authoredHasNext, setAuthoredHasNext] = useState(false);
   const [loadingMoreAuthored, setLoadingMoreAuthored] = useState(false);
   const [githubError, setGithubError] = useState<string | null>(null);
   const [currentPageAuthored, setCurrentPageAuthored] = useState(1);
@@ -323,7 +321,7 @@ export default function UserRulesClientPage({ ruleCount }) {
               <>
                 {authoredRules.length === 0 && loadingAuthored ? (
                   <div className="flex items-center justify-center py-8">
-                    <Spinner size="lg" text="Fetching data from GitHub... this might take a minute." />
+                    <Spinner size="lg" text="Loading authored rules... this might take a minute." />
                   </div>
                 ) : authoredRules.length === 0 ? (
                   <div className="py-4 text-sm text-gray-500">No rules found.</div>

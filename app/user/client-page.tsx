@@ -110,7 +110,6 @@ export default function UserRulesClientPage({ ruleCount }) {
     setCurrentPageAuthored(1);
 
     let cursor: string | null = null;
-    let previousCursor: string | null = null;
     let hasMore = true;
     let pageCount = 0;
     const MAX_PAGES = 100; // Safety limit to prevent infinite loops
@@ -124,8 +123,8 @@ export default function UserRulesClientPage({ ruleCount }) {
 
         const params = new URLSearchParams();
         params.set("authorTitle", authorName || "");
-        params.set("first", FETCH_PAGE_SIZE.toString());
-        if (cursor) params.set("after", cursor);
+        params.set("last", FETCH_PAGE_SIZE.toString());
+        if (cursor) params.set("before", cursor);
 
         const tinaRes = await fetch(`./api/tina/rules-by-author?${params.toString()}`);
         if (!tinaRes.ok) {
@@ -166,15 +165,14 @@ export default function UserRulesClientPage({ ruleCount }) {
         }
 
         const pageInfo = res?.data?.ruleConnection?.pageInfo;
-        const newCursor = pageInfo?.endCursor ?? null;
-        const hasMorePages = !!pageInfo?.hasNextPage;
+        const newCursor = pageInfo?.startCursor ?? null;
+        const hasMorePages = !!pageInfo?.hasPreviousPage;
 
         // Stop if cursor hasn't changed (prevents infinite loop)
-        if (newCursor === previousCursor && previousCursor !== null) {
+        if (newCursor === cursor && cursor !== null) {
           break;
         }
 
-        previousCursor = cursor;
         cursor = newCursor;
         hasMore = hasMorePages && newCursor !== null;
       }

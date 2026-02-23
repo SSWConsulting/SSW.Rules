@@ -5,20 +5,20 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const authorTitle = searchParams.get("authorTitle");
-    const firstStr = searchParams.get("first");
-    const after = searchParams.get("after") || undefined;
+    const lastStr = searchParams.get("last") ?? searchParams.get("first");
+    const before = searchParams.get("before") || undefined;
 
     if (!authorTitle) {
       return NextResponse.json({ error: "authorTitle is required" }, { status: 400 });
     }
 
-    const first = firstStr ? Number(firstStr) : undefined;
+    const last = lastStr ? Number(lastStr) : undefined;
 
     const result = await client.queries.rulesByAuthor({
       authorTitle,
-      first,
-      after,
-      sort: "-lastUpdated",
+      last,
+      before,
+      sort: "lastUpdated",
     });
 
     return NextResponse.json(result, { status: 200 });

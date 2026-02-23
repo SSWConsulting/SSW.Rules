@@ -30,13 +30,14 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [authoredRules, setAuthoredRules] = useState<any[]>([]);
   const [author, setAuthor] = useState<{ fullName?: string; slug?: string; gitHubUrl?: string }>({});
   const [loadingAuthored, setLoadingAuthored] = useState(false);
+  const [authoredFullyLoaded, setAuthoredFullyLoaded] = useState(false);
   const [authoredNextCursor, setAuthoredNextCursor] = useState<string | null>(null);
   const [authoredHasNext, setAuthoredHasNext] = useState(false);
   const [loadingMoreAuthored, setLoadingMoreAuthored] = useState(false);
   const [githubError, setGithubError] = useState<string | null>(null);
   const [currentPageAuthored, setCurrentPageAuthored] = useState(1);
   const [itemsPerPageAuthored, setItemsPerPageAuthored] = useState(20);
-  const FETCH_PAGE_SIZE = 10;
+  const FETCH_PAGE_SIZE = 20;
 
   const resolveAuthor = async (): Promise<string> => {
     const res = await fetch(`./api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);
@@ -97,19 +98,27 @@ export default function UserRulesClientPage({ ruleCount }) {
     }
   };
 
-  // Function to load ALL authored rules (not just one page) - WITH BATCHING
+  // Fetch authored rules progressively:
+  // - render once the first page returns
+  // - keep fetching and appending in the background
+  // - only enable pagination UI once all results are fetched
   const loadAllAuthoredRules = async (authorName: string) => {
     setLoadingAuthored(true);
+    setLoadingMoreAuthored(false);
+    setAuthoredFullyLoaded(false);
     setAuthoredRules([]);
+    setCurrentPageAuthored(1);
+
     let cursor: string | null = null;
     let previousCursor: string | null = null;
     let hasMore = true;
     let pageCount = 0;
     const MAX_PAGES = 100; // Safety limit to prevent infinite loops
     const allRulesFromTina: any[] = [];
+    const seenKeys = new Set<string>();
+
 
     try {
-      // Step 1: Fetch ALL pages from TinaCMS API (collect rules)
       while (hasMore && pageCount < MAX_PAGES) {
         pageCount++;
 
@@ -127,17 +136,34 @@ export default function UserRulesClientPage({ ruleCount }) {
         const edges = res?.data?.ruleConnection?.edges ?? [];
         const nodes = edges.map((e: any) => e?.node).filter(Boolean);
 
-        const batch = nodes.map((fullRule: any) => ({
-          guid: fullRule.guid,
-          title: fullRule.title,
-          uri: fullRule.uri,
-          body: fullRule.body,
-          authors: fullRule.authors?.map((a: any) => (a && a.title ? { title: a.title } : null)).filter((a: any): a is { title: string } => a !== null) || [],
-          lastUpdated: fullRule.lastUpdated,
-          lastUpdatedBy: fullRule.lastUpdatedBy,
-        }));
+        const batch = nodes
+          .map((fullRule: any) => ({
+            guid: fullRule.guid,
+            title: fullRule.title,
+            uri: fullRule.uri,
+            body: fullRule.body,
+            authors: fullRule.authors?.map((a: any) => (a && a.title ? { title: a.title } : null)).filter((a: any): a is { title: string } => a !== null) || [],
+            lastUpdated: fullRule.lastUpdated,
+            lastUpdatedBy: fullRule.lastUpdatedBy,
+          }))
+          .filter((r: any) => {
+            const key = r.guid || r.uri;
+            if (!key) return true;
+            if (seenKeys.has(key)) return false;
+            seenKeys.add(key);
+            return true;
+          });
 
         allRulesFromTina.push(...batch);
+
+        // Render as soon as we have the first page.
+        // Backend returns results sorted by lastUpdated, so we can append without re-sorting.
+        setAuthoredRules([...allRulesFromTina]);
+        if (pageCount === 1) {
+          setLoadingAuthored(false);
+        } else {
+          setLoadingMoreAuthored(true);
+        }
 
         const pageInfo = res?.data?.ruleConnection?.pageInfo;
         const newCursor = pageInfo?.endCursor ?? null;
@@ -152,19 +178,14 @@ export default function UserRulesClientPage({ ruleCount }) {
         cursor = newCursor;
         hasMore = hasMorePages && newCursor !== null;
       }
-
-      // Step 2: Sort by date (most recent first) and set all at once
-      const sortedRules = allRulesFromTina.sort((a, b) => {
-        const dateA = a.lastUpdated ? new Date(a.lastUpdated).getTime() : 0;
-        const dateB = b.lastUpdated ? new Date(b.lastUpdated).getTime() : 0;
-        return dateB - dateA; // Descending order (newest first)
-      });
-
-      setAuthoredRules(sortedRules);
     } catch (err) {
       console.error("Failed to fetch authored rules:", err);
     } finally {
+      setAuthoredFullyLoaded(true);
+      setLoadingMoreAuthored(false);
       setLoadingAuthored(false);
+      setItemsPerPageAuthored(20);
+      setCurrentPageAuthored(1);
     }
   };
 
@@ -221,6 +242,7 @@ export default function UserRulesClientPage({ ruleCount }) {
   const totalPagesAuthored = itemsPerPageAuthored >= authoredRules.length ? 1 : Math.ceil(authoredRules.length / itemsPerPageAuthored);
 
   const paginatedAuthoredRules = useMemo(() => {
+    // Keep list height stable: always render the current page slice (even while background loading).
     if (itemsPerPageAuthored >= authoredRules.length) {
       return authoredRules;
     }
@@ -316,14 +338,20 @@ export default function UserRulesClientPage({ ruleCount }) {
                       externalCurrentPage={currentPageAuthored}
                       externalItemsPerPage={itemsPerPageAuthored}
                     />
-                    <Pagination
-                      currentPage={currentPageAuthored}
-                      totalPages={totalPagesAuthored}
-                      totalItems={authoredRules.length}
-                      itemsPerPage={itemsPerPageAuthored}
-                      onPageChange={handlePageChangeAuthored}
-                      onItemsPerPageChange={handleItemsPerPageChangeAuthored}
-                    />
+                    {!authoredFullyLoaded && loadingMoreAuthored && (
+                      <div className="mt-4 text-center text-sm text-gray-500">Loading more authored rules...</div>
+                    )}
+
+                    {authoredFullyLoaded && (
+                      <Pagination
+                        currentPage={currentPageAuthored}
+                        totalPages={totalPagesAuthored}
+                        totalItems={authoredRules.length}
+                        itemsPerPage={itemsPerPageAuthored}
+                        onPageChange={handlePageChangeAuthored}
+                        onItemsPerPageChange={handleItemsPerPageChangeAuthored}
+                      />
+                    )}
                   </>
                 )}
               </>

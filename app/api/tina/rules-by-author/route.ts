@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
       authorTitle,
       first,
       after,
+      sort: "-lastUpdated",
     });
 
     return NextResponse.json(result, { status: 200 });

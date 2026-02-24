@@ -111,12 +111,13 @@ export default function UserRulesClientPage({ ruleCount }) {
     let hasMore = true;
     let pageCount = 0;
     const MAX_PAGES = 100; // Safety limit to prevent infinite loops
+    const MAX_AUTHORED_RULES = 100;
     const allRulesFromTina: any[] = [];
     const seenKeys = new Set<string>();
 
 
     try {
-      while (hasMore && pageCount < MAX_PAGES) {
+      while (hasMore && pageCount < MAX_PAGES && allRulesFromTina.length < MAX_AUTHORED_RULES) {
         pageCount++;
 
         const params = new URLSearchParams();
@@ -152,6 +153,9 @@ export default function UserRulesClientPage({ ruleCount }) {
           });
 
         allRulesFromTina.push(...batch);
+        if (allRulesFromTina.length > MAX_AUTHORED_RULES) {
+          allRulesFromTina.length = MAX_AUTHORED_RULES;
+        }
 
         // Render as soon as we have the first page.
         // Backend returns results sorted by created, so we can append without re-sorting.

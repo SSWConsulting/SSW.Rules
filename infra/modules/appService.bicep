@@ -42,34 +42,15 @@ var effectiveSlotName = environment == 'prod' ? 'pre-production' : slotName
 // - For staging PR slots: use the slotName as the tag
 var slotImageTag = environment == 'prod' ? imageTag : slotName
 
-// Shared app settings used by both the main App Service and deployment slots
-var baseAppSettings = [
-  {
-    name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
-    value: 'false'
-  }
-  {
-    name: 'DOCKER_REGISTRY_SERVER_URL'
-    value: 'https://${containerRegistryName}.azurecr.io'
-  }
-  {
-    name: 'WEBSITES_PORT'
-    value: '3000'
-  }
-  {
-    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-    value: appInsightsConnectionString
-  }
-]
-
-// Shared site configuration properties
+// Shared site configuration properties.
+// IMPORTANT: Do not set `siteConfig.appSettings` here; ARM/Bicep replaces the entire app settings collection,
+// which would wipe settings managed outside IaC (e.g. secrets set via `az webapp config appsettings set`).
 var baseSiteConfig = {
   acrUseManagedIdentityCreds: true
   alwaysOn: true
   ftpsState: 'Disabled'
   minTlsVersion: '1.2'
   http20Enabled: true
-  appSettings: baseAppSettings
 }
 
 // ============================================================================

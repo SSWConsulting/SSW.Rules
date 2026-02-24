@@ -166,6 +166,10 @@ jobs:
             --resource-group "${{ needs.infrastructure.outputs.resourceGroup }}" \
             --slot "${{ needs.infrastructure.outputs.slotName }}" \
             --settings \
+            "WEBSITES_ENABLE_APP_SERVICE_STORAGE=false" \
+            "DOCKER_REGISTRY_SERVER_URL=https://${{ needs.infrastructure.outputs.acrName }}.azurecr.io" \
+            "WEBSITES_PORT=3000" \
+            "APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}" \
             "TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}" \
             "AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }}" \
             "AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }}" \

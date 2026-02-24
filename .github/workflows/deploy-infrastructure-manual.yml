@@ -1,0 +1,35 @@
+name: Deploy Infrastructure (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+      ref:
+        description: "Optional git ref to deploy from (defaults to current)"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  infrastructure:
+    name: Deploy Infrastructure
+    uses: ./.github/workflows/deploy-infrastructure.yml
+    with:
+      environment: ${{ github.event.inputs.environment }}
+      ref: ${{ github.event.inputs.ref }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_SERVICE_PRINCIPAL_OBJECT_ID: ${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}

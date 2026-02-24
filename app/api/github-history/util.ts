@@ -24,6 +24,7 @@ export const EXCLUDED_COMMIT_SHAS: string[] = [
   "6d7c8acbf37377fbc647e431f98cf58c3447b031",
   "e6a4f720c383f7013fd009a0aa6b52e8fe779ee2",
   "0a57480c7730685582dd67f12d3e49a12ce0af32",
+  "4f578b9650d3e43d33b0295011cf71e6cc11f0ef",
 ];
 
 /**

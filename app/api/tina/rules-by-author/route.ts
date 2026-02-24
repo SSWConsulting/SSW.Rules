@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
 
     const last = lastStr ? Number(lastStr) : undefined;
     const isFirstBatch = before === undefined && (last === undefined || last === FIRST_BATCH_SIZE);
+    const isDev = process.env.NODE_ENV === "development";
 
     const fetchRulesByAuthor = (a: string, l?: number, b?: string) =>
       client.queries.rulesByAuthor({
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest) {
         sort: "created",
       });
 
-    const result = isFirstBatch
+    const result = isFirstBatch && !isDev
       ? await unstable_cache(
           async (a: string) => fetchRulesByAuthor(a, FIRST_BATCH_SIZE, undefined),
           [`tina-rules-by-author-first-batch-${authorTitle}-${FIRST_BATCH_SIZE}`],
@@ -38,11 +39,13 @@ export async function GET(request: NextRequest) {
 
     const res = NextResponse.json(result, { status: 200 });
 
-    if (isFirstBatch) {
+    if (isFirstBatch && !isDev) {
       res.headers.set(
         "Cache-Control",
         `public, s-maxage=${FIRST_BATCH_CACHE_SECONDS}, stale-while-revalidate=${FIRST_BATCH_STALE_WHILE_REVALIDATE_SECONDS}`
       );
+    } else if (isDev) {
+      res.headers.set("Cache-Control", "no-store");
     }
 
     return res;

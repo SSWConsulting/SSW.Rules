@@ -34,7 +34,7 @@ export async function generateMetadata() {
     title: "Archived Rules | SSW Rules",
     description: "Rules that have been archived",
     alternates: {
-      canonical: `${siteUrl}/archived/`,
+      canonical: `${siteUrl}/archived`,
     },
   };
 }

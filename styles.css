@@ -280,7 +280,7 @@
   }
 
   blockquote {
-    @apply italic text-sm font-light;
+    @apply italic font-light;
   }
 
   table {

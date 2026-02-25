@@ -29,7 +29,7 @@ export async function generateMetadata() {
   return {
     title: "SSW.Rules | Secret Ingredients for Quality Software (Open Source on GitHub)",
     alternates: {
-      canonical: `${siteUrl}/search/`,
+      canonical: `${siteUrl}/search`,
     },
   }
 }

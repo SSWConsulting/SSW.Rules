@@ -58,7 +58,7 @@ export async function generateMetadata() {
     title: "Orphaned Rules | SSW Rules",
     description: "Rules that have no parent category",
     alternates: {
-      canonical: `${siteUrl}/orphaned/`,
+      canonical: `${siteUrl}/orphaned`,
     },
   };
 }

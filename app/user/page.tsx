@@ -24,7 +24,7 @@ export async function generateMetadata() {
   return {
     title: "My Rules | SSW.Rules",
     alternates: {
-      canonical: `${siteUrl}/user/`,
+      canonical: `${siteUrl}/user`,
     },
   };
 }

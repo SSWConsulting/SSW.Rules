@@ -323,7 +323,7 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
       return {
         title: `${category.data.category.title} | SSW.Rules`,
         alternates: {
-          canonical: `${siteUrl}/${filename}/`,
+          canonical: `${siteUrl}/${filename}`,
         },
       };
     }
@@ -333,7 +333,7 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
       const metadata: any = {
         title: `${rule.data.rule.title} | SSW.Rules`,
         alternates: {
-          canonical: `${siteUrl}/${filename}/`,
+          canonical: `${siteUrl}/${filename}`,
         },
       };
 

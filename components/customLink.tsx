@@ -12,8 +12,6 @@ interface CustomLinkProps extends PropsWithChildren {
   style?: React.CSSProperties;
 }
 
-
-
 const isTinaSite = (href: string): boolean => {
   const tinaSitePatterns = /^(https:\/\/(?:www\.)?tina\.io(?:\/|$))/i;
   return tinaSitePatterns.test(href);

@@ -14,6 +14,10 @@
  * isExternalSSWSite("https://google.com")               // false
  */
 export const isExternalSSWSite = (href: string): boolean => {
+  if(href.startsWith("/") && !href.startsWith("/rules"))
+  {
+    return true;
+  }
   if(href.includes("ssw.com.au") && !href.includes("ssw.com.au/rules"))
   {
     return true;
@@ -30,10 +34,20 @@ export const isExternalSSWSite = (href: string): boolean => {
  * @returns `true` if the link points outside the current site (including SSW external sites), `false` if it's on ssw.com.au/rules
  * @example
  * isExternalLink("https://www.ssw.com.au/rules/*")   // false
+ * isExternalLink("https://www.ssw.com.au/people")    // true
  * isExternalLink("https://anydomain.com.au")         // true
  * isExternalLink("/company")                         // true
  */
 export const isExternalLink = (href: string): boolean => {
+  if(href.startsWith("/"))
+  {
+    if(href.startsWith("/rules"))
+    {
+      return false;
+    }
+    return true;
+  }
+  
   if(isExternalSSWSite(href))
   {
     return true;

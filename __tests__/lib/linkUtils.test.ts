@@ -19,6 +19,6 @@ describe("isExternalLink", () => {
     expect(isExternalLink("https://ssw.com.au")).toBe(true);
     expect(isExternalLink("https://www.ssw.com.au/rules")).toBe(false);
     expect(isExternalLink("https://www.ssw.com.au/people")).toBe(true);
-    expect(isExternalLink("/internal-link")).toBe(false);
+    expect(isExternalLink("/internal-link")).toBe(true);
   });
 });

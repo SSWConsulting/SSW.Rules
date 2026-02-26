@@ -48,7 +48,7 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
               <p className="text-sm mt-1">
                 The following rule references may have been renamed or removed:{" "}
                 {brokenReferences.paths.map((p, i) => (
-                  <code key={i} className="bg-amber-100 px-1 rounded text-xs">
+                  <code key={p} className="bg-amber-100 px-1 rounded text-xs">
                     {p}
                     {i < brokenReferences.paths.length - 1 ? ", " : ""}
                   </code>

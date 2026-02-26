@@ -67,7 +67,12 @@ async function fetchCategoryRuleData(): Promise<{
         after,
       });
     } catch (err: any) {
-      console.warn("[fetchCategoryRuleData] categoryRuleCountsQuery failed (possibly broken rule references), skipping page:", err?.message || err);
+      const errMsg = err?.message || String(err);
+      const isRecordNotFound = errMsg.includes("Unable to find record");
+      console.warn(
+        `[fetchCategoryRuleData] categoryRuleCountsQuery failed${isRecordNotFound ? " (broken rule references)" : ""}, skipping page:`,
+        errMsg
+      );
       hasNextPage = false;
       break;
     }

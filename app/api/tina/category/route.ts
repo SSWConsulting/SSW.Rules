@@ -10,7 +10,7 @@ async function fetchCategoryData(relativePath: string, branch?: string) {
 
   const res: any = await (client as any).request(
     {
-      query: CategoryWithRulesQueryDocument,
+      query: String(CategoryWithRulesQueryDocument),
       variables: { relativePath },
       errorPolicy: "all",
     },
@@ -29,7 +29,7 @@ async function fetchCategoryData(relativePath: string, branch?: string) {
   return {
     data: res?.data,
     errors: res?.errors ?? null,
-    query: CategoryWithRulesQueryDocument,
+    query: String(CategoryWithRulesQueryDocument),
     variables: { relativePath },
   };
 }

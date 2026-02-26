@@ -61,7 +61,7 @@ const getCategoryData = async (filename: string) => {
     // Tina's default client errorPolicy is "throw" which can 500 a whole page if a referenced rule is missing.
     // Using a non-throwing errorPolicy allows us to render the category and simply omit missing rules.
     const res: any = await (client as any).request({
-      query: CategoryWithRulesQueryDocument,
+      query: String(CategoryWithRulesQueryDocument),
       variables: { relativePath: `${fullPath}` },
       errorPolicy: "all",
     });
@@ -79,7 +79,7 @@ const getCategoryData = async (filename: string) => {
 
     return {
       data: res.data,
-      query: CategoryWithRulesQueryDocument,
+      query: String(CategoryWithRulesQueryDocument),
       variables: { relativePath: `${fullPath}` },
     };
   } catch (error) {

@@ -5,7 +5,6 @@ import Link from "next/link";
 jest.mock("next/link", () => jest.fn(({prefetch, ...props}) => <a {...props} />));
 
 describe("CustomLink", () => {
-
   describe("when href is rule URL", () => {
     it("does not open in a new tab by default", () => {
       render(<CustomLink href="/rules/do-something">click me</CustomLink>);

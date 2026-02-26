@@ -168,15 +168,17 @@ const RuleList: React.FC<RuleListProps> = ({
       </div>
 
       <ol className="flex flex-col justify-between gap-2 p-0 list-none">
-        {paginatedRules.map((rule, i) => (
-          <RuleListItem
-            key={`${rule.guid}-${rule.uri}-${(effectiveCurrentPage - 1) * effectiveItemsPerPage + i}`}
-            rule={rule}
-            index={(effectiveCurrentPage - 1) * effectiveItemsPerPage + i}
-            onBookmarkRemoved={onBookmarkRemoved}
-            filter={filter}
-          />
-        ))}
+        {paginatedRules
+          .filter((rule) => rule?.uri && rule?.title)
+          .map((rule, i) => (
+            <RuleListItem
+              key={`${rule.guid ?? "unknown"}-${rule.uri}-${(effectiveCurrentPage - 1) * effectiveItemsPerPage + i}`}
+              rule={rule}
+              index={(effectiveCurrentPage - 1) * effectiveItemsPerPage + i}
+              onBookmarkRemoved={onBookmarkRemoved}
+              filter={filter}
+            />
+          ))}
       </ol>
 
       {showPagination && (

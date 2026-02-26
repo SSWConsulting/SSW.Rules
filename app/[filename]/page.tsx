@@ -67,6 +67,38 @@ const getCategoryData = async (filename: string) => {
       variables: res.variables,
     };
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isRecordNotFound = errorMessage.includes("Unable to find record");
+
+    if (isRecordNotFound) {
+      // Extract broken rule paths from the error message
+      const brokenPathMatches = errorMessage.matchAll(/Unable to find record ([^\n]+)/g);
+      const brokenPaths = Array.from(brokenPathMatches, (match) => match[1].trim());
+
+      console.warn(
+        `[getCategoryData] Category "${filename}" has broken rule references: ${brokenPaths.join(", ")}. Returning category with empty index.`
+      );
+
+      // Return a minimal category response with empty index so the page still renders
+      return {
+        data: {
+          category: {
+            __typename: "CategoryCategory" as const,
+            title: filename.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+            body: null,
+            uri: filename,
+            index: [],
+          },
+        },
+        query: "",
+        variables: { relativePath: fullPath },
+        brokenReferences: {
+          detected: true,
+          paths: brokenPaths.length > 0 ? brokenPaths : ["unknown path"],
+        } as BrokenReferences,
+      };
+    }
+
     console.error(`[getCategoryData] failed for filename="${filename}":`, error);
     return null;
   }
@@ -287,6 +319,7 @@ export default async function Page({
             view,
             page,
             perPage,
+            brokenReferences: (category as any).brokenReferences ?? null,
           }}
         />
       </Section>

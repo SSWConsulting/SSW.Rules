@@ -38,7 +38,43 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isRecordNotFound = errorMessage.includes("Unable to find record");
+
+    if (isRecordNotFound) {
+      // Extract broken rule paths from error message
+      const brokenPathMatches = errorMessage.matchAll(/Unable to find record ([^\n]+)/g);
+      const brokenPaths = Array.from(brokenPathMatches, (match) => match[1].trim());
+
+      console.warn(`[api/tina/category] Broken rule references in category "${relativePath}": ${brokenPaths.join(", ")}`);
+
+      // Derive a fallback title from the relativePath (e.g., "design/rules-to-better-ui.mdx" -> "Rules To Better Ui")
+      const filename = relativePath.replace(/\.mdx$/, "").split("/").pop() ?? "";
+      const fallbackTitle = filename.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+      return NextResponse.json(
+        {
+          data: {
+            category: {
+              __typename: "CategoryCategory",
+              title: fallbackTitle,
+              body: null,
+              uri: filename,
+              index: [],
+            },
+          },
+          query: "",
+          variables: { relativePath },
+          _brokenReferences: {
+            detected: true,
+            paths: brokenPaths.length > 0 ? brokenPaths : ["unknown path"],
+          },
+        },
+        { status: 200 }
+      );
+    }
+
     console.error(`[api/tina/category] failed for relativePath="${relativePath}":`, error);
-    return NextResponse.json({ error: "Failed to fetch category", details: error instanceof Error ? error.message : String(error) }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch category", details: errorMessage }, { status: 500 });
   }
 }

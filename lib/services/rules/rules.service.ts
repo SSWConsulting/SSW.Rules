@@ -60,10 +60,17 @@ async function fetchCategoryRuleData(): Promise<{
   let hasNextPage = true;
 
   while (hasNextPage) {
-    const res: any = await client.queries.categoryRuleCountsQuery({
-      first: 50,
-      after,
-    });
+    let res: any;
+    try {
+      res = await client.queries.categoryRuleCountsQuery({
+        first: 50,
+        after,
+      });
+    } catch (err: any) {
+      console.warn("[fetchCategoryRuleData] categoryRuleCountsQuery failed (possibly broken rule references), skipping page:", err?.message || err);
+      hasNextPage = false;
+      break;
+    }
 
     const conn: any = res?.data?.categoryConnection;
     const edges = conn?.edges ?? [];

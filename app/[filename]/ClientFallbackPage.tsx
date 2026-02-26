@@ -122,6 +122,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
                     query: categoryResult.query,
                     variables: categoryResult.variables,
                   },
+                  brokenReferences: categoryResult._brokenReferences ?? null,
                 });
                 setLoading(false);
                 return;
@@ -232,6 +233,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
             view: data.view,
             page: data.page,
             perPage: data.perPage,
+            brokenReferences: data.brokenReferences ?? null,
           }}
         />
       </Section>

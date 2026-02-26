@@ -13,12 +13,15 @@ interface ServerCategoryPageProps {
   view: "titleOnly" | "blurb" | "all";
   page: number;
   perPage: number;
+  brokenReferences?: { detected: boolean; paths: string[] } | null;
 }
 
-export default function ServerCategoryPage({ category, path, includeArchived, view, page, perPage }: ServerCategoryPageProps) {
+export default function ServerCategoryPage({ category, path, includeArchived, view, page, perPage, brokenReferences }: ServerCategoryPageProps) {
   const title = category?.title ?? "";
-  const breadCrumbTitle = category?.title.replace("Rules to Better", "") ?? "";
-  const baseRules: any[] = Array.isArray(category?.index) ? category.index.flatMap((i: any) => (i?.rule ? [i.rule] : [])) : [];
+  const breadCrumbTitle = (category?.title ?? "").replace("Rules to Better", "");
+  const baseRules: any[] = Array.isArray(category?.index)
+    ? category.index.flatMap((i: any) => (i?.rule && i.rule.uri && i.rule.title ? [i.rule] : []))
+    : [];
 
   const activeRules = baseRules.filter((r) => r?.isArchived !== true);
   const archivedRules = baseRules.filter((r) => r?.isArchived === true);
@@ -39,6 +42,21 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
             <CategoryEdit path={path} />
           </div>
 
+          {brokenReferences?.detected && (
+            <div className="bg-amber-50 border border-amber-300 text-amber-800 px-4 py-3 rounded mb-4" role="alert">
+              <p className="font-bold">⚠️ Some rules in this category could not be loaded</p>
+              <p className="text-sm mt-1">
+                The following rule references may have been renamed or removed:{" "}
+                {brokenReferences.paths.map((p, i) => (
+                  <code key={i} className="bg-amber-100 px-1 rounded text-xs">
+                    {p}
+                    {i < brokenReferences.paths.length - 1 ? ", " : ""}
+                  </code>
+                ))}
+              </p>
+            </div>
+          )}
+
           <div className="text-md rule-content" data-tina-field={tinaField(category, "body")}>
             <TinaMarkdown content={category?.body} components={MarkdownComponentMapping} />
           </div>
@@ -58,7 +76,7 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
           <div className="flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <ol className="border-l-3 border-gray-300 pl-6">
               {sidebarRules.map((rule, index) => (
-                <li key={`sidebar-${rule.guid}-${index}`} className="py-1 ml-4">
+                <li key={`sidebar-${rule.guid ?? "unknown"}-${index}`} className="py-1 ml-4">
                   <Link href={`/${rule.uri}`} className="text-gray-700 hover:text-ssw-red">
                     {rule.title}
                   </Link>

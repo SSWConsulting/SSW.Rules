@@ -12,6 +12,7 @@ export type TinaCategoryProps = {
     view: "titleOnly" | "blurb" | "all";
     page: number;
     perPage: number;
+    brokenReferences?: { detected: boolean; paths: string[] } | null;
   };
   tinaQueryProps: any;
 };

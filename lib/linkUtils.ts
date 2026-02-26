@@ -4,7 +4,7 @@ export const isExternalSSWSite = (href: string): boolean => {
     return true;
   }
   const externalSSWSitePatterns =
-    /^(https:\/\/(?:www\.)?ssw\.com\.au\/(?:people|rules|ssw)(?:\/|$))/i;
+    /^(https:\/\/(?:www\.)?ssw\.com\.au\/(?:people|ssw)(?:\/|$))/i;
   return externalSSWSitePatterns.test(href);
 };
 
@@ -19,10 +19,6 @@ export const isExternalSSWSite = (href: string): boolean => {
  * isExternalLink("/company")                         // true
  */
 export const isExternalLink = (href: string): boolean => {
-  if(href.includes("ssw.com.au/rules"))
-  {
-    return false;
-  }
   if(isExternalSSWSite(href))
   {
     return true;

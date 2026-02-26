@@ -1,3 +1,18 @@
+
+/**
+ * Determines whether a given href points to a trusted external SSW-branded site.
+ *
+ * SSW sites are treated as trusted, so they do not receive `noopener noreferrer nofollow`
+ * rel attributes when rendered as external links.
+ *
+ * @param href - The URL to evaluate.
+ * @returns `true` if the href points to an SSW-branded site (excluding `ssw.com.au/rules`), `false` otherwise.
+ * @example
+ * isExternalSSWSite("https://ssw.com.au/people")        // true
+ * isExternalSSWSite("https://www.ssw.com.au/ssw/")      // true
+ * isExternalSSWSite("https://ssw.com.au/rules")         // false
+ * isExternalSSWSite("https://google.com")               // false
+ */
 export const isExternalSSWSite = (href: string): boolean => {
   if(href.includes("ssw.com.au") && !href.includes("ssw.com.au/rules"))
   {

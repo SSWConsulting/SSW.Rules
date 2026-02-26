@@ -8,6 +8,7 @@ describe("isExternalSSWSite", () => {
     expect(isExternalSSWSite("https://ssw.com.au")).toBe(true);
     expect(isExternalSSWSite("https://www.ssw.com.au")).toBe(true);
     expect(isExternalSSWSite("https://www.ssw.com.au/people")).toBe(true);
+    expect(isExternalSSWSite("https://www.ssw.com.au/archive")).toBe(true);
     expect(isExternalSSWSite("https://www.ssw.com.au/rules")).toBe(false);
   });
 });

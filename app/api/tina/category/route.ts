@@ -1,15 +1,37 @@
 import { unstable_cache } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
+import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 import { getBranch, getFetchOptions } from "@/utils/tina/get-branch";
 
 // Helper function to fetch category data (will be wrapped with cache)
 async function fetchCategoryData(relativePath: string, branch?: string) {
-  if (branch) {
-    return await client.queries.categoryWithRulesQuery({ relativePath }, await getFetchOptions());
-  } else {
-    return await client.queries.categoryWithRulesQuery({ relativePath });
+  const options = branch ? await getFetchOptions(branch) : undefined;
+
+  const res: any = await (client as any).request(
+    {
+      query: CategoryWithRulesQueryDocument,
+      variables: { relativePath },
+      errorPolicy: "all",
+    },
+    options
+  );
+
+  const errorMessages = (res?.errors ?? [])
+    .map((e: any) => (typeof e === "string" ? e : e?.message))
+    .filter((m: any): m is string => typeof m === "string" && m.length > 0);
+
+  const missingRecordErrors = errorMessages.filter((m) => m.includes("Unable to find record"));
+  if (missingRecordErrors.length > 0) {
+    console.warn(`[api/tina/category] Missing rule references in category relativePath="${relativePath}":\n${missingRecordErrors.join("\n")}`);
   }
+
+  return {
+    data: res?.data,
+    errors: res?.errors ?? null,
+    query: CategoryWithRulesQueryDocument,
+    variables: { relativePath },
+  };
 }
 
 export async function GET(request: NextRequest) {

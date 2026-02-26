@@ -14,9 +14,7 @@
     "dev:build": "next build",
     "prepare:content": "cross-env node ./scripts/prepare-content.js",
     "crawl-sitemap": "node ./scripts/crawl-sitemap.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:ci": "jest --ci --coverage"
+    "test": "jest"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.3",

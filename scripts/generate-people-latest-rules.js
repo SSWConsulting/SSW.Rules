@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 const fs = require("node:fs");
 const path = require("node:path");
-const crypto = require("node:crypto");
 const { spawn } = require("node:child_process");
 const readline = require("node:readline");
 const matter = require("gray-matter");
@@ -42,12 +41,6 @@ function resolveContentRepoPath() {
 
   for (const p of candidates) {
     if (isGitRepo(p)) {
-      if (p !== initialPath) {
-        const suggested = path.relative(projectRoot, p) || p;
-        console.warn(
-          `⚠️ generate-people-latest-rules: LOCAL_CONTENT_RELATIVE_PATH resolved to missing repo (${initialPath}); using ${p} instead. Consider setting LOCAL_CONTENT_RELATIVE_PATH=${suggested}`
-        );
-      }
       return p;
     }
   }

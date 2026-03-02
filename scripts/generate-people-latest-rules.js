@@ -24,36 +24,10 @@ const outputPath = path.join(projectRoot, "public", "people-latest-rules.json");
 
 const ONLY_USER = (process.env.PEOPLE_LATEST_RULES_ONLY_USER || "").trim().toLowerCase();
 
-const LOCAL_CONTENT_RELATIVE_PATH = process.env.LOCAL_CONTENT_RELATIVE_PATH || path.join("..", "SSW.Rules.Content");
-let CONTENT_REPO_PATH = path.resolve(projectRoot, LOCAL_CONTENT_RELATIVE_PATH);
+const CONTENT_REPO_PATH = path.resolve(projectRoot, "..", "SSW.Rules.Content");
 const GIT_MAX_COMMITS = Number(process.env.PEOPLE_LATEST_RULES_GIT_MAX_COMMITS) || 100000;
 
 const MAX_RULES_PER_USER = 5;
-
-function isGitRepo(repoPath) {
-  return Boolean(repoPath) && fs.existsSync(repoPath) && fs.existsSync(path.join(repoPath, ".git"));
-}
-
-function resolveContentRepoPath() {
-  const initialPath = CONTENT_REPO_PATH;
-  const candidates = [initialPath, path.resolve(projectRoot, "..", "SSW.Rules.Content"), path.resolve(projectRoot, "..", "..", "SSW.Rules.Content")].filter(
-    Boolean
-  );
-
-  for (const p of candidates) {
-    if (isGitRepo(p)) {
-      if (p !== initialPath) {
-        const suggested = path.relative(projectRoot, p) || p;
-        console.warn(
-          `⚠️ generate-people-latest-rules: LOCAL_CONTENT_RELATIVE_PATH resolved to missing repo (${initialPath}); using ${p} instead. Consider setting LOCAL_CONTENT_RELATIVE_PATH=${suggested}`
-        );
-      }
-      return p;
-    }
-  }
-
-  throw new Error(`Content repo not found (or missing .git): ${initialPath}. Tried: ${candidates.join(", ")}`);
-}
 
 function extractUsernameFromUrl(url) {
   if (!url) return null;
@@ -205,8 +179,6 @@ async function buildLatestRulesForUsersFromGitLog(activeLogins, emailToLogin, na
   const active = new Set(activeLogins.map((l) => String(l).toLowerCase()));
   const perUser = new Map();
   for (const l of active) perUser.set(l, new Map());
-
-  CONTENT_REPO_PATH = resolveContentRepoPath();
 
   const COMMIT_MARK = "<<<COMMIT>>>";
   const END_MARK = "<<<END_COMMIT>>>";

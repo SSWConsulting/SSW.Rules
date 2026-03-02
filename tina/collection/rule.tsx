@@ -168,7 +168,7 @@ const Rule: Collection = {
       type: "string",
       name: "redirects",
       label: "Redirects",
-      description: "Alternate URLs that redirect to this rule.",
+      description: "Alternate URLs that redirect to this rule. E.g. \"keep-PBIs-smaller-than-2-days\"",
       list: true,
       searchable: false,
       ui: {

@@ -4,6 +4,7 @@ import { PaginationResult, PaginationVars } from "@/models/Pagination";
 import { QueryResult } from "@/models/QueryResult";
 import { Rule } from "@/models/Rule";
 import client from "@/tina/__generated__/client";
+import { CategoryRuleCountsQueryDocument } from "@/tina/__generated__/types";
 
 type RuleSearchField = "title" | "uri";
 
@@ -60,10 +61,23 @@ async function fetchCategoryRuleData(): Promise<{
   let hasNextPage = true;
 
   while (hasNextPage) {
-    const res: any = await client.queries.categoryRuleCountsQuery({
-      first: 50,
-      after,
+    const res: any = await (client as any).request({
+      query: CategoryRuleCountsQueryDocument,
+      variables: {
+        first: 50,
+        after,
+      },
+      errorPolicy: "all",
     });
+
+    const errorMessages = (res?.errors ?? [])
+      .map((e: any) => (typeof e === "string" ? e : e?.message))
+      .filter((m: any): m is string => typeof m === "string" && m.length > 0);
+
+    const missingRecordErrors = errorMessages.filter((m) => m.includes("Unable to find record"));
+    if (missingRecordErrors.length > 0) {
+      console.warn(`[fetchCategoryRuleData] Missing rule references detected while computing counts:\n${missingRecordErrors.join("\n")}`);
+    }
 
     const conn: any = res?.data?.categoryConnection;
     const edges = conn?.edges ?? [];

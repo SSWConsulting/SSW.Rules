@@ -3,6 +3,7 @@ import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
+import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 import ClientFallbackPage from "./ClientFallbackPage";
 import { TinaCategoryWrapper } from "./TinaCategoryWrapper";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
@@ -57,14 +58,29 @@ const getCategoryData = async (filename: string) => {
   if (!fullPath) return;
 
   try {
-    const res = await client.queries.categoryWithRulesQuery({
-      relativePath: `${fullPath}`,
+    // Tina's default client errorPolicy is "throw" which can 500 a whole page if a referenced rule is missing.
+    // Using a non-throwing errorPolicy allows us to render the category and simply omit missing rules.
+    const res: any = await (client as any).request({
+      query: String(CategoryWithRulesQueryDocument),
+      variables: { relativePath: `${fullPath}` },
+      errorPolicy: "all",
     });
+
+    const errorMessages = (res?.errors ?? [])
+      .map((e: any) => (typeof e === "string" ? e : e?.message))
+      .filter((m: any): m is string => typeof m === "string" && m.length > 0);
+
+    const missingRecordErrors = errorMessages.filter((m) => m.includes("Unable to find record"));
+    if (missingRecordErrors.length > 0) {
+      console.warn(`[getCategoryData] Missing rule references in category relativePath="${fullPath}":\n${missingRecordErrors.join("\n")}`);
+    }
+
+    if (!res?.data) return null;
 
     return {
       data: res.data,
-      query: res.query,
-      variables: res.variables,
+      query: String(CategoryWithRulesQueryDocument),
+      variables: { relativePath: `${fullPath}` },
     };
   } catch (error) {
     console.error(`[getCategoryData] failed for filename="${filename}":`, error);

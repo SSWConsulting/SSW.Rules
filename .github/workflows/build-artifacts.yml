@@ -267,6 +267,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Debug CRM env presence (safe)
+        run: |
+          echo "CRM_TENANT=$CRM_TENANT"
+          echo "CRM_TENANT_ID is set? $([ -n "$CRM_TENANT_ID" ] && echo yes || echo no)"
+          echo "CRM_APP_ID is set? $([ -n "$CRM_APP_ID" ] && echo yes || echo no)"
+          echo "CRM_SCOPE is set? $([ -n "$CRM_SCOPE" ] && echo yes || echo no)"
+          echo "CRM_APP_SECRET is set? $([ -n "$CRM_APP_SECRET" ] && echo yes || echo no)"
+        env:
+          CRM_TENANT: ${{ vars.CRM_TENANT }}
+          CRM_TENANT_ID: ${{ vars.CRM_TENANT_ID }}
+          CRM_APP_ID: ${{ vars.CRM_APP_ID }}
+          CRM_SCOPE: ${{ vars.CRM_SCOPE }}
+          CRM_APP_SECRET: ${{ secrets.CRM_APP_SECRET }}
+
       - name: Generate people-latest-rules.json
         env:
           LOCAL_CONTENT_RELATIVE_PATH: content

@@ -68,6 +68,8 @@ on:
         required: false
       NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING:
         required: false
+      CRM_APP_SECRET:
+        required: false
     outputs:
       image_tag:
         description: "Docker tag to deploy"

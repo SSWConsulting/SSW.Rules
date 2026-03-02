@@ -7,7 +7,6 @@
     "build": "tinacms build && next build",
     "generate:archived-rules": "node ./scripts/generate-archived-rules.js",
     "generate:people-latest-rules": "node ./scripts/generate-people-latest-rules.js",
-    "prebuild": "npm run -s generate:people-latest-rules",
     "postbuild": "npm run -s generate:archived-rules && next-sitemap",
     "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
     "start": "next start",

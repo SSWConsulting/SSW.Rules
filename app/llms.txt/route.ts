@@ -8,8 +8,9 @@ import { join } from "node:path";
  * so this Route Handler guarantees the file is accessible at /rules/llms.txt.
  */
 export async function GET() {
+  const filePath = join(process.cwd(), "public", "llms.txt");
+
   try {
-    const filePath = join(process.cwd(), "public", "llms.txt");
     const content = readFileSync(filePath, "utf-8");
 
     return new Response(content, {
@@ -19,7 +20,9 @@ export async function GET() {
         "Cache-Control": "public, max-age=3600, s-maxage=86400",
       },
     });
-  } catch {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`[llms.txt] Failed to read ${filePath}: ${message}`);
     return new Response("llms.txt not found", { status: 404 });
   }
 }

@@ -22,16 +22,16 @@ jobs:
       - name: Find latest release branch by semver
         id: find_release
         run: |
+          set -euo pipefail
           echo "🔍 Finding latest release/v* branch..."
 
           # Fetch all refs matching release/v* prefix
           BRANCHES=$(gh api "repos/${{ github.repository }}/git/matching-refs/heads/release/v" \
-            --paginate --jq '.[].ref | sub("refs/heads/"; "")' 2>/dev/null)
+            --paginate --jq '.[].ref | sub("refs/heads/"; "")')
 
           if [ -z "$BRANCHES" ]; then
             echo "❌ No release branches found matching 'release/v*'"
-            echo "found=false" >> $GITHUB_OUTPUT
-            exit 0
+            exit 1
           fi
 
           echo "Found release branches:"
@@ -47,12 +47,10 @@ jobs:
 
           echo "✅ Latest release branch: $LATEST_BRANCH"
           echo "branch=$LATEST_BRANCH" >> $GITHUB_OUTPUT
-          echo "found=true" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ github.token }}
 
       - name: Trigger production deployment
-        if: steps.find_release.outputs.found == 'true'
         run: |
           BRANCH="${{ steps.find_release.outputs.branch }}"
           echo "🚀 Triggering production deployment from: $BRANCH"
@@ -65,9 +63,3 @@ jobs:
           echo "✅ Deployment triggered successfully!"
         env:
           GH_TOKEN: ${{ github.token }}
-
-      - name: No release branch found
-        if: steps.find_release.outputs.found != 'true'
-        run: |
-          echo "⚠️ No release branch found. Skipping scheduled deployment."
-          echo "Expected branch pattern: release/v*"

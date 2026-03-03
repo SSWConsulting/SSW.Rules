@@ -175,7 +175,7 @@ function resolveLoginFromName(name, nameToLogin, ambiguousNames) {
 
 // ---------------- Email -> login resolve (prefer CRM map) ----------------
 
-function resolveLoginFromEmailOrMap(email, emailToLogin) {
+function resolveLoginFromEmailOrMap(email, emailToLogin, active) {
   const e = String(email || "")
     .trim()
     .toLowerCase();
@@ -184,12 +184,14 @@ function resolveLoginFromEmailOrMap(email, emailToLogin) {
   // Prefer CRM mapping first
   if (emailToLogin && typeof emailToLogin.get === "function") {
     const mapped = emailToLogin.get(e);
-    if (mapped) return mapped;
+    if (mapped && (!active || active.has(mapped))) return mapped;
   }
 
   // Fallback: infer from email patterns (noreply, local-part)
   const inferred = extractLikelyLoginFromEmail(e);
-  return inferred || null;
+  if (inferred && (!active || active.has(inferred))) return inferred;
+
+  return null;
 }
 
 // ---------------- Git log scan (single pass) ----------------
@@ -237,15 +239,11 @@ async function buildLatestRulesForUsersFromGitLog(activeLogins, emailToLogin, na
   let filePaths = [];
 
   function resolveParticipantLogin({ email, name }) {
-    // 1) email -> CRM map (authoritative)
-    const fromMap = resolveLoginFromEmailOrMap(email, emailToLogin);
-    if (fromMap && active.has(fromMap)) return fromMap;
+    // 1) email -> login (CRM map, else infer) — accept only if it matches an active login
+    const fromEmail = resolveLoginFromEmailOrMap(email, emailToLogin, active);
+    if (fromEmail) return fromEmail;
 
-    // 2) email infer (local-part / noreply) — accept only if it matches an active login
-    const inferred = extractLikelyLoginFromEmail(email);
-    if (inferred && active.has(inferred)) return inferred;
-
-    // 3) name -> CRM name map (strict)
+    // 2) name -> CRM name map (strict)
     const fromName = resolveLoginFromName(name, nameToLogin, ambiguousNames);
     if (fromName && active.has(fromName)) return fromName;
 

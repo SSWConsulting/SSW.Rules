@@ -56,6 +56,7 @@ jobs:
           echo "🚀 Triggering production deployment from: $BRANCH"
 
           gh workflow run build-and-deploy.yml \
+            --repo "${{ github.repository }}" \
             --ref "$BRANCH" \
             -f environment=production \
             -f branch_name="$BRANCH"

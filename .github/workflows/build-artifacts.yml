@@ -257,7 +257,13 @@ jobs:
           mv content-temp ./content
 
       - name: Generate public/llms.txt
-        run: node scripts/generate-llms-txt.js
+        run: |
+          echo "Generating public/llms.txt..."
+          node scripts/generate-llms-txt.js
+
+          echo "Checking generated file..."
+          ls -lh public/llms.txt
+          head -c 300 public/llms.txt || true
 
       # ────────────────────────────── Generate people-latest-rules.json (for SSW.People) ───────────────────────────
       - name: Setup Node.js
@@ -289,9 +295,6 @@ jobs:
           echo "Checking generated file..."
           ls -lh public/people-latest-rules.json
           head -c 300 public/people-latest-rules.json || true
-          
-      - name: Generate public/llms.txt
-        run: node scripts/generate-llms-txt.js
 
       # ────────────────────────────── AZURE LOGIN ───────────────────────────
       - name: Azure CLI – Login

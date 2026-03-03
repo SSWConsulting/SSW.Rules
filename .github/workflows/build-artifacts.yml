@@ -592,19 +592,6 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.10.0
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: Generate search index with content
         env:
           LOCAL_CONTENT_RELATIVE_PATH: ../content

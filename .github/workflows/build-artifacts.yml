@@ -68,6 +68,8 @@ on:
         required: false
       NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING:
         required: false
+      CRM_APP_SECRET:
+        required: false
     outputs:
       image_tag:
         description: "Docker tag to deploy"
@@ -254,6 +256,37 @@ jobs:
           cp content-temp/scripts/tina-migration/redirects.json ./
           mv content-temp ./content
 
+      # ────────────────────────────── Generate people-latest-rules.json (for SSW.People) ───────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate people-latest-rules.json
+        env:
+          LOCAL_CONTENT_RELATIVE_PATH: content
+          CRM_TENANT: ${{ vars.CRM_TENANT }}
+          CRM_TENANT_ID: ${{ vars.CRM_TENANT_ID }}
+          CRM_APP_ID: ${{ vars.CRM_APP_ID }}
+          CRM_SCOPE: ${{ vars.CRM_SCOPE }}
+          CRM_VIEW_CURRENT: ${{ vars.CRM_VIEW_CURRENT }}
+          CRM_APP_SECRET: ${{ secrets.CRM_APP_SECRET }}
+        run: |
+          echo "Generating people-latest-rules.json..."
+          pnpm run generate:people-latest-rules
+
+          echo "Checking generated file..."
+          ls -lh public/people-latest-rules.json
+          head -c 300 public/people-latest-rules.json || true
+          
       - name: Generate public/llms.txt
         run: node scripts/generate-llms-txt.js
 
@@ -548,19 +581,6 @@ jobs:
           path: content
           fetch-depth: 0
           lfs: true
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.10.0
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
 
       - name: Generate search index with content
         env:

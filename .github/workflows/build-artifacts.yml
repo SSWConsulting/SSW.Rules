@@ -256,6 +256,9 @@ jobs:
           cp content-temp/scripts/tina-migration/redirects.json ./
           mv content-temp ./content
 
+      - name: Generate public/llms.txt
+        run: node scripts/generate-llms-txt.js
+
       # ────────────────────────────── Generate people-latest-rules.json (for SSW.People) ───────────────────────────
       - name: Setup Node.js
         uses: actions/setup-node@v4

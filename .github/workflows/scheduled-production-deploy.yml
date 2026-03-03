@@ -6,6 +6,10 @@ on:
     - cron: "0 6 * * *"
   workflow_dispatch: # Allow manual trigger for testing
 
+concurrency:
+  group: scheduled-production-deploy
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: write

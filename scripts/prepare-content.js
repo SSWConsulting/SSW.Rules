@@ -50,6 +50,8 @@ const scriptsPath = join(contentAbsPath, "scripts/tina-migration");
 const buildMapScript = join(scriptsPath, "build-rule-category-map.py");
 const orphanedCheckScript = join(scriptsPath, "orphaned_rules_check.py");
 const buildRedirectMapScript = join(scriptsPath, "build-redirect-map.py");
+const generateLlmsScript = join(__dirname, "generate-llms-txt.js");
+const contentRulesDir = join(contentAbsPath, "public", "uploads", "rules");
 
 const { command: python } = resolvePythonInvocation();
 
@@ -60,3 +62,5 @@ execSync(`${python} "${buildRedirectMapScript}"`, { stdio: "inherit", cwd: scrip
 copyAndMoveJsonFile("category-uri-title-map.json", scriptsPath);
 copyAndMoveJsonFile("orphaned_rules.json", scriptsPath);
 copyAndMoveJsonFile("redirects.json", scriptsPath);
+
+execSync(`node "${generateLlmsScript}" "${contentRulesDir}"`, {stdio: "inherit", cwd: __dirname});

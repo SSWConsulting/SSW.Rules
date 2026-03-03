@@ -1,0 +1,69 @@
+name: Scheduled Production Deploy
+
+on:
+  schedule:
+    # 1:00 AM US Eastern (EST) / 2:00 AM (EDT) — every day
+    - cron: "0 6 * * *"
+  workflow_dispatch: # Allow manual trigger for testing
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  find-and-deploy:
+    name: Find Latest Release & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find latest release branch by semver
+        id: find_release
+        run: |
+          echo "🔍 Finding latest release/v* branch..."
+
+          # Fetch all refs matching release/v* prefix
+          BRANCHES=$(gh api "repos/${{ github.repository }}/git/matching-refs/heads/release/v" \
+            --paginate --jq '.[].ref | sub("refs/heads/"; "")' 2>/dev/null)
+
+          if [ -z "$BRANCHES" ]; then
+            echo "❌ No release branches found matching 'release/v*'"
+            echo "found=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Found release branches:"
+          echo "$BRANCHES"
+          echo ""
+
+          # Extract version numbers, sort by semver, pick the highest
+          LATEST_BRANCH=$(echo "$BRANCHES" \
+            | sed 's|release/v||' \
+            | sort -t. -k1,1n -k2,2n -k3,3n \
+            | tail -1)
+          LATEST_BRANCH="release/v${LATEST_BRANCH}"
+
+          echo "✅ Latest release branch: $LATEST_BRANCH"
+          echo "branch=$LATEST_BRANCH" >> $GITHUB_OUTPUT
+          echo "found=true" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Trigger production deployment
+        if: steps.find_release.outputs.found == 'true'
+        run: |
+          BRANCH="${{ steps.find_release.outputs.branch }}"
+          echo "🚀 Triggering production deployment from: $BRANCH"
+
+          gh workflow run build-and-deploy.yml \
+            --ref "$BRANCH" \
+            -f environment=production \
+            -f branch_name="$BRANCH"
+
+          echo "✅ Deployment triggered successfully!"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: No release branch found
+        if: steps.find_release.outputs.found != 'true'
+        run: |
+          echo "⚠️ No release branch found. Skipping scheduled deployment."
+          echo "Expected branch pattern: release/v*"

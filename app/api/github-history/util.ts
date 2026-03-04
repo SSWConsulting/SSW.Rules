@@ -367,7 +367,12 @@ export function isCommitExcluded(commit: GitHubCommit): boolean {
 
   // Primary author is excluded, but if any allowed co-author exists, don't exclude
   const alternateAuthorName = findFirstAllowedCoAuthorName(commit);
-  return !alternateAuthorName;
+  if (alternateAuthorName) return false;
+
+  // Don't exclude bot commits that reference a PR — author can be resolved via PR lookup
+  if (extractPRNumber(commit.commit.message) !== null) return false;
+
+  return true;
 }
 
 // ---------------- Find Latest Valid Commit ----------------
@@ -384,4 +389,64 @@ export function findLatestNonExcludedCommit(commits: GitHubCommit[]): GitHubComm
   }
 
   return commits[0];
+}
+
+/**
+ * Extracts a pull request number from a commit message.
+ */
+export function extractPRNumber(message: string): number | null {
+  const match = message.match(/\(#(\d+)\)/);
+  return match ? Number.parseInt(match[1], 10) : null;
+}
+
+/**
+ * Fetches commits from a pull request and returns the first non-excluded co-author name.
+ */
+async function fetchCoAuthorFromPR(owner: string, repo: string, prNumber: number, headers: Record<string, string>): Promise<string | null> {
+  const url = `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}/commits?per_page=100`;
+  try {
+    const commits = await fetchGitHub<GitHubCommit[]>(url, headers);
+
+    for (const commit of commits) {
+      const coAuthors = extractCoAuthors(commit.commit.message);
+      for (const coAuthor of coAuthors) {
+        if (!isIdentifierExcluded(coAuthor.name) && !isIdentifierExcluded(coAuthor.email)) {
+          return coAuthor.name;
+        }
+      }
+    }
+  } catch (error) {
+    console.warn(`Failed to fetch PR #${prNumber} commits: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  return null;
+}
+
+/**
+ * Async version of getAlternateAuthorName with PR-based fallback.
+ * 1. Tries extracting co-author from the commit message (sync, existing logic)
+ * 2. If that fails and the primary author is excluded, extracts the PR number
+ *    from the commit message and scans PR commits for Co-authored-by trailers
+ */
+export async function resolveAlternateAuthorName(
+  commit: GitHubCommit | null,
+  owner: string,
+  repo: string,
+  headers: Record<string, string>
+): Promise<string | null> {
+  if (!commit) return null;
+
+  // Try sync co-author extraction from commit message
+  const syncResult = getAlternateAuthorName(commit);
+  if (syncResult) return syncResult;
+
+  // Only do PR lookup if primary author is excluded
+  if (!isPrimaryAuthorExcluded(commit)) return null;
+
+  // Try PR-based lookup
+  const prNumber = extractPRNumber(commit.commit.message);
+  if (prNumber) {
+    return fetchCoAuthorFromPR(owner, repo, prNumber, headers);
+  }
+
+  return null;
 }

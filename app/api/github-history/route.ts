@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { GitHubCommit } from "@/components/last-updated-by/types";
 import { getGitHubAppToken } from "@/lib/services/github/github.utils";
-import { fetchGitHub, findCompleteFileHistory, findLatestNonExcludedCommit, getAlternateAuthorName } from "./util";
+import { fetchGitHub, findCompleteFileHistory, findLatestNonExcludedCommit, resolveAlternateAuthorName } from "./util";
 
 const GITHUB_ACTIVE_BRANCH = process.env.NEXT_PUBLIC_TINA_BRANCH || "main";
 const CACHE_TTL = 3600;
@@ -88,10 +88,10 @@ async function runWithConcurrency<T, R>(items: T[], limit: number, fn: (item: T,
  * - if excluded and no allowed co-author => return null
  * - if not excluded => return primary author name (commit.commit.author.name)
  */
-function pickAuthorNameOrNull(commit: GitHubCommit | null): string | null {
+async function pickAuthorNameOrNull(commit: GitHubCommit | null, owner: string, repo: string, headers: Record<string, string>): Promise<string | null> {
   if (!commit) return null;
 
-  const alt = getAlternateAuthorName(commit);
+  const alt = await resolveAlternateAuthorName(commit, owner, repo, headers);
   if (alt) return alt;
 
   const primaryName = commit.commit?.author?.name ?? null;
@@ -172,7 +172,7 @@ export async function GET(request: Request) {
         latestCommit,
         firstCommit,
         historyUrl,
-        otherCoAuthorName: getAlternateAuthorName(latestCommit),
+        otherCoAuthorName: await resolveAlternateAuthorName(latestCommit, owner, repo, headers),
       });
     } else {
       // No path specified, just get latest commit for the branch
@@ -192,7 +192,7 @@ export async function GET(request: Request) {
         latestCommit,
         firstCommit: null,
         historyUrl,
-        otherCoAuthorName: getAlternateAuthorName(latestCommit),
+        otherCoAuthorName: await resolveAlternateAuthorName(latestCommit, owner, repo, headers),
       });
     }
   } catch (error) {
@@ -285,7 +285,7 @@ export async function POST(request: Request) {
             return { index, item: { path, authorName: null, sha: null, date: null, historyUrl } };
           }
 
-          const authorName = pickAuthorNameOrNull(latestCommit);
+          const authorName = await pickAuthorNameOrNull(latestCommit, owner, repo, headers);
           return {
             index,
             item: {
@@ -299,7 +299,7 @@ export async function POST(request: Request) {
         } else {
           const firstCommit = allCommitsWithHistory[allCommitsWithHistory.length - 1] ?? null;
 
-          const alt = firstCommit ? getAlternateAuthorName(firstCommit) : null;
+          const alt = firstCommit ? await resolveAlternateAuthorName(firstCommit, owner, repo, headers) : null;
           if (alt) {
             return {
               index,

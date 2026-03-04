@@ -1,0 +1,66 @@
+name: Scheduled Production Deploy
+
+on:
+  schedule:
+    # 1:00 AM US Eastern (EST) / 2:00 AM (EDT) — every day
+    - cron: "0 6 * * *"
+  workflow_dispatch: # Allow manual trigger for testing
+
+concurrency:
+  group: scheduled-production-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  find-and-deploy:
+    name: Find Latest Release & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find latest release branch by semver
+        id: find_release
+        run: |
+          set -euo pipefail
+          echo "🔍 Finding latest release/v* branch..."
+
+          # Fetch all refs matching release/v* prefix
+          BRANCHES=$(gh api "repos/${{ github.repository }}/git/matching-refs/heads/release/v" \
+            --paginate --jq '.[].ref | sub("refs/heads/"; "")')
+
+          if [ -z "$BRANCHES" ]; then
+            echo "❌ No release branches found matching 'release/v*'"
+            exit 1
+          fi
+
+          echo "Found release branches:"
+          echo "$BRANCHES"
+          echo ""
+
+          # Extract version numbers, sort by semver, pick the highest
+          LATEST_BRANCH=$(echo "$BRANCHES" \
+            | sed 's|release/v||' \
+            | sort -t. -k1,1n -k2,2n -k3,3n \
+            | tail -1)
+          LATEST_BRANCH="release/v${LATEST_BRANCH}"
+
+          echo "✅ Latest release branch: $LATEST_BRANCH"
+          echo "branch=$LATEST_BRANCH" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Trigger production deployment
+        run: |
+          BRANCH="${{ steps.find_release.outputs.branch }}"
+          echo "🚀 Triggering production deployment from: $BRANCH"
+
+          gh workflow run build-and-deploy.yml \
+            --repo "${{ github.repository }}" \
+            --ref "$BRANCH" \
+            -f environment=production \
+            -f branch_name="$BRANCH"
+
+          echo "✅ Deployment triggered successfully!"
+        env:
+          GH_TOKEN: ${{ github.token }}

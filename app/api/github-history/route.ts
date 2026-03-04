@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { GitHubCommit } from "@/components/last-updated-by/types";
 import { getGitHubAppToken } from "@/lib/services/github/github.utils";
-import { fetchGitHub, findCompleteFileHistory, findLatestNonExcludedCommit, resolveAlternateAuthorName } from "./util";
+import { fetchGitHub, findCompleteFileHistory, findLatestNonExcludedCommit, getAlternateAuthorName, isCommitExcluded, resolveAlternateAuthorName } from "./util";
 
 const GITHUB_ACTIVE_BRANCH = process.env.NEXT_PUBLIC_TINA_BRANCH || "main";
 const CACHE_TTL = 3600;
@@ -88,10 +88,10 @@ async function runWithConcurrency<T, R>(items: T[], limit: number, fn: (item: T,
  * - if excluded and no allowed co-author => return null
  * - if not excluded => return primary author name (commit.commit.author.name)
  */
-async function pickAuthorNameOrNull(commit: GitHubCommit | null, owner: string, repo: string, headers: Record<string, string>): Promise<string | null> {
+function pickAuthorNameOrNull(commit: GitHubCommit | null): string | null {
   if (!commit) return null;
 
-  const alt = await resolveAlternateAuthorName(commit, owner, repo, headers);
+  const alt = getAlternateAuthorName(commit);
   if (alt) return alt;
 
   const primaryName = commit.commit?.author?.name ?? null;
@@ -159,10 +159,24 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: "No commits found", branch: GITHUB_ACTIVE_BRANCH, historyUrl }, { status: 400 });
       }
 
-      // Find the latest non-excluded commit (newest first)
-      const latestCommit = findLatestNonExcludedCommit(allCommitsWithHistory);
-      // Find the first commit (oldest, last in array since it's newest-first)
       const firstCommit = allCommitsWithHistory[allCommitsWithHistory.length - 1];
+
+      // If the newest commit is excluded (bot), try async PR resolution first
+      const newestCommit = allCommitsWithHistory[0];
+      if (isCommitExcluded(newestCommit)) {
+        const resolvedAuthor = await resolveAlternateAuthorName(newestCommit, owner, repo, headers);
+        if (resolvedAuthor) {
+          return NextResponse.json({
+            latestCommit: newestCommit,
+            firstCommit,
+            historyUrl,
+            otherCoAuthorName: resolvedAuthor,
+          });
+        }
+      }
+
+      // Fall back to sync logic (skips bot commits without co-authors)
+      const latestCommit = findLatestNonExcludedCommit(allCommitsWithHistory);
 
       if (!latestCommit) {
         return NextResponse.json({ error: "No valid commits found", historyUrl }, { status: 400 });
@@ -172,7 +186,7 @@ export async function GET(request: Request) {
         latestCommit,
         firstCommit,
         historyUrl,
-        otherCoAuthorName: await resolveAlternateAuthorName(latestCommit, owner, repo, headers),
+        otherCoAuthorName: getAlternateAuthorName(latestCommit),
       });
     } else {
       // No path specified, just get latest commit for the branch
@@ -180,6 +194,20 @@ export async function GET(request: Request) {
 
       if (!latestCommits.length) {
         return NextResponse.json({ error: "No commits found", historyUrl }, { status: 400 });
+      }
+
+      // If the newest commit is excluded (bot), try async PR resolution first
+      const newestCommit = latestCommits[0];
+      if (isCommitExcluded(newestCommit)) {
+        const resolvedAuthor = await resolveAlternateAuthorName(newestCommit, owner, repo, headers);
+        if (resolvedAuthor) {
+          return NextResponse.json({
+            latestCommit: newestCommit,
+            firstCommit: null,
+            historyUrl,
+            otherCoAuthorName: resolvedAuthor,
+          });
+        }
       }
 
       const latestCommit = findLatestNonExcludedCommit(latestCommits);
@@ -192,7 +220,7 @@ export async function GET(request: Request) {
         latestCommit,
         firstCommit: null,
         historyUrl,
-        otherCoAuthorName: await resolveAlternateAuthorName(latestCommit, owner, repo, headers),
+        otherCoAuthorName: getAlternateAuthorName(latestCommit),
       });
     }
   } catch (error) {
@@ -279,13 +307,32 @@ export async function POST(request: Request) {
         }
 
         if (mode === "updated") {
+          // If the newest commit is excluded (bot), try async PR resolution first
+          const newestCommit = allCommitsWithHistory[0];
+          if (isCommitExcluded(newestCommit)) {
+            const resolvedAuthor = await resolveAlternateAuthorName(newestCommit, owner, repo, headers);
+            if (resolvedAuthor) {
+              return {
+                index,
+                item: {
+                  path,
+                  authorName: resolvedAuthor,
+                  sha: newestCommit.sha ?? null,
+                  date: newestCommit.commit?.author?.date ?? null,
+                  historyUrl,
+                },
+              };
+            }
+          }
+
+          // Fall back to sync logic
           const latestCommit = findLatestNonExcludedCommit(allCommitsWithHistory);
 
           if (!latestCommit) {
             return { index, item: { path, authorName: null, sha: null, date: null, historyUrl } };
           }
 
-          const authorName = await pickAuthorNameOrNull(latestCommit, owner, repo, headers);
+          const authorName = pickAuthorNameOrNull(latestCommit);
           return {
             index,
             item: {

@@ -367,12 +367,7 @@ export function isCommitExcluded(commit: GitHubCommit): boolean {
 
   // Primary author is excluded, but if any allowed co-author exists, don't exclude
   const alternateAuthorName = findFirstAllowedCoAuthorName(commit);
-  if (alternateAuthorName) return false;
-
-  // Don't exclude bot commits that reference a PR — author can be resolved via PR lookup
-  if (extractPRNumber(commit.commit.message) !== null) return false;
-
-  return true;
+  return !alternateAuthorName;
 }
 
 // ---------------- Find Latest Valid Commit ----------------

@@ -402,12 +402,22 @@ async function fetchCoAuthorFromPR(owner: string, repo: string, prNumber: number
   try {
     const commits = await fetchGitHub<GitHubCommit[]>(url, headers);
 
+    // First pass: check Co-authored-by trailers
     for (const commit of commits) {
       const coAuthors = extractCoAuthors(commit.commit.message);
       for (const coAuthor of coAuthors) {
         if (!isIdentifierExcluded(coAuthor.name) && !isIdentifierExcluded(coAuthor.email)) {
           return coAuthor.name;
         }
+      }
+    }
+
+    // Second pass: check primary commit authors
+    for (const commit of commits) {
+      const authorName = commit.commit?.author?.name;
+      const authorLogin = commit.author?.login;
+      if (authorName && !isIdentifierExcluded(authorName) && !isIdentifierExcluded(authorLogin)) {
+        return authorName;
       }
     }
   } catch (error) {

@@ -263,7 +263,7 @@ jobs:
 
           echo "Checking generated file..."
           ls -lh public/llms.txt
-          head -c 300 public/llms.txt || true
+          head -c 500 public/llms.txt || true
 
       # ────────────────────────────── Generate people-latest-rules.json (for SSW.People) ───────────────────────────
       - name: Setup Node.js

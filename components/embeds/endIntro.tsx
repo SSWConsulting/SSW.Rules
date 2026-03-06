@@ -20,11 +20,6 @@ export const endIntroTemplate: Template = {
       required: false,
     },
   ],
-  ui: {
-    defaultItem: {
-      _hidden: "",
-    },
-  },
 };
 
 export const endIntroComponent = {

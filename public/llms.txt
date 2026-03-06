@@ -130,5 +130,3 @@ Key concepts:
 - [Rules to Better .NET 10 Migrations](https://www.ssw.com.au/rules/rules-to-better-net10-migrations): Migrating applications to .NET 10
 - [Rules to Better API Management](https://www.ssw.com.au/rules/rules-to-better-openapi-specification): OpenAPI specification and API management
 - [Rules to Better YARP](https://www.ssw.com.au/rules/rules-to-better-yarp): Using YARP (Yet Another Reverse Proxy) for .NET
-- [Latest Rules](https://www.ssw.com.au/rules/latest-rules): Recently updated rules across all categories
-- [Search](https://www.ssw.com.au/rules/search): Search all rules by keyword

@@ -17,7 +17,7 @@ export default function Error({ error }: { error: Error & { digest?: string }; r
   return (
     <div className="relative z-[1] py-20 max-w-screen-xl mx-auto px-4">
       <div className="flex flex-col items-center text-center">
-        <Image src="/img/tina-llama-error.webp" alt="Error illustration" width={400} height={400} unoptimized />
+        <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH}/tina-llama-error.webp`} alt="Error illustration" width={400} height={400} unoptimized />
 
         <p className="mt-6 text-lg font-medium text-muted-foreground">Oops! Something went wrong.</p>
 

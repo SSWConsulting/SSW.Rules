@@ -8,7 +8,7 @@
       "/admin/*",
       "/_next/*",
       "/api/*",
-      "*.{css,scss,sass,js,ts,tsx,jsx,ico,png,jpg,jpeg,gif,svg,woff,woff2,ttf,eot}"
+      "*.{css,scss,sass,js,ts,tsx,jsx,ico,png,jpg,jpeg,gif,svg,woff,woff2,ttf,eot,txt}"
     ],
     "rewrite": "/index.html"
   },

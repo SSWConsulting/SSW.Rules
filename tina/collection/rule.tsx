@@ -116,7 +116,7 @@ const Rule: Collection = {
         itemProps: (item) => ({ label: "👤 " + (item?.title ?? "Author") }),
         defaultItem: {
           title: "Bob Northwind",
-          url: "https://ssw.com.au/people/bob-northwind",
+          url: "https://www.ssw.com.au/people/bob-northwind",
         },
         component: ConditionalHiddenField,
       },
@@ -132,7 +132,7 @@ const Rule: Collection = {
         },
         {
           type: "string",
-          description: "The SSW People link for the contributor. E.g. \"https://ssw.com.au/people/bob-northwind\"",
+          description: "The SSW People link for the contributor. E.g. \"https://www.ssw.com.au/people/bob-northwind\"",
           name: "url",
           label: "Url",
         },

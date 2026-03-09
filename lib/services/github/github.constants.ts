@@ -33,6 +33,35 @@ export const DEFAULT_RESULTS_PER_PAGE = 6;
 export const DEFAULT_FILES_PER_PULL_REQUEST = 20;
 
 // Query for TinaCMS bot PRs - includes commit authors with GitHub login
+export const GITHUB_DISCUSSIONS_LATEST_COMMENTS_QUERY = `
+  query LatestDiscussionComments($owner: String!, $repo: String!, $categoryId: ID!, $first: Int!) {
+    repository(owner: $owner, name: $repo) {
+      discussions(
+        first: $first
+        categoryId: $categoryId
+        orderBy: { field: UPDATED_AT, direction: DESC }
+      ) {
+        nodes {
+          title
+          body
+          comments(last: 1) {
+            nodes {
+              author {
+                login
+                avatarUrl
+                url
+              }
+              body
+              createdAt
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const GITHUB_TINA_BOT_PRS_QUERY = `
   query SearchTinaBotPRs($query: String!, $first: Int!, $after: String) {
     search(

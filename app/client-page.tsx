@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import AboutSSWCard from "@/components/AboutSSWCard";
 import CategoryActionButtons from "@/components/CategoryActionButtons";
@@ -35,7 +34,6 @@ export default function HomeClientPage(props: HomeClientPageProps) {
   return (
     <>
       <SearchBar />
-      <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH}/tina-llama-error.webp`} alt="Error illustration" width={400} height={400} unoptimized />
       <div className="max-sm:h-auto m-4">
         <h1 className="m-0 mb-4 flex items-end max-sm:flex-col max-sm:items-start">
           <span className="text-ssw-red font-bold text-[2rem]">{ruleCount.toLocaleString("en-US")}&nbsp;</span>

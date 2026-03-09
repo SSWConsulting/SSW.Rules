@@ -10,6 +10,8 @@ export const historyFields: TinaField[] = [
     label: "Last Updated",
     ui: {
       component: "hidden",
+      // Ensure TinaCMS always serializes this field even when absent from frontmatter
+      defaultValue: "",
     },
   },
   {
@@ -19,6 +21,7 @@ export const historyFields: TinaField[] = [
     description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
     ui: {
       component: "hidden",
+      defaultValue: "",
     },
   },
   {
@@ -28,6 +31,7 @@ export const historyFields: TinaField[] = [
     description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
     ui: {
       component: "hidden",
+      defaultValue: "",
     },
   },
   {
@@ -131,10 +135,15 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
     userName = undefined;
   }
 
+  const now = new Date().toISOString();
+
   if (form.crudType === "create") {
     return {
       ...values,
-      lastUpdated: new Date().toISOString(),
+      // On create, set createdBy/Email if UserInfoField hasn't resolved yet
+      createdBy: !values.createdBy || values.createdBy === "Unknown" ? (userName ?? "") : values.createdBy,
+      createdByEmail: !values.createdByEmail || values.createdByEmail === "Unknown" ? (userEmail ?? "") : values.createdByEmail,
+      lastUpdated: now,
       lastUpdatedBy: userName ?? "",
       lastUpdatedByEmail: userEmail ?? "",
     };
@@ -142,7 +151,7 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
 
   return {
     ...values,
-    lastUpdated: new Date().toISOString(),
+    lastUpdated: now,
     lastUpdatedBy: userName ?? "",
     lastUpdatedByEmail: userEmail ?? "",
   };

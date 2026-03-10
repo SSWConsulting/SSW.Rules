@@ -13,9 +13,6 @@ param appServicePlanId string
 @description('Name of the Container Registry (without .azurecr.io)')
 param containerRegistryName string
 
-@description('Application Insights Connection String')
-param appInsightsConnectionString string = ''
-
 @description('Environment name for resource naming (staging/prod)')
 param environment string
 
@@ -42,34 +39,18 @@ var effectiveSlotName = environment == 'prod' ? 'pre-production' : slotName
 // - For staging PR slots: use the slotName as the tag
 var slotImageTag = environment == 'prod' ? imageTag : slotName
 
-// Shared app settings used by both the main App Service and deployment slots
-var baseAppSettings = [
-  {
-    name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
-    value: 'false'
-  }
-  {
-    name: 'DOCKER_REGISTRY_SERVER_URL'
-    value: 'https://${containerRegistryName}.azurecr.io'
-  }
-  {
-    name: 'WEBSITES_PORT'
-    value: '3000'
-  }
-  {
-    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-    value: appInsightsConnectionString
-  }
-]
-
 // Shared site configuration properties
+// NOTE: appSettings are intentionally NOT set here. ARM treats siteConfig.appSettings
+// as a full replacement (not a merge), which would wipe all environment variables
+// (secrets, Auth0, CRM, etc.) set by the CI/CD pipeline on every infrastructure deploy.
+// App settings are managed exclusively via 'az webapp config appsettings set' in the
+// GitHub Actions workflows, which performs a safe merge.
 var baseSiteConfig = {
   acrUseManagedIdentityCreds: true
   alwaysOn: true
   ftpsState: 'Disabled'
   minTlsVersion: '1.2'
   http20Enabled: true
-  appSettings: baseAppSettings
 }
 
 // ============================================================================

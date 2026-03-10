@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+
+import Script from "next/script";
+import { useEffect } from "react";
 import { YouTubeShorts } from "@/components/shared/Youtube";
 
 type Platform = "youtube" | "instagram" | "tiktok" | "facebook" | "unknown";
@@ -21,88 +24,103 @@ function extractTikTokId(url: string): string | null {
   return match ? match[1] : null;
 }
 
-// Instagram's embed renders at a fixed width. We cap at 290px to safely fit inside the
-// sidebar Card (inner width ≈ 276–308px depending on viewport).
-// The header/footer pixel values clip the Instagram chrome (avatar row + action buttons).
-// If the video appears slightly cut, tweak INSTAGRAM_HEADER_PX / INSTAGRAM_FOOTER_PX by ±10px.
-const INSTAGRAM_FIXED_WIDTH = 290;
-const INSTAGRAM_HEADER_PX = 88; // avatar + name + Follow button + close icon row
-const INSTAGRAM_FOOTER_PX = 230; // ❤️💬✈️ row + view count + comments + "View more on Instagram" + logo
-const INSTAGRAM_VIDEO_HEIGHT = Math.round((INSTAGRAM_FIXED_WIDTH * 16) / 9); // ~517px for a 9:16 reel
-const INSTAGRAM_IFRAME_HEIGHT = INSTAGRAM_VIDEO_HEIGHT + INSTAGRAM_HEADER_PX + INSTAGRAM_FOOTER_PX;
-
 function InstagramEmbed({ url }: { url: string }) {
   const id = extractInstagramId(url);
+
+  // On SPA navigation the script is already loaded but won't re-scan new blockquotes.
+  // Call process() manually whenever the reel ID changes.
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).instgrm?.Embeds?.process();
+  }, [id]);
+
   if (!id) {
     return <EmbedFallback message="Invalid Instagram URL. Use a Reel or post link (e.g. instagram.com/reel/XXXXX/)." />;
   }
 
   return (
     <div className="my-0 flex justify-center">
-      {/* Fixed-width container: predictable clip regardless of sidebar width */}
-      <div
-        className="relative overflow-hidden rounded-xs"
-        style={{ width: INSTAGRAM_FIXED_WIDTH, height: INSTAGRAM_VIDEO_HEIGHT }}
+      {/*
+        Official Instagram blockquote embed. Instagram's embed.js transforms this
+        into a fully responsive player — no manual chrome clipping needed.
+        max-width keeps the widget within the sidebar Card (~290px inner width).
+      */}
+      <blockquote
+        className="instagram-media"
+        data-instgrm-permalink={`https://www.instagram.com/reel/${id}/`}
+        data-instgrm-version="14"
+        style={{ maxWidth: "290px", width: "100%", margin: "0 auto", border: "none" }}
       >
-        <iframe
-          src={`https://www.instagram.com/reel/${id}/embed/`}
-          title="Instagram Reel"
-          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
-          allowFullScreen
-          scrolling="no"
-          className="absolute left-0 border-0"
-          style={{
-            top: -INSTAGRAM_HEADER_PX,
-            width: INSTAGRAM_FIXED_WIDTH,
-            height: INSTAGRAM_IFRAME_HEIGHT,
-          }}
-        />
-      </div>
+        <a href={`https://www.instagram.com/reel/${id}/`}>View on Instagram</a>
+      </blockquote>
+      {/* onReady fires on initial load and after every SPA re-mount */}
+      <Script
+        src="https://www.instagram.com/embed.js"
+        strategy="lazyOnload"
+        onReady={() => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (window as any).instgrm?.Embeds?.process();
+        }}
+      />
     </div>
   );
 }
 
 function TikTokEmbed({ url }: { url: string }) {
   const id = extractTikTokId(url);
+
   if (!id) {
     return <EmbedFallback message="Invalid TikTok URL. Use a video link (e.g. tiktok.com/@user/video/12345)." />;
   }
 
-  // TikTok embed/v2 has ~180px of chrome (top bar with author/caption + bottom controls/CTA).
-  // Using aspect-[9/22] instead of aspect-9/16 adds the extra height so the video
-  // portion fills the player without being zoomed/cropped. Width is capped at 290px
-  // to match the Instagram embed and stay within the sidebar Card.
   return (
-    <div className="my-0">
-      <div className="relative w-full max-w-[290px] mx-auto aspect-[9/22] rounded-xs">
-        <iframe
-          src={`https://www.tiktok.com/embed/v2/${id}`}
-          title="TikTok video"
-          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
-          allowFullScreen
-          scrolling="no"
-          className="absolute left-0 top-0 h-full w-full border-0 rounded-xs"
-        />
-      </div>
+    <div className="my-0 flex justify-center overflow-x-hidden">
+      {/*
+        Official TikTok blockquote embed. TikTok's embed.js handles responsive sizing.
+        Setting min/max-width to 290px fits the sidebar. TikTok may internally enforce
+        a 325px minimum — overflow-x-hidden on the wrapper clips any slight overflow.
+      */}
+      <blockquote className="tiktok-embed" cite={url} data-video-id={id} data-embed-from="oembed" style={{ maxWidth: "290px", minWidth: "290px" }}>
+        <section>
+          <a href={url}>View on TikTok</a>
+        </section>
+      </blockquote>
+      <Script src="https://www.tiktok.com/embed.js" strategy="lazyOnload" />
     </div>
   );
 }
 
 function FacebookEmbed({ url }: { url: string }) {
-  const encodedUrl = encodeURIComponent(url);
+  // On SPA navigation the SDK is already loaded but won't re-scan new fb-video divs.
+  // Call FB.XFBML.parse() manually whenever the URL changes.
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).FB?.XFBML?.parse();
+  }, [url]);
 
   return (
-    <div className="my-0 rounded-xs">
-      <div className="relative w-full max-w-md mx-auto aspect-9/16">
-        <iframe
-          src={`https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&autoplay=false`}
-          title="Facebook video"
-          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
-          allowFullScreen
-          scrolling="no"
-          className="absolute left-0 top-0 h-full w-full border-0 rounded-xs"
-        />
-      </div>
+    <div className="my-0 flex justify-center overflow-x-hidden">
+      {/*
+        Official Facebook video embed. The SDK transforms <div class="fb-video"> into
+        a fully rendered player — no manual sizing or chrome clipping needed.
+        data-width caps the player at 290px to match the sidebar Card inner width.
+      */}
+      <div id="fb-root" />
+      <div
+        className="fb-video"
+        data-href={url}
+        data-width="290"
+        data-show-text="false"
+        data-autoplay="false"
+      />
+      <Script
+        src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v25.0"
+        strategy="lazyOnload"
+        onReady={() => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (window as any).FB?.XFBML?.parse();
+        }}
+      />
     </div>
   );
 }

@@ -1,14 +1,13 @@
 import type { MermaidConfig } from "mermaid";
-import { colors } from "@/site-config";
 
-// SSW brand colors — sourced from the project's single color palette (site-config.ts)
-const SSW_RED = colors.sswRed;
-const SSW_RED_LIGHT = colors.sswLightRed;
-const SSW_RED_TINT = colors.sswRedTint;
-const SSW_GRAY = colors.sswGray;
-const SSW_BLACK = colors.sswBlack;
-const SSW_LIGHT_BG = colors.sswLightBg;
-const WHITE = colors.white;
+// SSW brand colors — keep these in sync with the @theme block in styles.css
+const SSW_RED = "#cc4141";
+const SSW_RED_LIGHT = "#d26e6e";
+const SSW_RED_TINT = "#fdecea"; // very light red for shape fills
+const SSW_GRAY = "#797979";
+const SSW_BLACK = "#333333";
+const SSW_LIGHT_BG = "#f6f8fa";
+const WHITE = "#ffffff";
 
 export const sswMermaidConfig: MermaidConfig = {
   startOnLoad: false,

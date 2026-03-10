@@ -147,7 +147,6 @@ module appServiceModule 'modules/appService.bicep' = {
     // Use existing plan for staging, newly created plan for production
     appServicePlanId: environment == 'staging' ? existingAppServicePlan.id : appServicePlanModule.outputs.appServicePlanId
     containerRegistryName: containerRegistryName
-    appInsightsConnectionString: appInsightsModule.outputs.connectionString
     environment: environment
     imageTag: imageTag
     tags: tags

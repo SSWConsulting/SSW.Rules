@@ -160,6 +160,10 @@ jobs:
                   # Add settings and output flag
                   CMD+=(
                     --settings
+                    "WEBSITES_ENABLE_APP_SERVICE_STORAGE=false"
+                    "DOCKER_REGISTRY_SERVER_URL=https://${{ needs.infrastructure.outputs.acrLoginServer }}"
+                    "WEBSITES_PORT=3000"
+                    "APPLICATIONINSIGHTS_CONNECTION_STRING=${{ needs.infrastructure.outputs.appInsightsConnectionString }}"
                     "TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}"
                     "AUTH0_DOMAIN=${{ vars.AUTH0_DOMAIN }}"
                     "AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }}"

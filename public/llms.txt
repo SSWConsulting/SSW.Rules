@@ -1,0 +1,132 @@
+# SSW Rules
+
+> SSW Rules is an open-source knowledge base of best practices ("rules") for software development, project management, and business operations. It contains 3000+ rules maintained by SSW — an Australian software consultancy — and the developer community. Each rule provides concise, actionable guidance with real-world examples.
+
+The site is available at https://www.ssw.com.au/rules. Rules are organized into categories (e.g., "Rules to Better Scrum", "Rules to Better .NET Core"). Each rule has a unique URL like `https://www.ssw.com.au/rules/{rule-name}` and each category like `https://www.ssw.com.au/rules/{category-name}`.
+
+SSW Rules covers a wide range of topics across software engineering, from code quality and architecture to DevOps, project management, communication, design, marketing, and business operations. The rules are crowd-sourced and continuously updated, with full version history available on GitHub.
+
+Key concepts:
+- **Rule**: A single best practice page with a title, description, and often "good" vs "bad" examples
+- **Category**: A collection of related rules (e.g., "Rules to Better Scrum" contains ~30 rules about Scrum practices)
+- **SSW**: SSW is an Australian software consultancy specializing in .NET, Azure, Angular, React, and AI development
+
+## AI & AI-Assisted Development
+
+- [Rules to Better AI Assisted Development](https://www.ssw.com.au/rules/rules-to-better-ai-assisted-development): Best practices for using AI coding assistants like GitHub Copilot, Cursor, and AI-powered IDEs. Covers workflows for AI pair programming, configuring AGENTS.md, co-authoring commits, vibe coding guardrails, and MCP servers for context.
+- [Rules to Better AI Development](https://www.ssw.com.au/rules/rules-to-better-ai-development): Building AI-powered applications and working with LLMs. Includes guidance on prompt engineering for apps, RAG patterns, model selection, fine-tuning, and deploying AI features.
+- [Rules to Better AI Use](https://www.ssw.com.au/rules/rules-to-better-ai): General best practices for using AI tools effectively in daily work, including ChatGPT, image generators, and AI assistants.
+- [Rules to Better ChatGPT Prompt Engineering](https://www.ssw.com.au/rules/rules-to-better-chatgpt-prompt-engineering): Writing effective prompts for ChatGPT and other LLMs. Covers prompt structure, few-shot examples, chain-of-thought, and system prompts.
+- [Rules to Better AI-Generated Media](https://www.ssw.com.au/rules/rules-to-better-ai-generated-media): Creating images, video, and audio with AI tools like DALL-E, Midjourney, and Sora.
+
+## Software Development
+
+- [Rules to Better Code](https://www.ssw.com.au/rules/rules-to-better-code): Writing clean, maintainable code. Covers coding standards, refactoring, SOLID principles, and code readability.
+- [Rules to Better Code Quality](https://www.ssw.com.au/rules/rules-to-better-code-quality): Code quality standards and practices including static analysis, linting, code coverage, and technical debt management.
+- [Rules to Better .NET Core](https://www.ssw.com.au/rules/rules-to-better-net-core): Building applications with .NET Core and modern .NET. Covers dependency injection, middleware, configuration, and deployment patterns.
+- [Rules to Better Clean Architecture](https://www.ssw.com.au/rules/rules-to-better-clean-architecture): Applying Clean Architecture principles to build maintainable, testable software with clear separation of concerns.
+- [Rules to Better Architecture and Code Review](https://www.ssw.com.au/rules/rules-to-better-architecture-and-code-review): Reviewing code and architecture effectively. Includes checklists, review processes, and architectural decision records.
+- [Rules to Better Testing](https://www.ssw.com.au/rules/rules-to-better-testing): Software testing best practices including integration testing, end-to-end testing, and test strategy.
+- [Rules to Better Unit Tests](https://www.ssw.com.au/rules/rules-to-better-unit-tests): Writing effective unit tests with proper assertions, mocking, test naming, and test-driven development.
+- [Rules to Better Error Handling](https://www.ssw.com.au/rules/rules-to-better-error-handling): Handling errors gracefully in applications, including exception patterns, logging, and user-friendly error messages.
+- [Rules to Better Naming Conventions](https://www.ssw.com.au/rules/rules-to-better-naming-conventions): Consistent naming for code, files, databases, and other assets.
+- [Rules to Better Entity Framework](https://www.ssw.com.au/rules/rules-to-better-entity-framework): Entity Framework and EF Core best practices for data access.
+- [Rules to Better .NET Projects](https://www.ssw.com.au/rules/rules-to-better-net-projects): Managing .NET projects, solutions, and project structure.
+
+## Web Development
+
+- [Rules to Better React](https://www.ssw.com.au/rules/rules-to-better-react): React development best practices including hooks, component patterns, state management, and performance optimization.
+- [Rules to Better Angular](https://www.ssw.com.au/rules/rules-to-better-angular): Angular development best practices including modules, services, routing, and RxJS patterns.
+- [Rules to Better Next.js](https://www.ssw.com.au/rules/rules-to-better-nextjs): Next.js application development including App Router, Server Components, data fetching, and deployment.
+- [Rules to Better TypeScript](https://www.ssw.com.au/rules/rules-to-better-typescript): TypeScript development patterns including type safety, generics, utility types, and configuration.
+- [Rules to Better Blazor](https://www.ssw.com.au/rules/rules-to-better-blazor): Blazor development best practices for building interactive web UIs with C#.
+- [Rules to Better Vue](https://www.ssw.com.au/rules/rules-to-better-vue): Vue.js development patterns and best practices.
+- [Rules to Better Web API - REST](https://www.ssw.com.au/rules/rules-to-better-web-api-rest): Building RESTful APIs with proper resource design, status codes, versioning, and documentation.
+- [Rules to Better Web API - GraphQL](https://www.ssw.com.au/rules/rules-to-better-web-api-graphql): Building GraphQL APIs including schema design, resolvers, and performance.
+- [Rules to Better Web API - gRPC](https://www.ssw.com.au/rules/rules-to-better-web-api-grpc): Using gRPC for high-performance inter-service communication.
+- [Rules to Better Websites - Development](https://www.ssw.com.au/rules/rules-to-better-websites-development): General web development practices including responsive design, progressive enhancement, and web standards.
+- [Rules to Better JavaScript and jQuery](https://www.ssw.com.au/rules/rules-to-better-javascript-and-jquery): JavaScript best practices and patterns.
+
+## DevOps & Source Control
+
+- [Rules to Better DevOps](https://www.ssw.com.au/rules/rules-to-better-devops): DevOps culture and practices including infrastructure as code, monitoring, and incident management.
+- [Rules to Better DevOps using GitHub (Actions)](https://www.ssw.com.au/rules/rules-to-better-devops-using-github): GitHub Actions CI/CD pipelines, workflows, and automation.
+- [Rules to Better DevOps using Azure DevOps (Pipelines)](https://www.ssw.com.au/rules/rules-to-better-devops-using-azure-devops): Azure DevOps pipeline configuration and best practices.
+- [Rules to Better GitHub](https://www.ssw.com.au/rules/rules-to-better-github): Using GitHub effectively including repositories, issues, projects, and collaboration features.
+- [Rules to Better Pull Requests](https://www.ssw.com.au/rules/rules-to-better-pull-requests): Creating and reviewing pull requests with clear descriptions, small changes, and effective reviews.
+- [Rules to Better Version Control with Git](https://www.ssw.com.au/rules/rules-to-better-version-control-with-git): Git workflows and best practices including branching strategies, commit messages, and merge strategies.
+- [Rules to Better Continuous Deployment](https://www.ssw.com.au/rules/rules-to-better-continuous-deployment-with-tfs): Continuous deployment strategies and automation.
+- [Rules to Better Branching and Builds](https://www.ssw.com.au/rules/rules-to-better-branching-and-builds): Branch strategies and build automation.
+
+## Project Management & Scrum
+
+- [Rules to Better Scrum](https://www.ssw.com.au/rules/rules-to-better-scrum): Scrum framework best practices including Sprint Planning, Daily Scrums, Sprint Reviews, and Retrospectives.
+- [Rules to Better Product Owners](https://www.ssw.com.au/rules/rules-to-better-product-owners): Being an effective Product Owner including backlog management, stakeholder communication, and prioritization.
+- [Rules to Successful Projects](https://www.ssw.com.au/rules/rules-to-successful-projects): Delivering successful software projects from initiation to completion.
+- [Rules to Better Specification Reviews](https://www.ssw.com.au/rules/rules-to-better-specification-reviews): Running effective Spec Reviews to define project scope, architecture, and estimates.
+- [Rules to Better Bug Management and Product Feedback](https://www.ssw.com.au/rules/rules-to-better-bug-management-and-product-feedback): Managing bugs and gathering product feedback effectively.
+- [Rules to Better Scrum using GitHub (Issues and Projects)](https://www.ssw.com.au/rules/rules-to-better-scrum-using-github): Using GitHub Issues and Projects for Scrum workflow.
+- [Rules to Better Scrum using Azure DevOps (Work Items)](https://www.ssw.com.au/rules/rules-to-better-scrum-using-azure-devops): Using Azure DevOps for Scrum workflow.
+
+## Communication & Collaboration
+
+- [Rules to Better Email](https://www.ssw.com.au/rules/rules-to-better-email): Professional email communication including subject lines, formatting, and email etiquette.
+- [Rules to Better Communication](https://www.ssw.com.au/rules/rules-to-better-communication): Clear and effective communication in professional settings.
+- [Rules to Better Meetings](https://www.ssw.com.au/rules/rules-to-better-meetings): Running productive meetings with agendas, action items, and follow-ups.
+- [Rules to Better Microsoft Teams](https://www.ssw.com.au/rules/rules-to-better-microsoft-teams): Using Microsoft Teams effectively for chat, calls, and collaboration.
+- [Rules to Better Presentations](https://www.ssw.com.au/rules/rules-to-better-presentations): Delivering great presentations with clear structure and engaging delivery.
+- [Rules to Better Powerpoint Presentations](https://www.ssw.com.au/rules/rules-to-better-powerpoint-presentations): Creating effective PowerPoint slides.
+- [Rules to Better Technical Documentation](https://www.ssw.com.au/rules/rules-to-better-technical-documentation): Writing technical docs that are clear, accurate, and maintainable.
+- [Rules to Better Giving and Taking Feedback](https://www.ssw.com.au/rules/rules-to-better-giving-and-taking-feedback): Providing constructive feedback and receiving it gracefully.
+
+## Cloud & Infrastructure
+
+- [Rules to Better Azure](https://www.ssw.com.au/rules/rules-to-better-azure): Microsoft Azure best practices including resource management, cost optimization, and service selection.
+- [Rules to Better Security](https://www.ssw.com.au/rules/rules-to-better-security): Security practices for developers and admins including authentication, authorization, and vulnerability management.
+- [Rules to Better SQL Databases - Developers](https://www.ssw.com.au/rules/rules-to-better-sql-databases-developers): SQL database development best practices including schema design, queries, and stored procedures.
+- [Rules to Better SQL Databases - Performance](https://www.ssw.com.au/rules/rules-to-better-sql-databases-performance): SQL database performance optimization including indexing and query tuning.
+- [Rules to Better Power Platform](https://www.ssw.com.au/rules/rules-to-better-power-platform): Microsoft Power Platform development including Power Apps, Power Automate, and Power BI.
+- [Rules to Better Application Performance](https://www.ssw.com.au/rules/rules-to-better-application-performance): Performance optimization for web and desktop applications.
+- [Rules to Better Application Insights](https://www.ssw.com.au/rules/rules-to-better-application-insights): Using Application Insights for monitoring and diagnostics.
+
+## Design & UX
+
+- [Rules to Better Interfaces (General Usability Practices)](https://www.ssw.com.au/rules/rules-to-better-interfaces-general-usability-practices): UI/UX usability guidelines for building intuitive interfaces.
+- [Rules to Better Figma](https://www.ssw.com.au/rules/rules-to-better-figma): Using Figma for design including components, auto layout, and design systems.
+- [Rules to Better Accessibility](https://www.ssw.com.au/rules/rules-to-better-accessibility): Building accessible applications that work for everyone, including WCAG compliance.
+- [Rules to Better Content Design](https://www.ssw.com.au/rules/rules-to-better-content-design): Designing effective content with clear language, hierarchy, and user-focused writing.
+- [Rules to Better Websites - Layout and Formatting](https://www.ssw.com.au/rules/rules-to-better-websites-layout-and-formatting): Website layout best practices including grid systems, typography, and spacing.
+- [Rules to Better Designers](https://www.ssw.com.au/rules/rules-to-better-designers): Best practices for designers working in development teams.
+
+## Marketing & SEO
+
+- [Rules to Better Google Rankings and SEO](https://www.ssw.com.au/rules/rules-to-better-google-rankings-and-seo): Search engine optimization including keywords, meta tags, structured data, and link building.
+- [Rules to Better Social Media for Business](https://www.ssw.com.au/rules/rules-to-better-social-media-for-business): Business social media strategy across LinkedIn, Twitter/X, and other platforms.
+- [Rules to Better Video Recording](https://www.ssw.com.au/rules/rules-to-better-video-recording): Recording professional videos including equipment, lighting, audio, and editing.
+- [Rules to Better Blogging](https://www.ssw.com.au/rules/rules-to-better-blogging): Writing effective blog content that engages readers and ranks well.
+- [Rules to Better Branding](https://www.ssw.com.au/rules/rules-to-better-branding): Brand consistency and guidelines for visual identity.
+- [Rules to Better YouTube](https://www.ssw.com.au/rules/rules-to-better-youtube): YouTube channel management and video optimization.
+
+## Business & Operations
+
+- [Rules to Better CRM](https://www.ssw.com.au/rules/rules-to-better-crm): Customer relationship management best practices.
+- [Rules to Better Business Management](https://www.ssw.com.au/rules/rules-to-better-business-management): Business management best practices for software companies.
+- [Rules to Better Remote Work](https://www.ssw.com.au/rules/rules-to-better-remote-work): Working effectively from anywhere including home office setup, async communication, and work-life balance.
+- [Rules to Better Recruiting](https://www.ssw.com.au/rules/rules-to-better-recruiting): Hiring and recruitment practices for tech companies.
+- [Rules to Better Timesheets](https://www.ssw.com.au/rules/rules-to-better-timesheets): Time tracking and timesheets for consulting and project-based work.
+- [Rules to Better Software Consultants - Dealing with Clients](https://www.ssw.com.au/rules/rules-to-better-software-consultants-dealing-with-clients): Client relationship management for software consultants.
+- [Rules to Better Software Consultants - Happy Clients](https://www.ssw.com.au/rules/rules-to-better-software-consultants-happy-clients): Keeping clients satisfied and building long-term relationships.
+
+## Optional
+
+- [Rules to Better Markdown](https://www.ssw.com.au/rules/rules-to-better-markdown): Writing well-formatted Markdown
+- [Rules to Better Open Source Software](https://www.ssw.com.au/rules/rules-to-better-open-source-software): Contributing to and maintaining open source projects
+- [Rules to Better Microservices](https://www.ssw.com.au/rules/rules-to-better-microservices): Microservices architecture patterns and practices
+- [Rules to Better Domain Driven Design](https://www.ssw.com.au/rules/rules-to-better-domain-driven-design): DDD principles and patterns including aggregates, bounded contexts, and event sourcing
+- [Rules to Better Vertical Slice Architecture](https://www.ssw.com.au/rules/rules-to-better-vertical-slice-architecture): Vertical Slice Architecture approach for feature-organized code
+- [Rules to Better Modular Monoliths](https://www.ssw.com.au/rules/rules-to-better-modular-monoliths): Modular monolith patterns as an alternative to microservices
+- [Rules to Better Power BI](https://www.ssw.com.au/rules/rules-to-better-power-bi): Power BI reporting and data visualization
+- [Rules to Better Data Analytics](https://www.ssw.com.au/rules/rules-to-better-data-analytics): Data analytics practices and tools
+- [Rules to Better .NET 10 Migrations](https://www.ssw.com.au/rules/rules-to-better-net10-migrations): Migrating applications to .NET 10
+- [Rules to Better API Management](https://www.ssw.com.au/rules/rules-to-better-openapi-specification): OpenAPI specification and API management
+- [Rules to Better YARP](https://www.ssw.com.au/rules/rules-to-better-yarp): Using YARP (Yet Another Reverse Proxy) for .NET

@@ -79,7 +79,7 @@ Changes made in **SSW.Rules.Content** (e.g. rule MDX, categories, images) will *
 
 Code changes made to **SSW.Rules** are deployed as follows:
 
-- **main** deploys to **staging**: https://ssw-rules-tina-staging-c5bwbjc4a8d2g8gm.australiaeast-01.azurewebsites.net/rules
+- **main** deploys to **staging**: https://app-sswrules-staging.azurewebsites.net/rules
 - To deploy to **production**:
   - Create a `release/xx` branch from the current `main` commit you want to ship
   - Manually run the production deployment workflow in [GitHub Actions](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-and-deploy.yml)

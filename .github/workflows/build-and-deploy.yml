@@ -79,6 +79,7 @@ jobs:
             GH_APP_ID: ${{ vars.GH_APP_ID }}
             GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
             GITHUB_APP_INSTALLATION_ID: ${{ secrets.GITHUB_APP_INSTALLATION_ID }}
+            CRM_APP_SECRET: ${{ secrets.CRM_APP_SECRET }}
 
     # ============================================================================
     # DEPLOY TO AZURE WEB APP

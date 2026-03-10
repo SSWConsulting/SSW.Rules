@@ -99,7 +99,7 @@ const Rule: Collection = {
       type: "string",
       name: "sidebarVideo",
       label: "Sidebar Video",
-      description: "Primarily for promoting Shorts. For videos relevant to the rule, embed them directly in the body instead.",
+      description: "Supports YouTube Shorts, Instagram Reels, TikTok, and Facebook videos. For videos relevant to the rule, embed them directly in the body instead.",
       searchable: false,
       ui: {
         component: ConditionalHiddenField,

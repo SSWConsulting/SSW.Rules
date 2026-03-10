@@ -14,7 +14,7 @@ import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import GitHubMetadata from "@/components/last-updated-by";
 import RelatedRulesCard from "@/components/RelatedRulesCard";
 import RuleActionButtons from "@/components/RuleActionButtons";
-import { YouTubeShorts } from "@/components/shared/Youtube";
+import { SocialVideoEmbed } from "@/components/shared/SocialVideoEmbed";
 import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import { Card } from "@/components/ui/card";
 
@@ -112,7 +112,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
         <div className="layout-sidebar">
           {rule?.sidebarVideo && (
             <Card>
-              <YouTubeShorts url={rule.sidebarVideo} />
+              <SocialVideoEmbed url={rule.sidebarVideo} />
             </Card>
           )}
           <CategoriesCard categories={rule?.categories} />

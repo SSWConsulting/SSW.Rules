@@ -14,6 +14,17 @@ export const siteUrl = `https://www.ssw.com.au/rules`;
 export const siteUrlRelative = `/`;
 export const themeColor = `#cc4141`;
 export const backgroundColor = `#fff`;
+
+// SSW brand color palette — single source of truth for TypeScript consumers
+export const colors = {
+  sswRed: "#cc4141",
+  sswLightRed: "#d26e6e",
+  sswRedTint: "#fdecea", // very light red, used for shape fills
+  sswGray: "#797979",
+  sswBlack: "#333333",
+  sswLightBg: "#f6f8fa", // matches --color-table-odd
+  white: "#ffffff",
+} as const;
 export const pathPrefix = `/rules`;
 export const social = {
   twitter: `SSW_TV`,

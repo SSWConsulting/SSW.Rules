@@ -134,16 +134,24 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
   if (form.crudType === "create") {
     return {
       ...values,
+      // On first save, set createdBy from the auth provider directly (UserInfoField's async
+      // onChange may not have settled before the user clicks Save on the first edit).
+      createdBy: userName ?? values.createdBy ?? "Unknown",
+      createdByEmail: userEmail ?? values.createdByEmail ?? "Unknown",
       lastUpdated: new Date().toISOString(),
-      lastUpdatedBy: userName ?? "",
-      lastUpdatedByEmail: userEmail ?? "",
+      // Fall back to "Unknown" so the UI fallback can render on the very first save
+      // (empty string is falsy and would cause the metadata section to be hidden).
+      lastUpdatedBy: userName ?? "Unknown",
+      lastUpdatedByEmail: userEmail ?? "Unknown",
     };
   }
 
   return {
     ...values,
     lastUpdated: new Date().toISOString(),
-    lastUpdatedBy: userName ?? "",
-    lastUpdatedByEmail: userEmail ?? "",
+    // Prefer the resolved user name; if auth fails, keep the previously saved value
+    // rather than overwriting it with an empty string that hides the metadata section.
+    lastUpdatedBy: userName ?? values.lastUpdatedBy ?? "Unknown",
+    lastUpdatedByEmail: userEmail ?? values.lastUpdatedByEmail ?? "Unknown",
   };
 };

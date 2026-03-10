@@ -7,7 +7,7 @@ import Tooltip from "../tooltip/tooltip";
 import { getRelativeTime } from "./get-relative-time";
 import type { GitHubMetadataProps, GitHubMetadataResponse } from "./types";
 
-export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", path, className = "" }: GitHubMetadataProps) {
+export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", path, className = "", fallbackLastUpdatedBy, fallbackLastUpdated, fallbackCreated }: GitHubMetadataProps) {
   const [data, setData] = useState<GitHubMetadataResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -111,7 +111,51 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
       );
     }
 
-    // If we only have historyUrl but no commit data (error case), just show the history link
+    // Fallback to MDX frontmatter values when GitHub hasn't indexed the new file yet
+    // (first save returns 0 commits, causing a 400 from the API).
+    // Trigger when we have *any* frontmatter metadata (name or date) to show.
+    if (fallbackLastUpdatedBy || fallbackLastUpdated) {
+      const displayName = fallbackLastUpdatedBy || "Unknown";
+      const lastUpdateInAbsoluteTime = fallbackLastUpdated ? formatDate(new Date(fallbackLastUpdated), "dd MMM yyyy") : null;
+      const lastUpdateInRelativeTime = fallbackLastUpdated ? getRelativeTime(fallbackLastUpdated) : null;
+      const createdTime = fallbackCreated ? formatDate(new Date(fallbackCreated), "d MMM yyyy") : null;
+      const tooltipContent =
+        createdTime && lastUpdateInAbsoluteTime
+          ? `Created ${createdTime}\nLast updated ${lastUpdateInAbsoluteTime}`
+          : lastUpdateInAbsoluteTime
+            ? `Last updated ${lastUpdateInAbsoluteTime}`
+            : undefined;
+
+      return (
+        <div className={`text-slate-500 text-sm ${className}`}>
+          <div className="flex md:flex-row flex-col md:items-center gap-2">
+            <span>
+              Last updated by{" "}
+              <span className="font-bold text-black">{displayName}</span>
+              {lastUpdateInRelativeTime && (
+                <Tooltip text={lastUpdateInAbsoluteTime ?? ""} showDelay={0} hideDelay={0} opaque={true}>
+                  <span>{` ${lastUpdateInRelativeTime}.`}</span>
+                </Tooltip>
+              )}
+            </span>
+            <div className="relative group text-black">
+              <a
+                href={historyUrl}
+                target="_blank"
+                title={tooltipContent}
+                rel="noopener noreferrer nofollow"
+                className="underline flex flex-row items-center gap-1.5 mb-2 md:mb-0"
+              >
+                See history
+                <FaHistory className="w-3 h-3" />
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // If we only have historyUrl but no commit data and no fallback (error case), just show the history link
     return (
       <div className={`text-slate-500 text-sm ${className}`}>
         <div className="flex md:flex-row flex-col md:items-center gap-2">

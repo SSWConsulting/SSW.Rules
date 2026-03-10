@@ -112,8 +112,10 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
     }
 
     // Fallback to MDX frontmatter values when GitHub hasn't indexed the new file yet
-    // (first save returns 0 commits, causing a 400 from the API)
-    if (fallbackLastUpdatedBy) {
+    // (first save returns 0 commits, causing a 400 from the API).
+    // Trigger when we have *any* frontmatter metadata (name or date) to show.
+    if (fallbackLastUpdatedBy || fallbackLastUpdated) {
+      const displayName = fallbackLastUpdatedBy || "Unknown";
       const lastUpdateInAbsoluteTime = fallbackLastUpdated ? formatDate(new Date(fallbackLastUpdated), "dd MMM yyyy") : null;
       const lastUpdateInRelativeTime = fallbackLastUpdated ? getRelativeTime(fallbackLastUpdated) : null;
       const createdTime = fallbackCreated ? formatDate(new Date(fallbackCreated), "d MMM yyyy") : null;
@@ -129,7 +131,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
           <div className="flex md:flex-row flex-col md:items-center gap-2">
             <span>
               Last updated by{" "}
-              <span className="font-bold text-black">{fallbackLastUpdatedBy}</span>
+              <span className="font-bold text-black">{displayName}</span>
               {lastUpdateInRelativeTime && (
                 <Tooltip text={lastUpdateInAbsoluteTime ?? ""} showDelay={0} hideDelay={0} opaque={true}>
                   <span>{` ${lastUpdateInRelativeTime}.`}</span>

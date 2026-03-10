@@ -14,8 +14,6 @@ export const createdInfoFields: TinaField[] = [
     label: "Created",
     ui: {
       component: "hidden",
-      // Ensure TinaCMS always serializes this field even when absent from frontmatter
-      defaultValue: "",
     },
   },
   {
@@ -25,7 +23,6 @@ export const createdInfoFields: TinaField[] = [
     description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
     ui: {
       component: UserInfoField,
-      defaultValue: "Unknown",
     },
   },
   {
@@ -35,7 +32,6 @@ export const createdInfoFields: TinaField[] = [
     description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
     ui: {
       component: UserInfoField,
-      defaultValue: "Unknown",
     },
   },
 ];

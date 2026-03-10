@@ -35,13 +35,6 @@ export const config = defineConfig({
   schema: {
     collections: [Rule, Category, Global],
   },
-  cmsCallback: (cms) => {
-    // Pre-warm the TinaCMS Cloud auth session so getUser() is cached
-    // before historyBeforeSubmit fires on the first save of a session.
-    cms.events.subscribe("cms:enable", () => {
-      cms.api?.tina?.authProvider?.getUser().catch(() => {});
-    });
-  },
   search: {
     tina: {
       indexerToken: searchToken,

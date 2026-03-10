@@ -10,8 +10,6 @@ export const historyFields: TinaField[] = [
     label: "Last Updated",
     ui: {
       component: "hidden",
-      // Ensure TinaCMS always serializes this field even when absent from frontmatter
-      defaultValue: "",
     },
   },
   {
@@ -21,7 +19,6 @@ export const historyFields: TinaField[] = [
     description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
     ui: {
       component: "hidden",
-      defaultValue: "",
     },
   },
   {
@@ -31,7 +28,6 @@ export const historyFields: TinaField[] = [
     description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
     ui: {
       component: "hidden",
-      defaultValue: "",
     },
   },
   {
@@ -135,15 +131,14 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
     userName = undefined;
   }
 
-  const now = new Date().toISOString();
-
   if (form.crudType === "create") {
     return {
       ...values,
-      // On create, set createdBy/Email if UserInfoField hasn't resolved yet
-      createdBy: !values.createdBy || values.createdBy === "Unknown" ? (userName ?? "") : values.createdBy,
-      createdByEmail: !values.createdByEmail || values.createdByEmail === "Unknown" ? (userEmail ?? "") : values.createdByEmail,
-      lastUpdated: now,
+      // On first save, set createdBy from the auth provider directly (UserInfoField's async
+      // onChange may not have settled before the user clicks Save on the first edit).
+      createdBy: userName ?? values.createdBy ?? "Unknown",
+      createdByEmail: userEmail ?? values.createdByEmail ?? "Unknown",
+      lastUpdated: new Date().toISOString(),
       lastUpdatedBy: userName ?? "",
       lastUpdatedByEmail: userEmail ?? "",
     };
@@ -151,7 +146,7 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
 
   return {
     ...values,
-    lastUpdated: now,
+    lastUpdated: new Date().toISOString(),
     lastUpdatedBy: userName ?? "",
     lastUpdatedByEmail: userEmail ?? "",
   };

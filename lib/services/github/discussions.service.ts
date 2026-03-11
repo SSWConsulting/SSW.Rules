@@ -1,10 +1,12 @@
 import { unstable_cache } from "next/cache";
 import { ActivityRule } from "@/models/ActivityRule";
+import { RecentComment } from "@/models/RecentComment";
 import client from "@/tina/__generated__/client";
 import { getGitHubAppToken } from "./github.utils";
 
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
 const MAX_DISCUSSIONS = 200;
+const RECENT_COMMENTS_COUNT = 5;
 const GUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const GET_DISCUSSIONS_QUERY = `
@@ -22,8 +24,17 @@ const GET_DISCUSSIONS_QUERY = `
         nodes {
           title
           updatedAt
-          comments {
+          comments(last: 1) {
             totalCount
+            nodes {
+              author {
+                login
+                avatarUrl
+              }
+              body
+              createdAt
+              url
+            }
           }
         }
       }
@@ -31,10 +42,38 @@ const GET_DISCUSSIONS_QUERY = `
   }
 `;
 
+interface DiscussionCommentNode {
+  author: { login: string; avatarUrl: string } | null;
+  body: string;
+  createdAt: string;
+  url: string;
+}
+
 interface DiscussionNode {
   title: string;
   updatedAt: string;
-  comments: { totalCount: number };
+  comments: {
+    totalCount: number;
+    nodes: DiscussionCommentNode[];
+  };
+}
+
+/**
+ * Strips common Markdown syntax to produce plain preview text.
+ */
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/!\[.*?\]\(.*?\)/g, "") // images
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // links → text
+    .replace(/`{1,3}[^`\n]*`{1,3}/g, "") // inline code
+    .replace(/^#{1,6}\s+/gm, "") // headings
+    .replace(/\*{1,2}([^*\n]*)\*{1,2}/g, "$1") // bold/italic
+    .replace(/_{1,2}([^_\n]*)_{1,2}/g, "$1") // underscore bold/italic
+    .replace(/~~([^~\n]*)~~/g, "$1") // strikethrough
+    .replace(/^[\s>]+/gm, "") // blockquotes
+    .replace(/^[\s*\-+]+/gm, "") // unordered lists
+    .replace(/\n+/g, " ") // newlines → space
+    .trim();
 }
 
 /**
@@ -100,13 +139,19 @@ async function fetchRulesByGuids(guids: string[]): Promise<Map<string, { title: 
   return map;
 }
 
+export interface DiscussionData {
+  activityRules: ActivityRule[];
+  recentComments: RecentComment[];
+}
+
 /**
- * Returns rules sorted by most recent Giscus comment activity.
- * Results are cached for 6 hours via Next.js unstable_cache.
+ * Fetches GitHub Discussions and returns both activity-ranked rules and recent comments.
  */
-export async function fetchActivityRules(): Promise<ActivityRule[]> {
+async function fetchDiscussionData(): Promise<DiscussionData> {
   const org = process.env.NEXT_PUBLIC_GITHUB_ORG;
-  const giscusRepoName = process.env.NEXT_PUBLIC_GISCUS_REPO_NAME;
+  // GISCUS_ACTIVITY_REPO_NAME is a server-only override for the discussions repo.
+  // Falls back to NEXT_PUBLIC_GISCUS_REPO_NAME if not set.
+  const giscusRepoName = process.env.GISCUS_ACTIVITY_REPO_NAME ?? process.env.NEXT_PUBLIC_GISCUS_REPO_NAME;
 
   if (!org || !giscusRepoName) {
     throw new Error("Missing NEXT_PUBLIC_GITHUB_ORG or GISCUS_ACTIVITY_REPO_NAME / NEXT_PUBLIC_GISCUS_REPO_NAME environment variables.");
@@ -115,11 +160,8 @@ export async function fetchActivityRules(): Promise<ActivityRule[]> {
   const token = await getGitHubAppToken();
   const discussions = await fetchDiscussions(token, org, giscusRepoName);
 
-  // Discussion titles are rule GUIDs (Giscus "specific" mapping mode).
-  // Filter to UUID-shaped titles with at least 1 comment to exclude:
-  //   - non-rule discussions
-  //   - auto-created empty discussions (Giscus creates one on first page view)
-  // Deduplicate, preserving first (most-recent) occurrence.
+  // Filter to UUID-shaped titles with at least 1 comment.
+  // Deduplicate by GUID, preserving first (most-recent) occurrence.
   const seenGuids = new Set<string>();
   const uniqueDiscussions: DiscussionNode[] = [];
   for (const d of discussions) {
@@ -133,27 +175,58 @@ export async function fetchActivityRules(): Promise<ActivityRule[]> {
   const guids = uniqueDiscussions.map((d) => d.title.trim());
   const ruleMap = await fetchRulesByGuids(guids);
 
-  const rules: ActivityRule[] = [];
+  const activityRules: ActivityRule[] = [];
+
+  // Collect (comment, ruleInfo) pairs for the recent comments list
+  const commentCandidates: Array<{ discussion: DiscussionNode; rule: { title: string; uri: string }; comment: DiscussionCommentNode }> = [];
+
   for (const discussion of uniqueDiscussions) {
     const guid = discussion.title.trim();
     const rule = ruleMap.get(guid);
-    if (!rule) continue; // Skip discussions that don't map to a known rule
+    if (!rule) continue;
 
-    rules.push({
+    activityRules.push({
       guid,
       title: rule.title,
       uri: rule.uri,
       lastCommentAt: discussion.updatedAt,
       commentCount: discussion.comments.totalCount,
     });
+
+    const latestComment = discussion.comments.nodes[0];
+    if (latestComment) {
+      commentCandidates.push({ discussion, rule, comment: latestComment });
+    }
   }
 
-  return rules;
+  // Sort candidates by comment createdAt descending and take the top N
+  commentCandidates.sort((a, b) => new Date(b.comment.createdAt).getTime() - new Date(a.comment.createdAt).getTime());
+
+  const recentComments: RecentComment[] = commentCandidates.slice(0, RECENT_COMMENTS_COUNT).map(({ discussion, rule, comment }) => ({
+    guid: discussion.title.trim(),
+    ruleTitle: rule.title,
+    ruleUri: rule.uri,
+    authorLogin: comment.author?.login ?? "ghost",
+    authorAvatarUrl: comment.author?.avatarUrl ?? `https://avatars.githubusercontent.com/u/10137`,
+    bodyPreview: stripMarkdown(comment.body).slice(0, 200),
+    commentedAt: comment.createdAt,
+  }));
+
+  return { activityRules, recentComments };
 }
 
 const SIX_HOURS = 6 * 60 * 60;
 
-export const getCachedActivityRules = unstable_cache(fetchActivityRules, ["github-discussions-activity"], {
+export const getCachedDiscussionData = unstable_cache(fetchDiscussionData, ["github-discussion-data"], {
   revalidate: SIX_HOURS,
   tags: ["github-discussions-activity"],
 });
+
+/** Convenience wrapper — returns just the activity-ranked rules (used by the API route). */
+export async function getCachedActivityRules(): Promise<ActivityRule[]> {
+  const { activityRules } = await getCachedDiscussionData();
+  return activityRules;
+}
+
+
+

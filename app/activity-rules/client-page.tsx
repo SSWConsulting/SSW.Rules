@@ -4,9 +4,11 @@ import { useState } from "react";
 import { FaComment } from "react-icons/fa";
 import { RiTimeFill } from "react-icons/ri";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import RecentCommentsCard from "@/components/RecentCommentsCard";
 import { Card } from "@/components/ui/card";
 import { timeAgo } from "@/lib/dateUtils";
 import { ActivityRule } from "@/models/ActivityRule";
+import { RecentComment } from "@/models/RecentComment";
 import Link from "next/link";
 
 const PAGE_SIZE = 5;
@@ -14,9 +16,10 @@ const PAGE_SIZE = 5;
 interface ActivityRulesClientPageProps {
   rules: ActivityRule[];
   total: number;
+  recentComments: RecentComment[];
 }
 
-export default function ActivityRulesClientPage({ rules, total }: ActivityRulesClientPageProps) {
+export default function ActivityRulesClientPage({ rules, total, recentComments }: ActivityRulesClientPageProps) {
   const [page, setPage] = useState(1);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -27,7 +30,7 @@ export default function ActivityRulesClientPage({ rules, total }: ActivityRulesC
     <>
       <Breadcrumbs breadcrumbText="Rules by Activity" />
       <div className="layout-two-columns">
-        <div className="layout-main-section">
+        <div className="layout-main-section min-w-0">
           <h1 className="text-ssw-red font-bold mb-4">Rules by Activity</h1>
           <p className="text-gray-500 mb-6">Rules ranked by most recent comment activity.</p>
 
@@ -86,7 +89,12 @@ export default function ActivityRulesClientPage({ rules, total }: ActivityRulesC
             </div>
           )}
         </div>
+
+        <div className="layout-sidebar min-w-0">
+          <RecentCommentsCard comments={recentComments} />
+        </div>
       </div>
     </>
   );
 }
+

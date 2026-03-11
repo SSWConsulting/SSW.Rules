@@ -1,22 +1,25 @@
 import { Section } from "@/components/layout/section";
-import { getCachedActivityRules } from "@/lib/services/github/discussions.service";
+import { getCachedDiscussionData } from "@/lib/services/github/discussions.service";
+import { ActivityRule } from "@/models/ActivityRule";
+import { RecentComment } from "@/models/RecentComment";
 import { siteUrl } from "@/site-config";
 import ActivityRulesClientPage from "./client-page";
 
 export const revalidate = 21600; // 6 hours
 
 export default async function ActivityRulesPage() {
-  let rules: Awaited<ReturnType<typeof getCachedActivityRules>> = [];
+  let activityRules: ActivityRule[] = [];
+  let recentComments: RecentComment[] = [];
 
   try {
-    rules = await getCachedActivityRules();
+    ({ activityRules, recentComments } = await getCachedDiscussionData());
   } catch (error) {
-    console.error("[activity-rules] Failed to fetch activity rules:", error);
+    console.error("[activity-rules] Failed to fetch discussion data:", error);
   }
 
   return (
     <Section>
-      <ActivityRulesClientPage rules={rules} total={rules.length} />
+      <ActivityRulesClientPage rules={activityRules} total={activityRules.length} recentComments={recentComments} />
     </Section>
   );
 }
@@ -29,3 +32,4 @@ export async function generateMetadata() {
     },
   };
 }
+

@@ -109,20 +109,22 @@ export async function fetchActivityRules(): Promise<ActivityRule[]> {
   const giscusRepoName = process.env.NEXT_PUBLIC_GISCUS_REPO_NAME;
 
   if (!org || !giscusRepoName) {
-    throw new Error("Missing NEXT_PUBLIC_GITHUB_ORG or NEXT_PUBLIC_GISCUS_REPO_NAME environment variables.");
+    throw new Error("Missing NEXT_PUBLIC_GITHUB_ORG or GISCUS_ACTIVITY_REPO_NAME / NEXT_PUBLIC_GISCUS_REPO_NAME environment variables.");
   }
 
   const token = await getGitHubAppToken();
   const discussions = await fetchDiscussions(token, org, giscusRepoName);
 
   // Discussion titles are rule GUIDs (Giscus "specific" mapping mode).
-  // Filter to UUID-shaped titles to exclude any non-rule discussions.
+  // Filter to UUID-shaped titles with at least 1 comment to exclude:
+  //   - non-rule discussions
+  //   - auto-created empty discussions (Giscus creates one on first page view)
   // Deduplicate, preserving first (most-recent) occurrence.
   const seenGuids = new Set<string>();
   const uniqueDiscussions: DiscussionNode[] = [];
   for (const d of discussions) {
     const guid = d.title.trim();
-    if (GUID_REGEX.test(guid) && !seenGuids.has(guid)) {
+    if (GUID_REGEX.test(guid) && d.comments.totalCount > 0 && !seenGuids.has(guid)) {
       seenGuids.add(guid);
       uniqueDiscussions.push(d);
     }

@@ -6,11 +6,13 @@ import CategoryActionButtons from "@/components/CategoryActionButtons";
 import HelpCard from "@/components/HelpCard";
 import HelpImproveCard from "@/components/HelpImproveCard";
 import JoinConversationCard from "@/components/JoinConversationCard";
+import LatestCommentsCard from "@/components/LatestCommentsCard";
 import LatestRulesCard from "@/components/LatestRulesCard";
 import QuickLinksCard from "@/components/QuickLinksCard";
 import SearchBar from "@/components/SearchBarWrapper";
 import { Card } from "@/components/ui/card";
 import WhyRulesCard from "@/components/WhyRulesCard";
+import { LatestComment } from "@/models/LatestComment";
 import { LatestRule } from "@/models/LatestRule";
 import { QuickLink } from "@/types/quickLink";
 
@@ -20,10 +22,11 @@ export interface HomeClientPageProps {
   ruleCount: number;
   categoryRuleCounts: Record<string, number>;
   quickLinks: QuickLink[];
+  latestComments: LatestComment[];
 }
 
 export default function HomeClientPage(props: HomeClientPageProps) {
-  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks } = props;
+  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, latestComments } = props;
 
   const getTopCategoryTotal = (subCategories: any[]) => {
     return subCategories.reduce((total, category) => {
@@ -76,6 +79,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
 
         <div className="layout-sidebar max-sm:mt-0">
           <LatestRulesCard rules={latestRules} />
+          <LatestCommentsCard comments={latestComments} />
           <QuickLinksCard links={quickLinks} />
           <WhyRulesCard />
           <HelpImproveCard />

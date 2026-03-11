@@ -1,6 +1,7 @@
 import React from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Section } from "@/components/layout/section";
+import { fetchLatestComments } from "@/lib/services/comments";
 import { fetchCategoryRuleCounts, fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
@@ -32,12 +33,13 @@ async function fetchQuickLinks(): Promise<QuickLink[]> {
 }
 
 export default async function Home() {
-  const [topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks] = await Promise.all([
+  const [topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, latestComments] = await Promise.all([
     fetchTopCategoriesWithSubcategories(),
     fetchLatestRules(),
     fetchRuleCount(),
     fetchCategoryRuleCounts(),
     fetchQuickLinks(),
+    fetchLatestComments(5),
   ]);
 
   return (
@@ -49,6 +51,7 @@ export default async function Home() {
         ruleCount={ruleCount}
         categoryRuleCounts={categoryRuleCounts}
         quickLinks={quickLinks}
+        latestComments={latestComments}
       />
     </Section>
   );

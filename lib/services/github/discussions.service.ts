@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache";
+import { extractBodyPreview } from "@/lib/bodyUtils";
 import { ActivityRule } from "@/models/ActivityRule";
 import { RecentComment } from "@/models/RecentComment";
 import client from "@/tina/__generated__/client";
@@ -24,6 +25,12 @@ const GET_DISCUSSIONS_QUERY = `
         nodes {
           title
           updatedAt
+          thumbsUp: reactions(content: THUMBS_UP) {
+            totalCount
+          }
+          thumbsDown: reactions(content: THUMBS_DOWN) {
+            totalCount
+          }
           comments(last: 1) {
             totalCount
             nodes {
@@ -52,6 +59,8 @@ interface DiscussionCommentNode {
 interface DiscussionNode {
   title: string;
   updatedAt: string;
+  thumbsUp: { totalCount: number };
+  thumbsDown: { totalCount: number };
   comments: {
     totalCount: number;
     nodes: DiscussionCommentNode[];
@@ -120,10 +129,12 @@ async function fetchDiscussions(token: string, owner: string, repoName: string):
 }
 
 /**
- * Fetches rules by GUID from TinaCMS and returns a map of guid → { title, uri }.
+ * Fetches rules by GUID from TinaCMS and returns a map of guid → metadata.
  */
-async function fetchRulesByGuids(guids: string[]): Promise<Map<string, { title: string; uri: string }>> {
-  const map = new Map<string, { title: string; uri: string }>();
+async function fetchRulesByGuids(
+  guids: string[]
+): Promise<Map<string, { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> }>> {
+  const map = new Map<string, { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> }>();
   if (guids.length === 0) return map;
 
   const res = await client.queries.rulesByGuidQuery({ guids });
@@ -132,7 +143,24 @@ async function fetchRulesByGuids(guids: string[]): Promise<Map<string, { title: 
   for (const edge of edges) {
     const node = edge?.node;
     if (node?.guid && node.title && node.uri) {
-      map.set(node.guid, { title: node.title, uri: node.uri });
+      const authors = (node.authors ?? []).map((a) => a?.title).filter((t): t is string => !!t);
+      const categories = (node.categories ?? [])
+        .map((c) => {
+          if (c?.category?.__typename === "CategoryCategory") {
+            return { title: c.category.title, uri: c.category.uri ?? "" };
+          }
+          return null;
+        })
+        .filter((c): c is { title: string; uri: string } => !!c && !!c.title);
+
+      map.set(node.guid, {
+        title: node.title,
+        uri: node.uri,
+        authors,
+        created: node.created ?? null,
+        body: node.body ?? null,
+        categories,
+      });
     }
   }
 
@@ -178,7 +206,7 @@ async function fetchDiscussionData(): Promise<DiscussionData> {
   const activityRules: ActivityRule[] = [];
 
   // Collect (comment, ruleInfo) pairs for the recent comments list
-  const commentCandidates: Array<{ discussion: DiscussionNode; rule: { title: string; uri: string }; comment: DiscussionCommentNode }> = [];
+  const commentCandidates: Array<{ discussion: DiscussionNode; rule: { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> }; comment: DiscussionCommentNode }> = [];
 
   for (const discussion of uniqueDiscussions) {
     const guid = discussion.title.trim();
@@ -191,6 +219,12 @@ async function fetchDiscussionData(): Promise<DiscussionData> {
       uri: rule.uri,
       lastCommentAt: discussion.updatedAt,
       commentCount: discussion.comments.totalCount,
+      authors: rule.authors,
+      created: rule.created,
+      descriptionPreview: extractBodyPreview(rule.body),
+      categories: rule.categories,
+      thumbsUp: discussion.thumbsUp.totalCount,
+      thumbsDown: discussion.thumbsDown.totalCount,
     });
 
     const latestComment = discussion.comments.nodes[0];

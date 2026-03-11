@@ -108,8 +108,17 @@ query rulesByGuidQuery($guids: [String!]!) {
         title
         uri
         body
+        created
         authors {
           title
+        }
+        categories {
+          category {
+            ... on CategoryCategory {
+              title
+              uri
+            }
+          }
         }
       }
     }

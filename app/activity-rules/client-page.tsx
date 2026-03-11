@@ -1,15 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { FaComment } from "react-icons/fa";
-import { RiTimeFill } from "react-icons/ri";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RecentCommentsCard from "@/components/RecentCommentsCard";
-import { Card } from "@/components/ui/card";
-import { timeAgo } from "@/lib/dateUtils";
+import RuleActivityCard from "@/components/RuleActivityCard";
 import { ActivityRule } from "@/models/ActivityRule";
 import { RecentComment } from "@/models/RecentComment";
-import Link from "next/link";
 
 const PAGE_SIZE = 5;
 
@@ -35,26 +31,7 @@ export default function ActivityRulesClientPage({ rules, total, recentComments }
           <p className="text-gray-500 mb-6">Rules ranked by most recent comment activity.</p>
 
           {pageRules.map((rule, i) => (
-            <Card key={rule.guid} className="mb-4">
-              <div className="flex">
-                <span className="text-gray-400 mr-2">#{start + i + 1}</span>
-                <div className="flex flex-col">
-                  <Link href={`/${rule.uri}`} className="no-underline">
-                    <h2 className="m-0 mb-2 text-2xl max-sm:text-lg hover:text-ssw-red">{rule.title}</h2>
-                  </Link>
-                  <div className="flex items-center gap-4 text-sm text-gray-400">
-                    <span className="flex items-center gap-1">
-                      <RiTimeFill className="inline" />
-                      Last comment {timeAgo(rule.lastCommentAt)}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <FaComment className="inline" />
-                      {rule.commentCount} {rule.commentCount === 1 ? "comment" : "comments"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Card>
+            <RuleActivityCard key={rule.guid} rule={rule} rank={start + i + 1} />
           ))}
 
           {total === 0 && <p className="text-gray-500">No rules with comment activity found.</p>}

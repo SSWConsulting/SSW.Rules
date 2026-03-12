@@ -25,11 +25,10 @@ export default function ActivityRulesClientPage({ rules, total, recentComments }
   return (
     <>
       <Breadcrumbs breadcrumbText="Rules by Activity" />
+      <h1 className="text-ssw-red font-bold mb-2">Rules by Activity</h1>
+      <p className="text-gray-500 mb-6">Rules ranked by most recent comment activity.</p>
       <div className="layout-two-columns">
         <div className="layout-main-section min-w-0">
-          <h1 className="text-ssw-red font-bold mb-4">Rules by Activity</h1>
-          <p className="text-gray-500 mb-6">Rules ranked by most recent comment activity.</p>
-
           {pageRules.map((rule, i) => (
             <RuleActivityCard key={rule.guid} rule={rule} rank={start + i + 1} />
           ))}

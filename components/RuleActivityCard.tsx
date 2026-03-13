@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FaThumbsUp, FaThumbsDown, FaComment } from "react-icons/fa";
+import { FaComment, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { RiTimeFill } from "react-icons/ri";
 import { Card } from "@/components/ui/card";
 import { timeAgo } from "@/lib/dateUtils";
@@ -64,14 +64,26 @@ export default function RuleActivityCard({ rule, rank }: RuleActivityCardProps) 
 
           {/* Interaction row */}
           <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
-            <span className="flex items-center gap-1" title="Likes">
+            <a
+              href={`${rule.discussionUrl}#top`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Like this rule on GitHub"
+              className="flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer"
+            >
               <FaThumbsUp />
               <span>{rule.thumbsUp}</span>
-            </span>
-            <span className="flex items-center gap-1" title="Dislikes">
+            </a>
+            <a
+              href={`${rule.discussionUrl}#top`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Dislike this rule on GitHub"
+              className="flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer"
+            >
               <FaThumbsDown />
               <span>{rule.thumbsDown}</span>
-            </span>
+            </a>
             <span className="flex items-center gap-1" title="Comments">
               <FaComment />
               <span>

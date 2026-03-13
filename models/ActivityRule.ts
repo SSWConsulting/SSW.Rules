@@ -15,6 +15,7 @@ export interface ActivityRule {
   categories: ActivityRuleCategory[];
   thumbsUp: number;
   thumbsDown: number;
+  discussionUrl: string;
 }
 
 export interface ActivityRulesResponse {

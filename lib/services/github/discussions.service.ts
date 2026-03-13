@@ -24,6 +24,7 @@ const GET_DISCUSSIONS_QUERY = `
         }
         nodes {
           title
+          url
           updatedAt
           thumbsUp: reactions(content: THUMBS_UP) {
             totalCount
@@ -58,6 +59,7 @@ interface DiscussionCommentNode {
 
 interface DiscussionNode {
   title: string;
+  url: string;
   updatedAt: string;
   thumbsUp: { totalCount: number };
   thumbsDown: { totalCount: number };
@@ -234,6 +236,7 @@ async function fetchDiscussionData(): Promise<DiscussionData> {
       categories: rule.categories,
       thumbsUp: discussion.thumbsUp.totalCount,
       thumbsDown: discussion.thumbsDown.totalCount,
+      discussionUrl: discussion.url,
     });
 
     const latestComment = discussion.comments.nodes[0];

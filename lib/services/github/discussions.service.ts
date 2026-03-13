@@ -133,8 +133,13 @@ async function fetchDiscussions(token: string, owner: string, repoName: string):
  */
 async function fetchRulesByGuids(
   guids: string[]
-): Promise<Map<string, { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> }>> {
-  const map = new Map<string, { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> }>();
+): Promise<
+  Map<string, { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> }>
+> {
+  const map = new Map<
+    string,
+    { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> }
+  >();
   if (guids.length === 0) return map;
 
   const res = await client.queries.rulesByGuidQuery({ guids });
@@ -206,7 +211,11 @@ async function fetchDiscussionData(): Promise<DiscussionData> {
   const activityRules: ActivityRule[] = [];
 
   // Collect (comment, ruleInfo) pairs for the recent comments list
-  const commentCandidates: Array<{ discussion: DiscussionNode; rule: { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> }; comment: DiscussionCommentNode }> = [];
+  const commentCandidates: Array<{
+    discussion: DiscussionNode;
+    rule: { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> };
+    comment: DiscussionCommentNode;
+  }> = [];
 
   for (const discussion of uniqueDiscussions) {
     const guid = discussion.title.trim();
@@ -261,6 +270,3 @@ export async function getCachedActivityRules(): Promise<ActivityRule[]> {
   const { activityRules } = await getCachedDiscussionData();
   return activityRules;
 }
-
-
-

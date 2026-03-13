@@ -30,13 +30,13 @@ export default function RecentCommentsCard({ comments }: RecentCommentsCardProps
                     unoptimized
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm text-gray-700 leading-snug">
+                    <p className="text-sm text-gray-700 leading-snug mb-1!">
                       <span className="font-medium text-gray-900">{comment.authorLogin}</span>
                       {" commented on "}
                     </p>
-                    <p className="text-sm font-medium text-ssw-red group-hover:underline truncate">{comment.ruleTitle}</p>
-                    <p className="text-xs text-gray-500 mt-1 line-clamp-2 overflow-hidden break-words">{comment.bodyPreview}</p>
-                    <div className="flex items-center gap-1 mt-1 text-xs text-gray-400">
+                    <p className="text-sm font-medium text-ssw-red group-hover:underline truncate mb-3!">{comment.ruleTitle}</p>
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-2 overflow-hidden break-words mb-2">{comment.bodyPreview}</p>
+                    <div className="flex items-center gap-1 mt-1 text-xs text-gray-400 mb-4">
                       <RiTimeFill className="flex-shrink-0" />
                       <span>{timeAgo(comment.commentedAt)}</span>
                     </div>

@@ -101,7 +101,7 @@ query categoryWithRulesQuery($relativePath: String!) {
 }
 
 query rulesByGuidQuery($guids: [String!]!) {
-  ruleConnection(filter: { guid: { in: $guids } }) {
+  ruleConnection(filter: { guid: { in: $guids } }, first: 200) {
     edges {
       node {
         guid

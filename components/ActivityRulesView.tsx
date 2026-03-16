@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import RecentCommentsCard from "@/components/RecentCommentsCard";
 import RuleActivityCard from "@/components/RuleActivityCard";
 import RadioButton from "@/components/radio-button/radio-button";
@@ -34,13 +33,13 @@ function sortRules(rules: ActivityRule[], sortKey: SortKey): ActivityRule[] {
   });
 }
 
-interface ActivityRulesClientPageProps {
+interface ActivityRulesViewProps {
   rules: ActivityRule[];
   total: number;
   recentComments: RecentComment[];
 }
 
-export default function ActivityRulesClientPage({ rules, total, recentComments }: ActivityRulesClientPageProps) {
+export default function ActivityRulesView({ rules, total, recentComments }: ActivityRulesViewProps) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [sortKey, setSortKey] = useState<SortKey>("lastCommented");
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -72,8 +71,6 @@ export default function ActivityRulesClientPage({ rules, total, recentComments }
 
   return (
     <>
-      <Breadcrumbs breadcrumbText="Rules by Activity" />
-      <h1 className="text-ssw-red font-bold mb-2">Rules by Activity</h1>
       <div className="flex items-center py-4">
         <span className="mr-4 hidden sm:block">Sort by</span>
         {SORT_OPTIONS.map(({ key, label }, i) => (
@@ -106,4 +103,3 @@ export default function ActivityRulesClientPage({ rules, total, recentComments }
     </>
   );
 }
-

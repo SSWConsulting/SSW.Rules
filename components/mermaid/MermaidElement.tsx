@@ -2,6 +2,10 @@
 
 import { useRef, useEffect } from "react";
 import mermaid from "mermaid";
+import { sswMermaidConfig } from "./mermaid-theme";
+
+// Initialize once at module load so the SSW theme is applied before any render.
+mermaid.initialize(sswMermaidConfig);
 
 interface MermaidElementProps {
   value: string;
@@ -12,8 +16,7 @@ export default function MermaidElement({ value }: MermaidElementProps) {
 
   useEffect(() => {
     if (mermaidRef.current) {
-      mermaid.initialize({ startOnLoad: true });
-      mermaid.run();
+      mermaid.run({ nodes: mermaidRef.current.querySelectorAll(".mermaid") });
     }
   }, [value]);
 

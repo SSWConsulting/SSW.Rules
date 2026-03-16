@@ -1,13 +1,38 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RecentCommentsCard from "@/components/RecentCommentsCard";
 import RuleActivityCard from "@/components/RuleActivityCard";
+import RadioButton from "@/components/radio-button/radio-button";
 import { ActivityRule } from "@/models/ActivityRule";
 import { RecentComment } from "@/models/RecentComment";
 
 const PAGE_SIZE = 5;
+
+type SortKey = "lastCommented" | "mostCommented" | "mostLiked" | "leastLiked";
+
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: "lastCommented", label: "Last Commented" },
+  { key: "mostCommented", label: "Most Commented" },
+  { key: "mostLiked", label: "Most Liked" },
+  { key: "leastLiked", label: "Least Liked" },
+];
+
+function sortRules(rules: ActivityRule[], sortKey: SortKey): ActivityRule[] {
+  return [...rules].sort((a, b) => {
+    switch (sortKey) {
+      case "lastCommented":
+        return new Date(b.lastCommentAt || 0).getTime() - new Date(a.lastCommentAt || 0).getTime();
+      case "mostCommented":
+        return (b.commentCount ?? 0) - (a.commentCount ?? 0) || a.title.localeCompare(b.title);
+      case "mostLiked":
+        return (b.thumbsUp ?? 0) - (a.thumbsUp ?? 0) || a.title.localeCompare(b.title);
+      case "leastLiked":
+        return (a.thumbsUp ?? 0) - (b.thumbsUp ?? 0) || a.title.localeCompare(b.title);
+    }
+  });
+}
 
 interface ActivityRulesClientPageProps {
   rules: ActivityRule[];
@@ -17,10 +42,16 @@ interface ActivityRulesClientPageProps {
 
 export default function ActivityRulesClientPage({ rules, total, recentComments }: ActivityRulesClientPageProps) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [sortKey, setSortKey] = useState<SortKey>("lastCommented");
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const visibleRules = rules.slice(0, visibleCount);
+  const sortedRules = useMemo(() => sortRules(rules, sortKey), [rules, sortKey]);
+  const visibleRules = sortedRules.slice(0, visibleCount);
   const hasMore = visibleCount < total;
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [sortKey]);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -43,7 +74,20 @@ export default function ActivityRulesClientPage({ rules, total, recentComments }
     <>
       <Breadcrumbs breadcrumbText="Rules by Activity" />
       <h1 className="text-ssw-red font-bold mb-2">Rules by Activity</h1>
-      <p className="text-gray-500 mb-6">Rules ranked by most recent comment activity.</p>
+      <div className="flex items-center py-4">
+        <span className="mr-4 hidden sm:block">Sort by</span>
+        {SORT_OPTIONS.map(({ key, label }, i) => (
+          <RadioButton
+            key={key}
+            id={`sort-${key}`}
+            value={key}
+            selectedOption={sortKey}
+            handleOptionChange={(e) => setSortKey(e.target.value as SortKey)}
+            labelText={label}
+            position={i === 0 ? "first" : i === SORT_OPTIONS.length - 1 ? "last" : "middle"}
+          />
+        ))}
+      </div>
       <div className="layout-two-columns">
         <div className="layout-main-section min-w-0">
           {visibleRules.map((rule, i) => (

@@ -1,183 +1,100 @@
 "use client";
 
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { BiChevronDown, BiRefresh, BiSearch, BiX } from "react-icons/bi";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { BiChevronDown, BiSearch, BiX } from "react-icons/bi";
 import { wrapFieldsWithMeta } from "tinacms";
 
 interface CategoryItem {
   title: string;
-  _sys: {
-    relativePath: string; // e.g. "azure-devops/branch-policies.mdx"
-  };
+  _sys: { relativePath: string };
 }
 
-/** Shape of each entry in the `categories` array stored in the rule front matter */
 interface CategoryEntry {
   category: string; // e.g. "categories/azure-devops/branch-policies.mdx"
 }
 
-const CategoryMultiSelectorInner: React.FC<any> = (props) => {
-  const { field, input, form, tinaForm } = props;
-  const containerRef = useRef<HTMLDivElement>(null);
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
+/** Fetch categories from the API */
+const fetchCategories = async (): Promise<CategoryItem[]> => {
+  const res = await fetch(`${basePath}/api/categories`, { method: "GET", cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  return data?.categories ?? [];
+};
+
+
+const CategoryMultiSelectorInner: React.FC<any> = ({ input, tinaForm }) => {
   const [filter, setFilter] = useState("");
   const [allCategories, setAllCategories] = useState<CategoryItem[]>([]);
-  const [filteredCategories, setFilteredCategories] = useState<CategoryItem[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const [currentBranch, setCurrentBranch] = useState<string | null>(null);
-  const [revalidating, setRevalidating] = useState(false);
-  const [revalidateStatus, setRevalidateStatus] = useState<string | null>(null);
-  const [refetching, setRefetching] = useState(false);
-
-  // ── Determine whether the field should be hidden (create mode) ──────────────
   const shouldHide = tinaForm?.crudType === "create";
 
-  // Hide the outer label wrapper that wrapFieldsWithMeta adds
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    let el: HTMLElement | null = containerRef.current;
-    for (let depth = 0; depth < 6 && el; depth++) {
-      el = el.parentElement;
-      if (!el) break;
-      const allLabels = el.querySelectorAll("label");
-      for (const label of Array.from(allLabels)) {
-        if (!containerRef.current?.contains(label)) {
-          (label as HTMLElement).style.display = shouldHide ? "none" : "";
-          return;
-        }
-      }
-    }
-  }, [shouldHide]);
-
-  // ── Derive selected categories from input.value ─────────────────────────────
-  const selectedEntries: CategoryEntry[] = useMemo(() => {
-    const val = input.value;
-    if (!val || !Array.isArray(val)) return [];
-    return val as CategoryEntry[];
-  }, [input.value]);
-
+  // ── Derived state ───────────────────────────────────────────────────────────
+  const selectedEntries: CategoryEntry[] = useMemo(() => (Array.isArray(input.value) ? input.value : []), [input.value]);
   const selectedPaths = useMemo(() => new Set(selectedEntries.map((e) => e.category)), [selectedEntries]);
 
-  // ── Fetch categories on mount ───────────────────────────────────────────────
+  const filteredCategories = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    return q ? allCategories.filter((c) => (c.title || "").toLowerCase().includes(q)) : allCategories;
+  }, [filter, allCategories]);
+
+  // ── Fetch on mount ──────────────────────────────────────────────────────────
   useEffect(() => {
-    const run = async () => {
+    (async () => {
       setLoading(true);
       try {
-        try {
-          const branchRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/branch`, { method: "GET", cache: "no-store" });
-          if (branchRes.ok) {
-            const branchData = await branchRes.json();
-            setCurrentBranch(branchData?.branch || "main");
-          } else {
-            setCurrentBranch("main");
-          }
-        } catch {
-          setCurrentBranch("main");
-        }
-
-        const categoriesRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/categories`, { method: "GET", cache: "no-store" });
-        if (!categoriesRes.ok) throw new Error(`HTTP ${categoriesRes.status}`);
-        const categoriesData = await categoriesRes.json();
-        setAllCategories(categoriesData?.categories || []);
+        setAllCategories(await fetchCategories());
       } catch (e) {
         console.error("Failed to load categories:", e);
       } finally {
         setLoading(false);
       }
-    };
-    run();
+    })();
   }, []);
 
-  // ── Filter list on search ───────────────────────────────────────────────────
-  useEffect(() => {
-    const q = filter.trim().toLowerCase();
-    setFilteredCategories(q ? allCategories.filter((c) => (c.title || "").toLowerCase().includes(q)) : allCategories);
-  }, [filter, allCategories]);
-
-  // ── Helpers ─────────────────────────────────────────────────────────────────
-  const refetchCategories = async () => {
-    try {
-      setRefetching(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/categories`, { method: "GET", cache: "no-store" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      setAllCategories(data?.categories || []);
-    } catch (e) {
-      console.error("Failed to refetch categories:", e);
-    } finally {
-      setRefetching(false);
-    }
-  };
-
-  const handleRevalidate = async () => {
-    if (!currentBranch) return;
-    setRevalidating(true);
-    setRevalidateStatus(null);
-    try {
-      const tag = `branch-${currentBranch}-categories`;
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/revalidate-tag`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tag }),
-      });
-      const data = await response.json();
-      if (response.ok && data.success) {
-        setRevalidateStatus("Successfully refreshed categories");
-        await refetchCategories();
+  const toggleCategory = useCallback(
+    (category: CategoryItem) => {
+      const path = `categories/${category._sys.relativePath}`;
+      if (selectedPaths.has(path)) {
+        input.onChange(selectedEntries.filter((e) => e.category !== path));
       } else {
-        setRevalidateStatus(`Failed: ${data.error || "Unknown error"}`);
+        input.onChange([...selectedEntries, { category: path }]);
       }
-    } catch (error) {
-      setRevalidateStatus(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
-    } finally {
-      setRevalidating(false);
-    }
-  };
+    },
+    [selectedPaths, selectedEntries, input],
+  );
 
-  const toggleCategory = (category: CategoryItem) => {
-    const path = `categories/${category._sys.relativePath}`;
-    if (selectedPaths.has(path)) {
-      // Remove
-      input.onChange(selectedEntries.filter((e) => e.category !== path));
-    } else {
-      // Add
-      input.onChange([...selectedEntries, { category: path }]);
-    }
-  };
+  const removeCategory = useCallback(
+    (path: string) => input.onChange(selectedEntries.filter((e) => e.category !== path)),
+    [selectedEntries, input],
+  );
 
-  const removeCategory = (path: string) => {
-    input.onChange(selectedEntries.filter((e) => e.category !== path));
-  };
+  const getLabelForPath = useCallback(
+    (catPath: string) => {
+      const rel = catPath.replace(/^categories\//, "");
+      return allCategories.find((c) => c._sys.relativePath === rel)?.title ?? rel.replace(".mdx", "").split("/").at(-1) ?? catPath;
+    },
+    [allCategories],
+  );
 
-  // ── Button label ────────────────────────────────────────────────────────────
   const triggerLabel =
     selectedEntries.length === 0 ? "Select categories" : selectedEntries.length === 1 ? "1 category selected" : `${selectedEntries.length} categories selected`;
 
   // ── Render ──────────────────────────────────────────────────────────────────
-  if (shouldHide) {
-    return <div ref={containerRef} style={{ display: "none" }} />;
-  }
+  if (shouldHide) return <div style={{ display: "none" }} />;
 
-  if (loading) {
-    return (
-      <div ref={containerRef}>
-        <div className="p-4 text-center text-gray-500 text-sm">Loading categories...</div>
-      </div>
-    );
-  }
+  if (loading) return <div className="p-4 text-center text-gray-500 text-sm">Loading categories...</div>;
 
   return (
-    <div ref={containerRef} className="space-y-2">
+    <div className="space-y-2">
       {/* Selected chips */}
       {selectedEntries.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {selectedEntries.map((entry) => {
-            const rel = entry.category.replace(/^categories\//, "");
-            const matched = allCategories.find((c) => c._sys.relativePath === rel);
-            const label = matched?.title ?? rel.replace(".mdx", "").split("/").at(-1) ?? entry.category;
+            const label = getLabelForPath(entry.category);
             return (
               <span key={entry.category} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                 {label}
@@ -221,9 +138,9 @@ const CategoryMultiSelectorInner: React.FC<any> = (props) => {
                   <PopoverPanel className="relative overflow-hidden rounded-lg shadow-lg bg-white border border-gray-150 z-50">
                     {({ close }) => (
                       <div className="max-h-[70vh] flex flex-col w-full">
-                        {/* Search + refresh header */}
+                        {/* Search header */}
                         <div className="bg-gray-50 p-2 border-b border-gray-100 z-10 shadow-sm">
-                          <div className="relative mb-2">
+                          <div className="relative">
                             <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <input
                               type="text"
@@ -237,36 +154,12 @@ const CategoryMultiSelectorInner: React.FC<any> = (props) => {
                               placeholder="Search categories..."
                             />
                           </div>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              handleRevalidate();
-                            }}
-                            disabled={revalidating || !currentBranch}
-                            className="w-full text-xs px-3 py-1.5 bg-blue-500 text-white rounded-sm hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5"
-                            title="The category list may be showing stale data. Click to refresh and fetch the most up-to-date list."
-                          >
-                            <BiRefresh className={`w-4.5 h-4.5 ${revalidating ? "animate-spin" : ""}`} />
-                            {revalidating ? "Refreshing..." : "Refresh Categories"}
-                          </button>
-                          {revalidateStatus && (
-                            <div
-                              className={`mt-1 text-xs px-2 py-1 rounded ${revalidateStatus.includes("Successfully") ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}
-                            >
-                              {revalidateStatus}
-                            </div>
-                          )}
                         </div>
-
-                        {/* Refreshing indicator */}
-                        {refetching && <div className="p-2 bg-blue-50 border-b border-blue-200 text-xs text-blue-700 text-center">Refreshing categories...</div>}
 
                         {/* Category list */}
                         {!loading && filteredCategories.length === 0 && <div className="p-4 text-center text-gray-400 text-sm">No categories found</div>}
                         {!loading && filteredCategories.length > 0 && (
-                          <div className={`flex-1 overflow-y-auto ${refetching ? "opacity-50 pointer-events-none" : ""}`}>
+                          <div className="flex-1 overflow-y-auto">
                             {filteredCategories.map((category) => {
                               const path = `categories/${category._sys.relativePath}`;
                               const isSelected = selectedPaths.has(path);

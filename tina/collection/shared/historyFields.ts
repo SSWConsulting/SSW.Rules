@@ -70,8 +70,14 @@ export const historyFields: TinaField[] = [
 ];
 
 export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; cms: TinaCMS; values: Record<string, any> }) => {
+  // IMPORTANT: mutate `values` in-place instead of creating a new object.
+  // TinaCMS's internal handleSubmit calls `form.initialize(values)` with the
+  // *original* reference after onSubmit.  If we return a spread-copy, the
+  // form state is re-initialised from the stale original and metadata fields
+  // are lost until the next save.  Mutating in-place keeps both the saved
+  // payload and the re-initialised form state in sync.
   if (typeof values.uri === "string") {
-    values = { ...values, uri: values.uri.trim() };
+    values.uri = values.uri.trim();
   }
 
   let userEmail: string | undefined;
@@ -132,26 +138,22 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
   }
 
   if (form.crudType === "create") {
-    return {
-      ...values,
-      // On first save, set createdBy from the auth provider directly (UserInfoField's async
-      // onChange may not have settled before the user clicks Save on the first edit).
-      createdBy: userName ?? values.createdBy ?? "Unknown",
-      createdByEmail: userEmail ?? values.createdByEmail ?? "Unknown",
-      lastUpdated: new Date().toISOString(),
-      // Fall back to "Unknown" so the UI fallback can render on the very first save
-      // (empty string is falsy and would cause the metadata section to be hidden).
-      lastUpdatedBy: userName ?? "Unknown",
-      lastUpdatedByEmail: userEmail ?? "Unknown",
-    };
+    // On first save, set createdBy from the auth provider directly (UserInfoField's async
+    // onChange may not have settled before the user clicks Save on the first edit).
+    values.createdBy = userName ?? values.createdBy ?? "Unknown";
+    values.createdByEmail = userEmail ?? values.createdByEmail ?? "Unknown";
+    values.lastUpdated = new Date().toISOString();
+    // Fall back to "Unknown" so the UI fallback can render on the very first save
+    // (empty string is falsy and would cause the metadata section to be hidden).
+    values.lastUpdatedBy = userName ?? "Unknown";
+    values.lastUpdatedByEmail = userEmail ?? "Unknown";
+    return values;
   }
 
-  return {
-    ...values,
-    lastUpdated: new Date().toISOString(),
-    // Prefer the resolved user name; if auth fails, keep the previously saved value
-    // rather than overwriting it with an empty string that hides the metadata section.
-    lastUpdatedBy: userName ?? values.lastUpdatedBy ?? "Unknown",
-    lastUpdatedByEmail: userEmail ?? values.lastUpdatedByEmail ?? "Unknown",
-  };
+  values.lastUpdated = new Date().toISOString();
+  // Prefer the resolved user name; if auth fails, keep the previously saved value
+  // rather than overwriting it with an empty string that hides the metadata section.
+  values.lastUpdatedBy = userName ?? values.lastUpdatedBy ?? "Unknown";
+  values.lastUpdatedByEmail = userEmail ?? values.lastUpdatedByEmail ?? "Unknown";
+  return values;
 };

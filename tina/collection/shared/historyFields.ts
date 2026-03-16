@@ -1,6 +1,7 @@
 import { Form, TinaCMS, TinaField } from "tinacms";
 import { getBearerAuthHeader } from "@/utils/tina/get-bearer-auth-header";
 import { ConditionalHiddenField } from "../../fields/ConditionalHiddenField";
+import { MetadataAutoUpdater } from "../../fields/MetadataAutoUpdater";
 
 export const historyFields: TinaField[] = [
   {
@@ -9,7 +10,12 @@ export const historyFields: TinaField[] = [
     description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
     label: "Last Updated",
     ui: {
-      component: "hidden",
+      // MetadataAutoUpdater reactively sets lastUpdated, lastUpdatedBy, and
+      // lastUpdatedByEmail on the live form state as soon as the user makes
+      // an edit.  This ensures the values are present in tinaForm.values for
+      // the editorial-workflow path (protected branch → CreateBranchModal),
+      // which bypasses beforeSubmit entirely.
+      component: MetadataAutoUpdater,
     },
   },
   {

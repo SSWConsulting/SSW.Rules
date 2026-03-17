@@ -95,7 +95,17 @@ export async function POST(request: NextRequest) {
     }
 
     const client = algoliasearch(appId, apiKey);
-    const result = await client.search(requests);
+
+    // Inject snippet and highlight settings so results include content snippets
+    const enrichedRequests = requests.map((req: any) => ({
+      ...req,
+      attributesToSnippet: ["content:30"],
+      attributesToHighlight: ["title", "content"],
+      highlightPreTag: "<mark>",
+      highlightPostTag: "</mark>",
+    }));
+
+    const result = await client.search(enrichedRequests);
 
     return NextResponse.json(result);
   } catch (error) {

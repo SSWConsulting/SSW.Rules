@@ -32,11 +32,6 @@ export interface GitHubMetadataProps {
   path?: string;
   /** Additional CSS classes to apply to the component */
   className?: string;
-  /** Fallback values sourced from MDX frontmatter, used when the GitHub API has not yet
-   * indexed the newly-created file (i.e. first save returns 0 commits). */
-  fallbackLastUpdatedBy?: string;
-  fallbackLastUpdated?: string;
-  fallbackCreated?: string;
 }
 
 export interface GitHubMetadataResponse {

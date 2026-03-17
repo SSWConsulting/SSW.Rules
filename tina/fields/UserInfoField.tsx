@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { useCMS, wrapFieldsWithMeta } from "tinacms";
+import { hideFieldWrapper } from "./hideFieldWrapper";
 
 /**
  * Custom field component that fetches the logged-in user info
@@ -15,40 +16,8 @@ export const UserInfoField = wrapFieldsWithMeta((props: any) => {
   const hasUpdated = React.useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Hide the field wrapper (including label and description) on create mode
-  useEffect(() => {
-    const shouldHide = true;
-
-    if (shouldHide) {
-      // Find the field wrapper element (similar to ConditionalHiddenField)
-      const findFieldWrapperElement = (): HTMLElement | null => {
-        if (!containerRef.current) return null;
-
-        let element: HTMLElement | null = containerRef.current;
-        const maxDepth = 5;
-
-        for (let depth = 0; depth < maxDepth && element; depth++) {
-          element = element.parentElement;
-          if (!element) break;
-
-          // Check if this element contains a label
-          const hasLabel = element.querySelector("label") || element.querySelector('[class*="label"]') || element.getAttribute("data-tina-field");
-
-          // If we found a label or reached a reasonable depth, this is likely the wrapper
-          if (hasLabel || depth >= 2) {
-            return element;
-          }
-        }
-
-        return null;
-      };
-
-      const fieldWrapper = findFieldWrapperElement();
-      if (fieldWrapper) {
-        fieldWrapper.style.display = "none";
-      }
-    }
-  }, [tinaForm?.crudType]);
+  // Hide the field wrapper (including label and description) in the sidebar.
+  useEffect(() => hideFieldWrapper(containerRef), []);
 
   useEffect(() => {
     // Only set createdBy/createdByEmail on NEW rules (create mode).

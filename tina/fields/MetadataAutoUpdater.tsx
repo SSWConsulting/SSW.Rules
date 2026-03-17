@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { useCMS, wrapFieldsWithMeta } from "tinacms";
+import { hideFieldWrapper } from "./hideFieldWrapper";
 
 /**
  * Hidden field component that **reactively** populates the three
@@ -29,22 +30,7 @@ const MetadataAutoUpdaterInner: React.FC<any> = ({ tinaForm }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Hide the surrounding field wrapper (label + description) in the sidebar.
-  useEffect(() => {
-    if (!containerRef.current) return;
-    let el: HTMLElement | null = containerRef.current;
-    for (let depth = 0; depth < 5 && el; depth++) {
-      el = el.parentElement;
-      if (!el) break;
-      const hasLabel =
-        el.querySelector("label") ||
-        el.querySelector('[class*="label"]') ||
-        el.getAttribute("data-tina-field");
-      if (hasLabel || depth >= 2) {
-        el.style.display = "none";
-        break;
-      }
-    }
-  }, []);
+  useEffect(() => hideFieldWrapper(containerRef), []);
 
   // Subscribe to dirty state and push metadata into the form.
   useEffect(() => {

@@ -95,6 +95,22 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
         : true; // For update, always call (even if empty, to remove from all categories)
 
     if (shouldCallAPI) {
+      // Resolve the current branch from TinaCMS client (set by editorial workflow before beforeSubmit fires)
+      // This is more reliable than the x-branch cookie which may not be propagated yet
+      const tinaBranch = cms.api.tina?.branch || "";
+      const cookieBranch =
+        typeof document !== "undefined"
+          ? (document.cookie
+              .split("; ")
+              .find((c) => c.startsWith("x-branch="))
+              ?.split("=")[1] || "")
+          : "";
+      const resolvedBranch = tinaBranch || cookieBranch;
+
+      console.log(
+        `[historyBeforeSubmit] Branch resolution — tinaBranch: "${tinaBranch}", cookieBranch: "${cookieBranch}", resolved: "${resolvedBranch}"`
+      );
+
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/update-category`, {
           method: "POST",
@@ -106,15 +122,31 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
             categories: categories,
             ruleUri: values.uri,
             formType: formType,
+            branch: resolvedBranch || undefined,
           }),
         });
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
           console.error(`Failed to update categories for ${formType} form:`, errorData);
+          cms.alerts?.error?.(
+            `Category index update failed: ${errorData?.error || errorData?.details || "Unknown error"}. The rule will be saved, but category pages may not reflect the change until re-saved.`
+          );
+        } else {
+          const responseData = await response.json().catch(() => null);
+          const added = responseData?.AddedCategories?.length || 0;
+          const deleted = responseData?.DeletedCategories?.length || 0;
+          if (added > 0 || deleted > 0) {
+            cms.alerts?.info?.(
+              `Category indexes updated: ${added > 0 ? `${added} added` : ""}${added > 0 && deleted > 0 ? ", " : ""}${deleted > 0 ? `${deleted} removed` : ""}`
+            );
+          }
         }
       } catch (error) {
         console.error(`Error updating categories for ${form.crudType} form:`, error);
+        cms.alerts?.error?.(
+          `Category index update encountered an error. The rule will be saved, but category pages may not reflect the change until re-saved.`
+        );
         // Don't throw - allow form submission to continue even if category update fails
       }
     }

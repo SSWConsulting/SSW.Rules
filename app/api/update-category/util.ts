@@ -89,7 +89,7 @@ export function categorizeCategories(currentCategories: string[], requestedCateg
 }
 
 export async function getRuleCategories(ruleUri: string, branch?: string): Promise<{ rule: any; currentRuleCategories: string[] }> {
-  const currentRule = await client.queries.rulesByUriQuery({ uris: [ruleUri] }, branch ? await getFetchOptions() : undefined);
+  const currentRule = await client.queries.rulesByUriQuery({ uris: [ruleUri] }, branch ? await getFetchOptions(branch) : undefined);
   const rule = currentRule?.data?.ruleConnection?.edges?.[0]?.node;
 
   if (!rule) {

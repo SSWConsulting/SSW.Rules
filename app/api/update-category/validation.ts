@@ -39,7 +39,7 @@ export function validateRequestBody(body: unknown): {
     };
   }
 
-  const { categories, ruleUri, formType } = body as UpdateCategoryRequest;
+  const { categories, ruleUri, formType, branch } = body as UpdateCategoryRequest;
 
   if (!Array.isArray(categories) || !ruleUri) {
     return {
@@ -53,5 +53,5 @@ export function validateRequestBody(body: unknown): {
     };
   }
 
-  return { valid: true, data: { categories, ruleUri, formType } };
+  return { valid: true, data: { categories, ruleUri, formType, branch } };
 }

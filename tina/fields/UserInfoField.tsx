@@ -51,8 +51,16 @@ export const UserInfoField = wrapFieldsWithMeta((props: any) => {
   }, [tinaForm?.crudType]);
 
   useEffect(() => {
-    // Only update once, and only if the value is still "Unknown" (default)
-    if (hasUpdated.current || (input.value && input.value !== "Unknown")) {
+    // Only set createdBy/createdByEmail on NEW rules (create mode).
+    // When editing an existing rule, these fields should keep whatever
+    // value is already in the frontmatter — even if it's "Unknown" or empty.
+    // Updating a rule does NOT mean you created it.
+    if (hasUpdated.current || tinaForm?.crudType !== "create") {
+      return;
+    }
+
+    // Only update if the value is still the default "Unknown"
+    if (input.value && input.value !== "Unknown") {
       return;
     }
 

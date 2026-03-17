@@ -26,6 +26,9 @@ const Rule: Collection = {
       created: new Date().toISOString(),
       createdBy: "Unknown",
       createdByEmail: "Unknown",
+      lastUpdated: new Date().toISOString(),
+      lastUpdatedBy: "Unknown",
+      lastUpdatedByEmail: "Unknown",
       filename: "rule",
       body: defaultBody,
     };

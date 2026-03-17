@@ -1,6 +1,7 @@
 import { Form, TinaCMS, TinaField } from "tinacms";
 import { getBearerAuthHeader } from "@/utils/tina/get-bearer-auth-header";
 import { ConditionalHiddenField } from "../../fields/ConditionalHiddenField";
+import { MetadataAutoUpdater } from "../../fields/MetadataAutoUpdater";
 
 export const historyFields: TinaField[] = [
   {
@@ -9,7 +10,12 @@ export const historyFields: TinaField[] = [
     description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
     label: "Last Updated",
     ui: {
-      component: "hidden",
+      // MetadataAutoUpdater reactively sets lastUpdated, lastUpdatedBy, and
+      // lastUpdatedByEmail on the live form state as soon as the user makes
+      // an edit.  This ensures the values are present in tinaForm.values for
+      // the editorial-workflow path (protected branch → CreateBranchModal),
+      // which bypasses beforeSubmit entirely.
+      component: MetadataAutoUpdater,
     },
   },
   {
@@ -70,8 +76,14 @@ export const historyFields: TinaField[] = [
 ];
 
 export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; cms: TinaCMS; values: Record<string, any> }) => {
+  // IMPORTANT: mutate `values` in-place instead of creating a new object.
+  // TinaCMS's internal handleSubmit calls `form.initialize(values)` with the
+  // *original* reference after onSubmit.  If we return a spread-copy, the
+  // form state is re-initialised from the stale original and metadata fields
+  // are lost until the next save.  Mutating in-place keeps both the saved
+  // payload and the re-initialised form state in sync.
   if (typeof values.uri === "string") {
-    values = { ...values, uri: values.uri.trim() };
+    values.uri = values.uri.trim();
   }
 
   let userEmail: string | undefined;
@@ -132,18 +144,22 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
   }
 
   if (form.crudType === "create") {
-    return {
-      ...values,
-      lastUpdated: new Date().toISOString(),
-      lastUpdatedBy: userName ?? "",
-      lastUpdatedByEmail: userEmail ?? "",
-    };
+    // On first save, set createdBy from the auth provider directly (UserInfoField's async
+    // onChange may not have settled before the user clicks Save on the first edit).
+    values.createdBy = userName ?? values.createdBy ?? "Unknown";
+    values.createdByEmail = userEmail ?? values.createdByEmail ?? "Unknown";
+    values.lastUpdated = new Date().toISOString();
+    // Fall back to "Unknown" so the UI fallback can render on the very first save
+    // (empty string is falsy and would cause the metadata section to be hidden).
+    values.lastUpdatedBy = userName ?? "Unknown";
+    values.lastUpdatedByEmail = userEmail ?? "Unknown";
+    return values;
   }
 
-  return {
-    ...values,
-    lastUpdated: new Date().toISOString(),
-    lastUpdatedBy: userName ?? "",
-    lastUpdatedByEmail: userEmail ?? "",
-  };
+  values.lastUpdated = new Date().toISOString();
+  // Prefer the resolved user name; if auth fails, keep the previously saved value
+  // rather than overwriting it with an empty string that hides the metadata section.
+  values.lastUpdatedBy = userName ?? values.lastUpdatedBy ?? "Unknown";
+  values.lastUpdatedByEmail = userEmail ?? values.lastUpdatedByEmail ?? "Unknown";
+  return values;
 };

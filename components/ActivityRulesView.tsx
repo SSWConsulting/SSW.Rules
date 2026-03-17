@@ -9,13 +9,12 @@ import { RecentComment } from "@/models/RecentComment";
 
 const PAGE_SIZE = 5;
 
-type SortKey = "lastCommented" | "mostCommented" | "mostLiked" | "leastLiked";
+type SortKey = "lastCommented" | "mostCommented" | "mostLiked";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "lastCommented", label: "Last Commented" },
   { key: "mostCommented", label: "Most Commented" },
   { key: "mostLiked", label: "Most Liked" },
-  { key: "leastLiked", label: "Least Liked" },
 ];
 
 function sortRules(rules: ActivityRule[], sortKey: SortKey): ActivityRule[] {
@@ -27,8 +26,6 @@ function sortRules(rules: ActivityRule[], sortKey: SortKey): ActivityRule[] {
         return (b.commentCount ?? 0) - (a.commentCount ?? 0) || a.title.localeCompare(b.title);
       case "mostLiked":
         return (b.thumbsUp ?? 0) - (a.thumbsUp ?? 0) || a.title.localeCompare(b.title);
-      case "leastLiked":
-        return (a.thumbsUp ?? 0) - (b.thumbsUp ?? 0) || a.title.localeCompare(b.title);
     }
   });
 }

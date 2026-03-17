@@ -82,7 +82,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
             value="activity"
             selectedOption={view}
             handleOptionChange={(e) => handleViewChange(e.target.value as HomeView)}
-            labelText="Rules View"
+            labelText="Activity View"
             position="last"
           />
         </div>

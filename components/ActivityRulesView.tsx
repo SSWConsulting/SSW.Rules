@@ -13,9 +13,9 @@ const PAGE_SIZE = 5;
 type SortKey = "lastCommented" | "mostCommented" | "mostLiked";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "lastCommented", label: "Last Commented" },
-  { key: "mostCommented", label: "Most Commented" },
   { key: "mostLiked", label: "Most Liked" },
+  { key: "mostCommented", label: "Most Commented" },
+  { key: "lastCommented", label: "Last Commented" },
 ];
 
 function sortRules(rules: ActivityRule[], sortKey: SortKey): ActivityRule[] {
@@ -44,13 +44,33 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
   // After mount, React state is the source of truth for instant UI updates.
   const [sortKey, setSortKey] = useState<SortKey>(() => {
     const raw = searchParams.get("sort");
-    return SORT_OPTIONS.some((o) => o.key === raw) ? (raw as SortKey) : "lastCommented";
+    return SORT_OPTIONS.some((o) => o.key === raw) ? (raw as SortKey) : "mostLiked";
   });
+
+  const [animatingMetric, setAnimatingMetric] = useState<SortKey | null>(null);
+  const [animationEpoch, setAnimationEpoch] = useState(0);
+  const animationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const handleSortChange = (newSort: SortKey) => setSortKey(newSort);
+  const handleSortChange = (newSort: SortKey) => {
+    setSortKey(newSort);
+    setAnimatingMetric(newSort);
+    setAnimationEpoch((e) => e + 1);
+
+    // Clear the animation flag after the keyframe finishes so that cards
+    // loaded later by infinite scroll mount without the animation class.
+    if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
+    animationTimerRef.current = setTimeout(() => {
+      setAnimatingMetric(null);
+      animationTimerRef.current = null;
+    }, 450); // slightly longer than the 0.35s keyframe
+  };
+
+  useEffect(() => () => {
+    if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
+  }, []);
 
   // Keep the URL in sync as a non-blocking side effect.
   // Reads window.location.search so it preserves params owned by the parent
@@ -58,7 +78,7 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
   useEffect(() => {
     const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
     const params = new URLSearchParams(window.location.search);
-    if (sortKey === "lastCommented") {
+    if (sortKey === "mostLiked") {
       params.delete("sort");
     } else {
       params.set("sort", sortKey);
@@ -95,7 +115,7 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
 
   return (
     <>
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 px-4">
         <span className="mr-4 hidden sm:block">Sort by</span>
         {SORT_OPTIONS.map(({ key, label }, i) => (
           <RadioButton
@@ -116,7 +136,14 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
             history entry. Pressing back restores to 0 (top) automatically. */}
         <div className="layout-main-section min-w-0" onClickCapture={() => window.scrollTo(0, 0)}>
           {visibleRules.map((rule, i) => (
-            <RuleActivityCard key={rule.guid} rule={rule} rank={i + 1} />
+            <RuleActivityCard
+              key={rule.guid}
+              rule={rule}
+              rank={i + 1}
+              activeMetric={sortKey}
+              animatingMetric={animatingMetric}
+              animationEpoch={animationEpoch}
+            />
           ))}
 
           {total === 0 && <p className="text-gray-500">No rules with comment activity found.</p>}

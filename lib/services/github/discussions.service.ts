@@ -153,8 +153,11 @@ async function fetchRulesByGuids(
       const authors = (node.authors ?? []).map((a) => a?.title).filter((t): t is string => !!t);
       const categories = (node.categories ?? [])
         .map((c) => {
-          if (c?.category?.__typename === "CategoryCategory") {
-            return { title: c.category.title, uri: c.category.uri ?? "" };
+          const cat = c?.category;
+          // __typename is not requested in rulesByGuidQuery; the inline fragment
+          // guarantees that title/uri are present only for CategoryCategory nodes.
+          if (cat && "title" in cat && cat.title) {
+            return { title: cat.title, uri: ("uri" in cat ? (cat.uri as string) : null) ?? "" };
           }
           return null;
         })

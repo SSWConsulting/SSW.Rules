@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { FaComment, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { RiTimeFill } from "react-icons/ri";
@@ -8,6 +10,9 @@ import { ActivityRule } from "@/models/ActivityRule";
 interface RuleActivityCardProps {
   rule: ActivityRule;
   rank: number;
+  activeMetric?: string;
+  animatingMetric?: string | null;
+  animationEpoch?: number;
 }
 
 function formatDate(dateStr: string | null): string | null {
@@ -17,45 +22,70 @@ function formatDate(dateStr: string | null): string | null {
   return d.toLocaleDateString("en-AU", { year: "numeric", month: "short", day: "numeric" });
 }
 
-export default function RuleActivityCard({ rule, rank }: RuleActivityCardProps) {
+function shortenCategory(title: string): string {
+  const match = title.match(/^Rules to Better\s+(.+)$/i);
+  return match ? match[1] : title;
+}
+
+/** Returns { key, className } to spread onto the element that should animate. */
+function metricAnimProps(
+  metric: string,
+  activeMetric: string | undefined,
+  animatingMetric: string | null | undefined,
+  animationEpoch: number,
+  baseClassName: string,
+) {
+  const isActive = activeMetric === metric;
+  const isAnimating = animatingMetric === metric && animationEpoch > 0;
+  return {
+    key: isAnimating ? animationEpoch : undefined,
+    className: [baseClassName, isActive ? "font-semibold" : "", isAnimating ? "animate-metric-pop" : ""]
+      .filter(Boolean)
+      .join(" "),
+  };
+}
+
+export default function RuleActivityCard({
+  rule,
+  rank,
+  activeMetric,
+  animatingMetric,
+  animationEpoch = 0,
+}: RuleActivityCardProps) {
   const publishDate = formatDate(rule.created);
+
+  const categoryLabels =
+    rule.categories.length > 0
+      ? rule.categories.map((cat) => shortenCategory(cat.title)).join(", ")
+      : null;
 
   return (
     <Card className="mb-4 p-4">
       <div className="flex gap-3 min-w-0">
-        {/* Rank number */}
-        <span className="text-gray-300 font-bold text-lg leading-tight flex-shrink-0 w-6 text-right">#{rank}</span>
+        {/* Rank number — matches rule-list-item-header style */}
+        <span className="text-sm text-gray-500 mr-2 w-6 shrink-0 mt-1">#{rank}</span>
 
         {/* Card body */}
         <div className="min-w-0 flex-1 flex flex-col gap-2">
-          {/* Title */}
-          <Link href={`/${rule.uri}`} className="no-underline group">
-            <h2 className="m-0 text-xl font-bold leading-tight group-hover:text-ssw-red transition-colors">{rule.title}</h2>
-          </Link>
+          {/* Title — matches rule-list-item-header: text-2xl, no-underline link, a:hover global red */}
+          <h2 className="m-0 text-2xl">
+            <Link href={`/${rule.uri}`} className="no-underline">{rule.title}</Link>
+          </h2>
 
-          {/* Tags / categories */}
-          {rule.categories.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {rule.categories.map((cat) => (
-                <Link key={cat.uri || cat.title} href={cat.uri ? `/${cat.uri}` : "#"} className="no-underline">
-                  <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
-                    {cat.title}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          )}
-
-          {/* Author + publish date */}
-          {(rule.authors.length > 0 || publishDate) && (
+          {/* Author + publish date + category */}
+          {(rule.authors.length > 0 || publishDate || categoryLabels) && (
             <p className="text-xs text-gray-400 m-0">
               {rule.authors.length > 0 && (
-                <>
-                  <span className="font-medium text-gray-500">{rule.authors.join(", ")}</span>
-                </>
+                <span className="font-medium text-gray-500">{rule.authors.join(", ")}</span>
               )}
               {rule.authors.length > 0 && publishDate && <span className="mx-1">·</span>}
               {publishDate && <span>Published {publishDate}</span>}
+              {categoryLabels && (
+                <>
+                  <span className="mx-1">·</span>
+                  <span className="font-medium text-gray-500">{categoryLabels}</span>
+                </>
+              )}
             </p>
           )}
 
@@ -64,16 +94,26 @@ export default function RuleActivityCard({ rule, rank }: RuleActivityCardProps) 
 
           {/* Interaction row */}
           <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
+
+            {/* Thumbs up: icon + count animate together */}
             <a
+              {...metricAnimProps(
+                "mostLiked",
+                activeMetric,
+                animatingMetric,
+                animationEpoch,
+                "flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer",
+              )}
               href={`${rule.discussionUrl}#top`}
               target="_blank"
               rel="noopener noreferrer"
               title="Like this rule on GitHub"
-              className="flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer"
             >
               <FaThumbsUp />
               <span>{rule.thumbsUp}</span>
             </a>
+
+            {/* Thumbs down: no metric emphasis */}
             <a
               href={`${rule.discussionUrl}#top`}
               target="_blank"
@@ -84,16 +124,38 @@ export default function RuleActivityCard({ rule, rank }: RuleActivityCardProps) 
               <FaThumbsDown />
               <span>{rule.thumbsDown}</span>
             </a>
-            <span className="flex items-center gap-1" title="Comments">
+
+            {/* Comments: icon + count + label animate together */}
+            <span
+              {...metricAnimProps(
+                "mostCommented",
+                activeMetric,
+                animatingMetric,
+                animationEpoch,
+                "flex items-center gap-1",
+              )}
+              title="Comments"
+            >
               <FaComment />
               <span>
                 {rule.commentCount} {rule.commentCount === 1 ? "comment" : "comments"}
               </span>
             </span>
-            <span className="flex items-center gap-1 text-gray-400 ml-auto">
+
+            {/* Last commented: icon + label + timestamp animate together */}
+            <span
+              {...metricAnimProps(
+                "lastCommented",
+                activeMetric,
+                animatingMetric,
+                animationEpoch,
+                "flex items-center gap-1 text-gray-400 ml-auto",
+              )}
+            >
               <RiTimeFill />
               <span>Last commented {timeAgo(rule.lastCommentAt)}</span>
             </span>
+
           </div>
         </div>
       </div>

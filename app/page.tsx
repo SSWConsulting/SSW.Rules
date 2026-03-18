@@ -39,7 +39,7 @@ export default async function Home() {
     fetchRuleCount(),
     fetchCategoryRuleCounts(),
     fetchQuickLinks(),
-    getCachedDiscussionData(),
+    getCachedDiscussionData().catch(() => ({ activityRules: [], recentComments: [] })),
   ]);
 
   return (

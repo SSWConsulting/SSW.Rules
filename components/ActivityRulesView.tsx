@@ -50,6 +50,7 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
   }, [sortKey]);
 
   useEffect(() => {
+    if (!hasMore) return;
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
 
@@ -64,7 +65,7 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
 
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [total]);
+  }, [hasMore, total]);
 
   return (
     <>

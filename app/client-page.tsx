@@ -18,7 +18,6 @@ import { ActivityRule } from "@/models/ActivityRule";
 import { LatestRule } from "@/models/LatestRule";
 import { RecentComment } from "@/models/RecentComment";
 import { QuickLink } from "@/types/quickLink";
-import { getActivityData } from "./activity-actions";
 
 type HomeView = "categories" | "activity";
 
@@ -28,30 +27,17 @@ export interface HomeClientPageProps {
   ruleCount: number;
   categoryRuleCounts: Record<string, number>;
   quickLinks: QuickLink[];
+  activityRules: ActivityRule[];
+  recentComments: RecentComment[];
 }
 
 export default function HomeClientPage(props: HomeClientPageProps) {
-  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks } = props;
+  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, activityRules, recentComments } = props;
 
   const [view, setView] = useState<HomeView>("categories");
-  const [activityRules, setActivityRules] = useState<ActivityRule[]>([]);
-  const [recentComments, setRecentComments] = useState<RecentComment[]>([]);
-  const [activityLoaded, setActivityLoaded] = useState(false);
-  const [activityLoading, setActivityLoading] = useState(false);
 
   const handleViewChange = (newView: HomeView) => {
     setView(newView);
-    if (newView === "activity" && !activityLoaded) {
-      setActivityLoading(true);
-      getActivityData()
-        .then((data) => {
-          setActivityRules(data.activityRules);
-          setRecentComments(data.recentComments);
-          setActivityLoaded(true);
-        })
-        .catch((e) => console.error("Failed to load activity data", e))
-        .finally(() => setActivityLoading(false));
-    }
   };
 
   const getTopCategoryTotal = (subCategories: any[]) => {
@@ -140,13 +126,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
       )}
 
       {view === "activity" && (
-        <>
-          {activityLoading ? (
-            <p className="text-gray-500">Loading activity data...</p>
-          ) : (
-            <ActivityRulesView rules={activityRules} total={activityRules.length} recentComments={recentComments} />
-          )}
-        </>
+        <ActivityRulesView rules={activityRules} total={activityRules.length} recentComments={recentComments} />
       )}
     </>
   );

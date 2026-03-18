@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import AboutSSWCard from "@/components/AboutSSWCard";
 import ActivityRulesView from "@/components/ActivityRulesView";
 import CategoryActionButtons from "@/components/CategoryActionButtons";
@@ -34,11 +35,30 @@ export interface HomeClientPageProps {
 export default function HomeClientPage(props: HomeClientPageProps) {
   const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, activityRules, recentComments } = props;
 
-  const [view, setView] = useState<HomeView>("categories");
+  const searchParams = useSearchParams();
 
-  const handleViewChange = (newView: HomeView) => {
-    setView(newView);
-  };
+  // Initialise from URL once (covers direct links and back-navigation remounts).
+  // After mount, React state is the source of truth for instant UI updates.
+  const [view, setView] = useState<HomeView>(() =>
+    searchParams.get("view") === "activity" ? "activity" : "categories"
+  );
+
+  const handleViewChange = (newView: HomeView) => setView(newView);
+
+  // Keep the URL in sync as a non-blocking side effect.
+  // window.history.replaceState does NOT trigger a navigation or a server fetch.
+  useEffect(() => {
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+    const params = new URLSearchParams(window.location.search);
+    if (view === "categories") {
+      params.delete("view");
+      params.delete("sort");
+    } else {
+      params.set("view", view);
+    }
+    const qs = params.toString();
+    window.history.replaceState(null, "", qs ? `${basePath}/?${qs}` : `${basePath}/`);
+  }, [view]);
 
   const getTopCategoryTotal = (subCategories: any[]) => {
     return subCategories.reduce((total, category) => {

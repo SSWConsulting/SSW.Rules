@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Section } from "@/components/layout/section";
 import { getCachedDiscussionData } from "@/lib/services/github/discussions.service";
@@ -45,15 +45,17 @@ export default async function Home() {
   return (
     <Section>
       <Breadcrumbs isHomePage />
-      <HomeClientPage
-        topCategories={topCategories}
-        latestRules={latestRules}
-        ruleCount={ruleCount}
-        categoryRuleCounts={categoryRuleCounts}
-        quickLinks={quickLinks}
-        activityRules={activityData.activityRules}
-        recentComments={activityData.recentComments}
-      />
+      <Suspense fallback={null}>
+        <HomeClientPage
+          topCategories={topCategories}
+          latestRules={latestRules}
+          ruleCount={ruleCount}
+          categoryRuleCounts={categoryRuleCounts}
+          quickLinks={quickLinks}
+          activityRules={activityData.activityRules}
+          recentComments={activityData.recentComments}
+        />
+      </Suspense>
     </Section>
   );
 }

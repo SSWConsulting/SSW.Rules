@@ -40,7 +40,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
   // Initialise from URL once (covers direct links and back-navigation remounts).
   // After mount, React state is the source of truth for instant UI updates.
   const [view, setView] = useState<HomeView>(() =>
-    searchParams.get("view") === "activity" ? "activity" : "categories"
+    searchParams.get("view") === "categories" ? "categories" : "activity"
   );
 
   const handleViewChange = (newView: HomeView) => setView(newView);
@@ -50,7 +50,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
   useEffect(() => {
     const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
     const params = new URLSearchParams(window.location.search);
-    if (view === "categories") {
+    if (view === "activity") {
       params.delete("view");
       params.delete("sort");
     } else {
@@ -76,19 +76,19 @@ export default function HomeClientPage(props: HomeClientPageProps) {
         </h1>
         <div className="flex items-center">
           <RadioButton
-            id="view-categories"
-            value="categories"
-            selectedOption={view}
-            handleOptionChange={(e) => handleViewChange(e.target.value as HomeView)}
-            labelText="Category View"
-            position="first"
-          />
-          <RadioButton
             id="view-activity"
             value="activity"
             selectedOption={view}
             handleOptionChange={(e) => handleViewChange(e.target.value as HomeView)}
             labelText="Activity View"
+            position="first"
+          />
+          <RadioButton
+            id="view-categories"
+            value="categories"
+            selectedOption={view}
+            handleOptionChange={(e) => handleViewChange(e.target.value as HomeView)}
+            labelText="Category View"
             position="last"
           />
         </div>

@@ -1,14 +1,14 @@
 import React, { Suspense } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Section } from "@/components/layout/section";
-import { getCachedDiscussionData } from "@/lib/services/github/discussions.service";
+import { fetchDiscussionData } from "@/lib/services/github/discussions.service";
 import { fetchCategoryRuleCounts, fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import { QuickLink } from "@/types/quickLink";
 import HomeClientPage from "./client-page";
 
-export const revalidate = 300;
+export const revalidate = 21600; // 6 hours
 
 async function fetchTopCategoriesWithSubcategories() {
   // Fetch the main category index file with all top categories expanded in one query
@@ -39,7 +39,7 @@ export default async function Home() {
     fetchRuleCount(),
     fetchCategoryRuleCounts(),
     fetchQuickLinks(),
-    getCachedDiscussionData().catch(() => ({ activityRules: [], recentComments: [] })),
+    fetchDiscussionData(),
   ]);
 
   return (

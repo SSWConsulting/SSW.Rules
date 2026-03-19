@@ -185,7 +185,7 @@ export interface DiscussionData {
 /**
  * Fetches GitHub Discussions and returns both activity-ranked rules and recent comments.
  */
-async function fetchDiscussionData(): Promise<DiscussionData> {
+export async function fetchDiscussionData(): Promise<DiscussionData> {
   const org = process.env.NEXT_PUBLIC_GITHUB_ORG;
   // GISCUS_ACTIVITY_REPO_NAME is a server-only override for the discussions repo.
   // Falls back to NEXT_PUBLIC_GISCUS_REPO_NAME if not set.

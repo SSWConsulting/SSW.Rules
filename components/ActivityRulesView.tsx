@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import RecentCommentsCard from "@/components/RecentCommentsCard";
 import RuleActivityCard from "@/components/RuleActivityCard";
 import RadioButton from "@/components/radio-button/radio-button";
@@ -51,6 +51,14 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
   const [animationEpoch, setAnimationEpoch] = useState(0);
   const animationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(() => {
+    window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+    return () => {
+      window.history.scrollRestoration = "auto";
+    };
+  }, []);
+
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -65,12 +73,15 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
     animationTimerRef.current = setTimeout(() => {
       setAnimatingMetric(null);
       animationTimerRef.current = null;
-    }, 450); // slightly longer than the 0.35s keyframe
+    }, 1050); // slightly longer than 2 × 0.5s keyframe iterations
   };
 
-  useEffect(() => () => {
-    if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
+    },
+    []
+  );
 
   // Keep the URL in sync as a non-blocking side effect.
   // Reads window.location.search so it preserves params owned by the parent
@@ -130,20 +141,9 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
         ))}
       </div>
       <div className="layout-two-columns">
-        {/* onClickCapture fires in the capture phase, before the Link's own
-            click handler calls router.push. At that point window.scrollY is
-            already 0, so Next.js saves 0 as the scroll position for this
-            history entry. Pressing back restores to 0 (top) automatically. */}
-        <div className="layout-main-section min-w-0" onClickCapture={() => window.scrollTo(0, 0)}>
+        <div className="layout-main-section min-w-0">
           {visibleRules.map((rule, i) => (
-            <RuleActivityCard
-              key={rule.guid}
-              rule={rule}
-              rank={i + 1}
-              activeMetric={sortKey}
-              animatingMetric={animatingMetric}
-              animationEpoch={animationEpoch}
-            />
+            <RuleActivityCard key={rule.guid} rule={rule} rank={i + 1} animatingMetric={animatingMetric} animationEpoch={animationEpoch} activeSort={sortKey} />
           ))}
 
           {total === 0 && <p className="text-gray-500">No rules with comment activity found.</p>}

@@ -10,9 +10,9 @@ import { ActivityRule } from "@/models/ActivityRule";
 interface RuleActivityCardProps {
   rule: ActivityRule;
   rank: number;
-  activeMetric?: string;
   animatingMetric?: string | null;
   animationEpoch?: number;
+  activeSort?: string;
 }
 
 function formatDate(dateStr: string | null): string | null {
@@ -30,16 +30,16 @@ function shortenCategory(title: string): string {
 /** Returns { key, className } to spread onto the element that should animate. */
 function metricAnimProps(
   metric: string,
-  activeMetric: string | undefined,
   animatingMetric: string | null | undefined,
   animationEpoch: number,
+  activeSort: string | undefined,
   baseClassName: string,
 ) {
-  const isActive = activeMetric === metric;
   const isAnimating = animatingMetric === metric && animationEpoch > 0;
+  const isBold = activeSort === metric && !isAnimating;
   return {
     key: isAnimating ? animationEpoch : undefined,
-    className: [baseClassName, isActive ? "font-semibold" : "", isAnimating ? "animate-metric-pop" : ""]
+    className: [baseClassName, isAnimating ? "animate-metric-pop" : "", isBold ? "font-bold" : ""]
       .filter(Boolean)
       .join(" "),
   };
@@ -48,9 +48,9 @@ function metricAnimProps(
 export default function RuleActivityCard({
   rule,
   rank,
-  activeMetric,
   animatingMetric,
   animationEpoch = 0,
+  activeSort,
 }: RuleActivityCardProps) {
   const publishDate = formatDate(rule.created);
 
@@ -99,9 +99,9 @@ export default function RuleActivityCard({
             <a
               {...metricAnimProps(
                 "mostLiked",
-                activeMetric,
                 animatingMetric,
                 animationEpoch,
+                activeSort,
                 "flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer",
               )}
               href={`${rule.discussionUrl}#top`}
@@ -129,9 +129,9 @@ export default function RuleActivityCard({
             <span
               {...metricAnimProps(
                 "mostCommented",
-                activeMetric,
                 animatingMetric,
                 animationEpoch,
+                activeSort,
                 "flex items-center gap-1",
               )}
               title="Comments"
@@ -146,9 +146,9 @@ export default function RuleActivityCard({
             <span
               {...metricAnimProps(
                 "lastCommented",
-                activeMetric,
                 animatingMetric,
                 animationEpoch,
+                activeSort,
                 "flex items-center gap-1 text-gray-400 ml-auto",
               )}
             >

@@ -1,12 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-type HomeView = "categories" | "activity";
+export default function ViewToggle() {
+  const pathname = usePathname();
+  const isCategories = pathname === "/categories";
 
-interface ViewToggleProps {
-  activeView: HomeView;
-}
-
-export default function ViewToggle({ activeView }: ViewToggleProps) {
   const baseClasses = "px-4 py-1 text-sm transition-colors";
   const activeClasses = "bg-ssw-red text-white";
   const inactiveClasses = "bg-white text-gray-700 hover:bg-ssw-red hover:text-white";
@@ -16,14 +16,14 @@ export default function ViewToggle({ activeView }: ViewToggleProps) {
       <Link
         href="/"
         prefetch={true}
-        className={`${baseClasses} border border-r-0 rounded-l-md ${activeView === "activity" ? activeClasses : inactiveClasses}`}
+        className={`${baseClasses} border border-r-0 rounded-l-md ${!isCategories ? activeClasses : inactiveClasses}`}
       >
         Activity View
       </Link>
       <Link
         href="/categories"
         prefetch={true}
-        className={`${baseClasses} border border-l-0 rounded-r-md ${activeView === "categories" ? activeClasses : inactiveClasses}`}
+        className={`${baseClasses} border border-l-0 rounded-r-md ${isCategories ? activeClasses : inactiveClasses}`}
       >
         Category View
       </Link>

@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import RecentCommentsCard from "@/components/RecentCommentsCard";
 import RuleActivityCard from "@/components/RuleActivityCard";
@@ -35,17 +34,13 @@ interface ActivityRulesViewProps {
   rules: ActivityRule[];
   total: number;
   recentComments: RecentComment[];
+  initialSort?: string;
 }
 
-export default function ActivityRulesView({ rules, total, recentComments }: ActivityRulesViewProps) {
-  const searchParams = useSearchParams();
-
-  // Initialise from URL once (covers direct links and back-navigation remounts).
-  // After mount, React state is the source of truth for instant UI updates.
-  const [sortKey, setSortKey] = useState<SortKey>(() => {
-    const raw = searchParams.get("sort");
-    return SORT_OPTIONS.some((o) => o.key === raw) ? (raw as SortKey) : "mostLiked";
-  });
+export default function ActivityRulesView({ rules, total, recentComments, initialSort }: ActivityRulesViewProps) {
+  const [sortKey, setSortKey] = useState<SortKey>(() =>
+    SORT_OPTIONS.some((o) => o.key === initialSort) ? (initialSort as SortKey) : "mostLiked"
+  );
 
   const [animatingMetric, setAnimatingMetric] = useState<SortKey | null>(null);
   const [animationEpoch, setAnimationEpoch] = useState(0);

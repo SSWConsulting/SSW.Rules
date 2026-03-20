@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import AboutSSWCard from "@/components/AboutSSWCard";
 import ActivityRulesView from "@/components/ActivityRulesView";
 import CategoryActionButtons from "@/components/CategoryActionButtons";
@@ -30,18 +29,14 @@ export interface HomeClientPageProps {
   quickLinks: QuickLink[];
   activityRules: ActivityRule[];
   recentComments: RecentComment[];
+  initialView: HomeView;
+  initialSort?: string;
 }
 
 export default function HomeClientPage(props: HomeClientPageProps) {
-  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, activityRules, recentComments } = props;
+  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, activityRules, recentComments, initialView, initialSort } = props;
 
-  const searchParams = useSearchParams();
-
-  // Initialise from URL once (covers direct links and back-navigation remounts).
-  // After mount, React state is the source of truth for instant UI updates.
-  const [view, setView] = useState<HomeView>(() =>
-    searchParams.get("view") === "categories" ? "categories" : "activity"
-  );
+  const [view, setView] = useState<HomeView>(initialView);
 
   const handleViewChange = (newView: HomeView) => setView(newView);
 
@@ -146,7 +141,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
       )}
 
       {view === "activity" && (
-        <ActivityRulesView rules={activityRules} total={activityRules.length} recentComments={recentComments} />
+        <ActivityRulesView rules={activityRules} total={activityRules.length} recentComments={recentComments} initialSort={initialSort} />
       )}
     </>
   );

@@ -32,8 +32,13 @@ async function fetchQuickLinks(): Promise<QuickLink[]> {
   return Array.isArray(res.data.global.quickLinks?.links) ? (res.data.global.quickLinks.links as QuickLink[]) : [];
 }
 
-export default async function Home() {
-  const [topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, activityData] = await Promise.all([
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string; sort?: string }>;
+}) {
+  const [resolvedParams, topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, activityData] = await Promise.all([
+    searchParams,
     fetchTopCategoriesWithSubcategories(),
     fetchLatestRules(),
     fetchRuleCount(),
@@ -54,6 +59,8 @@ export default async function Home() {
           quickLinks={quickLinks}
           activityRules={activityData.activityRules}
           recentComments={activityData.recentComments}
+          initialView={resolvedParams.view === "categories" ? "categories" : "activity"}
+          initialSort={resolvedParams.sort}
         />
       </Suspense>
     </Section>

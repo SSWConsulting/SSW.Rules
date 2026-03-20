@@ -34,13 +34,10 @@ interface ActivityRulesViewProps {
   rules: ActivityRule[];
   total: number;
   recentComments: RecentComment[];
-  initialSort?: string;
 }
 
-export default function ActivityRulesView({ rules, total, recentComments, initialSort }: ActivityRulesViewProps) {
-  const [sortKey, setSortKey] = useState<SortKey>(() =>
-    SORT_OPTIONS.some((o) => o.key === initialSort) ? (initialSort as SortKey) : "mostLiked"
-  );
+export default function ActivityRulesView({ rules, total, recentComments }: ActivityRulesViewProps) {
+  const [sortKey, setSortKey] = useState<SortKey>("mostLiked");
 
   const [animatingMetric, setAnimatingMetric] = useState<SortKey | null>(null);
   const [animationEpoch, setAnimationEpoch] = useState(0);

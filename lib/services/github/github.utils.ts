@@ -209,8 +209,14 @@ export async function getGitHubAppToken(): Promise<string> {
   const privateKey = process.env.GH_APP_PRIVATE_KEY;
   const installationId = process.env.GITHUB_APP_INSTALLATION_ID;
 
-  if (!appId || !privateKey) {
+  if (!appId && !privateKey) {
     throw new Error("GitHub App credentials are not configured. Please set GH_APP_ID and GH_APP_PRIVATE_KEY environment variables.");
+  }
+  if (!appId) {
+    throw new Error("GitHub App credentials are not configured. GH_APP_ID environment variable is missing or empty.");
+  }
+  if (!privateKey) {
+    throw new Error("GitHub App credentials are not configured. GH_APP_PRIVATE_KEY environment variable is missing or empty.");
   }
 
   // Check if the private key appears to be truncated (only first line loaded)

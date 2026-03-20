@@ -9,12 +9,13 @@ import { RecentComment } from "@/models/RecentComment";
 
 const PAGE_SIZE = 5;
 
-type SortKey = "lastCommented" | "mostCommented" | "mostLiked";
+type SortKey = "lastCommented" | "mostCommented" | "mostLiked" | "latestRules";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "mostLiked", label: "Most Liked" },
   { key: "mostCommented", label: "Most Commented" },
   { key: "lastCommented", label: "Last Commented" },
+  { key: "latestRules", label: "Latest Rules" },
 ];
 
 function sortRules(rules: ActivityRule[], sortKey: SortKey): ActivityRule[] {
@@ -26,6 +27,8 @@ function sortRules(rules: ActivityRule[], sortKey: SortKey): ActivityRule[] {
         return (b.commentCount ?? 0) - (a.commentCount ?? 0) || a.title.localeCompare(b.title);
       case "mostLiked":
         return (b.thumbsUp ?? 0) - (a.thumbsUp ?? 0) || a.title.localeCompare(b.title);
+      case "latestRules":
+        return 0; // pre-sorted by TinaCMS (lastUpdated desc)
     }
   });
 }
@@ -34,9 +37,10 @@ interface ActivityRulesViewProps {
   rules: ActivityRule[];
   total: number;
   recentComments: RecentComment[];
+  latestRulesData: ActivityRule[];
 }
 
-export default function ActivityRulesView({ rules, total, recentComments }: ActivityRulesViewProps) {
+export default function ActivityRulesView({ rules, total, recentComments, latestRulesData }: ActivityRulesViewProps) {
   const [sortKey, setSortKey] = useState<SortKey>("mostLiked");
 
   const [animatingMetric, setAnimatingMetric] = useState<SortKey | null>(null);
@@ -59,13 +63,11 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
     setAnimatingMetric(newSort);
     setAnimationEpoch((e) => e + 1);
 
-    // Clear the animation flag after the keyframe finishes so that cards
-    // loaded later by infinite scroll mount without the animation class.
     if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
     animationTimerRef.current = setTimeout(() => {
       setAnimatingMetric(null);
       animationTimerRef.current = null;
-    }, 1050); // slightly longer than 2 × 0.5s keyframe iterations
+    }, 1050);
   };
 
   useEffect(
@@ -75,9 +77,6 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
     []
   );
 
-  // Keep the URL in sync as a non-blocking side effect.
-  // Reads window.location.search so it preserves params owned by the parent
-  // (e.g. ?view=activity) and only modifies the ?sort param.
   useEffect(() => {
     const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
     const params = new URLSearchParams(window.location.search);
@@ -90,9 +89,12 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
     window.history.replaceState(null, "", qs ? `${basePath}/?${qs}` : `${basePath}/`);
   }, [sortKey]);
 
-  const sortedRules = useMemo(() => sortRules(rules, sortKey), [rules, sortKey]);
+  const activeRules = sortKey === "latestRules" ? latestRulesData : rules;
+  const activeTotal = sortKey === "latestRules" ? latestRulesData.length : total;
+
+  const sortedRules = useMemo(() => sortRules(activeRules, sortKey), [activeRules, sortKey]);
   const visibleRules = sortedRules.slice(0, visibleCount);
-  const hasMore = visibleCount < total;
+  const hasMore = visibleCount < activeTotal;
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
@@ -106,7 +108,7 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          setVisibleCount((c) => Math.min(c + PAGE_SIZE, total));
+          setVisibleCount((c) => Math.min(c + PAGE_SIZE, activeTotal));
         }
       },
       { rootMargin: "200px" }
@@ -114,7 +116,7 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
 
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [hasMore, total]);
+  }, [hasMore, activeTotal]);
 
   return (
     <>
@@ -138,7 +140,7 @@ export default function ActivityRulesView({ rules, total, recentComments }: Acti
             <RuleActivityCard key={rule.guid} rule={rule} rank={i + 1} animatingMetric={animatingMetric} animationEpoch={animationEpoch} activeSort={sortKey} />
           ))}
 
-          {total === 0 && <p className="text-gray-500">No rules with comment activity found.</p>}
+          {activeTotal === 0 && <p className="text-gray-500">No rules found.</p>}
 
           {hasMore && <div ref={sentinelRef} className="h-10" />}
         </div>

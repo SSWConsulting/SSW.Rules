@@ -1,12 +1,16 @@
 import { redirect } from "next/navigation";
 import ActivityRulesView from "@/components/ActivityRulesView";
 import { fetchDiscussionData } from "@/lib/services/github/discussions.service";
+import { fetchActivityLatestRules } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 
 export const revalidate = 21600; // 6 hours
 
 export default async function Home() {
-  const activityData = await fetchDiscussionData().catch(() => null);
+  const [activityData, latestRulesData] = await Promise.all([
+    fetchDiscussionData().catch(() => null),
+    fetchActivityLatestRules(200),
+  ]);
 
   if (!activityData) {
     redirect("/categories");
@@ -17,6 +21,7 @@ export default async function Home() {
       rules={activityData.activityRules}
       total={activityData.activityRules.length}
       recentComments={activityData.recentComments}
+      latestRulesData={latestRulesData}
     />
   );
 }

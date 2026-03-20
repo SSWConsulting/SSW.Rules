@@ -1,3 +1,29 @@
+query activityLatestRulesQuery($size: Float) {
+  ruleConnection(last: $size, sort: "lastUpdated") {
+    edges {
+      node {
+        guid
+        title
+        uri
+        body
+        created
+        lastUpdatedBy
+        authors {
+          title
+        }
+        categories {
+          category {
+            ... on CategoryCategory {
+              title
+              uri
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 query latestRulesQuery($size: Float, $sortOption: String, $includeBody: Boolean = false) {
   ruleConnection(last: $size, sort: $sortOption) {
     edges {

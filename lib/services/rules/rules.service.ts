@@ -1,5 +1,7 @@
 import { unstable_cache } from "next/cache";
+import { extractBodyPreview } from "@/lib/bodyUtils";
 import { toSlug } from "@/lib/utils";
+import { ActivityRule } from "@/models/ActivityRule";
 import { PaginationResult, PaginationVars } from "@/models/Pagination";
 import { QueryResult } from "@/models/QueryResult";
 import { Rule } from "@/models/Rule";
@@ -13,6 +15,41 @@ type RuleQueryVars = PaginationVars & {
   field?: RuleSearchField;
   sort?: string;
 };
+
+async function fetchActivityLatestRulesData(size: number = 200): Promise<ActivityRule[]> {
+  const res = await client.queries.activityLatestRulesQuery({ size });
+
+  const rules = res?.data?.ruleConnection?.edges
+    ?.filter((edge: any) => edge?.node?.guid)
+    .map((edge: any) => edge.node) || [];
+
+  return rules.map((r: any): ActivityRule => ({
+    guid: r.guid,
+    title: r.title,
+    uri: r.uri,
+    lastCommentAt: "",
+    commentCount: 0,
+    authors: r.authors?.map((a: any) => a.title).filter(Boolean) || [],
+    created: r.created || null,
+    descriptionPreview: extractBodyPreview(r.body),
+    categories: (r.categories || [])
+      .map((c: any) => c?.category)
+      .filter((c: any) => c?.title && c?.uri)
+      .map((c: any) => ({ title: c.title, uri: c.uri })),
+    thumbsUp: 0,
+    thumbsDown: 0,
+    discussionUrl: "",
+  }));
+}
+
+export async function fetchActivityLatestRules(size: number = 200): Promise<ActivityRule[]> {
+  const getCached = unstable_cache(
+    fetchActivityLatestRulesData,
+    [`activity-latest-rules-${size}`],
+    { tags: ["activity-latest-rules", "latest-rules"] }
+  );
+  return getCached(size);
+}
 
 // Internal function that performs the actual data fetching
 async function fetchLatestRulesData(size: number = 5, sortOption: "lastUpdated" | "created" = "lastUpdated", includeBody: boolean = false) {

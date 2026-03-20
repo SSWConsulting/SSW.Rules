@@ -92,71 +92,73 @@ export default function RuleActivityCard({
           {/* Short description */}
           {rule.descriptionPreview && <p className="text-sm text-gray-600 m-0 line-clamp-2">{rule.descriptionPreview}</p>}
 
-          {/* Interaction row */}
-          <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
+          {/* Interaction row — only shown for rules with discussion activity */}
+          {rule.discussionUrl && (
+            <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
 
-            {/* Thumbs up: icon + count animate together */}
-            <a
-              {...metricAnimProps(
-                "mostLiked",
-                animatingMetric,
-                animationEpoch,
-                activeSort,
-                "flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer",
-              )}
-              href={`${rule.discussionUrl}#top`}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Like this rule on GitHub"
-            >
-              <FaThumbsUp />
-              <span>{rule.thumbsUp}</span>
-            </a>
+              {/* Thumbs up: icon + count animate together */}
+              <a
+                {...metricAnimProps(
+                  "mostLiked",
+                  animatingMetric,
+                  animationEpoch,
+                  activeSort,
+                  "flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer",
+                )}
+                href={`${rule.discussionUrl}#top`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Like this rule on GitHub"
+              >
+                <FaThumbsUp />
+                <span>{rule.thumbsUp}</span>
+              </a>
 
-            {/* Thumbs down: no metric emphasis */}
-            <a
-              href={`${rule.discussionUrl}#top`}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Dislike this rule on GitHub"
-              className="flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer"
-            >
-              <FaThumbsDown />
-              <span>{rule.thumbsDown}</span>
-            </a>
+              {/* Thumbs down: no metric emphasis */}
+              <a
+                href={`${rule.discussionUrl}#top`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Dislike this rule on GitHub"
+                className="flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer"
+              >
+                <FaThumbsDown />
+                <span>{rule.thumbsDown}</span>
+              </a>
 
-            {/* Comments: icon + count + label animate together */}
-            <span
-              {...metricAnimProps(
-                "mostCommented",
-                animatingMetric,
-                animationEpoch,
-                activeSort,
-                "flex items-center gap-1",
-              )}
-              title="Comments"
-            >
-              <FaComment />
-              <span>
-                {rule.commentCount} {rule.commentCount === 1 ? "comment" : "comments"}
+              {/* Comments: icon + count + label animate together */}
+              <span
+                {...metricAnimProps(
+                  "mostCommented",
+                  animatingMetric,
+                  animationEpoch,
+                  activeSort,
+                  "flex items-center gap-1",
+                )}
+                title="Comments"
+              >
+                <FaComment />
+                <span>
+                  {rule.commentCount} {rule.commentCount === 1 ? "comment" : "comments"}
+                </span>
               </span>
-            </span>
 
-            {/* Last commented: icon + label + timestamp animate together */}
-            <span
-              {...metricAnimProps(
-                "lastCommented",
-                animatingMetric,
-                animationEpoch,
-                activeSort,
-                "flex items-center gap-1 text-gray-400 ml-auto",
-              )}
-            >
-              <RiTimeFill />
-              <span>Last commented {timeAgo(rule.lastCommentAt)}</span>
-            </span>
+              {/* Last commented: icon + label + timestamp animate together */}
+              <span
+                {...metricAnimProps(
+                  "lastCommented",
+                  animatingMetric,
+                  animationEpoch,
+                  activeSort,
+                  "flex items-center gap-1 text-gray-400 ml-auto",
+                )}
+              >
+                <RiTimeFill />
+                <span>Last commented {timeAgo(rule.lastCommentAt)}</span>
+              </span>
 
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </Card>

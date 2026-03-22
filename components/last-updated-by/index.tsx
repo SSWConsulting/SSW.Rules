@@ -83,14 +83,12 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
               Last updated by{" "}
               <span className="font-bold text-black">
                 {shouldShowLink ? (
-                  <a href={`https://github.com/${latestCommit.author?.login}`} target="_blank" rel="noopener noreferrer nofollow">
-                    {displayAuthorName}
-                  </a>
+                  <a href={`${process.env.NEXT_PUBLIC_BASE_PATH}/user?author=${latestCommit.author?.login}`}>{displayAuthorName}</a>
                 ) : (
                   displayAuthorName
                 )}
-              </span>
-              {" "}<Tooltip text={lastUpdateInAbsoluteTime} showDelay={0} hideDelay={0} opaque={true}>
+              </span>{" "}
+              <Tooltip text={lastUpdateInAbsoluteTime} showDelay={0} hideDelay={0} opaque={true}>
                 <span>{` ${lastUpdateInRelativeTime}.`}</span>
               </Tooltip>
             </span>

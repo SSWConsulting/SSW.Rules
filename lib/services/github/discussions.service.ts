@@ -29,7 +29,19 @@ const GET_DISCUSSIONS_QUERY = `
           thumbsUp: reactions(content: THUMBS_UP) {
             totalCount
           }
+          heart: reactions(content: HEART) {
+            totalCount
+          }
+          rocket: reactions(content: ROCKET) {
+            totalCount
+          }
+          hooray: reactions(content: HOORAY) {
+            totalCount
+          }
           thumbsDown: reactions(content: THUMBS_DOWN) {
+            totalCount
+          }
+          confused: reactions(content: CONFUSED) {
             totalCount
           }
           comments(last: 1) {
@@ -62,7 +74,11 @@ interface DiscussionNode {
   url: string;
   updatedAt: string;
   thumbsUp: { totalCount: number };
+  heart: { totalCount: number };
+  rocket: { totalCount: number };
+  hooray: { totalCount: number };
   thumbsDown: { totalCount: number };
+  confused: { totalCount: number };
   comments: {
     totalCount: number;
     nodes: DiscussionCommentNode[];
@@ -237,8 +253,8 @@ export async function fetchDiscussionData(): Promise<DiscussionData> {
       created: rule.created,
       descriptionPreview: extractBodyPreview(rule.body),
       categories: rule.categories,
-      thumbsUp: discussion.thumbsUp.totalCount,
-      thumbsDown: discussion.thumbsDown.totalCount,
+      thumbsUp: discussion.thumbsUp.totalCount + discussion.heart.totalCount + discussion.rocket.totalCount + discussion.hooray.totalCount,
+      thumbsDown: discussion.thumbsDown.totalCount + discussion.confused.totalCount,
       discussionUrl: discussion.url,
     });
 

@@ -1,11 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import AboutSSWCard from "@/components/AboutSSWCard";
+import HelpCard from "@/components/HelpCard";
+import HelpImproveCard from "@/components/HelpImproveCard";
+import QuickLinksCard from "@/components/QuickLinksCard";
 import RecentCommentsCard from "@/components/RecentCommentsCard";
 import RuleActivityCard from "@/components/RuleActivityCard";
 import RadioButton from "@/components/radio-button/radio-button";
+import WhyRulesCard from "@/components/WhyRulesCard";
 import { ActivityRule } from "@/models/ActivityRule";
 import { RecentComment } from "@/models/RecentComment";
+import { QuickLink } from "@/types/quickLink";
+import JoinConversationCard from "./JoinConversationCard";
 
 const PAGE_SIZE = 5;
 
@@ -38,9 +45,10 @@ interface ActivityRulesViewProps {
   total: number;
   recentComments: RecentComment[];
   latestRulesData: ActivityRule[];
+  quickLinks: QuickLink[];
 }
 
-export default function ActivityRulesView({ rules, total, recentComments, latestRulesData }: ActivityRulesViewProps) {
+export default function ActivityRulesView({ rules, total, recentComments, latestRulesData, quickLinks }: ActivityRulesViewProps) {
   const [sortKey, setSortKey] = useState<SortKey>("mostLiked");
 
   const [animatingMetric, setAnimatingMetric] = useState<SortKey | null>(null);
@@ -121,7 +129,6 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
   return (
     <>
       <div className="flex items-center py-4 px-4">
-        <span className="mr-4 hidden sm:block">Sort by</span>
         {SORT_OPTIONS.map(({ key, label }, i) => (
           <RadioButton
             key={key}
@@ -147,6 +154,12 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
 
         <div className="layout-sidebar min-w-0">
           <RecentCommentsCard comments={recentComments} />
+          <QuickLinksCard links={quickLinks} />
+          <WhyRulesCard />
+          <HelpImproveCard />
+          <HelpCard />
+          <AboutSSWCard />
+          <JoinConversationCard />
         </div>
       </div>
     </>

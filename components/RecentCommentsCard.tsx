@@ -24,7 +24,7 @@ export default function RecentCommentsCard({ comments }: RecentCommentsCardProps
                   {/* Commenter name — not a link */}
                   <p className="text-sm text-gray-500 m-0 mb-0.5">
                     <span className="font-medium text-gray-700">{comment.authorLogin}</span>
-                    {" commented on"}
+                    {" on"}
                   </p>
 
                   {/* Rule title — link only, black by default, red on hover via global a:hover */}
@@ -32,7 +32,7 @@ export default function RecentCommentsCard({ comments }: RecentCommentsCardProps
                     <p className="text-sm font-medium m-0 mb-1">{comment.ruleTitle}</p>
                   </Link>
 
-                  <p className="text-xs text-gray-500 m-0 mb-2 line-clamp-2 break-words">{comment.bodyPreview}</p>
+                  <p className="text-xs text-gray-500 m-0 my-2 line-clamp-2 break-words">{comment.bodyPreview}</p>
 
                   <p className="text-xs text-gray-400 flex items-center gap-1 m-0 mb-3">
                     <RiTimeFill className="flex-shrink-0" />

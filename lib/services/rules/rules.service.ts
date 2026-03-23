@@ -7,6 +7,7 @@ import { QueryResult } from "@/models/QueryResult";
 import { Rule } from "@/models/Rule";
 import client from "@/tina/__generated__/client";
 import { CategoryRuleCountsQueryDocument } from "@/tina/__generated__/types";
+import { QuickLink } from "@/types/quickLink";
 
 type RuleSearchField = "title" | "uri";
 
@@ -199,6 +200,11 @@ export async function fetchAllArchivedRules(firstPerPage = 50): Promise<Rule[]> 
   }
 
   return all;
+}
+
+export async function fetchQuickLinks(): Promise<QuickLink[]> {
+  const res = await client.queries.global({ relativePath: "index.json" });
+  return Array.isArray(res.data.global.quickLinks?.links) ? (res.data.global.quickLinks.links as QuickLink[]) : [];
 }
 
 export async function fetchPaginatedRules(variables: RuleQueryVars = {}): Promise<PaginationResult<Rule>> {

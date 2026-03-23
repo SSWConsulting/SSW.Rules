@@ -1,15 +1,16 @@
 import { redirect } from "next/navigation";
 import ActivityRulesView from "@/components/ActivityRulesView";
 import { fetchDiscussionData } from "@/lib/services/github/discussions.service";
-import { fetchActivityLatestRules } from "@/lib/services/rules";
+import { fetchActivityLatestRules, fetchQuickLinks } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 
 export const revalidate = 21600; // 6 hours
 
 export default async function Home() {
-  const [activityData, latestRulesData] = await Promise.all([
+  const [activityData, latestRulesData, quickLinks] = await Promise.all([
     fetchDiscussionData().catch(() => null),
     fetchActivityLatestRules(200),
+    fetchQuickLinks(),
   ]);
 
   if (!activityData) {
@@ -22,6 +23,7 @@ export default async function Home() {
       total={activityData.activityRules.length}
       recentComments={activityData.recentComments}
       latestRulesData={latestRulesData}
+      quickLinks={quickLinks}
     />
   );
 }

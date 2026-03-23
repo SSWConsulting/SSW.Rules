@@ -8,10 +8,9 @@ import LatestRulesCard from "@/components/LatestRulesCard";
 import QuickLinksCard from "@/components/QuickLinksCard";
 import { Card } from "@/components/ui/card";
 import WhyRulesCard from "@/components/WhyRulesCard";
-import { fetchCategoryRuleCounts, fetchLatestRules } from "@/lib/services/rules";
+import { fetchCategoryRuleCounts, fetchLatestRules, fetchQuickLinks } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
-import { QuickLink } from "@/types/quickLink";
 
 export const revalidate = 21600; // 6 hours
 
@@ -25,11 +24,6 @@ async function fetchTopCategoriesWithSubcategories() {
   const topCategories = result.data.category.index?.map((item: any) => item?.top_category).filter(Boolean) || [];
 
   return topCategories;
-}
-
-async function fetchQuickLinks(): Promise<QuickLink[]> {
-  const res = await client.queries.global({ relativePath: "index.json" });
-  return Array.isArray(res.data.global.quickLinks?.links) ? (res.data.global.quickLinks.links as QuickLink[]) : [];
 }
 
 export default async function CategoriesPage() {

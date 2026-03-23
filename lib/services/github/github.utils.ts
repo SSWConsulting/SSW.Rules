@@ -123,8 +123,8 @@ function generateJWT(appId: string, privateKey: string): string {
   const now = Math.floor(Date.now() / 1000);
   const payload = {
     iat: now - 60, // Issued at time (60 seconds in the past to allow for clock skew)
-    exp: now + 600, // Expires in 10 minutes
-    iss: appId, // Issuer (GitHub App ID)
+    exp: now + 540, // Expires in 9 minutes (buffer for clock skew; GitHub max is 10 minutes)
+    iss: parseInt(appId, 10), // Issuer (GitHub App ID) - must be a number per GitHub API requirements
   };
 
   const header = {

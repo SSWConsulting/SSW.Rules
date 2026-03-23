@@ -15,6 +15,7 @@ import { QuickLink } from "@/types/quickLink";
 import JoinConversationCard from "./JoinConversationCard";
 
 const PAGE_SIZE = 5;
+const MAX_ITEMS = 50;
 
 type SortKey = "lastCommented" | "mostCommented" | "mostLiked" | "latestRules";
 
@@ -98,7 +99,7 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
   }, [sortKey]);
 
   const activeRules = sortKey === "latestRules" ? latestRulesData : rules;
-  const activeTotal = sortKey === "latestRules" ? latestRulesData.length : total;
+  const activeTotal = Math.min(sortKey === "latestRules" ? latestRulesData.length : total, MAX_ITEMS);
 
   const sortedRules = useMemo(() => sortRules(activeRules, sortKey), [activeRules, sortKey]);
   const visibleRules = sortedRules.slice(0, visibleCount);
@@ -150,6 +151,15 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
           {activeTotal === 0 && <p className="text-gray-500">No rules found.</p>}
 
           {hasMore && <div ref={sentinelRef} className="h-10" />}
+
+          {!hasMore && activeTotal > 0 && (
+            <div className="mt-4 mb-2 p-4 text-center text-gray-600">
+              Want more?{" "}
+              <a href={`${process.env.NEXT_PUBLIC_BASE_PATH}/categories`} className="text-ssw-red underline font-medium">
+                Explore our categories
+              </a>
+            </div>
+          )}
         </div>
 
         <div className="layout-sidebar min-w-0">

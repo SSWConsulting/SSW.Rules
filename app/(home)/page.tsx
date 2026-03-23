@@ -9,7 +9,7 @@ export const revalidate = 21600; // 6 hours
 export default async function Home() {
   const [activityData, latestRulesData, quickLinks] = await Promise.all([
     fetchDiscussionData().catch(() => null),
-    fetchActivityLatestRules(200),
+    fetchActivityLatestRules(50),
     fetchQuickLinks(),
   ]);
 

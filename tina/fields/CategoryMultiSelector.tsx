@@ -3,7 +3,8 @@
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronDown, BiRefresh, BiSearch, BiX } from "react-icons/bi";
-import { wrapFieldsWithMeta } from "tinacms";
+import { wrapFieldsWithMeta, useBranchData } from "tinacms";
+import { getBearerAuthHeader } from "@/utils/tina/get-bearer-auth-header";
 
 interface CategoryItem {
   title: string;
@@ -21,6 +22,18 @@ const CategoryMultiSelectorInner: React.FC<any> = (props) => {
   const { field, input, form, tinaForm } = props;
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Track the previous TinaCMS branch to detect editorial workflow completion
+  const prevTinaBranchRef = useRef<string | null | undefined>(undefined);
+  const isFirstBranchRenderRef = useRef(true);
+
+  // Store latest form values for use in the branch change effect
+  // (updated synchronously during render so it is always current)
+  const pendingCategoryUpdateRef = useRef<{
+    categories: any[];
+    ruleUri: string | undefined;
+    formType: "create" | "update";
+  } | null>(null);
+
   const [filter, setFilter] = useState("");
   const [allCategories, setAllCategories] = useState<CategoryItem[]>([]);
   const [filteredCategories, setFilteredCategories] = useState<CategoryItem[]>([]);
@@ -28,6 +41,16 @@ const CategoryMultiSelectorInner: React.FC<any> = (props) => {
 
   const [currentBranch, setCurrentBranch] = useState<string | null>(null);
   const [revalidating, setRevalidating] = useState(false);
+
+  // Detect editorial workflow branch creation so we can update category indexes
+  const { currentBranch: tinaBranchData } = useBranchData();
+
+  // Keep pendingCategoryUpdateRef up to date with the latest form values on every render
+  pendingCategoryUpdateRef.current = {
+    categories: Array.isArray(input.value) ? input.value : [],
+    ruleUri: form.values?.uri as string | undefined,
+    formType: tinaForm?.crudType === "create" ? "create" : "update",
+  };
   const [revalidateStatus, setRevalidateStatus] = useState<string | null>(null);
   const [refetching, setRefetching] = useState(false);
 
@@ -105,6 +128,77 @@ const CategoryMultiSelectorInner: React.FC<any> = (props) => {
     const q = filter.trim().toLowerCase();
     setFilteredCategories(q ? allCategories.filter((c) => (c.title || "").toLowerCase().includes(q)) : allCategories);
   }, [filter, allCategories]);
+
+  // ── Editorial workflow: trigger category update when branch is created ───────
+  // When using TinaCMS editorial workflow, the beforeSubmit hook is never called.
+  // Instead, executeEditorialWorkflow() creates the branch and saves content directly.
+  // After it completes, setCurrentBranch(result.branchName) fires, which updates
+  // tinaBranchData here. We detect this and call /api/update-category ourselves.
+  useEffect(() => {
+    // First render: just initialise the ref, do not trigger any update
+    if (isFirstBranchRenderRef.current) {
+      isFirstBranchRenderRef.current = false;
+      prevTinaBranchRef.current = tinaBranchData;
+      return;
+    }
+
+    const prevBranch = prevTinaBranchRef.current;
+    prevTinaBranchRef.current = tinaBranchData;
+
+    const newBranch = tinaBranchData;
+
+    // Only act when:
+    //  - we had a known previous branch
+    //  - the branch actually changed
+    //  - the new branch follows the TinaCMS editorial workflow prefix ("tina/")
+    const isEditorialWorkflowBranch =
+      typeof newBranch === "string" && decodeURIComponent(newBranch).startsWith("tina/");
+
+    if (!prevBranch || !newBranch || prevBranch === newBranch || !isEditorialWorkflowBranch) {
+      return;
+    }
+
+    const pending = pendingCategoryUpdateRef.current;
+    if (!pending?.ruleUri) return;
+
+    const { categories, ruleUri, formType } = pending;
+
+    // For create forms, skip if there are no categories to add
+    if (formType === "create" && categories.length === 0) return;
+
+    // useBranchData returns the raw (unencoded) branch name; the API expects it encoded
+    const encodedBranch = encodeURIComponent(newBranch);
+
+    (async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/update-category`, {
+          method: "POST",
+          headers: {
+            ...getBearerAuthHeader(),
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            categories,
+            ruleUri,
+            formType,
+            branch: encodedBranch,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+          console.error("[CategoryMultiSelector] Failed to update category indexes after editorial workflow:", errorData);
+        } else {
+          const data = await response.json().catch(() => null);
+          const added = data?.AddedCategories?.length ?? 0;
+          const deleted = data?.DeletedCategories?.length ?? 0;
+          console.log(`[CategoryMultiSelector] Category indexes updated after editorial workflow — added: ${added}, deleted: ${deleted}`);
+        }
+      } catch (error) {
+        console.error("[CategoryMultiSelector] Error updating category indexes after editorial workflow:", error);
+      }
+    })();
+  }, [tinaBranchData]);
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
   const refetchCategories = async () => {

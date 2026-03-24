@@ -83,6 +83,7 @@ export type CategoryRuleIndexItem = {
     categories: Array<string | { category?: string }>;
     ruleUri: string;
     formType?: "create" | "update";
+    branch?: string;
   };
   
   export type UpdateCategoryResponse = {

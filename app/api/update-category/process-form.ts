@@ -33,7 +33,7 @@ async function processSingleCategory(
     // This causes errors when the category index contains references to rules that don't exist yet.
     if (!skipExistenceCheck) {
       try {
-        const categoryQueryResult = await client.queries.categoryWithRulesQuery({ relativePath }, branch ? await getFetchOptions() : undefined);
+        const categoryQueryResult = await client.queries.categoryWithRulesQuery({ relativePath }, branch ? await getFetchOptions(branch) : undefined);
         const ruleAlreadyExists = ruleExistsByUriInCategory(categoryQueryResult, ruleUri);
 
         // Early return if no change is needed

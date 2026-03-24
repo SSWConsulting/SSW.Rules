@@ -56,7 +56,16 @@ const CategoryMultiSelectorInner: React.FC<any> = (props) => {
   const selectedEntries: CategoryEntry[] = useMemo(() => {
     const val = input.value;
     if (!val || !Array.isArray(val)) return [];
-    return val as CategoryEntry[];
+    const seen = new Set<string>();
+    const normalized: CategoryEntry[] = [];
+    for (const entry of val as any[]) {
+      const category = (entry as any)?.category;
+      if (typeof category !== "string" || category.length === 0) continue;
+      if (seen.has(category)) continue;
+      seen.add(category);
+      normalized.push({ category });
+    }
+    return normalized;
   }, [input.value]);
 
   const selectedPaths = useMemo(() => new Set(selectedEntries.map((e) => e.category)), [selectedEntries]);
@@ -197,7 +206,7 @@ const CategoryMultiSelectorInner: React.FC<any> = (props) => {
 
       {/* Popover trigger + panel */}
       <div className="relative z-[1000]">
-        <input type="hidden" id={input.name} name={input.name} />
+        <input type="hidden" id={input.name}  {...input} />
         <Popover>
           {({ open }) => (
             <>

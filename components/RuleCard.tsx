@@ -11,6 +11,7 @@ interface RuleCardProps {
   index?: number;
   authorUrl?: string | null;
   skeletonMeta?: boolean;
+  snippet?: string | null;
 }
 
 function isHttpUrl(value?: string | null) {
@@ -18,7 +19,7 @@ function isHttpUrl(value?: string | null) {
   return /^https?:\/\//i.test(value.trim());
 }
 
-export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, index, authorUrl, skeletonMeta }: RuleCardProps) {
+export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, index, authorUrl, skeletonMeta, snippet }: RuleCardProps) {
   const showLink = !skeletonMeta && isHttpUrl(authorUrl) && (lastUpdatedBy || "Unknown") !== "Unknown";
 
   return (
@@ -37,24 +38,33 @@ export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, inde
               <div className="h-3 w-16 rounded bg-gray-200" />
             </div>
           ) : (
-            <h4 className="flex m-0 content-center text-lg text-gray-400">
-              <span className="font-medium">
-                {showLink ? (
-                  <a href={authorUrl!} target="_blank" rel="noopener noreferrer nofollow" className="underline">
-                    {lastUpdatedBy || "Unknown"}
-                  </a>
-                ) : (
-                  <span>{lastUpdatedBy || "Unknown"}</span>
-                )}
-              </span>
+            <>
+              <h4 className="flex m-0 content-center text-lg text-gray-400">
+                <span className="font-medium">
+                  {showLink ? (
+                    <a href={authorUrl!} target="_blank" rel="noopener noreferrer nofollow" className="underline">
+                      {lastUpdatedBy || "Unknown"}
+                    </a>
+                  ) : (
+                    <span>{lastUpdatedBy || "Unknown"}</span>
+                  )}
+                </span>
 
-              {lastUpdated && (
-                <div className="flex items-center ml-4 text-xs text-gray-400">
-                  <RiTimeFill className="inline mr-1" />
-                  <span>{timeAgo(lastUpdated)}</span>
-                </div>
+                {lastUpdated && (
+                  <div className="flex items-center ml-4 text-xs text-gray-400">
+                    <RiTimeFill className="inline mr-1" />
+                    <span>{timeAgo(lastUpdated)}</span>
+                  </div>
+                )}
+              </h4>
+
+              {snippet && (
+                <p
+                  className="m-0 mt-1 text-sm text-gray-500 line-clamp-2 [&_em]:font-semibold [&_em]:not-italic [&_em]:text-gray-700"
+                  dangerouslySetInnerHTML={{ __html: snippet }}
+                />
               )}
-            </h4>
+            </>
           )}
         </div>
       </div>

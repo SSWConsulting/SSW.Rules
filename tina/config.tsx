@@ -41,7 +41,7 @@ export const config = defineConfig({
       stopwordLanguages: ["eng"],
     },
     indexBatchSize: 100,
-    maxSearchIndexFieldLength: 100,
+    maxSearchIndexFieldLength: 500,
   },
   repoProvider: {
     defaultBranchName: branch,

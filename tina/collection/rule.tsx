@@ -190,7 +190,7 @@ const Rule: Collection = {
       label: "SEO Description",
       description:
         "Page summary used for SEO. Can be generated with AI. See https://www.ssw.com.au/rules/html-meta-tags/#rectifying-the-missing-meta-tags-issue",
-      searchable: false,
+      searchable: true,
       ui: {
         component: ConditionalHiddenField,
         ...({ textarea: true, rows: 3 } as any),
@@ -201,7 +201,7 @@ const Rule: Collection = {
       name: "body",
       label: "Body",
       isBody: true,
-      searchable: false,
+      searchable: true,
       templates: embedTemplates,
       toolbarOverride: toolbarFields,
       ui: {

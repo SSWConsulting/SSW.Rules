@@ -57,7 +57,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
   }, [owner, repo, path]);
 
   if (loading) {
-    return <div className={`text-slate-500 text-sm mb-2 ${className}`}>Loading last updated info...</div>;
+    return <div className={`text-ssw-gray text-sm mb-2 ${className}`}>Loading last updated info...</div>;
   }
 
   // If we have data with historyUrl, show it even if there's an error
@@ -77,7 +77,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
       const tooltipContent = createdTime ? `Created ${createdTime}\nLast updated ${lastUpdateInAbsoluteTime}` : `Last updated ${lastUpdateInAbsoluteTime}`;
 
       return (
-        <div className={`text-slate-500 text-sm ${className}`}>
+        <div className={`text-ssw-gray text-sm ${className}`}>
           <div className="flex md:flex-row flex-col md:items-center gap-2">
             <span>
               Last updated by{" "}
@@ -89,8 +89,8 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
                 ) : (
                   displayAuthorName
                 )}
-              </span>
-              {" "}<Tooltip text={lastUpdateInAbsoluteTime} showDelay={0} hideDelay={0} opaque={true}>
+              </span>{" "}
+              <Tooltip text={lastUpdateInAbsoluteTime} showDelay={0} hideDelay={0} opaque={true}>
                 <span>{` ${lastUpdateInRelativeTime}.`}</span>
               </Tooltip>
             </span>
@@ -113,7 +113,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
 
     // If we only have historyUrl but no commit data (error case), just show the history link
     return (
-      <div className={`text-slate-500 text-sm ${className}`}>
+      <div className={`text-ssw-gray text-sm ${className}`}>
         <div className="flex md:flex-row flex-col md:items-center gap-2">
           <div className="relative group text-black">
             <a

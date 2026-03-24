@@ -7,6 +7,7 @@ query activityLatestRulesQuery($size: Float) {
         uri
         body
         created
+        lastUpdated
         lastUpdatedBy
         authors {
           title
@@ -135,6 +136,7 @@ query rulesByGuidQuery($guids: [String!]!) {
         uri
         body
         created
+        lastUpdated
         authors {
           title
         }

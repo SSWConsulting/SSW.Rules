@@ -19,7 +19,7 @@ function formatDate(dateStr: string | null): string | null {
   if (!dateStr) return null;
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return null;
-  return d.toLocaleDateString("en-AU", { year: "numeric", month: "short", day: "numeric" });
+  return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
 function shortenCategory(title: string): string {
@@ -36,7 +36,7 @@ function metricAnimProps(
   baseClassName: string
 ) {
   const isAnimating = animatingMetric === metric && animationEpoch > 0;
-  const isBold = activeSort === metric && !isAnimating;
+  const isBold = activeSort === metric;
   return {
     key: isAnimating ? animationEpoch : undefined,
     className: [baseClassName, isAnimating ? "animate-metric-pop" : "", isBold ? "font-bold" : ""].filter(Boolean).join(" "),
@@ -44,13 +44,13 @@ function metricAnimProps(
 }
 
 export default function RuleActivityCard({ rule, rank, animatingMetric, animationEpoch = 0, activeSort }: RuleActivityCardProps) {
-  const publishDate = formatDate(rule.created);
+  const publishDate = formatDate(rule.created ?? rule.lastUpdated);
 
   const categoryLabels = rule.categories.length > 0 ? rule.categories.map((cat) => shortenCategory(cat.title)).join(", ") : null;
 
   return (
     <Card className="mb-4 p-4">
-      <div className="flex gap-3 min-w-0">
+      <div className="flex gap-1 min-w-0">
         {/* Rank number — matches rule-list-item-header style */}
         <span className="text-sm text-gray-500 mr-2 w-6 shrink-0 mt-1">#{rank}</span>
 
@@ -66,12 +66,12 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
           {/* Author + publish date + category */}
           {(rule.authors.length > 0 || publishDate || categoryLabels) && (
             <p className="text-xs text-gray-400 m-0">
+              {publishDate && <span>Published on {publishDate}</span>}
+              {publishDate && rule.authors.length > 0 && <span> by </span>}
               {rule.authors.length > 0 && <span className="font-medium text-gray-500">{rule.authors.join(", ")}</span>}
-              {rule.authors.length > 0 && publishDate && <span className="mx-1">·</span>}
-              {publishDate && <span>Published {publishDate}</span>}
               {categoryLabels && (
                 <>
-                  <span className="mx-1">·</span>
+                  <span> under </span>
                   <span className="font-medium text-gray-500">{categoryLabels}</span>
                 </>
               )}

@@ -23,7 +23,7 @@ export default function RecentCommentsCard({ comments }: RecentCommentsCardProps
                 <div className="min-w-0 flex-1">
                   {/* Commenter name — not a link */}
                   <p className="text-sm text-gray-500 m-0 mb-0.5">
-                    <span className="font-medium text-gray-700">{comment.authorLogin}</span>
+                    <span className="font-medium text-gray-500">{comment.authorLogin}</span>
                     {" on"}
                   </p>
 

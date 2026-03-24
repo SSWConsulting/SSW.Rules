@@ -152,11 +152,11 @@ async function fetchDiscussions(token: string, owner: string, repoName: string):
 async function fetchRulesByGuids(
   guids: string[]
 ): Promise<
-  Map<string, { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> }>
+  Map<string, { title: string; uri: string; authors: string[]; created: string | null; lastUpdated: string | null; body: any; categories: Array<{ title: string; uri: string }> }>
 > {
   const map = new Map<
     string,
-    { title: string; uri: string; authors: string[]; created: string | null; body: any; categories: Array<{ title: string; uri: string }> }
+    { title: string; uri: string; authors: string[]; created: string | null; lastUpdated: string | null; body: any; categories: Array<{ title: string; uri: string }> }
   >();
   if (guids.length === 0) return map;
 
@@ -184,6 +184,7 @@ async function fetchRulesByGuids(
         uri: node.uri,
         authors,
         created: node.created ?? null,
+        lastUpdated: node.lastUpdated ?? null,
         body: node.body ?? null,
         categories,
       });
@@ -251,6 +252,7 @@ export async function fetchDiscussionData(): Promise<DiscussionData> {
       commentCount: discussion.comments.totalCount,
       authors: rule.authors,
       created: rule.created,
+      lastUpdated: rule.lastUpdated,
       descriptionPreview: extractBodyPreview(rule.body),
       categories: rule.categories,
       thumbsUp: discussion.thumbsUp.totalCount + discussion.heart.totalCount + discussion.rocket.totalCount + discussion.hooray.totalCount,

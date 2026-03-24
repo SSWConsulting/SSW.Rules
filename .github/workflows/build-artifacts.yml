@@ -636,6 +636,7 @@ jobs:
           NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
         run: pnpm tinacms search-index
 
+          
       - name: Install Algolia Python dependencies
         run: pip install pyyaml "algoliasearch>=3,<4"
 
@@ -646,3 +647,13 @@ jobs:
           NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
           NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ inputs.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
         run: python algolia_sync.py
+        
+      - name: Patch rule body content in Algolia index
+        env:
+          NEXT_PUBLIC_ALGOLIA_APP_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
+          NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
+          NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+        run: |
+          cd content/scripts/tina-migration/algolia-indexer
+          npm install
+          node update_algolia_index.js

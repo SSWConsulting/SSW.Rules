@@ -160,6 +160,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
                     lastUpdated={result.lastUpdated}
                     index={index}
                     authorUrl={getAuthorUrl(result)}
+                    snippet={result._snippetResult?.seoDescription?.value || result._snippetResult?.body?.value}
                   />
                 ))}
               </div>

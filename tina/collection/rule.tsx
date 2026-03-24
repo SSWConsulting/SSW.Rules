@@ -3,7 +3,7 @@ import { Collection, useCMS, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
-import { CategorySelectorInput } from "../fields/CategorySelector";
+import { CategoryMultiSelectorInput } from "../fields/CategoryMultiSelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
@@ -79,8 +79,7 @@ const Rule: Collection = {
       list: true,
       searchable: false,
       ui: {
-        itemProps: (item) => ({ label: item?.category ? `📂 ${item?.category?.split("/").at(-1)?.replace(".mdx", "")}` : "Select a Category" }),
-        component: ConditionalHiddenField,
+        component: CategoryMultiSelectorInput,
       },
       fields: [
         {
@@ -89,9 +88,6 @@ const Rule: Collection = {
           label: "Related Category",
           description: "The related category of the rule",
           collections: ["category"],
-          ui: {
-            component: wrapFieldsWithMeta((props) => <CategorySelectorInput {...props} />),
-          },
         },
       ],
     },

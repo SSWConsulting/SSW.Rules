@@ -66,7 +66,7 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
           {/* Author + publish date + category */}
           {(rule.authors.length > 0 || publishDate || categoryLabels) && (
             <p className="text-xs text-gray-400 m-0">
-              {publishDate && <span>Published on {publishDate}</span>}
+              {publishDate && <span>Published on <span className="font-medium text-gray-500">{publishDate}</span></span>}
               {publishDate && rule.authors.length > 0 && <span> by </span>}
               {rule.authors.length > 0 && <span className="font-medium text-gray-500">{rule.authors.join(", ")}</span>}
               {categoryLabels && (

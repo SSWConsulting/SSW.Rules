@@ -9,7 +9,7 @@ export default function ViewToggle() {
 
   const baseClasses = "px-4 py-1 text-sm transition-colors";
   const activeClasses = "bg-ssw-red text-white";
-  const inactiveClasses = "bg-white text-gray-700 hover:bg-ssw-red hover:text-white";
+  const inactiveClasses = "bg-white text-gray-700 hover:bg-gray-100 hover:text-gray-900";
 
   return (
     <div className="flex items-center">

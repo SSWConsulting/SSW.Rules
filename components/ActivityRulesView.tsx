@@ -129,7 +129,7 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
 
   return (
     <>
-      <div className="flex items-center py-4 px-4">
+      <div className="flex items-center pb-4 md:pt-4 px-4">
         {SORT_OPTIONS.map(({ key, label }, i) => (
           <RadioButton
             key={key}

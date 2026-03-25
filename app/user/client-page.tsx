@@ -361,11 +361,11 @@ export default function UserRulesClientPage({ ruleCount }) {
   };
 
   // Not logged in - show login prompt
-  if (!authLoading && !isAuthenticated) {
+  if (!authLoading && !isAuthenticated && !queryStringRulesAuthor) {
     return (
       <>
         <Breadcrumbs breadcrumbText="User Rules" />
-        <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center justify-center min-h-100">
           <div className="text-center">
             <p className="text-xl text-gray-600 mb-4">Sign in to view user profiles</p>
             <a
@@ -386,7 +386,7 @@ export default function UserRulesClientPage({ ruleCount }) {
     return (
       <>
         <Breadcrumbs breadcrumbText="User Rules" />
-        <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center justify-center min-h-100">
           <Spinner size="lg" />
         </div>
       </>

@@ -32,14 +32,26 @@ async function fetchQuickLinks(): Promise<QuickLink[]> {
 }
 
 async function fetchHomepageData() {
-  const res = await client.queries.homepage({
-    relativePath: "index.json",
-  });
-  return {
-    data: res.data,
-    query: res.query,
-    variables: res.variables,
-  };
+  try {
+    const res = await client.queries.homepage({
+      relativePath: "index.json",
+    });
+    return {
+      data: res.data,
+      query: res.query,
+      variables: res.variables,
+    };
+  } catch (error) {
+    // If the homepage document is missing or the Tina query fails, log and return a safe fallback
+    console.error("Failed to fetch homepage data from Tina CMS:", error);
+    return {
+      data: null,
+      query: null,
+      variables: {
+        relativePath: "index.json",
+      },
+    };
+  }
 }
 
 export default async function Home() {

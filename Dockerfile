@@ -57,7 +57,6 @@
     ARG NEXT_PUBLIC_GTM_CONTAINER_ID
     ARG NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING
     ARG GH_APP_ID
-    ARG GH_APP_PRIVATE_KEY
     ARG GITHUB_APP_INSTALLATION_ID
 
     # Build info environment variables (kept as before)
@@ -86,12 +85,14 @@
         NEXT_PUBLIC_GTM_CONTAINER_ID=$NEXT_PUBLIC_GTM_CONTAINER_ID \
         NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=$NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING \
         GH_APP_ID=$GH_APP_ID \
-        GH_APP_PRIVATE_KEY=$GH_APP_PRIVATE_KEY \
         GITHUB_APP_INSTALLATION_ID=$GITHUB_APP_INSTALLATION_ID \
         NEXT_TELEMETRY_DISABLED=1
     
     # Build the Next.js application
-    RUN if [ -f yarn.lock ]; then yarn build; else npm run build; fi
+    # GH_APP_PRIVATE_KEY is injected via BuildKit secret so it never touches a layer
+    RUN --mount=type=secret,id=GH_APP_PRIVATE_KEY \
+        export GH_APP_PRIVATE_KEY="$(cat /run/secrets/GH_APP_PRIVATE_KEY)" && \
+        if [ -f yarn.lock ]; then yarn build; else npm run build; fi
     
     # -----------------------------------------
     # Reduce Next.js output size

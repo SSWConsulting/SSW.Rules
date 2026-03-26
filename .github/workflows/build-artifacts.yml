@@ -411,12 +411,6 @@ jobs:
           AVAILABLE=$(df -h / | awk 'NR==2 {print $4}' || echo "unknown")
           echo "Available disk space: $AVAILABLE"
 
-      - name: Encode GH_APP_PRIVATE_KEY for Docker build
-        env:
-          GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
-        run: |
-          echo "GH_APP_PK_B64=$(echo "$GH_APP_PRIVATE_KEY" | base64 -w 0)" >> $GITHUB_ENV
-
       - name: Record build start time
         run: |
           echo "BUILD_START_TIME=$(date +%s)" >> $GITHUB_ENV
@@ -457,8 +451,9 @@ jobs:
             NEXT_PUBLIC_GTM_CONTAINER_ID=${{ secrets.NEXT_PUBLIC_GTM_CONTAINER_ID }}
             NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
             GH_APP_ID=${{ vars.GH_APP_ID }}
-            GH_APP_PRIVATE_KEY=${{ env.GH_APP_PK_B64 }}
             GITHUB_APP_INSTALLATION_ID=${{ secrets.GITHUB_APP_INSTALLATION_ID }}
+          secrets: |
+            GH_APP_PRIVATE_KEY=${{ secrets.GH_APP_PRIVATE_KEY }}
           # CACHE COMPLETELY DISABLED
           no-cache: true
           # Clean up intermediate containers after build

@@ -12,4 +12,4 @@ export const toolbarFields = [
   "codeBlock",
   "mermaid",
   "table",
-];
+] as const;

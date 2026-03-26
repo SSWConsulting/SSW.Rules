@@ -1,8 +1,6 @@
 "use client";
 
-import { RefObject, useRef } from "react";
 import { useTina } from "tinacms/dist/react";
-import { useMarkHighlight } from "@/lib/useMarkHighlight";
 import ServerRulePage, { ServerRulePageProps } from "./ServerRulePage";
 
 export type TinaRuleProps = {
@@ -17,11 +15,8 @@ export function TinaRuleWrapper({ serverRulePageProps, tinaQueryProps }: TinaRul
     data: tinaQueryProps.data,
   });
 
-  const contentRef = useRef<HTMLDivElement>(null);
-  useMarkHighlight(contentRef as RefObject<HTMLElement>);
-
   return (
-    <div ref={contentRef}>
+    <div>
       <ServerRulePage tinaProps={{ data }} serverRulePageProps={serverRulePageProps} />
     </div>
   );

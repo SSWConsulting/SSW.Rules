@@ -9,7 +9,6 @@ type ToolbarOverrideType =
   | "codeBlock"
   | "bold"
   | "italic"
-  | "highlight"
   | "raw"
   | "embed"
   | "mermaid"
@@ -24,7 +23,6 @@ export const toolbarFields: ToolbarOverrideType[] = [
   "ol",
   "bold",
   "italic",
-  "highlight",
   "code",
   "codeBlock",
   "mermaid",

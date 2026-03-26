@@ -1,8 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { tinaField } from "tinacms/dist/react";
 
+interface AboutSSWData {
+  title?: string;
+  body?: string;
+}
+
 interface AboutSSWCardProps {
-  data?: any;
+  data?: AboutSSWData;
 }
 
 export default function AboutSSWCard({ data }: AboutSSWCardProps) {

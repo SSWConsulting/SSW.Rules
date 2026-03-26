@@ -5,7 +5,7 @@ import { fetchCategoryRuleCounts, fetchLatestRules, fetchRuleCount } from "@/lib
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import { QuickLink } from "@/types/quickLink";
-import HomeClientPage from "./client-page";
+import { TinaHomepageWrapper } from "./TinaHomepageWrapper";
 
 export const revalidate = 300;
 
@@ -31,24 +31,51 @@ async function fetchQuickLinks(): Promise<QuickLink[]> {
   return Array.isArray(res.data.global.quickLinks?.links) ? (res.data.global.quickLinks.links as QuickLink[]) : [];
 }
 
+async function fetchHomepageData() {
+  try {
+    const res = await client.queries.homepage({
+      relativePath: "index.json",
+    });
+    return {
+      data: res.data,
+      query: res.query,
+      variables: res.variables,
+    };
+  } catch (error) {
+    // If the homepage document is missing or the Tina query fails, log and return a safe fallback
+    console.error("Failed to fetch homepage data from Tina CMS:", error);
+    return {
+      data: null,
+      query: null,
+      variables: {
+        relativePath: "index.json",
+      },
+    };
+  }
+}
+
 export default async function Home() {
-  const [topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks] = await Promise.all([
+  const [topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, homepageTinaProps] = await Promise.all([
     fetchTopCategoriesWithSubcategories(),
     fetchLatestRules(),
     fetchRuleCount(),
     fetchCategoryRuleCounts(),
     fetchQuickLinks(),
+    fetchHomepageData(),
   ]);
 
   return (
     <Section>
       <Breadcrumbs isHomePage />
-      <HomeClientPage
-        topCategories={topCategories}
-        latestRules={latestRules}
-        ruleCount={ruleCount}
-        categoryRuleCounts={categoryRuleCounts}
-        quickLinks={quickLinks}
+      <TinaHomepageWrapper
+        tinaQueryProps={homepageTinaProps}
+        serverProps={{
+          topCategories,
+          latestRules,
+          ruleCount,
+          categoryRuleCounts,
+          quickLinks,
+        }}
       />
     </Section>
   );

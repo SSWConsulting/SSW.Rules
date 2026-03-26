@@ -117,18 +117,6 @@
   --gray-900: oklch(0.145 0 0);
 }
 
-/*
- * MDX renders <mark> with inline background-color styles, so attribute
- * substring selectors are used to match the color values. Both hex and
- * rgb() formats are included because either may appear.
- */
-mark:is(
-  [style*="CC4141"],
-  [style*="rgb(204, 65, 65)"]
-) {
-  color: white;
-}
-
 .btn-red {
   @apply bg-ssw-red;
 }

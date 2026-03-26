@@ -1,8 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { tinaField } from "tinacms/dist/react";
-import Image from "next/image";
-
 interface HelpImproveCardProps {
   data?: any;
 }
@@ -33,7 +31,8 @@ export default function HelpImproveCard({ data }: HelpImproveCardProps) {
         <RiDoubleQuotesR className="inline ml-1" />
       </blockquote>
       <div className="flex flex-col gap-4 items-center mt-4">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={personImage}
           alt=""
           className="rounded-full"

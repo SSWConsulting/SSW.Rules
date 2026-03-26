@@ -39,7 +39,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
       <div className="max-sm:h-auto m-4">
         <h1 className="m-0 mb-4 flex items-end max-sm:flex-col max-sm:items-start">
           <span className="text-ssw-red font-bold text-[2rem]">{ruleCount.toLocaleString("en-US")}&nbsp;</span>
-          <span className="text-gray-600 text-lg font-normal" data-tina-field={tinaField(homepage, "tagline")}>{homepage.tagline || "Best Practices for Better Software & Better Teams"}</span>
+          <span className="text-gray-600 text-lg font-normal" {...(homepage ? { "data-tina-field": tinaField(homepage, "tagline") } : {})}>{homepage?.tagline || "Best Practices for Better Software & Better Teams"}</span>
         </h1>
       </div>
       <div className="layout-two-columns">
@@ -79,11 +79,11 @@ export default function HomeClientPage(props: HomeClientPageProps) {
         <div className="layout-sidebar max-sm:mt-0">
           <LatestRulesCard rules={latestRules} />
           <QuickLinksCard links={quickLinks} />
-          <WhyRulesCard data={homepage.whyRules} />
-          <HelpImproveCard data={homepage.helpImprove} />
-          <HelpCard data={homepage.needHelp} />
-          <AboutSSWCard data={homepage.aboutSsw} />
-          <JoinConversationCard data={homepage.joinConversation} />
+          <WhyRulesCard data={homepage?.whyRules} />
+          <HelpImproveCard data={homepage?.helpImprove} />
+          <HelpCard data={homepage?.needHelp} />
+          <AboutSSWCard data={homepage?.aboutSsw} />
+          <JoinConversationCard data={homepage?.joinConversation} />
         </div>
       </div>
 

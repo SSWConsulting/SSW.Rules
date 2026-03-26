@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import ActivityRulesView from "@/components/ActivityRulesView";
-import { getCachedDiscussionData } from "@/lib/services/github/discussions.service";
+import { fetchDiscussionData } from "@/lib/services/github/discussions.service";
 import { fetchActivityLatestRules, fetchQuickLinks } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 
@@ -8,7 +8,7 @@ export const revalidate = 21600; // 6 hours
 
 export default async function Home() {
   const [activityData, latestRulesData, quickLinks] = await Promise.all([
-    getCachedDiscussionData().catch(() => null),
+    fetchDiscussionData().catch(() => null),
     fetchActivityLatestRules(50),
     fetchQuickLinks(),
   ]);

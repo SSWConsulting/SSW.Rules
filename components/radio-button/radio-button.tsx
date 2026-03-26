@@ -33,11 +33,11 @@ const RadioButton: React.FC<RadioButtonProps> = ({ id, value, selectedOption, ha
     }
 
     if (position === "first") {
-      return "border border-r-0 rounded-l-md rounded-r-none";
+      return "border rounded-l-md rounded-r-none";
     } else if (position === "last") {
       return "border border-l-0 rounded-r-md rounded-l-none";
     } else if (position === "middle") {
-      return "border rounded-none";
+      return "border border-l-0 rounded-none";
     }
 
     return "border rounded";
@@ -47,13 +47,13 @@ const RadioButton: React.FC<RadioButtonProps> = ({ id, value, selectedOption, ha
     <button
       type="button"
       id={id}
-      className={`group px-4 py-1 text-sm cursor-pointer hover:text-white transition-colors ${getBorderClasses()} ${
-        isSelected ? "bg-ssw-red" : "bg-white hover:bg-ssw-red"
+      className={`px-1 sm:px-4 py-1 text-sm cursor-pointer transition-colors ${getBorderClasses()} ${
+        isSelected ? "bg-ssw-red text-white" : "bg-white text-gray-700 hover:bg-gray-100 hover:text-gray-900"
       }`}
       onClick={handleButtonClick}
       aria-pressed={isSelected}
     >
-      <span className={`transition-colors ${isSelected ? "text-white" : "text-gray-700 group-hover:text-white"}`}>{labelText}</span>
+      {labelText}
     </button>
   );
 };

@@ -38,6 +38,8 @@ function getAppInsights(): ApplicationInsights | null {
         enableCorsCorrelation: true, // Enable cross-origin correlation
         enableRequestHeaderTracking: true,
         enableResponseHeaderTracking: true,
+        // Exclude domains where injecting correlation headers causes CORS failures
+        correlationHeaderExcludedDomains: ["api.github.com", "*.github.com"],
         extensionConfig: {
           // Fix for https://github.com/microsoft/ApplicationInsights-JS/issues/2341
           ["AppInsightsCfgSyncPlugin"]: {

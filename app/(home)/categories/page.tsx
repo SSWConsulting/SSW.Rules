@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import AboutSSWCard from "@/components/AboutSSWCard";
 import CategoryActionButtons from "@/components/CategoryActionButtons";
@@ -8,38 +6,39 @@ import HelpImproveCard from "@/components/HelpImproveCard";
 import JoinConversationCard from "@/components/JoinConversationCard";
 import LatestRulesCard from "@/components/LatestRulesCard";
 import QuickLinksCard from "@/components/QuickLinksCard";
-import SearchBar from "@/components/SearchBarWrapper";
 import { Card } from "@/components/ui/card";
 import WhyRulesCard from "@/components/WhyRulesCard";
-import { LatestRule } from "@/models/LatestRule";
-import { QuickLink } from "@/types/quickLink";
+import { fetchCategoryRuleCounts, fetchLatestRules, fetchQuickLinks } from "@/lib/services/rules";
+import { siteUrl } from "@/site-config";
+import client from "@/tina/__generated__/client";
 
-export interface HomeClientPageProps {
-  topCategories: any[];
-  latestRules: LatestRule[];
-  ruleCount: number;
-  categoryRuleCounts: Record<string, number>;
-  quickLinks: QuickLink[];
+export const revalidate = 21600; // 6 hours
+
+async function fetchTopCategoriesWithSubcategories() {
+  const result = await client.queries.mainCategoryQuery();
+
+  if (!result?.data?.category || result.data.category.__typename !== "CategoryMain") {
+    return [];
+  }
+
+  const topCategories = result.data.category.index?.map((item: any) => item?.top_category).filter(Boolean) || [];
+
+  return topCategories;
 }
 
-export default function HomeClientPage(props: HomeClientPageProps) {
-  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks } = props;
+export default async function CategoriesPage() {
+  const [topCategories, latestRules, categoryRuleCounts, quickLinks] = await Promise.all([
+    fetchTopCategoriesWithSubcategories(),
+    fetchLatestRules(),
+    fetchCategoryRuleCounts(),
+    fetchQuickLinks(),
+  ]);
 
-  const getTopCategoryTotal = (subCategories: any[]) => {
-    return subCategories.reduce((total, category) => {
-      return total + (categoryRuleCounts[category._sys.filename] || 0);
-    }, 0);
-  };
+  const getTopCategoryTotal = (subCategories: any[]) =>
+    subCategories.reduce((total, category) => total + (categoryRuleCounts[category._sys.filename] || 0), 0);
 
   return (
     <>
-      <SearchBar />
-      <div className="max-sm:h-auto m-4">
-        <h1 className="m-0 mb-4 flex items-end max-sm:flex-col max-sm:items-start">
-          <span className="text-ssw-red font-bold text-[2rem]">{ruleCount.toLocaleString("en-US")}&nbsp;</span>
-          <span className="text-gray-600 text-lg font-normal">Best Practices for Better Software & Better Teams</span>
-        </h1>
-      </div>
       <div className="layout-two-columns">
         <div className="layout-main-section">
           {topCategories
@@ -57,13 +56,12 @@ export default function HomeClientPage(props: HomeClientPageProps) {
                     {getTopCategoryTotal(topCategory.index?.map((item: any) => item.category).filter(Boolean) || [])} Rules
                   </span>
                 </h2>
-
                 <ol className="text-lg mb-0">
                   {topCategory.index
                     ?.filter((item: any) => item.category && categoryRuleCounts[item.category._sys.filename] > 0)
                     ?.map((item: any, subIndex: number) => (
                       <li key={subIndex} className="mb-4 last:mb-2">
-                        <div className=" flex justify-between">
+                        <div className="flex justify-between">
                           <Link href={`/${item.category._sys.filename}`}>{item.category.title}</Link>
                           <span className="text-gray-300">{categoryRuleCounts[item.category._sys.filename] || 0}</span>
                         </div>
@@ -73,7 +71,6 @@ export default function HomeClientPage(props: HomeClientPageProps) {
               </Card>
             ))}
         </div>
-
         <div className="layout-sidebar max-sm:mt-0">
           <LatestRulesCard rules={latestRules} />
           <QuickLinksCard links={quickLinks} />
@@ -84,8 +81,16 @@ export default function HomeClientPage(props: HomeClientPageProps) {
           <JoinConversationCard />
         </div>
       </div>
-
       <CategoryActionButtons />
     </>
   );
+}
+
+export async function generateMetadata() {
+  return {
+    title: "SSW.Rules | Categories",
+    alternates: {
+      canonical: `${siteUrl}/categories`,
+    },
+  };
 }

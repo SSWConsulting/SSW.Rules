@@ -1,19 +1,24 @@
 import { Card } from "@/components/ui/card";
+import { tinaField } from "tinacms/dist/react";
 
-export default function WhyRulesCard() {
+interface WhyRulesCardProps {
+  data?: any;
+}
+
+export default function WhyRulesCard({ data }: WhyRulesCardProps) {
   return (
-    <Card title="Why All These Rules?">
-      <p>
+    <Card title={data?.title || "Why All These Rules?"}>
+      <p data-tina-field={tinaField(data, "linkText")}>
         Read about the{" "}
         <a
           className="underline"
-          href="https://www.codemag.com/article/0605091"
+          href={data?.linkUrl || "https://www.codemag.com/article/0605091"}
           target="_blank"
           rel="noopener noreferrer nofollow"
         >
-          History of SSW Rules
+          {data?.linkText || "History of SSW Rules"}
         </a>
-        , published in CoDe Magazine.
+        {data?.description || ", published in CoDe Magazine."}
       </p>
     </Card>
   );

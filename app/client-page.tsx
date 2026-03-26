@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import WhyRulesCard from "@/components/WhyRulesCard";
 import { LatestRule } from "@/models/LatestRule";
 import { QuickLink } from "@/types/quickLink";
+import { tinaField } from "tinacms/dist/react";
 
 export interface HomeClientPageProps {
   topCategories: any[];
@@ -20,10 +21,11 @@ export interface HomeClientPageProps {
   ruleCount: number;
   categoryRuleCounts: Record<string, number>;
   quickLinks: QuickLink[];
+  homepage: any;
 }
 
 export default function HomeClientPage(props: HomeClientPageProps) {
-  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks } = props;
+  const { topCategories, latestRules, ruleCount, categoryRuleCounts, quickLinks, homepage } = props;
 
   const getTopCategoryTotal = (subCategories: any[]) => {
     return subCategories.reduce((total, category) => {
@@ -37,7 +39,7 @@ export default function HomeClientPage(props: HomeClientPageProps) {
       <div className="max-sm:h-auto m-4">
         <h1 className="m-0 mb-4 flex items-end max-sm:flex-col max-sm:items-start">
           <span className="text-ssw-red font-bold text-[2rem]">{ruleCount.toLocaleString("en-US")}&nbsp;</span>
-          <span className="text-gray-600 text-lg font-normal">Best Practices for Better Software & Better Teams</span>
+          <span className="text-gray-600 text-lg font-normal" data-tina-field={tinaField(homepage, "tagline")}>{homepage.tagline || "Best Practices for Better Software & Better Teams"}</span>
         </h1>
       </div>
       <div className="layout-two-columns">
@@ -77,11 +79,11 @@ export default function HomeClientPage(props: HomeClientPageProps) {
         <div className="layout-sidebar max-sm:mt-0">
           <LatestRulesCard rules={latestRules} />
           <QuickLinksCard links={quickLinks} />
-          <WhyRulesCard />
-          <HelpImproveCard />
-          <HelpCard />
-          <AboutSSWCard />
-          <JoinConversationCard />
+          <WhyRulesCard data={homepage.whyRules} />
+          <HelpImproveCard data={homepage.helpImprove} />
+          <HelpCard data={homepage.needHelp} />
+          <AboutSSWCard data={homepage.aboutSsw} />
+          <JoinConversationCard data={homepage.joinConversation} />
         </div>
       </div>
 

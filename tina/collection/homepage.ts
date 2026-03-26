@@ -3,7 +3,7 @@ import type { Collection } from 'tinacms';
 const Homepage: Collection = {
   label: 'Homepage',
   name: 'homepage',
-  path: 'homepage',
+  path: 'content/homepage',
   format: 'json',
   ui: {
     allowedActions: {

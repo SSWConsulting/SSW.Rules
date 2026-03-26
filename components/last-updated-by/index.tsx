@@ -1,6 +1,7 @@
 "use client";
 
 import { formatDate } from "date-fns";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaHistory } from "react-icons/fa";
 import Tooltip from "../tooltip/tooltip";
@@ -83,7 +84,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
               Last updated by{" "}
               <span className="font-bold text-black">
                 {shouldShowLink ? (
-                  <a href={`${process.env.NEXT_PUBLIC_BASE_PATH}/user?author=${latestCommit.author?.login}`}>{displayAuthorName}</a>
+                  <Link href={`/user?author=${encodeURIComponent(latestCommit.author?.login ?? "")}`}>{displayAuthorName}</Link>
                 ) : (
                   displayAuthorName
                 )}

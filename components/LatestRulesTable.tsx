@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CgSortAz } from "react-icons/cg";
 import { RiTimeFill } from "react-icons/ri";
@@ -16,6 +17,7 @@ interface LatestRulesTableProps {
 }
 
 export default function LatestRulesTable({ rulesByUpdated, rulesByCreated, title }: LatestRulesTableProps) {
+  const router = useRouter();
   const [currentSort, setCurrentSort] = useState<"lastUpdated" | "created">("lastUpdated");
 
   const handleSortChange = (newSort: "lastUpdated" | "created") => {
@@ -64,25 +66,21 @@ export default function LatestRulesTable({ rulesByUpdated, rulesByCreated, title
     };
   }, [currentRules, usernames]);
 
-  const openGithubProfile = async (uri: string) => {
-    if (!uri) return;
-    const username = usernames[uri];
-    if (username) {
-      window.open(`https://github.com/${username}`, "_blank", "noopener,noreferrer");
-      return;
-    }
+  const fetchAndNavigateToUserProfile = async (uri: string) => {
+    if (!uri || loadingMap[uri]) return;
     try {
       setLoadingMap((m) => ({ ...m, [uri]: true }));
-      const params = new URLSearchParams();
-      params.set("ruleUri", uri);
+      const params = new URLSearchParams({ ruleUri: uri });
       const res = await fetch(`/api/github/rules/authors?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch GitHub username");
       const { authors } = await res.json();
-      const lastModified = authors && authors.length ? authors[authors.length - 1] : null;
+      const lastModified = authors?.length ? authors[authors.length - 1] : null;
       setUsernames((m) => ({ ...m, [uri]: lastModified }));
-      if (lastModified) window.open(`https://github.com/${lastModified}`, "_blank", "noopener,noreferrer");
-    } catch (e) {
-      console.error("Failed to fetch GitHub username for latest rules:", e);
+      if (lastModified) {
+        router.push(`/user?author=${encodeURIComponent(lastModified)}`);
+      }
+    } catch (err) {
+      console.error("Failed to fetch GitHub username:", err);
     } finally {
       setLoadingMap((m) => ({ ...m, [uri]: false }));
     }
@@ -113,25 +111,28 @@ export default function LatestRulesTable({ rulesByUpdated, rulesByCreated, title
               </Link>
               <h4 className="flex m-0 content-center text-lg text-gray-400">
                 {rule.lastUpdatedBy ? (
-                  <a
-                    href={usernames[rule.uri] ? `${process.env.NEXT_PUBLIC_BASE_PATH}/user?author=${usernames[rule.uri]}` : "#"}
-                    onClick={(e) => {
-                      // Prevent parent handlers from intercepting the click
-                      e.stopPropagation();
-                      if (usernames[rule.uri]) {
-                        // Navigate to the user profile page
-                        window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH}/user?author=${usernames[rule.uri]}`;
-                        return;
-                      }
-                      // Otherwise prevent default and fetch then open
-                      e.preventDefault();
-                      if (!loadingMap[rule.uri]) openGithubProfile(rule.uri);
-                    }}
-                    className={`font-medium hover:text-ssw-red hover:underline ${loadingMap[rule.uri] ? "opacity-50 cursor-not-allowed" : ""}`}
-                    title={usernames[rule.uri] ? `View ${usernames[rule.uri]}'s profile` : `View ${rule.lastUpdatedBy}'s rules`}
-                  >
-                    {loadingMap[rule.uri] ? "Loading..." : usernames[rule.uri] || rule.lastUpdatedBy}
-                  </a>
+                  usernames[rule.uri] ? (
+                    <Link
+                      href={`/user?author=${encodeURIComponent(usernames[rule.uri]!)}`}
+                      className="font-medium hover:text-ssw-red hover:underline"
+                      title={`View ${usernames[rule.uri]}'s profile`}
+                    >
+                      {usernames[rule.uri]}
+                    </Link>
+                  ) : (
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        fetchAndNavigateToUserProfile(rule.uri);
+                      }}
+                      className={`font-medium hover:text-ssw-red hover:underline ${loadingMap[rule.uri] ? "opacity-50 cursor-not-allowed" : ""}`}
+                      title={`View ${rule.lastUpdatedBy}'s rules`}
+                    >
+                      {loadingMap[rule.uri] ? "Loading..." : rule.lastUpdatedBy}
+                    </a>
+                  )
                 ) : (
                   <span className="font-medium">Unknown</span>
                 )}

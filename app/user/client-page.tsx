@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import { RiBookmarkFill, RiGithubFill } from "react-icons/ri";
+import { RiGithubFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth/UserClientProvider";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RuleList from "@/components/rule-list";
@@ -24,7 +24,7 @@ type TabKey = (typeof Tabs)[keyof typeof Tabs];
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
-export default function UserRulesClientPage({ ruleCount }) {
+export default function UserRulesClientPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.AUTHORED);

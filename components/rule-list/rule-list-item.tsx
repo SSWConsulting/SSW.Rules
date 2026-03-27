@@ -3,7 +3,6 @@
 import React, { RefObject, useRef } from "react";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
-import { useMarkHighlight } from "@/lib/useMarkHighlight";
 import { RuleListFilter } from "@/types/ruleListFilter";
 import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
 import RuleListItemHeader from "./rule-list-item-header";
@@ -37,7 +36,6 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
   }
 
   const contentRef = useRef<HTMLDivElement>(null);
-  useMarkHighlight(contentRef as RefObject<HTMLElement>);
 
   return (
     <li key={index} className="p-4 border rounded shadow">

@@ -2,8 +2,6 @@
 
 import { useTina } from "tinacms/dist/react";
 import ServerCategoryPage from "./ServerCategoryPage";
-import { useMarkHighlight } from "@/lib/useMarkHighlight";
-import { useRef, RefObject } from "react";
 
 export type TinaCategoryProps = {
   serverCategoryPageProps: {
@@ -22,9 +20,6 @@ export function TinaCategoryWrapper({ serverCategoryPageProps, tinaQueryProps }:
     variables: tinaQueryProps.variables,
     data: tinaQueryProps.data,
   });
-
-  const contentRef = useRef<HTMLDivElement>(null);
-  useMarkHighlight(contentRef as RefObject<HTMLElement>);
 
   return (
     <ServerCategoryPage

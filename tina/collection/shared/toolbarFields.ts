@@ -15,7 +15,8 @@ type ToolbarOverrideType =
   | "mermaid"
   | "table";
 
-export const toolbarFields: ToolbarOverrideType[] = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const toolbarFields: any[] = [
   "embed",
   "heading",
   "link",
@@ -29,4 +30,4 @@ export const toolbarFields: ToolbarOverrideType[] = [
   "codeBlock",
   "mermaid",
   "table",
-];
+] satisfies ToolbarOverrideType[];

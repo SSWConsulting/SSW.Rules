@@ -111,6 +111,7 @@ query categoryWithRulesQuery($relativePath: String!) {
       title
       body
       uri
+      seoDescription
       index {
         rule {
           ... on Rule {

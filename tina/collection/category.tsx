@@ -199,6 +199,17 @@ const Category: Collection = {
         },
         {
           type: "string",
+          name: "seoDescription",
+          label: "SEO Description",
+          description:
+            "Page summary used for SEO. Can be generated with AI. See https://www.ssw.com.au/rules/html-meta-tags/#rectifying-the-missing-meta-tags-issue",
+          searchable: false,
+          ui: {
+            ...({ textarea: true, rows: 3 } as any),
+          },
+        },
+        {
+          type: "string",
           name: "redirects",
           label: "Redirects",
           list: true,

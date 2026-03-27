@@ -337,12 +337,19 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
   try {
     const category = await getCategoryData(filename);
     if (category?.data?.category && "title" in category.data.category) {
-      return {
-        title: `${category.data.category.title} | SSW.Rules`,
+      const categoryData = category.data.category as any;
+      const metadata: any = {
+        title: `${categoryData.title} | SSW.Rules`,
         alternates: {
           canonical: `${siteUrl}/${filename}`,
         },
       };
+
+      if (categoryData.seoDescription) {
+        metadata.description = categoryData.seoDescription;
+      }
+
+      return metadata;
     }
 
     const rule = await getRuleData(filename);

@@ -27,10 +27,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return bodyValidation.error!;
     }
 
-    const { categories, ruleUri, formType } = bodyValidation.data!;
+    const { categories, ruleUri, formType, branch: bodyBranch } = bodyValidation.data!;
     const token = authValidation.token || "";
-    const activeBranch = request.cookies.get("x-branch")?.value;
+    const cookieBranch = request.cookies.get("x-branch")?.value;
+    // Prefer branch from request body (explicitly set from cms.api.tina.branch in beforeSubmit)
+    // Fall back to x-branch cookie for backward compatibility
+    const activeBranch = bodyBranch || cookieBranch;
     const isCreateForm = formType === "create";
+
 
     // Step 3: Handle create forms (simpler flow - just add all categories)
     if (isCreateForm) {

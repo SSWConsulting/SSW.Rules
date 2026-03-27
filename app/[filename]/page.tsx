@@ -336,7 +336,7 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
 
   try {
     const category = await getCategoryData(filename);
-    if (category?.data?.category && "title" in category.data.category) {
+    if (category?.data?.category && category.data.category.__typename === "CategoryCategory") {
       const categoryData = category.data.category as any;
       const metadata: any = {
         title: `${categoryData.title} | SSW.Rules`,

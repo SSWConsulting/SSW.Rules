@@ -83,10 +83,7 @@ export default function UserRulesClientPage() {
 
   const isInvalidUser =
     authorFoundInCRM === false &&
-    authoredFullyLoaded &&
-    authoredRules.length === 0 &&
-    !loadingLastModified &&
-    lastModifiedRules.length === 0;
+    authoredFullyLoaded;
 
   const tabItems = [
     { key: Tabs.AUTHORED, label: authoredFullyLoaded ? `Authored (${authoredRules.length})` : "Authored" },

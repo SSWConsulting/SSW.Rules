@@ -1,4 +1,4 @@
-import { Section } from "@/components/layout/section";
+import { Section } from "@/app/(home)/components/layout/section";
 import { siteUrl } from "@/site-config";
 import ProfileClientPage from "./client-page";
 

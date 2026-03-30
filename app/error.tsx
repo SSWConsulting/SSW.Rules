@@ -3,8 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
-import useAppInsights from "@/components/hooks/useAppInsights";
-import { Button } from "@/components/ui/button";
+import useAppInsights from "@/app/(home)/components/hooks/useAppInsights";
+import { Button } from "@/app/(home)/components/ui/button";
 
 export default function Error({ error }: { error: Error & { digest?: string }; reset: () => void }) {
   const { trackException } = useAppInsights();

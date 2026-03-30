@@ -9,7 +9,7 @@
  * - Finding alternate authors when primary author is excluded
  */
 
-import { GitHubCommit } from "@/components/last-updated-by/types";
+import { GitHubCommit } from "@/app/(home)/components/last-updated-by/types";
 import { CommitDetails } from "./types";
 
 // ---------------- Configuration ----------------

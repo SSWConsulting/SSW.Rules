@@ -1,6 +1,6 @@
 import React from "react";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import { Section } from "@/components/layout/section";
+import Breadcrumbs from "@/app/(home)/components/Breadcrumbs";
+import { Section } from "@/app/(home)/components/layout/section";
 import { fetchAllArchivedRules, fetchLatestRules } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";

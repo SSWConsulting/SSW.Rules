@@ -1,22 +1,22 @@
 import Image from "next/image";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import ArchivedReasonContent from "@/app/(home)/components/ArchivedReasonContent";
+import AuthorsCard from "@/app/(home)/components/AuthorsCard";
+import Breadcrumbs from "@/app/(home)/components/Breadcrumbs";
+import BrokenReferenceBanner from "@/app/(home)/components/BrokenReferenceBanner";
+import CategoriesCard from "@/app/(home)/components/CategoriesCard";
+import Discussion from "@/app/(home)/components/Discussion";
+import HelpCard from "@/app/(home)/components/HelpCard";
+import { useAdminBackBlock } from "@/app/(home)/components/hooks/useAdminBackBlock";
+import { useIsAdminPage } from "@/app/(home)/components/hooks/useIsAdminPage";
+import GitHubMetadata from "@/app/(home)/components/last-updated-by";
+import RelatedRulesCard from "@/app/(home)/components/RelatedRulesCard";
+import RuleActionButtons from "@/app/(home)/components/RuleActionButtons";
+import { SocialVideoEmbed } from "@/app/(home)/components/shared/SocialVideoEmbed";
+import { getMarkdownComponentMapping } from "@/app/(home)/components/tina-markdown/markdown-component-mapping";
+import { Card } from "@/app/(home)/components/ui/card";
 import type { BrokenReferences } from "@/app/[filename]/page";
-import ArchivedReasonContent from "@/components/ArchivedReasonContent";
-import AuthorsCard from "@/components/AuthorsCard";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import BrokenReferenceBanner from "@/components/BrokenReferenceBanner";
-import CategoriesCard from "@/components/CategoriesCard";
-import Discussion from "@/components/Discussion";
-import HelpCard from "@/components/HelpCard";
-import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
-import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
-import GitHubMetadata from "@/components/last-updated-by";
-import RelatedRulesCard from "@/components/RelatedRulesCard";
-import RuleActionButtons from "@/components/RuleActionButtons";
-import { SocialVideoEmbed } from "@/components/shared/SocialVideoEmbed";
-import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
-import { Card } from "@/components/ui/card";
 
 export interface ServerRulePageProps {
   rule: any;

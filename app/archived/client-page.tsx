@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import React, { useMemo } from "react";
-import AboutSSWCard from "@/components/AboutSSWCard";
-import HelpCard from "@/components/HelpCard";
-import HelpImproveCard from "@/components/HelpImproveCard";
-import JoinConversationCard from "@/components/JoinConversationCard";
-import LatestRulesCard from "@/components/LatestRulesCard";
-import QuickLinksCard from "@/components/QuickLinksCard";
-import SearchBar from "@/components/SearchBarWrapper";
-import { Card } from "@/components/ui/card";
-import WhyRulesCard from "@/components/WhyRulesCard";
+import AboutSSWCard from "@/app/(home)/components/AboutSSWCard";
+import HelpCard from "@/app/(home)/components/HelpCard";
+import HelpImproveCard from "@/app/(home)/components/HelpImproveCard";
+import JoinConversationCard from "@/app/(home)/components/JoinConversationCard";
+import LatestRulesCard from "@/app/(home)/components/LatestRulesCard";
+import QuickLinksCard from "@/app/(home)/components/QuickLinksCard";
+import SearchBar from "@/app/(home)/components/SearchBarWrapper";
+import { Card } from "@/app/(home)/components/ui/card";
+import WhyRulesCard from "@/app/(home)/components/WhyRulesCard";
 import { Rule } from "@/models/Rule";
 
 export interface ArchivedClientPageProps {

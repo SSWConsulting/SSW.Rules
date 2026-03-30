@@ -1,4 +1,4 @@
-import { Section } from "@/components/layout/section";
+import { Section } from "@/app/(home)/components/layout/section";
 import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import LatestRuleClientPage from "./client-page";

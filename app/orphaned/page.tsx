@@ -1,19 +1,19 @@
 import React from "react";
-import { Section } from "@/components/layout/section";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import OrphanedClientPage from "./client-page";
-import client from "@/tina/__generated__/client";
-import { Rule } from "@/models/Rule";
+import Breadcrumbs from "@/app/(home)/components/Breadcrumbs";
+import { Section } from "@/app/(home)/components/layout/section";
 import { OrphanedRulesData } from "@/models/OrphanedRule";
+import { Rule } from "@/models/Rule";
 import orphanedRulesData from "@/orphaned_rules.json";
 import { siteUrl } from "@/site-config";
+import client from "@/tina/__generated__/client";
+import OrphanedClientPage from "./client-page";
 
 export const revalidate = 300;
 
 const fetchOrphanedRulesData = async (): Promise<Rule[]> => {
   const rules: Rule[] = [];
   const typedOrphanedRulesData: OrphanedRulesData = orphanedRulesData;
-console.log(typedOrphanedRulesData);
+  console.log(typedOrphanedRulesData);
   for (const orphanedRule of typedOrphanedRulesData) {
     try {
       const ruleData = await client.queries.rule({

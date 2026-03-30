@@ -1,14 +1,14 @@
 "use client";
 
-import AboutSSWCard from "@/components/AboutSSWCard";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import HelpCard from "@/components/HelpCard";
-import HelpImproveCard from "@/components/HelpImproveCard";
-import JoinConversationCard from "@/components/JoinConversationCard";
-import LatestRulesList from "@/components/LatestRulesList";
-import RuleCount from "@/components/RuleCount";
-import SearchBar from "@/components/SearchBarWrapper";
-import WhyRulesCard from "@/components/WhyRulesCard";
+import AboutSSWCard from "@/app/(home)/components/AboutSSWCard";
+import Breadcrumbs from "@/app/(home)/components/Breadcrumbs";
+import HelpCard from "@/app/(home)/components/HelpCard";
+import HelpImproveCard from "@/app/(home)/components/HelpImproveCard";
+import JoinConversationCard from "@/app/(home)/components/JoinConversationCard";
+import LatestRulesList from "@/app/(home)/components/LatestRulesList";
+import RuleCount from "@/app/(home)/components/RuleCount";
+import SearchBar from "@/app/(home)/components/SearchBarWrapper";
+import WhyRulesCard from "@/app/(home)/components/WhyRulesCard";
 import { LatestRule } from "@/models/LatestRule";
 
 interface LatestRuleClientPageProps {

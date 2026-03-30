@@ -4,7 +4,7 @@ import React from "react";
 import { BiChevronRight } from "react-icons/bi";
 import { GoCircleSlash } from "react-icons/go";
 import { Button, wrapFieldsWithMeta } from "tinacms";
-import { Icon, IconOptions } from "../../components/icon";
+import { Icon, IconOptions } from "../../app/(home)/components/icon";
 import { ColorPickerInput } from "./color";
 
 const parseIconName = (name: string) => {

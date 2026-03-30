@@ -2,10 +2,10 @@
 
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAdminBackBlock } from "@/app/(home)/components/hooks/useAdminBackBlock";
+import { useIsAdminPage } from "@/app/(home)/components/hooks/useIsAdminPage";
+import { Section } from "@/app/(home)/components/layout/section";
 import NotFound from "@/app/not-found";
-import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
-import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
-import { Section } from "@/components/layout/section";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
 import { TinaCategoryWrapper } from "./TinaCategoryWrapper";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";

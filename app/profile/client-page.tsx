@@ -4,10 +4,10 @@ import { getAccessToken } from "@auth0/nextjs-auth0";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { RiBookmarkFill, RiGithubFill } from "react-icons/ri";
-import { useAuth } from "@/components/auth/UserClientProvider";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import RuleList from "@/components/rule-list";
-import Spinner from "@/components/Spinner";
+import { useAuth } from "@/app/(home)/components/auth/UserClientProvider";
+import Breadcrumbs from "@/app/(home)/components/Breadcrumbs";
+import RuleList from "@/app/(home)/components/rule-list";
+import Spinner from "@/app/(home)/components/Spinner";
 import { BookmarkService } from "@/lib/bookmarkService";
 import { BookmarkedRule, Rule, UserBookmarksResponse } from "@/types";
 
@@ -167,7 +167,12 @@ export default function ProfileClientPage({ data }: ProfileClientPageProps) {
                 />
                 <div>
                   <h1>{isAuthenticated ? user?.name : ""}</h1>
-                  <a className="flex align-center underline" href={`https://www.github.com/${user?.nickname}`} target="_blank" rel="noopener noreferrer nofollow">
+                  <a
+                    className="flex align-center underline"
+                    href={`https://www.github.com/${user?.nickname}`}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                  >
                     <RiGithubFill size={20} className=" my-2 mx-1" />
                     <span className="my-2">GitHub Profile</span>
                   </a>

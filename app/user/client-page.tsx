@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import Spinner from "@/components/Spinner";
+import { useEffect, useMemo, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import RuleList from "@/components/rule-list";
-import Pagination from "@/components/ui/pagination";
+import Breadcrumbs from "@/app/(home)/components/Breadcrumbs";
+import RuleList from "@/app/(home)/components/rule-list";
+import Spinner from "@/app/(home)/components/Spinner";
+import Pagination from "@/app/(home)/components/ui/pagination";
 
 const Tabs = {
   MODIFIED: "modified",
@@ -114,7 +114,6 @@ export default function UserRulesClientPage({ ruleCount }) {
     const MAX_AUTHORED_RULES = 100;
     const allRulesFromTina: any[] = [];
     const seenKeys = new Set<string>();
-
 
     try {
       while (hasMore && pageCount < MAX_PAGES && allRulesFromTina.length < MAX_AUTHORED_RULES) {

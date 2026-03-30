@@ -1,6 +1,6 @@
 import React from "react";
 import { Collection, wrapFieldsWithMeta } from "tinacms";
-import { embedTemplates } from "@/components/embeds";
+import { embedTemplates } from "@/app/(home)/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";

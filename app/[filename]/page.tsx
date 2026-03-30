@@ -4,6 +4,7 @@ import { Section } from "@/components/layout/section";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
+import { extractBodyPreview } from "@/lib/bodyUtils";
 import ClientFallbackPage from "./ClientFallbackPage";
 import { TinaCategoryWrapper } from "./TinaCategoryWrapper";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
@@ -335,13 +336,20 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
 
   try {
     const category = await getCategoryData(filename);
-    if (category?.data?.category && "title" in category.data.category) {
-      return {
-        title: `${category.data.category.title} | SSW.Rules`,
+    if (category?.data?.category && category.data.category.__typename === "CategoryCategory") {
+      const categoryData = category.data.category as any;
+      const metadata: any = {
+        title: `${categoryData.title} | SSW.Rules`,
         alternates: {
           canonical: `${siteUrl}/${filename}`,
         },
       };
+
+      if (categoryData.seoDescription) {
+        metadata.description = categoryData.seoDescription;
+      }
+
+      return metadata;
     }
 
     const rule = await getRuleData(filename);
@@ -353,9 +361,10 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
         },
       };
 
-      if (rule.data.rule.seoDescription) {
-        metadata.description = rule.data.rule.seoDescription;
-      }
+      metadata.description =
+        rule.data.rule.seoDescription ||
+        extractBodyPreview(rule.data.rule.body) ||
+        undefined;
 
       if (rule.data.rule.isArchived) {
         metadata.robots = { index: false, follow: true };

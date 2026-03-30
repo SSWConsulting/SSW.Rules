@@ -3,7 +3,6 @@
 import React, { RefObject, useRef } from "react";
 import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
-import { useMarkHighlight } from "@/lib/useMarkHighlight";
 import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
 import { Figure, inlineFigureDefaultItem, inlineFigureFields } from "./figure";
 
@@ -17,7 +16,6 @@ export function EmailEmbed({ data }: { data: any }) {
   ].filter((field) => field.value?.trim());
 
   const contentRef = useRef<HTMLDivElement>(null);
-  useMarkHighlight(contentRef as RefObject<HTMLElement>);
 
   const figure: string = data?.figure || "";
   const figurePrefix: any = data?.figurePrefix || "default";

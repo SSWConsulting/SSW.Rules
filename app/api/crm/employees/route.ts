@@ -19,6 +19,7 @@ export async function GET(request: Request) {
 
       if (emp) {
         return NextResponse.json({
+          found: true,
           fullName: emp.fullName,
           slug: toSlug(emp.fullName || query),
           gitHubUrl: emp.gitHubUrl || `https://github.com/${query}`,
@@ -27,6 +28,7 @@ export async function GET(request: Request) {
 
       const fullName = normalizeName(query) || '';
       return NextResponse.json({
+        found: false,
         fullName,
         slug: toSlug(query),
         gitHubUrl: `https://github.com/${query}`,

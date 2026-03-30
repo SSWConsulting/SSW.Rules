@@ -53,6 +53,7 @@ export default function UserRulesClientPage() {
   const [authoredFullyLoaded, setAuthoredFullyLoaded] = useState(false);
   const [loadingMoreAuthored, setLoadingMoreAuthored] = useState(false);
   const [githubError, setGithubError] = useState<string | null>(null);
+  const [authorFoundInCRM, setAuthorFoundInCRM] = useState<boolean | null>(null);
   const [currentPageAuthored, setCurrentPageAuthored] = useState(1);
   const [itemsPerPageAuthored, setItemsPerPageAuthored] = useState(20);
   const FETCH_PAGE_SIZE = 20;
@@ -80,6 +81,13 @@ export default function UserRulesClientPage() {
     return authoredRules.slice(startIndex, endIndex);
   }, [authoredRules, currentPageAuthored, itemsPerPageAuthored]);
 
+  const isInvalidUser =
+    authorFoundInCRM === false &&
+    authoredFullyLoaded &&
+    authoredRules.length === 0 &&
+    !loadingLastModified &&
+    lastModifiedRules.length === 0;
+
   const tabItems = [
     { key: Tabs.AUTHORED, label: authoredFullyLoaded ? `Authored (${authoredRules.length})` : "Authored" },
     { key: Tabs.MODIFIED, label: loadingLastModified ? "Last Modified" : `Last Modified (${lastModifiedRules.length})` },
@@ -91,6 +99,7 @@ export default function UserRulesClientPage() {
     if (!res.ok) throw new Error("Failed to resolve author");
     const profile = await res.json();
     setAuthor(profile);
+    setAuthorFoundInCRM(profile.found === true);
     return profile.fullName as string;
   };
 
@@ -388,6 +397,31 @@ export default function UserRulesClientPage() {
         <Breadcrumbs breadcrumbText="User Rules" />
         <div className="flex items-center justify-center min-h-100">
           <Spinner size="lg" />
+        </div>
+      </>
+    );
+  }
+
+  if (isInvalidUser) {
+    return (
+      <>
+        <Breadcrumbs breadcrumbText="User Rules" />
+        <div className="layout-two-columns">
+          <div className="layout-main-section mt-6">
+            <div className="min-w-full shadow-lg rounded mb-6">
+              <section className="mb-4 rounded">
+                <div className="flex flex-col gap-6 p-8 bg-[#f5f5f5] rounded-t">
+                  <div className="flex gap-6 items-center">
+                    <FaUserCircle size={100} className="text-gray-300" />
+                    <div>
+                      <h1 className="text-ssw-red">{queryStringRulesAuthor}</h1>
+                      <p className="mt-2 text-gray-500">This user is invalid</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
         </div>
       </>
     );

@@ -204,8 +204,8 @@ export async function fetchAllArchivedRules(firstPerPage = 50): Promise<Rule[]> 
 }
 
 export async function fetchQuickLinks(): Promise<QuickLink[]> {
-  const res = await client.queries.global({ relativePath: "index.json" });
-  return Array.isArray(res.data.global.quickLinks?.links) ? (res.data.global.quickLinks.links as QuickLink[]) : [];
+  const res = await client.queries.homepage({ relativePath: "index.json" });
+  return Array.isArray(res.data.homepage.quickLinks?.links) ? (res.data.homepage.quickLinks.links as QuickLink[]) : [];
 }
 
 export async function fetchPaginatedRules(variables: RuleQueryVars = {}): Promise<PaginationResult<Rule>> {

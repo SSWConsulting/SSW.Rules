@@ -4,27 +4,29 @@ import { Section } from "@/app/(home)/components/layout/section";
 import { fetchAllArchivedRules, fetchLatestRules } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
-import { QuickLink } from "@/types/quickLink";
 import ArchivedClientPage from "./client-page";
 
 export const revalidate = 300;
 
-async function fetchQuickLinks(): Promise<QuickLink[]> {
-  const res = await client.queries.global({
-    relativePath: "index.json",
-  });
-  return Array.isArray(res.data.global.quickLinks?.links) ? (res.data.global.quickLinks.links as QuickLink[]) : [];
+async function fetchHomepageData() {
+  try {
+    const res = await client.queries.homepage({ relativePath: "index.json" });
+    return { data: res.data, query: res.query, variables: res.variables };
+  } catch (error) {
+    console.error("Failed to fetch homepage data from Tina CMS:", error);
+    return { data: null, query: null, variables: { relativePath: "index.json" } };
+  }
 }
 
 export default async function ArchivedPage() {
-  const [archivedRules, latestRules, quickLinks] = await Promise.all([fetchAllArchivedRules(), fetchLatestRules(), fetchQuickLinks()]);
+  const [archivedRules, latestRules, homepageData] = await Promise.all([fetchAllArchivedRules(), fetchLatestRules(), fetchHomepageData()]);
 
   const archivedRulesWithReason = archivedRules.filter((rule) => rule.archivedreason?.trim());
 
   return (
     <Section>
       <Breadcrumbs breadcrumbText="Archived Rules" />
-      <ArchivedClientPage archivedRules={archivedRulesWithReason} latestRules={latestRules} quickLinks={quickLinks} />
+      <ArchivedClientPage archivedRules={archivedRulesWithReason} latestRules={latestRules} homepageData={homepageData} />
     </Section>
   );
 }

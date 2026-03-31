@@ -1,10 +1,9 @@
 import Link from "next/link";
 import CategoryActionButtons from "@/app/(home)/components/CategoryActionButtons";
 import LatestRulesCard from "@/app/(home)/components/LatestRulesCard";
-import QuickLinksCard from "@/app/(home)/components/QuickLinksCard";
 import { Card } from "@/app/(home)/components/ui/card";
-import HomepageSidebarWrapper from "@/app/(home)/categories/HomepageSidebarWrapper";
-import { fetchCategoryRuleCounts, fetchLatestRules, fetchQuickLinks } from "@/lib/services/rules";
+import HomepageSidebarCards from "@/app/(home)/components/HomepageSidebarCards";
+import { fetchCategoryRuleCounts, fetchLatestRules } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 
@@ -46,11 +45,10 @@ async function fetchHomepageData() {
 }
 
 export default async function CategoriesPage() {
-  const [topCategories, latestRules, categoryRuleCounts, quickLinks,homePageData] = await Promise.all([
+  const [topCategories, latestRules, categoryRuleCounts, homePageData] = await Promise.all([
     fetchTopCategoriesWithSubcategories(),
     fetchLatestRules(),
     fetchCategoryRuleCounts(),
-    fetchQuickLinks(),
     fetchHomepageData(),
   ]);
 
@@ -93,8 +91,11 @@ export default async function CategoriesPage() {
         </div>
         <div className="layout-sidebar max-sm:mt-0">
           <LatestRulesCard rules={latestRules} />
-          <QuickLinksCard links={quickLinks} />
-          {homePageData.query && <HomepageSidebarWrapper tinaQueryProps={homePageData as { query: string; variables: any; data: any }} />}
+          {homePageData.query && (
+            <HomepageSidebarCards
+              tinaHomepageProps={homePageData as { query: string; variables: any; data: any }}
+            />
+          )}
         </div>
       </div>
       <CategoryActionButtons />

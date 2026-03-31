@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useTina } from "tinacms/dist/react";
 import AboutSSWCard from "@/app/(home)/components/AboutSSWCard";
 import HelpCard from "@/app/(home)/components/HelpCard";
 import HelpImproveCard from "@/app/(home)/components/HelpImproveCard";
@@ -12,7 +11,6 @@ import RadioButton from "@/app/(home)/components/radio-button/radio-button";
 import WhyRulesCard from "@/app/(home)/components/WhyRulesCard";
 import { ActivityRule } from "@/models/ActivityRule";
 import { RecentComment } from "@/models/RecentComment";
-import { QuickLink } from "@/types/quickLink";
 import JoinConversationCard from "./JoinConversationCard";
 
 const PAGE_SIZE = 5;
@@ -47,17 +45,10 @@ interface ActivityRulesViewProps {
   total: number;
   recentComments: RecentComment[];
   latestRulesData: ActivityRule[];
-  quickLinks: QuickLink[];
-  homepageData?: { data: any; query: any; variables: any } | null;
+  homepage?: any;
 }
 
-export default function ActivityRulesView({ rules, total, recentComments, latestRulesData, quickLinks, homepageData }: ActivityRulesViewProps) {
-  const { data } = useTina({
-    query: homepageData?.query ?? "",
-    variables: homepageData?.variables ?? { relativePath: "index.json" },
-    data: homepageData?.data ?? {},
-  });
-  const homepage = data?.homepage;
+export default function ActivityRulesView({ rules, total, recentComments, latestRulesData, homepage }: ActivityRulesViewProps) {
   const [sortKey, setSortKey] = useState<SortKey>("mostLiked");
 
   const [animatingMetric, setAnimatingMetric] = useState<SortKey | null>(null);
@@ -172,7 +163,7 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
 
         <div className="layout-sidebar min-w-0">
           <RecentCommentsCard comments={recentComments} />
-          <QuickLinksCard links={quickLinks} />
+          <QuickLinksCard data={homepage?.quickLinks} />
           <WhyRulesCard data={homepage?.whyRules} />
           <HelpImproveCard data={homepage?.helpImprove} />
           <HelpCard data={homepage?.needHelp} />

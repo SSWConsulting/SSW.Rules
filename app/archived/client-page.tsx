@@ -2,25 +2,20 @@
 
 import Link from "next/link";
 import React, { useMemo } from "react";
-import AboutSSWCard from "@/app/(home)/components/AboutSSWCard";
-import HelpCard from "@/app/(home)/components/HelpCard";
-import HelpImproveCard from "@/app/(home)/components/HelpImproveCard";
-import JoinConversationCard from "@/app/(home)/components/JoinConversationCard";
+import HomepageSidebarCards from "@/app/(home)/components/HomepageSidebarCards";
 import LatestRulesCard from "@/app/(home)/components/LatestRulesCard";
-import QuickLinksCard from "@/app/(home)/components/QuickLinksCard";
 import SearchBar from "@/app/(home)/components/SearchBarWrapper";
 import { Card } from "@/app/(home)/components/ui/card";
-import WhyRulesCard from "@/app/(home)/components/WhyRulesCard";
 import { Rule } from "@/models/Rule";
 
 export interface ArchivedClientPageProps {
   archivedRules: Rule[];
   latestRules?: any[];
-  quickLinks?: any[];
+  homepageData?: { query: string; variables: any; data: any } | null;
 }
 
 export default function ArchivedClientPage(props: ArchivedClientPageProps) {
-  const { archivedRules, latestRules = [], quickLinks = [] } = props;
+  const { archivedRules, latestRules = [], homepageData } = props;
 
   const groupedArchivedData = useMemo(() => {
     const categoryRules: Record<string, Rule[]> = {};
@@ -90,12 +85,7 @@ export default function ArchivedClientPage(props: ArchivedClientPageProps) {
 
         <div className="layout-sidebar">
           {latestRules.length > 0 && <LatestRulesCard rules={latestRules} />}
-          {quickLinks.length > 0 && <QuickLinksCard links={quickLinks} />}
-          <WhyRulesCard />
-          <HelpImproveCard />
-          <HelpCard />
-          <AboutSSWCard />
-          <JoinConversationCard />
+          {homepageData?.query && <HomepageSidebarCards tinaHomepageProps={homepageData} />}
         </div>
       </div>
     </>

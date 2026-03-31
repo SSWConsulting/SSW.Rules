@@ -53,13 +53,7 @@ const Homepage: Collection = {
       label: "Help Improve Our Rules",
       fields: [
         { type: "string", name: "title", label: "Title" },
-        {
-          type: "string",
-          name: "quote",
-          label: "Quote",
-          ui: { component: "textarea" },
-        },
-        { type: "string", name: "tweetUrl", label: "Tweet URL" },
+        { type: "rich-text", name: "quote", label: "Quote" },
         { type: "string", name: "personName", label: "Person Name" },
         { type: "string", name: "personTitle", label: "Person Title" },
         { type: "string", name: "personImage", label: "Person Image URL" },
@@ -72,9 +66,7 @@ const Homepage: Collection = {
       label: "Why All These Rules?",
       fields: [
         { type: "string", name: "title", label: "Title" },
-        { type: "string", name: "linkText", label: "Link Text" },
-        { type: "string", name: "linkUrl", label: "Link URL" },
-        { type: "string", name: "description", label: "Description" },
+        { type: "rich-text", name: "body", label: "Body" },
       ],
     },
     {

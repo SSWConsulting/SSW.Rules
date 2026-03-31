@@ -2,6 +2,7 @@
 
 import { useTina } from "tinacms/dist/react";
 import ActivityRulesView from "@/app/(home)/components/ActivityRulesView";
+import HomepageHeader from "@/app/(home)/components/HomepageHeader";
 import { ActivityRule } from "@/models/ActivityRule";
 import { RecentComment } from "@/models/RecentComment";
 
@@ -10,23 +11,29 @@ export type TinaActivityWrapperProps = {
   total: number;
   recentComments: RecentComment[];
   latestRulesData: ActivityRule[];
+  ruleCount: number;
   tinaQueryProps: { query: string; variables: any; data: any };
 };
 
-export function TinaActivityWrapper({ rules, total, recentComments, latestRulesData, tinaQueryProps }: TinaActivityWrapperProps) {
+export function TinaActivityWrapper({ rules, total, recentComments, latestRulesData, ruleCount, tinaQueryProps }: TinaActivityWrapperProps) {
   const { data } = useTina({
     query: tinaQueryProps.query,
     variables: tinaQueryProps.variables,
     data: tinaQueryProps.data,
   });
 
+  const homepage = data?.homepage;
+
   return (
-    <ActivityRulesView
-      rules={rules}
-      total={total}
-      recentComments={recentComments}
-      latestRulesData={latestRulesData}
-      homepage={data.homepage}
-    />
+    <>
+      <HomepageHeader homepage={homepage} ruleCount={ruleCount} />
+      <ActivityRulesView
+        rules={rules}
+        total={total}
+        recentComments={recentComments}
+        latestRulesData={latestRulesData}
+        homepage={homepage}
+      />
+    </>
   );
 }

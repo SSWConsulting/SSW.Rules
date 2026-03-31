@@ -1,6 +1,20 @@
+import Link from "next/link";
 import React from "react";
 
 export type FigurePrefix = "none" | "bad" | "ok" | "good";
+
+function renderFigureText(text: string): React.ReactNode {
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+  return parts.map((part, index) => {
+    const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (!match) return <span key={index}>{part}</span>;
+    const [, label, url] = match;
+    if (url.startsWith("/")) {
+      return <Link key={index} href={url} className="underline">{label}</Link>;
+    }
+    return <a key={index} href={url} className="underline" target="_blank" rel="noopener noreferrer">{label}</a>;
+  });
+}
 
 export function getPrefix(prefix?: FigurePrefix): string {
   switch (prefix) {
@@ -23,7 +37,7 @@ export function Figure({ prefix = "none", text, className }: { prefix?: FigurePr
   return (
     <p className={`font-bold mt-1 ${className ?? ""}`.trim()}>
       {prefixText}
-      {trimmed}
+      {renderFigureText(trimmed)}
     </p>
   );
 }

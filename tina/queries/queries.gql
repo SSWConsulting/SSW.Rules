@@ -107,10 +107,12 @@ query mainCategoryQuery {
 
 query categoryWithRulesQuery($relativePath: String!) {
   category(relativePath: $relativePath) {
+    __typename
     ... on CategoryCategory {
       title
       body
       uri
+      seoDescription
       index {
         rule {
           ... on Rule {

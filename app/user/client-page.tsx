@@ -1,24 +1,44 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { getAccessToken } from "@auth0/nextjs-auth0";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import Breadcrumbs from "@/app/(home)/components/Breadcrumbs";
-import RuleList from "@/app/(home)/components/rule-list";
-import Spinner from "@/app/(home)/components/Spinner";
-import Pagination from "@/app/(home)/components/ui/pagination";
+import { RiGithubFill } from "react-icons/ri";
+import { useAuth } from "@/components/auth/UserClientProvider";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import RuleList from "@/components/rule-list";
+import Spinner from "@/components/Spinner";
+import Pagination from "@/components/ui/pagination";
+import { BookmarkService } from "@/lib/bookmarkService";
+import { BookmarkedRule, Rule, UserBookmarksResponse } from "@/types";
 
 const Tabs = {
   MODIFIED: "modified",
   AUTHORED: "authored",
+  BOOKMARKED: "bookmarked",
 } as const;
 
 type TabKey = (typeof Tabs)[keyof typeof Tabs];
 
-export default function UserRulesClientPage({ ruleCount }) {
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+export default function UserRulesClientPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.AUTHORED);
   const queryStringRulesAuthor = searchParams.get("author") || "";
+
+  const { user, isLoading: authLoading } = useAuth();
+  const isAuthenticated = !!user;
+  const isOwnProfile = user?.nickname === queryStringRulesAuthor;
+  const showBookmarks = isAuthenticated && isOwnProfile;
+
+  const [bookmarkedRules, setBookmarkedRules] = useState<BookmarkedRule[]>([]);
+  const [bookmarkRules, setBookmarkRules] = useState<Rule[]>([]);
+  const [bookmarkCount, setBookmarkCount] = useState(0);
+  const [isLoadingBookmarks, setIsLoadingBookmarks] = useState(false);
 
   // Last Modified
   const [lastModifiedRules, setLastModifiedRules] = useState<any[]>([]);
@@ -26,43 +46,205 @@ export default function UserRulesClientPage({ ruleCount }) {
   const [currentPageLastModified, setCurrentPageLastModified] = useState(1);
   const [itemsPerPageLastModified, setItemsPerPageLastModified] = useState(20);
 
-  // Acknowledged
+  // Authored
   const [authoredRules, setAuthoredRules] = useState<any[]>([]);
   const [author, setAuthor] = useState<{ fullName?: string; slug?: string; gitHubUrl?: string }>({});
   const [loadingAuthored, setLoadingAuthored] = useState(false);
   const [authoredFullyLoaded, setAuthoredFullyLoaded] = useState(false);
   const [loadingMoreAuthored, setLoadingMoreAuthored] = useState(false);
   const [githubError, setGithubError] = useState<string | null>(null);
+  const [authorFoundInCRM, setAuthorFoundInCRM] = useState<boolean | null>(null);
   const [currentPageAuthored, setCurrentPageAuthored] = useState(1);
   const [itemsPerPageAuthored, setItemsPerPageAuthored] = useState(20);
   const FETCH_PAGE_SIZE = 20;
+
+  // Pagination helpers (must be before early returns)
+  const totalPagesLastModified = itemsPerPageLastModified >= lastModifiedRules.length ? 1 : Math.ceil(lastModifiedRules.length / itemsPerPageLastModified);
+
+  const paginatedLastModifiedRules = useMemo(() => {
+    if (itemsPerPageLastModified >= lastModifiedRules.length) {
+      return lastModifiedRules;
+    }
+    const startIndex = (currentPageLastModified - 1) * itemsPerPageLastModified;
+    const endIndex = startIndex + itemsPerPageLastModified;
+    return lastModifiedRules.slice(startIndex, endIndex);
+  }, [lastModifiedRules, currentPageLastModified, itemsPerPageLastModified]);
+
+  const totalPagesAuthored = itemsPerPageAuthored >= authoredRules.length ? 1 : Math.ceil(authoredRules.length / itemsPerPageAuthored);
+
+  const paginatedAuthoredRules = useMemo(() => {
+    if (itemsPerPageAuthored >= authoredRules.length) {
+      return authoredRules;
+    }
+    const startIndex = (currentPageAuthored - 1) * itemsPerPageAuthored;
+    const endIndex = startIndex + itemsPerPageAuthored;
+    return authoredRules.slice(startIndex, endIndex);
+  }, [authoredRules, currentPageAuthored, itemsPerPageAuthored]);
+
+  const isInvalidUser =
+    authorFoundInCRM === false &&
+    authoredFullyLoaded;
+
+  const tabItems = [
+    { key: Tabs.AUTHORED, label: authoredFullyLoaded ? `Authored (${authoredRules.length})` : "Authored" },
+    { key: Tabs.MODIFIED, label: loadingLastModified ? "Last Modified" : `Last Modified (${lastModifiedRules.length})` },
+    ...(showBookmarks ? [{ key: Tabs.BOOKMARKED, label: `Bookmarks (${bookmarkCount})` }] : []),
+  ];
 
   const resolveAuthor = async (): Promise<string> => {
     const res = await fetch(`./api/crm/employees?query=${encodeURIComponent(queryStringRulesAuthor)}`);
     if (!res.ok) throw new Error("Failed to resolve author");
     const profile = await res.json();
     setAuthor(profile);
+    setAuthorFoundInCRM(profile.found === true);
     return profile.fullName as string;
   };
+
+  // Auto-redirect to own profile if logged in but no author param
+  useEffect(() => {
+    if (!authLoading && isAuthenticated && !queryStringRulesAuthor && user?.nickname) {
+      router.replace(`/user?author=${user.nickname}`);
+    }
+  }, [authLoading, isAuthenticated, queryStringRulesAuthor, user?.nickname, router]);
 
   useEffect(() => {
     (async () => {
       if (queryStringRulesAuthor) {
-        // Load last modified rules immediately (doesn't need CRM)
         const lastModifiedPromise = loadAllLastModifiedRules();
 
-        // Try to resolve author for authored rules (needs CRM)
         try {
           const resolvedAuthorName = await resolveAuthor();
           await Promise.all([loadAllAuthoredRules(resolvedAuthorName as string), lastModifiedPromise]);
         } catch (err) {
-          // CRM failed, but still wait for last modified rules
           console.error("Failed to resolve author from CRM:", err);
           await lastModifiedPromise;
         }
       }
     })();
   }, [queryStringRulesAuthor]);
+
+  // Fetch bookmarks when viewing own profile
+  useEffect(() => {
+    if (showBookmarks && activeTab === Tabs.BOOKMARKED) {
+      getBookmarkList();
+    }
+  }, [showBookmarks, activeTab, user]);
+
+  async function getBookmarkList() {
+    if (!user?.sub) {
+      setIsLoadingBookmarks(false);
+      return;
+    }
+
+    try {
+      setIsLoadingBookmarks(true);
+      const accessToken = await getAccessToken();
+
+      if (!accessToken) {
+        console.error("No access token available");
+        setIsLoadingBookmarks(false);
+        return;
+      }
+
+      const bookmarkResult: UserBookmarksResponse = await BookmarkService.getUserBookmarks(user.sub, accessToken);
+
+      if (!bookmarkResult.error && bookmarkResult.bookmarkedRules) {
+        setBookmarkedRules(bookmarkResult.bookmarkedRules);
+        setBookmarkCount(bookmarkResult.bookmarkedRules.length);
+
+        if (bookmarkResult.bookmarkedRules.length > 0) {
+          try {
+            const guids = Array.from(new Set(bookmarkResult.bookmarkedRules.map((b) => b.ruleGuid).filter((g): g is string => Boolean(g))));
+
+            const res = await fetch(`${BASE_PATH}/api/rules/by-guid`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ guids }),
+            });
+
+            if (!res.ok) {
+              throw new Error("Failed to fetch rules by GUID");
+            }
+
+            const { rules: fetchedRules } = await res.json();
+            const byGuid = new Map<string, any>(fetchedRules.map((r: any) => [r.guid, r]));
+
+            const matchedRules: any[] = guids
+              .map((g) => byGuid.get(g))
+              .filter(Boolean)
+              .map((fullRule: any) => ({
+                guid: fullRule.guid,
+                title: fullRule.title,
+                uri: fullRule.uri,
+                body: fullRule.body,
+                isBookmarked: true,
+                authors: fullRule.authors || [],
+              }));
+
+            setBookmarkRules(matchedRules);
+
+            if (matchedRules.length !== bookmarkResult.bookmarkedRules.length) {
+              const foundGuids = new Set(matchedRules.map((r) => r.guid));
+              const missingGuids = bookmarkResult.bookmarkedRules.map((b) => b.ruleGuid).filter((g) => !foundGuids.has(g));
+              console.warn(`Some bookmarked rules not found:`, missingGuids);
+            }
+          } catch (ruleError) {
+            console.error("Error fetching rule data:", ruleError);
+            setBookmarkRules([]);
+          }
+        } else {
+          setBookmarkRules([]);
+        }
+      } else {
+        console.error("Failed to fetch bookmarks:", bookmarkResult.message);
+        setBookmarkedRules([]);
+        setBookmarkCount(0);
+        setBookmarkRules([]);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setBookmarkedRules([]);
+      setBookmarkCount(0);
+      setBookmarkRules([]);
+    } finally {
+      setIsLoadingBookmarks(false);
+    }
+  }
+
+  const handleBookmarkRemoved = async (ruleGuid: string) => {
+    if (!user?.sub) {
+      console.error("No user ID available");
+      return;
+    }
+
+    try {
+      const accessToken = await getAccessToken();
+
+      if (!accessToken) {
+        console.error("No access token available");
+        return;
+      }
+
+      const removeResult = await BookmarkService.removeBookmark({ ruleGuid, userId: user.sub }, accessToken);
+
+      if (removeResult.error) {
+        console.error("Failed to remove bookmark:", removeResult.message);
+        return;
+      }
+
+      setBookmarkedRules((prevRules) => {
+        const updatedRules = prevRules.filter((bookmark) => bookmark.ruleGuid !== ruleGuid);
+        setBookmarkCount(updatedRules.length);
+        return updatedRules;
+      });
+
+      setBookmarkRules((prevRules) => {
+        return prevRules.filter((rule) => rule.guid !== ruleGuid);
+      });
+    } catch (error) {
+      console.error("Error removing bookmark:", error);
+    }
+  };
 
   // Function to load last modified rules using the new API
   const loadAllLastModifiedRules = async () => {
@@ -78,7 +260,6 @@ export default function UserRulesClientPage({ ruleCount }) {
 
       const data = await res.json();
 
-      // Transform API response to match RuleList expected format
       const rules = (data.items || []).map((item: any) => ({
         title: item.title,
         uri: item.uri,
@@ -110,7 +291,7 @@ export default function UserRulesClientPage({ ruleCount }) {
     let cursor: string | null = null;
     let hasMore = true;
     let pageCount = 0;
-    const MAX_PAGES = 100; // Safety limit to prevent infinite loops
+    const MAX_PAGES = 100;
     const MAX_AUTHORED_RULES = 100;
     const allRulesFromTina: any[] = [];
     const seenKeys = new Set<string>();
@@ -156,8 +337,6 @@ export default function UserRulesClientPage({ ruleCount }) {
           allRulesFromTina.length = MAX_AUTHORED_RULES;
         }
 
-        // Render as soon as we have the first page.
-        // Backend returns results sorted by created, so we can append without re-sorting.
         setAuthoredRules([...allRulesFromTina]);
         if (pageCount === 1) {
           setLoadingAuthored(false);
@@ -169,7 +348,6 @@ export default function UserRulesClientPage({ ruleCount }) {
         const newCursor = pageInfo?.startCursor ?? null;
         const hasMorePages = !!pageInfo?.hasPreviousPage;
 
-        // Stop if cursor hasn't changed (prevents infinite loop)
         if (newCursor === cursor && cursor !== null) {
           break;
         }
@@ -188,12 +366,67 @@ export default function UserRulesClientPage({ ruleCount }) {
     }
   };
 
+  // Not logged in - show login prompt
+  if (!authLoading && !isAuthenticated && !queryStringRulesAuthor) {
+    return (
+      <>
+        <Breadcrumbs breadcrumbText="User Rules" />
+        <div className="flex items-center justify-center min-h-100">
+          <div className="text-center">
+            <p className="text-xl text-gray-600 mb-4">Sign in to view user profiles</p>
+            <a
+              href={`${BASE_PATH}/auth/login?returnTo=${encodeURIComponent(`/user`)}`}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-ssw-red rounded-md hover:bg-ssw-red/90"
+            >
+              <RiGithubFill size={18} className="mr-2" />
+              Sign in with GitHub
+            </a>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Loading state
+  if (authLoading) {
+    return (
+      <>
+        <Breadcrumbs breadcrumbText="User Rules" />
+        <div className="flex items-center justify-center min-h-100">
+          <Spinner size="lg" />
+        </div>
+      </>
+    );
+  }
+
+  if (isInvalidUser) {
+    return (
+      <>
+        <Breadcrumbs breadcrumbText="User Rules" />
+        <div className="layout-two-columns">
+          <div className="layout-main-section mt-6">
+            <div className="min-w-full shadow-lg rounded mb-6">
+              <section className="mb-4 rounded">
+                <div className="flex flex-col gap-6 p-8 bg-[#f5f5f5] rounded-t">
+                  <div className="flex gap-6 items-center">
+                    <FaUserCircle size={100} className="text-gray-300" />
+                    <div>
+                      <h1 className="text-ssw-red">{queryStringRulesAuthor}</h1>
+                      <p className="mt-2 text-gray-500">This user is invalid</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   const TabHeader = () => (
-    <div role="tablist" aria-label="User Rules Tabs" className="flex mt-2 mb-4 divide-x divide-gray-200 rounded">
-      {[
-        { key: Tabs.AUTHORED, label: authoredFullyLoaded ? `Authored (${authoredRules.length})` : "Authored" },
-        { key: Tabs.MODIFIED, label: loadingLastModified ? "Last Modified" : `Last Modified (${lastModifiedRules.length})` },
-      ].map((t, i) => {
+    <div role="tablist" aria-label="User Rules Tabs" className="flex m-4 divide-x divide-gray-200 rounded">
+      {tabItems.map((t, i) => {
         const isActive = activeTab === t.key;
         return (
           <button
@@ -204,8 +437,8 @@ export default function UserRulesClientPage({ ruleCount }) {
             onClick={() => setActiveTab(t.key)}
             className={[
               "px-4 py-1 text-sm transition-colors hover:cursor-pointer",
-              i === 0 ? "rounded-l" : "-ml-px",
-              i === 1 ? "rounded-r" : "",
+              i === 0 ? "rounded-l" : "",
+              i === tabItems.length - 1 ? "rounded-r" : "",
               isActive ? "bg-ssw-red text-white shadow-sm border-0" : "bg-white hover:text-ssw-red border",
             ].join(" ")}
           >
@@ -216,18 +449,6 @@ export default function UserRulesClientPage({ ruleCount }) {
     </div>
   );
 
-  // Pagination helpers for Last Modified
-  const totalPagesLastModified = itemsPerPageLastModified >= lastModifiedRules.length ? 1 : Math.ceil(lastModifiedRules.length / itemsPerPageLastModified);
-
-  const paginatedLastModifiedRules = useMemo(() => {
-    if (itemsPerPageLastModified >= lastModifiedRules.length) {
-      return lastModifiedRules;
-    }
-    const startIndex = (currentPageLastModified - 1) * itemsPerPageLastModified;
-    const endIndex = startIndex + itemsPerPageLastModified;
-    return lastModifiedRules.slice(startIndex, endIndex);
-  }, [lastModifiedRules, currentPageLastModified, itemsPerPageLastModified]);
-
   const handlePageChangeLastModified = (page: number) => {
     setCurrentPageLastModified(page);
   };
@@ -236,19 +457,6 @@ export default function UserRulesClientPage({ ruleCount }) {
     setItemsPerPageLastModified(newItemsPerPage);
     setCurrentPageLastModified(1);
   };
-
-  // Pagination helpers for Authored
-  const totalPagesAuthored = itemsPerPageAuthored >= authoredRules.length ? 1 : Math.ceil(authoredRules.length / itemsPerPageAuthored);
-
-  const paginatedAuthoredRules = useMemo(() => {
-    // Keep list height stable: always render the current page slice (even while background loading).
-    if (itemsPerPageAuthored >= authoredRules.length) {
-      return authoredRules;
-    }
-    const startIndex = (currentPageAuthored - 1) * itemsPerPageAuthored;
-    const endIndex = startIndex + itemsPerPageAuthored;
-    return authoredRules.slice(startIndex, endIndex);
-  }, [authoredRules, currentPageAuthored, itemsPerPageAuthored]);
 
   const handlePageChangeAuthored = (page: number) => {
     setCurrentPageAuthored(page);
@@ -271,90 +479,134 @@ export default function UserRulesClientPage({ ruleCount }) {
               <span className="text-sm text-red-700">{githubError}</span>
             </div>
           )}
-          {author.fullName && (
-            <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4">
-              <h1 className="text-ssw-red mt-1.5">{author.fullName}'s Rules</h1>
 
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={`https://ssw.com.au/people/${author.slug}/`}
-                className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-800 border border-gray-400 rounded-md hover:border-ssw-red hover:text-ssw-red transition-colors leading-5"
-              >
-                <FaUserCircle className="w-4 h-4 mr-1" />
-                View SSW People profile
-              </a>
-            </div>
-          )}
-
-          <TabHeader />
-
-          <div className="rounded-lg border border-gray-100 bg-white p-4">
-            {activeTab === Tabs.MODIFIED && (
-              <>
-                {lastModifiedRules.length === 0 && loadingLastModified ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Spinner size="lg" text="Fetching data from GitHub... this might take a minute." />
+          <div className="min-w-full shadow-lg rounded mb-6">
+            <section className="mb-4 rounded">
+              <div className="flex flex-col gap-6 p-8 bg-[#f5f5f5] rounded-t">
+                <div className="flex gap-6 items-center">
+                  <Image
+                    src={`https://avatars.githubusercontent.com/${queryStringRulesAuthor}`}
+                    alt={queryStringRulesAuthor || ""}
+                    title={queryStringRulesAuthor}
+                    width={100}
+                    height={100}
+                    className="rounded-full object-cover"
+                  />
+                  <div>
+                    <h1 className="text-ssw-red">{author?.fullName || queryStringRulesAuthor}</h1>
+                    <div className="flex flex-wrap gap-4 mt-2">
+                      <a
+                        href={`https://github.com/${queryStringRulesAuthor}`}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        className="inline-flex items-center text-sm text-gray-700 hover:text-ssw-red transition-colors"
+                      >
+                        <RiGithubFill size={16} className="mr-1" />
+                        GitHub Profile
+                      </a>
+                      {author?.slug && (
+                        <a
+                          href={`https://ssw.com.au/people/${author.slug}/`}
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          className="inline-flex items-center text-sm text-gray-700 hover:text-ssw-red transition-colors"
+                        >
+                          <FaUserCircle size={16} className="mr-1" />
+                          SSW People Profile
+                        </a>
+                      )}
+                    </div>
                   </div>
-                ) : lastModifiedRules.length === 0 ? (
-                  <div className="py-4 text-sm text-gray-500">No rules found.</div>
-                ) : (
+                </div>
+              </div>
+
+              <TabHeader />
+
+              <div className="rounded-lg border border-gray-100 bg-white p-4">
+                {activeTab === Tabs.MODIFIED && (
                   <>
-                    <RuleList
-                      rules={paginatedLastModifiedRules}
-                      showFilterControls={false}
-                      showPagination={false}
-                      externalCurrentPage={currentPageLastModified}
-                      externalItemsPerPage={itemsPerPageLastModified}
-                    />
-                    <Pagination
-                      currentPage={currentPageLastModified}
-                      totalPages={totalPagesLastModified}
-                      totalItems={lastModifiedRules.length}
-                      itemsPerPage={itemsPerPageLastModified}
-                      onPageChange={handlePageChangeLastModified}
-                      onItemsPerPageChange={handleItemsPerPageChangeLastModified}
-                    />
+                    {lastModifiedRules.length === 0 && loadingLastModified ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Spinner size="lg" text="Fetching data from GitHub... this might take a minute." />
+                      </div>
+                    ) : lastModifiedRules.length === 0 ? (
+                      <div className="py-4 text-sm text-gray-500">No rules found.</div>
+                    ) : (
+                      <>
+                        <RuleList
+                          rules={paginatedLastModifiedRules}
+                          showFilterControls={false}
+                          showPagination={false}
+                          externalCurrentPage={currentPageLastModified}
+                          externalItemsPerPage={itemsPerPageLastModified}
+                        />
+                        <Pagination
+                          currentPage={currentPageLastModified}
+                          totalPages={totalPagesLastModified}
+                          totalItems={lastModifiedRules.length}
+                          itemsPerPage={itemsPerPageLastModified}
+                          onPageChange={handlePageChangeLastModified}
+                          onItemsPerPageChange={handleItemsPerPageChangeLastModified}
+                        />
+                      </>
+                    )}
                   </>
                 )}
-              </>
-            )}
 
-            {activeTab === Tabs.AUTHORED && (
-              <>
-                {authoredRules.length === 0 && loadingAuthored ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Spinner size="lg" text="Loading authored rules... this might take a minute." />
-                  </div>
-                ) : authoredRules.length === 0 ? (
-                  <div className="py-4 text-sm text-gray-500">No rules found.</div>
-                ) : (
+                {activeTab === Tabs.AUTHORED && (
                   <>
-                    <RuleList
-                      rules={paginatedAuthoredRules}
-                      showFilterControls={false}
-                      showPagination={false}
-                      externalCurrentPage={currentPageAuthored}
-                      externalItemsPerPage={itemsPerPageAuthored}
-                    />
-                    {!authoredFullyLoaded && loadingMoreAuthored && (
-                      <div className="mt-4 text-center text-sm text-gray-500">Loading more authored rules...</div>
-                    )}
+                    {authoredRules.length === 0 && loadingAuthored ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Spinner size="lg" text="Loading authored rules... this might take a minute." />
+                      </div>
+                    ) : authoredRules.length === 0 ? (
+                      <div className="py-4 text-sm text-gray-500">No rules found.</div>
+                    ) : (
+                      <>
+                        <RuleList
+                          rules={paginatedAuthoredRules}
+                          showFilterControls={false}
+                          showPagination={false}
+                          externalCurrentPage={currentPageAuthored}
+                          externalItemsPerPage={itemsPerPageAuthored}
+                        />
+                        {!authoredFullyLoaded && loadingMoreAuthored && (
+                          <div className="mt-4 text-center text-sm text-gray-500">Loading more authored rules...</div>
+                        )}
 
-                    {authoredFullyLoaded && (
-                      <Pagination
-                        currentPage={currentPageAuthored}
-                        totalPages={totalPagesAuthored}
-                        totalItems={authoredRules.length}
-                        itemsPerPage={itemsPerPageAuthored}
-                        onPageChange={handlePageChangeAuthored}
-                        onItemsPerPageChange={handleItemsPerPageChangeAuthored}
+                        {authoredFullyLoaded && (
+                          <Pagination
+                            currentPage={currentPageAuthored}
+                            totalPages={totalPagesAuthored}
+                            totalItems={authoredRules.length}
+                            itemsPerPage={itemsPerPageAuthored}
+                            onPageChange={handlePageChangeAuthored}
+                            onItemsPerPageChange={handleItemsPerPageChangeAuthored}
+                          />
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+
+                {activeTab === Tabs.BOOKMARKED && showBookmarks && (
+                  <>
+                    {isLoadingBookmarks ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Spinner size="lg" />
+                      </div>
+                    ) : (
+                      <RuleList
+                        rules={bookmarkRules}
+                        type={"bookmark"}
+                        noContentMessage="No bookmarks? Use them to save rules for later!"
+                        onBookmarkRemoved={handleBookmarkRemoved}
                       />
                     )}
                   </>
                 )}
-              </>
-            )}
+              </div>
+            </section>
           </div>
         </div>
       </div>

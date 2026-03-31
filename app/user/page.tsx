@@ -1,19 +1,15 @@
 import { Suspense } from "react";
-import Layout from "@/app/(home)/components/layout/layout";
-import { Section } from "@/app/(home)/components/layout/section";
-import { fetchRuleCount } from "@/lib/services/rules";
+import { Section } from "@/components/layout/section";
 import { siteUrl } from "@/site-config";
 import UserRulesClientPage from "./client-page";
 
 export const revalidate = 300;
 
 export default async function UserRulesPage() {
-  const ruleCount = await fetchRuleCount();
-
   return (
     <Section>
       <Suspense fallback={null}>
-        <UserRulesClientPage ruleCount={ruleCount} />
+        <UserRulesClientPage />
       </Suspense>
     </Section>
   );
@@ -21,7 +17,7 @@ export default async function UserRulesPage() {
 
 export async function generateMetadata() {
   return {
-    title: "My Rules | SSW.Rules",
+    title: "Profile | SSW.Rules",
     alternates: {
       canonical: `${siteUrl}/user`,
     },

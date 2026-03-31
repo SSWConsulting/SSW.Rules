@@ -1,6 +1,6 @@
 import React from "react";
 import { Collection, useCMS, wrapFieldsWithMeta } from "tinacms";
-import { embedTemplates } from "@/app/(home)/components/embeds";
+import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
 import { CategoryMultiSelectorInput } from "../fields/CategoryMultiSelector";

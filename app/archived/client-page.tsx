@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import React, { useMemo } from "react";
-import HomepageSidebarCards from "@/app/(home)/components/HomepageSidebarCards";
-import LatestRulesCard from "@/app/(home)/components/LatestRulesCard";
-import SearchBar from "@/app/(home)/components/SearchBarWrapper";
-import { Card } from "@/app/(home)/components/ui/card";
+import HomepageSidebarCards from "@/components/HomepageSidebarCards";
+import LatestRulesCard from "@/components/LatestRulesCard";
+import SearchBar from "@/components/SearchBarWrapper";
+import { Card } from "@/components/ui/card";
 import { Rule } from "@/models/Rule";
 
 export interface ArchivedClientPageProps {

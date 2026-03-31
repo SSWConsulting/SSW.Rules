@@ -1,8 +1,8 @@
 "use client";
 
 import { useTina } from "tinacms/dist/react";
-import ActivityRulesView from "@/app/(home)/components/ActivityRulesView";
-import HomepageHeader from "@/app/(home)/components/HomepageHeader";
+import ActivityRulesView from "@/components/ActivityRulesView";
+import HomepageHeader from "@/components/HomepageHeader";
 import { ActivityRule } from "@/models/ActivityRule";
 import { RecentComment } from "@/models/RecentComment";
 
@@ -27,13 +27,7 @@ export function TinaActivityWrapper({ rules, total, recentComments, latestRulesD
   return (
     <>
       <HomepageHeader homepage={homepage} ruleCount={ruleCount} />
-      <ActivityRulesView
-        rules={rules}
-        total={total}
-        recentComments={recentComments}
-        latestRulesData={latestRulesData}
-        homepage={homepage}
-      />
+      <ActivityRulesView rules={rules} total={total} recentComments={recentComments} latestRulesData={latestRulesData} homepage={homepage} />
     </>
   );
 }

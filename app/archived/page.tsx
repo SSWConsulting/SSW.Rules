@@ -1,6 +1,6 @@
 import React from "react";
-import Breadcrumbs from "@/app/(home)/components/Breadcrumbs";
-import { Section } from "@/app/(home)/components/layout/section";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { Section } from "@/components/layout/section";
 import { fetchAllArchivedRules, fetchHomepageData, fetchLatestRules } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import ArchivedClientPage from "./client-page";

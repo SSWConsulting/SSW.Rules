@@ -1,6 +1,6 @@
 import React from "react";
-import { Section } from "@/app/(home)/components/layout/section";
 import categoryTitleIndex from "@/category-uri-title-map.json";
+import { Section } from "@/components/layout/section";
 import { extractBodyPreview } from "@/lib/bodyUtils";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";

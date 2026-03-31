@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/app/(home)/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 export function Illustration(props: React.ComponentPropsWithoutRef<"svg">) {
   return (

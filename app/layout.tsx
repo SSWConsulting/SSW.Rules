@@ -2,12 +2,12 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import { Metadata } from "next";
 import { Inter as FontSans, Lato, Nunito } from "next/font/google";
 import React from "react";
-import SiteLayout from "@/app/(home)/components/layout/layout";
+import SiteLayout from "@/components/layout/layout";
 import { cn } from "@/lib/utils";
 import "@/styles.css";
-import UserClientProvider from "@/app/(home)/components/auth/UserClientProvider";
-import AppInsightsProvider from "@/app/(home)/components/providers/AppInsightsProvider";
-import { TailwindIndicator } from "@/app/(home)/components/ui/breakpoint-indicator";
+import UserClientProvider from "@/components/auth/UserClientProvider";
+import AppInsightsProvider from "@/components/providers/AppInsightsProvider";
+import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
 
 const fontSans = FontSans({
   subsets: ["latin"],

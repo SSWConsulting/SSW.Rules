@@ -2,14 +2,14 @@
 
 import React from "react";
 import { useTina } from "tinacms/dist/react";
-import AboutSSWCard from "@/app/(home)/components/AboutSSWCard";
-import HelpCard from "@/app/(home)/components/HelpCard";
-import HelpImproveCard from "@/app/(home)/components/HelpImproveCard";
-import HomepageHeader from "@/app/(home)/components/HomepageHeader";
-import JoinConversationCard from "@/app/(home)/components/JoinConversationCard";
-import LatestRulesCard from "@/app/(home)/components/LatestRulesCard";
-import QuickLinksCard from "@/app/(home)/components/QuickLinksCard";
-import WhyRulesCard from "@/app/(home)/components/WhyRulesCard";
+import AboutSSWCard from "@/components/AboutSSWCard";
+import HelpCard from "@/components/HelpCard";
+import HelpImproveCard from "@/components/HelpImproveCard";
+import HomepageHeader from "@/components/HomepageHeader";
+import JoinConversationCard from "@/components/JoinConversationCard";
+import LatestRulesCard from "@/components/LatestRulesCard";
+import QuickLinksCard from "@/components/QuickLinksCard";
+import WhyRulesCard from "@/components/WhyRulesCard";
 import { LatestRule } from "@/models/LatestRule";
 
 interface TinaHomepageWrapperProps {
@@ -32,9 +32,7 @@ export default function TinaHomepageWrapper({ tinaHomepageProps, ruleCount, late
     <>
       <HomepageHeader homepage={homepage} ruleCount={ruleCount} />
       <div className="layout-two-columns">
-        <div className="layout-main-section">
-          {children}
-        </div>
+        <div className="layout-main-section">{children}</div>
         <div className="layout-sidebar max-sm:mt-0">
           <LatestRulesCard rules={latestRules} />
           <QuickLinksCard data={homepage?.quickLinks} />

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
-import Breadcrumbs from "@/app/(home)/components/Breadcrumbs";
-import { CategoryEdit } from "@/app/(home)/components/CategoryEdit";
-import RuleListWrapper from "@/app/(home)/components/rule-list/rule-list-wrapper";
-import MarkdownComponentMapping from "@/app/(home)/components/tina-markdown/markdown-component-mapping";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { CategoryEdit } from "@/components/CategoryEdit";
+import RuleListWrapper from "@/components/rule-list/rule-list-wrapper";
+import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 
 interface ServerCategoryPageProps {
   category: any;

@@ -1,4 +1,4 @@
-import { Section } from "@/app/(home)/components/layout/section";
+import { Section } from "@/components/layout/section";
 
 export default function Loading() {
   return (

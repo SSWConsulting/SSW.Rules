@@ -4,8 +4,8 @@ import { getAccessToken } from "@auth0/nextjs-auth0";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { PiWarningFill } from "react-icons/pi";
-import { useAuth } from "@/app/(home)/components/auth/UserClientProvider";
-import RuleList from "@/app/(home)/components/rule-list";
+import { useAuth } from "@/components/auth/UserClientProvider";
+import RuleList from "@/components/rule-list";
 import { BookmarkService } from "@/lib/bookmarkService";
 import { Rule } from "@/models/Rule";
 

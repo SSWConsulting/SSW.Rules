@@ -1,6 +1,6 @@
-import Breadcrumbs from "@/app/(home)/components/Breadcrumbs";
-import { Section } from "@/app/(home)/components/layout/section";
-import SearchBar from "@/app/(home)/components/SearchBarWrapper";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { Section } from "@/components/layout/section";
+import SearchBar from "@/components/SearchBarWrapper";
 
 export const revalidate = 21600; // 6 hours
 

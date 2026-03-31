@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import type { GitHubCommit } from "@/app/(home)/components/last-updated-by/types";
+import type { GitHubCommit } from "@/components/last-updated-by/types";
 import { getGitHubAppToken } from "@/lib/services/github/github.utils";
 import {
   fetchGitHub,

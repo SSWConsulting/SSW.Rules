@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import Link from "next/link";
-import { CustomLink } from "@/app/(home)/components/customLink";
+import { CustomLink } from "@/components/customLink";
 
 jest.mock("next/link", () => jest.fn(({ prefetch, ...props }) => <a {...props} />));
 

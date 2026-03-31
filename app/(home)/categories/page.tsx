@@ -1,7 +1,7 @@
 import Link from "next/link";
-import CategoryActionButtons from "@/app/(home)/components/CategoryActionButtons";
-import { Card } from "@/app/(home)/components/ui/card";
 import TinaHomepageWrapper from "@/app/(home)/TinaHomepageWrapper";
+import CategoryActionButtons from "@/components/CategoryActionButtons";
+import { Card } from "@/components/ui/card";
 import { fetchCategoryRuleCounts, fetchHomepageData, fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
@@ -29,16 +29,11 @@ export default async function CategoriesPage() {
     fetchRuleCount(),
   ]);
 
-  const getTopCategoryTotal = (subCategories: any[]) =>
-    subCategories.reduce((total, category) => total + (categoryRuleCounts[category._sys.filename] || 0), 0);
+  const getTopCategoryTotal = (subCategories: any[]) => subCategories.reduce((total, category) => total + (categoryRuleCounts[category._sys.filename] || 0), 0);
 
   return (
     <>
-      <TinaHomepageWrapper
-        tinaHomepageProps={homePageData as { query: string; variables: any; data: any }}
-        ruleCount={ruleCount}
-        latestRules={latestRules}
-      >
+      <TinaHomepageWrapper tinaHomepageProps={homePageData as { query: string; variables: any; data: any }} ruleCount={ruleCount} latestRules={latestRules}>
         {topCategories
           .filter(
             (topCategory) =>

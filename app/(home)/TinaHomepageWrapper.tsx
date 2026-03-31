@@ -13,7 +13,7 @@ import WhyRulesCard from "@/components/WhyRulesCard";
 import { LatestRule } from "@/models/LatestRule";
 
 interface TinaHomepageWrapperProps {
-  tinaHomepageProps: { query: string; variables: any; data: any };
+  tinaHomepageProps: { query: string; variables: any; data: any } | null;
   ruleCount: number;
   latestRules: LatestRule[];
   children: React.ReactNode;
@@ -21,9 +21,9 @@ interface TinaHomepageWrapperProps {
 
 export default function TinaHomepageWrapper({ tinaHomepageProps, ruleCount, latestRules, children }: TinaHomepageWrapperProps) {
   const { data } = useTina({
-    query: tinaHomepageProps.query,
-    variables: tinaHomepageProps.variables,
-    data: tinaHomepageProps.data,
+    query: tinaHomepageProps?.query ?? "",
+    variables: tinaHomepageProps?.variables ?? {},
+    data: tinaHomepageProps?.data ?? {},
   });
 
   const homepage = data?.homepage;

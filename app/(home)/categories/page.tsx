@@ -33,7 +33,7 @@ export default async function CategoriesPage() {
 
   return (
     <>
-      <TinaHomepageWrapper tinaHomepageProps={homePageData as { query: string; variables: any; data: any }} ruleCount={ruleCount} latestRules={latestRules}>
+      <TinaHomepageWrapper tinaHomepageProps={homePageData} ruleCount={ruleCount} latestRules={latestRules}>
         {topCategories
           .filter(
             (topCategory) =>

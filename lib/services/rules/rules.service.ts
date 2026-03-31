@@ -215,7 +215,7 @@ export const fetchHomepageData = cache(async () => {
     return { data: res.data, query: res.query, variables: res.variables };
   } catch (error) {
     console.error("Failed to fetch homepage data from Tina CMS:", error);
-    return { data: null, query: null, variables: { relativePath: "index.json" } };
+    return null;
   }
 });
 

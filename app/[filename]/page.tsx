@@ -5,6 +5,7 @@ import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 import { extractBodyPreview } from "@/lib/bodyUtils";
+import { trackServerException, SeverityLevel } from "@/lib/server/appInsightsServer";
 import ClientFallbackPage from "./ClientFallbackPage";
 import { TinaCategoryWrapper } from "./TinaCategoryWrapper";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
@@ -27,7 +28,10 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
         after,
       });
     } catch (err: any) {
-      console.warn(`[getFullRelativePathFromFilename] topCategoryWithIndexQuery failed for filename="${filename}":`, err?.message || err);
+      trackServerException(err, {
+        component: "getFullRelativePathFromFilename",
+        filename,
+      }, SeverityLevel.Warning);
       return null;
     }
 
@@ -54,9 +58,21 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
   return null;
 };
 
-const getCategoryData = async (filename: string) => {
+/**
+ * Result type that distinguishes between "no data" and "TinaCMS error".
+ * When `tinaError` is set the caller should re-throw during ISR so that
+ * Next.js keeps serving the previously cached (stale) page instead of
+ * replacing it with a 404 / error page.
+ */
+type DataResult<T> = { data: T; tinaError?: never } | { data: null; tinaError?: Error };
+
+const getCategoryData = async (filename: string): Promise<DataResult<{
+  data: any;
+  query: string;
+  variables: { relativePath: string };
+}>> => {
   const fullPath = await getFullRelativePathFromFilename(filename);
-  if (!fullPath) return;
+  if (!fullPath) return { data: null };
 
   try {
     // Tina's default client errorPolicy is "throw" which can 500 a whole page if a referenced rule is missing.
@@ -76,16 +92,23 @@ const getCategoryData = async (filename: string) => {
       console.warn(`[getCategoryData] Missing rule references in category relativePath="${fullPath}":\n${missingRecordErrors.join("\n")}`);
     }
 
-    if (!res?.data) return null;
+    if (!res?.data) return { data: null };
 
     return {
-      data: res.data,
-      query: String(CategoryWithRulesQueryDocument),
-      variables: { relativePath: `${fullPath}` },
+      data: {
+        data: res.data,
+        query: String(CategoryWithRulesQueryDocument),
+        variables: { relativePath: `${fullPath}` },
+      },
     };
   } catch (error) {
-    console.error(`[getCategoryData] failed for filename="${filename}":`, error);
-    return null;
+    const err = error instanceof Error ? error : new Error(String(error));
+    trackServerException(err, {
+      component: "getCategoryData",
+      filename,
+      fullPath,
+    });
+    return { data: null, tinaError: err };
   }
 };
 
@@ -94,7 +117,14 @@ export interface BrokenReferences {
   paths: string[];
 }
 
-const getRuleData = async (filename: string) => {
+type RuleDataResult = {
+  data: any;
+  query: any;
+  variables: any;
+  brokenReferences: BrokenReferences | null;
+};
+
+const getRuleData = async (filename: string): Promise<DataResult<RuleDataResult>> => {
   try {
     const basicProps = await client.queries.ruleDataBasic({
       relativePath: filename + "/rule.mdx",
@@ -106,10 +136,12 @@ const getRuleData = async (filename: string) => {
       });
 
       return {
-        data: fullProps.data,
-        query: fullProps.query,
-        variables: fullProps.variables,
-        brokenReferences: null as BrokenReferences | null,
+        data: {
+          data: fullProps.data,
+          query: fullProps.query,
+          variables: fullProps.variables,
+          brokenReferences: null,
+        },
       };
     } catch (relatedError) {
       const errorMessage = relatedError instanceof Error ? relatedError.message : String(relatedError);
@@ -125,23 +157,29 @@ const getRuleData = async (filename: string) => {
 
       return {
         data: {
-          ...basicProps.data,
-          rule: {
-            ...basicProps.data.rule,
-            related: [], // Clear broken related rules
+          data: {
+            ...basicProps.data,
+            rule: {
+              ...basicProps.data.rule,
+              related: [], // Clear broken related rules
+            },
           },
+          query: basicProps.query,
+          variables: basicProps.variables,
+          brokenReferences: {
+            detected: true,
+            paths: brokenPaths,
+          } as BrokenReferences,
         },
-        query: basicProps.query,
-        variables: basicProps.variables,
-        brokenReferences: {
-          detected: true,
-          paths: brokenPaths,
-        } as BrokenReferences,
       };
     }
   } catch (error) {
-    console.error(`[getRuleData] failed for filename="${filename}":`, error);
-    return null;
+    const err = error instanceof Error ? error : new Error(String(error));
+    trackServerException(err, {
+      component: "getRuleData",
+      filename,
+    });
+    return { data: null, tinaError: err };
   }
 };
 
@@ -286,8 +324,8 @@ export default async function Page({
 }) {
   const { filename } = await params;
 
-  const category = await getCategoryData(filename);
-  if (category?.data) {
+  const categoryResult = await getCategoryData(filename);
+  if (categoryResult.data) {
     const sp = (await searchParams) ?? {};
     const includeArchived = String(sp.archived ?? "") === "true";
     const view = String(sp.view ?? "blurb") as "titleOnly" | "blurb" | "all";
@@ -297,9 +335,9 @@ export default async function Page({
     return (
       <Section>
         <TinaCategoryWrapper
-          tinaQueryProps={category}
+          tinaQueryProps={categoryResult.data}
           serverCategoryPageProps={{
-            path: category.variables?.relativePath,
+            path: categoryResult.data.variables?.relativePath,
             includeArchived,
             view,
             page,
@@ -310,20 +348,28 @@ export default async function Page({
     );
   }
 
-  const rule = await getRuleData(filename);
+  const ruleResult = await getRuleData(filename);
 
-  if (rule?.data) {
+  if (ruleResult.data) {
     return (
       <Section>
         <TinaRuleWrapper
-          tinaQueryProps={rule}
+          tinaQueryProps={ruleResult.data}
           serverRulePageProps={{
-            rule: rule.data.rule,
-            brokenReferences: rule.brokenReferences,
+            rule: ruleResult.data.data.rule,
+            brokenReferences: ruleResult.data.brokenReferences,
           }}
         />
       </Section>
     );
+  }
+
+  // If we got here because TinaCMS threw (e.g. stale tina-lock.json), re-throw
+  // so that Next.js ISR keeps serving the previously cached (stale) page
+  // instead of replacing it with a 404 / error page.
+  const tinaError = categoryResult.tinaError || ruleResult.tinaError;
+  if (tinaError) {
+    throw tinaError;
   }
 
   // If data is not found statically, try fetching on client side with branch support
@@ -335,9 +381,9 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
   const { filename } = await params;
 
   try {
-    const category = await getCategoryData(filename);
-    if (category?.data?.category && category.data.category.__typename === "CategoryCategory") {
-      const categoryData = category.data.category as any;
+    const categoryResult = await getCategoryData(filename);
+    if (categoryResult.data?.data?.category && categoryResult.data.data.category.__typename === "CategoryCategory") {
+      const categoryData = categoryResult.data.data.category as any;
       const metadata: any = {
         title: `${categoryData.title} | SSW.Rules`,
         alternates: {
@@ -352,21 +398,22 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
       return metadata;
     }
 
-    const rule = await getRuleData(filename);
-    if (rule?.data?.rule?.title) {
+    const ruleResult = await getRuleData(filename);
+    if (ruleResult.data?.data?.rule?.title) {
+      const rule = ruleResult.data.data.rule;
       const metadata: any = {
-        title: `${rule.data.rule.title} | SSW.Rules`,
+        title: `${rule.title} | SSW.Rules`,
         alternates: {
           canonical: `${siteUrl}/${filename}`,
         },
       };
 
       metadata.description =
-        rule.data.rule.seoDescription ||
-        extractBodyPreview(rule.data.rule.body) ||
+        rule.seoDescription ||
+        extractBodyPreview(rule.body) ||
         undefined;
 
-      if (rule.data.rule.isArchived) {
+      if (rule.isArchived) {
         metadata.robots = { index: false, follow: true };
       }
 

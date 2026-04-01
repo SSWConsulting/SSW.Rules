@@ -9,6 +9,7 @@ import QuickLinksCard from "@/components/QuickLinksCard";
 import { Card } from "@/components/ui/card";
 import WhyRulesCard from "@/components/WhyRulesCard";
 import { fetchCategoryRuleCounts, fetchLatestRules, fetchQuickLinks } from "@/lib/services/rules";
+import { trackServerException } from "@/lib/server/appInsightsServer";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 
@@ -21,18 +22,23 @@ async function fetchTopCategoriesWithSubcategories() {
     return [];
   }
 
-  const topCategories = result.data.category.index?.map((item: any) => item?.top_category).filter(Boolean) || [];
-
-  return topCategories;
+  return result.data.category.index?.map((item: any) => item?.top_category).filter(Boolean) || [];
 }
 
 export default async function CategoriesPage() {
-  const [topCategories, latestRules, categoryRuleCounts, quickLinks] = await Promise.all([
-    fetchTopCategoriesWithSubcategories(),
-    fetchLatestRules(),
-    fetchCategoryRuleCounts(),
-    fetchQuickLinks(),
-  ]);
+  let topCategories, latestRules, categoryRuleCounts, quickLinks;
+  try {
+    [topCategories, latestRules, categoryRuleCounts, quickLinks] = await Promise.all([
+      fetchTopCategoriesWithSubcategories(),
+      fetchLatestRules(),
+      fetchCategoryRuleCounts(),
+      fetchQuickLinks(),
+    ]);
+  } catch (error) {
+    // Log to Application Insights and re-throw so ISR keeps stale cached page
+    trackServerException(error, { component: "CategoriesPage" });
+    throw error;
+  }
 
   const getTopCategoryTotal = (subCategories: any[]) =>
     subCategories.reduce((total, category) => total + (categoryRuleCounts[category._sys.filename] || 0), 0);

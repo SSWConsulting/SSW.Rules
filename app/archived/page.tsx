@@ -1,23 +1,30 @@
 import React from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Section } from "@/components/layout/section";
-import { fetchAllArchivedRules, fetchLatestRules } from "@/lib/services/rules";
+import { fetchAllArchivedRules, fetchLatestRules, fetchQuickLinks } from "@/lib/services/rules";
+import { trackServerException } from "@/lib/server/appInsightsServer";
 import { siteUrl } from "@/site-config";
-import client from "@/tina/__generated__/client";
-import { QuickLink } from "@/types/quickLink";
 import ArchivedClientPage from "./client-page";
 
 export const revalidate = 300;
 
-async function fetchQuickLinks(): Promise<QuickLink[]> {
-  const res = await client.queries.global({
-    relativePath: "index.json",
-  });
-  return Array.isArray(res.data.global.quickLinks?.links) ? (res.data.global.quickLinks.links as QuickLink[]) : [];
-}
-
 export default async function ArchivedPage() {
-  const [archivedRules, latestRules, quickLinks] = await Promise.all([fetchAllArchivedRules(), fetchLatestRules(), fetchQuickLinks()]);
+  let archivedRules, latestRules, quickLinks;
+  try {
+    [archivedRules, latestRules, quickLinks] = await Promise.all([fetchAllArchivedRules(), fetchLatestRules(), fetchQuickLinks()]);
+  } catch (error) {
+    trackServerException(error, { component: "ArchivedPage" });
+    return (
+      <Section>
+        <div className="flex flex-col items-center py-20 text-center">
+          <p className="text-lg text-gray-500">
+            This page is temporarily unavailable due to a data issue.
+            Please try refreshing in a few minutes.
+          </p>
+        </div>
+      </Section>
+    );
+  }
 
   const archivedRulesWithReason = archivedRules.filter((rule) => rule.archivedreason?.trim());
 

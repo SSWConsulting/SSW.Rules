@@ -59,10 +59,10 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
 };
 
 /**
- * Result type that distinguishes between "no data" and "TinaCMS error".
- * When `tinaError` is set the caller should re-throw during ISR so that
- * Next.js keeps serving the previously cached (stale) page instead of
- * replacing it with a 404 / error page.
+ * Result type that distinguishes between "no data" (content genuinely
+ * doesn't exist) and "TinaCMS error" (e.g. stale tina-lock.json).
+ * When `tinaError` is set the page renders an inline fallback instead
+ * of falling through to ClientFallbackPage / notFound.
  */
 type DataResult<T> = { data: T; tinaError?: never } | { data: null; tinaError?: Error };
 
@@ -364,14 +364,24 @@ export default async function Page({
     );
   }
 
-  // If we got here because TinaCMS threw (e.g. stale tina-lock.json),
-  // re-throw so that the nearest error boundary (app/error.tsx) renders
-  // a user-friendly error page instead of a blank or 404 page.
-  // The error is already tracked in Application Insights by the catch
-  // blocks in getCategoryData / getRuleData above.
+  // If we got here because TinaCMS errored (e.g. stale tina-lock.json or
+  // query timeout), render a fallback instead of throwing.
+  // NOTE: we cannot throw here because during on-demand ISR revalidation
+  // (triggered by revalidatePath), thrown errors bypass error.tsx and
+  // result in a raw 500. The error is already tracked in Application
+  // Insights by the catch blocks in getCategoryData / getRuleData above.
   const tinaError = categoryResult.tinaError || ruleResult.tinaError;
   if (tinaError) {
-    throw tinaError;
+    return (
+      <Section>
+        <div className="flex flex-col items-center py-20 text-center">
+          <p className="text-lg text-gray-500">
+            This page is temporarily unavailable due to a data issue.
+            Please try refreshing in a few minutes.
+          </p>
+        </div>
+      </Section>
+    );
   }
 
   // If data is not found statically, try fetching on client side with branch support

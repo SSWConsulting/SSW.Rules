@@ -15,6 +15,8 @@ export async function GET(request: NextRequest) {
 
     // First, try the basic query (without related field resolution)
     // This ensures we always get the rule data even if references are broken
+    // First, try the basic query (without related field resolution)
+    // This ensures we always get the rule data even if references are broken
     const basicResult = fetchOptions
       ? await client.queries.ruleDataBasic({ relativePath }, fetchOptions)
       : await client.queries.ruleDataBasic({ relativePath });

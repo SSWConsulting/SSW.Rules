@@ -35,10 +35,19 @@ export default async function Home() {
       throw error;
     }
 
-    // Log to Application Insights, then re-throw so error.tsx renders a
-    // user-friendly error page
+    // Log to Application Insights, then render inline fallback.
+    // NOTE: we cannot throw here because during on-demand ISR revalidation
+    // (triggered by revalidatePath), thrown errors bypass error.tsx and
+    // result in a raw 500.
     trackServerException(error, { component: "HomePage" });
-    throw error;
+    return (
+      <div className="flex flex-col items-center py-20 text-center">
+        <p className="text-lg text-gray-500">
+          This page is temporarily unavailable due to a data issue.
+          Please try refreshing in a few minutes.
+        </p>
+      </div>
+    );
   }
 }
 

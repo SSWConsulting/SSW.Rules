@@ -364,9 +364,11 @@ export default async function Page({
     );
   }
 
-  // If we got here because TinaCMS threw (e.g. stale tina-lock.json), re-throw
-  // so that Next.js ISR keeps serving the previously cached (stale) page
-  // instead of replacing it with a 404 / error page.
+  // If we got here because TinaCMS threw (e.g. stale tina-lock.json),
+  // re-throw so that the nearest error boundary (app/error.tsx) renders
+  // a user-friendly error page instead of a blank or 404 page.
+  // The error is already tracked in Application Insights by the catch
+  // blocks in getCategoryData / getRuleData above.
   const tinaError = categoryResult.tinaError || ruleResult.tinaError;
   if (tinaError) {
     throw tinaError;

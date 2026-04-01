@@ -1,5 +1,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
+import client from "@/tina/__generated__/client";
+import { trackServerException, SeverityLevel } from "@/lib/server/appInsightsServer";
 
 enum TINA_CONTENT_CHANGE_TYPE {
   Modified = "content.modified",
@@ -22,6 +24,27 @@ export async function POST(req: Request) {
     const changedPaths: string[] = Array.isArray(body?.paths) ? body.paths : [];
     if (changedPaths.length === 0) {
       return NextResponse.json({ revalidated: false, reason: "No paths in payload" }, { status: 200 });
+    }
+
+    // Health check: verify TinaCMS queries work before invalidating the cache.
+    // If tina-lock.json is stale, queries will fail and regeneration would produce
+    // broken pages. Better to keep serving the previously cached version.
+    try {
+      await client.queries.allRulesPaths({ first: 1 });
+    } catch (healthCheckError) {
+      trackServerException(healthCheckError, {
+        component: "revalidate-webhook",
+        reason: "TinaCMS health check failed — skipping revalidation to preserve cached pages",
+        changedPaths: changedPaths.join(", "),
+      }, SeverityLevel.Critical);
+      return NextResponse.json(
+        {
+          revalidated: false,
+          reason: "TinaCMS health check failed — cached pages preserved",
+          error: healthCheckError instanceof Error ? healthCheckError.message : String(healthCheckError),
+        },
+        { status: 200 },
+      );
     }
 
     const routesToRevalidate = new Set<string>();
@@ -83,8 +106,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ revalidated: true, routes: Array.from(routesToRevalidate) });
   } catch (err) {
-    console.error("Error during revalidation", err);
-    return NextResponse.json({ message: "Error revalidating" }, { status: 500 });
+    trackServerException(err, { component: "revalidate-webhook" });
+    return NextResponse.json({ message: "Error revalidating", details: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
 }
 

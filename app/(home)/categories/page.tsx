@@ -35,7 +35,8 @@ export default async function CategoriesPage() {
       fetchQuickLinks(),
     ]);
   } catch (error) {
-    // Log to Application Insights and re-throw so ISR keeps stale cached page
+    // Log to Application Insights, then re-throw so error.tsx renders a
+    // user-friendly error page
     trackServerException(error, { component: "CategoriesPage" });
     throw error;
   }

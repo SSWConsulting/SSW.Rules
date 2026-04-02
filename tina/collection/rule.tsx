@@ -132,7 +132,7 @@ const Rule: Collection = {
         {
           type: "string",
           description:
-            "Use an SSW People link for SSW contributors or any other public profile/website link for non-SSW authors. E.g. \"https://www.ssw.com.au/people/adam-cogan\" or \"https://github.com/octocat\"",
+            "Use an SSW People link for SSW contributors or any other public profile/website link for non-SSW authors. E.g. \"https://www.ssw.com.au/people/adam-cogan\" or a GitHub profile such as \"https://github.com/octocat\"",
           name: "url",
           label: "Url",
         },

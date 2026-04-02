@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { GroupListFieldPlugin, ImageField, MdxFieldPluginExtendible, ToggleFieldPlugin, wrapFieldsWithMeta, ListFieldPlugin } from "tinacms";
 
 /**
@@ -228,8 +228,9 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
   const isObjectListField = isListField && field.type === "object";
   const isPrimitiveListField = isListField && field.type !== "object";
   const listValue = Array.isArray(input.value) ? input.value : [];
+  const defaultValueOnEmptyRef = useRef(field.ui?.defaultValueOnEmpty);
 
-  const getUiValue = (valueOrResolver: any) => {
+  const resolveUiFieldValue = (valueOrResolver: any) => {
     if (typeof valueOrResolver === "function") {
       return valueOrResolver(getFormValues());
     }
@@ -312,18 +313,31 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
 
   // Use custom condition if provided, otherwise use default behavior
   const shouldHide = customCondition ? customShouldHide : shouldHideByDefault;
+  const emptyListMessage = useMemo(() => {
+    if (!isObjectListField || listValue.length > 0) {
+      return undefined;
+    }
+
+    return resolveUiFieldValue(field.ui?.emptyListMessage);
+  }, [field.ui?.emptyListMessage, isObjectListField, listValue.length]);
+
+  useEffect(() => {
+    defaultValueOnEmptyRef.current = field.ui?.defaultValueOnEmpty;
+  }, [field.ui?.defaultValueOnEmpty]);
 
   useEffect(() => {
     if (shouldHide || !isObjectListField || listValue.length > 0 || hasAppliedDefaultListValue.current) {
       return;
     }
 
-    const defaultValue = getUiValue(field.ui?.defaultValueOnEmpty);
+    const currentFormValues = form?.values || form?.getState?.()?.values || {};
+    const defaultValueOnEmpty = defaultValueOnEmptyRef.current;
+    const defaultValue = typeof defaultValueOnEmpty === "function" ? defaultValueOnEmpty(currentFormValues) : defaultValueOnEmpty;
     if (Array.isArray(defaultValue) && defaultValue.length > 0) {
       input.onChange(defaultValue);
       hasAppliedDefaultListValue.current = true;
     }
-  }, [field.ui, input, isObjectListField, listValue.length, shouldHide]);
+  }, [form, input, isObjectListField, listValue.length, shouldHide]);
 
   // ============================================================================
   // HANDLE FIELD VISIBILITY
@@ -385,8 +399,6 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
         if (isListField) {
           // Object lists → GroupList
           if (isObjectListField) {
-            const emptyListMessage = listValue.length === 0 ? getUiValue(field.ui?.emptyListMessage) : undefined;
-
             return (
               <div ref={containerRef}>
                 {typeof emptyListMessage === "string" && emptyListMessage.trim() ? (

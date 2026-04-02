@@ -34,6 +34,7 @@ import { GroupListFieldPlugin, ImageField, MdxFieldPluginExtendible, ToggleField
 export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
   const { field, tinaForm, input, form, meta } = props;
   const containerRef = useRef<HTMLDivElement>(null);
+  const hasAppliedDefaultListValue = useRef(false);
 
   // ============================================================================
   // HELPER FUNCTIONS
@@ -226,6 +227,15 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
   const isAlwaysVisible = isAlwaysVisibleField();
   const isObjectListField = isListField && field.type === "object";
   const isPrimitiveListField = isListField && field.type !== "object";
+  const listValue = Array.isArray(input.value) ? input.value : [];
+
+  const getUiValue = (valueOrResolver: any) => {
+    if (typeof valueOrResolver === "function") {
+      return valueOrResolver(getFormValues());
+    }
+
+    return valueOrResolver;
+  };
 
   // ============================================================================
   // CUSTOM CONDITION LOGIC
@@ -303,6 +313,18 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
   // Use custom condition if provided, otherwise use default behavior
   const shouldHide = customCondition ? customShouldHide : shouldHideByDefault;
 
+  useEffect(() => {
+    if (shouldHide || !isObjectListField || listValue.length > 0 || hasAppliedDefaultListValue.current) {
+      return;
+    }
+
+    const defaultValue = getUiValue(field.ui?.defaultValueOnEmpty);
+    if (Array.isArray(defaultValue) && defaultValue.length > 0) {
+      input.onChange(defaultValue);
+      hasAppliedDefaultListValue.current = true;
+    }
+  }, [field.ui, input, isObjectListField, listValue.length, shouldHide]);
+
   // ============================================================================
   // HANDLE FIELD VISIBILITY
   // ============================================================================
@@ -363,8 +385,13 @@ export const ConditionalHiddenField = wrapFieldsWithMeta((props: any) => {
         if (isListField) {
           // Object lists → GroupList
           if (isObjectListField) {
+            const emptyListMessage = listValue.length === 0 ? getUiValue(field.ui?.emptyListMessage) : undefined;
+
             return (
               <div ref={containerRef}>
+                {typeof emptyListMessage === "string" && emptyListMessage.trim() ? (
+                  <div className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">{emptyListMessage}</div>
+                ) : null}
                 <GroupListFieldPlugin.Component {...propsWithoutError} />
               </div>
             );

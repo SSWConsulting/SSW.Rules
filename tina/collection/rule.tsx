@@ -7,6 +7,7 @@ import { CategoryMultiSelectorInput } from "../fields/CategoryMultiSelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
+import { getDefaultAuthors, getMissingAuthorMessage } from "../fields/authorFieldUtils";
 import { createdInfoFields } from "./shared/createdInfoFields";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { toolbarFields } from "./shared/toolbarFields";
@@ -111,10 +112,12 @@ const Rule: Collection = {
       ui: {
         itemProps: (item) => ({ label: "👤 " + (item?.title ?? "Author") }),
         defaultItem: {
-          title: "Bob Northwind",
-          url: "https://www.ssw.com.au/people/bob-northwind",
+          title: "",
+          url: "",
         },
         component: ConditionalHiddenField,
+        defaultValueOnEmpty: getDefaultAuthors,
+        emptyListMessage: getMissingAuthorMessage,
       },
       fields: [
         {
@@ -128,7 +131,8 @@ const Rule: Collection = {
         },
         {
           type: "string",
-          description: "The SSW People link for the contributor. E.g. \"https://www.ssw.com.au/people/bob-northwind\"",
+          description:
+            "Use an SSW People link for SSW contributors or any other public profile/website link for non-SSW authors. E.g. \"https://www.ssw.com.au/people/adam-cogan\" or \"https://github.com/octocat\"",
           name: "url",
           label: "Url",
         },

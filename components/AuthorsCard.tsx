@@ -18,7 +18,7 @@ interface AuthorsCardProps {
 
 export default function AuthorsCard({ authors }: AuthorsCardProps) {
   const resolvedAuthors: Author[] = useMemo(() => authors || [], [authors]);
-  const placeholderImg = `${process.env.NEXT_PUBLIC_BASE_PATH}/uploads/ssw-employee-profile-placeholder-sketch.jpg`;
+  const placeholderImg = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/uploads/ssw-employee-profile-placeholder-sketch.jpg`;
 
   const getImgSource = useCallback(
     (author: Author): string => {

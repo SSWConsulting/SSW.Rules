@@ -37,7 +37,7 @@ export function MegaMenuWrapper(props) {
         subtitle="Secret ingredients to quality software"
         rightSideActionsOverride={() => <ActionButtons />}
         linkComponent={linkComponent}
-        url="/"
+        url={basePath ? `/${basePath}` : "/"}
         searchUrl="https://www.ssw.com.au/rules"
         isFlagVisible={false}
       />

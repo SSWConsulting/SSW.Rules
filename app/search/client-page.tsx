@@ -22,6 +22,15 @@ interface SearchResult {
   objectID: string;
   title: string;
   slug: string;
+  _snippetResult?: {
+    content?: { value: string; matchLevel: string };
+    [key: string]: any;
+  };
+  _highlightResult?: {
+    title?: { value: string; matchLevel: string };
+    content?: { value: string; matchLevel: string };
+    [key: string]: any;
+  };
   [key: string]: any;
 }
 
@@ -160,6 +169,11 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
                     lastUpdated={result.lastUpdated}
                     index={index}
                     authorUrl={getAuthorUrl(result)}
+                    snippet={
+                      result._snippetResult?.content?.matchLevel !== "none"
+                        ? result._snippetResult?.content?.value
+                        : null
+                    }
                   />
                 ))}
               </div>

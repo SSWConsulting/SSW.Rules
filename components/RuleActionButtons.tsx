@@ -30,7 +30,12 @@ export default function RuleActionButtons({ rule, showBookmark = true, showOpenI
           <Bookmark ruleGuid={rule.guid} />
         </Suspense>
       )}
-      <IconLink href={`/admin#/~/${sanitizedBasePath}/${rule.uri}`} title="Edit rule with TinaCMS" tooltipOpaque={true} onClick={() => setTinaBranchToMainIfExists()}>
+      <IconLink
+        href={`/admin#/~/${sanitizedBasePath}/${rule.uri}`}
+        title="Edit rule with TinaCMS"
+        tooltipOpaque={true}
+        onClick={() => setTinaBranchToMainIfExists()}
+      >
         <RiPencilLine size={ICON_SIZE} />
       </IconLink>
       <IconLink

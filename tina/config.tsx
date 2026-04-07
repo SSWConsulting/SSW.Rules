@@ -2,6 +2,7 @@ import { defineConfig } from "tinacms";
 import nextConfig from "../next.config";
 import Category from "./collection/category";
 import Global from "./collection/global";
+import Homepage from "./collection/homepage";
 import Rule from "./collection/rule";
 
 const branch = process.env.NEXT_PUBLIC_TINA_BRANCH ?? "main";
@@ -33,7 +34,7 @@ export const config = defineConfig({
     basePath: nextConfig.basePath?.replace(/^\//, "") || "", // The base path of the app (could be /blog)
   },
   schema: {
-    collections: [Rule, Category, Global],
+    collections: [Rule, Category, Homepage, Global],
   },
   search: {
     tina: {

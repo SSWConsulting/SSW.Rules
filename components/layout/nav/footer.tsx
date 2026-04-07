@@ -20,7 +20,12 @@ export const Footer = () => {
           </span>
           <span>
             Loving SSW Rules?{" "}
-            <a href="https://github.com/SSWConsulting/SSW.Rules" target="_blank" rel="noopener noreferrer nofollow" className="action-button-label underline hover:underline">
+            <a
+              href="https://github.com/SSWConsulting/SSW.Rules"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="action-button-label underline hover:underline"
+            >
               Star us on GitHub.
             </a>{" "}
           </span>

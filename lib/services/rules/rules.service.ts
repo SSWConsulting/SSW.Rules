@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { extractBodyPreview } from "@/lib/bodyUtils";
 import { toSlug } from "@/lib/utils";
 import { ActivityRule } from "@/models/ActivityRule";
@@ -204,9 +205,19 @@ export async function fetchAllArchivedRules(firstPerPage = 50): Promise<Rule[]> 
 }
 
 export async function fetchQuickLinks(): Promise<QuickLink[]> {
-  const res = await client.queries.global({ relativePath: "index.json" });
-  return Array.isArray(res.data.global.quickLinks?.links) ? (res.data.global.quickLinks.links as QuickLink[]) : [];
+  const res = await client.queries.homepage({ relativePath: "index.json" });
+  return Array.isArray(res.data.homepage.quickLinks?.links) ? (res.data.homepage.quickLinks.links as QuickLink[]) : [];
 }
+
+export const fetchHomepageData = cache(async () => {
+  try {
+    const res = await client.queries.homepage({ relativePath: "index.json" });
+    return { data: res.data, query: res.query, variables: res.variables };
+  } catch (error) {
+    console.error("Failed to fetch homepage data from Tina CMS:", error);
+    return null;
+  }
+});
 
 export async function fetchPaginatedRules(variables: RuleQueryVars = {}): Promise<PaginationResult<Rule>> {
   const { first, last, after, before, q, field = "title", sort } = variables;

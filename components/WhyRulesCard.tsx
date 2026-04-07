@@ -15,9 +15,9 @@ export default function WhyRulesCard({ data }: WhyRulesCardProps) {
           <TinaMarkdown
             content={data.body}
             components={{
-              a: ({ url, children }: { url: string; children: React.ReactNode }) => (
-                <a className="underline" href={url} target="_blank" rel="noopener noreferrer nofollow">
-                  {children}
+              a: (props?: { url: string; children: React.ReactNode }) => (
+                <a className="underline" href={props?.url} target="_blank" rel="noopener noreferrer nofollow">
+                  {props?.children}
                 </a>
               ),
             }}

@@ -23,10 +23,10 @@ export default function HelpImproveCard({ data }: HelpImproveCardProps) {
         <TinaMarkdown
           content={data?.quote || fallbackQuote}
           components={{
-            p: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
-            a: ({ url, children }: { url: string; children: React.ReactNode }) => (
-              <a className="underline" href={url} target="_blank" rel="noopener noreferrer nofollow">
-                {children}
+            p: (props?: { children: React.ReactNode }) => <span>{props?.children}</span>,
+            a: (props?: { url: string; children: React.ReactNode }) => (
+              <a className="underline" href={props?.url} target="_blank" rel="noopener noreferrer nofollow">
+                {props?.children}
               </a>
             ),
           }}

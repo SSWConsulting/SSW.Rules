@@ -78,7 +78,7 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
                     <path d="M6 9l6 6 6-6" />
                   </svg>
                 </span>
-                <div className={`absolute -left-4 top-full z-10 bg-white border border-gray-200 rounded shadow-md min-w-max ${isDropdownOpen ? "block" : "hidden md:group-hover:block"}`}>
+                <div className={`absolute -left-4 top-full z-10 bg-white border border-gray-200 rounded shadow-md w-max max-w-[min(20rem,calc(100vw-2rem))] ${isDropdownOpen ? "block" : "hidden md:group-hover:block"}`}>
                   <ul className="list-none m-0 py-1 px-0">
                     {categoryList.map((cat, i) => (
                       <li key={i} className="mb-0">

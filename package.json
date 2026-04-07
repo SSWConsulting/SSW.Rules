@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "pnpm tinacms dev -c \"next dev --turbopack\"",
-    "build": "tinacms build && next build",
+    "build": "pnpm prepare:content && tinacms build --offline -c \"next build\"",
+    "build-offline": "pnpm prepare:content && tinacms build --offline -c \"next build\"",
     "generate:archived-rules": "node ./scripts/generate-archived-rules.js",
     "generate:people-latest-rules": "node ./scripts/generate-people-latest-rules.js",
     "postbuild": "npm run -s generate:archived-rules && next-sitemap",
@@ -23,7 +24,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
-    "@tinacms/cli": "2.2.0",
+    "@tinacms/cli": "0.0.0-5433815-20260407133505",
     "@types/jest": "^30.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^22.19.3",
@@ -91,7 +92,7 @@
     "svg-react-loader": "^0.4.6",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
-    "tinacms": "3.7.0",
+    "tinacms": "0.0.0-5433815-20260407133505",
     "tw-animate-css": "^1.2.4",
     "unplugin-info": "^1.2.4",
     "usehooks-ts": "^3.1.1"

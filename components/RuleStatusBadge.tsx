@@ -45,7 +45,7 @@ export default function RuleStatusBadge({ lastUpdated, rulePath, className }: Ru
   const description = getRuleStatusDescription(lastUpdated, status);
 
   return (
-    <Tooltip text={description}>
+    <Tooltip text={description} showDelay={0} hideDelay={0} opaque={true}>
       <span className={cn("inline-block h-2.5 w-2.5 rounded-full shrink-0", dotStyles[status], className)} aria-label={description} role="img" />
     </Tooltip>
   );

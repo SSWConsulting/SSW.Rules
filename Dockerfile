@@ -88,7 +88,7 @@
         GH_APP_ID=$GH_APP_ID \
         GH_APP_PRIVATE_KEY=$GH_APP_PRIVATE_KEY \
         GITHUB_APP_INSTALLATION_ID=$GITHUB_APP_INSTALLATION_ID \
-        LOCAL_CONTENT_RELATIVE_PATH=content \
+        LOCAL_CONTENT_RELATIVE_PATH=../content \
         NEXT_TELEMETRY_DISABLED=1
     
     # Build the Next.js application using offline mode (local content, no TinaCloud calls)

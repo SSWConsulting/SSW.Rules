@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "pnpm tinacms dev -c \"next dev --turbopack\"",
     "build": "tinacms build && next build",
-    "build-offline": "tinacms build --offline -c \"next build\"",
+    "build-offline": "tinacms build --offline -c \"next build && npm run -s generate:archived-rules && next-sitemap\"",
     "generate:archived-rules": "node ./scripts/generate-archived-rules.js",
     "generate:people-latest-rules": "node ./scripts/generate-people-latest-rules.js",
     "postbuild": "npm run -s generate:archived-rules && next-sitemap",

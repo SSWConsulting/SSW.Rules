@@ -56,6 +56,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.16
         version: 0.5.19(tailwindcss@4.2.1)
+      '@tinacms/graphql':
+        specifier: 2.2.1
+        version: 2.2.1(react@19.2.4)(typescript@5.9.3)
       algoliasearch:
         specifier: ^5.46.0
         version: 5.49.2
@@ -3650,11 +3653,17 @@ packages:
   '@tinacms/graphql@0.0.0-5433815-20260407133505':
     resolution: {integrity: sha512-4Vck3e+wjcngtq8q5MOzt7Um49BC3uPvh6x5GUr7oe11Vf2pfI7HDBDdpA4uwMEdc5JwgH2uTSEYSOJP8vGPOw==}
 
+  '@tinacms/graphql@2.2.1':
+    resolution: {integrity: sha512-M7Hm6o1yCIdfnHM2loEFu0ulILFZbjhBGtTFjg7v4JX0yMcLNb54kqg82iLEKyMdgQjRv2t1dtwHcXkclBAHMA==}
+
   '@tinacms/graphql@2.2.3':
     resolution: {integrity: sha512-qykmT/MzCRoDhFnpOKNdsSnnFp7XcOQtfz/O5f2l9kAX3jvxya06WAOxET3p+nvnN2iKYYctEstmwUG0ZWhwFw==}
 
   '@tinacms/mdx@0.0.0-5433815-20260407133505':
     resolution: {integrity: sha512-NwTcqzmfW3m/DvNohNQdVYHFM6n5sesfgzEBKKbEK0yBxoMfz1lYEPz/EZVa9zPS2sXOH9Ngnxpsm+6KUZYWIA==}
+
+  '@tinacms/mdx@2.1.0':
+    resolution: {integrity: sha512-3A8fDUhhRqtchU0M5vmDM9pnvG4sXy4FG2hdiUlfyeytAF0HwBi7EZq7n0Cv7qvgd5E0vXSKqOZ9H/lOl8QQXQ==}
 
   '@tinacms/mdx@2.1.1':
     resolution: {integrity: sha512-IkxFEnm4TYsUyjz83qZzNaDdnZti/4d5KW5Z26hKVwS6J4LI+HEU/gWDAE6waRaNDTiQUUfD1J24XxkH6jJ5pA==}
@@ -3666,6 +3675,12 @@ packages:
 
   '@tinacms/schema-tools@0.0.0-5433815-20260407133505':
     resolution: {integrity: sha512-xMapIrWqpwIhFLCqwgMhrpV9lvsv4tvBKbK87pIUK85mUMywzwHBC10nUSojw0jhcZIZ+EUFL3IDuCvhZEmrjQ==}
+    peerDependencies:
+      react: '>=16.14.0'
+      yup: ^1.0.0
+
+  '@tinacms/schema-tools@2.7.0':
+    resolution: {integrity: sha512-uc6XL8xtldoFQ3xHnXkijJTALEB+gEsyvsf7q/1Gs1uvG5Alm6xPmBAdWxM4fUZv1WDQZwH46SW+cXK1Ej+N8w==}
     peerDependencies:
       react: '>=16.14.0'
       yup: ^1.0.0
@@ -13055,6 +13070,34 @@ snapshots:
       - supports-color
       - typescript
 
+  '@tinacms/graphql@2.2.1(react@19.2.4)(typescript@5.9.3)':
+    dependencies:
+      '@iarna/toml': 2.2.5
+      '@tinacms/mdx': 2.1.0(react@19.2.4)(typescript@5.9.3)(yup@1.7.1)
+      '@tinacms/schema-tools': 2.7.0(react@19.2.4)(yup@1.7.1)
+      abstract-level: 1.0.4
+      date-fns: 2.30.0
+      es-toolkit: 1.45.1
+      fast-glob: 3.3.3
+      fs-extra: 11.3.4
+      glob-parent: 6.0.2
+      graphql: 15.8.0
+      gray-matter: 4.0.3
+      isomorphic-git: 1.37.3
+      js-sha1: 0.6.0
+      js-yaml: 3.14.2
+      jsonpath-plus: 10.4.0
+      many-level: 2.0.0
+      micromatch: 4.0.8
+      normalize-path: 3.0.0
+      readable-stream: 4.7.0
+      yup: 1.7.1
+    transitivePeerDependencies:
+      - react
+      - react-native-b4a
+      - supports-color
+      - typescript
+
   '@tinacms/graphql@2.2.3(react@19.2.4)(typescript@5.9.3)':
     dependencies:
       '@iarna/toml': 2.2.5
@@ -13086,6 +13129,43 @@ snapshots:
   '@tinacms/mdx@0.0.0-5433815-20260407133505(react@19.2.4)(typescript@5.9.3)(yup@1.7.1)':
     dependencies:
       '@tinacms/schema-tools': 0.0.0-5433815-20260407133505(react@19.2.4)(yup@1.7.1)
+      acorn: 8.8.2
+      ccount: 2.0.1
+      estree-util-is-identifier-name: 2.1.0
+      mdast-util-compact: 4.1.1
+      mdast-util-directive: 2.2.4
+      mdast-util-from-markdown: 1.3.0
+      mdast-util-gfm: 2.0.2
+      mdast-util-mdx-jsx: 2.1.2
+      mdast-util-to-markdown: 1.5.0
+      micromark-extension-gfm: 2.0.3
+      micromark-factory-mdx-expression: 1.0.7
+      micromark-factory-space: 1.0.0
+      micromark-factory-whitespace: 1.0.0
+      micromark-util-character: 1.1.0
+      micromark-util-symbol: 1.0.1
+      micromark-util-types: 1.1.0
+      parse-entities: 4.0.1
+      prettier: 2.8.8
+      remark: 14.0.2
+      remark-gfm: 2.0.0
+      remark-mdx: 2.3.0
+      stringify-entities: 4.0.3
+      typedoc: 0.26.11(typescript@5.9.3)
+      unist-util-source: 4.0.2
+      unist-util-stringify-position: 3.0.3
+      unist-util-visit: 4.1.2
+      uvu: 0.5.6
+      vfile-message: 3.1.4
+    transitivePeerDependencies:
+      - react
+      - supports-color
+      - typescript
+      - yup
+
+  '@tinacms/mdx@2.1.0(react@19.2.4)(typescript@5.9.3)(yup@1.7.1)':
+    dependencies:
+      '@tinacms/schema-tools': 2.7.0(react@19.2.4)(yup@1.7.1)
       acorn: 8.8.2
       ccount: 2.0.1
       estree-util-is-identifier-name: 2.1.0
@@ -13162,6 +13242,14 @@ snapshots:
       fs-extra: 11.3.4
 
   '@tinacms/schema-tools@0.0.0-5433815-20260407133505(react@19.2.4)(yup@1.7.1)':
+    dependencies:
+      picomatch-browser: 2.2.6
+      react: 19.2.4
+      url-pattern: 1.0.3
+      yup: 1.7.1
+      zod: 3.25.76
+
+  '@tinacms/schema-tools@2.7.0(react@19.2.4)(yup@1.7.1)':
     dependencies:
       picomatch-browser: 2.2.6
       react: 19.2.4

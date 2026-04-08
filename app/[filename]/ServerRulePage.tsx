@@ -40,7 +40,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
       const uri = cat?.uri;
       return typeof uri === "string" && uri.trim().length > 0 ? { title: cat.title, link: `/${uri}` } : null;
     })
-    .filter(Boolean);
+    .filter((c): c is { title: string; link: string } => c !== null);
   const breadcrumbCategories = allCategories?.length > 0 ? allCategories : undefined;
 
   useAdminBackBlock({ isAdminPage });

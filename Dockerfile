@@ -8,21 +8,21 @@
     # -----------------------------------------
     FROM base AS deps
     RUN apk add --no-cache libc6-compat git-lfs
+    RUN corepack enable && corepack prepare pnpm@10.10.0 --activate
     WORKDIR /app
     
-    COPY package*.json ./
-    COPY yarn.lock* ./
+    COPY package.json pnpm-lock.yaml* ./
     
-    # Always perform a clean install
-    RUN if [ -f yarn.lock ]; then yarn --frozen-lockfile --cache-folder /tmp/yarn-cache; \
-        elif [ -f package-lock.json ]; then npm ci --force --cache /tmp/npm-cache; \
-        else npm install --force --cache /tmp/npm-cache; fi
+    RUN pnpm install --frozen-lockfile
     
     # -----------------------------------------
     # Build stage
     # -----------------------------------------
     FROM base AS builder
     WORKDIR /app
+    
+    RUN apk add --no-cache git-lfs && \
+        corepack enable && corepack prepare pnpm@10.10.0 --activate
     
     COPY --from=deps /app/node_modules ./node_modules
     COPY . .
@@ -59,7 +59,7 @@
     ARG GH_APP_ID
     ARG GH_APP_PRIVATE_KEY
     ARG GITHUB_APP_INSTALLATION_ID
-
+    
     # Build info environment variables (kept as before)
     ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP \
         VERSION_DEPLOYED=$VERSION_DEPLOYED \
@@ -88,10 +88,11 @@
         GH_APP_ID=$GH_APP_ID \
         GH_APP_PRIVATE_KEY=$GH_APP_PRIVATE_KEY \
         GITHUB_APP_INSTALLATION_ID=$GITHUB_APP_INSTALLATION_ID \
+        LOCAL_CONTENT_RELATIVE_PATH=../content \
         NEXT_TELEMETRY_DISABLED=1
     
-    # Build the Next.js application
-    RUN if [ -f yarn.lock ]; then yarn build; else npm run build; fi
+    # Build the Next.js application using offline mode (local content, no TinaCloud calls)
+    RUN pnpm build-offline
     
     # -----------------------------------------
     # Reduce Next.js output size
@@ -143,4 +144,3 @@
     
     EXPOSE 3000
     CMD ["node", "server.js"]
-    

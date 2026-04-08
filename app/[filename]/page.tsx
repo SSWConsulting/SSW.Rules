@@ -1,10 +1,10 @@
 import React from "react";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
+import { extractBodyPreview } from "@/lib/bodyUtils";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
-import { extractBodyPreview } from "@/lib/bodyUtils";
 import ClientFallbackPage from "./ClientFallbackPage";
 import { TinaCategoryWrapper } from "./TinaCategoryWrapper";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
@@ -361,10 +361,7 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
         },
       };
 
-      metadata.description =
-        rule.data.rule.seoDescription ||
-        extractBodyPreview(rule.data.rule.body) ||
-        undefined;
+      metadata.description = rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined;
 
       if (rule.data.rule.isArchived) {
         metadata.robots = { index: false, follow: true };

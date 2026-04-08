@@ -33,6 +33,49 @@ on:
         required: false
         default: ""
         description: "Git ref to checkout (defaults to github.sha if not specified)"
+      NEXT_PUBLIC_TINA_CLIENT_ID:
+        type: string
+        required: true
+        description: "TinaCMS public client ID"
+      NEXT_PUBLIC_GTM_CONTAINER_ID:
+        type: string
+        required: false
+        default: ""
+        description: "Google Tag Manager container ID"
+      NEXT_PUBLIC_ALGOLIA_APP_ID:
+        type: string
+        required: false
+        default: ""
+        description: "Algolia application ID"
+      NEXT_PUBLIC_ALGOLIA_INDEX_NAME:
+        type: string
+        required: false
+        default: ""
+        description: "Algolia index name"
+      NEXT_PUBLIC_ALGOLIA_API_KEY:
+        type: string
+        required: false
+        default: ""
+        description: "Algolia search-only API key"
+      NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING:
+        type: string
+        required: false
+        default: ""
+        description: "Application Insights connection string (client-side)"
+      NEXT_PUBLIC_API_BASE_URL:
+        type: string
+        required: false
+        default: ""
+        description: "Public API base URL"
+      GITHUB_APP_INSTALLATION_ID:
+        type: string
+        required: false
+        default: ""
+        description: "GitHub App installation ID"
+      GH_APP_ID:
+        type: string
+        required: true
+        description: "GitHub App ID"
     secrets:
       AZURE_CLIENT_ID:
         required: true
@@ -46,28 +89,10 @@ on:
         required: false
       TINA_WEBHOOK_SECRET:
         required: true
-      NEXT_PUBLIC_TINA_CLIENT_ID:
-        required: true
-      NEXT_PUBLIC_ALGOLIA_APP_ID:
-        required: false
       NEXT_PUBLIC_ALGOLIA_ADMIN_KEY:
         required: false
-      NEXT_PUBLIC_ALGOLIA_INDEX_NAME:
-        required: false
-      NEXT_PUBLIC_ALGOLIA_API_KEY:
-        required: false
-      NEXT_PUBLIC_API_BASE_URL:
-        required: false
-      GH_APP_ID:
-        required: true
       GH_APP_PRIVATE_KEY:
         required: true
-      GITHUB_APP_INSTALLATION_ID:
-        required: false
-      NEXT_PUBLIC_GTM_CONTAINER_ID:
-        required: false
-      NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING:
-        required: false
       CRM_APP_SECRET:
         required: false
     outputs:
@@ -440,11 +465,11 @@ jobs:
             TINA_TOKEN=${{ secrets.TINA_TOKEN }}
             TINA_SEARCH_TOKEN=${{ secrets.TINA_SEARCH_TOKEN }}
             TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}
-            NEXT_PUBLIC_TINA_CLIENT_ID=${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-            NEXT_PUBLIC_ALGOLIA_APP_ID=${{ secrets.NEXT_PUBLIC_ALGOLIA_APP_ID }}
+            NEXT_PUBLIC_TINA_CLIENT_ID=${{ inputs.NEXT_PUBLIC_TINA_CLIENT_ID }}
+            NEXT_PUBLIC_ALGOLIA_APP_ID=${{ inputs.NEXT_PUBLIC_ALGOLIA_APP_ID }}
             NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
-            NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ secrets.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
-            NEXT_PUBLIC_ALGOLIA_API_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_API_KEY }}
+            NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ inputs.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
+            NEXT_PUBLIC_ALGOLIA_API_KEY=${{ inputs.NEXT_PUBLIC_ALGOLIA_API_KEY }}
             NEXT_PUBLIC_TINA_BRANCH=${{ steps.resolve_content_branch.outputs.content_branch }}
             NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
             NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
@@ -452,13 +477,13 @@ jobs:
             NEXT_PUBLIC_GISCUS_REPO_ID=${{ vars.NEXT_PUBLIC_GISCUS_REPO_ID }}
             NEXT_PUBLIC_GISCUS_CATEGORY_ID=${{ vars.NEXT_PUBLIC_GISCUS_CATEGORY_ID }}
             NEXT_PUBLIC_GISCUS_THEME_URL=${{ vars.NEXT_PUBLIC_GISCUS_THEME_URL }}
-            NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+            NEXT_PUBLIC_API_BASE_URL=${{ inputs.NEXT_PUBLIC_API_BASE_URL }}
             NEXT_PUBLIC_BASE_PATH=${{ vars.NEXT_PUBLIC_BASE_PATH }}
-            NEXT_PUBLIC_GTM_CONTAINER_ID=${{ secrets.NEXT_PUBLIC_GTM_CONTAINER_ID }}
-            NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
-            GH_APP_ID=${{ vars.GH_APP_ID }}
+            NEXT_PUBLIC_GTM_CONTAINER_ID=${{ inputs.NEXT_PUBLIC_GTM_CONTAINER_ID }}
+            NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ inputs.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
+            GH_APP_ID=${{ inputs.GH_APP_ID }}
             GH_APP_PRIVATE_KEY=${{ env.GH_APP_PK_B64 }}
-            GITHUB_APP_INSTALLATION_ID=${{ secrets.GITHUB_APP_INSTALLATION_ID }}
+            GITHUB_APP_INSTALLATION_ID=${{ inputs.GITHUB_APP_INSTALLATION_ID }}
           # CACHE COMPLETELY DISABLED
           no-cache: true
           # Clean up intermediate containers after build
@@ -589,7 +614,7 @@ jobs:
           LOCAL_CONTENT_RELATIVE_PATH: ../content
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
           TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
-          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ inputs.NEXT_PUBLIC_TINA_CLIENT_ID }}
           NEXT_PUBLIC_TINA_BRANCH: ${{ steps.resolve_content_branch.outputs.content_branch }}
           NEXT_PUBLIC_GITHUB_ORG: ${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
           NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}

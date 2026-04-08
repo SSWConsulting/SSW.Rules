@@ -26,9 +26,7 @@ export default function BrokenReferenceBanner({ brokenPaths, ruleUri }: BrokenRe
           </svg>
         </div>
         <div className="flex-1">
-          <h3 className="text-sm font-semibold text-amber-800 m-0 mb-1">
-            Broken Related Rule Reference{brokenPaths.length > 1 ? "s" : ""}
-          </h3>
+          <h3 className="text-sm font-semibold text-amber-800 m-0 mb-1">Broken Related Rule Reference{brokenPaths.length > 1 ? "s" : ""}</h3>
           <p className="text-sm text-amber-700 m-0 mb-2">
             This rule references {brokenPaths.length > 1 ? "rules that no longer exist" : "a rule that no longer exists"}:
           </p>

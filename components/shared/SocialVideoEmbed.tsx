@@ -106,13 +106,7 @@ function FacebookEmbed({ url }: { url: string }) {
         data-width caps the player at 290px to match the sidebar Card inner width.
       */}
       <div id="fb-root" />
-      <div
-        className="fb-video"
-        data-href={url}
-        data-width="290"
-        data-show-text="false"
-        data-autoplay="false"
-      />
+      <div className="fb-video" data-href={url} data-width="290" data-show-text="false" data-autoplay="false" />
       <Script
         src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v25.0"
         strategy="lazyOnload"
@@ -126,11 +120,7 @@ function FacebookEmbed({ url }: { url: string }) {
 }
 
 function EmbedFallback({ message }: { message: string }) {
-  return (
-    <div className="my-4 rounded-lg border-2 border-dashed p-4 text-sm text-gray-500">
-      {message}
-    </div>
-  );
+  return <div className="my-4 rounded-lg border-2 border-dashed p-4 text-sm text-gray-500">{message}</div>;
 }
 
 export function SocialVideoEmbed({ url = "" }: { url?: string }) {

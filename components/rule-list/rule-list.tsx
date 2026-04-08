@@ -167,10 +167,12 @@ const RuleList: React.FC<RuleListProps> = ({
         )}
       </div>
 
-      <ol className="flex flex-col justify-between gap-2 p-0 list-none 
+      <ol
+        className="flex flex-col justify-between gap-2 p-0 list-none 
            [&_h2]:text-2xl 
            [&_h3]:text-xl 
-           [&_h4]:text-lg">
+           [&_h4]:text-lg"
+      >
         {paginatedRules.map((rule, i) => (
           <RuleListItem
             key={`${rule.guid}-${rule.uri}-${(effectiveCurrentPage - 1) * effectiveItemsPerPage + i}`}

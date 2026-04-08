@@ -49,7 +49,7 @@ const Rule: Collection = {
       type: "string",
       label: "Title",
       name: "title",
-      description: "Should start with \"Do you\" and end with a question mark.",
+      description: 'Should start with "Do you" and end with a question mark.',
       isTitle: true,
       required: true,
       searchable: true,
@@ -58,7 +58,7 @@ const Rule: Collection = {
       type: "string",
       name: "uri",
       label: "URL Slug",
-      description: "Identifies this page in the URL. Should be short and not include \"Do you\". E.g. \"keep-urls-clean\"",
+      description: 'Identifies this page in the URL. Should be short and not include "Do you". E.g. "keep-urls-clean"',
       required: true,
       searchable: true,
       ui: {
@@ -95,7 +95,8 @@ const Rule: Collection = {
       type: "string",
       name: "sidebarVideo",
       label: "Sidebar Video",
-      description: "Supports YouTube Shorts, Instagram Reels, TikTok, and Facebook videos. For videos relevant to the rule, embed them directly in the body instead.",
+      description:
+        "Supports YouTube Shorts, Instagram Reels, TikTok, and Facebook videos. For videos relevant to the rule, embed them directly in the body instead.",
       searchable: false,
       ui: {
         component: ConditionalHiddenField,
@@ -128,7 +129,7 @@ const Rule: Collection = {
         },
         {
           type: "string",
-          description: "The SSW People link for the contributor. E.g. \"https://www.ssw.com.au/people/bob-northwind\"",
+          description: 'The SSW People link for the contributor. E.g. "https://www.ssw.com.au/people/bob-northwind"',
           name: "url",
           label: "Url",
         },
@@ -138,7 +139,7 @@ const Rule: Collection = {
       type: "object",
       label: "Related Rules",
       name: "related",
-      description: "Select related rules. E.g. \"keep-urls-clean\"",
+      description: 'Select related rules. E.g. "keep-urls-clean"',
       list: true,
       searchable: false,
       ui: {
@@ -164,7 +165,7 @@ const Rule: Collection = {
       type: "string",
       name: "redirects",
       label: "Redirects",
-      description: "Alternate URLs that redirect to this rule. E.g. \"keep-PBIs-smaller-than-2-days\"",
+      description: 'Alternate URLs that redirect to this rule. E.g. "keep-PBIs-smaller-than-2-days"',
       list: true,
       searchable: false,
       ui: {

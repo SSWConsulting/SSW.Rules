@@ -90,6 +90,16 @@ Code changes made to **SSW.Rules** are deployed as follows:
 
 To deploy a PR preview, add a comment to the PR: **`/deploy`**. This creates/updates a preview deployment (slot `pr-<number>`) and posts a comment with the preview URL.
 
+#### Using a custom `tina-lock.json` in a PR preview
+
+The build process checks whether a branch with the **same name as the PR branch** exists in `SSW.Rules.Content`. If found, that branch is used to source content (including `tina-lock.json`); otherwise it falls back to `main`.
+
+This means if your PR requires a new `tina-lock.json` (e.g. you added or changed a TinaCMS collection), you can test it in the PR preview **without touching `main`** in the content repo:
+
+1. Create a branch in `SSWConsulting/SSW.Rules.Content` with the **exact same name** as your PR branch.
+2. Push the updated `tina-lock.json` (and any other content changes) to that branch.
+3. Comment `/deploy` on the PR - the preview build will automatically pick up the matching content branch.
+
 
 
 ---

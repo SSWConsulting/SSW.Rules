@@ -65,7 +65,7 @@ const ActionButtons = () => {
           <a
             target="_blank"
             rel="noopener noreferrer nofollow"
-            href={`/${basePath}/admin/index.html#/collections/rule/~`}
+            href={`/${basePath}/admin/index.html#/collections/new/rule/~`}
             className="action-btn-link-underlined"
             aria-label="Create an SSW Rule"
           >

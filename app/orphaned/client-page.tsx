@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import RuleList from "@/components/rule-list";
 import { getAccessToken } from "@auth0/nextjs-auth0";
-import { BookmarkService } from "@/lib/bookmarkService";
-import { useAuth } from "@/components/auth/UserClientProvider";
-import { Rule } from "@/models/Rule";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import { PiWarningFill } from "react-icons/pi";
+import { useAuth } from "@/components/auth/UserClientProvider";
+import RuleList from "@/components/rule-list";
+import { BookmarkService } from "@/lib/bookmarkService";
+import { Rule } from "@/models/Rule";
 
 export default function OrphanedClientPage(props) {
   const { orphanedRules } = props;
@@ -53,7 +53,7 @@ export default function OrphanedClientPage(props) {
       return;
     }
     const bookmarkSet = new Set(bookmarkedGuids);
-    
+
     const updated = orphanedRules.map((r: any) => ({
       ...r,
       isBookmarked: r?.guid ? bookmarkSet.has(r.guid) : false,
@@ -67,18 +67,14 @@ export default function OrphanedClientPage(props) {
       <div className="flex">
         <div className="w-full lg:w-2/3 bg-white pt-4 p-6 rounded shadow">
           <h1 className="m-0 mb-2 text-ssw-red font-bold">Orphaned Rules</h1>
-          
+
           {/* Warning alert card */}
           <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4 mb-4 flex items-center">
             <PiWarningFill className="inline text-ssw-red mr-2" size={18} />
             <span className="text-red-800">The rules listed below have no parent category</span>
           </div>
 
-          <RuleList 
-            rules={annotatedRules} 
-            type="orphaned" 
-            noContentMessage="No orphaned rules found."
-          />
+          <RuleList rules={annotatedRules} type="orphaned" noContentMessage="No orphaned rules found." />
         </div>
         <div className="hidden lg:w-1/3 lg:block md:hidden p-6 pr-0">
           <ol className="border-l-3 border-gray-300 pl-6">

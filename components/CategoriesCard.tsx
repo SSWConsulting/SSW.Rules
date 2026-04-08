@@ -1,26 +1,23 @@
-import { Card } from '@/components/ui/card'
-import Link from 'next/link'
-import { tinaField } from 'tinacms/dist/react'
+import Link from "next/link";
+import { tinaField } from "tinacms/dist/react";
+import { Card } from "@/components/ui/card";
 
 interface CategoryItem {
   category?: {
-    uri: string
-    title?: string
-  }
+    uri: string;
+    title?: string;
+  };
 }
 
 interface CategoriesCardProps {
-  categories?: CategoryItem[] | null
+  categories?: CategoryItem[] | null;
 }
 
 export default function CategoriesCard({ categories }: CategoriesCardProps) {
-  const mapped =
-    (categories || [])
-      .map(c => c?.category)
-      .filter((c): c is { uri: string; title?: string } => !!c)
+  const mapped = (categories || []).map((c) => c?.category).filter((c): c is { uri: string; title?: string } => !!c);
 
   if (!mapped || mapped.length === 0) {
-    return <></>
+    return <></>;
   }
 
   return (
@@ -39,7 +36,5 @@ export default function CategoriesCard({ categories }: CategoriesCardProps) {
         ))}
       </div>
     </Card>
-  )
+  );
 }
-
-

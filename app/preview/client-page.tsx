@@ -26,14 +26,11 @@ export default function PreviewClientPage() {
       }
     }
 
-    const collection = searchParams.get("collection");
-
     const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
     const basePath = rawBasePath ? `/${rawBasePath.replace(/\//g, "")}` : "";
-    const destination =
-      uri && collection
-        ? `${basePath}/admin#/~/${collection}/${uri}`
-        : `${basePath}/admin`;
+    const destination = uri
+      ? `${basePath}/admin#/~/rules/${uri}`
+      : `${basePath}/admin`;
     window.location.replace(destination);
   }, [searchParams]);
 

@@ -5,11 +5,12 @@ import { useEffect } from "react";
 
 const TINA_BRANCH_KEY = "tinacms-current-branch";
 
-export default function SetBranchClientPage() {
+export default function PreviewClientPage() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const branch = searchParams.get("branch");
+    const uri = searchParams.get("uri");
 
     if (branch) {
       try {
@@ -17,11 +18,18 @@ export default function SetBranchClientPage() {
       } catch (e) {
         console.warn("Unable to set branch in localStorage:", e);
       }
+
+      try {
+        document.cookie = `x-branch=${encodeURIComponent(branch)}; path=/; SameSite=Lax`;
+      } catch (e) {
+        console.warn("Unable to set x-branch cookie:", e);
+      }
     }
 
     const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
     const basePath = rawBasePath ? `/${rawBasePath.replace(/\//g, "")}` : "";
-    window.location.replace(`${basePath}/admin`);
+    const destination = uri ? `${basePath}/${uri}` : `${basePath}/admin`;
+    window.location.replace(destination);
   }, [searchParams]);
 
   return null;

@@ -1,6 +1,17 @@
 // middleware.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { auth0 } from './lib/auth0'
+import redirectMappingRaw from './redirects.json'
+
+// Build O(1) lookup map once at module initialization.
+// Filter out self-referential entries at startup to avoid redundant redirects.
+const redirectMap = new Map<string, string>(
+  Object.entries(redirectMappingRaw as Record<string, string>)
+    .filter(([source, destination]) => source.toLowerCase() !== destination.toLowerCase())
+)
+
+const rawBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/\//g, '')
+const basePath = rawBasePath ? `/${rawBasePath}` : ''
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -8,6 +19,19 @@ export function middleware(request: NextRequest) {
   // Support auth routes with or without basePath prefix
   if (pathname.startsWith('/auth') || (pathname.startsWith(`${process.env.NEXT_PUBLIC_BASE_PATH}/auth`))) {
     return auth0.middleware(request)
+  }
+
+  // URI redirect lookup — strip basePath then match against the redirect map
+  const strippedPath = basePath && pathname.startsWith(basePath)
+    ? pathname.slice(basePath.length)
+    : pathname
+  const slug = strippedPath.replace(/^\//, '')
+  const destination = redirectMap.get(slug)
+
+  if (destination) {
+    const url = request.nextUrl.clone()
+    url.pathname = `${basePath}/${destination}`
+    return NextResponse.redirect(url, 308)
   }
 
   // Only run in development mode

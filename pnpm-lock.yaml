@@ -150,8 +150,8 @@ importers:
         specifier: ^3.20.0
         version: 3.23.0
       ssw.megamenu:
-        specifier: ^4.13.7
-        version: 4.13.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: ^4.13.9
+        version: 4.13.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-jsx:
         specifier: ^5.1.6
         version: 5.1.7(@babel/core@7.29.0)(react@19.2.4)
@@ -1657,8 +1657,8 @@ packages:
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
 
-  '@graphql-codegen/plugin-helpers@6.2.0':
-    resolution: {integrity: sha512-TKm0Q0+wRlg354Qt3PyXc+sy6dCKxmNofBsgmHoFZNVHtzMQSSgNT+rUWdwBwObQ9bFHiUVsDIv8QqxKMiKmpw==}
+  '@graphql-codegen/plugin-helpers@6.2.1':
+    resolution: {integrity: sha512-shRr26TfVZ6KFBjzRYUj02gLNh6yaECz9gTGgI6riANw5sSH9PONwTsBRYkEgU+6IXiL7VQeCumahvxSGFbRlQ==}
     engines: {node: '>=16'}
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -8105,8 +8105,8 @@ packages:
     peerDependencies:
       sucrase: ^3.35.0
 
-  ssw.megamenu@4.13.8:
-    resolution: {integrity: sha512-SMkfHw6dT4L8ojQseutTYo2kw2G73UcF8VkzspYoDs5wnMxM6nEoJ5T5SE9IKAZrGWwEvR/D3HqJ/Wu94q9sbA==}
+  ssw.megamenu@4.13.9:
+    resolution: {integrity: sha512-jHz5cJmluUrGQhqa7zaIM8s7daujC5exepDL+beAhZ83OUqNe15omegoBvldYbIHaL+6J+C5CmlAmXQHgaKjsQ==}
     peerDependencies:
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -10633,14 +10633,13 @@ snapshots:
       lodash: 4.17.23
       tslib: 2.6.3
 
-  '@graphql-codegen/plugin-helpers@6.2.0(graphql@15.8.0)':
+  '@graphql-codegen/plugin-helpers@6.2.1(graphql@15.8.0)':
     dependencies:
       '@graphql-tools/utils': 11.0.0(graphql@15.8.0)
       change-case-all: 1.0.15
       common-tags: 1.8.2
       graphql: 15.8.0
       import-from: 4.0.0
-      lodash: 4.17.23
       tslib: 2.6.3
 
   '@graphql-codegen/schema-ast@4.1.0(graphql@15.8.0)':
@@ -12929,7 +12928,7 @@ snapshots:
   '@tinacms/cli@2.2.0(@codemirror/language@6.0.0)(@types/node@22.19.15)(@types/react@19.2.14)(abstract-level@1.0.4)(immer@10.2.0)(lightningcss@1.31.1)(react-dnd-html5-backend@16.0.1)(react-dnd@16.0.1(@types/hoist-non-react-statics@3.3.7(@types/react@19.2.14))(@types/node@22.19.15)(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@3.30.0)(scheduler@0.27.0)(slate-dom@0.114.0(slate@0.114.0))(slate@0.114.0)(sucrase@3.35.1)(use-sync-external-store@1.6.0(react@19.2.4))(yaml@2.8.2)':
     dependencies:
       '@graphql-codegen/core': 2.6.8(graphql@15.8.0)
-      '@graphql-codegen/plugin-helpers': 6.2.0(graphql@15.8.0)
+      '@graphql-codegen/plugin-helpers': 6.2.1(graphql@15.8.0)
       '@graphql-codegen/typescript': 4.1.6(graphql@15.8.0)
       '@graphql-codegen/typescript-operations': 4.6.1(graphql@15.8.0)
       '@graphql-codegen/visitor-plugin-common': 4.1.2(graphql@15.8.0)
@@ -18460,7 +18459,7 @@ snapshots:
       module-error: 1.0.2
       sucrase: 3.35.1
 
-  ssw.megamenu@4.13.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  ssw.megamenu@4.13.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       '@headlessui/react': 2.2.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@heroicons/react': 2.2.0(react@19.2.4)

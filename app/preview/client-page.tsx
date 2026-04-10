@@ -20,7 +20,9 @@ export default function PreviewClientPage() {
       }
 
       try {
-        document.cookie = `x-branch=${encodeURIComponent(branch)}; path=/; SameSite=Lax`;
+        const secureAttribute =
+          window.location.protocol === "https:" ? "; Secure" : "";
+        document.cookie = `x-branch=${encodeURIComponent(branch)}; path=/; SameSite=Lax${secureAttribute}`;
       } catch (e) {
         console.warn("Unable to set x-branch cookie:", e);
       }

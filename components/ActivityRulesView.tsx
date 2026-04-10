@@ -161,7 +161,7 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
           )}
         </div>
 
-        <div className="layout-sidebar min-w-0">
+        <div className="layout-sidebar min-w-0 mb-8">
           <RecentCommentsCard comments={recentComments} />
           <QuickLinksCard data={homepage?.quickLinks} />
           <WhyRulesCard data={homepage?.whyRules} />

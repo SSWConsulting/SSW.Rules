@@ -32,12 +32,12 @@ export const Footer = () => {
           <GitHubButtonWrapper />
         </section>
       </div>
-      <footer className="bg-[var(--footer-background)] text-[var(--footer-foreground)] py-6 md:py-4 lg:py-2  [&_a]:no-underline text-xs">
+      <footer className="text-center bg-[var(--footer-background)] text-[var(--footer-foreground)] py-6 md:py-4 lg:py-2 [&_a]:no-underline text-xs">
         <section className="main-container">
           <div className="xl:mx-6">
             <div className="mx-6 flex flex-col-reverse md:flex-row justify-between align-middle leading-6">
               <div className="py-2">&copy; 1990-{new Date().getFullYear()} SSW. All rights reserved.</div>
-              <div className="w-full md:w-3/6 md:text-right py-2 flex max-sm:flex-col max-sm:items-start items-center max-sm:justify-start justify-center md:justify-end">
+              <div className="w-full md:w-3/6 md:text-right py-2 flex max-sm:flex-col items-center max-sm:justify-start justify-center md:justify-end">
                 <a
                   className="inline-block text-white visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red max-sm:mb-3"
                   href="https://github.com/SSWConsulting/SSW.Rules/issues"

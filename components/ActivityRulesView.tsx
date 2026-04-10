@@ -154,7 +154,7 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
           {!hasMore && activeTotal > 0 && (
             <div className="mt-4 mb-2 p-4 text-center text-gray-600">
               Want more?{" "}
-              <a href={`${process.env.NEXT_PUBLIC_BASE_PATH}/categories`} className="text-ssw-red underline font-medium">
+              <a href={`${process.env.NEXT_PUBLIC_BASE_PATH}/categories`} className="underline">
                 Explore our categories
               </a>
             </div>

@@ -99,51 +99,6 @@ const nextConfig: NextConfig = {
       { source: "/.well-known/:path*", destination: "/.well-known/:path*" },
     ];
   },
-  async redirects() {
-    // Import Node.js modules inside the function to avoid issues with TinaCMS build
-    const { readFileSync } = await import("fs");
-    const { join } = await import("path");
-
-    // Load redirect mapping from JSON file generated during content preparation
-    // Contains redirects for both rules and categories
-    const redirectMappingPath = join(process.cwd(), "redirects.json");
-    let redirectMapping: Record<string, string> = {};
-
-    try {
-      const fileContent = readFileSync(redirectMappingPath, "utf-8");
-      redirectMapping = JSON.parse(fileContent);
-    } catch (error) {
-      // If file doesn't exist yet (e.g., first build), return empty array
-      console.warn("⚠️  redirects.json not found. Skipping redirects generation.");
-      return [];
-    }
-
-    const encodePathSegment = (segment: string): string => {
-      const encoded = encodeURI(segment);
-
-      // Escape special characters that have meaning in path-to-regexp
-      // These characters need to be escaped: ( ) + * ? [ ] { } |
-      return encoded.replace(/[()+*?[\]{}|]/g, "\\$&");
-    };
-
-    // Transform the redirect mapping object into Next.js redirect format
-    // redirectMapping is { "old-uri": "new-uri", ... }
-    // Note: Next.js automatically prepends basePath to source and destination,
-    // so we don't need to include it here
-    return Object.entries(redirectMapping)
-      .map(([source, destination]) => {
-        if (source.toLowerCase() === destination) {
-          return null;
-        }
-
-        return {
-          source: `/${encodePathSegment(source)}`,
-          destination: `/${destination}`,
-          permanent: true, // 308 permanent redirect
-        };
-      })
-      .filter((item): item is { source: string; destination: string; permanent: boolean } => item !== null);
-  },
 };
 
 export default nextConfig;

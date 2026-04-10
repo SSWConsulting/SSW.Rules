@@ -10,9 +10,6 @@ const redirectMap = new Map<string, string>(
     .filter(([source, destination]) => source.toLowerCase() !== destination.toLowerCase())
 )
 
-const rawBasePath = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/\//g, '')
-const basePath = rawBasePath ? `/${rawBasePath}` : ''
-
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -21,16 +18,13 @@ export function middleware(request: NextRequest) {
     return auth0.middleware(request)
   }
 
-  // URI redirect lookup — strip basePath then match against the redirect map
-  const strippedPath = basePath && pathname.startsWith(basePath)
-    ? pathname.slice(basePath.length)
-    : pathname
-  const slug = strippedPath.replace(/^\//, '')
+  // URI redirect lookup — request.nextUrl.pathname already has basePath stripped by NextURL
+  const slug = pathname.replace(/^\//, '')
   const destination = redirectMap.get(slug)
 
   if (destination) {
     const url = request.nextUrl.clone()
-    url.pathname = `${basePath}/${destination}`
+    url.pathname = `/${destination}`
     return NextResponse.redirect(url, 308)
   }
 

@@ -33,7 +33,7 @@ export const Footer = () => {
         </section>
       </div>
       <footer className="text-center bg-[var(--footer-background)] text-[var(--footer-foreground)] py-6 md:py-4 lg:py-2 [&_a]:no-underline text-xs">
-        <section className="main-container">
+        <section className="main-container max-w-screen-xl">
           <div className="xl:mx-6">
             <div className="mx-6 flex flex-col-reverse md:flex-row justify-between align-middle leading-6">
               <div className="py-2">&copy; 1990-{new Date().getFullYear()} SSW. All rights reserved.</div>

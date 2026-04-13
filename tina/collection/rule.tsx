@@ -136,6 +136,36 @@ const Rule: Collection = {
           label: "Url",
           ui: {
             component: AuthorUrlField,
+            validate: (value: any) => {
+              if (!value) return undefined;
+              try {
+                const url = new URL(value);
+                if (!["http:", "https:"].includes(url.protocol)) {
+                  return "URL must start with http:// or https://";
+                }
+              } catch {
+                return "Please enter a valid URL (e.g. https://example.com)";
+              }
+            },
+          },
+        },
+        {
+          type: "string",
+          name: "img",
+          label: "Profile Image URL",
+          description: "Optional. Photo URL for non-SSW authors. SSW authors get their image automatically.",
+          ui: {
+            validate: (value: any) => {
+              if (!value) return undefined;
+              try {
+                const url = new URL(value);
+                if (!["http:", "https:"].includes(url.protocol)) {
+                  return "Image URL must start with http:// or https://";
+                }
+              } catch {
+                return "Please enter a valid image URL";
+              }
+            },
           },
         },
       ],

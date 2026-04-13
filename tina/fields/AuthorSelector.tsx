@@ -124,11 +124,13 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
 
   const handleSwitchToNonSsw = () => {
     setIsNonSsw(true);
+    input.onChange("");
     updateUrlField("");
   };
 
   const handleSwitchToSsw = () => {
     setIsNonSsw(false);
+    input.onChange("");
     updateUrlField("");
   };
 

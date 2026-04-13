@@ -3,6 +3,8 @@ import { Collection, useCMS, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
+import { AuthorSelectorInput } from "../fields/AuthorSelector";
+import { AuthorUrlField } from "../fields/AuthorUrlField";
 import { CategoryMultiSelectorInput } from "../fields/CategoryMultiSelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
@@ -110,10 +112,10 @@ const Rule: Collection = {
       list: true,
       searchable: false,
       ui: {
-        itemProps: (item) => ({ label: "👤 " + (item?.title ?? "Author") }),
+        itemProps: (item) => ({ label: "👤 " + (item?.title || "Add an author") }),
         defaultItem: {
-          title: "Bob Northwind",
-          url: "https://www.ssw.com.au/people/bob-northwind",
+          title: "Adam Cogan",
+          url: "https://www.ssw.com.au/people/adam-cogan",
         },
         component: ConditionalHiddenField,
       },
@@ -124,14 +126,17 @@ const Rule: Collection = {
           description: "The full name of the contributor, as it should appear on the rule.",
           label: "Name",
           ui: {
-            component: ConditionalHiddenField,
+            component: AuthorSelectorInput,
           },
         },
         {
           type: "string",
-          description: 'The SSW People link for the contributor. E.g. "https://www.ssw.com.au/people/bob-northwind"',
+          description: 'Link to the contributor profile. SSW People link (e.g. "https://www.ssw.com.au/people/adam-cogan") or any external URL.',
           name: "url",
           label: "Url",
+          ui: {
+            component: AuthorUrlField,
+          },
         },
       ],
     },

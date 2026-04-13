@@ -1,5 +1,6 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
+import { recordRevalidation } from "@/lib/revalidation-store";
 
 enum TINA_CONTENT_CHANGE_TYPE {
   Modified = "content.modified",
@@ -36,6 +37,7 @@ export async function POST(req: Request) {
         const slug = changedPath.replace("public/uploads/rules/", "").replace("/rule.mdx", "").replace(/\/+$/, "");
         if (slug) {
           routesToRevalidate.add(`/${slug}`);
+          recordRevalidation(slug);
         }
         // If change type is add then we also need to revalidate the /api/rules route
         if (eventType === TINA_CONTENT_CHANGE_TYPE.Added) {

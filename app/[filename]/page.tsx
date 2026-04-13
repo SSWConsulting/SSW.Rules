@@ -2,6 +2,7 @@ import React from "react";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { extractBodyPreview } from "@/lib/bodyUtils";
+import { recordPageGeneration } from "@/lib/revalidation-store";
 import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
@@ -313,6 +314,9 @@ export default async function Page({
   const rule = await getRuleData(filename);
 
   if (rule?.data) {
+    const pageGeneratedAt = Date.now();
+    recordPageGeneration(filename, pageGeneratedAt);
+
     return (
       <Section>
         <TinaRuleWrapper
@@ -320,6 +324,7 @@ export default async function Page({
           serverRulePageProps={{
             rule: rule.data.rule,
             brokenReferences: rule.brokenReferences,
+            pageGeneratedAt,
           }}
         />
       </Section>

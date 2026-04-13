@@ -50,14 +50,6 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
     if (typeof tinaForm?.change === "function") {
       tinaForm.change(urlFieldName, value);
     }
-
-    console.log("[AuthorSelector] updateUrlField", {
-      urlFieldName,
-      bracketName,
-      value,
-      formHasChange: typeof form?.change === "function",
-      tinaFormFinalFormHasChange: typeof tinaForm?.finalForm?.change === "function",
-    });
   };
 
   // Read the current URL value so we can initialise the non‑SSW toggle state.

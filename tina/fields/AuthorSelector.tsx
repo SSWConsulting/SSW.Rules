@@ -14,10 +14,6 @@ interface EmployeeItem {
 
 /**
  * Custom TinaCMS field component for the author `title` field.
- *
- * - Provides a searchable dropdown of SSW employees (fetched from the CRM API).
- * - On selection, auto‑fills both the `title` (name) and sibling `url` field.
- * - Includes a "Not from SSW" toggle that switches to manual text entry.
  */
 const AuthorSelectorInner: React.FC<any> = (props) => {
   const { field, input, form, tinaForm } = props;
@@ -30,14 +26,11 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
   const [isNonSsw, setIsNonSsw] = useState(false);
 
   // Derive the sibling `url` field name from our own `input.name`.
-  // TinaCMS uses dot notation for field names: "authors.0.title" -> "authors.0.url"
   const urlFieldName = useMemo(() => {
     return input.name.replace(/\.title$/, ".url");
   }, [input.name]);
 
-  // Helper to update the sibling URL field via the best available form API
   const updateUrlField = (value: string) => {
-    // Also try bracket notation just in case
     const bracketName = urlFieldName.replace(/\.(\d+)\./g, "[$1].");
 
     // Approach 1: form prop (should be tinaForm.finalForm = the final-form API)
@@ -70,7 +63,6 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
   // Read the current URL value so we can initialise the non‑SSW toggle state.
   const currentUrl: string = form?.getState?.()?.values ? (getNestedValue(form.getState().values, urlFieldName) ?? "") : "";
 
-  // On mount, detect whether the existing URL is non‑SSW
   useEffect(() => {
     if (currentUrl && !currentUrl.includes("ssw.com.au/people")) {
       setIsNonSsw(true);
@@ -83,7 +75,6 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
       setLoading(true);
       setError(null);
       try {
-        // Build the URL — fall back to a relative path if NEXT_PUBLIC_BASE_PATH is empty
         const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
         const url = `${base}/api/crm/employees`;
 
@@ -114,7 +105,6 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
     fetchEmployees();
   }, []);
 
-  // Filter employees when search text changes
   useEffect(() => {
     const q = filter.trim().toLowerCase();
     if (!q) {
@@ -125,10 +115,8 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
   }, [filter, allEmployees]);
 
   const handleSelectEmployee = (employee: EmployeeItem, close: () => void) => {
-    // Set the title (name) field — this is our own field
     input.onChange(employee.fullName);
 
-    // Build the SSW People URL from the employee name
     const slug = employee.fullName
       .toLowerCase()
       .replace(/\s+/g, "-")
@@ -144,13 +132,11 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
 
   const handleSwitchToNonSsw = () => {
     setIsNonSsw(true);
-    // Clear the URL so the user can enter a custom one
     updateUrlField("");
   };
 
   const handleSwitchToSsw = () => {
     setIsNonSsw(false);
-    // Clear URL — it will be auto-filled on next SSW person selection
     updateUrlField("");
   };
 
@@ -212,7 +198,6 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
                   >
                     {({ close }) => (
                       <div className="max-h-[50vh] flex flex-col w-full" style={{ backgroundColor: "white" }}>
-                        {/* Search input */}
                         <div className="p-2 border-b border-gray-100 shadow-sm" style={{ backgroundColor: "#f9fafb" }}>
                           <div className="relative">
                             <BiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -231,28 +216,24 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
                           </div>
                         </div>
 
-                        {/* Loading */}
                         {loading && (
                           <div className="p-4 text-center text-gray-500 text-sm" style={{ backgroundColor: "white" }}>
                             Loading SSW people...
                           </div>
                         )}
 
-                        {/* Error */}
                         {error && (
                           <div className="p-4 text-center text-red-500 text-sm" style={{ backgroundColor: "white" }}>
                             {error}
                           </div>
                         )}
 
-                        {/* Empty state */}
                         {!loading && !error && filteredEmployees.length === 0 && (
                           <div className="p-4 text-center text-gray-400 text-sm" style={{ backgroundColor: "white" }}>
                             No matching people found
                           </div>
                         )}
 
-                        {/* Employee list */}
                         {!loading && !error && filteredEmployees.length > 0 && (
                           <div className="flex-1 overflow-y-auto" style={{ backgroundColor: "white" }}>
                             {filteredEmployees.map((employee) => {
@@ -302,10 +283,6 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
 };
 
 export const AuthorSelectorInput = wrapFieldsWithMeta(AuthorSelectorInner);
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ──────────────────────────────────────────────────────────────────────────────
 
 /** Read a nested value from an object using a dot/bracket path like "authors[0].url" */
 function getNestedValue(obj: any, path: string): any {

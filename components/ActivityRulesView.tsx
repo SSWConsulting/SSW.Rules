@@ -11,7 +11,6 @@ import RadioButton from "@/components/radio-button/radio-button";
 import WhyRulesCard from "@/components/WhyRulesCard";
 import { ActivityRule } from "@/models/ActivityRule";
 import { RecentComment } from "@/models/RecentComment";
-import { QuickLink } from "@/types/quickLink";
 import JoinConversationCard from "./JoinConversationCard";
 
 const PAGE_SIZE = 5;
@@ -46,10 +45,10 @@ interface ActivityRulesViewProps {
   total: number;
   recentComments: RecentComment[];
   latestRulesData: ActivityRule[];
-  quickLinks: QuickLink[];
+  homepage?: any;
 }
 
-export default function ActivityRulesView({ rules, total, recentComments, latestRulesData, quickLinks }: ActivityRulesViewProps) {
+export default function ActivityRulesView({ rules, total, recentComments, latestRulesData, homepage }: ActivityRulesViewProps) {
   const [sortKey, setSortKey] = useState<SortKey>("mostLiked");
 
   const [animatingMetric, setAnimatingMetric] = useState<SortKey | null>(null);
@@ -155,7 +154,7 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
           {!hasMore && activeTotal > 0 && (
             <div className="mt-4 mb-2 p-4 text-center text-gray-600">
               Want more?{" "}
-              <a href={`${process.env.NEXT_PUBLIC_BASE_PATH}/categories`} className="text-ssw-red underline font-medium">
+              <a href={`${process.env.NEXT_PUBLIC_BASE_PATH}/categories`} className="underline">
                 Explore our categories
               </a>
             </div>
@@ -164,12 +163,12 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
 
         <div className="layout-sidebar min-w-0">
           <RecentCommentsCard comments={recentComments} />
-          <QuickLinksCard links={quickLinks} />
-          <WhyRulesCard />
-          <HelpImproveCard />
-          <HelpCard />
-          <AboutSSWCard />
-          <JoinConversationCard />
+          <QuickLinksCard data={homepage?.quickLinks} />
+          <WhyRulesCard data={homepage?.whyRules} />
+          <HelpImproveCard data={homepage?.helpImprove} />
+          <HelpCard data={homepage?.needHelp} />
+          <AboutSSWCard data={homepage?.aboutSsw} />
+          <JoinConversationCard data={homepage?.joinConversation} />
         </div>
       </div>
     </>

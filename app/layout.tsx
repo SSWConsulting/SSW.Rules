@@ -6,8 +6,8 @@ import SiteLayout from "@/components/layout/layout";
 import { cn } from "@/lib/utils";
 import "@/styles.css";
 import UserClientProvider from "@/components/auth/UserClientProvider";
-import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
 import AppInsightsProvider from "@/components/providers/AppInsightsProvider";
+import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
 
 const fontSans = FontSans({
   subsets: ["latin"],

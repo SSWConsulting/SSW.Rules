@@ -1,6 +1,7 @@
-import { auth0 } from "@/lib/auth0";
 import { NextRequest, NextResponse } from "next/server";
+import { auth0 } from "@/lib/auth0";
 
+export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
     const session = await auth0.getSession();
@@ -9,7 +10,7 @@ export async function GET(req: NextRequest) {
     }
     return NextResponse.json({ authenticated: false }, { status: 200 });
   } catch (error) {
-    console.error('Authentication check error:', error);
+    console.error("Authentication check error:", error);
     return NextResponse.json({ authenticated: false }, { status: 500 });
   }
 }

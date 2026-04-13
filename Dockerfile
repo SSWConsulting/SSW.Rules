@@ -12,9 +12,11 @@
     
     COPY package*.json ./
     COPY yarn.lock* ./
-    
+    COPY pnpm-lock.yaml* ./
+
     # Always perform a clean install
     RUN if [ -f yarn.lock ]; then yarn --frozen-lockfile --cache-folder /tmp/yarn-cache; \
+        elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm install --frozen-lockfile; \
         elif [ -f package-lock.json ]; then npm ci --force --cache /tmp/npm-cache; \
         else npm install --force --cache /tmp/npm-cache; fi
     
@@ -91,7 +93,9 @@
         NEXT_TELEMETRY_DISABLED=1
     
     # Build the Next.js application
-    RUN if [ -f yarn.lock ]; then yarn build; else npm run build; fi
+    RUN if [ -f yarn.lock ]; then yarn build; \
+        elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+        else npm run build; fi
     
     # -----------------------------------------
     # Reduce Next.js output size

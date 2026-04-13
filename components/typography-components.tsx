@@ -2,9 +2,9 @@ import { Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { Prism } from "tinacms/dist/rich-text/prism";
-import { toSlug } from "@/lib/utils";
 import { CustomLink } from "@/components/customLink";
 import MermaidElement from "@/components/mermaid/MermaidElement";
+import { toSlug } from "@/lib/utils";
 import { withBasePath } from "@/lib/withBasePath";
 
 // Helper function to extract text content from TinaCMS props structure
@@ -96,13 +96,7 @@ export const getTypographyComponents = (enableAnchors = false) => ({
     if (isDownloadable) {
       const filename = getFilenameFromHref(originalHref);
       return (
-        <a
-          className="underline hover:text-ssw-red"
-          href={href}
-          download={filename}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a className="underline hover:text-ssw-red" href={href} download={filename} target="_blank" rel="noopener noreferrer">
           {props.children}
         </a>
       );

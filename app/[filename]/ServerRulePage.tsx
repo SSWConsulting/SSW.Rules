@@ -22,6 +22,7 @@ import { Card } from "@/components/ui/card";
 export interface ServerRulePageProps {
   rule: any;
   brokenReferences?: BrokenReferences | null;
+  pageGeneratedAt?: number;
 }
 
 export type ServerRulePagePropsWithTinaProps = {
@@ -34,7 +35,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
   const rule = data?.rule;
   const { isAdmin: isAdminPage, isLoading: isAdminLoading } = useIsAdminPage();
 
-  const { brokenReferences } = serverRulePageProps;
+  const { brokenReferences, pageGeneratedAt } = serverRulePageProps;
   const allCategories = rule.categories
     ?.map((c: any) => {
       const cat = c?.category;
@@ -89,7 +90,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
 
               <div className="flex justify-between my-2 flex-col md:flex-row">
                 <div className="flex items-center gap-2 mt-2">
-                  <RuleStatusBadge lastUpdated={rule?.lastUpdated} rulePath={rule?.id} />
+                  <RuleStatusBadge pageGeneratedAt={pageGeneratedAt} ruleSlug={rule?.uri} />
                   <GitHubMetadata owner="SSWConsulting" repo="SSW.Rules.Content" path={rule?.id} />
                 </div>
                 <RuleActionButtons rule={rule} />

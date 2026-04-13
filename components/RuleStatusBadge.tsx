@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Tooltip from "@/components/tooltip/tooltip";
-import { getRuleStatus, getRuleStatusDescription } from "@/lib/ruleStatus";
+import { getRuleStatus, getRuleStatusDescription, type RuleStatus } from "@/lib/ruleStatus";
 import { cn } from "@/lib/utils";
 
 interface RuleStatusBadgeProps {
-  lastUpdated: string | null | undefined;
-  rulePath?: string;
+  pageGeneratedAt?: number;
+  ruleSlug?: string;
   className?: string;
 }
 
@@ -17,32 +17,34 @@ const dotStyles = {
   rebuilding: "bg-yellow-500",
 } as const;
 
-export default function RuleStatusBadge({ lastUpdated, rulePath, className }: RuleStatusBadgeProps) {
-  const [isBeingRebuilt, setIsBeingRebuilt] = useState(false);
+export default function RuleStatusBadge({ pageGeneratedAt, ruleSlug, className }: RuleStatusBadgeProps) {
+  const [status, setStatus] = useState<RuleStatus>("fresh");
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (!rulePath) return;
+    if (!ruleSlug) return;
 
-    const checkOpenPRs = async () => {
+    const fetchStatus = async () => {
       try {
-        const params = new URLSearchParams({ path: rulePath });
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/github-open-prs?${params.toString()}`);
+        const params = new URLSearchParams({ slug: ruleSlug });
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/isr-status?${params.toString()}`);
         if (response.ok) {
-          const { hasOpenPRs } = await response.json();
-          setIsBeingRebuilt(hasOpenPRs);
+          const { lastWebhookAt } = await response.json();
+          setStatus(getRuleStatus(pageGeneratedAt, lastWebhookAt));
         }
       } catch {
-        // Silently fail — default to no "rebuilding" state
+        // Silently fail — default to "fresh"
+      } finally {
+        setLoaded(true);
       }
     };
 
-    checkOpenPRs();
-  }, [rulePath]);
+    fetchStatus();
+  }, [ruleSlug, pageGeneratedAt]);
 
-  const status = getRuleStatus(lastUpdated, isBeingRebuilt);
-  if (!status) return null;
+  if (!loaded) return null;
 
-  const description = getRuleStatusDescription(lastUpdated, status);
+  const description = getRuleStatusDescription(status);
 
   return (
     <Tooltip text={description} showDelay={0} hideDelay={0} opaque={true}>

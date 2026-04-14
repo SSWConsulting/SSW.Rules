@@ -2,6 +2,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth0 } from './lib/auth0'
 import redirectMappingRaw from './redirects.json'
+import * as appInsights from 'applicationinsights'
+
+export const runtime = 'nodejs'
 
 // Build O(1) lookup map once at module initialization.
 // Filter out self-referential entries at startup to avoid redundant redirects.
@@ -23,6 +26,24 @@ export function middleware(request: NextRequest) {
   const destination = redirectMap.get(slug)
 
   if (destination) {
+    // Track redirect hit with Application Insights (fire-and-forget, non-blocking)
+    try {
+      if (appInsights.defaultClient) {
+        appInsights.defaultClient.trackEvent({
+          name: 'uri-redirect-hit',
+          properties: {
+            sourceUri: slug,
+            destinationUri: destination,
+            timestamp: new Date().toISOString(),
+            userAgent: request.headers.get('user-agent') ?? '',
+            referer: request.headers.get('referer') ?? '',
+          },
+        })
+      }
+    } catch {
+      // Telemetry is non-critical — never block a redirect
+    }
+
     const url = request.nextUrl.clone()
     url.pathname = `/${destination}`
     return NextResponse.redirect(url, 308)

@@ -1,6 +1,6 @@
 import * as appInsights from "applicationinsights";
 import { NextRequest, NextResponse } from "next/server";
-import { auth0 } from "./lib/auth0";
+import { getAuth0 } from "./lib/auth0";
 import redirectMappingRaw from "./redirects.json";
 
 export const runtime = "nodejs";
@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/auth") || pathname.startsWith(`${process.env.NEXT_PUBLIC_BASE_PATH}/auth`)) {
-    return auth0.middleware(request);
+    return getAuth0().middleware(request);
   }
 
   const slug = pathname.replace(/^\//, "");

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth0 } from "@/lib/auth0";
+import { getAuth0 } from "@/lib/auth0";
 
 export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth0.getSession();
+    const session = await getAuth0().getSession();
     if (session) {
       return NextResponse.json({ isAuthenticated: true }, { status: 200 });
     }

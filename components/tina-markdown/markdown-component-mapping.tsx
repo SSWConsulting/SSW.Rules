@@ -77,6 +77,13 @@ export const getMarkdownComponentMapping = (enableAnchors = false): Components<a
     h5: withHighlightProcessing("h5"),
     h6: withHighlightProcessing("h6"),
 
+    html_inline: ({ value }: { value: string }) => {
+      if (typeof value === "string" && value.trimStart().startsWith("<svg")) {
+        return <span dangerouslySetInnerHTML={{ __html: value }} />;
+      }
+      return <></>;
+    },
+
     blockquote: (props: any) => {
       const textWithHighlight = getTextFromContent(props);
       if (textWithHighlight) {

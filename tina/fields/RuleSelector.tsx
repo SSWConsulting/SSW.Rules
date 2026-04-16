@@ -8,6 +8,7 @@ interface Rule {
   title: string;
   uri: string;
   lastUpdated: string;
+  isArchived?: boolean;
   _sys: {
     relativePath: string;
   };
@@ -206,11 +207,18 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
                               >
                                 <div className="flex items-center justify-between w-full gap-3">
                                   <div className="flex-1 min-w-0 overflow-hidden">
-                                    <div
-                                      className="font-medium text-gray-900 text-sm leading-5 whitespace-normal break-words line-clamp-2"
-                                      title={rule.title || rule.uri}
-                                    >
-                                      {rule.title || rule.uri}
+                                    <div className="flex items-center gap-2">
+                                      <span
+                                        className="font-medium text-gray-900 text-sm leading-5 whitespace-normal break-words line-clamp-2 flex-1 min-w-0"
+                                        title={rule.title || rule.uri}
+                                      >
+                                        {rule.title || rule.uri}
+                                      </span>
+                                      {rule.isArchived && (
+                                        <span className="shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-red-600 text-white">
+                                          Archived
+                                        </span>
+                                      )}
                                     </div>
                                     <div className="text-xs text-gray-500 leading-4 truncate">{rule.uri}</div>
                                   </div>

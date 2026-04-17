@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FaComment, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { RiTimeFill } from "react-icons/ri";
+import { tinaField } from "tinacms/dist/react";
 import { Card } from "@/components/ui/card";
 import { timeAgo } from "@/lib/dateUtils";
 import { ActivityRule } from "@/models/ActivityRule";
@@ -13,6 +14,7 @@ interface RuleActivityCardProps {
   animatingMetric?: string | null;
   animationEpoch?: number;
   activeSort?: string;
+  tinaNode?: any;
 }
 
 function formatDate(dateStr: string | null): string | null {
@@ -27,7 +29,7 @@ function shortenCategory(title: string): string {
   return match ? match[1] : title;
 }
 
-/** Returns { key, className } to spread onto the element that should animate. */
+/** Returns { animKey, className } for metric animation. animKey must be passed as `key` prop directly, not spread. */
 function metricAnimProps(
   metric: string,
   animatingMetric: string | null | undefined,
@@ -38,12 +40,57 @@ function metricAnimProps(
   const isAnimating = animatingMetric === metric && animationEpoch > 0;
   const isBold = activeSort === metric;
   return {
-    key: isAnimating ? animationEpoch : undefined,
+    animKey: isAnimating ? animationEpoch : undefined,
     className: [baseClassName, isAnimating ? "animate-metric-pop" : "", isBold ? "font-bold" : ""].filter(Boolean).join(" "),
   };
 }
 
-export default function RuleActivityCard({ rule, rank, animatingMetric, animationEpoch = 0, activeSort }: RuleActivityCardProps) {
+function MetricsRow({ rule, animatingMetric, animationEpoch = 0, activeSort }: { rule: ActivityRule; animatingMetric?: string | null; animationEpoch?: number; activeSort?: string }) {
+  const { animKey: likedKey, className: likedClass } = metricAnimProps("mostLiked", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer");
+  const { animKey: commentedKey, className: commentedClass } = metricAnimProps("mostCommented", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1");
+  const { animKey: lastCommentedKey, className: lastCommentedClass } = metricAnimProps("lastCommented", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1 text-gray-400 ml-auto");
+
+  return (
+    <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
+      <a
+        key={likedKey}
+        className={likedClass}
+        href={`${rule.discussionUrl}#top`}
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Like this rule on GitHub"
+      >
+        <FaThumbsUp />
+        <span>{rule.thumbsUp}</span>
+      </a>
+
+      <a
+        href={`${rule.discussionUrl}#top`}
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Dislike this rule on GitHub"
+        className="flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer"
+      >
+        <FaThumbsDown />
+        <span>{rule.thumbsDown}</span>
+      </a>
+
+      <span key={commentedKey} className={commentedClass} title="Comments">
+        <FaComment />
+        <span>
+          {rule.commentCount} {rule.commentCount === 1 ? "comment" : "comments"}
+        </span>
+      </span>
+
+      <span key={lastCommentedKey} className={lastCommentedClass}>
+        <RiTimeFill />
+        <span>Last commented {timeAgo(rule.lastCommentAt)}</span>
+      </span>
+    </div>
+  );
+}
+
+export default function RuleActivityCard({ rule, rank, animatingMetric, animationEpoch = 0, activeSort, tinaNode }: RuleActivityCardProps) {
   const publishDate = formatDate(rule.created ?? rule.lastUpdated);
 
   const categoryLabels = rule.categories.length > 0 ? rule.categories.map((cat) => shortenCategory(cat.title)).join(", ") : null;
@@ -57,7 +104,7 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
         {/* Card body */}
         <div className="min-w-0 flex-1 flex flex-col gap-2">
           {/* Title — matches rule-list-item-header: text-2xl, no-underline link, a:hover global red */}
-          <h2 className="m-0 text-2xl">
+          <h2 className="m-0 text-2xl" data-tina-field={tinaNode ? tinaField(tinaNode, "title") : undefined}>
             <Link href={`/${rule.uri}`} className="no-underline">
               {rule.title}
             </Link>
@@ -83,55 +130,15 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
           )}
 
           {/* Short description */}
-          {rule.descriptionPreview && <p className="text-sm text-gray-600 m-0 my-2 line-clamp-2">{rule.descriptionPreview}</p>}
+          {rule.descriptionPreview && (
+            <p className="text-sm text-gray-600 m-0 my-2 line-clamp-2" data-tina-field={tinaNode ? tinaField(tinaNode, "body") : undefined}>
+              {rule.descriptionPreview}
+            </p>
+          )}
 
           {/* Interaction row — only shown for rules with discussion activity */}
           {rule.discussionUrl && (
-            <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
-              {/* Thumbs up: icon + count animate together */}
-              <a
-                {...metricAnimProps(
-                  "mostLiked",
-                  animatingMetric,
-                  animationEpoch,
-                  activeSort,
-                  "flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer"
-                )}
-                href={`${rule.discussionUrl}#top`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Like this rule on GitHub"
-              >
-                <FaThumbsUp />
-                <span>{rule.thumbsUp}</span>
-              </a>
-
-              {/* Thumbs down: no metric emphasis */}
-              <a
-                href={`${rule.discussionUrl}#top`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Dislike this rule on GitHub"
-                className="flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer"
-              >
-                <FaThumbsDown />
-                <span>{rule.thumbsDown}</span>
-              </a>
-
-              {/* Comments: icon + count + label animate together */}
-              <span {...metricAnimProps("mostCommented", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1")} title="Comments">
-                <FaComment />
-                <span>
-                  {rule.commentCount} {rule.commentCount === 1 ? "comment" : "comments"}
-                </span>
-              </span>
-
-              {/* Last commented: icon + label + timestamp animate together */}
-              <span {...metricAnimProps("lastCommented", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1 text-gray-400 ml-auto")}>
-                <RiTimeFill />
-                <span>Last commented {timeAgo(rule.lastCommentAt)}</span>
-              </span>
-            </div>
+            <MetricsRow rule={rule} animatingMetric={animatingMetric} animationEpoch={animationEpoch} activeSort={activeSort} />
           )}
         </div>
       </div>

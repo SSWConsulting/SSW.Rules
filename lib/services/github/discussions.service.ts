@@ -147,20 +147,23 @@ async function fetchDiscussions(token: string, owner: string, repoName: string):
 }
 
 /**
- * Fetches rules by GUID from TinaCMS and returns a map of guid → metadata.
+ * Fetches rules by GUID from TinaCMS and returns a map of guid → metadata
+ * along with the raw Tina query props for useTina() visual editing.
  */
 async function fetchRulesByGuids(
   guids: string[]
-): Promise<
-  Map<string, { title: string; uri: string; authors: string[]; created: string | null; lastUpdated: string | null; body: any; categories: Array<{ title: string; uri: string }> }>
-> {
+): Promise<{
+  map: Map<string, { title: string; uri: string; authors: string[]; created: string | null; lastUpdated: string | null; body: any; categories: Array<{ title: string; uri: string }> }>;
+  tinaProps: TinaQueryProps;
+}> {
   const map = new Map<
     string,
     { title: string; uri: string; authors: string[]; created: string | null; lastUpdated: string | null; body: any; categories: Array<{ title: string; uri: string }> }
   >();
-  if (guids.length === 0) return map;
+  if (guids.length === 0) return { map, tinaProps: { query: "", variables: {}, data: {} } };
 
   const res = await client.queries.rulesByGuidQuery({ guids });
+  const tinaProps: TinaQueryProps = { query: res.query, variables: res.variables, data: res.data };
   const edges = res?.data?.ruleConnection?.edges ?? [];
 
   for (const edge of edges) {
@@ -191,12 +194,19 @@ async function fetchRulesByGuids(
     }
   }
 
-  return map;
+  return { map, tinaProps };
+}
+
+export interface TinaQueryProps {
+  query: string;
+  variables: any;
+  data: any;
 }
 
 export interface DiscussionData {
   activityRules: ActivityRule[];
   recentComments: RecentComment[];
+  rulesByGuidTinaProps: TinaQueryProps;
 }
 
 /**
@@ -228,7 +238,7 @@ export async function fetchDiscussionData(): Promise<DiscussionData> {
   }
 
   const guids = uniqueDiscussions.map((d) => d.title.trim());
-  const ruleMap = await fetchRulesByGuids(guids);
+  const { map: ruleMap, tinaProps: rulesByGuidTinaProps } = await fetchRulesByGuids(guids);
 
   const activityRules: ActivityRule[] = [];
 
@@ -279,7 +289,7 @@ export async function fetchDiscussionData(): Promise<DiscussionData> {
     commentedAt: comment.createdAt,
   }));
 
-  return { activityRules, recentComments };
+  return { activityRules, recentComments, rulesByGuidTinaProps };
 }
 
 const SIX_HOURS = 6 * 60 * 60;

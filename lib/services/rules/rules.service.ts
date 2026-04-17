@@ -18,14 +18,25 @@ type RuleQueryVars = PaginationVars & {
   sort?: string;
 };
 
-async function fetchActivityLatestRulesData(size: number = 200): Promise<ActivityRule[]> {
+export interface TinaQueryProps {
+  query: string;
+  variables: any;
+  data: any;
+}
+
+export interface ActivityLatestRulesResult {
+  rules: ActivityRule[];
+  tinaProps: TinaQueryProps;
+}
+
+async function fetchActivityLatestRulesData(size: number = 200): Promise<ActivityLatestRulesResult> {
   const res = await client.queries.activityLatestRulesQuery({ size });
 
   const rules = res?.data?.ruleConnection?.edges
     ?.filter((edge: any) => edge?.node?.guid)
     .map((edge: any) => edge.node) || [];
 
-  return rules.map((r: any): ActivityRule => ({
+  const activityRules = rules.map((r: any): ActivityRule => ({
     guid: r.guid,
     title: r.title,
     uri: r.uri,
@@ -43,9 +54,14 @@ async function fetchActivityLatestRulesData(size: number = 200): Promise<Activit
     thumbsDown: 0,
     discussionUrl: "",
   }));
+
+  return {
+    rules: activityRules,
+    tinaProps: { query: res.query, variables: res.variables, data: res.data },
+  };
 }
 
-export async function fetchActivityLatestRules(size: number = 200): Promise<ActivityRule[]> {
+export async function fetchActivityLatestRules(size: number = 200): Promise<ActivityLatestRulesResult> {
   const getCached = unstable_cache(
     fetchActivityLatestRulesData,
     [`activity-latest-rules-${size}`],

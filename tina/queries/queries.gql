@@ -2,6 +2,17 @@ query activityLatestRulesQuery($size: Float) {
   ruleConnection(last: $size, sort: "lastUpdated") {
     edges {
       node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
         guid
         title
         uri
@@ -133,6 +144,17 @@ query rulesByGuidQuery($guids: [String!]!) {
   ruleConnection(filter: { guid: { in: $guids } }, first: 200) {
     edges {
       node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
         guid
         title
         uri

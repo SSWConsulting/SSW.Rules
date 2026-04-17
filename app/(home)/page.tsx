@@ -7,7 +7,7 @@ import { siteUrl } from "@/site-config";
 export const revalidate = 21600; // 6 hours
 
 export default async function Home() {
-  const [activityData, latestRulesData, homePageData, ruleCount] = await Promise.all([
+  const [activityData, latestRulesResult, homePageData, ruleCount] = await Promise.all([
     fetchDiscussionData().catch(() => null),
     fetchActivityLatestRules(50),
     fetchHomepageData(),
@@ -23,9 +23,11 @@ export default async function Home() {
       rules={activityData.activityRules}
       total={activityData.activityRules.length}
       recentComments={activityData.recentComments}
-      latestRulesData={latestRulesData}
+      latestRulesData={latestRulesResult.rules}
       ruleCount={ruleCount}
       tinaQueryProps={homePageData as { query: string; variables: any; data: any }}
+      activityRulesTinaProps={activityData.rulesByGuidTinaProps}
+      latestRulesTinaProps={latestRulesResult.tinaProps}
     />
   );
 }

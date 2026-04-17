@@ -46,9 +46,10 @@ interface ActivityRulesViewProps {
   recentComments: RecentComment[];
   latestRulesData: ActivityRule[];
   homepage?: any;
+  tinaNodeMap?: Map<string, any>;
 }
 
-export default function ActivityRulesView({ rules, total, recentComments, latestRulesData, homepage }: ActivityRulesViewProps) {
+export default function ActivityRulesView({ rules, total, recentComments, latestRulesData, homepage, tinaNodeMap }: ActivityRulesViewProps) {
   const [sortKey, setSortKey] = useState<SortKey>("mostLiked");
 
   const [animatingMetric, setAnimatingMetric] = useState<SortKey | null>(null);
@@ -144,7 +145,7 @@ export default function ActivityRulesView({ rules, total, recentComments, latest
       <div className="layout-two-columns">
         <div className="layout-main-section min-w-0">
           {visibleRules.map((rule, i) => (
-            <RuleActivityCard key={rule.guid} rule={rule} rank={i + 1} animatingMetric={animatingMetric} animationEpoch={animationEpoch} activeSort={sortKey} />
+            <RuleActivityCard key={rule.guid} rule={rule} rank={i + 1} animatingMetric={animatingMetric} animationEpoch={animationEpoch} activeSort={sortKey} tinaNode={tinaNodeMap?.get(rule.guid)} />
           ))}
 
           {activeTotal === 0 && <p className="text-gray-500">No rules found.</p>}

@@ -48,8 +48,16 @@ interface ActivityRulesViewProps {
   homepage?: any;
 }
 
+function getInitialSort(): SortKey {
+  if (typeof window === "undefined") return "mostLiked";
+  const params = new URLSearchParams(window.location.search);
+  const sort = params.get("sort");
+  if (sort && SORT_OPTIONS.some((o) => o.key === sort)) return sort as SortKey;
+  return "mostLiked";
+}
+
 export default function ActivityRulesView({ rules, total, recentComments, latestRulesData, homepage }: ActivityRulesViewProps) {
-  const [sortKey, setSortKey] = useState<SortKey>("mostLiked");
+  const [sortKey, setSortKey] = useState<SortKey>(getInitialSort);
 
   const [animatingMetric, setAnimatingMetric] = useState<SortKey | null>(null);
   const [animationEpoch, setAnimationEpoch] = useState(0);

@@ -44,7 +44,7 @@ function metricAnimProps(
 }
 
 export default function RuleActivityCard({ rule, rank, animatingMetric, animationEpoch = 0, activeSort }: RuleActivityCardProps) {
-  const publishDate = formatDate(rule.created ?? rule.lastUpdated);
+  const publishDate = formatDate(rule.lastUpdated ?? rule.created);
 
   const categoryLabels = rule.categories.length > 0 ? rule.categories.map((cat) => shortenCategory(cat.title)).join(", ") : null;
 
@@ -68,7 +68,7 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
             <p className="text-xs text-gray-400 m-0">
               {publishDate && (
                 <span>
-                  Published on <span className="font-medium text-gray-500">{publishDate}</span>
+                  Last updated on <span {...metricAnimProps("latestRules", animatingMetric, animationEpoch, activeSort, "inline-flex font-medium text-gray-500")}>{publishDate}</span>
                 </span>
               )}
               {publishDate && rule.authors.length > 0 && <span> by </span>}

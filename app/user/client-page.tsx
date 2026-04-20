@@ -8,11 +8,13 @@ import { FaUserCircle } from "react-icons/fa";
 import { RiGithubFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth/UserClientProvider";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import RadioButton from "@/components/radio-button/radio-button";
 import RuleList from "@/components/rule-list";
 import Spinner from "@/components/Spinner";
 import Pagination from "@/components/ui/pagination";
 import { BookmarkService } from "@/lib/bookmarkService";
 import { BookmarkedRule, Rule, UserBookmarksResponse } from "@/types";
+import { RuleListFilter } from "@/types/ruleListFilter";
 
 const Tabs = {
   MODIFIED: "modified",
@@ -34,6 +36,8 @@ export default function UserRulesClientPage() {
   const isAuthenticated = !!user;
   const isOwnProfile = user?.nickname === queryStringRulesAuthor;
   const showBookmarks = isAuthenticated && isOwnProfile;
+
+  const [sharedFilter, setSharedFilter] = useState<RuleListFilter>(RuleListFilter.Blurb);
 
   const [bookmarkedRules, setBookmarkedRules] = useState<BookmarkedRule[]>([]);
   const [bookmarkRules, setBookmarkRules] = useState<Rule[]>([]);
@@ -81,9 +85,7 @@ export default function UserRulesClientPage() {
     return authoredRules.slice(startIndex, endIndex);
   }, [authoredRules, currentPageAuthored, itemsPerPageAuthored]);
 
-  const isInvalidUser =
-    authorFoundInCRM === false &&
-    authoredFullyLoaded;
+  const isInvalidUser = authorFoundInCRM === false && authoredFullyLoaded;
 
   const tabItems = [
     { key: Tabs.AUTHORED, label: authoredFullyLoaded ? `Authored (${authoredRules.length})` : "Authored" },
@@ -424,8 +426,12 @@ export default function UserRulesClientPage() {
     );
   }
 
+  const handleFilterChange = (e: { target: { value: string } }) => {
+    setSharedFilter(e.target.value as RuleListFilter);
+  };
+
   const TabHeader = () => (
-    <div role="tablist" aria-label="User Rules Tabs" className="flex m-4 divide-x divide-gray-200 rounded">
+    <div role="tablist" aria-label="User Rules Tabs" className="flex m-4 mx-6 divide-x divide-gray-200 rounded">
       {tabItems.map((t, i) => {
         const isActive = activeTab === t.key;
         return (
@@ -522,7 +528,35 @@ export default function UserRulesClientPage() {
 
               <TabHeader />
 
-              <div className="rounded-lg border border-gray-100 bg-white p-4">
+              <div className="rounded-lg border border-gray-100 bg-white py-4 px-6">
+                <div className="flex items-center py-2 mb-2">
+                  <span className="mr-4 hidden sm:block">Show me</span>
+                  <RadioButton
+                    id="userFilterTitleOnly"
+                    value={RuleListFilter.TitleOnly}
+                    selectedOption={sharedFilter}
+                    handleOptionChange={handleFilterChange}
+                    labelText="Titles"
+                    position="first"
+                  />
+                  <RadioButton
+                    id="userFilterBlurb"
+                    value={RuleListFilter.Blurb}
+                    selectedOption={sharedFilter}
+                    handleOptionChange={handleFilterChange}
+                    labelText="Blurbs"
+                    position="middle"
+                  />
+                  <RadioButton
+                    id="userFilterAll"
+                    value={RuleListFilter.All}
+                    selectedOption={sharedFilter}
+                    handleOptionChange={handleFilterChange}
+                    labelText="Everything"
+                    position="last"
+                  />
+                </div>
+
                 {activeTab === Tabs.MODIFIED && (
                   <>
                     {lastModifiedRules.length === 0 && loadingLastModified ? (
@@ -534,9 +568,11 @@ export default function UserRulesClientPage() {
                     ) : (
                       <>
                         <RuleList
+                          key={sharedFilter}
                           rules={paginatedLastModifiedRules}
                           showFilterControls={false}
                           showPagination={false}
+                          initialFilter={sharedFilter}
                           externalCurrentPage={currentPageLastModified}
                           externalItemsPerPage={itemsPerPageLastModified}
                         />
@@ -564,9 +600,11 @@ export default function UserRulesClientPage() {
                     ) : (
                       <>
                         <RuleList
+                          key={sharedFilter}
                           rules={paginatedAuthoredRules}
                           showFilterControls={false}
                           showPagination={false}
+                          initialFilter={sharedFilter}
                           externalCurrentPage={currentPageAuthored}
                           externalItemsPerPage={itemsPerPageAuthored}
                         />
@@ -597,9 +635,12 @@ export default function UserRulesClientPage() {
                       </div>
                     ) : (
                       <RuleList
+                        key={sharedFilter}
                         rules={bookmarkRules}
                         type={"bookmark"}
                         noContentMessage="No bookmarks? Use them to save rules for later!"
+                        showFilterControls={false}
+                        initialFilter={sharedFilter}
                         onBookmarkRemoved={handleBookmarkRemoved}
                       />
                     )}

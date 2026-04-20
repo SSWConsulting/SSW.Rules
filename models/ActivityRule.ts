@@ -12,6 +12,7 @@ export interface ActivityRule {
   authors: string[];
   created: string | null;
   lastUpdated: string | null;
+  lastUpdatedBy: string | null;
   descriptionPreview: string;
   categories: ActivityRuleCategory[];
   thumbsUp: number;

@@ -139,6 +139,7 @@ query rulesByGuidQuery($guids: [String!]!) {
         body
         created
         lastUpdated
+        lastUpdatedBy
         authors {
           title
         }

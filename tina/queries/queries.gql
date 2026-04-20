@@ -259,6 +259,7 @@ query paginatedRulesQuery($before: String, $after: String, $first: Float, $last:
         title
         uri
         lastUpdated
+        isArchived
         _sys {
           relativePath
         }

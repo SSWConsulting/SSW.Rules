@@ -36,6 +36,7 @@ async function fetchRulesData() {
       title: node?.title || "",
       uri: node?.uri || "",
       lastUpdated: node.lastUpdated || "",
+      isArchived: node?.isArchived || false,
       _sys: { relativePath: node?._sys?.relativePath || "" },
     }));
 

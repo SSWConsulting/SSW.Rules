@@ -244,3 +244,59 @@ jobs:
         uses: ./.github/workflows/crawl-sitemap.yml
         with:
             sitemap_url: https://www.ssw.com.au/rules/sitemap-index-0.xml
+
+    # ============================================================================
+    # POST-DEPLOYMENT CONTENT FRESHNESS CHECK
+    # Compares the SSW.Rules.Content SHA used during the build against the current
+    # HEAD of that branch. If new commits were merged during the ~20-minute build
+    # window, a fresh production deployment is triggered automatically so the live
+    # site is never left with stale content until the next scheduled run.
+    # ============================================================================
+    check-content-freshness:
+        name: Check Content Freshness & Retrigger if Stale
+        if: github.event.inputs.environment == 'production'
+        needs: [build, deploy]
+        runs-on: ubuntu-latest
+        permissions:
+            actions: write
+            contents: read
+        steps:
+            - name: Compare content SHA used in build vs current HEAD
+              id: freshness_check
+              run: |
+                  BUILT_SHA="${{ needs.build.outputs.content_sha }}"
+                  CONTENT_BRANCH="${{ needs.build.outputs.content_branch }}"
+
+                  echo "Content branch used: $CONTENT_BRANCH"
+                  echo "Content SHA at build time: $BUILT_SHA"
+
+                  CURRENT_SHA=$(gh api "repos/SSWConsulting/SSW.Rules.Content/commits/$CONTENT_BRANCH" \
+                    --jq '.sha')
+
+                  echo "Content SHA now:           $CURRENT_SHA"
+
+                  if [ "$BUILT_SHA" != "$CURRENT_SHA" ]; then
+                    echo "⚠️ SSW.Rules.Content changed during deployment — site was built from $BUILT_SHA but HEAD is now $CURRENT_SHA"
+                    echo "stale=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "✅ Content is up to date — no retrigger needed"
+                    echo "stale=false" >> $GITHUB_OUTPUT
+                  fi
+              env:
+                  GH_TOKEN: ${{ github.token }}
+
+            - name: Retrigger production deployment with fresh content
+              if: steps.freshness_check.outputs.stale == 'true'
+              run: |
+                  BRANCH="${{ github.event.inputs.branch_name || github.ref_name }}"
+                  echo "🔄 Triggering fresh production deployment from branch: $BRANCH"
+
+                  gh workflow run build-and-deploy.yml \
+                    --repo "${{ github.repository }}" \
+                    --ref "$BRANCH" \
+                    -f environment=production \
+                    -f branch_name="$BRANCH"
+
+                  echo "✅ Retrigger dispatched — the new run will build with the latest content"
+              env:
+                  GH_TOKEN: ${{ github.token }}

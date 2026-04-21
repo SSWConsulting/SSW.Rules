@@ -116,6 +116,12 @@ on:
       deployment_url:
         description: "Deployment URL"
         value: ${{ jobs.build-and-push.outputs.deployment_url }}
+      content_sha:
+        description: "SSW.Rules.Content commit SHA used during this build"
+        value: ${{ jobs.build-and-push.outputs.content_sha }}
+      content_branch:
+        description: "SSW.Rules.Content branch used during this build"
+        value: ${{ jobs.build-and-push.outputs.content_branch }}
 
 defaults:
   run:
@@ -137,6 +143,8 @@ jobs:
       commit_hash: ${{ env.COMMIT_HASH }}
       version_deployed: ${{ env.VERSION_DEPLOYED }}
       deployment_url: ${{ env.DEPLOYMENT_URL }}
+      content_sha: ${{ steps.capture_content_sha.outputs.content_sha }}
+      content_branch: ${{ steps.resolve_content_branch.outputs.content_branch }}
     steps:
       # ────────────────────────────── BUILD INFO ─────────────────────────────
       - name: Generate build information
@@ -251,6 +259,14 @@ jobs:
           path: content-temp
           fetch-depth: 0
           lfs: true
+
+      - name: Capture SSW.Rules.Content commit SHA
+        id: capture_content_sha
+        run: |
+          CONTENT_SHA=$(git -C content-temp rev-parse HEAD)
+          echo "content_sha=$CONTENT_SHA" >> $GITHUB_OUTPUT
+          echo "SSW.Rules.Content SHA at build time: $CONTENT_SHA"
+          echo "SSW.Rules.Content branch: ${{ steps.resolve_content_branch.outputs.content_branch }}"
 
       # ────────────────────────────── PYTHON + MAPPING FILES ────────────────
       - name: Setup Python

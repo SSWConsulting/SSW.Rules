@@ -11,6 +11,7 @@ export interface ActivityRule {
   commentCount: number;
   authors: string[];
   created: string | null;
+  createdBy: string | null;
   lastUpdated: string | null;
   lastUpdatedBy: string | null;
   descriptionPreview: string;

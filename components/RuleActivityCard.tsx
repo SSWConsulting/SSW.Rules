@@ -46,6 +46,8 @@ function metricAnimProps(
 export default function RuleActivityCard({ rule, rank, animatingMetric, animationEpoch = 0, activeSort }: RuleActivityCardProps) {
   const publishDate = formatDate(rule.lastUpdated ?? rule.created);
 
+  const displayBy = rule.lastUpdatedBy || rule.createdBy || (rule.authors.length > 0 ? rule.authors.join(", ") : null);
+
   const categoryLabels = rule.categories.length > 0 ? rule.categories.map((cat) => shortenCategory(cat.title)).join(", ") : null;
 
   const dateAnim = metricAnimProps("latestRules", animatingMetric, animationEpoch, activeSort, "inline-flex font-medium text-gray-500");
@@ -69,15 +71,15 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
           </h2>
 
           {/* Last updated + category */}
-          {(rule.lastUpdatedBy || publishDate || categoryLabels) && (
+          {(displayBy || publishDate || categoryLabels) && (
             <p className="text-xs text-gray-400 m-0">
               {publishDate && (
                 <span>
                   Last updated on <span key={dateAnim.key} className={dateAnim.className}>{publishDate}</span>
                 </span>
               )}
-              {publishDate && rule.lastUpdatedBy && <span> by </span>}
-              {rule.lastUpdatedBy && <span className="font-medium text-gray-500">{rule.lastUpdatedBy}</span>}
+              {publishDate && displayBy && <span> by </span>}
+              {displayBy && <span className="font-medium text-gray-500">{displayBy}</span>}
               {categoryLabels && (
                 <>
                   <span> under </span>

@@ -209,7 +209,7 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
                                   <div className="flex-1 min-w-0 overflow-hidden">
                                     <div className="flex items-start gap-2">
                                       <span
-                                        className={`font-medium text-sm leading-5 whitespace-normal break-words line-clamp-2 flex-1 min-w-0 ${rule.isArchived ? "opacity-50 text-gray-900" : "text-gray-900"}`}
+                                        className={`font-medium text-gray-900 text-sm leading-5 whitespace-normal break-words line-clamp-2 flex-1 min-w-0 ${rule.isArchived ? "opacity-50" : ""}`}
                                         title={rule.title || rule.uri}
                                       >
                                         {rule.title || rule.uri}

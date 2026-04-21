@@ -1,6 +1,7 @@
 import React from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Section } from "@/components/layout/section";
+import { hasAssignedCategory } from "@/lib/services/rules/orphaned-rules";
 import { OrphanedRulesData } from "@/models/OrphanedRule";
 import { Rule } from "@/models/Rule";
 import orphanedRulesData from "@/orphaned_rules.json";
@@ -13,15 +14,19 @@ export const revalidate = 300;
 const fetchOrphanedRulesData = async (): Promise<Rule[]> => {
   const rules: Rule[] = [];
   const typedOrphanedRulesData: OrphanedRulesData = orphanedRulesData;
-  console.log(typedOrphanedRulesData);
+
   for (const orphanedRule of typedOrphanedRulesData) {
     try {
-      const ruleData = await client.queries.rule({
+      const ruleData = await client.queries.ruleData({
         relativePath: `${orphanedRule.uri}/rule.mdx`,
       });
 
       if (ruleData?.data?.rule) {
         const rule = ruleData.data.rule;
+        if (hasAssignedCategory(rule.categories)) {
+          continue;
+        }
+
         rules.push({
           guid: rule.guid || "",
           title: rule.title || "",

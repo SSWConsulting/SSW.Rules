@@ -245,13 +245,6 @@ jobs:
         with:
             sitemap_url: https://www.ssw.com.au/rules/sitemap-index-0.xml
 
-    # ============================================================================
-    # POST-DEPLOYMENT CONTENT FRESHNESS CHECK
-    # Compares the SSW.Rules.Content SHA used during the build against the current
-    # HEAD of that branch. If new commits were merged during the ~20-minute build
-    # window, a fresh production deployment is triggered automatically so the live
-    # site is never left with stale content until the next scheduled run.
-    # ============================================================================
     check-content-freshness:
         name: Check Content Freshness & Retrigger if Stale
         if: github.event.inputs.environment == 'production'

@@ -263,8 +263,13 @@ jobs:
                   echo "Content branch used: $CONTENT_BRANCH"
                   echo "Content SHA at build time: $BUILT_SHA"
 
-                  CURRENT_SHA=$(gh api "repos/SSWConsulting/SSW.Rules.Content/commits/$CONTENT_BRANCH" \
-                    --jq '.sha')
+                  CURRENT_SHA=$(git ls-remote "https://github.com/SSWConsulting/SSW.Rules.Content.git" \
+                    "refs/heads/$CONTENT_BRANCH" | awk '{print $1}')
+
+                  if [ -z "$CURRENT_SHA" ]; then
+                    echo "❌ Could not resolve current SHA for branch '$CONTENT_BRANCH' — ls-remote returned nothing"
+                    exit 1
+                  fi
 
                   echo "Content SHA now:           $CURRENT_SHA"
 
@@ -275,8 +280,6 @@ jobs:
                     echo "✅ Content is up to date — no retrigger needed"
                     echo "stale=false" >> $GITHUB_OUTPUT
                   fi
-              env:
-                  GH_TOKEN: ${{ github.token }}
 
             - name: Retrigger production deployment with fresh content
               if: steps.freshness_check.outputs.stale == 'true'

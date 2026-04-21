@@ -33,7 +33,9 @@ async function fetchActivityLatestRulesData(size: number = 200): Promise<Activit
     commentCount: 0,
     authors: r.authors?.map((a: any) => a.title).filter(Boolean) || [],
     created: r.created || null,
+    createdBy: r.createdBy || null,
     lastUpdated: r.lastUpdated || null,
+    lastUpdatedBy: r.lastUpdatedBy || null,
     descriptionPreview: extractBodyPreview(r.body),
     categories: (r.categories || [])
       .map((c: any) => c?.category)

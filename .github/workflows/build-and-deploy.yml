@@ -284,14 +284,14 @@ jobs:
             - name: Retrigger production deployment with fresh content
               if: steps.freshness_check.outputs.stale == 'true'
               run: |
-                  BRANCH="${{ github.event.inputs.branch_name || github.ref_name }}"
-                  echo "🔄 Triggering fresh production deployment from branch: $BRANCH"
+                  echo "🔄 Triggering fresh production deployment from: ${{ github.ref_name }}"
 
                   gh workflow run build-and-deploy.yml \
                     --repo "${{ github.repository }}" \
-                    --ref "$BRANCH" \
+                    --ref "${{ github.ref_name }}" \
                     -f environment=production \
-                    -f branch_name="$BRANCH"
+                    -f branch_name="${{ github.event.inputs.branch_name }}" \
+                    -f tina_branch="${{ github.event.inputs.tina_branch }}"
 
                   echo "✅ Retrigger dispatched — the new run will build with the latest content"
               env:

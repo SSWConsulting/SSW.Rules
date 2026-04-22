@@ -14,7 +14,7 @@ export default function ViewToggle() {
   return (
     <div className="flex items-center">
       <Link href="/" prefetch={true} className={`${baseClasses} border rounded-l-md ${!isCategories ? activeClasses : inactiveClasses}`}>
-        What’s Hot 🔥
+        What’s Hot
       </Link>
       <Link href="/categories" prefetch={true} className={`${baseClasses} border border-l-0 rounded-r-md ${isCategories ? activeClasses : inactiveClasses}`}>
         Explore Categories

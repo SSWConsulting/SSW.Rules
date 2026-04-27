@@ -1,8 +1,11 @@
+function parseDateInput(input: string): Date {
+  if (/^\d{10}$/.test(input)) return new Date(Number(input) * 1000);
+  if (/^\d{13}$/.test(input)) return new Date(Number(input));
+  return new Date(input);
+}
+
 export function timeAgo(isoString: string): string {
-  const raw = Number(isoString);
-  // Algolia's Python v3 client serialises datetime objects as Unix seconds.
-  // A 10-digit number is seconds (year ~2001-2286); multiply to get ms.
-  const date = !isNaN(raw) && raw < 1e12 ? new Date(raw * 1000) : new Date(isoString);
+  const date = parseDateInput(isoString);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffSec = Math.floor(diffMs / 1000);
@@ -21,8 +24,7 @@ export function timeAgo(isoString: string): string {
 }
 
 export function formatDateLong(iso: string): string {
-  const raw = Number(iso);
-  const date = !isNaN(raw) && raw < 1e12 ? new Date(raw * 1000) : new Date(iso);
+  const date = parseDateInput(iso);
   return date.toLocaleDateString("en-AU", {
     day: "2-digit",
     month: "short",

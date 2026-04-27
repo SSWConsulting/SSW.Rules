@@ -114,13 +114,8 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
   const getDisplayName = (r: any): string | null => r.lastUpdatedBy || r.createdBy || r.authors?.[0]?.title || null;
 
   const getAuthorUrl = (r: any): string | null => {
-    const name = getDisplayName(r);
+    const name = r.lastUpdatedBy || r.createdBy;
     if (name) return `https://ssw.com.au/people/${toSlug(name)}/`;
-    return r.authors?.[0]?.url || null;
-  };
-
-  const getResolvedAuthorUrl = (r: any): string | null => {
-    if (r.lastUpdatedBy || r.createdBy) return getAuthorUrl(r);
     return r.authors?.[0]?.url || null;
   };
 
@@ -167,7 +162,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
                     lastUpdatedBy={getDisplayName(result)}
                     lastUpdated={result.lastUpdated ?? result.created ?? null}
                     index={index}
-                    authorUrl={getResolvedAuthorUrl(result)}
+                    authorUrl={getAuthorUrl(result)}
                   />
                 ))}
               </div>

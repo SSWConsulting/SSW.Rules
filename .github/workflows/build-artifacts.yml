@@ -275,7 +275,7 @@ jobs:
           python-version: "3.x"
 
       - name: Install dependencies
-        run: pip install pyyaml "algoliasearch>=3,<4"
+        run: pip install pyyaml
 
       - name: Generate rule‑category mapping files
         working-directory: content-temp/scripts/tina-migration

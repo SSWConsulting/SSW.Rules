@@ -1,5 +1,8 @@
 export function timeAgo(isoString: string): string {
-  const date = new Date(isoString);
+  const raw = Number(isoString);
+  // Algolia's Python v3 client serialises datetime objects as Unix seconds.
+  // A 10-digit number is seconds (year ~2001-2286); multiply to get ms.
+  const date = !isNaN(raw) && raw < 1e12 ? new Date(raw * 1000) : new Date(isoString);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffSec = Math.floor(diffMs / 1000);
@@ -18,7 +21,8 @@ export function timeAgo(isoString: string): string {
 }
 
 export function formatDateLong(iso: string): string {
-  const date = new Date(iso);
+  const raw = Number(iso);
+  const date = !isNaN(raw) && raw < 1e12 ? new Date(raw * 1000) : new Date(iso);
   return date.toLocaleDateString("en-AU", {
     day: "2-digit",
     month: "short",

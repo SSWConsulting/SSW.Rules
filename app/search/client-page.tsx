@@ -111,9 +111,17 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
     { value: "created", label: "Recently Created" },
   ];
 
-  const getAuthorUrl = (r: any) => {
-    const displayName = r.lastUpdatedBy || r.createdBy;
-    return displayName ? `https://ssw.com.au/people/${toSlug(displayName)}/` : null;
+  const getDisplayName = (r: any): string | null => r.lastUpdatedBy || r.createdBy || r.authors?.[0]?.title || null;
+
+  const getAuthorUrl = (r: any): string | null => {
+    const name = getDisplayName(r);
+    if (name) return `https://ssw.com.au/people/${toSlug(name)}/`;
+    return r.authors?.[0]?.url || null;
+  };
+
+  const getResolvedAuthorUrl = (r: any): string | null => {
+    if (r.lastUpdatedBy || r.createdBy) return getAuthorUrl(r);
+    return r.authors?.[0]?.url || null;
   };
 
   return (
@@ -156,10 +164,10 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
                     key={result.objectID}
                     title={result.title}
                     slug={result.slug}
-                    lastUpdatedBy={result.lastUpdatedBy}
-                    lastUpdated={result.lastUpdated}
+                    lastUpdatedBy={getDisplayName(result)}
+                    lastUpdated={result.lastUpdated ?? result.created ?? null}
                     index={index}
-                    authorUrl={getAuthorUrl(result)}
+                    authorUrl={getResolvedAuthorUrl(result)}
                   />
                 ))}
               </div>

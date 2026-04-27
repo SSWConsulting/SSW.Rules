@@ -636,6 +636,9 @@ jobs:
           NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
         run: pnpm tinacms search-index
 
+      - name: Install Algolia Python dependencies
+        run: pip install pyyaml "algoliasearch>=3,<4"
+
       - name: Sync Algolia index
         working-directory: content/scripts/tina-migration
         env:

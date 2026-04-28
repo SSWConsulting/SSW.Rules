@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { BiArchive, BiUser, BiLinkExternal } from 'react-icons/bi';
+import Link from "next/link";
+import React from "react";
+import { BiArchive, BiPause } from "react-icons/bi";
+import { PiPuzzlePiece } from "react-icons/pi";
 
 const CategoryActionButtons: React.FC = () => {
   return (
-    <div className="flex gap-4 p-4 justify-center">
+    <div className="flex gap-4 p-4">
       <Link
         href="/orphaned"
         className="flex items-center justify-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 bg-white rounded-md border hover:bg-gray-50 hover:text-ssw-red transition-colors duration-200 no-underline text-center"
       >
-        <BiUser className="hidden sm:block w-4 h-4" />
+        <PiPuzzlePiece className="hidden sm:block w-4 h-4" />
         <span>Orphaned Rules</span>
       </Link>
 
@@ -29,7 +30,7 @@ const CategoryActionButtons: React.FC = () => {
         rel="noopener noreferrer nofollow"
         className="flex items-center justify-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 bg-white rounded-md border hover:bg-gray-50 hover:text-ssw-red transition-colors duration-200 no-underline text-center"
       >
-        <BiLinkExternal className="hidden sm:block w-4 h-4" />
+        <BiPause className="hidden sm:block w-4 h-4" />
         <span>Unmigrated Rules</span>
       </a>
     </div>

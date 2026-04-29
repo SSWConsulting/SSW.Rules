@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FaAddressCard, FaGithub, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { normalizeName } from "@/lib/utils";
 import { useAuth } from "./UserClientProvider";
 
 type AnyUser = {
@@ -25,7 +26,7 @@ export default function UserDropdown() {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const u = (user || {}) as AnyUser;
-  const displayName = u.name || u.nickname;
+  const displayName = u.name ? normalizeName(u.name) : u.nickname;
   const [sswPeopleSlug, setSswPeopleSlug] = useState<string | null>(null);
 
   useEffect(() => {

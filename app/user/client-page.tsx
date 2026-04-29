@@ -8,6 +8,7 @@ import { FaAddressCard, FaUserCircle } from "react-icons/fa";
 import { RiGithubFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth/UserClientProvider";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import Tooltip from "@/components/tooltip/tooltip";
 import RadioButton from "@/components/radio-button/radio-button";
 import RuleList from "@/components/rule-list";
 import Spinner from "@/components/Spinner";
@@ -501,15 +502,17 @@ export default function UserRulesClientPage() {
                   <div>
                     <h1 className="text-ssw-red">{author?.fullName || queryStringRulesAuthor}</h1>
                     <div className="flex flex-wrap gap-4 mt-2">
-                      <a
-                        href={`https://github.com/${queryStringRulesAuthor}`}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="inline-flex items-center text-sm text-gray-700 hover:text-ssw-red transition-colors"
-                      >
-                        <RiGithubFill size={16} className="mr-1" />
-                        GitHub Profile
-                      </a>
+                      <Tooltip text={queryStringRulesAuthor} showDelay={0} hideDelay={0} opaque={true}>
+                        <a
+                          href={`https://github.com/${queryStringRulesAuthor}`}
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          className="inline-flex items-center text-sm text-gray-700 hover:text-ssw-red transition-colors"
+                        >
+                          <RiGithubFill size={16} className="mr-1" />
+                          GitHub Profile
+                        </a>
+                      </Tooltip>
                       {author?.slug && (
                         <a
                           href={`https://ssw.com.au/people/${author.slug}/`}

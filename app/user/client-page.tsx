@@ -4,7 +4,7 @@ import { getAccessToken } from "@auth0/nextjs-auth0";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { FaUserCircle } from "react-icons/fa";
+import { FaAddressCard, FaUserCircle } from "react-icons/fa";
 import { RiGithubFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth/UserClientProvider";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -517,7 +517,7 @@ export default function UserRulesClientPage() {
                           rel="noopener noreferrer nofollow"
                           className="inline-flex items-center text-sm text-gray-700 hover:text-ssw-red transition-colors"
                         >
-                          <FaUserCircle size={16} className="mr-1" />
+                          <FaAddressCard size={16} className="mr-1" />
                           SSW People Profile
                         </a>
                       )}

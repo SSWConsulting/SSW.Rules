@@ -101,7 +101,6 @@ export default function UserDropdown() {
                     dark:border-b-gray-900"
       />
       <div className="flex items-center gap-3 p-4">
-        {u?.picture?.trim() && <img src={u.picture} alt={displayName} className="h-10 w-10 rounded-full object-cover" referrerPolicy="no-referrer" />}
         <div className="min-w-0">
           <p className="mb-1 truncate text-sm font-semibold">{displayName}</p>
           {u.email && <p className="mb-0 truncate text-xs text-gray-500 dark:text-gray-400">{u.email}</p>}

@@ -7,7 +7,7 @@ import { PiPuzzlePiece } from "react-icons/pi";
 
 const CategoryActionButtons: React.FC = () => {
   return (
-    <div className="flex gap-4 p-4">
+    <div className="flex gap-4 p-4 justify-center">
       <Link
         href="/orphaned"
         className="flex items-center justify-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 bg-white rounded-md border hover:bg-gray-50 hover:text-ssw-red transition-colors duration-200 no-underline text-center"

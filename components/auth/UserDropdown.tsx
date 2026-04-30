@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { FaGithub, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { FaAddressCard, FaGithub, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { normalizeName } from "@/lib/utils";
 import { useAuth } from "./UserClientProvider";
 
 type AnyUser = {
@@ -25,7 +26,19 @@ export default function UserDropdown() {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const u = (user || {}) as AnyUser;
-  const displayName = u.nickname || u.name;
+  const displayName = (u.name && normalizeName(u.name)) || u.nickname || "";
+  const [sswPeopleSlug, setSswPeopleSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    setSswPeopleSlug(null);
+    if (!u.nickname) return;
+    fetch(`${basePath}/api/crm/employees?query=${encodeURIComponent(u.nickname)}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.found && data.slug) setSswPeopleSlug(data.slug);
+      })
+      .catch(() => {});
+  }, [u.nickname]);
 
   const handleOpen = () => {
     if (!open && buttonRef.current) {
@@ -89,16 +102,23 @@ export default function UserDropdown() {
                     dark:border-b-gray-900"
       />
       <div className="flex items-center gap-3 p-4">
-        {u?.picture?.trim() && <img src={u.picture} alt={displayName} className="h-10 w-10 rounded-full object-cover" referrerPolicy="no-referrer" />}
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold">{displayName}</p>
-          {u.email && <p className="truncate text-xs text-gray-500 dark:text-gray-400">{u.email}</p>}
+          <p className="mb-1 truncate text-sm font-semibold">{displayName}</p>
+          {u.email && <p className="mb-0 truncate text-xs text-gray-500 dark:text-gray-400">{u.email}</p>}
         </div>
       </div>
 
-      <div className="border-t border-gray-200 dark:border-gray-700" />
+      <hr className="my-0 border-gray-200 dark:border-gray-700" />
 
       <nav className="p-1">
+        <Link
+          href="/user"
+          prefetch={false}
+          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800"
+        >
+          <FaUser size="18" /> SSW Rules Profile
+        </Link>
+
         <a
           href={`https://www.github.com/${u.nickname}`}
           target="_blank"
@@ -108,14 +128,22 @@ export default function UserDropdown() {
           <FaGithub size="18" /> GitHub Profile
         </a>
 
-        <Link
-          href="/user"
-          prefetch={false}
-          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800"
-        >
-          <FaUser size="18" /> SSW.Rules Profile
-        </Link>
+        {sswPeopleSlug && (
+          <a
+            href={`https://ssw.com.au/people/${sswPeopleSlug}/`}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800"
+          >
+            <FaAddressCard size="18" /> SSW People Profile
+          </a>
+        )}
 
+      </nav>
+
+      <hr className="my-0 border-gray-200 dark:border-gray-700" />
+
+      <nav className="p-1">
         <a
           href={`${basePath}/auth/logout?returnTo=${window.location.origin}${basePath}`}
           className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:hover:bg-gray-800"

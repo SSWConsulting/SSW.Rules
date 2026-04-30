@@ -108,7 +108,7 @@ export default function UserDropdown() {
         </div>
       </div>
 
-      <div className="border-t border-gray-200 dark:border-gray-700" />
+      <hr className="my-0 border-gray-200 dark:border-gray-700" />
 
       <nav className="p-1">
         <Link
@@ -141,7 +141,7 @@ export default function UserDropdown() {
 
       </nav>
 
-      <div className="border-t border-gray-200 dark:border-gray-700" />
+      <hr className="my-0 border-gray-200 dark:border-gray-700" />
 
       <nav className="p-1">
         <a

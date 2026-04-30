@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
 import { getFetchOptions } from "@/utils/tina/get-branch";
+import { trackServerException } from "@/lib/appInsights.server";
 
 export async function GET(request: NextRequest) {
   try {
@@ -64,6 +65,7 @@ export async function GET(request: NextRequest) {
     }
   } catch (error) {
     console.error("Error fetching rule from Tina:", error);
+    trackServerException(error, { route: "/api/tina/rule" });
     return NextResponse.json({ error: "Failed to fetch rule", details: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
 }

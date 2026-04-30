@@ -63,8 +63,8 @@ export default async function CategoriesPage() {
               </ol>
             </Card>
           ))}
+        <CategoryActionButtons />
       </TinaHomepageWrapper>
-      <CategoryActionButtons />
     </>
   );
 }

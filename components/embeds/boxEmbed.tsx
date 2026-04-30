@@ -148,7 +148,7 @@ export const boxEmbedTemplate: Template = {
         { value: "greybox", label: "Default (Greybox)" },
         { value: "info", label: "Info" },
         { value: "warning", label: "Warning" },
-        { value: "tips", label: "Tip" },
+        { value: "tips", label: "Tips" },
         { value: "highlight", label: "Highlight" },
         { value: "china", label: "China" },
         { value: "codeauditor", label: "CodeAuditor" },

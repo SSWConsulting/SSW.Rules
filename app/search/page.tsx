@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import Layout from "@/components/layout/layout";
 import { Section } from "@/components/layout/section";
 import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";

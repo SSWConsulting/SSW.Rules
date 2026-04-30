@@ -244,3 +244,55 @@ jobs:
         uses: ./.github/workflows/crawl-sitemap.yml
         with:
             sitemap_url: https://www.ssw.com.au/rules/sitemap-index-0.xml
+
+    check-content-freshness:
+        name: Check Content Freshness & Retrigger if Stale
+        if: github.event.inputs.environment == 'production'
+        needs: [build, deploy]
+        runs-on: ubuntu-latest
+        permissions:
+            actions: write
+            contents: read
+        steps:
+            - name: Compare content SHA used in build vs current HEAD
+              id: freshness_check
+              run: |
+                  BUILT_SHA="${{ needs.build.outputs.content_sha }}"
+                  CONTENT_BRANCH="${{ needs.build.outputs.content_branch }}"
+
+                  echo "Content branch used: $CONTENT_BRANCH"
+                  echo "Content SHA at build time: $BUILT_SHA"
+
+                  CURRENT_SHA=$(git ls-remote "https://github.com/SSWConsulting/SSW.Rules.Content.git" \
+                    "refs/heads/$CONTENT_BRANCH" | awk '{print $1}')
+
+                  if [ -z "$CURRENT_SHA" ]; then
+                    echo "❌ Could not resolve current SHA for branch '$CONTENT_BRANCH' — ls-remote returned nothing"
+                    exit 1
+                  fi
+
+                  echo "Content SHA now:           $CURRENT_SHA"
+
+                  if [ "$BUILT_SHA" != "$CURRENT_SHA" ]; then
+                    echo "⚠️ SSW.Rules.Content changed during deployment — site was built from $BUILT_SHA but HEAD is now $CURRENT_SHA"
+                    echo "stale=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "✅ Content is up to date — no retrigger needed"
+                    echo "stale=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Retrigger production deployment with fresh content
+              if: steps.freshness_check.outputs.stale == 'true'
+              run: |
+                  echo "🔄 Triggering fresh production deployment from: ${{ github.ref_name }}"
+
+                  gh workflow run build-and-deploy.yml \
+                    --repo "${{ github.repository }}" \
+                    --ref "${{ github.ref_name }}" \
+                    -f environment=production \
+                    -f branch_name="${{ github.event.inputs.branch_name }}" \
+                    -f tina_branch="${{ github.event.inputs.tina_branch }}"
+
+                  echo "✅ Retrigger dispatched — the new run will build with the latest content"
+              env:
+                  GH_TOKEN: ${{ github.token }}

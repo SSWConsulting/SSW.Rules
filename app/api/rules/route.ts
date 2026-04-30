@@ -1,3 +1,4 @@
+import { trackServerException } from "@/lib/appInsights.server";
 import { NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
 
@@ -36,6 +37,7 @@ async function fetchRulesData() {
       title: node?.title || "",
       uri: node?.uri || "",
       lastUpdated: node.lastUpdated || "",
+      isArchived: node?.isArchived || false,
       _sys: { relativePath: node?._sys?.relativePath || "" },
     }));
 
@@ -54,6 +56,7 @@ export async function GET() {
     });
   } catch (err) {
     console.error("[/api/rules] error:", err);
+    trackServerException(err, { route: "/api/rules" });
     return NextResponse.json({ message: "Failed to fetch rules" }, { status: 500 });
   }
 }

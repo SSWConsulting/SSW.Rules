@@ -23,7 +23,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
-    "@tinacms/cli": "2.2.0",
+    "@tinacms/cli": "2.2.4",
     "@types/jest": "^30.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^22.19.3",
@@ -39,7 +39,7 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^4.13.3",
+    "@auth0/nextjs-auth0": "^4.17.1",
     "@fontsource-variable/inter": "^5.2.6",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
@@ -70,7 +70,7 @@
     "mermaid": "^11.4.1",
     "moment": "^2.30.1",
     "motion": "^12.23.26",
-    "next": "15.5.9",
+    "next": "15.5.15",
     "next-sitemap": "^4.2.3",
     "next-themes": "^0.4.6",
     "prop-types": "^15.8.1",
@@ -91,7 +91,7 @@
     "svg-react-loader": "^0.4.6",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
-    "tinacms": "3.7.0",
+    "tinacms": "3.7.4",
     "tw-animate-css": "^1.2.4",
     "unplugin-info": "^1.2.4",
     "usehooks-ts": "^3.1.1"

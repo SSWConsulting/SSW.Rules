@@ -77,6 +77,30 @@ export const getMarkdownComponentMapping = (enableAnchors = false): Components<a
     h5: withHighlightProcessing("h5"),
     h6: withHighlightProcessing("h6"),
 
+    html_inline: ({ value }: { value: string }) => {
+      if (typeof value !== "string") return <></>;
+      const trimmed = value.trim();
+      if (!trimmed.startsWith("<svg")) return <></>;
+
+      const lower = trimmed.toLowerCase();
+      // Reject scripts, foreignObject (embeds arbitrary HTML), and event handler attributes
+      if (
+        lower.includes("<script") ||
+        lower.includes("<foreignobject") ||
+        /\bon\w+\s*=/.test(lower) ||
+        /\bhref\s*=\s*["']?\s*javascript:/i.test(trimmed)
+      ) {
+        return <></>;
+      }
+      // Reject trailing content after the closing </svg>
+      const svgCloseIndex = trimmed.lastIndexOf("</svg>");
+      if (svgCloseIndex === -1 || trimmed.slice(svgCloseIndex + 6).trim() !== "") {
+        return <></>;
+      }
+
+      return <span dangerouslySetInnerHTML={{ __html: trimmed }} />;
+    },
+
     blockquote: (props: any) => {
       const textWithHighlight = getTextFromContent(props);
       if (textWithHighlight) {

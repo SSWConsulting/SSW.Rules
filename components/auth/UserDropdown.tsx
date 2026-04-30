@@ -26,10 +26,11 @@ export default function UserDropdown() {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const u = (user || {}) as AnyUser;
-  const displayName = u.name ? normalizeName(u.name) : u.nickname;
+  const displayName = (u.name && normalizeName(u.name)) || u.nickname || "";
   const [sswPeopleSlug, setSswPeopleSlug] = useState<string | null>(null);
 
   useEffect(() => {
+    setSswPeopleSlug(null);
     if (!u.nickname) return;
     fetch(`${basePath}/api/crm/employees?query=${encodeURIComponent(u.nickname)}`)
       .then((res) => (res.ok ? res.json() : null))

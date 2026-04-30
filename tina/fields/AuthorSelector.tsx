@@ -4,6 +4,7 @@ import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/re
 import React, { useEffect, useMemo, useState } from "react";
 import { BiChevronDown, BiSearch, BiUser } from "react-icons/bi";
 import { wrapFieldsWithMeta } from "tinacms";
+import { toSlug } from "@/lib/utils";
 
 interface EmployeeItem {
   userId: string;
@@ -109,11 +110,7 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
   const handleSelectEmployee = (employee: EmployeeItem, close: () => void) => {
     input.onChange(employee.fullName);
 
-    const slug = employee.fullName
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
+    const slug = toSlug(employee.fullName);
     const sswUrl = `https://www.ssw.com.au/people/${slug}`;
 
     // Set the sibling url field

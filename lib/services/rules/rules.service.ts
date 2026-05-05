@@ -19,40 +19,41 @@ type RuleQueryVars = PaginationVars & {
 };
 
 async function fetchActivityLatestRulesData(size: number = 200): Promise<ActivityRule[]> {
-  const res = await client.queries.activityLatestRulesQuery({ size });
+  try {
+    const res = await client.queries.activityLatestRulesQuery({ size });
 
-  const rules = res?.data?.ruleConnection?.edges
-    ?.filter((edge: any) => edge?.node?.guid)
-    .map((edge: any) => edge.node) || [];
+    const rules = res?.data?.ruleConnection?.edges?.filter((edge: any) => edge?.node?.guid).map((edge: any) => edge.node) || [];
 
-  return rules.map((r: any): ActivityRule => ({
-    guid: r.guid,
-    title: r.title,
-    uri: r.uri,
-    lastCommentAt: "",
-    commentCount: 0,
-    authors: r.authors?.map((a: any) => a.title).filter(Boolean) || [],
-    created: r.created || null,
-    createdBy: r.createdBy || null,
-    lastUpdated: r.lastUpdated || null,
-    lastUpdatedBy: r.lastUpdatedBy || null,
-    descriptionPreview: extractBodyPreview(r.body),
-    categories: (r.categories || [])
-      .map((c: any) => c?.category)
-      .filter((c: any) => c?.title && c?.uri)
-      .map((c: any) => ({ title: c.title, uri: c.uri })),
-    thumbsUp: 0,
-    thumbsDown: 0,
-    discussionUrl: "",
-  }));
+    return rules.map(
+      (r: any): ActivityRule => ({
+        guid: r.guid,
+        title: r.title,
+        uri: r.uri,
+        lastCommentAt: "",
+        commentCount: 0,
+        authors: r.authors?.map((a: any) => a.title).filter(Boolean) || [],
+        created: r.created || null,
+        createdBy: r.createdBy || null,
+        lastUpdated: r.lastUpdated || null,
+        lastUpdatedBy: r.lastUpdatedBy || null,
+        descriptionPreview: extractBodyPreview(r.body),
+        categories: (r.categories || [])
+          .map((c: any) => c?.category)
+          .filter((c: any) => c?.title && c?.uri)
+          .map((c: any) => ({ title: c.title, uri: c.uri })),
+        thumbsUp: 0,
+        thumbsDown: 0,
+        discussionUrl: "",
+      })
+    );
+  } catch (error) {
+    console.error("Failed to fetch activity latest rules:", error);
+    return [];
+  }
 }
 
 export async function fetchActivityLatestRules(size: number = 200): Promise<ActivityRule[]> {
-  const getCached = unstable_cache(
-    fetchActivityLatestRulesData,
-    [`activity-latest-rules-${size}`],
-    { tags: ["activity-latest-rules", "latest-rules"] }
-  );
+  const getCached = unstable_cache(fetchActivityLatestRulesData, [`activity-latest-rules-${size}`], { tags: ["activity-latest-rules", "latest-rules"] });
   return getCached(size);
 }
 
@@ -166,13 +167,23 @@ const getCachedCategoryRuleData = unstable_cache(fetchCategoryRuleData, ["catego
 });
 
 export async function fetchRuleCount(): Promise<number> {
-  const data = await getCachedCategoryRuleData();
-  return data.totalUniqueRules;
+  try {
+    const data = await getCachedCategoryRuleData();
+    return data.totalUniqueRules;
+  } catch (error) {
+    console.error("Failed to fetch rule count:", error);
+    return 0;
+  }
 }
 
 export async function fetchCategoryRuleCounts(): Promise<Record<string, number>> {
-  const data = await getCachedCategoryRuleData();
-  return data.categoryRuleCounts;
+  try {
+    const data = await getCachedCategoryRuleData();
+    return data.categoryRuleCounts;
+  } catch (error) {
+    console.error("Failed to fetch category rule counts:", error);
+    return {};
+  }
 }
 
 export async function fetchArchivedRules(variables: { first?: number; after?: string } = {}): Promise<QueryResult<Rule>> {

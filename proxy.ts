@@ -3,13 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuth0 } from "./lib/auth0";
 import redirectMappingRaw from "./redirects.json";
 
-export const runtime = "nodejs";
-
 const redirectMap = new Map<string, string>(
   Object.entries(redirectMappingRaw as Record<string, string>).filter(([source, destination]) => source.toLowerCase() !== destination.toLowerCase())
 );
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/auth") || pathname.startsWith(`${process.env.NEXT_PUBLIC_BASE_PATH}/auth`)) {

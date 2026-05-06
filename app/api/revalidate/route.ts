@@ -69,12 +69,12 @@ export async function POST(req: Request) {
 
     // Revalidate latest-rules tag if any rule was modified or added
     if (shouldRevalidateLatestRules) {
-      revalidateTag("latest-rules");
+      revalidateTag("latest-rules", { expire: 0 });
     }
 
     // Revalidate rule-count tag if any rule was added
     if (shouldRevalidateRuleCount) {
-      revalidateTag("rule-count");
+      revalidateTag("rule-count", { expire: 0 });
     }
 
     for (const route of routesToRevalidate) {

@@ -17,21 +17,21 @@ export async function POST(req: Request) {
       );
     }
 
-    revalidateTag(tag);
+    revalidateTag(tag, "max");
 
-    return NextResponse.json({ 
-      success: true, 
-      tag 
+    return NextResponse.json({
+      success: true,
+      tag
     }, { status: 200 });
   } catch (err) {
     console.error("Error during tag revalidation", err);
     const errorMessage = err instanceof Error ? err.message : String(err);
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: "Error revalidating tag",
-        details: errorMessage 
-      }, 
+        details: errorMessage
+      },
       { status: 500 }
     );
   }
@@ -44,16 +44,16 @@ export async function GET(req: Request) {
 
     if (!tag) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: "Tag query parameter is required",
-          tag: null 
-        }, 
+          tag: null
+        },
         { status: 400 }
       );
     }
 
-    revalidateTag(tag);
+    revalidateTag(tag, "max");
 
     return NextResponse.json({ 
       success: true, 

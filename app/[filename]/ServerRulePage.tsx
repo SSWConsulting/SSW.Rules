@@ -14,6 +14,7 @@ import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import GitHubMetadata from "@/components/last-updated-by";
 import RelatedRulesCard from "@/components/RelatedRulesCard";
 import RuleActionButtons from "@/components/RuleActionButtons";
+import RuleFreshnessIndicator from "@/components/RuleFreshnessIndicator";
 import { SocialVideoEmbed } from "@/components/shared/SocialVideoEmbed";
 import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import { Card } from "@/components/ui/card";
@@ -87,7 +88,10 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
               </h1>
 
               <div className="flex justify-between my-2 flex-col md:flex-row">
-                <GitHubMetadata owner="SSWConsulting" repo="SSW.Rules.Content" path={rule?.id} className="mt-2" />
+                <div className="flex flex-col gap-1">
+                  <GitHubMetadata owner="SSWConsulting" repo="SSW.Rules.Content" path={rule?.id} className="mt-2" />
+                  <RuleFreshnessIndicator relativePath={rule?._sys?.relativePath} staticLastUpdated={rule?.lastUpdated} />
+                </div>
                 <RuleActionButtons rule={rule} />
               </div>
             </div>

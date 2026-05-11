@@ -27,7 +27,7 @@ function shortenCategory(title: string): string {
   return match ? match[1] : title;
 }
 
-/** Returns { key, className } to spread onto the element that should animate. */
+/** Returns { key, className } for the element that should animate. key must be passed as a JSX prop directly, not spread. */
 function metricAnimProps(
   metric: string,
   animatingMetric: string | null | undefined,
@@ -44,9 +44,16 @@ function metricAnimProps(
 }
 
 export default function RuleActivityCard({ rule, rank, animatingMetric, animationEpoch = 0, activeSort }: RuleActivityCardProps) {
-  const publishDate = formatDate(rule.created ?? rule.lastUpdated);
+  const publishDate = formatDate(rule.lastUpdated ?? rule.created);
+
+  const displayBy = rule.lastUpdatedBy || rule.createdBy || (rule.authors.length > 0 ? rule.authors.join(", ") : null);
 
   const categoryLabels = rule.categories.length > 0 ? rule.categories.map((cat) => shortenCategory(cat.title)).join(", ") : null;
+
+  const dateAnim = metricAnimProps("latestRules", animatingMetric, animationEpoch, activeSort, "inline-flex font-medium text-gray-500");
+  const likedAnim = metricAnimProps("mostLiked", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer");
+  const commentedAnim = metricAnimProps("mostCommented", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1");
+  const lastCommentedAnim = metricAnimProps("lastCommented", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1 text-gray-400 ml-auto");
 
   return (
     <Card className="mb-4 p-4">
@@ -63,12 +70,16 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
             </Link>
           </h2>
 
-          {/* Author + publish date + category */}
-          {(rule.authors.length > 0 || publishDate || categoryLabels) && (
+          {/* Last updated + category */}
+          {(displayBy || publishDate || categoryLabels) && (
             <p className="text-xs text-gray-400 m-0">
-              {publishDate && <span>Published on <span className="font-medium text-gray-500">{publishDate}</span></span>}
-              {publishDate && rule.authors.length > 0 && <span> by </span>}
-              {rule.authors.length > 0 && <span className="font-medium text-gray-500">{rule.authors.join(", ")}</span>}
+              {publishDate && (
+                <span>
+                  Last updated on <span key={dateAnim.key} className={dateAnim.className}>{publishDate}</span>
+                </span>
+              )}
+              {publishDate && displayBy && <span> by </span>}
+              {displayBy && <span className="font-medium text-gray-500">{displayBy}</span>}
               {categoryLabels && (
                 <>
                   <span> under </span>
@@ -86,13 +97,8 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
             <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
               {/* Thumbs up: icon + count animate together */}
               <a
-                {...metricAnimProps(
-                  "mostLiked",
-                  animatingMetric,
-                  animationEpoch,
-                  activeSort,
-                  "flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer"
-                )}
+                key={likedAnim.key}
+                className={likedAnim.className}
                 href={`${rule.discussionUrl}#top`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -115,7 +121,7 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
               </a>
 
               {/* Comments: icon + count + label animate together */}
-              <span {...metricAnimProps("mostCommented", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1")} title="Comments">
+              <span key={commentedAnim.key} className={commentedAnim.className} title="Comments">
                 <FaComment />
                 <span>
                   {rule.commentCount} {rule.commentCount === 1 ? "comment" : "comments"}
@@ -123,7 +129,7 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
               </span>
 
               {/* Last commented: icon + label + timestamp animate together */}
-              <span {...metricAnimProps("lastCommented", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1 text-gray-400 ml-auto")}>
+              <span key={lastCommentedAnim.key} className={lastCommentedAnim.className}>
                 <RiTimeFill />
                 <span>Last commented {timeAgo(rule.lastCommentAt)}</span>
               </span>

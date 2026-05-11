@@ -34,12 +34,14 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
   const { isAdmin: isAdminPage, isLoading: isAdminLoading } = useIsAdminPage();
 
   const { brokenReferences } = serverRulePageProps;
-  const primaryCategory = rule.categories?.[0]?.category;
-  const primaryCategoryUri = primaryCategory?.uri;
-  const breadcrumbCategories =
-    typeof primaryCategoryUri === "string" && primaryCategoryUri.trim().length > 0
-      ? [{ title: primaryCategory.title, link: `/${primaryCategoryUri}` }]
-      : undefined;
+  const allCategories = rule.categories
+    ?.map((c: any) => {
+      const cat = c?.category;
+      const uri = cat?.uri;
+      return typeof uri === "string" && uri.trim().length > 0 ? { title: cat.title, link: `/${uri}` } : null;
+    })
+    .filter((c): c is { title: string; link: string } => c !== null);
+  const breadcrumbCategories = allCategories?.length > 0 ? allCategories : undefined;
 
   useAdminBackBlock({ isAdminPage });
 

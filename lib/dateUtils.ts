@@ -1,5 +1,11 @@
+function parseDateInput(input: string): Date {
+  if (/^\d{10}$/.test(input)) return new Date(Number(input) * 1000);
+  if (/^\d{13}$/.test(input)) return new Date(Number(input));
+  return new Date(input);
+}
+
 export function timeAgo(isoString: string): string {
-  const date = new Date(isoString);
+  const date = parseDateInput(isoString);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffSec = Math.floor(diffMs / 1000);
@@ -18,7 +24,7 @@ export function timeAgo(isoString: string): string {
 }
 
 export function formatDateLong(iso: string): string {
-  const date = new Date(iso);
+  const date = parseDateInput(iso);
   return date.toLocaleDateString("en-AU", {
     day: "2-digit",
     month: "short",

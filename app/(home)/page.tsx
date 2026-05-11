@@ -1,16 +1,17 @@
 import { redirect } from "next/navigation";
-import ActivityRulesView from "@/components/ActivityRulesView";
+import { TinaActivityWrapper } from "@/app/(home)/TinaActivityWrapper";
 import { fetchDiscussionData } from "@/lib/services/github/discussions.service";
-import { fetchActivityLatestRules, fetchQuickLinks } from "@/lib/services/rules";
+import { fetchActivityLatestRules, fetchHomepageData, fetchRuleCount } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 
 export const revalidate = 21600; // 6 hours
 
 export default async function Home() {
-  const [activityData, latestRulesData, quickLinks] = await Promise.all([
+  const [activityData, latestRulesData, homePageData, ruleCount] = await Promise.all([
     fetchDiscussionData().catch(() => null),
     fetchActivityLatestRules(50),
-    fetchQuickLinks(),
+    fetchHomepageData(),
+    fetchRuleCount(),
   ]);
 
   if (!activityData) {
@@ -18,12 +19,13 @@ export default async function Home() {
   }
 
   return (
-    <ActivityRulesView
+    <TinaActivityWrapper
       rules={activityData.activityRules}
       total={activityData.activityRules.length}
       recentComments={activityData.recentComments}
       latestRulesData={latestRulesData}
-      quickLinks={quickLinks}
+      ruleCount={ruleCount}
+      tinaQueryProps={homePageData as { query: string; variables: any; data: any }}
     />
   );
 }

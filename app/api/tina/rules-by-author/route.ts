@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import client from "@/tina/__generated__/client";
+import { trackServerException } from "@/lib/appInsights.server";
 
 const FIRST_BATCH_SIZE = 20;
 const FIRST_BATCH_CACHE_SECONDS = 60 * 60 * 24;
@@ -51,6 +52,7 @@ export async function GET(request: NextRequest) {
     return res;
   } catch (error) {
     console.error("Error fetching rules by author from Tina:", error);
+    trackServerException(error, { route: "/api/tina/rules-by-author" });
     return NextResponse.json(
       { error: "Failed to fetch rules", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }

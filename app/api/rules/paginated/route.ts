@@ -1,4 +1,5 @@
 import { fetchPaginatedRules } from "@/lib/services/rules";
+import { trackServerException } from "@/lib/appInsights.server";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -24,6 +25,7 @@ export async function GET(req: Request) {
     );
   } catch (err) {
     console.error("[/api/rules/paginated] error:", err);
+    trackServerException(err, { route: "/api/rules/paginated" });
     return NextResponse.json({ message: "Failed to fetch paginated rules" }, { status: 500 });
   }
 }

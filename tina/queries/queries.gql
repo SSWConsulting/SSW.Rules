@@ -7,6 +7,7 @@ query activityLatestRulesQuery($size: Float) {
         uri
         body
         created
+        createdBy
         lastUpdated
         lastUpdatedBy
         authors {
@@ -138,7 +139,9 @@ query rulesByGuidQuery($guids: [String!]!) {
         uri
         body
         created
+        createdBy
         lastUpdated
+        lastUpdatedBy
         authors {
           title
         }
@@ -259,6 +262,7 @@ query paginatedRulesQuery($before: String, $after: String, $first: Float, $last:
         title
         uri
         lastUpdated
+        isArchived
         _sys {
           relativePath
         }

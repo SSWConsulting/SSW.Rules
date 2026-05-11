@@ -64,7 +64,7 @@ function SearchResults({
     if (sortBy === "created") {
       sortedHits.sort((a, b) => new Date(b.created || 0).getTime() - new Date(a.created || 0).getTime());
     } else if (sortBy === "lastUpdated") {
-      sortedHits.sort((a, b) => new Date(b.lastUpdated || 0).getTime() - new Date(a.lastUpdated || 0).getTime());
+      sortedHits.sort((a, b) => new Date(b.lastUpdated || b.created || 0).getTime() - new Date(a.lastUpdated || a.created || 0).getTime());
     }
 
     const sortLabel = sortBy ?? "relevance";

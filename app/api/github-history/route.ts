@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import type { GitHubCommit } from "@/components/last-updated-by/types";
 import { getGitHubAppToken } from "@/lib/services/github/github.utils";
-import { fetchGitHub, findCompleteFileHistory, findLatestNonExcludedCommit, getAlternateAuthorName, isCommitExcluded, resolveAlternateAuthorName } from "./util";
+import {
+  fetchGitHub,
+  findCompleteFileHistory,
+  findLatestNonExcludedCommit,
+  getAlternateAuthorName,
+  isCommitExcluded,
+  resolveAlternateAuthorName,
+} from "./util";
 
 const GITHUB_ACTIVE_BRANCH = process.env.NEXT_PUBLIC_TINA_BRANCH || "main";
 const CACHE_TTL = 3600;

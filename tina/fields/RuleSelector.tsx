@@ -2,12 +2,13 @@
 
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
 import React, { useEffect, useMemo, useState } from "react";
-import { BiChevronDown, BiSearch } from "react-icons/bi";
+import { BiChevronDown, BiSearch, BiSolidError } from "react-icons/bi";
 
 interface Rule {
   title: string;
   uri: string;
   lastUpdated: string;
+  isArchived?: boolean;
   _sys: {
     relativePath: string;
   };
@@ -206,11 +207,19 @@ export const RuleSelector: React.FC<any> = ({ input }) => {
                               >
                                 <div className="flex items-center justify-between w-full gap-3">
                                   <div className="flex-1 min-w-0 overflow-hidden">
-                                    <div
-                                      className="font-medium text-gray-900 text-sm leading-5 whitespace-normal break-words line-clamp-2"
-                                      title={rule.title || rule.uri}
-                                    >
-                                      {rule.title || rule.uri}
+                                    <div className="flex items-start gap-2">
+                                      <span
+                                        className={`font-medium text-gray-900 text-sm leading-5 whitespace-normal break-words line-clamp-2 flex-1 min-w-0 ${rule.isArchived ? "opacity-50" : ""}`}
+                                        title={rule.title || rule.uri}
+                                      >
+                                        {rule.title || rule.uri}
+                                      </span>
+                                      {rule.isArchived && (
+                                        <span className="shrink-0 mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-red-50 border border-red-200 text-[#cc4141]">
+                                          <BiSolidError className="h-3 w-3 shrink-0" aria-hidden="true" />
+                                          Archived
+                                        </span>
+                                      )}
                                     </div>
                                     <div className="text-xs text-gray-500 leading-4 truncate">{rule.uri}</div>
                                   </div>

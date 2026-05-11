@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export function Illustration(props: React.ComponentPropsWithoutRef<"svg">) {
   return (
@@ -20,18 +20,13 @@ export default function NotFound() {
         <Illustration className="w-full max-w-xl text-ssw-red" />
 
         {/* Error message */}
-        <p className="mt-6 text-lg font-medium text-muted-foreground">
-          Oops! Something went wrong.
-        </p>
+        <p className="mt-6 text-lg font-medium text-muted-foreground">Oops! Something went wrong.</p>
 
         {/* Verdict text */}
         <div className="mt-8 max-w-3xl">
-          <p className="text-3xl sm:text-4xl font-light text-gray-500">
-            The verdict is in...
-          </p>
+          <p className="text-3xl sm:text-4xl font-light text-gray-500">The verdict is in...</p>
           <p className="mt-2 text-3xl sm:text-4xl font-light text-gray-500">
-            SSW Rules has concluded that this page is{" "}
-            <span className="font-bold text-primary">NOT FOUND!</span>
+            SSW Rules has concluded that this page is <span className="font-bold text-primary">NOT FOUND!</span>
           </p>
         </div>
 
@@ -41,8 +36,8 @@ export default function NotFound() {
             Visit{" "}
             <Link href="/" className="text-ssw-red hover:underline">
               SSW Rules homepage
-            </Link>
-            {" "}and find out more secret ingredients to quality software.
+            </Link>{" "}
+            and find out more secret ingredients to quality software.
           </div>
           <div className="bg-gray-200 p-6 rounded text-left">
             Learn more about{" "}

@@ -3,9 +3,8 @@ import { Collection, useCMS, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
-import { AuthorSelectorInput } from "../fields/AuthorSelector";
-import { AuthorUrlField } from "../fields/AuthorUrlField";
 import { CategoryMultiSelectorInput } from "../fields/CategoryMultiSelector";
+import { PeopleSelector } from "../fields/PeopleSelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
@@ -112,42 +111,20 @@ const Rule: Collection = {
       list: true,
       searchable: false,
       ui: {
-        itemProps: (item) => ({ label: "👤 " + (item?.title || "Add an author") }),
-        defaultItem: {
-          title: "Adam Cogan",
-          url: "https://www.ssw.com.au/people/adam-cogan",
-        },
-        component: ConditionalHiddenField,
+        component: PeopleSelector,
       },
       fields: [
         {
           type: "string",
           name: "title",
-          description: "The full name of the contributor, as it should appear on the rule.",
-          label: "Name",
-          ui: {
-            component: AuthorSelectorInput,
-          },
+          description: "Full name as it should appear on the rule.",
+          label: "Contributor Name",
         },
         {
           type: "string",
-          description: 'Link to the contributor profile. SSW People link (e.g. "https://www.ssw.com.au/people/adam-cogan") or any external URL.',
+          description: "Full link to the contributor's profile (e.g. SSW People or an external URL)",
           name: "url",
-          label: "Url",
-          ui: {
-            component: AuthorUrlField,
-            validate: (value: any) => {
-              if (!value) return undefined;
-              try {
-                const url = new URL(value);
-                if (!["http:", "https:"].includes(url.protocol)) {
-                  return "URL must start with http:// or https://";
-                }
-              } catch {
-                return "Please enter a valid URL (e.g. https://example.com)";
-              }
-            },
-          },
+          label: "Profile URL",
         },
         {
           type: "string",

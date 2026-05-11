@@ -68,7 +68,7 @@ export default function RuleFreshnessIndicator({ relativePath, staticLastUpdated
   const config = STATUS_CONFIG[status];
 
   return (
-    <Tooltip text={config.tooltip}>
+    <Tooltip text={config.tooltip} opaque>
       <span className="inline-flex items-center gap-1.5 text-xs text-gray-500">
         <span className={`inline-block h-2 w-2 rounded-full ${config.color}`} aria-hidden="true" />
         {config.label}

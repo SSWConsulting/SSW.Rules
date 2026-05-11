@@ -11,6 +11,7 @@ interface RuleCardProps {
   index?: number;
   authorUrl?: string | null;
   skeletonMeta?: boolean;
+  snippet?: string | null;
 }
 
 function isHttpUrl(value?: string | null) {
@@ -18,7 +19,7 @@ function isHttpUrl(value?: string | null) {
   return /^https?:\/\//i.test(value.trim());
 }
 
-export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, index, authorUrl, skeletonMeta }: RuleCardProps) {
+export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, index, authorUrl, skeletonMeta, snippet }: RuleCardProps) {
   const showLink = !skeletonMeta && isHttpUrl(authorUrl) && (lastUpdatedBy || "Unknown") !== "Unknown";
 
   return (
@@ -30,6 +31,13 @@ export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, inde
           <Link href={`/${slug}`} className="no-underline">
             <h2 className="m-0 mb-2 text-2xl max-sm:text-lg hover:text-ssw-red">{title}</h2>
           </Link>
+
+          {snippet && (
+            <p
+              className="m-0 mb-2 text-sm text-gray-600"
+              dangerouslySetInnerHTML={{ __html: snippet }}
+            />
+          )}
 
           {skeletonMeta ? (
             <div className="flex items-center gap-4 animate-pulse">

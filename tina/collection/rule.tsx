@@ -5,6 +5,7 @@ import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
 import { CategoryMultiSelectorInput } from "../fields/CategoryMultiSelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
+import { PeopleSelector } from "../fields/PeopleSelector";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
 import { createdInfoFields } from "./shared/createdInfoFields";
@@ -110,28 +111,20 @@ const Rule: Collection = {
       list: true,
       searchable: false,
       ui: {
-        itemProps: (item) => ({ label: "👤 " + (item?.title ?? "Author") }),
-        defaultItem: {
-          title: "Bob Northwind",
-          url: "https://www.ssw.com.au/people/bob-northwind",
-        },
-        component: ConditionalHiddenField,
+        component: PeopleSelector,
       },
       fields: [
         {
           type: "string",
           name: "title",
-          description: "The full name of the contributor, as it should appear on the rule.",
-          label: "Name",
-          ui: {
-            component: ConditionalHiddenField,
-          },
+          description: "Full name as it should appear on the rule.",
+          label: "Contributor Name",
         },
         {
           type: "string",
-          description: 'The SSW People link for the contributor. E.g. "https://www.ssw.com.au/people/bob-northwind"',
+          description: "Full link to the contributor's profile (e.g. SSW People or an external URL)",
           name: "url",
-          label: "Url",
+          label: "Profile URL",
         },
       ],
     },

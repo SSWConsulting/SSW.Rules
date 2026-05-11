@@ -93,7 +93,7 @@ export const PeopleSelector = wrapFieldsWithMeta((props: any) => {
 
   const filteredEmployees = useMemo(() => {
     const q = filter.trim().toLowerCase();
-    if (!q) return sortedEmployees.slice(0, 30);
+    if (!q) return sortedEmployees;
     return sortedEmployees.filter((e) => e.fullName.toLowerCase().includes(q));
   }, [filter, sortedEmployees]);
 

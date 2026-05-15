@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm tinacms dev -c \"next dev --turbopack\"",
-    "build": "tinacms build && next build",
+    "build": "tinacms build --content=local && next build",
     "generate:archived-rules": "node ./scripts/generate-archived-rules.js",
     "generate:people-latest-rules": "node ./scripts/generate-people-latest-rules.js",
     "postbuild": "npm run -s generate:archived-rules && next-sitemap",

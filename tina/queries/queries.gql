@@ -314,6 +314,7 @@ query ruleData($relativePath: String!) {
       authors {
         title
         url
+        img
       }
       categories {
         category {
@@ -371,6 +372,7 @@ query ruleDataBasic($relativePath: String!) {
       authors {
         title
         url
+        img
       }
       categories {
         category {

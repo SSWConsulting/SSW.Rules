@@ -4,6 +4,7 @@ import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
 import { CategoryMultiSelectorInput } from "../fields/CategoryMultiSelector";
+import { PeopleSelector } from "../fields/PeopleSelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
@@ -110,28 +111,39 @@ const Rule: Collection = {
       list: true,
       searchable: false,
       ui: {
-        itemProps: (item) => ({ label: "👤 " + (item?.title ?? "Author") }),
-        defaultItem: {
-          title: "Bob Northwind",
-          url: "https://www.ssw.com.au/people/bob-northwind",
-        },
-        component: ConditionalHiddenField,
+        component: PeopleSelector,
       },
       fields: [
         {
           type: "string",
           name: "title",
-          description: "The full name of the contributor, as it should appear on the rule.",
-          label: "Name",
-          ui: {
-            component: ConditionalHiddenField,
-          },
+          description: "Full name as it should appear on the rule.",
+          label: "Contributor Name",
         },
         {
           type: "string",
-          description: 'The SSW People link for the contributor. E.g. "https://www.ssw.com.au/people/bob-northwind"',
+          description: "Full link to the contributor's profile (e.g. SSW People or an external URL)",
           name: "url",
-          label: "Url",
+          label: "Profile URL",
+        },
+        {
+          type: "string",
+          name: "img",
+          label: "Profile Image URL",
+          description: "Optional. Photo URL for non-SSW authors. SSW authors get their image automatically.",
+          ui: {
+            validate: (value: any) => {
+              if (!value) return undefined;
+              try {
+                const url = new URL(value);
+                if (!["http:", "https:"].includes(url.protocol)) {
+                  return "Image URL must start with http:// or https://";
+                }
+              } catch {
+                return "Please enter a valid image URL";
+              }
+            },
+          },
         },
       ],
     },

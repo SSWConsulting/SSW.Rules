@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       );
     }
 
-    revalidateTag(tag, "max");
+    revalidateTag(tag, { expire: 0 });
 
     return NextResponse.json({
       success: true,
@@ -53,11 +53,11 @@ export async function GET(req: Request) {
       );
     }
 
-    revalidateTag(tag, "max");
+    revalidateTag(tag, { expire: 0 });
 
-    return NextResponse.json({ 
-      success: true, 
-      tag 
+    return NextResponse.json({
+      success: true,
+      tag
     }, { status: 200 });
   } catch (err) {
     console.error("Error during tag revalidation", err);

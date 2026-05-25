@@ -123,15 +123,15 @@ export const Footer = () => {
             <hr className="border-gray-800 my-2"></hr>
             <div className="flex flex-col md:flex-row justify-between mx-6">
               <div className="py-2">
-                This website is under{" "}
+                ssw.com.au <FaHeart className="text-ssw-red inline" size={12} />{" "}
                 <a
                   className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
                   href={`${pathPrefix}/rules-to-better-websites-deployment`}
                 >
-                  CONSTANT CONTINUOUS DEPLOYMENT
+                  CONTINUOUS DEPLOYMENT
                 </a>
                 . Last deployed {getLastDeployTime()} ago
-                {buildDate && <span title={buildDate}> on {moment(buildDate).format("MMM D, YYYY [at] HH:mm UTC")}</span>} (Build #{" "}
+                {buildDate && <span title={buildDate}> {moment(buildDate).format("D MMM YYYY [at] HH:mm UTC")}</span>} (Build #{" "}
                 <a
                   className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
                   href={deploymentUrl}
@@ -180,5 +180,5 @@ const getLastDeployTime = () => {
   var minutes = Math.floor(delta / 60) % 60;
   delta -= minutes * 60;
 
-  return days !== 0 ? `${days} day(s)` : hours !== 0 ? `${hours} hour(s)` : minutes > 1 ? `${minutes} minutes` : "1 minute";
+  return days !== 0 ? `${days} day(s)` : hours !== 0 ? `${hours} hour(s)` : minutes > 1 ? `${minutes} min` : "1 min";
 };

@@ -1,8 +1,8 @@
-import moment from "moment";
 import React from "react";
 import { FaFacebook, FaHeart, FaInstagram, FaLinkedin, FaTiktok, FaXTwitter, FaYoutube } from "react-icons/fa6";
 import { GitHubButtonWrapper } from "@/components/GitHubButtonWrapper";
 import { pathPrefix } from "../../../site-config";
+import { RelativeTime } from "./relative-time";
 
 const buildTimestamp = process.env.BUILD_TIMESTAMP ? parseInt(process.env.BUILD_TIMESTAMP) : Date.now() - 1000 * 60 * 30;
 const buildDate = process.env.BUILD_DATE;
@@ -122,9 +122,7 @@ export const Footer = () => {
             <div className="flex flex-col lg:flex-row justify-between mx-6">
               <div className="py-2">
                 This website is under continuous deployment. Last updated{" "}
-                <span title={buildDate ? `Last deployed ${moment(buildDate).format("D MMM YYYY [at] HH:mm UTC")}` : undefined}>
-                  {getLastDeployTime()} ago
-                </span>
+                <RelativeTime buildTimestamp={buildTimestamp} buildDate={buildDate} />
                 {commitHash && (
                   <>
                     . Last commit{" "}
@@ -162,20 +160,4 @@ export const Footer = () => {
       </footer>
     </>
   );
-};
-
-const getLastDeployTime = () => {
-  const lastDeployDuration = moment.duration(Date.now() - buildTimestamp);
-  let delta = Math.abs(lastDeployDuration.asMilliseconds()) / 1000;
-
-  const days = Math.floor(delta / 86400);
-  delta -= days * 86400;
-
-  var hours = Math.floor(delta / 3600) % 24;
-  delta -= hours * 3600;
-
-  var minutes = Math.floor(delta / 60) % 60;
-  delta -= minutes * 60;
-
-  return days !== 0 ? `${days} day(s)` : hours !== 0 ? `${hours} hour(s)` : minutes > 1 ? `${minutes} min` : "1 min";
 };

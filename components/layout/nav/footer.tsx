@@ -5,8 +5,6 @@ import { GitHubButtonWrapper } from "@/components/GitHubButtonWrapper";
 import { pathPrefix } from "../../../site-config";
 
 const buildTimestamp = process.env.BUILD_TIMESTAMP ? parseInt(process.env.BUILD_TIMESTAMP) : Date.now() - 1000 * 60 * 30;
-const versionDeployed = process.env.VERSION_DEPLOYED || "dev";
-const deploymentUrl = process.env.DEPLOYMENT_URL || "#";
 const buildDate = process.env.BUILD_DATE;
 const commitHash = process.env.COMMIT_HASH;
 
@@ -35,9 +33,9 @@ export const Footer = () => {
       <footer className="text-center bg-[var(--footer-background)] text-[var(--footer-foreground)] py-6 md:py-4 lg:py-2 [&_a]:no-underline text-xs">
         <section className="main-container max-w-screen-xl">
           <div className="xl:mx-6">
-            <div className="mx-6 flex flex-col-reverse md:flex-row justify-between align-middle leading-6">
+            <div className="mx-6 flex flex-col-reverse lg:flex-row justify-between align-middle leading-6">
               <div className="py-2">&copy; 1990-{new Date().getFullYear()} SSW. All rights reserved.</div>
-              <div className="w-full md:w-3/4 md:text-right py-2 flex max-sm:flex-col items-center max-sm:justify-start justify-center md:justify-end">
+              <div className="w-full lg:w-3/4 lg:text-right py-2 flex max-sm:flex-col items-center max-sm:justify-start justify-center lg:justify-end">
                 <a
                   className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red max-sm:mb-3"
                   href="https://github.com/SSWConsulting/SSW.Rules/issues"
@@ -121,28 +119,35 @@ export const Footer = () => {
               </div>
             </div>
             <hr className="border-gray-800 my-2"></hr>
-            <div className="flex flex-col md:flex-row justify-between mx-6">
+            <div className="flex flex-col lg:flex-row justify-between mx-6">
               <div className="py-2">
-                ssw.com.au <FaHeart className="text-ssw-red inline" size={12} />{" "}
+                This website is under{" "}
                 <a
                   className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
                   href={`${pathPrefix}/rules-to-better-websites-deployment`}
                 >
-                  CONTINUOUS DEPLOYMENT
+                  continuous deployment
                 </a>
-                . Last deployed {getLastDeployTime()} ago
-                {buildDate && <span title={buildDate}> {moment(buildDate).format("D MMM YYYY [at] HH:mm UTC")}</span>} (Build #{" "}
-                <a
-                  className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
-                  href={deploymentUrl}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                >
-                  {versionDeployed}
-                </a>
-                {commitHash && <span title={`Commit: ${commitHash}`}>-{commitHash}</span>})
+                . Last updated{" "}
+                <span title={buildDate ? moment(buildDate).format("D MMM YYYY [at] HH:mm UTC") : undefined}>
+                  {getLastDeployTime()} ago
+                </span>
+                {commitHash && (
+                  <>
+                    . Last commit{" "}
+                    <a
+                      className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
+                      href={`https://github.com/SSWConsulting/SSW.Rules/commit/${commitHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      title={`View commit ${commitHash}`}
+                    >
+                      {commitHash}
+                    </a>
+                  </>
+                )}
               </div>
-              <div className="md:text-right py-2">
+              <div className="lg:text-right py-2">
                 Powered by{" "}
                 <a
                   className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"

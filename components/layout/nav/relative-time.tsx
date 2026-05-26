@@ -40,7 +40,7 @@ export function RelativeTime({ buildTimestamp, buildDate }: Props) {
     : undefined;
 
   return (
-    <span className="relative inline-block group cursor-help">
+    <span className="relative inline-block group cursor-help text-white hover:text-ssw-red transition-all duration-300 ease-in-out">
       {formatRelative(now - buildTimestamp)}
       {tooltip && (
         <span

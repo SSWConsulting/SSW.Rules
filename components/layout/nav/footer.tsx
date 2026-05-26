@@ -124,7 +124,6 @@ export const Footer = () => {
                 This website is under{" "}
                 <a
                   className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
-                  style={{ textDecoration: "underline" }}
                   href="https://www.ssw.com.au/rules/rules-to-better-websites-deployment"
                   target="_blank"
                   rel="noopener noreferrer"

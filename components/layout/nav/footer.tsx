@@ -121,15 +121,8 @@ export const Footer = () => {
             <hr className="border-gray-800 my-2"></hr>
             <div className="flex flex-col lg:flex-row justify-between mx-6">
               <div className="py-2">
-                This website is under{" "}
-                <a
-                  className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
-                  href={`${pathPrefix}/rules-to-better-websites-deployment`}
-                >
-                  continuous deployment
-                </a>
-                . Last updated{" "}
-                <span title={buildDate ? moment(buildDate).format("D MMM YYYY [at] HH:mm UTC") : undefined}>
+                This website is under continuous deployment. Last updated{" "}
+                <span title={buildDate ? `Last deployed ${moment(buildDate).format("D MMM YYYY [at] HH:mm UTC")}` : undefined}>
                   {getLastDeployTime()} ago
                 </span>
                 {commitHash && (
@@ -140,7 +133,6 @@ export const Footer = () => {
                       href={`https://github.com/SSWConsulting/SSW.Rules/commit/${commitHash}`}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
-                      title={`View commit ${commitHash}`}
                     >
                       {commitHash}
                     </a>

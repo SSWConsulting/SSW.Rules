@@ -18,7 +18,7 @@ const projectRoot = path.resolve(__dirname, "..");
 const outputPath = path.join(projectRoot, "archived-rules.json");
 
 const getBranch = () =>
-  process.env.NEXT_PUBLIC_TINA_BRANCH || process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF || process.env.HEAD || "main";
+  process.env.NEXT_PUBLIC_TINA_BRANCH || process.env.HEAD || "main";
 
 const getCandidateUrls = () => {
   if (process.env.NODE_ENV === "development") {

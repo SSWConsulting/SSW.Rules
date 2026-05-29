@@ -4,7 +4,7 @@ import { GitHubButtonWrapper } from "@/components/GitHubButtonWrapper";
 import { pathPrefix } from "../../../site-config";
 import { RelativeTime } from "./relative-time";
 
-const buildTimestamp = process.env.BUILD_TIMESTAMP ? parseInt(process.env.BUILD_TIMESTAMP) : Date.now() - 1000 * 60 * 30;
+const buildTimestamp = process.env.BUILD_TIMESTAMP ? parseInt(process.env.BUILD_TIMESTAMP, 10) : Date.now() - 1000 * 60 * 30;
 const buildDate = process.env.BUILD_DATE;
 const commitHash = process.env.COMMIT_HASH;
 
@@ -126,7 +126,7 @@ export const Footer = () => {
                   className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
                   href="https://www.ssw.com.au/rules/rules-to-better-websites-deployment"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener noreferrer nofollow"
                 >
                   continuous deployment
                 </a>

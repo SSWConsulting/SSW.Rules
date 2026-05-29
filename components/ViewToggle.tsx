@@ -17,7 +17,7 @@ export default function ViewToggle() {
         What’s Hot 🔥
       </Link>
       <Link href="/categories" prefetch={true} className={`${baseClasses} border border-l-0 rounded-r-md ${isCategories ? activeClasses : inactiveClasses}`}>
-        Explore Categories
+        Explore Categories test
       </Link>
     </div>
   );

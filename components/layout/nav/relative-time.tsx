@@ -66,13 +66,14 @@ export function RelativeTime({ buildTimestamp, buildDate }: Props) {
   }, []);
 
   const formatted = buildDate ? formatUtcDate(buildDate) : undefined;
-  const tooltip = formatted ? `Last deployed ${formatted}` : undefined;
+  const tooltip = formatted ? `Last updated ${formatted}` : undefined;
 
   return (
     <span
-      className="relative inline-block group cursor-help text-white hover:text-ssw-red focus-visible:text-ssw-red transition-all duration-300 ease-in-out"
+      className={`relative inline-block group text-white hover:text-ssw-red focus-visible:text-ssw-red transition-all duration-300 ease-in-out${tooltip ? " cursor-help" : ""}`}
       tabIndex={tooltip ? 0 : undefined}
       aria-describedby={tooltip ? tooltipId : undefined}
+      title={tooltip}
     >
       {formatRelative(now - buildTimestamp)}
       {tooltip && (

@@ -152,7 +152,7 @@ jobs:
         run: |
           BUILD_TIMESTAMP=$(date +%s)000
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          COMMIT_HASH=$(echo "${{ github.sha }}" | cut -c1-7)
+          COMMIT_HASH=${{ github.sha }}
           VERSION_DEPLOYED="${{ github.run_number }}"
           DEPLOYMENT_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
@@ -234,7 +234,7 @@ jobs:
 
       - name: Update commit hash from checkout
         run: |
-          COMMIT_HASH=$(git rev-parse --short=7 HEAD)
+          COMMIT_HASH=$(git rev-parse HEAD)
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
           echo "Commit hash (from checkout): $COMMIT_HASH"
 

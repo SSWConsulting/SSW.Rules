@@ -139,7 +139,7 @@ export const Footer = () => {
                       target="_blank"
                       rel="noopener noreferrer nofollow"
                     >
-                      {commitHash}
+                      {commitHash.slice(0, 7)}
                     </a>
                   </>
                 )}

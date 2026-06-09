@@ -19,10 +19,8 @@ query CategoryFull($relativePath: String!) {
         body
         created
         createdBy
-        createdByEmail
         lastUpdated
         lastUpdatedBy
-        lastUpdatedByEmail
         isArchived
         archivedreason
         index {
@@ -53,10 +51,8 @@ query CategoryFullNoIndex($relativePath: String!) {
         body
         created
         createdBy
-        createdByEmail
         lastUpdated
         lastUpdatedBy
-        lastUpdatedByEmail
         isArchived
         archivedreason
     }

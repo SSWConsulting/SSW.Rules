@@ -36,10 +36,8 @@ export type CategoryRuleIndexItem = {
       body?: string;
       created?: string;
       createdBy?: string;
-      createdByEmail?: string;
       lastUpdated?: string;
       lastUpdatedBy?: string;
-      lastUpdatedByEmail?: string;
       isArchived?: boolean;
       archivedreason?: string;
     };
@@ -59,10 +57,8 @@ export type CategoryRuleIndexItem = {
     body?: string;
     created?: string;
     createdBy?: string;
-    createdByEmail?: string;
     lastUpdated?: string;
     lastUpdatedBy?: string;
-    lastUpdatedByEmail?: string;
     isArchived?: boolean;
     archivedreason?: string;
     index?: CategoryIndexItem[];

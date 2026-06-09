@@ -336,10 +336,8 @@ query ruleData($relativePath: String!) {
       seoDescription
       created
       createdBy
-      createdByEmail
       lastUpdated
       lastUpdatedBy
-      lastUpdatedByEmail
       isArchived
       archivedreason
       sidebarVideo
@@ -386,10 +384,8 @@ query ruleDataBasic($relativePath: String!) {
       seoDescription
       created
       createdBy
-      createdByEmail
       lastUpdated
       lastUpdatedBy
-      lastUpdatedByEmail
       isArchived
       archivedreason
       sidebarVideo

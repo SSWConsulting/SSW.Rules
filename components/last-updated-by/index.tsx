@@ -79,7 +79,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
 
       return (
         <div className={`text-ssw-gray text-sm ${className}`}>
-          <div className="flex md:flex-row flex-col md:items-center gap-2">
+          <div className="flex flex-col md:flex-row lg:flex-col xl:flex-row items-start md:items-center lg:items-start xl:items-center gap-1">
             <span>
               Last updated by{" "}
               <span className="font-bold text-black">
@@ -99,7 +99,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
                 target="_blank"
                 title={tooltipContent}
                 rel="noopener noreferrer nofollow"
-                className="underline flex flex-row items-center gap-1.5 mb-2 md:mb-0"
+                className="underline flex flex-row items-center gap-1.5 mb-0"
               >
                 See history
                 <FaHistory className="w-3 h-3" />
@@ -113,14 +113,14 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
     // If we only have historyUrl but no commit data (error case), just show the history link
     return (
       <div className={`text-ssw-gray text-sm ${className}`}>
-        <div className="flex md:flex-row flex-col md:items-center gap-2">
+        <div className="flex flex-col md:flex-row lg:flex-col xl:flex-row items-start md:items-center lg:items-start xl:items-center gap-1">
           <div className="relative group text-black">
             <a
               href={historyUrl}
               target="_blank"
               title="View commit history on GitHub"
               rel="noopener noreferrer nofollow"
-              className="underline flex flex-row items-center gap-1.5 mb-2 md:mb-0"
+              className="underline flex flex-row items-center gap-1.5 mb-0"
             >
               See history
               <FaHistory className="w-3 h-3" />

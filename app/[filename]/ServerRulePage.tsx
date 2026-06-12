@@ -52,7 +52,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
       {brokenReferences?.detected && <BrokenReferenceBanner brokenPaths={brokenReferences.paths} ruleUri={rule?.uri || ""} />}
 
       <div className="layout-two-columns">
-        <Card dropShadow className="layout-main-section p-6">
+        <Card dropShadow className="layout-main-section p-6 lg:p-4 xl:p-6">
           {rule?.isArchived && rule?.archivedreason && (
             <div className="mb-8 bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="flex items-start gap-3">
@@ -86,7 +86,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
                 {rule?.title}
               </h1>
 
-              <div className="flex justify-between my-2 flex-col md:flex-row">
+              <div className="flex justify-between my-2 flex-col md:flex-row lg:flex-col xl:flex-row">
                 <GitHubMetadata owner="SSWConsulting" repo="SSW.Rules.Content" path={rule?.id} className="mt-2" />
                 <RuleActionButtons rule={rule} />
               </div>

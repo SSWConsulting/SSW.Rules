@@ -24,7 +24,7 @@ export default function RuleActionButtons({ rule, showBookmark = true, showOpenI
   if (isAdminPage) return null;
 
   return (
-    <div className="mt-4 sm:mt-0 flex items-center gap-4 text-2xl pl-7.5">
+    <div className="mt-4 sm:mt-0 flex items-center gap-4 text-2xl lg:pl-0 xl:pl-7.5">
       {showBookmark && (
         <Suspense fallback={<span className="opacity-50">...</span>}>
           <Bookmark ruleGuid={rule.guid} />

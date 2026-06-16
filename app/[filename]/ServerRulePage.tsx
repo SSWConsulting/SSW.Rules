@@ -75,7 +75,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
             </div>
           )}
 
-          <div className="flex border-b-2">
+          <div className="flex border-b pb-2">
             {rule?.thumbnail && (
               <div className="w-[175px] h-[175px] relative mr-4">
                 <Image src={rule.thumbnail} alt="thumbnail image for the rule" fill className="object-cover object-center" />

@@ -79,7 +79,7 @@ export default function GitHubMetadata({ owner = "tinacms", repo = "tina.io", pa
 
       return (
         <div className={`text-ssw-gray text-sm ${className}`}>
-          <div className="flex md:flex-row flex-col md:items-center gap-2">
+          <div className="flex lg:flex-row flex-col lg:items-center gap-1 lg:gap-2">
             <span>
               Last updated by{" "}
               <span className="font-bold text-black">

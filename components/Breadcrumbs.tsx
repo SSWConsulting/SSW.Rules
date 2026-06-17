@@ -33,22 +33,46 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isDropdownOpen]);
 
+  // Mobile: show only the immediate parent (one level up) to avoid multi-line wrapping
+  const immediateParent =
+    categoryList.length > 0
+      ? { link: categoryList[0].link, title: categoryList[0].title.replace(/Rules to(?: Better)?/i, "").trim() }
+      : { link: siteUrlRelative, title: "SSW Rules" };
+
   return (
     <nav aria-label="Breadcrumb" className="m-4 mt-2">
-      <div className="grid grid-cols-[auto_1fr] gap-2 items-start md:items-center">
+      {/* Mobile: single line — icon + immediate parent only */}
+      <div className="flex items-center gap-2 md:hidden">
+        <a href={parentSiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center shrink-0">
+          <img alt="SSW Foursquare" src={withBasePath(iconSrc)} width={16} height={16} className="block w-4 h-4" loading="lazy" decoding="async" />
+        </a>
+        {!isHomePage && (
+          <>
+            <span aria-hidden="true" className="text-gray-400 shrink-0">/</span>
+            <Link
+              href={immediateParent.link}
+              className="truncate min-w-0 transition underline decoration-1 decoration-gray-400 underline-offset-2 duration-150 hover:text-ssw-red hover:decoration-ssw-red"
+            >
+              {immediateParent.title}
+            </Link>
+          </>
+        )}
+      </div>
+
+      {/* Desktop: full trail, labels truncate at ~80 characters */}
+      <div className="hidden md:grid grid-cols-[auto_1fr] gap-2 items-center">
         <a
           href={parentSiteUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center shrink-0 translate-y-[2px] md:translate-y-0 md:h-[1.5em]"
+          className="inline-flex items-center shrink-0 h-[1.5em]"
         >
           <img alt="SSW Foursquare" src={withBasePath(iconSrc)} width={16} height={16} className="block w-4 h-4" loading="lazy" decoding="async" />
-          <span aria-hidden="true" className="ml-2 hidden md:inline text-gray-400">/</span>
+          <span aria-hidden="true" className="ml-2 text-gray-400">/</span>
         </a>
 
-        <ol className="flex min-w-0 list-none p-0 m-0 flex-col items-start md:flex-row md:items-center">
-          <li className="flex items-center mb-0 md:h-[1.5em]">
-            <span aria-hidden="true" className="mr-2 inline md:hidden text-gray-400">/</span>
+        <ol className="flex min-w-0 list-none p-0 m-0 items-center">
+          <li className="flex items-center mb-0 h-[1.5em] shrink-0">
             <Link
               href={siteUrlRelative}
               className="transition underline decoration-1 decoration-gray-400 underline-offset-2 duration-150 hover:text-ssw-red hover:decoration-ssw-red"
@@ -58,8 +82,8 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
           </li>
 
           {showCategories && categoryList.length > 1 ? (
-            <li className="mt-1 flex items-center mb-0 md:mt-0">
-              <span aria-hidden="true" className="mr-2 md:mx-4 text-gray-400">/</span>
+            <li className="flex items-center mb-0 shrink-0">
+              <span aria-hidden="true" className="mx-4 text-gray-400">/</span>
               <div className="relative group" ref={dropdownRef}>
                 <button
                   ref={triggerRef}
@@ -105,11 +129,11 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
           ) : (
             showCategories &&
             categoryList.map((cat, i) => (
-              <li key={i} className="mt-1 flex items-center mb-0 md:mt-0">
-                <span aria-hidden="true" className="mr-2 md:mx-4 text-gray-400">/</span>
+              <li key={i} className="flex items-center mb-0 min-w-0">
+                <span aria-hidden="true" className="mx-4 text-gray-400 shrink-0">/</span>
                 <Link
                   href={cat.link}
-                  className="transition underline decoration-1 decoration-gray-400 underline-offset-2 duration-150 hover:text-ssw-red hover:decoration-ssw-red"
+                  className="truncate min-w-0 max-w-[80ch] transition underline decoration-1 decoration-gray-400 underline-offset-2 duration-150 hover:text-ssw-red hover:decoration-ssw-red"
                 >
                   {cat.title.replace(/Rules to(?: Better)?/i, "").trim()}
                 </Link>
@@ -118,9 +142,9 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
           )}
 
           {!isHomePage && (
-            <li className="mt-1 flex items-center mb-0 md:mt-0" aria-current="page">
-              <span aria-hidden="true" className="mr-2 md:mx-4 text-gray-400">/</span>
-              <span className="truncate">{tailText}</span>
+            <li className="flex items-center mb-0 min-w-0" aria-current="page">
+              <span aria-hidden="true" className="mx-4 text-gray-400 shrink-0">/</span>
+              <span className="truncate min-w-0 max-w-[80ch]">{tailText}</span>
             </li>
           )}
         </ol>

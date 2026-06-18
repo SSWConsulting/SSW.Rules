@@ -25,7 +25,6 @@ const Rule: Collection = {
       guid: generateGuid(),
       created: new Date().toISOString(),
       createdBy: "Unknown",
-      createdByEmail: "Unknown",
       filename: "rule",
       body: defaultBody,
     };

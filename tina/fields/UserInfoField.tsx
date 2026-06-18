@@ -60,7 +60,7 @@ export const UserInfoField = wrapFieldsWithMeta((props: any) => {
       try {
         const user = await cms.api?.tina?.authProvider?.getUser();
         if (user) {
-          const value = field.name === "createdByEmail" ? user.email || "Unknown" : user.fullName || "Unknown";
+          const value = user.fullName || "Unknown";
 
           // Update the form field value
           input.onChange(value);

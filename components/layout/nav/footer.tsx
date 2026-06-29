@@ -1,5 +1,5 @@
 import React from "react";
-import { FaFacebook, FaHeart, FaInstagram, FaLinkedin, FaTiktok, FaXTwitter, FaYoutube } from "react-icons/fa6";
+import { FaBluesky, FaFacebook, FaHeart, FaInstagram, FaLinkedin, FaThreads, FaTiktok, FaXTwitter, FaYoutube } from "react-icons/fa6";
 import { GitHubButtonWrapper } from "@/components/GitHubButtonWrapper";
 import { pathPrefix } from "../../../site-config";
 import { RelativeTime } from "./relative-time";
@@ -67,6 +67,16 @@ export const Footer = () => {
                   </a>
                   <a
                     className="unstyled block float-right h-[25px] w-[25px] ml-4 text-white hover:text-ssw-red visited:text-white no-underline text-center leading-[25px]"
+                    id="bluesky-icon"
+                    title="SSW on BlueSky"
+                    href="https://bsky.app/profile/ssw.com.au"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                  >
+                    <FaBluesky size={24} />
+                  </a>
+                  <a
+                    className="unstyled block float-right h-[25px] w-[25px] ml-4 text-white hover:text-ssw-red visited:text-white no-underline text-center leading-[25px]"
                     id="twitter-icon"
                     title="SSW on Twitter"
                     href="https://twitter.com/SSW_TV"
@@ -74,6 +84,16 @@ export const Footer = () => {
                     rel="noopener noreferrer nofollow"
                   >
                     <FaXTwitter size={24} />
+                  </a>
+                  <a
+                    className="unstyled block float-right h-[25px] w-[25px] ml-4 text-white hover:text-ssw-red visited:text-white no-underline text-center leading-[25px]"
+                    id="threads-icon"
+                    title="SSW on Threads"
+                    href="https://www.threads.net/@ssw_tv"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                  >
+                    <FaThreads size={24} />
                   </a>
                   <a
                     className="unstyled block float-right h-[25px] w-[25px] ml-4 text-white hover:text-ssw-red visited:text-white no-underline text-center leading-[25px]"

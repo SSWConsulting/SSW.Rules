@@ -28,6 +28,20 @@ export const config = defineConfig({
       mediaRoot: "uploads",
     },
   },
+  ui: {
+    previewUrl: () => {
+      const origin = "https://www.ssw.com.au"
+      // In Tina's preview mode the current page's route lives in the hash:
+      // .../admin/index.html#/~/about -> "about"
+      const hash = typeof window !== "undefined" ? window.location.hash : "";
+      const match = hash.match(/^#\/~\/(.*)$/);
+      const route = match ? match[1].split("?")[0] : "";
+
+      return {
+        url: route ? `${origin}/${route}` : origin,
+      };
+    },
+  },
   build: {
     publicFolder: "public", // The public asset folder for your framework
     outputFolder: "admin", // within the public folder

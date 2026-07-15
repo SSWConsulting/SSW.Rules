@@ -93,6 +93,7 @@ query mainCategoryQuery {
               category {
                 ... on CategoryCategory {
                   title
+                  isArchived
                   _sys {
                     filename
                   }

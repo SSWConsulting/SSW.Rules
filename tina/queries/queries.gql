@@ -114,6 +114,8 @@ query categoryWithRulesQuery($relativePath: String!) {
       body
       uri
       seoDescription
+      isArchived
+      archivedreason
       index {
         rule {
           ... on Rule {

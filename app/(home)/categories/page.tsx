@@ -31,27 +31,24 @@ export default async function CategoriesPage() {
 
   const getTopCategoryTotal = (subCategories: any[]) => subCategories.reduce((total, category) => total + (categoryRuleCounts[category._sys.filename] || 0), 0);
 
+  const isVisibleCategory = (item: any) => item.category && !item.category.isArchived && categoryRuleCounts[item.category._sys.filename] > 0;
+
   return (
     <>
       <TinaHomepageWrapper tinaHomepageProps={homePageData} ruleCount={ruleCount} latestRules={latestRules}>
         {topCategories
-          .filter(
-            (topCategory) =>
-              topCategory.index &&
-              topCategory.index.length > 0 &&
-              topCategory.index.some((item: any) => item.category && categoryRuleCounts[item.category._sys.filename] > 0)
-          )
+          .filter((topCategory) => topCategory.index && topCategory.index.length > 0 && topCategory.index.some(isVisibleCategory))
           .map((topCategory, index) => (
             <Card key={index} className="mb-4">
               <h2 className="flex justify-between m-0 mb-4 text-2xl max-sm:text-lg">
                 <span>{topCategory.title}</span>
                 <span className="text-gray-500 text-lg">
-                  {getTopCategoryTotal(topCategory.index?.map((item: any) => item.category).filter(Boolean) || [])} Rules
+                  {getTopCategoryTotal(topCategory.index?.filter(isVisibleCategory)?.map((item: any) => item.category) || [])} Rules
                 </span>
               </h2>
               <ol className="text-lg mb-0">
                 {topCategory.index
-                  ?.filter((item: any) => item.category && categoryRuleCounts[item.category._sys.filename] > 0)
+                  ?.filter(isVisibleCategory)
                   ?.map((item: any, subIndex: number) => (
                     <li key={subIndex} className="mb-4 last:mb-2">
                       <div className="flex justify-between">

@@ -31,7 +31,7 @@ export default async function CategoriesPage() {
 
   const getTopCategoryTotal = (subCategories: any[]) => subCategories.reduce((total, category) => total + (categoryRuleCounts[category._sys.filename] || 0), 0);
 
-  const isVisibleCategory = (item: any) => item.category && item.category.isArchived !== true && categoryRuleCounts[item.category._sys.filename] > 0;
+  const isVisibleCategory = (item: any) => item.category && !item.category.isArchived && categoryRuleCounts[item.category._sys.filename] > 0;
 
   return (
     <>

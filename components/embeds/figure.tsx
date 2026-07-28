@@ -10,9 +10,17 @@ function renderFigureText(text: string): React.ReactNode {
     if (!match) return <span key={index}>{part}</span>;
     const [, label, url] = match;
     if (url.startsWith("/")) {
-      return <Link key={index} href={url} className="underline">{label}</Link>;
+      return (
+        <Link key={index} href={url} className="underline">
+          {label}
+        </Link>
+      );
     }
-    return <a key={index} href={url} className="underline" target="_blank" rel="noopener noreferrer">{label}</a>;
+    return (
+      <a key={index} href={url} className="underline" target="_blank" rel="noopener noreferrer">
+        {label}
+      </a>
+    );
   });
 }
 
@@ -32,12 +40,24 @@ export function getPrefix(prefix?: FigurePrefix): string {
 
 export function Figure({ prefix = "none", text, className }: { prefix?: FigurePrefix; text?: string; className?: string }) {
   const trimmed = text?.trim();
-  if (!trimmed) return null;
+  const hasPrefix = prefix !== "none";
+
+  // Show nothing when no example type is selected and no text
+  if (!hasPrefix && !trimmed) return null;
+
   const prefixText = getPrefix(prefix);
+
   return (
     <p className={`font-bold mt-1 ${className ?? ""}`.trim()}>
-      {prefixText}
-      {renderFigureText(trimmed)}
+      {trimmed ? (
+        <>
+          {prefixText}
+          {renderFigureText(trimmed)}
+        </>
+      ) : (
+        // Show prefix without trailing " - " when caption is empty
+        prefixText.replace(/ - $/, "")
+      )}
     </p>
   );
 }

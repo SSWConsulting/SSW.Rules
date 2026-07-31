@@ -338,30 +338,42 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
     const category = await getCategoryData(filename);
     if (category?.data?.category && category.data.category.__typename === "CategoryCategory") {
       const categoryData = category.data.category as any;
+      const description = categoryData.seoDescription || undefined;
+      const canonicalUrl = `${siteUrl}/${filename}`;
       const metadata: any = {
         title: `${categoryData.title} | SSW.Rules`,
+        description,
         alternates: {
-          canonical: `${siteUrl}/${filename}`,
+          canonical: canonicalUrl,
+        },
+        openGraph: {
+          title: `${categoryData.title} | SSW.Rules`,
+          description,
+          url: canonicalUrl,
+          type: "website",
         },
       };
-
-      if (categoryData.seoDescription) {
-        metadata.description = categoryData.seoDescription;
-      }
 
       return metadata;
     }
 
     const rule = await getRuleData(filename);
     if (rule?.data?.rule?.title) {
+      const description = rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined;
+      const canonicalUrl = `${siteUrl}/${filename}`;
       const metadata: any = {
         title: `${rule.data.rule.title} | SSW.Rules`,
+        description,
         alternates: {
-          canonical: `${siteUrl}/${filename}`,
+          canonical: canonicalUrl,
+        },
+        openGraph: {
+          title: `${rule.data.rule.title} | SSW.Rules`,
+          description,
+          url: canonicalUrl,
+          type: "article",
         },
       };
-
-      metadata.description = rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined;
 
       if (rule.data.rule.isArchived) {
         metadata.robots = { index: false, follow: true };

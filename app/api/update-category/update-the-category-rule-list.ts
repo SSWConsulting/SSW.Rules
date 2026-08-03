@@ -135,6 +135,7 @@ function buildCategoryParams(currentCategory: CategoryFullQueryResponse["categor
     guid: currentCategory?.guid,
     consulting: currentCategory?.consulting,
     experts: currentCategory?.experts,
+    seoDescription: currentCategory?.seoDescription,
     redirects: Array.isArray(currentCategory?.redirects) ? currentCategory.redirects.filter((r): r is string => typeof r === "string") : undefined,
     body: currentCategory?.body,
     created: currentCategory?.created,

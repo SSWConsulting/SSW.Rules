@@ -8,6 +8,7 @@ import "@/styles.css";
 import UserClientProvider from "@/components/auth/UserClientProvider";
 import AppInsightsProvider from "@/components/providers/AppInsightsProvider";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
+import { siteDescription, siteTitle, siteUrl, social } from "@/site-config";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -25,10 +26,32 @@ const lato = Lato({
   weight: "400",
 });
 
+const DEFAULT_OG_IMAGE = "https://assets.tina.io/8a7b77f2-cde8-44e7-a592-ebeb7e9dc437/ssw-default-og.jpg";
+
 export const metadata: Metadata = {
-  title: "SSW.Rules | Secret Ingredients to Quality Software (Open Source on GitHub)",
-  description:
-    "Secret Ingredients to Quality Software | SSW Rules provides best practices for developing secure, reliable, and efficient .NET, Azure, CRM, Angular, React, Dynamics, and AI applications. Learn more today!",
+  metadataBase: new URL("https://www.ssw.com.au"),
+  title: `${siteTitle} | Secret Ingredients to Quality Software (Open Source on GitHub)`,
+  description: siteDescription,
+  openGraph: {
+    title: `${siteTitle} | Secret Ingredients to Quality Software (Open Source on GitHub)`,
+    description: siteDescription,
+    siteName: siteTitle,
+    type: "website",
+    url: siteUrl,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: `${siteTitle} - Secret Ingredients to Quality Software`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: `@${social.twitter}`,
+    creator: `@${social.twitter}`,
+  },
 };
 
 const jsonLd = [

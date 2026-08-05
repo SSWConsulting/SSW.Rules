@@ -29,8 +29,12 @@ const lato = Lato({
 
 const defaultTitle = `${siteTitle} | ${homepageTitle}`;
 
+// Canonical is dropped on purpose - every page sets its own via pageMetadata, and a
+// page without one (e.g. /preview, not-found) should not inherit the home page's.
+const { alternates: _pageCanonical, ...siteDefaults } = pageMetadata({ title: defaultTitle, description: siteDescription });
+
 export const metadata: Metadata = {
-  ...pageMetadata({ title: defaultTitle, description: siteDescription }),
+  ...siteDefaults,
   // Origin only, NOT siteUrl - that ends in /rules and Next joins basePath into the
   // image path as well, giving /rules/rules/<slug>/opengraph-image and a 404. Dev
   // hides it by substituting a localhost base.

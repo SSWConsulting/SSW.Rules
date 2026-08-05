@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteTitle, siteUrl, social } from "@/site-config";
+import { siteDescription, siteTitle, siteUrl, social } from "@/site-config";
 
 interface PageMetadataOptions {
   title: string;
@@ -18,8 +18,12 @@ interface PageMetadataOptions {
  * `openGraph` replaces the layout's wholesale, so siteName/locale/handles are repeated
  * here rather than inherited. Never sets openGraph.images - the opengraph-image routes
  * supply the card, and Next only merges it when openGraph has no `images` key.
+ *
+ * `description` defaults rather than being left undefined: Next's merge iterates the
+ * source's own keys and assigns `metadata[key] ?? null`, so passing an explicit
+ * undefined would null out the layout's description instead of inheriting it.
  */
-export function pageMetadata({ title, description, path = "", type = "website", robots }: PageMetadataOptions): Metadata {
+export function pageMetadata({ title, description = siteDescription, path = "", type = "website", robots }: PageMetadataOptions): Metadata {
   const url = path ? `${siteUrl}/${path}` : `${siteUrl}/`;
 
   return {

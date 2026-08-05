@@ -85,7 +85,7 @@ export async function POST(req: Request) {
     }
 
     if (shouldRevalidateCategoryTitles) {
-      revalidateTag("category-rule-data");
+      revalidateTag("category-rule-data", { expire: 0 });
       // The root card carries the site-wide rule total
       revalidatePath("/opengraph-image");
     }

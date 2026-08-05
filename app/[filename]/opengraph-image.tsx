@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { OG_CONTENT_TYPE, OG_SIZE, OgCard } from "@/components/og/card";
+import { fetchCategoryRuleCounts } from "@/lib/services/rules";
 import { siteTitle } from "@/site-config";
 import client from "@/tina/__generated__/client";
 
@@ -39,6 +40,7 @@ export default async function OpengraphImage({ params }: { params: Promise<{ fil
 
   let title = siteTitle;
   let authors: { title?: string | null; url?: string | null }[] = [];
+  let ruleCount: number | undefined;
 
   try {
     const rule = await client.queries.ruleDataBasic({ relativePath: `${filename}/rule.mdx` });
@@ -47,13 +49,15 @@ export default async function OpengraphImage({ params }: { params: Promise<{ fil
       authors = (rule.data.rule.authors ?? []).filter(Boolean) as typeof authors;
     }
   } catch {
-    // This route serves category pages too - they have a title but no authors
+    // This route serves category pages too. They have no authors, so they get the
+    // hub treatment instead - bigger title, and the rule count carrying the weight.
     try {
       title = (await categoryTitle(filename)) ?? siteTitle;
+      ruleCount = (await fetchCategoryRuleCounts())[filename] ?? 0;
     } catch {
       // Fall back to the site title rather than failing the image
     }
   }
 
-  return new ImageResponse(await OgCard({ title, authors }), size);
+  return new ImageResponse(await OgCard({ title, authors, ruleCount }), size);
 }

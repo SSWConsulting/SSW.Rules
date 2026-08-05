@@ -111,7 +111,11 @@ const Avatar = ({ src, index, total }: { src: string; index: number; total: numb
  * Builds the shared Open Graph card. Callers pass already-resolved data so this stays
  * synchronous-ish and testable; use `resolveOgCard` to gather the images first.
  */
-export async function OgCard({ title, authors = [] }: { title: string; authors?: OgAuthor[] }) {
+export async function OgCard({ title, authors = [], ruleCount }: { title: string; authors?: OgAuthor[]; ruleCount?: number }) {
+  // Categories and the home page sit above individual rules, so they get a heavier
+  // treatment: a larger title (their titles are shorter - longest category is 62 chars
+  // against 107 for a rule) and the rule count in place of the author byline.
+  const isHub = ruleCount !== undefined;
   const shown = authors.filter((a) => a?.title).slice(0, MAX_FACES);
   const extra = authors.length - shown.length;
 
@@ -165,7 +169,7 @@ export async function OgCard({ title, authors = [] }: { title: string; authors?:
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ fontSize: 28, color: "#cc4141", letterSpacing: 2, marginBottom: 24 }}>SSW.RULES</div>
         {/* Longest real title is 107 chars - clamp so it can't push the byline off-card */}
-        <div style={{ fontSize: 54, fontWeight: 700, color: "#111", lineHeight: 1.15, display: "block", lineClamp: 3 }}>{title}</div>
+        <div style={{ fontSize: isHub ? 72 : 54, fontWeight: 700, color: "#111", lineHeight: 1.15, display: "block", lineClamp: 3 }}>{title}</div>
       </div>
 
       {shown.length > 0 ? (
@@ -194,8 +198,13 @@ export async function OgCard({ title, authors = [] }: { title: string; authors?:
               not explicitly display:flex. */}
           {extra > 0 ? <div style={{ fontSize: 30, color: "#999", marginLeft: 12, flexShrink: 0 }}>{`+${extra} more`}</div> : null}
         </div>
+      ) : isHub ? (
+        <div style={{ display: "flex", alignItems: "baseline" }}>
+          <div style={{ fontSize: 56, fontWeight: 700, color: "#cc4141" }}>{ruleCount.toLocaleString("en-AU")}</div>
+          <div style={{ fontSize: 30, color: "#555", marginLeft: 14 }}>{ruleCount === 1 ? "rule" : "rules"}</div>
+        </div>
       ) : (
-        // 235 rules (and every category page) have no authors
+        // 235 rules have no authors at all
         <div style={{ fontSize: 30, color: "#999" }}>ssw.com.au/rules</div>
       )}
     </div>

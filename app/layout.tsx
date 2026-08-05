@@ -8,7 +8,8 @@ import "@/styles.css";
 import UserClientProvider from "@/components/auth/UserClientProvider";
 import AppInsightsProvider from "@/components/providers/AppInsightsProvider";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
-import { homepageTitle, parentSiteUrl, siteDescription, siteTitle, siteUrl, social } from "@/site-config";
+import { pageMetadata } from "@/lib/pageMetadata";
+import { homepageTitle, parentSiteUrl, siteDescription, siteTitle } from "@/site-config";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,25 +30,11 @@ const lato = Lato({
 const defaultTitle = `${siteTitle} | ${homepageTitle}`;
 
 export const metadata: Metadata = {
+  ...pageMetadata({ title: defaultTitle, description: siteDescription }),
   // Origin only, NOT siteUrl - that ends in /rules and Next joins basePath into the
   // image path as well, giving /rules/rules/<slug>/opengraph-image and a 404. Dev
   // hides it by substituting a localhost base.
   metadataBase: new URL(parentSiteUrl),
-  title: defaultTitle,
-  description: siteDescription,
-  openGraph: {
-    title: defaultTitle,
-    description: siteDescription,
-    url: siteUrl,
-    siteName: siteTitle,
-    type: "website",
-    locale: "en_AU",
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: `@${social.twitter}`,
-    creator: `@${social.twitter}`,
-  },
 };
 
 const jsonLd = [

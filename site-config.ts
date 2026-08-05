@@ -1,9 +1,9 @@
 const titles = {
-  '/latest-rules/': `Latest Rules`,
-  '/user/': `User Rules`,
-  '/orphaned/': `Orphaned Rules`,
-  '/archived/': `Archived Rules`,
-  '/profile/': `Profile`,
+  "/latest-rules/": `Latest Rules`,
+  "/user/": `User Rules`,
+  "/orphaned/": `Orphaned Rules`,
+  "/archived/": `Archived Rules`,
+  "/profile/": `Profile`,
 };
 
 export const siteTitle = `SSW.Rules`;
@@ -21,7 +21,8 @@ export const social = {
 };
 export const parentSiteUrl = `https://www.ssw.com.au`;
 export const breadcrumbDefault = `SSW Rules`;
-export const homepageTitle = `Secret Ingredients to Quality Software (Open Source on GitHub)`;
+export const tagline = `Secret Ingredients to Quality Software`;
+export const homepageTitle = `${tagline} (Open Source on GitHub)`;
 export const trailingSlash = `never`;
 export { titles };
 
@@ -38,6 +39,7 @@ const config = {
   social,
   parentSiteUrl,
   breadcrumbDefault,
+  tagline,
   homepageTitle,
   trailingSlash,
   titles,

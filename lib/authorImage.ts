@@ -1,16 +1,13 @@
 /**
- * Derives an SSW People profile photo URL from an author's profile link.
+ * Resolves an author's profile link to a photo URL.
  *
- * Profile images live in SSW.People.Profiles under a Title-Cased directory name, e.g.
- * https://www.ssw.com.au/people/adam-cogan
- *   -> .../main/Adam-Cogan/Images/Adam-Cogan-Profile.jpg
- *
- * Shared by the authors card and the Open Graph image route so the convention only
- * lives in one place.
+ * SSW People profile images live in SSW.People.Profiles under a Title-Cased directory:
+ *   https://www.ssw.com.au/people/adam-cogan
+ *     -> .../main/Adam-Cogan/Images/Adam-Cogan-Profile.jpg
  */
 const PROFILES_REPO = "https://raw.githubusercontent.com/SSWConsulting/SSW.People.Profiles/main";
 
-export const profileImageUrl = (peopleUrl?: string): string | null => {
+export const profileImageUrl = (peopleUrl?: string | null): string | null => {
   // Host-scoped on purpose: a bare /people/ match would also claim URLs like
   // github.com/some-people/x, which belong to the GitHub avatar fallback.
   if (!peopleUrl?.includes("ssw.com.au/people")) return null;
@@ -27,8 +24,11 @@ export const profileImageUrl = (peopleUrl?: string): string | null => {
   return `${PROFILES_REPO}/${dir}/Images/${dir}-Profile.jpg`;
 };
 
-export const githubAvatarUrl = (url?: string): string | null => {
+export const githubAvatarUrl = (url?: string | null): string | null => {
   if (!url?.includes("github.com/")) return null;
   const username = url.split("github.com/").pop();
   return username ? `https://avatars.githubusercontent.com/${username}` : null;
 };
+
+/** The full resolution chain, so callers do not each re-spell the precedence. */
+export const authorImageUrl = (url?: string | null): string | null => profileImageUrl(url) ?? githubAvatarUrl(url);

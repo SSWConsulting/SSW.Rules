@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { tinaField } from "tinacms/dist/react";
 import { Card } from "@/components/ui/card";
-import { githubAvatarUrl, profileImageUrl } from "@/lib/authorImage";
+import { authorImageUrl } from "@/lib/authorImage";
 
 interface Author {
   title?: string;
@@ -29,7 +29,7 @@ export default function AuthorsCard({ authors }: AuthorsCardProps) {
 
       if (img?.includes("http")) return img;
 
-      return profileImageUrl(url) ?? githubAvatarUrl(url) ?? placeholderImg;
+      return authorImageUrl(url) ?? placeholderImg;
     },
     [placeholderImg]
   );

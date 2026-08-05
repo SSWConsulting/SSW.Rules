@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Section } from "@/components/layout/section";
 import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
+import { homepageTitle, siteTitle } from "@/site-config";
 import RulesSearchClientPage from "./client-page";
 
 export const revalidate = 300;
@@ -19,5 +20,5 @@ export default async function RulesSearchPage() {
 }
 
 export async function generateMetadata() {
-  return pageMetadata({ title: "SSW.Rules | Secret Ingredients for Quality Software (Open Source on GitHub)", path: "search" });
+  return pageMetadata({ title: `${siteTitle} | ${homepageTitle}`, path: "search" });
 }

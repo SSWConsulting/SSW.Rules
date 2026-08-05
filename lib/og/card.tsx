@@ -9,12 +9,12 @@ const OVERLAP = 16;
 const AVATAR = 72;
 const FOOTER_SIZE = 26;
 
-// Satori renders standalone - no CSS runtime, no Tailwind, no access to styles.css.
-// These mirror the ssw-* tokens by value; keep them in step.
-const SSW_RED = "#cc4141";
-const INK = "#111111";
-const INK_MUTED = "#555555";
-const INK_FAINT = "#888888";
+// Satori renders standalone - no CSS runtime, no Tailwind, no access to styles.css -
+// so the ssw-* classes cannot be used here. These are those tokens by value; keep them
+// in step with styles.css.
+const SSW_RED = "#cc4141"; // --color-ssw-red
+const SSW_BLACK = "#333333"; // --color-ssw-black
+const SSW_GRAY = "#797979"; // --color-ssw-gray
 const RULE_LINE = "#c4c4c4";
 const SURFACE = "#ffffff";
 
@@ -32,7 +32,7 @@ const ExtraChip = ({ count }: { count: number }) => (
       background: SURFACE,
       fontSize: 24,
       fontWeight: 600,
-      color: INK_MUTED,
+      color: SSW_GRAY,
     }}
   >
     {`+${count}`}
@@ -102,7 +102,7 @@ export async function buildOgCard({ title, authors = [], totalRules, isHub = fal
         justifyContent: "space-between",
         background: SURFACE,
         padding: 64,
-        fontFamily: "sans-serif",
+        fontFamily: "Nunito, sans-serif",
         position: "relative",
       }}
     >
@@ -134,7 +134,7 @@ export async function buildOgCard({ title, authors = [], totalRules, isHub = fal
 
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ fontSize: 28, color: SSW_RED, letterSpacing: 2, marginBottom: 24 }}>SSW.RULES</div>
-        <div style={{ fontSize: isHub ? 72 : 54, fontWeight: 700, color: INK, lineHeight: 1.15, display: "block", lineClamp: 3 }}>{title}</div>
+        <div style={{ fontSize: isHub ? 72 : 54, fontWeight: 700, color: SSW_BLACK, lineHeight: 1.15, display: "block", lineClamp: 3 }}>{title}</div>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
@@ -146,7 +146,7 @@ export async function buildOgCard({ title, authors = [], totalRules, isHub = fal
               ))}
               {extra > 0 ? <ExtraChip count={extra} /> : null}
             </div>
-            <div style={{ fontSize: FOOTER_SIZE, color: INK_MUTED, marginLeft: 22, flexShrink: 0 }}>
+            <div style={{ fontSize: FOOTER_SIZE, color: SSW_GRAY, marginLeft: 22, flexShrink: 0 }}>
               {`${authorCount} ${authorCount === 1 ? "contributor" : "contributors"}`}
             </div>
           </div>
@@ -155,9 +155,9 @@ export async function buildOgCard({ title, authors = [], totalRules, isHub = fal
         )}
 
         <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-          {totalRules ? <div style={{ fontSize: FOOTER_SIZE, color: INK_FAINT }}>{`${totalRules.toLocaleString("en-AU")} rules`}</div> : null}
+          {totalRules ? <div style={{ fontSize: FOOTER_SIZE, color: SSW_GRAY }}>{`${totalRules.toLocaleString("en-AU")} rules`}</div> : null}
           {totalRules ? <div style={{ fontSize: FOOTER_SIZE, color: RULE_LINE, marginLeft: 20, marginRight: 20 }}>|</div> : null}
-          <div style={{ fontSize: FOOTER_SIZE, color: "#666666" }}>ssw.com.au/rules</div>
+          <div style={{ fontSize: FOOTER_SIZE, color: SSW_GRAY }}>ssw.com.au/rules</div>
         </div>
       </div>
     </div>

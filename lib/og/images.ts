@@ -1,11 +1,11 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { githubAvatarUrl, profileImageUrl } from "@/lib/authorImage";
+import { authorImageUrl } from "@/lib/authorImage";
 import type { OgAuthor } from "@/lib/og/target";
 
 const publicFile = (relative: string) => path.join(process.cwd(), "public", relative);
 
-export const dataUri = (buffer: Buffer, mime: string) => `data:${mime};base64,${buffer.toString("base64")}`;
+const dataUri = (buffer: Buffer, mime: string) => `data:${mime};base64,${buffer.toString("base64")}`;
 
 /**
  * Detects the image type from magic bytes rather than the response header.
@@ -31,25 +31,22 @@ export function sniffImageType(buffer: Buffer): string | null {
  *   magick polygonBackground.png -resize 1200x630^ -gravity center -extent 1200x630 \
  *     -negate -normalize -sigmoidal-contrast 3,50% +level 79%,99.5% public/og-polygon.png
  */
-let polygonCache: string | undefined;
-export const loadPolygon = async (): Promise<string> => {
-  polygonCache ??= dataUri(await readFile(publicFile("og-polygon.png")), "image/png");
-  return polygonCache;
+const cachedFile = (relative: string, mime: string) => {
+  let cache: string | undefined;
+  return async (): Promise<string> => (cache ??= dataUri(await readFile(publicFile(relative)), mime));
 };
 
-let placeholderCache: string | undefined;
-const loadPlaceholder = async (): Promise<string> => {
-  placeholderCache ??= dataUri(await readFile(publicFile("uploads/ssw-employee-profile-placeholder-sketch.jpg")), "image/jpeg");
-  return placeholderCache;
-};
+export const loadPolygon = cachedFile("og-polygon.png", "image/png");
+const loadPlaceholder = cachedFile("uploads/ssw-employee-profile-placeholder-sketch.jpg", "image/jpeg");
 
 /** Fetched rather than handed to Satori as a URL so one bad photo degrades to the placeholder. */
 export const loadAvatar = async (author: OgAuthor): Promise<string> => {
-  const url = profileImageUrl(author.url ?? undefined) ?? githubAvatarUrl(author.url ?? undefined);
+  const url = authorImageUrl(author.url);
 
   if (url) {
     try {
-      const res = await fetch(url, { next: { revalidate: 60 * 60 * 24 } });
+      // Bounded: a slow GitHub must not stall the render past a crawler deadline
+      const res = await fetch(url, { next: { revalidate: 60 * 60 * 24 }, signal: AbortSignal.timeout(3000) });
       if (res.ok) {
         const buffer = Buffer.from(await res.arrayBuffer());
         const type = sniffImageType(buffer);
@@ -61,4 +58,20 @@ export const loadAvatar = async (author: OgAuthor): Promise<string> => {
   }
 
   return loadPlaceholder();
+};
+
+/**
+ * Nunito, vendored as TTF because Satori cannot read WOFF2 and next/font's copies are
+ * build artifacts with unstable paths. Without these the cards render in Satori's
+ * default sans, which is not the site's typeface.
+ */
+const loadFont = (file: string) => readFile(path.join(process.cwd(), "lib/og/fonts", file));
+
+let fontCache: { name: string; data: Buffer; weight: 400 | 700; style: "normal" }[] | undefined;
+export const loadFonts = async () => {
+  fontCache ??= [
+    { name: "Nunito", data: await loadFont("Nunito-Regular.ttf"), weight: 400 as const, style: "normal" as const },
+    { name: "Nunito", data: await loadFont("Nunito-Bold.ttf"), weight: 700 as const, style: "normal" as const },
+  ];
+  return fontCache;
 };

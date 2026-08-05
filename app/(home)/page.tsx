@@ -3,6 +3,7 @@ import { TinaActivityWrapper } from "@/app/(home)/TinaActivityWrapper";
 import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchDiscussionData } from "@/lib/services/github/discussions.service";
 import { fetchActivityLatestRules, fetchHomepageData, fetchRuleCount } from "@/lib/services/rules";
+import { homepageTitle, siteTitle } from "@/site-config";
 
 export const revalidate = 21600; // 6 hours
 
@@ -31,5 +32,5 @@ export default async function Home() {
 }
 
 export async function generateMetadata() {
-  return pageMetadata({ title: "SSW.Rules | Secret Ingredients for Quality Software (Open Source on GitHub)" });
+  return pageMetadata({ title: `${siteTitle} | ${homepageTitle}` });
 }

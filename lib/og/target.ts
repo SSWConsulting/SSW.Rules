@@ -6,13 +6,22 @@ export interface OgAuthor {
   url?: string | null;
 }
 
-export type OgTarget = { kind: "rule"; title: string; authors: OgAuthor[] } | { kind: "category"; title: string } | { kind: "unknown" };
+export type OgTarget =
+  | { kind: "rule"; title: string; authors: OgAuthor[] }
+  | { kind: "category"; title: string }
+  /** Genuinely no such filename. */
+  | { kind: "unknown" }
+  /** Lookup failed - render the generic card rather than 404 a page that still serves. */
+  | { kind: "unavailable" };
 
 /**
  * Category titles keyed by URL filename. mainCategoryQuery returns every category in
  * one un-paginated call, avoiding the pagination walk page.tsx needs for a full
  * relativePath. Top categories are skipped - they live at <dir>/index.mdx so their
  * filename is always "index" and never matches a URL segment.
+ *
+ * Tagged with rule-count as well as category-rule-data because the Tina webhook only
+ * fires the former; tagging solely on the latter would leave this cached for a year.
  */
 const getCategoryTitles = unstable_cache(
   async (): Promise<Record<string, string>> => {
@@ -29,15 +38,27 @@ const getCategoryTitles = unstable_cache(
     return titles;
   },
   ["og-category-titles"],
-  { tags: ["category-rule-data"] }
+  { tags: ["category-rule-data", "rule-count"], revalidate: 60 * 60 * 24 }
 );
 
 /**
- * Dispatches on the result, not on a thrown query: Tina throws identically for "no such
- * record" and "network is down", so treating a throw as "must be a category" would ship
- * a hub card titled "SSW.Rules" for a real rule and cache it for a day.
+ * Resolves a URL segment to a rule, a category, or neither.
+ *
+ * Category first, matching page.tsx's precedence, so the card and the page can never
+ * disagree about what a filename is. "unavailable" is kept distinct from "unknown":
+ * Tina throws identically for "no such record" and "network is down", and collapsing
+ * the two would 404 a real rule's card for the duration of an outage.
  */
 export async function resolveOgTarget(filename: string): Promise<OgTarget> {
+  let lookupFailed = false;
+
+  try {
+    const title = (await getCategoryTitles())[filename];
+    if (title) return { kind: "category", title };
+  } catch {
+    lookupFailed = true;
+  }
+
   try {
     const rule = await client.queries.ruleDataBasic({ relativePath: `${filename}/rule.mdx` });
     if (rule?.data?.rule?.title) {
@@ -48,15 +69,9 @@ export async function resolveOgTarget(filename: string): Promise<OgTarget> {
       };
     }
   } catch {
-    // Not a rule, or Tina is unwell. Either way the category lookup decides next.
+    // Tina throws for a missing record, so this alone does not mean the lookup failed.
+    // Only treat it as an outage if the category lookup above failed too.
   }
 
-  try {
-    const title = (await getCategoryTitles())[filename];
-    if (title) return { kind: "category", title };
-  } catch {
-    // Categories failed too - treat as unknown rather than guessing at a card
-  }
-
-  return { kind: "unknown" };
+  return lookupFailed ? { kind: "unavailable" } : { kind: "unknown" };
 }

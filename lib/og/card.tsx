@@ -31,7 +31,7 @@ const ExtraChip = ({ count }: { count: number }) => (
       borderRadius: AVATAR,
       background: SURFACE,
       fontSize: 24,
-      fontWeight: 600,
+      fontWeight: 700,
       color: SSW_GRAY,
     }}
   >

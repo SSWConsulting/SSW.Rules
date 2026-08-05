@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     }
 
     const routesToRevalidate = new Set<string>();
+    let shouldRevalidateCategoryTitles = false;
     let shouldRevalidateLatestRules = false;
     let shouldRevalidateRuleCount = false;
 
@@ -53,6 +54,8 @@ export async function POST(req: Request) {
       if (changedPath.startsWith("categories/")) {
         const rel = changedPath.replace("categories/", "");
         routesToRevalidate.add("/");
+        // Card titles come from a cached map, so purging the image path is not enough
+        shouldRevalidateCategoryTitles = true;
         // Ignore main/top index files like categories/index.mdx or categories/<top>/index.mdx
         if (!rel.endsWith("/index.mdx") && rel.endsWith(".mdx")) {
           const filename = rel
@@ -79,8 +82,12 @@ export async function POST(req: Request) {
     // Revalidate rule-count tag if any rule was added
     if (shouldRevalidateRuleCount) {
       revalidateTag("rule-count", { expire: 0 });
-      // Category titles feed the OG cards and are cached under this tag
-      revalidateTag("category-rule-data", { expire: 0 });
+    }
+
+    if (shouldRevalidateCategoryTitles) {
+      revalidateTag("category-rule-data");
+      // The root card carries the site-wide rule total
+      revalidatePath("/opengraph-image");
     }
 
     for (const route of routesToRevalidate) {

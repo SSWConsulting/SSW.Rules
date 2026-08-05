@@ -8,6 +8,13 @@ const basePath = normalizedBasePath ? `/${normalizedBasePath}` : "";
 
 const nextConfig: NextConfig = {
   output: "standalone", // Required for the Docker setup
+
+  // The OG fonts are read with a runtime-built path, which the file tracer cannot infer.
+  // Without this they would be missing from the standalone bundle and every card 500s.
+  outputFileTracingIncludes: {
+    "/opengraph-image": ["./lib/og/fonts/**"],
+    "/[filename]/opengraph-image": ["./lib/og/fonts/**"],
+  },
   basePath: basePath,
   assetPrefix: basePath,
   env: {
@@ -20,11 +27,7 @@ const nextConfig: NextConfig = {
 
   // Exclude Application Insights from server-side bundling to avoid dynamic require issues
   // This tells Next.js to use the Node.js runtime version instead of bundling it
-  serverExternalPackages: [
-    'applicationinsights',
-    'diagnostic-channel',
-    'diagnostic-channel-publishers',
-  ],
+  serverExternalPackages: ["applicationinsights", "diagnostic-channel", "diagnostic-channel-publishers"],
 
   images: {
     remotePatterns: [

@@ -49,8 +49,8 @@ export async function resolveOgTarget(filename: string): Promise<OgTarget> {
   try {
     const title = (await getCategoryTitles())[filename];
     if (title) return { kind: "category", title };
-  } catch {
-    // Fall through - the rule lookup may still succeed
+  } catch (error) {
+    console.warn(`[og] category lookup failed for "${filename}":`, error);
   }
 
   try {
@@ -62,8 +62,10 @@ export async function resolveOgTarget(filename: string): Promise<OgTarget> {
         authors: (rule.data.rule.authors ?? []).filter(Boolean) as OgAuthor[],
       };
     }
-  } catch {
-    // Tina throws for a missing record as well as for an outage
+  } catch (error) {
+    // Tina throws for a missing record as well as for an outage, so this is only worth
+    // a debug line - a genuine miss is normal traffic.
+    console.debug(`[og] no rule for "${filename}":`, error);
   }
 
   return { kind: "generic" };

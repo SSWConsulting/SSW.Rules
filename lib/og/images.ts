@@ -52,8 +52,8 @@ export const loadAvatar = async (author: OgAuthor): Promise<string> => {
         const type = sniffImageType(buffer);
         if (type) return dataUri(buffer, type);
       }
-    } catch {
-      // fall through to the placeholder
+    } catch (error) {
+      console.warn(`[og] avatar fetch failed for ${url}:`, error);
     }
   }
 

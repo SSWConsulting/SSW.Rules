@@ -338,15 +338,21 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
     const category = await getCategoryData(filename);
     if (category?.data?.category && category.data.category.__typename === "CategoryCategory") {
       const categoryData = category.data.category as any;
+      const title = `${categoryData.title} | SSW.Rules`;
+      const url = `${siteUrl}/${filename}`;
       const metadata: any = {
-        title: `${categoryData.title} | SSW.Rules`,
-        alternates: {
-          canonical: `${siteUrl}/${filename}`,
-        },
+        title,
+        alternates: { canonical: url },
+        // No `images` here on purpose - opengraph-image.tsx supplies it, and setting
+        // it explicitly would override the generated card.
+        openGraph: { title, url, type: "website" },
+        twitter: { card: "summary_large_image", title },
       };
 
       if (categoryData.seoDescription) {
         metadata.description = categoryData.seoDescription;
+        metadata.openGraph.description = categoryData.seoDescription;
+        metadata.twitter.description = categoryData.seoDescription;
       }
 
       return metadata;
@@ -354,14 +360,19 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
 
     const rule = await getRuleData(filename);
     if (rule?.data?.rule?.title) {
-      const metadata: any = {
-        title: `${rule.data.rule.title} | SSW.Rules`,
-        alternates: {
-          canonical: `${siteUrl}/${filename}`,
-        },
-      };
+      const title = `${rule.data.rule.title} | SSW.Rules`;
+      const url = `${siteUrl}/${filename}`;
+      const description = rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined;
 
-      metadata.description = rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined;
+      const metadata: any = {
+        title,
+        description,
+        alternates: { canonical: url },
+        // No `images` here on purpose - opengraph-image.tsx supplies it, and setting
+        // it explicitly would override the generated card.
+        openGraph: { title, description, url, type: "article" },
+        twitter: { card: "summary_large_image", title, description },
+      };
 
       if (rule.data.rule.isArchived) {
         metadata.robots = { index: false, follow: true };

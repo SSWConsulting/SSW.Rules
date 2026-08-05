@@ -8,6 +8,7 @@ import "@/styles.css";
 import UserClientProvider from "@/components/auth/UserClientProvider";
 import AppInsightsProvider from "@/components/providers/AppInsightsProvider";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
+import { homepageTitle, siteDescription, siteTitle, siteUrl, social } from "@/site-config";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -25,10 +26,27 @@ const lato = Lato({
   weight: "400",
 });
 
+const defaultTitle = `${siteTitle} | ${homepageTitle}`;
+
 export const metadata: Metadata = {
-  title: "SSW.Rules | Secret Ingredients to Quality Software (Open Source on GitHub)",
-  description:
-    "Secret Ingredients to Quality Software | SSW Rules provides best practices for developing secure, reliable, and efficient .NET, Azure, CRM, Angular, React, Dynamics, and AI applications. Learn more today!",
+  // Lets Next resolve the opengraph-image.tsx routes to absolute URLs, which social
+  // scrapers require. Without it og:image is emitted as a relative path and ignored.
+  metadataBase: new URL(siteUrl),
+  title: defaultTitle,
+  description: siteDescription,
+  openGraph: {
+    title: defaultTitle,
+    description: siteDescription,
+    url: siteUrl,
+    siteName: siteTitle,
+    type: "website",
+    locale: "en_AU",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: `@${social.twitter}`,
+    creator: `@${social.twitter}`,
+  },
 };
 
 const jsonLd = [

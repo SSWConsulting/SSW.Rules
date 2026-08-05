@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Section } from "@/components/layout/section";
+import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import RulesSearchClientPage from "./client-page";
@@ -19,10 +20,5 @@ export default async function RulesSearchPage() {
 }
 
 export async function generateMetadata() {
-  return {
-    title: "SSW.Rules | Secret Ingredients for Quality Software (Open Source on GitHub)",
-    alternates: {
-      canonical: `${siteUrl}/search`,
-    },
-  };
+  return pageMetadata({ title: "SSW.Rules | Secret Ingredients for Quality Software (Open Source on GitHub)", path: "search" });
 }

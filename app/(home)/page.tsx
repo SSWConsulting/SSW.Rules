@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { TinaActivityWrapper } from "@/app/(home)/TinaActivityWrapper";
+import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchDiscussionData } from "@/lib/services/github/discussions.service";
 import { fetchActivityLatestRules, fetchHomepageData, fetchRuleCount } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
@@ -31,10 +32,5 @@ export default async function Home() {
 }
 
 export async function generateMetadata() {
-  return {
-    title: "SSW.Rules | Secret Ingredients for Quality Software (Open Source on GitHub)",
-    alternates: {
-      canonical: `${siteUrl}/`,
-    },
-  };
+  return pageMetadata({ title: "SSW.Rules | Secret Ingredients for Quality Software (Open Source on GitHub)" });
 }

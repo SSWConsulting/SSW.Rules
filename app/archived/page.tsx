@@ -1,6 +1,7 @@
 import React from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Section } from "@/components/layout/section";
+import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchAllArchivedRules, fetchHomepageData, fetchLatestRules } from "@/lib/services/rules";
 import { siteUrl } from "@/site-config";
 import ArchivedClientPage from "./client-page";
@@ -21,11 +22,5 @@ export default async function ArchivedPage() {
 }
 
 export async function generateMetadata() {
-  return {
-    title: "Archived Rules | SSW Rules",
-    description: "Rules that have been archived",
-    alternates: {
-      canonical: `${siteUrl}/archived`,
-    },
-  };
+  return pageMetadata({ title: "Archived Rules | SSW Rules", description: "Rules that have been archived", path: "archived" });
 }

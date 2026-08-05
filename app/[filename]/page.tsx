@@ -2,7 +2,7 @@ import React from "react";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { extractBodyPreview } from "@/lib/bodyUtils";
-import { siteUrl } from "@/site-config";
+import { pageMetadata } from "@/lib/pageMetadata";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 import ClientFallbackPage from "./ClientFallbackPage";
@@ -338,53 +338,26 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
     const category = await getCategoryData(filename);
     if (category?.data?.category && category.data.category.__typename === "CategoryCategory") {
       const categoryData = category.data.category as any;
-      const title = `${categoryData.title} | SSW.Rules`;
-      const url = `${siteUrl}/${filename}`;
-      const metadata: any = {
-        title,
-        alternates: { canonical: url },
-        // No `images` here on purpose - opengraph-image.tsx supplies it, and setting
-        // it explicitly would override the generated card.
-        openGraph: { title, url, type: "website" },
-        twitter: { card: "summary_large_image", title },
-      };
-
-      if (categoryData.seoDescription) {
-        metadata.description = categoryData.seoDescription;
-        metadata.openGraph.description = categoryData.seoDescription;
-        metadata.twitter.description = categoryData.seoDescription;
-      }
-
-      return metadata;
+      return pageMetadata({
+        title: `${categoryData.title} | SSW.Rules`,
+        description: categoryData.seoDescription || undefined,
+        path: filename,
+      });
     }
 
     const rule = await getRuleData(filename);
     if (rule?.data?.rule?.title) {
-      const title = `${rule.data.rule.title} | SSW.Rules`;
-      const url = `${siteUrl}/${filename}`;
-      const description = rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined;
-
-      const metadata: any = {
-        title,
-        description,
-        alternates: { canonical: url },
-        // No `images` here on purpose - opengraph-image.tsx supplies it, and setting
-        // it explicitly would override the generated card.
-        openGraph: { title, description, url, type: "article" },
-        twitter: { card: "summary_large_image", title, description },
-      };
-
-      if (rule.data.rule.isArchived) {
-        metadata.robots = { index: false, follow: true };
-      }
-
-      return metadata;
+      return pageMetadata({
+        title: `${rule.data.rule.title} | SSW.Rules`,
+        description: rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined,
+        path: filename,
+        type: "article",
+        robots: rule.data.rule.isArchived ? { index: false, follow: true } : undefined,
+      });
     }
   } catch (error) {
     console.error("Error generating metadata:", error);
   }
 
-  return {
-    title: "SSW.Rules",
-  };
+  return pageMetadata({ title: "SSW.Rules", path: filename });
 }

@@ -9,9 +9,9 @@
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { ImageResponse } from "next/og";
-import { buildOgCard, OG_SIZE } from "@/lib/og/card";
-import { loadFonts } from "@/lib/og/images";
+
+import { buildOgCard } from "@/lib/og/card";
+import { ogImageResponse } from "@/lib/og/response";
 
 const outDir = process.env.OG_PREVIEW_DIR;
 const P = (title: string, slug: string) => ({ title, url: `https://www.ssw.com.au/people/${slug}` });
@@ -57,7 +57,7 @@ const cases: Record<string, Parameters<typeof buildOgCard>[0]> = {
 
   it.each(Object.keys(cases))("renders %s", async (name) => {
     await mkdir(outDir as string, { recursive: true });
-    const res = new ImageResponse(await buildOgCard(cases[name]), { ...OG_SIZE, fonts: await loadFonts() });
+    const res = await ogImageResponse(await buildOgCard(cases[name]));
     const png = Buffer.from(await res.arrayBuffer());
     expect(png.subarray(0, 8)).toEqual(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
     await writeFile(path.join(outDir as string, `${name}.png`), png);

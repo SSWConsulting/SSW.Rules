@@ -79,6 +79,8 @@ export async function POST(req: Request) {
     // Revalidate rule-count tag if any rule was added
     if (shouldRevalidateRuleCount) {
       revalidateTag("rule-count", { expire: 0 });
+      // Category titles feed the OG cards and are cached under this tag
+      revalidateTag("category-rule-data", { expire: 0 });
     }
 
     for (const route of routesToRevalidate) {

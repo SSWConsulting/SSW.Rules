@@ -36,19 +36,19 @@ describe("resolveOgTarget", () => {
     expect(queries.ruleDataBasic).not.toHaveBeenCalled();
   });
 
-  it("reports a genuine miss as unknown", async () => {
+  it("falls back to the generic card on a genuine miss", async () => {
     queries.mainCategoryQuery.mockResolvedValue(categories("other"));
     queries.ruleDataBasic.mockRejectedValue(new Error("Unable to find record"));
 
-    await expect(resolveOgTarget("no-such-page")).resolves.toEqual({ kind: "unknown" });
+    await expect(resolveOgTarget("no-such-page")).resolves.toEqual({ kind: "generic" });
   });
 
-  // The distinction that matters: an outage must not 404 a real rule's card
-  it("reports an outage as unavailable, not unknown", async () => {
+  // page.tsx serves unresolved filenames, so a card must never be worse than plain
+  it("falls back to the generic card during an outage rather than failing", async () => {
     queries.mainCategoryQuery.mockRejectedValue(new Error("ECONNREFUSED"));
     queries.ruleDataBasic.mockRejectedValue(new Error("ECONNREFUSED"));
 
-    await expect(resolveOgTarget("a-real-rule")).resolves.toEqual({ kind: "unavailable" });
+    await expect(resolveOgTarget("a-real-rule")).resolves.toEqual({ kind: "generic" });
   });
 
   it("still returns the rule when only the category lookup is down", async () => {
@@ -62,6 +62,6 @@ describe("resolveOgTarget", () => {
     queries.mainCategoryQuery.mockResolvedValue(categories("other"));
     queries.ruleDataBasic.mockResolvedValue({ data: { rule: {} } });
 
-    await expect(resolveOgTarget("untitled")).resolves.toEqual({ kind: "unknown" });
+    await expect(resolveOgTarget("untitled")).resolves.toEqual({ kind: "generic" });
   });
 });

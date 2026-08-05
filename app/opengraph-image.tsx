@@ -1,6 +1,5 @@
-import { ImageResponse } from "next/og";
 import { buildOgCard, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og/card";
-import { loadFonts } from "@/lib/og/images";
+import { ogImageResponse } from "@/lib/og/response";
 import { fetchRuleCount } from "@/lib/services/rules";
 import { tagline } from "@/site-config";
 
@@ -13,5 +12,5 @@ export const revalidate = 60 * 60 * 24;
 // Default card for every page without one of its own - home, search, latest-rules,
 // archived, user, orphaned. Inherited automatically by Next's metadata resolution.
 export default async function OpengraphImage() {
-  return new ImageResponse(await buildOgCard({ title: tagline, totalRules: await fetchRuleCount(), isHub: true }), { ...size, fonts: await loadFonts() });
+  return ogImageResponse(await buildOgCard({ title: tagline, totalRules: await fetchRuleCount(), isHub: true }));
 }

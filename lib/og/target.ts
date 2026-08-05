@@ -6,13 +6,7 @@ export interface OgAuthor {
   url?: string | null;
 }
 
-export type OgTarget =
-  | { kind: "rule"; title: string; authors: OgAuthor[] }
-  | { kind: "category"; title: string }
-  /** Genuinely no such filename. */
-  | { kind: "unknown" }
-  /** Lookup failed - render the generic card rather than 404 a page that still serves. */
-  | { kind: "unavailable" };
+export type OgTarget = { kind: "rule"; title: string; authors: OgAuthor[] } | { kind: "category"; title: string } | { kind: "generic" };
 
 /**
  * Category titles keyed by URL filename. mainCategoryQuery returns every category in
@@ -21,7 +15,7 @@ export type OgTarget =
  * filename is always "index" and never matches a URL segment.
  *
  * Tagged with rule-count as well as category-rule-data because the Tina webhook only
- * fires the former; tagging solely on the latter would leave this cached for a year.
+ * fires the former.
  */
 const getCategoryTitles = unstable_cache(
   async (): Promise<Record<string, string>> => {
@@ -42,21 +36,21 @@ const getCategoryTitles = unstable_cache(
 );
 
 /**
- * Resolves a URL segment to a rule, a category, or neither.
+ * Resolves a URL segment to a rule, a category, or neither. Category first, matching
+ * page.tsx's precedence, so the card and the page cannot disagree about what a
+ * filename is.
  *
- * Category first, matching page.tsx's precedence, so the card and the page can never
- * disagree about what a filename is. "unavailable" is kept distinct from "unknown":
- * Tina throws identically for "no such record" and "network is down", and collapsing
- * the two would 404 a real rule's card for the duration of an outage.
+ * Anything unresolved returns "generic" rather than 404ing. page.tsx serves every
+ * unresolved filename via ClientFallbackPage, so a 404 here would mean a live page
+ * with a broken og:image - and a Tina outage is indistinguishable from a genuine miss
+ * anyway, because the category map is cached and will not throw when it is warm.
  */
 export async function resolveOgTarget(filename: string): Promise<OgTarget> {
-  let lookupFailed = false;
-
   try {
     const title = (await getCategoryTitles())[filename];
     if (title) return { kind: "category", title };
   } catch {
-    lookupFailed = true;
+    // Fall through - the rule lookup may still succeed
   }
 
   try {
@@ -69,9 +63,8 @@ export async function resolveOgTarget(filename: string): Promise<OgTarget> {
       };
     }
   } catch {
-    // Tina throws for a missing record, so this alone does not mean the lookup failed.
-    // Only treat it as an outage if the category lookup above failed too.
+    // Tina throws for a missing record as well as for an outage
   }
 
-  return lookupFailed ? { kind: "unavailable" } : { kind: "unknown" };
+  return { kind: "generic" };
 }

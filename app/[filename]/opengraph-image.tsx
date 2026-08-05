@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { OG_CONTENT_TYPE, OG_SIZE, OgCard } from "@/components/og/card";
-import { fetchCategoryRuleCounts } from "@/lib/services/rules";
+import { fetchRuleCount } from "@/lib/services/rules";
 import { siteTitle } from "@/site-config";
 import client from "@/tina/__generated__/client";
 
@@ -40,7 +40,14 @@ export default async function OpengraphImage({ params }: { params: Promise<{ fil
 
   let title = siteTitle;
   let authors: { title?: string | null; url?: string | null }[] = [];
-  let ruleCount: number | undefined;
+  let isHub = false;
+
+  let totalRules: number | undefined;
+  try {
+    totalRules = await fetchRuleCount();
+  } catch {
+    // The card still renders without the total; better than failing the image
+  }
 
   try {
     const rule = await client.queries.ruleDataBasic({ relativePath: `${filename}/rule.mdx` });
@@ -49,15 +56,15 @@ export default async function OpengraphImage({ params }: { params: Promise<{ fil
       authors = (rule.data.rule.authors ?? []).filter(Boolean) as typeof authors;
     }
   } catch {
-    // This route serves category pages too. They have no authors, so they get the
-    // hub treatment instead - bigger title, and the rule count carrying the weight.
+    // This route serves category pages too. They sit above individual rules, so they
+    // get the hub treatment - larger title, and no contributor row.
     try {
       title = (await categoryTitle(filename)) ?? siteTitle;
-      ruleCount = (await fetchCategoryRuleCounts())[filename] ?? 0;
+      isHub = true;
     } catch {
       // Fall back to the site title rather than failing the image
     }
   }
 
-  return new ImageResponse(await OgCard({ title, authors, ruleCount }), size);
+  return new ImageResponse(await OgCard({ title, authors, totalRules, isHub }), size);
 }

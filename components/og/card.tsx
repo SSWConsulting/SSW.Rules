@@ -5,19 +5,10 @@ import { profileImageUrl } from "@/lib/authorImage";
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
 
-const MAX_FACES = 2; // 78% of rules have <= 2 authors; the rest get a "+N more"
+const MAX_FACES = 2; // 78% of rules have <= 2 authors; the rest are summarised by the chip
 const OVERLAP = 16;
-const AVATAR = 96;
-
-const COUNT_SIZE = 56;
-const COUNT_LABEL_SIZE = 30;
-/**
- * Satori's `alignItems: "baseline"` aligns line boxes, not text baselines, so the
- * smaller label lands low against the count. With `lineHeight: 1` on both and
- * flex-end, the remaining gap is the descender difference between the two sizes.
- * Measured from a render, not guessed - scripts/og-verify.mjs regenerates the case.
- */
-const COUNT_LABEL_NUDGE = Math.round((COUNT_SIZE - COUNT_LABEL_SIZE) * 0.115);
+const AVATAR = 72;
+const FOOTER_SIZE = 26;
 
 export interface OgAuthor {
   title?: string | null;
@@ -118,22 +109,48 @@ const Avatar = ({ src, index, total }: { src: string; index: number; total: numb
 );
 
 /**
- * Builds the shared Open Graph card. Callers pass already-resolved data so this stays
- * synchronous-ish and testable; use `resolveOgCard` to gather the images first.
+ * Closes the avatar row with a "+3" disc when there are more contributors than faces.
+ * Always last in the row, so unlike the photos it never needs a hole masked out of it.
  */
-export async function OgCard({ title, authors = [], ruleCount }: { title: string; authors?: OgAuthor[]; ruleCount?: number }) {
-  // Categories and the home page sit above individual rules, so they get a heavier
-  // treatment: a larger title (their titles are shorter - longest category is 62 chars
-  // against 107 for a rule) and the rule count in place of the author byline.
-  const isHub = ruleCount !== undefined;
-  const shown = authors.filter((a) => a?.title).slice(0, MAX_FACES);
-  const extra = authors.length - shown.length;
+const ExtraChip = ({ count }: { count: number }) => (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: AVATAR,
+      height: AVATAR,
+      flexShrink: 0,
+      marginLeft: -OVERLAP,
+      borderRadius: AVATAR,
+      background: "#fff",
+      fontSize: 24,
+      fontWeight: 600,
+      color: "#555",
+    }}
+  >
+    {`+${count}`}
+  </div>
+);
+
+interface OgCardProps {
+  title: string;
+  authors?: OgAuthor[];
+  /** Site-wide rule total, shown bottom-right on every card. */
+  totalRules?: number;
+  /** Categories and the home page sit above individual rules and get a larger title. */
+  isHub?: boolean;
+}
+
+export async function OgCard({ title, authors = [], totalRules, isHub = false }: OgCardProps) {
+  const named = authors.filter((a) => a?.title);
+  const authorCount = named.length;
+  const shown = named.slice(0, MAX_FACES);
+  const extra = authorCount - shown.length;
+  // The chip counts as a face for masking, so the avatar behind it gets a hole cut
+  const faceCount = shown.length + (extra > 0 ? 1 : 0);
 
   const [polygon, avatars] = await Promise.all([loadPolygon(), Promise.all(shown.map(loadAvatar))]);
-
-  // Author names are content data and can be long - the longest real pair is 52 chars.
-  // Clamp them rather than trusting them to fit.
-  const names = shown.map((a) => (a.title ?? "").trim()).join(", ");
 
   return (
     <div
@@ -182,41 +199,32 @@ export async function OgCard({ title, authors = [], ruleCount }: { title: string
         <div style={{ fontSize: isHub ? 72 : 54, fontWeight: 700, color: "#111", lineHeight: 1.15, display: "block", lineClamp: 3 }}>{title}</div>
       </div>
 
-      {shown.length > 0 ? (
-        <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-          <div style={{ display: "flex", flexShrink: 0 }}>
-            {avatars.map((src, i) => (
-              <Avatar key={shown[i].url ?? i} src={src} index={i} total={shown.length} />
-            ))}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+        {/* Left: contributors. Deliberately empty when a page has no authors - categories,
+            the home page, and the 235 rules with no author list. */}
+        {shown.length > 0 ? (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", flexShrink: 0 }}>
+              {avatars.map((src, i) => (
+                <Avatar key={shown[i].url ?? i} src={src} index={i} total={faceCount} />
+              ))}
+              {extra > 0 ? <ExtraChip count={extra} /> : null}
+            </div>
+            <div style={{ fontSize: FOOTER_SIZE, color: "#555", marginLeft: 22, flexShrink: 0 }}>
+              {`${authorCount} ${authorCount === 1 ? "contributor" : "contributors"}`}
+            </div>
           </div>
-          <div
-            style={{
-              fontSize: 30,
-              color: "#555",
-              marginLeft: 24,
-              minWidth: 0,
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {names}
-          </div>
-          {/* `extra && ...` would render a literal "0" when there are no extra authors.
-              The label is one interpolated string, not `+{extra} more` - JSX would split
-              that into three text nodes, and Satori rejects multi-child divs that are
-              not explicitly display:flex. */}
-          {extra > 0 ? <div style={{ fontSize: 30, color: "#999", marginLeft: 12, flexShrink: 0 }}>{`+${extra} more`}</div> : null}
+        ) : (
+          <div style={{ display: "flex" }} />
+        )}
+
+        {/* Right: site-wide totals, on every card */}
+        <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+          {totalRules ? <div style={{ fontSize: FOOTER_SIZE, color: "#888" }}>{`${totalRules.toLocaleString("en-AU")} rules`}</div> : null}
+          {totalRules ? <div style={{ fontSize: FOOTER_SIZE, color: "#c4c4c4", marginLeft: 20, marginRight: 20 }}>|</div> : null}
+          <div style={{ fontSize: FOOTER_SIZE, color: "#666" }}>ssw.com.au/rules</div>
         </div>
-      ) : isHub ? (
-        <div style={{ display: "flex", alignItems: "flex-end" }}>
-          <div style={{ fontSize: COUNT_SIZE, fontWeight: 700, color: "#cc4141", lineHeight: 1 }}>{ruleCount.toLocaleString("en-AU")}</div>
-          <div style={{ fontSize: COUNT_LABEL_SIZE, color: "#555", marginLeft: 14, marginBottom: COUNT_LABEL_NUDGE, lineHeight: 1 }}>{ruleCount === 1 ? "rule" : "rules"}</div>
-        </div>
-      ) : (
-        // 235 rules have no authors at all
-        <div style={{ fontSize: 30, color: "#999" }}>ssw.com.au/rules</div>
-      )}
+      </div>
     </div>
   );
 }

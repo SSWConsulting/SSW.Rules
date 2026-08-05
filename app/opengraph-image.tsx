@@ -10,12 +10,12 @@ export const alt = "SSW Rules";
 // Default card for every page without one of its own - home, search, latest-rules,
 // archived, user, orphaned. Inherited automatically by Next's metadata resolution.
 export default async function OpengraphImage() {
-  let ruleCount = 0;
+  let totalRules: number | undefined;
   try {
-    ruleCount = await fetchRuleCount();
+    totalRules = await fetchRuleCount();
   } catch {
-    // A count of 0 still renders; better than failing the image
+    // The card still renders without the total; better than failing the image
   }
 
-  return new ImageResponse(await OgCard({ title: homepageTitle, ruleCount }), size);
+  return new ImageResponse(await OgCard({ title: homepageTitle, totalRules, isHub: true }), size);
 }

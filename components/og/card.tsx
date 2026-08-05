@@ -9,6 +9,16 @@ const MAX_FACES = 2; // 78% of rules have <= 2 authors; the rest get a "+N more"
 const OVERLAP = 16;
 const AVATAR = 96;
 
+const COUNT_SIZE = 56;
+const COUNT_LABEL_SIZE = 30;
+/**
+ * Satori's `alignItems: "baseline"` aligns line boxes, not text baselines, so the
+ * smaller label lands low against the count. With `lineHeight: 1` on both and
+ * flex-end, the remaining gap is the descender difference between the two sizes.
+ * Measured from a render, not guessed - scripts/og-verify.mjs regenerates the case.
+ */
+const COUNT_LABEL_NUDGE = Math.round((COUNT_SIZE - COUNT_LABEL_SIZE) * 0.115);
+
 export interface OgAuthor {
   title?: string | null;
   url?: string | null;
@@ -199,9 +209,9 @@ export async function OgCard({ title, authors = [], ruleCount }: { title: string
           {extra > 0 ? <div style={{ fontSize: 30, color: "#999", marginLeft: 12, flexShrink: 0 }}>{`+${extra} more`}</div> : null}
         </div>
       ) : isHub ? (
-        <div style={{ display: "flex", alignItems: "baseline" }}>
-          <div style={{ fontSize: 56, fontWeight: 700, color: "#cc4141" }}>{ruleCount.toLocaleString("en-AU")}</div>
-          <div style={{ fontSize: 30, color: "#555", marginLeft: 14 }}>{ruleCount === 1 ? "rule" : "rules"}</div>
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+          <div style={{ fontSize: COUNT_SIZE, fontWeight: 700, color: "#cc4141", lineHeight: 1 }}>{ruleCount.toLocaleString("en-AU")}</div>
+          <div style={{ fontSize: COUNT_LABEL_SIZE, color: "#555", marginLeft: 14, marginBottom: COUNT_LABEL_NUDGE, lineHeight: 1 }}>{ruleCount === 1 ? "rule" : "rules"}</div>
         </div>
       ) : (
         // 235 rules have no authors at all

@@ -10,6 +10,30 @@ export const alt = "SSW Rules";
 // Cards only change when a rule's title or author list changes
 export const revalidate = 60 * 60 * 24;
 
+/**
+ * Looks up a category title by filename.
+ *
+ * mainCategoryQuery returns every top category and child category with its title and
+ * filename in a single un-paginated call, so this avoids the topCategoryWithIndexQuery
+ * pagination walk that page.tsx has to do to resolve a full relativePath.
+ */
+const categoryTitle = async (filename: string): Promise<string | null> => {
+  const res = await client.queries.mainCategoryQuery();
+  const topCategories = (res?.data?.category as any)?.index ?? [];
+
+  for (const entry of topCategories) {
+    const top = entry?.top_category;
+    if (!top) continue;
+    if (top._sys?.filename === filename) return top.title ?? null;
+
+    for (const child of top.index ?? []) {
+      if (child?.category?._sys?.filename === filename) return child.category.title ?? null;
+    }
+  }
+
+  return null;
+};
+
 export default async function OpengraphImage({ params }: { params: Promise<{ filename: string }> }) {
   const { filename } = await params;
 
@@ -23,9 +47,12 @@ export default async function OpengraphImage({ params }: { params: Promise<{ fil
       authors = (rule.data.rule.authors ?? []).filter(Boolean) as typeof authors;
     }
   } catch {
-    // This route also serves category pages. Resolving a category title needs the
-    // paginated topCategoryWithIndexQuery walk that page.tsx does, which is too heavy
-    // per-image - categories fall back to the site-title card for now.
+    // This route serves category pages too - they have a title but no authors
+    try {
+      title = (await categoryTitle(filename)) ?? siteTitle;
+    } catch {
+      // Fall back to the site title rather than failing the image
+    }
   }
 
   return new ImageResponse(await OgCard({ title, authors }), size);

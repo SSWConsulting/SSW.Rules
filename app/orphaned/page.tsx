@@ -5,7 +5,6 @@ import { pageMetadata } from "@/lib/pageMetadata";
 import { OrphanedRulesData } from "@/models/OrphanedRule";
 import { Rule } from "@/models/Rule";
 import orphanedRulesData from "@/orphaned_rules.json";
-import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import OrphanedClientPage from "./client-page";
 

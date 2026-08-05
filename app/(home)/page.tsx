@@ -3,7 +3,6 @@ import { TinaActivityWrapper } from "@/app/(home)/TinaActivityWrapper";
 import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchDiscussionData } from "@/lib/services/github/discussions.service";
 import { fetchActivityLatestRules, fetchHomepageData, fetchRuleCount } from "@/lib/services/rules";
-import { siteUrl } from "@/site-config";
 
 export const revalidate = 21600; // 6 hours
 

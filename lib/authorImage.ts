@@ -11,7 +11,11 @@
 const PROFILES_REPO = "https://raw.githubusercontent.com/SSWConsulting/SSW.People.Profiles/main";
 
 export const profileImageUrl = (peopleUrl?: string): string | null => {
-  const slug = peopleUrl?.match(/people\/([^/?#]+)/)?.[1];
+  // Host-scoped on purpose: a bare /people/ match would also claim URLs like
+  // github.com/some-people/x, which belong to the GitHub avatar fallback.
+  if (!peopleUrl?.includes("ssw.com.au/people")) return null;
+
+  const slug = peopleUrl.match(/people\/([^/?#]+)/)?.[1];
   if (!slug) return null;
 
   const dir = slug

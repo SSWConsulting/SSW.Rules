@@ -8,7 +8,7 @@ import "@/styles.css";
 import UserClientProvider from "@/components/auth/UserClientProvider";
 import AppInsightsProvider from "@/components/providers/AppInsightsProvider";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
-import { homepageTitle, siteDescription, siteTitle, siteUrl, social } from "@/site-config";
+import { homepageTitle, parentSiteUrl, siteDescription, siteTitle, siteUrl, social } from "@/site-config";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,9 +29,10 @@ const lato = Lato({
 const defaultTitle = `${siteTitle} | ${homepageTitle}`;
 
 export const metadata: Metadata = {
-  // Lets Next resolve the opengraph-image.tsx routes to absolute URLs, which social
-  // scrapers require. Without it og:image is emitted as a relative path and ignored.
-  metadataBase: new URL(siteUrl),
+  // Origin only, NOT siteUrl - that ends in /rules and Next joins basePath into the
+  // image path as well, giving /rules/rules/<slug>/opengraph-image and a 404. Dev
+  // hides it by substituting a localhost base.
+  metadataBase: new URL(parentSiteUrl),
   title: defaultTitle,
   description: siteDescription,
   openGraph: {

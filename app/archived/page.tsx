@@ -3,7 +3,6 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { Section } from "@/components/layout/section";
 import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchAllArchivedRules, fetchHomepageData, fetchLatestRules } from "@/lib/services/rules";
-import { siteUrl } from "@/site-config";
 import ArchivedClientPage from "./client-page";
 
 export const revalidate = 300;

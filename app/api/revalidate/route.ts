@@ -36,6 +36,9 @@ export async function POST(req: Request) {
         const slug = changedPath.replace("public/uploads/rules/", "").replace("/rule.mdx", "").replace(/\/+$/, "");
         if (slug) {
           routesToRevalidate.add(`/${slug}`);
+          // Separate route from the page, so it needs purging explicitly or the card
+          // keeps a stale title / author list until its 24h revalidate expires
+          routesToRevalidate.add(`/${slug}/opengraph-image`);
         }
         // If change type is add then we also need to revalidate the /api/rules route
         if (eventType === TINA_CONTENT_CHANGE_TYPE.Added) {
@@ -58,6 +61,7 @@ export async function POST(req: Request) {
             .pop();
           if (filename) {
             routesToRevalidate.add(`/${filename}`);
+            routesToRevalidate.add(`/${filename}/opengraph-image`);
           }
         }
         // If change type is add then we also need to revalidate the /api/categories route

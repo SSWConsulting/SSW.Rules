@@ -4,7 +4,6 @@ import CategoryActionButtons from "@/components/CategoryActionButtons";
 import { Card } from "@/components/ui/card";
 import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchCategoryRuleCounts, fetchHomepageData, fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
-import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 
 export const revalidate = 21600; // 6 hours

@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { Section } from "@/components/layout/section";
 import { pageMetadata } from "@/lib/pageMetadata";
-import { siteUrl } from "@/site-config";
 import UserRulesClientPage from "./client-page";
 
 export const revalidate = 300;

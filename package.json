@@ -15,7 +15,8 @@
     "dev:build": "next build",
     "prepare:content": "cross-env node ./scripts/prepare-content.js",
     "crawl-sitemap": "node ./scripts/crawl-sitemap.js",
-    "test": "jest"
+    "test": "jest",
+    "verify:og": "node ./scripts/og-verify.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.14",
@@ -31,6 +32,7 @@
     "@types/styled-components": "^5.1.36",
     "autoprefixer": "^10.5.0",
     "cross-env": "^10.1.0",
+    "esbuild": "^0.25.0",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
     "postcss": "^8.5.14",

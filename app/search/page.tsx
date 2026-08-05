@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import { Section } from "@/components/layout/section";
 import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
-import { siteUrl } from "@/site-config";
 import RulesSearchClientPage from "./client-page";
 
 export const revalidate = 300;

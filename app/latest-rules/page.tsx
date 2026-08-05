@@ -1,7 +1,6 @@
 import { Section } from "@/components/layout/section";
 import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
-import { siteUrl } from "@/site-config";
 import LatestRuleClientPage from "./client-page";
 
 export const revalidate = 300;

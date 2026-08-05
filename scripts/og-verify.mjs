@@ -1,9 +1,8 @@
 /**
- * Renders components/og/card.tsx directly, bypassing Tina, so the Open Graph card can be
- * eyeballed without running the whole site. Covers the cases that actually broke during
- * development: multiple authors, no authors, over-long content, and unreadable photos.
+ * Renders the Open Graph card to PNGs so it can be eyeballed without running the site.
+ * Unit tests cover the pure logic; this is the visual check.
  *
- *   node scripts/og-verify.mjs [outDir]     (default: ./og-preview)
+ *   pnpm verify:og [outDir]     (default: ./og-preview)
  */
 import { execFileSync } from "node:child_process";
 import { mkdir, rm, writeFile } from "node:fs/promises";
@@ -15,9 +14,9 @@ const build = path.join("scripts", ".og-card.build.mjs");
 
 // card.tsx is TSX and imports via "@/" - bundle it before importing
 execFileSync(
-  "./node_modules/.bin/esbuild",
+  "esbuild",
   [
-    "components/og/card.tsx",
+    "lib/og/card.tsx",
     "--bundle",
     "--format=esm",
     "--platform=node",
@@ -27,10 +26,10 @@ execFileSync(
     `--outfile=${build}`,
     "--log-level=error",
   ],
-  { stdio: "inherit" }
+  { stdio: "inherit", preferLocal: true, shell: false, env: { ...process.env, PATH: `./node_modules/.bin:${process.env.PATH}` } }
 );
 
-const { OgCard, OG_SIZE } = await import(`../${build}`);
+const { buildOgCard, OG_SIZE } = await import(`../${build}`);
 
 const P = (title, slug) => ({ title, url: `https://www.ssw.com.au/people/${slug}` });
 
@@ -81,11 +80,13 @@ const cases = {
 
 await mkdir(outDir, { recursive: true });
 
-for (const [name, rule] of Object.entries(cases)) {
-  const res = new ImageResponse(await OgCard(rule), OG_SIZE);
-  const file = path.join(outDir, `${name}.png`);
-  await writeFile(file, Buffer.from(await res.arrayBuffer()));
-  console.log(`wrote ${file}`);
+try {
+  for (const [name, rule] of Object.entries(cases)) {
+    const res = new ImageResponse(await buildOgCard(rule), OG_SIZE);
+    const file = path.join(outDir, `${name}.png`);
+    await writeFile(file, Buffer.from(await res.arrayBuffer()));
+    console.log(`wrote ${file}`);
+  }
+} finally {
+  await rm(build, { force: true });
 }
-
-await rm(build, { force: true });

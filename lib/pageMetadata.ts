@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteUrl } from "@/site-config";
+import { siteTitle, siteUrl, social } from "@/site-config";
 
 interface PageMetadataOptions {
   title: string;
@@ -14,13 +14,10 @@ interface PageMetadataOptions {
 /**
  * Builds a page's metadata with matching og: and twitter: tags.
  *
- * Next does NOT derive og:title from `title`, and a page that sets only `title`
- * silently inherits the layout's generic openGraph block - so every page shared as
- * "SSW.Rules | Secret Ingredients..." regardless of what it actually was. Routing
- * every page through here keeps the three in sync.
- *
- * Deliberately never sets openGraph.images: the opengraph-image.tsx routes supply the
- * card, and setting images here would override the generated one.
+ * Next does not derive og:title from `title`, and does not deep-merge: a page setting
+ * `openGraph` replaces the layout's wholesale, so siteName/locale/handles are repeated
+ * here rather than inherited. Never sets openGraph.images - the opengraph-image routes
+ * supply the card, and Next only merges it when openGraph has no `images` key.
  */
 export function pageMetadata({ title, description, path = "", type = "website", robots }: PageMetadataOptions): Metadata {
   const url = path ? `${siteUrl}/${path}` : `${siteUrl}/`;
@@ -29,8 +26,8 @@ export function pageMetadata({ title, description, path = "", type = "website", 
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { title, description, url, type },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: { title, description, url, type, siteName: siteTitle, locale: "en_AU" },
+    twitter: { card: "summary_large_image", title, description, site: `@${social.twitter}`, creator: `@${social.twitter}` },
     ...(robots ? { robots } : {}),
   };
 }

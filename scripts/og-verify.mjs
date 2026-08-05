@@ -74,7 +74,7 @@ const cases = {
     authors: [P("Toby Goodman", "toby-goodman"), P("Ryan Tee", "ryan-tee")],
     totalRules: TOTAL,
   },
-  "6-homepage": { title: "Secret Ingredients to Quality Software (Open Source on GitHub)", totalRules: TOTAL, isHub: true },
+  "6-homepage": { title: "Secret Ingredients to Quality Software", totalRules: TOTAL, isHub: true },
   "7-category": { title: "Rules to Better Interfaces (Forms)", totalRules: TOTAL, isHub: true },
   "8-category-longest": { title: "Rules to Better User Acceptance Tests (UAT) for Bug Management", totalRules: TOTAL, isHub: true },
 };

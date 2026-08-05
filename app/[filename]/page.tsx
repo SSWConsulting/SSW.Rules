@@ -2,7 +2,7 @@ import React from "react";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { extractBodyPreview } from "@/lib/bodyUtils";
-import { siteUrl } from "@/site-config";
+import { siteDescription, siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 import ClientFallbackPage from "./ClientFallbackPage";
@@ -338,30 +338,56 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
     const category = await getCategoryData(filename);
     if (category?.data?.category && category.data.category.__typename === "CategoryCategory") {
       const categoryData = category.data.category as any;
+      const title = `${categoryData.title} | SSW.Rules`;
+      const description = categoryData.seoDescription || siteDescription;
+      const url = `${siteUrl}/${filename}`;
       const metadata: any = {
-        title: `${categoryData.title} | SSW.Rules`,
+        title,
+        description,
         alternates: {
-          canonical: `${siteUrl}/${filename}`,
+          canonical: url,
+        },
+        openGraph: {
+          title,
+          description,
+          url,
+          type: "website",
+          images: [`${siteUrl}/og-image.jpg`],
+        },
+        twitter: {
+          card: "summary_large_image",
+          title,
+          description,
         },
       };
-
-      if (categoryData.seoDescription) {
-        metadata.description = categoryData.seoDescription;
-      }
 
       return metadata;
     }
 
     const rule = await getRuleData(filename);
     if (rule?.data?.rule?.title) {
+      const title = `${rule.data.rule.title} | SSW.Rules`;
+      const description = rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || siteDescription;
+      const url = `${siteUrl}/${filename}`;
       const metadata: any = {
-        title: `${rule.data.rule.title} | SSW.Rules`,
+        title,
+        description,
         alternates: {
-          canonical: `${siteUrl}/${filename}`,
+          canonical: url,
+        },
+        openGraph: {
+          title,
+          description,
+          url,
+          type: "article",
+          images: [`${siteUrl}/og-image.jpg`],
+        },
+        twitter: {
+          card: "summary_large_image",
+          title,
+          description,
         },
       };
-
-      metadata.description = rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined;
 
       if (rule.data.rule.isArchived) {
         metadata.robots = { index: false, follow: true };

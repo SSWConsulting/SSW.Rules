@@ -31,7 +31,7 @@ const ExtraChip = ({ count }: { count: number }) => (
       borderRadius: AVATAR,
       background: SURFACE,
       fontSize: 24,
-      fontWeight: 700,
+
       color: SSW_GRAY,
     }}
   >
@@ -102,7 +102,10 @@ export async function buildOgCard({ title, authors = [], totalRules, isHub = fal
         justifyContent: "space-between",
         background: SURFACE,
         padding: 64,
-        fontFamily: "Nunito, sans-serif",
+        // @vercel/og bundles only a regular weight, so fontWeight is deliberately not set
+        // anywhere on this card - asking for 700 renders identically and would silently
+        // change the design if a future Next shipped a bold face.
+        fontFamily: "sans-serif",
         position: "relative",
       }}
     >
@@ -134,7 +137,7 @@ export async function buildOgCard({ title, authors = [], totalRules, isHub = fal
 
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ fontSize: 28, color: SSW_RED, letterSpacing: 2, marginBottom: 24 }}>SSW.RULES</div>
-        <div style={{ fontSize: isHub ? 72 : 54, fontWeight: 700, color: SSW_BLACK, lineHeight: 1.15, display: "block", lineClamp: 3 }}>{title}</div>
+        <div style={{ fontSize: isHub ? 72 : 54, color: SSW_BLACK, lineHeight: 1.15, display: "block", lineClamp: 3 }}>{title}</div>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>

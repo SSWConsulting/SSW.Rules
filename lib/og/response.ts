@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
 import { buildOgCard, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og/card";
-import { loadFonts } from "@/lib/og/images";
 import { tagline } from "@/site-config";
 
 // Matches what ImageResponse sets by default, since returning a plain Response below
@@ -19,7 +18,7 @@ const CACHE_CONTROL = "public, max-age=0, must-revalidate";
  */
 export async function ogImageResponse(element: React.ReactElement, fallbackTitle?: string) {
   const render = async (el: React.ReactElement) => {
-    const res = new ImageResponse(el, { ...OG_SIZE, fonts: await loadFonts() });
+    const res = new ImageResponse(el, OG_SIZE);
     return Buffer.from(await res.arrayBuffer());
   };
 

@@ -59,19 +59,3 @@ export const loadAvatar = async (author: OgAuthor): Promise<string> => {
 
   return loadPlaceholder();
 };
-
-/**
- * Nunito, vendored as TTF because Satori cannot read WOFF2 and next/font's copies are
- * build artifacts with unstable paths. Without these the cards render in Satori's
- * default sans, which is not the site's typeface.
- */
-const loadFont = (file: string) => readFile(path.join(process.cwd(), "lib/og/fonts", file));
-
-let fontCache: { name: string; data: Buffer; weight: 400 | 700; style: "normal" }[] | undefined;
-export const loadFonts = async () => {
-  fontCache ??= [
-    { name: "Nunito", data: await loadFont("Nunito-Regular.ttf"), weight: 400 as const, style: "normal" as const },
-    { name: "Nunito", data: await loadFont("Nunito-Bold.ttf"), weight: 700 as const, style: "normal" as const },
-  ];
-  return fontCache;
-};

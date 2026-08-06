@@ -9,7 +9,7 @@ import UserClientProvider from "@/components/auth/UserClientProvider";
 import AppInsightsProvider from "@/components/providers/AppInsightsProvider";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
 import { pageMetadata } from "@/lib/pageMetadata";
-import { homepageTitle, parentSiteUrl, siteDescription, siteTitle } from "@/site-config";
+import { homepageTitle, siteDescription, siteTitle, siteUrl } from "@/site-config";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -35,10 +35,12 @@ const { alternates: _pageCanonical, ...siteDefaults } = pageMetadata({ title: de
 
 export const metadata: Metadata = {
   ...siteDefaults,
-  // Origin only, NOT siteUrl - that ends in /rules and Next joins basePath into the
-  // image path as well, giving /rules/rules/<slug>/opengraph-image and a 404. Dev
-  // hides it by substituting a localhost base.
-  metadataBase: new URL(parentSiteUrl),
+  // Must include the /rules basePath. Next emits the image path WITHOUT basePath
+  // (e.g. /reply-done/opengraph-image) and resolveUrl joins metadataBase.pathname onto
+  // it, so an origin-only base drops /rules and the og:image 404s. Verified on a
+  // pr-deploy slot: with the origin it emitted www.ssw.com.au/reply-done/opengraph-image
+  // while the card actually lives at /rules/reply-done/opengraph-image.
+  metadataBase: new URL(siteUrl),
 };
 
 const jsonLd = [

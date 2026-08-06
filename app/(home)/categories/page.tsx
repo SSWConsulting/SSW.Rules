@@ -2,8 +2,8 @@ import Link from "next/link";
 import TinaHomepageWrapper from "@/app/(home)/TinaHomepageWrapper";
 import CategoryActionButtons from "@/components/CategoryActionButtons";
 import { Card } from "@/components/ui/card";
+import { pageMetadata } from "@/lib/pageMetadata";
 import { fetchCategoryRuleCounts, fetchHomepageData, fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
-import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 
 export const revalidate = 21600; // 6 hours
@@ -47,16 +47,14 @@ export default async function CategoriesPage() {
                 </span>
               </h2>
               <ol className="text-lg mb-0">
-                {topCategory.index
-                  ?.filter(isVisibleCategory)
-                  ?.map((item: any, subIndex: number) => (
-                    <li key={subIndex} className="mb-4 last:mb-2">
-                      <div className="flex justify-between">
-                        <Link href={`/${item.category._sys.filename}`}>{item.category.title}</Link>
-                        <span className="text-gray-300">{categoryRuleCounts[item.category._sys.filename] || 0}</span>
-                      </div>
-                    </li>
-                  ))}
+                {topCategory.index?.filter(isVisibleCategory)?.map((item: any, subIndex: number) => (
+                  <li key={subIndex} className="mb-4 last:mb-2">
+                    <div className="flex justify-between">
+                      <Link href={`/${item.category._sys.filename}`}>{item.category.title}</Link>
+                      <span className="text-gray-300">{categoryRuleCounts[item.category._sys.filename] || 0}</span>
+                    </div>
+                  </li>
+                ))}
               </ol>
             </Card>
           ))}
@@ -67,10 +65,5 @@ export default async function CategoriesPage() {
 }
 
 export async function generateMetadata() {
-  return {
-    title: "SSW.Rules | Categories",
-    alternates: {
-      canonical: `${siteUrl}/categories`,
-    },
-  };
+  return pageMetadata({ title: "SSW.Rules | Categories", path: "categories" });
 }

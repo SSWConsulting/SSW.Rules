@@ -2,7 +2,7 @@ import React from "react";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { extractBodyPreview } from "@/lib/bodyUtils";
-import { siteUrl } from "@/site-config";
+import { pageMetadata } from "@/lib/pageMetadata";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 import ClientFallbackPage from "./ClientFallbackPage";
@@ -338,42 +338,26 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
     const category = await getCategoryData(filename);
     if (category?.data?.category && category.data.category.__typename === "CategoryCategory") {
       const categoryData = category.data.category as any;
-      const metadata: any = {
+      return pageMetadata({
         title: `${categoryData.title} | SSW.Rules`,
-        alternates: {
-          canonical: `${siteUrl}/${filename}`,
-        },
-      };
-
-      if (categoryData.seoDescription) {
-        metadata.description = categoryData.seoDescription;
-      }
-
-      return metadata;
+        description: categoryData.seoDescription || undefined,
+        path: filename,
+      });
     }
 
     const rule = await getRuleData(filename);
     if (rule?.data?.rule?.title) {
-      const metadata: any = {
+      return pageMetadata({
         title: `${rule.data.rule.title} | SSW.Rules`,
-        alternates: {
-          canonical: `${siteUrl}/${filename}`,
-        },
-      };
-
-      metadata.description = rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined;
-
-      if (rule.data.rule.isArchived) {
-        metadata.robots = { index: false, follow: true };
-      }
-
-      return metadata;
+        description: rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined,
+        path: filename,
+        type: "article",
+        robots: rule.data.rule.isArchived ? { index: false, follow: true } : undefined,
+      });
     }
   } catch (error) {
     console.error("Error generating metadata:", error);
   }
 
-  return {
-    title: "SSW.Rules",
-  };
+  return pageMetadata({ title: "SSW.Rules", path: filename });
 }

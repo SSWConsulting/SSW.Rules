@@ -34,7 +34,7 @@
     "cross-env": "^10.1.0",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
-    "postcss": "^8.5.14",
+    "postcss": "^8.5.23",
     "postcss-import": "^16.1.1",
     "postcss-nesting": "^13.0.2",
     "typescript": "^5.9.3"

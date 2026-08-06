@@ -7,7 +7,9 @@ export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 export const alt = "SSW Rules";
 
-export const revalidate = 60 * 60 * 24;
+// Must be a literal - Next statically extracts segment config from the AST and fails
+// the build on an expression it cannot evaluate.
+export const revalidate = 86400; // 24 hours
 
 // Default card for every page without one of its own - home, search, latest-rules,
 // archived, user, orphaned. Inherited automatically by Next's metadata resolution.

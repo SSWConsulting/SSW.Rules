@@ -11,6 +11,12 @@ import { Figure, inlineFigureDefaultItem, inlineFigureFields } from "./figure";
 import { imageEmbedTemplate } from "./imageEmbed";
 import { youtubeEmbedTemplate } from "./youtubeEmbed";
 
+// Inline code inside greybox needs a white background to contrast with the gray container
+const greyboxMarkdownComponents = {
+  ...MarkdownComponentMapping,
+  code: (props: any) => <code className="bg-white py-1 px-2 rounded-sm" {...props} />,
+};
+
 function YakShaverIcon() {
   return (
     <div className="w-8 h-8 mr-4 flex items-start justify-center">
@@ -113,7 +119,7 @@ export function BoxEmbed(props: any) {
               [&_img]:max-w-full [&_img]:h-auto
               [&_p:last-child]:mb-0"
           >
-            <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
+            <TinaMarkdown content={data.body} components={variant === "greybox" ? greyboxMarkdownComponents : MarkdownComponentMapping} />
           </div>
         </div>
       </div>

@@ -11,6 +11,15 @@ interface SearchResult {
   objectID: string;
   title: string;
   slug: string;
+  _snippetResult?: {
+    content?: { value: string; matchLevel: string };
+    [key: string]: any;
+  };
+  _highlightResult?: {
+    title?: { value: string; matchLevel: string };
+    content?: { value: string; matchLevel: string };
+    [key: string]: any;
+  };
   [key: string]: any;
 }
 

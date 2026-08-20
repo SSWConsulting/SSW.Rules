@@ -76,7 +76,10 @@ const getCategoryData = async (filename: string) => {
       console.warn(`[getCategoryData] Missing rule references in category relativePath="${fullPath}":\n${missingRecordErrors.join("\n")}`);
     }
 
-    if (!res?.data) return null;
+    if (!res?.data) {
+      console.error(`[getCategoryData] returned null for filename="${filename}" relativePath="${fullPath}" errors="${errorMessages.join(" | ")}"`);
+      return null;
+    }
 
     return {
       data: res.data,
@@ -100,6 +103,10 @@ const getRuleData = async (filename: string) => {
       relativePath: filename + "/rule.mdx",
     });
 
+    if (!basicProps?.data?.rule) {
+      console.error(`[getRuleData] ruleDataBasic returned no rule for filename="${filename}"`);
+    }
+
     try {
       const fullProps = await client.queries.ruleData({
         relativePath: filename + "/rule.mdx",
@@ -112,6 +119,10 @@ const getRuleData = async (filename: string) => {
         brokenReferences: null as BrokenReferences | null,
       };
     } catch (relatedError) {
+      console.warn(
+        `[getRuleData] related-rules query failed for filename="${filename}", rendering without related rules:`,
+        relatedError instanceof Error ? relatedError.message : relatedError
+      );
       const errorMessage = relatedError instanceof Error ? relatedError.message : String(relatedError);
 
       // Extract all broken paths from error message (there may be multiple)
@@ -327,6 +338,7 @@ export default async function Page({
   }
 
   // If data is not found statically, try fetching on client side with branch support
+  console.error(`[ClientFallbackPage] rendering fallback for filename="${filename}" category=null rule=null`);
   const sp = (await searchParams) ?? {};
   return <ClientFallbackPage filename={filename} searchParams={sp} />;
 }

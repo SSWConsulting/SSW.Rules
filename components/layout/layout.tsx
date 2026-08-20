@@ -11,18 +11,23 @@ type LayoutProps = PropsWithChildren & {
 };
 
 export default async function Layout({ children, rawPageData }: LayoutProps) {
-  const { data: globalData } = await client.queries.global(
-    {
-      relativePath: "index.json",
-    },
-    {
-      fetchOptions: {
-        next: {
-          revalidate: 60,
-        },
+  const { data: globalData } = await client.queries
+    .global(
+      {
+        relativePath: "index.json",
       },
-    }
-  );
+      {
+        fetchOptions: {
+          next: {
+            revalidate: 60,
+          },
+        },
+      }
+    )
+    .catch((error) => {
+      console.error("[SiteLayout] global query failed:", error);
+      throw error;
+    });
 
   const { menuGroups } = await getMegamenu();
 

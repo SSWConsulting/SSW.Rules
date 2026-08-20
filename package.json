@@ -15,7 +15,8 @@
     "dev:build": "next build",
     "prepare:content": "cross-env node ./scripts/prepare-content.js",
     "crawl-sitemap": "node ./scripts/crawl-sitemap.js",
-    "test": "jest"
+    "test": "jest",
+    "verify:og": "cross-env NODE_OPTIONS=--experimental-vm-modules OG_PREVIEW_DIR=og-preview jest ogCard.preview"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.14",

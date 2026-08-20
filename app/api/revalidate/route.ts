@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     }
 
     const routesToRevalidate = new Set<string>();
+    let shouldRevalidateCategoryTitles = false;
     let shouldRevalidateLatestRules = false;
     let shouldRevalidateRuleCount = false;
 
@@ -36,6 +37,9 @@ export async function POST(req: Request) {
         const slug = changedPath.replace("public/uploads/rules/", "").replace("/rule.mdx", "").replace(/\/+$/, "");
         if (slug) {
           routesToRevalidate.add(`/${slug}`);
+          // Separate route from the page, so it needs purging explicitly or the card
+          // keeps a stale title / author list until its 24h revalidate expires
+          routesToRevalidate.add(`/${slug}/opengraph-image`);
         }
         // If change type is add then we also need to revalidate the /api/rules route
         if (eventType === TINA_CONTENT_CHANGE_TYPE.Added) {
@@ -50,6 +54,8 @@ export async function POST(req: Request) {
       if (changedPath.startsWith("categories/")) {
         const rel = changedPath.replace("categories/", "");
         routesToRevalidate.add("/");
+        // Card titles come from a cached map, so purging the image path is not enough
+        shouldRevalidateCategoryTitles = true;
         // Ignore main/top index files like categories/index.mdx or categories/<top>/index.mdx
         if (!rel.endsWith("/index.mdx") && rel.endsWith(".mdx")) {
           const filename = rel
@@ -58,6 +64,7 @@ export async function POST(req: Request) {
             .pop();
           if (filename) {
             routesToRevalidate.add(`/${filename}`);
+            routesToRevalidate.add(`/${filename}/opengraph-image`);
           }
         }
         // If change type is add then we also need to revalidate the /api/categories route
@@ -75,6 +82,12 @@ export async function POST(req: Request) {
     // Revalidate rule-count tag if any rule was added
     if (shouldRevalidateRuleCount) {
       revalidateTag("rule-count", { expire: 0 });
+    }
+
+    if (shouldRevalidateCategoryTitles) {
+      revalidateTag("category-rule-data", { expire: 0 });
+      // The root card carries the site-wide rule total
+      revalidatePath("/opengraph-image");
     }
 
     for (const route of routesToRevalidate) {

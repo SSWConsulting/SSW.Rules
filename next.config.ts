@@ -20,11 +20,7 @@ const nextConfig: NextConfig = {
 
   // Exclude Application Insights from server-side bundling to avoid dynamic require issues
   // This tells Next.js to use the Node.js runtime version instead of bundling it
-  serverExternalPackages: [
-    'applicationinsights',
-    'diagnostic-channel',
-    'diagnostic-channel-publishers',
-  ],
+  serverExternalPackages: ["applicationinsights", "diagnostic-channel", "diagnostic-channel-publishers"],
 
   images: {
     remotePatterns: [

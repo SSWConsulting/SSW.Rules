@@ -38,11 +38,11 @@ const createHeading =
     const iconSize = Tag === "h2" ? 24 : Tag === "h3" ? 20 : 16;
 
     return (
-      <Tag id={id} className="group relative scroll-mt-24" {...props}>
+      <Tag id={id} className="scroll-mt-24" {...props}>
         {props.children}
         <a
           href={`#${id}`}
-          className="inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 no-underline"
+          className="inline-block ml-2 align-middle no-underline"
           aria-label={`Link to ${textContent}`}
         >
           <LinkIcon size={iconSize} className="text-gray-400 hover:text-ssw-red" />

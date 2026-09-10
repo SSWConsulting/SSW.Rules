@@ -42,7 +42,7 @@ const createHeading =
         {props.children}
         <a
           href={`#${id}`}
-          className="inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 no-underline"
+          className="inline-block ml-2 opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100 focus-visible:opacity-100 transition-opacity duration-200 no-underline"
           aria-label={`Link to ${textContent}`}
         >
           <LinkIcon size={iconSize} className="text-gray-400 hover:text-ssw-red" />

@@ -1,4 +1,35 @@
+import Link from "next/link";
 import React from "react";
+
+function renderMarkdownDescription(description: string): React.ReactNode {
+  if (!description) return null;
+  
+  // Split by markdown links [text](url)
+  const parts = description.split(/(\[[^\]]+\]\([^)]+\))/g);
+  
+  // Then process each part for bold markdown **text**
+  return parts.map((part, index) => {
+    // Check if this part is a markdown link
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (linkMatch) {
+      const [, label, url] = linkMatch;
+      if (url.startsWith("/")) {
+        return <Link key={index} href={url} className="underline">{label}</Link>;
+      }
+      return <a key={index} href={url} className="underline" target="_blank" rel="noopener noreferrer">{label}</a>;
+    }
+    
+    // Process bold markdown **text** in non-link parts
+    const boldParts = part.split(/(\*\*[^\*]+\*\*)/g);
+    return boldParts.map((boldPart, boldIndex) => {
+      const boldMatch = boldPart.match(/^\*\*([^\*]+)\*\*$/);
+      if (boldMatch) {
+        return <strong key={`${index}-${boldIndex}`}>{boldMatch[1]}</strong>;
+      }
+      return <span key={`${index}-${boldIndex}`}>{boldPart}</span>;
+    });
+  });
+}
 
 export function extractYoutubeId(input?: string | null): string | null {
   const value = (input ?? "").trim();
@@ -30,7 +61,7 @@ export function YouTubePlayer({ url = "", description = "" }: { url?: string; de
           className="absolute left-0 top-0 h-full w-full border-0"
         />
       </div>
-      {description ? <div className="text-base font-bold">{description}</div> : null}
+      {description ? <div className="text-base font-bold">{renderMarkdownDescription(description)}</div> : null}
     </div>
   );
 }
@@ -63,7 +94,7 @@ export function YouTubeShorts({ url = "", description = "" }: { url?: string; de
           className="absolute left-0 top-0 h-full w-full border-0 rounded-xs"
         />
       </div>
-      {description ? <div className="text-sm sm:text-base font-bold px-2 sm:px-0">{description}</div> : null}
+      {description ? <div className="text-sm sm:text-base font-bold px-2 sm:px-0">{renderMarkdownDescription(description)}</div> : null}
     </div>
   );
 }

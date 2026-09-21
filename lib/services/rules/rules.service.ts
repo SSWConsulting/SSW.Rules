@@ -7,7 +7,7 @@ import { PaginationResult, PaginationVars } from "@/models/Pagination";
 import { QueryResult } from "@/models/QueryResult";
 import { Rule } from "@/models/Rule";
 import client from "@/tina/__generated__/client";
-import { CategoryRuleCountsQueryDocument } from "@/tina/__generated__/types";
+import { ArchivedRulesQueryDocument, CategoryRuleCountsQueryDocument } from "@/tina/__generated__/types";
 import { QuickLink } from "@/types/quickLink";
 
 type RuleSearchField = "title" | "uri";
@@ -187,13 +187,35 @@ export async function fetchCategoryRuleCounts(): Promise<Record<string, number>>
 }
 
 export async function fetchArchivedRules(variables: { first?: number; after?: string } = {}): Promise<QueryResult<Rule>> {
-  const result = await client.queries.archivedRulesQuery(variables);
+  // A rule pointing at a category that no longer exists makes Tina throw "Unable to find record".
+  // errorPolicy: "all" keeps the rest of the page intact -- `category` is nullable, so only the
+  // dangling reference resolves to null instead of the whole prerender (and the deploy) failing.
+  const res: any = await (client as any).request({
+    query: ArchivedRulesQueryDocument,
+    variables,
+    errorPolicy: "all",
+  });
 
-  const archivedRules = result.data.ruleConnection?.edges ? result.data.ruleConnection.edges.map((edge: any) => edge.node) : [];
+  const errorMessages = (res?.errors ?? [])
+    .map((e: any) => (typeof e === "string" ? e : e?.message))
+    .filter((m: any): m is string => typeof m === "string" && m.length > 0);
+
+  const missingRecordErrors = errorMessages.filter((m) => m.includes("Unable to find record"));
+  if (missingRecordErrors.length > 0) {
+    console.warn(`[fetchArchivedRules] Missing category references detected; affected rules render without a category:\n${missingRecordErrors.join("\n")}`);
+  }
+
+  const otherErrors = errorMessages.filter((m) => !m.includes("Unable to find record"));
+  if (otherErrors.length > 0) {
+    console.error(`[fetchArchivedRules] Query errors:\n${otherErrors.join("\n")}`);
+  }
+
+  const conn: any = res?.data?.ruleConnection;
+  const archivedRules = (conn?.edges ?? []).map((edge: any) => edge?.node).filter(Boolean);
 
   return {
     data: archivedRules as Rule[],
-    pageInfo: result.data.ruleConnection?.pageInfo || { hasNextPage: false, endCursor: "" },
+    pageInfo: conn?.pageInfo || { hasNextPage: false, endCursor: "" },
   };
 }
 

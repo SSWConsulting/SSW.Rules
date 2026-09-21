@@ -1,0 +1,6 @@
+# .git-blame-ignore-revs
+# Exclude mechanical/bulk commits from git blame
+
+# Normalize line endings to LF
+# Mechanical change: renormalized all files to use LF line endings as specified in .gitattributes
+e7043ca

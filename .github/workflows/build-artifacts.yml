@@ -152,7 +152,7 @@ jobs:
         run: |
           BUILD_TIMESTAMP=$(date +%s)000
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          COMMIT_HASH=$(echo "${{ github.sha }}" | cut -c1-7)
+          COMMIT_HASH=${{ github.sha }}
           VERSION_DEPLOYED="${{ github.run_number }}"
           DEPLOYMENT_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
@@ -234,7 +234,7 @@ jobs:
 
       - name: Update commit hash from checkout
         run: |
-          COMMIT_HASH=$(git rev-parse --short=7 HEAD)
+          COMMIT_HASH=$(git rev-parse HEAD)
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
           echo "Commit hash (from checkout): $COMMIT_HASH"
 
@@ -625,16 +625,16 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      - name: Generate search index with content
-        env:
-          LOCAL_CONTENT_RELATIVE_PATH: ../content
-          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-          TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
-          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ inputs.NEXT_PUBLIC_TINA_CLIENT_ID }}
-          NEXT_PUBLIC_TINA_BRANCH: ${{ steps.resolve_content_branch.outputs.content_branch }}
-          NEXT_PUBLIC_GITHUB_ORG: ${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
-          NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
-        run: pnpm tinacms search-index
+      # - name: Generate search index with content
+      #   env:
+      #     LOCAL_CONTENT_RELATIVE_PATH: ../content
+      #     TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+      #     TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
+      #     NEXT_PUBLIC_TINA_CLIENT_ID: ${{ inputs.NEXT_PUBLIC_TINA_CLIENT_ID }}
+      #     NEXT_PUBLIC_TINA_BRANCH: ${{ steps.resolve_content_branch.outputs.content_branch }}
+      #     NEXT_PUBLIC_GITHUB_ORG: ${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
+      #     NEXT_PUBLIC_GITHUB_REPO: ${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
+      #   run: pnpm tinacms search-index
 
       - name: Install Algolia Python dependencies
         run: pip install pyyaml "algoliasearch>=3,<4"

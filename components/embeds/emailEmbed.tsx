@@ -25,17 +25,17 @@ export function EmailEmbed({ data }: { data: any }) {
       <div className="bg-gray-100 p-6 rounded-md mt-4">
         <div className="space-y-3">
           {fields.map(({ label, value }) => (
-            <div key={label} className="flex items-start text-right">
-              <div className="w-24 pt-2 pr-2">{label}:</div>
-              <div className="flex-1">
-                <div className="bg-white border px-3 py-2 rounded text-sm min-h-[40px] flex items-center">{value}</div>
+            <div key={label} className="flex flex-col gap-1 sm:flex-row sm:gap-0 sm:items-start sm:text-right">
+              <div className="sm:w-24 sm:shrink-0 sm:pt-2 sm:pr-2">{label}:</div>
+              <div className="sm:flex-1 sm:min-w-0">
+                <div className="bg-white border px-3 py-2 rounded text-sm min-h-[40px] flex items-center text-left">{value}</div>
               </div>
             </div>
           ))}
         </div>
 
         {data.shouldDisplayBody && data.body && (
-          <div className="mt-6 pl-24">
+          <div className="mt-6 sm:pl-24">
             <div className="bg-white border p-4 rounded">
               <div ref={contentRef}>
                 <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />

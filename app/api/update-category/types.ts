@@ -32,6 +32,7 @@ export type CategoryRuleIndexItem = {
       guid?: string;
       consulting?: boolean;
       experts?: string[];
+      seoDescription?: string;
       redirects?: string[];
       body?: string;
       created?: string;
@@ -55,6 +56,7 @@ export type CategoryRuleIndexItem = {
     guid?: string;
     consulting?: boolean;
     experts?: string[];
+    seoDescription?: string;
     redirects?: string[];
     body?: string;
     created?: string;

@@ -1,5 +1,4 @@
 import { isExternalSSWSite, isExternalLink } from "@/lib/linkUtils";
-import { tree } from "next/dist/build/templates/app-page";
 
 describe("isExternalSSWSite", () => {
   it("handles handles main site links", () => {

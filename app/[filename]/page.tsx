@@ -2,7 +2,7 @@ import React from "react";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { extractBodyPreview } from "@/lib/bodyUtils";
-import { siteUrl } from "@/site-config";
+import { pageMetadata } from "@/lib/pageMetadata";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 import ClientFallbackPage from "./ClientFallbackPage";
@@ -76,7 +76,10 @@ const getCategoryData = async (filename: string) => {
       console.warn(`[getCategoryData] Missing rule references in category relativePath="${fullPath}":\n${missingRecordErrors.join("\n")}`);
     }
 
-    if (!res?.data) return null;
+    if (!res?.data) {
+      console.error(`[getCategoryData] returned null for filename="${filename}" relativePath="${fullPath}" errors="${errorMessages.join(" | ")}"`);
+      return null;
+    }
 
     return {
       data: res.data,
@@ -100,6 +103,10 @@ const getRuleData = async (filename: string) => {
       relativePath: filename + "/rule.mdx",
     });
 
+    if (!basicProps?.data?.rule) {
+      console.error(`[getRuleData] ruleDataBasic returned no rule for filename="${filename}"`);
+    }
+
     try {
       const fullProps = await client.queries.ruleData({
         relativePath: filename + "/rule.mdx",
@@ -112,6 +119,10 @@ const getRuleData = async (filename: string) => {
         brokenReferences: null as BrokenReferences | null,
       };
     } catch (relatedError) {
+      console.warn(
+        `[getRuleData] related-rules query failed for filename="${filename}", rendering without related rules:`,
+        relatedError instanceof Error ? relatedError.message : relatedError
+      );
       const errorMessage = relatedError instanceof Error ? relatedError.message : String(relatedError);
 
       // Extract all broken paths from error message (there may be multiple)
@@ -327,6 +338,7 @@ export default async function Page({
   }
 
   // If data is not found statically, try fetching on client side with branch support
+  console.error(`[ClientFallbackPage] rendering fallback for filename="${filename}" category=null rule=null`);
   const sp = (await searchParams) ?? {};
   return <ClientFallbackPage filename={filename} searchParams={sp} />;
 }
@@ -338,42 +350,26 @@ export async function generateMetadata({ params }: { params: Promise<{ filename:
     const category = await getCategoryData(filename);
     if (category?.data?.category && category.data.category.__typename === "CategoryCategory") {
       const categoryData = category.data.category as any;
-      const metadata: any = {
+      return pageMetadata({
         title: `${categoryData.title} | SSW.Rules`,
-        alternates: {
-          canonical: `${siteUrl}/${filename}`,
-        },
-      };
-
-      if (categoryData.seoDescription) {
-        metadata.description = categoryData.seoDescription;
-      }
-
-      return metadata;
+        description: categoryData.seoDescription || undefined,
+        path: filename,
+      });
     }
 
     const rule = await getRuleData(filename);
     if (rule?.data?.rule?.title) {
-      const metadata: any = {
+      return pageMetadata({
         title: `${rule.data.rule.title} | SSW.Rules`,
-        alternates: {
-          canonical: `${siteUrl}/${filename}`,
-        },
-      };
-
-      metadata.description = rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined;
-
-      if (rule.data.rule.isArchived) {
-        metadata.robots = { index: false, follow: true };
-      }
-
-      return metadata;
+        description: rule.data.rule.seoDescription || extractBodyPreview(rule.data.rule.body) || undefined,
+        path: filename,
+        type: "article",
+        robots: rule.data.rule.isArchived ? { index: false, follow: true } : undefined,
+      });
     }
   } catch (error) {
     console.error("Error generating metadata:", error);
   }
 
-  return {
-    title: "SSW.Rules",
-  };
+  return pageMetadata({ title: "SSW.Rules", path: filename });
 }

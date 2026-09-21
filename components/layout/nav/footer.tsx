@@ -1,12 +1,10 @@
-import moment from "moment";
 import React from "react";
-import { FaFacebook, FaHeart, FaInstagram, FaLinkedin, FaTiktok, FaXTwitter, FaYoutube } from "react-icons/fa6";
+import { FaBluesky, FaFacebook, FaHeart, FaInstagram, FaLinkedin, FaThreads, FaTiktok, FaXTwitter, FaYoutube } from "react-icons/fa6";
 import { GitHubButtonWrapper } from "@/components/GitHubButtonWrapper";
 import { pathPrefix } from "../../../site-config";
+import { RelativeTime } from "./relative-time";
 
-const buildTimestamp = process.env.BUILD_TIMESTAMP ? parseInt(process.env.BUILD_TIMESTAMP) : Date.now() - 1000 * 60 * 30;
-const versionDeployed = process.env.VERSION_DEPLOYED || "dev";
-const deploymentUrl = process.env.DEPLOYMENT_URL || "#";
+const buildTimestamp = process.env.BUILD_TIMESTAMP ? parseInt(process.env.BUILD_TIMESTAMP, 10) : Date.now() - 1000 * 60 * 30;
 const buildDate = process.env.BUILD_DATE;
 const commitHash = process.env.COMMIT_HASH;
 
@@ -35,9 +33,9 @@ export const Footer = () => {
       <footer className="text-center bg-[var(--footer-background)] text-[var(--footer-foreground)] py-6 md:py-4 lg:py-2 [&_a]:no-underline text-xs">
         <section className="main-container max-w-screen-xl">
           <div className="xl:mx-6">
-            <div className="mx-6 flex flex-col-reverse md:flex-row justify-between align-middle leading-6">
+            <div className="mx-6 flex flex-col-reverse lg:flex-row justify-between align-middle leading-6">
               <div className="py-2">&copy; 1990-{new Date().getFullYear()} SSW. All rights reserved.</div>
-              <div className="w-full md:w-3/4 md:text-right py-2 flex max-sm:flex-col items-center max-sm:justify-start justify-center md:justify-end">
+              <div className="w-full lg:w-3/4 lg:text-right py-2 flex max-sm:flex-col items-center max-sm:justify-start justify-center lg:justify-end">
                 <a
                   className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red max-sm:mb-3"
                   href="https://github.com/SSWConsulting/SSW.Rules/issues"
@@ -69,6 +67,16 @@ export const Footer = () => {
                   </a>
                   <a
                     className="unstyled block float-right h-[25px] w-[25px] ml-4 text-white hover:text-ssw-red visited:text-white no-underline text-center leading-[25px]"
+                    id="bluesky-icon"
+                    title="SSW on BlueSky"
+                    href="https://bsky.app/profile/ssw.com.au"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                  >
+                    <FaBluesky size={24} />
+                  </a>
+                  <a
+                    className="unstyled block float-right h-[25px] w-[25px] ml-4 text-white hover:text-ssw-red visited:text-white no-underline text-center leading-[25px]"
                     id="twitter-icon"
                     title="SSW on Twitter"
                     href="https://twitter.com/SSW_TV"
@@ -76,6 +84,16 @@ export const Footer = () => {
                     rel="noopener noreferrer nofollow"
                   >
                     <FaXTwitter size={24} />
+                  </a>
+                  <a
+                    className="unstyled block float-right h-[25px] w-[25px] ml-4 text-white hover:text-ssw-red visited:text-white no-underline text-center leading-[25px]"
+                    id="threads-icon"
+                    title="SSW on Threads"
+                    href="https://www.threads.net/@ssw_tv"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                  >
+                    <FaThreads size={24} />
                   </a>
                   <a
                     className="unstyled block float-right h-[25px] w-[25px] ml-4 text-white hover:text-ssw-red visited:text-white no-underline text-center leading-[25px]"
@@ -121,28 +139,32 @@ export const Footer = () => {
               </div>
             </div>
             <hr className="border-gray-800 my-2"></hr>
-            <div className="flex flex-col md:flex-row justify-between mx-6">
+            <div className="flex flex-col lg:flex-row justify-between mx-6">
               <div className="py-2">
                 This website is under{" "}
                 <a
                   className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
                   href={`${pathPrefix}/rules-to-better-websites-deployment`}
                 >
-                  CONSTANT CONTINUOUS DEPLOYMENT
+                  continuous deployment
                 </a>
-                . Last deployed {getLastDeployTime()} ago
-                {buildDate && <span title={buildDate}> on {moment(buildDate).format("MMM D, YYYY [at] HH:mm UTC")}</span>} (Build #{" "}
-                <a
-                  className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
-                  href={deploymentUrl}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                >
-                  {versionDeployed}
-                </a>
-                {commitHash && <span title={`Commit: ${commitHash}`}>-{commitHash}</span>})
+                . Last updated{" "}
+                <RelativeTime buildTimestamp={buildTimestamp} buildDate={buildDate} />
+                {commitHash && (
+                  <>
+                    . Last commit{" "}
+                    <a
+                      className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
+                      href={`https://github.com/SSWConsulting/SSW.Rules/commit/${commitHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                    >
+                      {commitHash.slice(0, 7)}
+                    </a>
+                  </>
+                )}
               </div>
-              <div className="md:text-right py-2">
+              <div className="lg:text-right py-2">
                 Powered by{" "}
                 <a
                   className="inline-block text-white hover:text-ssw-red visited:text-white leading-3 transition-all duration-300 ease-in-out hover:text-ssw-red"
@@ -165,20 +187,4 @@ export const Footer = () => {
       </footer>
     </>
   );
-};
-
-const getLastDeployTime = () => {
-  const lastDeployDuration = moment.duration(Date.now() - buildTimestamp);
-  let delta = Math.abs(lastDeployDuration.asMilliseconds()) / 1000;
-
-  const days = Math.floor(delta / 86400);
-  delta -= days * 86400;
-
-  var hours = Math.floor(delta / 3600) % 24;
-  delta -= hours * 3600;
-
-  var minutes = Math.floor(delta / 60) % 60;
-  delta -= minutes * 60;
-
-  return days !== 0 ? `${days} day(s)` : hours !== 0 ? `${hours} hour(s)` : minutes > 1 ? `${minutes} minutes` : "1 minute";
 };

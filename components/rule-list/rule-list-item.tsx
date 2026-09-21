@@ -38,7 +38,7 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
   const contentRef = useRef<HTMLDivElement>(null);
 
   return (
-    <li key={index} className="p-4 border rounded shadow">
+    <li key={index} className="px-2 py-4 sm:p-4 border rounded shadow">
       {rule.isArchived && rule.archivedreason && (
         <div className="mx-2 mb-4 md:mx-6 md:mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-start gap-3">

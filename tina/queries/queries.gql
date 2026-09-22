@@ -59,6 +59,7 @@ query topCategoryWithIndexQuery($first: Float, $after: String) {
           }
           index {
             category {
+              __typename
               ... on CategoryCategory {
                 title
                 _sys {

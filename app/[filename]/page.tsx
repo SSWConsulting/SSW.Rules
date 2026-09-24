@@ -1,8 +1,10 @@
 import React from "react";
+import { redirect } from "next/navigation";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { extractBodyPreview } from "@/lib/bodyUtils";
 import { pageMetadata } from "@/lib/pageMetadata";
+import { findRuleByRedirect } from "@/lib/services/rules/rules.service";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 import ClientFallbackPage from "./ClientFallbackPage";
@@ -335,6 +337,12 @@ export default async function Page({
         />
       </Section>
     );
+  }
+
+  // Check if this filename is an old redirect
+  const redirectedUri = await findRuleByRedirect(filename);
+  if (redirectedUri) {
+    redirect(`/${redirectedUri}`);
   }
 
   // If data is not found statically, try fetching on client side with branch support

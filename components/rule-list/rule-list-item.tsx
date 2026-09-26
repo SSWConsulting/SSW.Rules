@@ -71,7 +71,7 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
       <RuleListItemHeader rule={rule} index={index} />
 
       {filter !== RuleListFilter.TitleOnly && (
-        <div data-tina-field={tinaField(rule, "body")} className="pt-4 pl-8 pr-2" ref={contentRef}>
+        <div data-tina-field={tinaField(rule, "body")} className="pt-4 pl-8 pr-2 w-full overflow-x-hidden break-words" ref={contentRef}>
           <TinaMarkdown content={getContentForViewStyle(filter, rule.body)} components={MarkdownComponentMapping} />
         </div>
       )}

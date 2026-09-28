@@ -19,13 +19,13 @@ const AuthorUrlFieldInner: React.FC<any> = (props) => {
       <input
         type="text"
         id={input.name}
+        {...input}
         className={`w-full text-sm rounded-full border shadow-inner py-2 px-4 focus:outline-none transition-colors ${
           isSswUrl
             ? "bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"
             : "bg-white border-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         }`}
         value={value}
-        onChange={(e) => input.onChange(e.target.value)}
         readOnly={isSswUrl}
         placeholder="https://example.com/author-profile"
       />

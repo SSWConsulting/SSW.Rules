@@ -138,9 +138,9 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
         <input
           type="text"
           id={input.name}
+          {...input}
           className="mb-2 w-full bg-white text-sm rounded-full border border-gray-200 shadow-inner py-2 px-4 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           value={input.value || ""}
-          onChange={(e) => input.onChange(e.target.value)}
           placeholder="Enter author name"
         />
         <button type="button" onClick={handleSwitchToSsw} className="block text-xs text-blue-600 hover:text-blue-800 underline transition-colors">

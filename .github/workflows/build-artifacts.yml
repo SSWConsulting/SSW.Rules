@@ -310,6 +310,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Every rule needs an existing category: fails in seconds, naming each rule, instead of an opaque /archived prerender error deep into the Docker build
+      - name: Validate rule categories
+        run: pnpm run validate:rule-categories content
+
       - name: Generate people-latest-rules.json
         env:
           LOCAL_CONTENT_RELATIVE_PATH: content

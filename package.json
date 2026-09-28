@@ -14,6 +14,7 @@
     "lint": "biome lint",
     "dev:build": "next build",
     "prepare:content": "cross-env node ./scripts/prepare-content.js",
+    "validate:rule-categories": "node ./scripts/validate-rule-categories.js",
     "crawl-sitemap": "node ./scripts/crawl-sitemap.js",
     "test": "jest",
     "verify:og": "cross-env NODE_OPTIONS=--experimental-vm-modules OG_PREVIEW_DIR=og-preview jest ogCard.preview"

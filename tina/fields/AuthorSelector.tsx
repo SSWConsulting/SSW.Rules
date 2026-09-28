@@ -11,6 +11,7 @@ interface EmployeeItem {
   fullName: string;
   jobTitle: string;
   gitHubUrl: string;
+  isActive: boolean;
 }
 
 /**
@@ -86,7 +87,8 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
 
         const items: EmployeeItem[] = (data?.value ?? [])
           .filter((e: EmployeeItem) => e.fullName)
-          .sort((a: EmployeeItem, b: EmployeeItem) => a.fullName.localeCompare(b.fullName));
+          // Current employees first, alumni at the bottom
+          .sort((a: EmployeeItem, b: EmployeeItem) => Number(b.isActive) - Number(a.isActive) || a.fullName.localeCompare(b.fullName));
         setAllEmployees(items);
       } catch (e: any) {
         console.error("Failed to load SSW employees:", e);
@@ -144,7 +146,7 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
           placeholder="Enter author name"
         />
         <button type="button" onClick={handleSwitchToSsw} className="block text-xs text-blue-600 hover:text-blue-800 underline transition-colors">
-          ← Select from SSW people
+          ← Choose from SSW People
         </button>
       </div>
     );
@@ -250,6 +252,9 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
                                       <div className="font-medium text-gray-900 text-sm leading-5 truncate">{employee.fullName}</div>
                                       {employee.jobTitle && <div className="text-xs text-gray-500 truncate">{employee.jobTitle}</div>}
                                     </div>
+                                    {!employee.isActive && (
+                                      <span className="shrink-0 rounded border border-gray-200 bg-gray-100 px-1.5 py-0.5 text-xs text-gray-500">Alumni</span>
+                                    )}
                                   </div>
                                 </button>
                               );
@@ -267,7 +272,7 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
       </div>
 
       <button type="button" onClick={handleSwitchToNonSsw} className="mt-2 block text-xs text-blue-600 hover:text-blue-800 underline transition-colors">
-        Not from SSW? Enter manually →
+        Not in SSW People? Enter manually →
       </button>
     </div>
   );

@@ -8,7 +8,8 @@
  * ClientFallbackPage and /archived aborts the Next.js export ~12 minutes into the Docker build,
  * without naming the rule. This check runs in seconds and names every offending rule.
  *
- * Usage: node scripts/validate-rule-categories.js <path-to-SSW.Rules.Content>
+ * Usage: node scripts/validate-rule-categories.js [path-to-SSW.Rules.Content]
+ * Without a path, falls back to LOCAL_CONTENT_RELATIVE_PATH from .env.local / .env.
  */
 const fs = require("node:fs");
 const path = require("node:path");
@@ -16,6 +17,7 @@ const matter = require("gray-matter");
 
 const RULES_DIR = path.join("public", "uploads", "rules");
 const CATEGORIES_DIR = "categories";
+const USAGE = "Usage: node scripts/validate-rule-categories.js [path-to-SSW.Rules.Content] (defaults to LOCAL_CONTENT_RELATIVE_PATH)";
 
 const toPosix = (p) => p.split(path.sep).join("/");
 
@@ -91,14 +93,31 @@ function formatReport({ uncategorizedRules, danglingReferences }) {
   return lines.join("\n");
 }
 
+function resolveContentRoot(contentArg) {
+  if (contentArg) return path.resolve(contentArg);
+
+  try {
+    const dotenv = require("dotenv");
+    for (const envFile of [".env.local", ".env"]) {
+      const fullPath = path.join(__dirname, "..", envFile);
+      if (fs.existsSync(fullPath)) dotenv.config({ path: fullPath, quiet: true });
+    }
+  } catch {
+    // dotenv is optional in CI where env vars are already set
+  }
+
+  const relPath = process.env.LOCAL_CONTENT_RELATIVE_PATH;
+  // Same convention as prepare-content.js: relative to this scripts folder
+  return relPath ? path.resolve(__dirname, relPath) : null;
+}
+
 function main() {
-  const contentArg = process.argv[2];
-  if (!contentArg) {
-    console.error("Usage: node scripts/validate-rule-categories.js <path-to-SSW.Rules.Content>");
+  const contentRoot = resolveContentRoot(process.argv[2]);
+  if (!contentRoot) {
+    console.error(USAGE);
     process.exit(1);
   }
 
-  const contentRoot = path.resolve(contentArg);
   if (!fs.existsSync(path.join(contentRoot, RULES_DIR)) || !fs.existsSync(path.join(contentRoot, CATEGORIES_DIR))) {
     console.error(`❌ validate-rule-categories: ${contentRoot} doesn't look like SSW.Rules.Content (missing ${RULES_DIR} or ${CATEGORIES_DIR})`);
     process.exit(1);

@@ -50,9 +50,16 @@ const scriptsPath = join(contentAbsPath, "scripts/tina-migration");
 const buildMapScript = join(scriptsPath, "build-rule-category-map.py");
 const orphanedCheckScript = join(scriptsPath, "orphaned_rules_check.py");
 const buildRedirectMapScript = join(scriptsPath, "build-redirect-map.py");
+const validateRuleCategoriesScript = join(__dirname, "validate-rule-categories.js");
 
 const { command: python } = resolvePythonInvocation();
 
+try {
+  execSync(`node "${validateRuleCategoriesScript}" "${contentAbsPath}"`, { stdio: "inherit" });
+} catch {
+  // The validator already printed which rules to fix; a stack trace would only bury it
+  process.exit(1);
+}
 execSync(`${python} "${buildMapScript}"`, { stdio: "inherit", cwd: scriptsPath });
 execSync(`${python} "${orphanedCheckScript}"`, { stdio: "inherit", cwd: scriptsPath });
 execSync(`${python} "${buildRedirectMapScript}"`, { stdio: "inherit", cwd: scriptsPath });

@@ -288,33 +288,17 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ filename: string }>;
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default async function Page({ params }: { params: Promise<{ filename: string }> }) {
   const { filename } = await params;
 
   const category = await getCategoryData(filename);
   if (category?.data) {
-    const sp = (await searchParams) ?? {};
-    const includeArchived = String(sp.archived ?? "") === "true";
-    const view = String(sp.view ?? "blurb") as "titleOnly" | "blurb" | "all";
-    const page = Math.max(1, parseInt(String(sp.page ?? "1"), 10) || 1);
-    const perPage = parseInt(String(sp.perPage ?? "20"), 10) || 20;
-
     return (
       <Section>
         <TinaCategoryWrapper
           tinaQueryProps={category}
           serverCategoryPageProps={{
             path: category.variables?.relativePath,
-            includeArchived,
-            view,
-            page,
-            perPage,
           }}
         />
       </Section>
@@ -339,8 +323,7 @@ export default async function Page({
 
   // If data is not found statically, try fetching on client side with branch support
   console.error(`[ClientFallbackPage] rendering fallback for filename="${filename}" category=null rule=null`);
-  const sp = (await searchParams) ?? {};
-  return <ClientFallbackPage filename={filename} searchParams={sp} />;
+  return <ClientFallbackPage filename={filename} />;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ filename: string }> }) {

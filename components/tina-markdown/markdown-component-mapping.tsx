@@ -101,6 +101,24 @@ export const getMarkdownComponentMapping = (enableAnchors = false): Components<a
       return <span dangerouslySetInnerHTML={{ __html: trimmed }} />;
     },
 
+    html_block: ({ value }: { value: string }) => {
+      if (typeof value !== "string") return <></>;
+      const trimmed = value.trim();
+
+      const lower = trimmed.toLowerCase();
+      // Reject scripts, foreignObject (embeds arbitrary HTML), and event handler attributes
+      if (
+        lower.includes("<script") ||
+        lower.includes("<foreignobject") ||
+        /\bon\w+\s*=/.test(lower) ||
+        /\bhref\s*=\s*["']?\s*javascript:/i.test(trimmed)
+      ) {
+        return <></>;
+      }
+
+      return <div dangerouslySetInnerHTML={{ __html: trimmed }} />;
+    },
+
     blockquote: (props: any) => {
       const textWithHighlight = getTextFromContent(props);
       if (textWithHighlight) {

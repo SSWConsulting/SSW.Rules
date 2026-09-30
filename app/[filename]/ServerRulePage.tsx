@@ -10,6 +10,7 @@ import CategoriesCard from "@/components/CategoriesCard";
 import Discussion from "@/components/Discussion";
 import HelpCard from "@/components/HelpCard";
 import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
+import { useCategoryReturnLinks } from "@/components/hooks/useCategoryReturnLinks";
 import { useIsAdminPage } from "@/components/hooks/useIsAdminPage";
 import GitHubMetadata from "@/components/last-updated-by";
 import RelatedRulesCard from "@/components/RelatedRulesCard";
@@ -41,7 +42,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
       return typeof uri === "string" && uri.trim().length > 0 ? { title: cat.title, link: `/${uri}` } : null;
     })
     .filter((c): c is { title: string; link: string } => c !== null);
-  const breadcrumbCategories = allCategories?.length > 0 ? allCategories : undefined;
+  const breadcrumbCategories = useCategoryReturnLinks(allCategories?.length > 0 ? allCategories : undefined);
 
   useAdminBackBlock({ isAdminPage });
 

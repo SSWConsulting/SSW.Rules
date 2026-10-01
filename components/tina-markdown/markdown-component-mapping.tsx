@@ -101,6 +101,17 @@ export const getMarkdownComponentMapping = (enableAnchors = false): Components<a
       return <span dangerouslySetInnerHTML={{ __html: trimmed }} />;
     },
 
+    // Tina's renderer builds the thead/tbody itself and looks up components["table"]
+    // for the outer element, so overriding this key alone is enough to add a scroll
+    // container. th/td are deliberately NOT overridden - Tina's defaults apply the
+    // per-column `align` from the markdown separator row, and overriding them would
+    // silently drop that alignment.
+    table: (props: any) => (
+      <div className="overflow-x-auto">
+        <table {...props} />
+      </div>
+    ),
+
     blockquote: (props: any) => {
       const textWithHighlight = getTextFromContent(props);
       if (textWithHighlight) {

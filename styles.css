@@ -305,12 +305,11 @@ mark:is(
     @apply w-full text-base !border-gray-200 !border-2 mb-4;
   }
 
-  th,
-  tr:first-child {
-    @apply text-left font-bold border-b-4 border-gray-300 pb-2;
+  th {
+    @apply text-left font-bold border-b-4 border-gray-300 bg-table-odd !px-4 !py-2;
   }
 
-  tr:nth-child(odd) {
+  tbody tr:nth-child(even) {
     @apply bg-table-odd;
   }
 

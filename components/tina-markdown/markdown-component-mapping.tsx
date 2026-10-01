@@ -108,7 +108,12 @@ export const getMarkdownComponentMapping = (enableAnchors = false): Components<a
     // silently drop that alignment.
     table: (props: any) => (
       <div className="mb-4 overflow-hidden rounded-lg border border-border">
-        <div className="relative w-full overflow-x-auto">
+        <div
+          role="region"
+          aria-label="Scrollable table"
+          tabIndex={0}
+          className="relative w-full overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+        >
           <table {...props} />
         </div>
       </div>

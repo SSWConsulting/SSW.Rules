@@ -8,7 +8,7 @@ export interface BreadcrumbCategory {
   link: string;
   title: string;
   scroll?: boolean;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 interface BreadcrumbProps {

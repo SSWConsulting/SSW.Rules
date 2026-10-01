@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 import type { BreadcrumbCategory } from "@/components/Breadcrumbs";
 import { CategoryReturnState, readCategoryReturnStates, requestScrollRestore } from "@/lib/categoryReturnState";
 
@@ -22,7 +22,11 @@ export function useCategoryReturnLinks(categories?: BreadcrumbCategory[]): Bread
       ...category,
       link: `${category.link}${returnState.search}`,
       scroll: false,
-      onClick: () => requestScrollRestore(categoryUri),
+      onClick: (event: MouseEvent<HTMLAnchorElement>) => {
+        // A modified click opens a new tab, which starts with its own session storage
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        requestScrollRestore(categoryUri);
+      },
     };
   });
 }

@@ -21,8 +21,6 @@ export interface RuleListProps {
   showPagination?: boolean;
   showFilterControls?: boolean;
   initialFilter?: RuleListFilter;
-  initialPage?: number;
-  initialItemsPerPage?: number;
   externalCurrentPage?: number; // For external pagination control
   externalItemsPerPage?: number; // For external pagination control
   externalFilter?: RuleListFilter;
@@ -42,8 +40,6 @@ const RuleList: React.FC<RuleListProps> = ({
   showPagination = true,
   showFilterControls = true,
   initialFilter = RuleListFilter.Blurb,
-  initialPage = 1,
-  initialItemsPerPage = 20,
   externalCurrentPage,
   externalItemsPerPage,
   externalFilter,
@@ -52,8 +48,8 @@ const RuleList: React.FC<RuleListProps> = ({
   onFilterChange,
 }) => {
   const [filter, setFilter] = useState<RuleListFilter>(initialFilter);
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
   const filterSectionRef = useRef<HTMLDivElement>(null);
 
   // Use external values if provided, otherwise use internal state

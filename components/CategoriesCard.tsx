@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { tinaField } from "tinacms/dist/react";
 import { useCategoryReturnLinks } from "@/components/hooks/useCategoryReturnLinks";

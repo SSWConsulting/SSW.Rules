@@ -1,22 +1,24 @@
+"use client";
+
 import Link from "next/link";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import ArchivedReasonContent from "@/components/ArchivedReasonContent";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { CategoryEdit } from "@/components/CategoryEdit";
-import RuleListWrapper from "@/components/rule-list/rule-list-wrapper";
+import { useRuleListUrlState } from "@/components/hooks/useRuleListUrlState";
+import RuleList from "@/components/rule-list/rule-list";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
+import { resolvePerPage, toPerPageState } from "@/lib/ruleListUrlState";
 
 interface ServerCategoryPageProps {
   category: any;
   path?: string;
-  includeArchived: boolean;
-  view: "titleOnly" | "blurb" | "all";
-  page: number;
-  perPage: number;
 }
 
-export default function ServerCategoryPage({ category, path, includeArchived, view, page, perPage }: ServerCategoryPageProps) {
+export default function ServerCategoryPage({ category, path }: ServerCategoryPageProps) {
+  const { state: listState, setPage, setPerPage, setView, setIncludeArchived } = useRuleListUrlState(category?.uri);
+  const { includeArchived } = listState;
   const title = category?.title ?? "";
   const breadCrumbTitle = category?.title.replace("Rules to Better", "") ?? "";
   const baseRules: any[] = Array.isArray(category?.index) ? category.index.flatMap((i: any) => (i?.rule ? [i.rule] : [])) : [];
@@ -66,14 +68,18 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
             <TinaMarkdown content={category?.body} components={MarkdownComponentMapping} />
           </div>
 
-          <RuleListWrapper
+          <RuleList
             categoryUri={path}
-            rules={baseRules}
-            initialView={view}
-            initialPage={page}
-            initialPerPage={perPage}
+            rules={finalRules}
             includeArchived={includeArchived}
+            onIncludeArchivedChange={setIncludeArchived}
             showFilterControls={true}
+            externalCurrentPage={listState.page}
+            externalItemsPerPage={resolvePerPage(listState.perPage, finalRules.length)}
+            externalFilter={listState.view}
+            onPageChange={setPage}
+            onItemsPerPageChange={(itemsPerPage) => setPerPage(toPerPageState(itemsPerPage, finalRules.length))}
+            onFilterChange={setView}
           />
         </div>
 

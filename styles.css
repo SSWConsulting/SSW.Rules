@@ -302,11 +302,11 @@ mark:is(
   }
 
   table {
-    @apply w-full text-base !border-gray-200 !border-2 mb-4;
+    @apply w-full text-base;
   }
 
   th {
-    @apply text-left font-bold border-b-4 border-gray-300 bg-table-odd !px-4 !py-2;
+    @apply text-left font-bold border-b-2 border-ssw-red/30 bg-table-odd !px-4 !py-2;
   }
 
   tbody tr:nth-child(even) {

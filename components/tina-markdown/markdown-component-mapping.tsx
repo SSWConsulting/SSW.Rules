@@ -107,8 +107,10 @@ export const getMarkdownComponentMapping = (enableAnchors = false): Components<a
     // per-column `align` from the markdown separator row, and overriding them would
     // silently drop that alignment.
     table: (props: any) => (
-      <div className="overflow-x-auto">
-        <table {...props} />
+      <div className="mb-4 overflow-hidden rounded-lg border border-border">
+        <div className="relative w-full overflow-x-auto">
+          <table {...props} />
+        </div>
       </div>
     ),
 

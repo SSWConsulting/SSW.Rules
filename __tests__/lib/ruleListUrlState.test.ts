@@ -1,4 +1,4 @@
-import { DEFAULT_RULE_LIST_URL_STATE, parseRuleListSearch, toRuleListSearch } from "@/lib/ruleListUrlState";
+import { DEFAULT_RULE_LIST_URL_STATE, parseRuleListSearch, resolveCurrentPage, resolvePerPage, toPerPageState, toRuleListSearch } from "@/lib/ruleListUrlState";
 import { RuleListFilter } from "@/types/ruleListFilter";
 
 describe("parseRuleListSearch", () => {
@@ -13,6 +13,10 @@ describe("parseRuleListSearch", () => {
       view: RuleListFilter.TitleOnly,
       includeArchived: true,
     });
+  });
+
+  it("reads perPage=all", () => {
+    expect(parseRuleListSearch("?perPage=all").perPage).toBe("all");
   });
 
   it("falls back to defaults for invalid values", () => {
@@ -31,7 +35,35 @@ describe("toRuleListSearch", () => {
     expect(parseRuleListSearch(search)).toEqual({ page: 2, perPage: 50, view: RuleListFilter.All, includeArchived: true });
   });
 
+  it("writes All as perPage=all", () => {
+    expect(toRuleListSearch({ ...DEFAULT_RULE_LIST_URL_STATE, perPage: "all" }, "")).toBe("?perPage=all");
+  });
+
   it("keeps unrelated params and removes params reset to default", () => {
     expect(toRuleListSearch({ ...DEFAULT_RULE_LIST_URL_STATE, page: 2 }, "?utm_source=x&page=4&archived=true")).toBe("?utm_source=x&page=2");
+  });
+});
+
+describe("per page 'All'", () => {
+  it("stores a choice that covers the whole list as 'all'", () => {
+    expect(toPerPageState(37, 37)).toBe("all");
+    expect(toPerPageState(20, 37)).toBe(20);
+  });
+
+  it("keeps meaning All when the list grows", () => {
+    expect(resolvePerPage("all", 37)).toBe(37);
+    expect(resolvePerPage("all", 45)).toBe(45);
+    expect(resolvePerPage(20, 45)).toBe(20);
+  });
+});
+
+describe("resolveCurrentPage", () => {
+  it("shows the last page for a page past the end", () => {
+    expect(resolveCurrentPage(99, 2, true)).toBe(2);
+    expect(resolveCurrentPage(2, 2, true)).toBe(2);
+  });
+
+  it("leaves the page alone when the caller paginates", () => {
+    expect(resolveCurrentPage(3, 1, false)).toBe(3);
   });
 });

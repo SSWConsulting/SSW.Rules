@@ -9,6 +9,7 @@ import { CategoryEdit } from "@/components/CategoryEdit";
 import { useRuleListUrlState } from "@/components/hooks/useRuleListUrlState";
 import RuleList from "@/components/rule-list/rule-list";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
+import { resolvePerPage, toPerPageState } from "@/lib/ruleListUrlState";
 
 interface ServerCategoryPageProps {
   category: any;
@@ -74,10 +75,10 @@ export default function ServerCategoryPage({ category, path }: ServerCategoryPag
             onIncludeArchivedChange={setIncludeArchived}
             showFilterControls={true}
             externalCurrentPage={listState.page}
-            externalItemsPerPage={listState.perPage}
+            externalItemsPerPage={resolvePerPage(listState.perPage, finalRules.length)}
             externalFilter={listState.view}
             onPageChange={setPage}
-            onItemsPerPageChange={setPerPage}
+            onItemsPerPageChange={(itemsPerPage) => setPerPage(toPerPageState(itemsPerPage, finalRules.length))}
             onFilterChange={setView}
           />
         </div>

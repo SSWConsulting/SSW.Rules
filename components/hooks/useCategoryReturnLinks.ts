@@ -23,7 +23,7 @@ export function useCategoryReturnLinks(categories?: BreadcrumbCategory[]): Bread
       link: `${category.link}${returnState.search}`,
       scroll: false,
       onClick: (event: MouseEvent<HTMLAnchorElement>) => {
-        // A modified click opens a new tab, which starts with its own session storage
+        // A modified click opens the list in another tab or window; this tab isn't navigating to it
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         requestScrollRestore(categoryUri);
       },

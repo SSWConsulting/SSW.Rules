@@ -5,6 +5,7 @@ import { RiGithubLine, RiPencilLine } from "react-icons/ri";
 import RadioButton from "@/components/radio-button";
 import Pagination from "@/components/ui/pagination";
 import { ICON_SIZE } from "@/constants";
+import { resolveCurrentPage } from "@/lib/ruleListUrlState";
 import { RuleListFilter } from "@/types/ruleListFilter";
 import { setTinaBranchToMainIfExists } from "@/utils/tina/set-branch";
 import { IconLink } from "../ui";
@@ -59,10 +60,7 @@ const RuleList: React.FC<RuleListProps> = ({
   const displayItemsPerPage = useMemo(() => (showPagination ? effectiveItemsPerPage : rules.length), [showPagination, effectiveItemsPerPage, rules.length]);
 
   const totalPages = displayItemsPerPage >= rules.length ? 1 : Math.ceil(rules.length / displayItemsPerPage);
-  const requestedPage = externalCurrentPage ?? currentPage;
-  // A page from a stale URL (e.g. ?page=5 on a list that has since shrunk) shows the last page instead of nothing.
-  // Without internal pagination the caller has already sliced `rules` and the page only drives numbering.
-  const effectiveCurrentPage = showPagination ? Math.min(requestedPage, totalPages) : requestedPage;
+  const effectiveCurrentPage = resolveCurrentPage(externalCurrentPage ?? currentPage, totalPages, showPagination);
 
   const paginatedRules = useMemo(() => {
     if (displayItemsPerPage >= rules.length) {

@@ -1,8 +1,11 @@
 import { RuleListFilter } from "@/types/ruleListFilter";
 
+// "all" rather than the rule count, so a saved link still shows every rule after the category grows
+export type RuleListPerPage = number | "all";
+
 export interface RuleListUrlState {
   page: number;
-  perPage: number;
+  perPage: RuleListPerPage;
   view: RuleListFilter;
   includeArchived: boolean;
 }
@@ -28,7 +31,7 @@ export function parseRuleListSearch(search: string): RuleListUrlState {
 
   return {
     page: parsePositiveInt(params.get("page")) ?? DEFAULT_RULE_LIST_URL_STATE.page,
-    perPage: parsePositiveInt(params.get("perPage")) ?? DEFAULT_RULE_LIST_URL_STATE.perPage,
+    perPage: params.get("perPage") === "all" ? "all" : (parsePositiveInt(params.get("perPage")) ?? DEFAULT_RULE_LIST_URL_STATE.perPage),
     view: view !== null && VIEWS.includes(view) ? (view as RuleListFilter) : DEFAULT_RULE_LIST_URL_STATE.view,
     includeArchived: params.get("archived") === "true",
   };
@@ -51,4 +54,20 @@ export function toRuleListSearch(state: RuleListUrlState, currentSearch: string)
 
   const query = params.toString();
   return query ? `?${query}` : "";
+}
+
+export function toPerPageState(itemsPerPage: number, totalRules: number): RuleListPerPage {
+  return itemsPerPage >= totalRules ? "all" : itemsPerPage;
+}
+
+export function resolvePerPage(perPage: RuleListPerPage, totalRules: number): number {
+  return perPage === "all" ? totalRules : perPage;
+}
+
+/**
+ * A page past the end (e.g. a stale ?page=5 on a list that has since shrunk) shows the last page instead of nothing.
+ * A list that doesn't paginate itself gets `rules` already sliced by its caller, and the page only drives numbering.
+ */
+export function resolveCurrentPage(requestedPage: number, totalPages: number, listPaginates: boolean): number {
+  return listPaginates ? Math.min(requestedPage, totalPages) : requestedPage;
 }

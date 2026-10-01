@@ -4,10 +4,14 @@
 
 const STORAGE_KEY = "ssw-rules:category-return";
 
+// A restore request is only honoured for the navigation that made it. If that navigation never
+// reaches the list (cancelled, blocked, failed), a later unrelated visit must not jump to the old position.
+const RESTORE_REQUEST_TTL_MS = 30_000;
+
 export interface CategoryReturnState {
   search: string;
   scrollY: number;
-  restoreScroll: boolean;
+  restoreRequestedAt: number | null;
 }
 
 type CategoryReturnStore = Record<string, CategoryReturnState>;
@@ -19,7 +23,7 @@ function isCategoryReturnState(value: unknown): value is CategoryReturnState {
     entry !== null &&
     typeof entry.search === "string" &&
     typeof entry.scrollY === "number" &&
-    typeof entry.restoreScroll === "boolean"
+    (entry.restoreRequestedAt === null || typeof entry.restoreRequestedAt === "number")
   );
 }
 
@@ -46,7 +50,7 @@ function writeStore(store: CategoryReturnStore) {
 
 export function saveCategoryReturnState(categoryUri: string, search: string, scrollY: number) {
   const store = readCategoryReturnStates();
-  store[categoryUri] = { search, scrollY, restoreScroll: false };
+  store[categoryUri] = { search, scrollY, restoreRequestedAt: null };
   writeStore(store);
 }
 
@@ -54,7 +58,7 @@ export function requestScrollRestore(categoryUri: string) {
   const store = readCategoryReturnStates();
   const entry = store[categoryUri];
   if (!entry) return;
-  entry.restoreScroll = true;
+  entry.restoreRequestedAt = Date.now();
   writeStore(store);
 }
 
@@ -62,9 +66,10 @@ export function requestScrollRestore(categoryUri: string) {
 export function takeScrollRestore(categoryUri: string, search: string): number | null {
   const store = readCategoryReturnStates();
   const entry = store[categoryUri];
-  if (!entry?.restoreScroll) return null;
+  if (!entry || entry.restoreRequestedAt === null) return null;
 
-  entry.restoreScroll = false;
+  const isFresh = Date.now() - entry.restoreRequestedAt <= RESTORE_REQUEST_TTL_MS;
+  entry.restoreRequestedAt = null;
   writeStore(store);
-  return entry.search === search ? entry.scrollY : null;
+  return isFresh && entry.search === search ? entry.scrollY : null;
 }

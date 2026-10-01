@@ -305,16 +305,17 @@ mark:is(
     @apply w-full text-base;
   }
 
+  th,
+  td {
+    @apply px-4 py-2;
+  }
+
   th {
-    @apply text-left font-bold border-b-2 border-ssw-red/30 bg-table-odd !px-4 !py-2;
+    @apply text-left font-bold border-b-2 border-ssw-red/30 bg-table-odd;
   }
 
   tbody tr:nth-child(even) {
     @apply bg-table-odd;
-  }
-
-  td {
-    @apply !px-4 !py-2;
   }
 
   hr {

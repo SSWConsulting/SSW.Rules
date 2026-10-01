@@ -101,13 +101,11 @@ export const getMarkdownComponentMapping = (enableAnchors = false): Components<a
       return <span dangerouslySetInnerHTML={{ __html: trimmed }} />;
     },
 
-    // Tina's renderer builds the thead/tbody itself and looks up components["table"]
-    // for the outer element, so overriding this key alone is enough to add a scroll
-    // container. th/td are deliberately NOT overridden - Tina's defaults apply the
-    // per-column `align` from the markdown separator row, and overriding them would
-    // silently drop that alignment.
+    // th/td are deliberately NOT overridden - Tina's defaults carry the per-column
+    // `align` from the markdown separator row, which an override would drop.
     table: (props: any) => (
       <div className="mb-4 overflow-hidden rounded-lg border border-border">
+        {/* Focusable so keyboard users can scroll clipped columns; the ring is inset because the wrapper's overflow-hidden clips an outer one */}
         <div
           role="region"
           aria-label="Scrollable table"

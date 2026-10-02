@@ -3,10 +3,14 @@ import { Collection, useCMS, wrapFieldsWithMeta } from "tinacms";
 import { embedTemplates } from "@/components/embeds";
 import { generateGuid } from "@/utils/guidGenerationUtils";
 import { countEndIntro } from "@/utils/mdxNodeUtils";
+import { AuthorSelectorInput } from "../fields/AuthorSelector";
+import { AuthorsListField } from "../fields/AuthorsListField";
+import { AuthorUrlField } from "../fields/AuthorUrlField";
 import { CategoryMultiSelectorInput } from "../fields/CategoryMultiSelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
+import { countMatchingAuthors, DEFAULT_AUTHOR, validateUniqueAuthors } from "./shared/authors";
 import { createdInfoFields } from "./shared/createdInfoFields";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { toolbarFields } from "./shared/toolbarFields";
@@ -106,32 +110,68 @@ const Rule: Collection = {
       type: "object",
       name: "authors",
       label: "Authors",
-      description: "Select one or more contributors for this rule.",
+      description: "Add one or more contributors for this rule.",
       list: true,
       searchable: false,
+      openFormOnCreate: true,
       ui: {
-        itemProps: (item) => ({ label: "👤 " + (item?.title ?? "Author") }),
-        defaultItem: {
-          title: "Bob Northwind",
-          url: "https://www.ssw.com.au/people/bob-northwind",
-        },
-        component: ConditionalHiddenField,
+        itemProps: (item) => ({ label: "👤 " + (item?.title || "Add an author") }),
+        defaultItem: DEFAULT_AUTHOR,
+        component: AuthorsListField,
+        validate: (value: any) => validateUniqueAuthors(value),
       },
       fields: [
         {
           type: "string",
           name: "title",
-          description: "The full name of the contributor, as it should appear on the rule.",
-          label: "Name",
+          description: "Full name as it should appear on the rule.",
+          label: "Contributor Name",
           ui: {
-            component: ConditionalHiddenField,
+            component: AuthorSelectorInput,
+            validate: (value: any, allValues: any) => {
+              if (countMatchingAuthors(allValues?.authors, "title", value) > 1) return "This contributor is already an author on this rule";
+            },
           },
         },
         {
           type: "string",
-          description: 'The SSW People link for the contributor. E.g. "https://www.ssw.com.au/people/bob-northwind"',
+          description: "Full link to the contributor's profile (e.g. SSW People or an external URL)",
           name: "url",
-          label: "Url",
+          label: "Profile URL",
+          ui: {
+            component: AuthorUrlField,
+            validate: (value: any, allValues: any) => {
+              if (!value) return undefined;
+              try {
+                const url = new URL(value);
+                if (!["http:", "https:"].includes(url.protocol)) {
+                  return "URL must start with http:// or https://";
+                }
+              } catch {
+                return "Please enter a valid URL (e.g. https://example.com)";
+              }
+              if (countMatchingAuthors(allValues?.authors, "url", value) > 1) return "This profile is already an author on this rule";
+            },
+          },
+        },
+        {
+          type: "string",
+          name: "img",
+          label: "Profile Image URL",
+          description: "Optional. Photo URL for non-SSW authors. SSW authors get their image automatically.",
+          ui: {
+            validate: (value: any) => {
+              if (!value) return undefined;
+              try {
+                const url = new URL(value);
+                if (!["http:", "https:"].includes(url.protocol)) {
+                  return "Image URL must start with http:// or https://";
+                }
+              } catch {
+                return "Please enter a valid image URL";
+              }
+            },
+          },
         },
       ],
     },

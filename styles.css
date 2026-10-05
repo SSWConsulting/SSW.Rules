@@ -302,20 +302,20 @@ mark:is(
   }
 
   table {
-    @apply w-full text-base !border-gray-200 !border-2 mb-4;
+    @apply w-full text-base;
   }
 
   th,
-  tr:first-child {
-    @apply text-left font-bold border-b-4 border-gray-300 pb-2;
-  }
-
-  tr:nth-child(odd) {
-    @apply bg-table-odd;
-  }
-
   td {
-    @apply !px-4 !py-2;
+    @apply px-4 py-2;
+  }
+
+  th {
+    @apply text-left font-bold border-b-2 border-ssw-red/30 bg-table-odd;
+  }
+
+  tbody tr:nth-child(even) {
+    @apply bg-table-odd;
   }
 
   hr {

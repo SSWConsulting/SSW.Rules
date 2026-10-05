@@ -25,3 +25,14 @@ export const validateUniqueAuthors = (authors?: RuleAuthor[]) => {
   const duplicate = findDuplicateAuthor(authors);
   if (duplicate) return `${duplicate.title || duplicate.url} is listed more than once. Remove the duplicate before saving.`;
 };
+
+/** Empty is allowed (the fields are optional), anything else must be a full http(s) URL. */
+export const validateHttpUrl = (value?: string) => {
+  if (!value) return;
+  try {
+    const { protocol } = new URL(value);
+    if (protocol !== "http:" && protocol !== "https:") return "URL must start with http:// or https://";
+  } catch {
+    return "Please enter a valid URL (e.g. https://example.com)";
+  }
+};

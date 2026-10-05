@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
 import { wrapFieldsWithMeta } from "tinacms";
+import { asSchemaComponent, TinaFieldProps } from "./types";
 
 /**
  * Custom TinaCMS field component for the author `url` field.
@@ -9,13 +9,12 @@ import { wrapFieldsWithMeta } from "tinacms";
  * - Renders as **readonly** when the URL is an SSW People link (auto-filled by the AuthorSelector).
  * - Renders as a normal editable input when the URL is empty or a non-SSW link.
  */
-const AuthorUrlFieldInner: React.FC<any> = (props) => {
-  const { input } = props;
+const AuthorUrlFieldInner = ({ input }: TinaFieldProps) => {
   const value: string = input.value || "";
   const isSswUrl = value.includes("ssw.com.au/people");
 
   return (
-    <div>
+    <>
       <input
         type="text"
         id={input.name}
@@ -30,8 +29,8 @@ const AuthorUrlFieldInner: React.FC<any> = (props) => {
         placeholder="https://example.com/author-profile"
       />
       {isSswUrl && <p className="mt-1 text-xs text-gray-400">Auto-filled from SSW people selection</p>}
-    </div>
+    </>
   );
 };
 
-export const AuthorUrlField = wrapFieldsWithMeta(AuthorUrlFieldInner);
+export const AuthorUrlField = asSchemaComponent(wrapFieldsWithMeta(AuthorUrlFieldInner));

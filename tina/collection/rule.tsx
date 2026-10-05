@@ -10,7 +10,7 @@ import { CategoryMultiSelectorInput } from "../fields/CategoryMultiSelector";
 import { ConditionalHiddenField } from "../fields/ConditionalHiddenField";
 import { ReadonlyUriInput } from "../fields/ReadonlyUriInput";
 import { RuleSelector } from "../fields/RuleSelector";
-import { countMatchingAuthors, DEFAULT_AUTHOR, validateUniqueAuthors } from "./shared/authors";
+import { countMatchingAuthors, DEFAULT_AUTHOR, RuleAuthor, validateHttpUrl, validateUniqueAuthors } from "./shared/authors";
 import { createdInfoFields } from "./shared/createdInfoFields";
 import { historyBeforeSubmit, historyFields } from "./shared/historyFields";
 import { toolbarFields } from "./shared/toolbarFields";
@@ -118,7 +118,8 @@ const Rule: Collection = {
         itemProps: (item) => ({ label: "👤 " + (item?.title || "Add an author") }),
         defaultItem: DEFAULT_AUTHOR,
         component: AuthorsListField,
-        validate: (value: any) => validateUniqueAuthors(value),
+        // Tina types object list values as `string[]`, so read the typed list from `allValues` (same value at runtime)
+        validate: (_authors, allValues: { authors?: RuleAuthor[] }) => validateUniqueAuthors(allValues?.authors),
       },
       fields: [
         {
@@ -128,7 +129,7 @@ const Rule: Collection = {
           label: "Contributor Name",
           ui: {
             component: AuthorSelectorInput,
-            validate: (value: any, allValues: any) => {
+            validate: (value: string, allValues: { authors?: RuleAuthor[] }) => {
               if (countMatchingAuthors(allValues?.authors, "title", value) > 1) return "This contributor is already an author on this rule";
             },
           },
@@ -140,16 +141,9 @@ const Rule: Collection = {
           label: "Profile URL",
           ui: {
             component: AuthorUrlField,
-            validate: (value: any, allValues: any) => {
-              if (!value) return undefined;
-              try {
-                const url = new URL(value);
-                if (!["http:", "https:"].includes(url.protocol)) {
-                  return "URL must start with http:// or https://";
-                }
-              } catch {
-                return "Please enter a valid URL (e.g. https://example.com)";
-              }
+            validate: (value: string, allValues: { authors?: RuleAuthor[] }) => {
+              const urlError = validateHttpUrl(value);
+              if (urlError) return urlError;
               if (countMatchingAuthors(allValues?.authors, "url", value) > 1) return "This profile is already an author on this rule";
             },
           },
@@ -160,17 +154,7 @@ const Rule: Collection = {
           label: "Profile Image URL",
           description: "Optional. Photo URL for non-SSW authors. SSW authors get their image automatically.",
           ui: {
-            validate: (value: any) => {
-              if (!value) return undefined;
-              try {
-                const url = new URL(value);
-                if (!["http:", "https:"].includes(url.protocol)) {
-                  return "Image URL must start with http:// or https://";
-                }
-              } catch {
-                return "Please enter a valid image URL";
-              }
-            },
+            validate: (value: string) => validateHttpUrl(value),
           },
         },
       ],

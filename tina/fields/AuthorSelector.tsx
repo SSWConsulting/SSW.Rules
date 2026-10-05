@@ -1,10 +1,11 @@
 "use client";
 
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BiChevronDown, BiSearch, BiUser } from "react-icons/bi";
 import { wrapFieldsWithMeta } from "tinacms";
 import { toSlug } from "@/lib/utils";
+import { asSchemaComponent, TinaFieldProps } from "./types";
 
 interface EmployeeItem {
   userId: string;
@@ -17,9 +18,7 @@ interface EmployeeItem {
 /**
  * Custom TinaCMS field component for the author `title` field.
  */
-const AuthorSelectorInner: React.FC<any> = (props) => {
-  const { field, input, form, tinaForm } = props;
-
+const AuthorSelectorInner = ({ input, form }: TinaFieldProps) => {
   const [filter, setFilter] = useState("");
   const [allEmployees, setAllEmployees] = useState<EmployeeItem[]>([]);
   const [filteredEmployees, setFilteredEmployees] = useState<EmployeeItem[]>([]);
@@ -32,30 +31,11 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
     return input.name.replace(/\.title$/, ".url");
   }, [input.name]);
 
-  const updateUrlField = (value: string) => {
-    const bracketName = urlFieldName.replace(/\.(\d+)\./g, "[$1].");
-
-    // Approach 1: form prop (should be tinaForm.finalForm = the final-form API)
-    if (typeof form?.change === "function") {
-      form.change(urlFieldName, value);
-      if (bracketName !== urlFieldName) {
-        form.change(bracketName, value);
-      }
-    }
-
-    // Approach 2: tinaForm.finalForm (TinaCMS form wrapper's final-form instance)
-    if (typeof tinaForm?.finalForm?.change === "function") {
-      tinaForm.finalForm.change(urlFieldName, value);
-    }
-
-    // Approach 3: tinaForm mutators (used internally by TinaCMS for list operations)
-    if (typeof tinaForm?.change === "function") {
-      tinaForm.change(urlFieldName, value);
-    }
-  };
+  // `form` is the Final Form instance behind the Tina form
+  const updateUrlField = (value: string) => form.change(urlFieldName, value);
 
   // Read the current URL value so we can initialise the non‑SSW toggle state.
-  const currentUrl: string = form?.getState?.()?.values ? (getNestedValue(form.getState().values, urlFieldName) ?? "") : "";
+  const currentUrl = getNestedValue(form.getState().values, urlFieldName) ?? "";
 
   useEffect(() => {
     if (currentUrl && !currentUrl.includes("ssw.com.au/people")) {
@@ -72,7 +52,7 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
         const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
         const url = `${base}/api/crm/employees`;
 
-        const res = await fetch(url, { method: "GET", cache: "no-store" });
+        const res = await fetch(url);
 
         if (!res.ok) {
           const body = await res.text().catch(() => "");
@@ -90,9 +70,9 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
           // Current employees first, alumni at the bottom
           .sort((a: EmployeeItem, b: EmployeeItem) => Number(b.isActive) - Number(a.isActive) || a.fullName.localeCompare(b.fullName));
         setAllEmployees(items);
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error("Failed to load SSW employees:", e);
-        setError(`Could not load SSW people list: ${e?.message || "Unknown error"}`);
+        setError(`Could not load SSW people list: ${e instanceof Error ? e.message : "Unknown error"}`);
       } finally {
         setLoading(false);
       }
@@ -155,7 +135,7 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
   // ── SSW mode: searchable dropdown ───────────────────────────────────────
   return (
     <div>
-      <div className="relative" style={{ zIndex: 9999 }}>
+      <div className="relative z-[9999]">
         <Popover>
           {({ open }) => (
             <>
@@ -176,7 +156,7 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
                 <BiChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
               </PopoverButton>
 
-              <div className="absolute inset-x-0 mt-1" style={{ zIndex: 9999 }}>
+              <div className="absolute inset-x-0 mt-1 z-[9999]">
                 <Transition
                   enter="transition duration-150 ease-out"
                   enterFrom="transform opacity-0 -translate-y-2"
@@ -185,19 +165,15 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
                   leaveFrom="transform opacity-100 translate-y-0"
                   leaveTo="transform opacity-0 -translate-y-2"
                 >
-                  <PopoverPanel
-                    className="overflow-hidden rounded-lg shadow-lg border border-gray-200"
-                    style={{ zIndex: 9999, backgroundColor: "white", position: "relative" }}
-                  >
+                  <PopoverPanel className="relative z-[9999] overflow-hidden rounded-lg shadow-lg border border-gray-200 bg-white">
                     {({ close }) => (
-                      <div className="max-h-[50vh] flex flex-col w-full" style={{ backgroundColor: "white" }}>
-                        <div className="p-2 border-b border-gray-100 shadow-sm" style={{ backgroundColor: "#f9fafb" }}>
+                      <div className="max-h-[50vh] flex flex-col w-full bg-white">
+                        <div className="p-2 border-b border-gray-100 shadow-sm bg-gray-50">
                           <div className="relative">
                             <BiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <input
                               type="text"
-                              className="text-sm rounded-sm border border-gray-100 shadow-inner py-1.5 pl-10 pr-3 w-full block placeholder-gray-400"
-                              style={{ backgroundColor: "white" }}
+                              className="bg-white text-sm rounded-sm border border-gray-100 shadow-inner py-1.5 pl-10 pr-3 w-full block placeholder-gray-400"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
@@ -209,40 +185,25 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
                           </div>
                         </div>
 
-                        {loading && (
-                          <div className="p-4 text-center text-gray-500 text-sm" style={{ backgroundColor: "white" }}>
-                            Loading SSW people...
-                          </div>
-                        )}
+                        {loading && <div className="p-4 text-center text-gray-500 text-sm bg-white">Loading SSW people...</div>}
 
-                        {error && (
-                          <div className="p-4 text-center text-red-500 text-sm" style={{ backgroundColor: "white" }}>
-                            {error}
-                          </div>
-                        )}
+                        {error && <div className="p-4 text-center text-red-500 text-sm bg-white">{error}</div>}
 
                         {!loading && !error && filteredEmployees.length === 0 && (
-                          <div className="p-4 text-center text-gray-400 text-sm" style={{ backgroundColor: "white" }}>
-                            No matching people found
-                          </div>
+                          <div className="p-4 text-center text-gray-400 text-sm bg-white">No matching people found</div>
                         )}
 
                         {!loading && !error && filteredEmployees.length > 0 && (
-                          <div className="flex-1 overflow-y-auto" style={{ backgroundColor: "white" }}>
+                          <div className="flex-1 overflow-y-auto bg-white">
                             {filteredEmployees.map((employee) => {
                               const isSelected = input.value === employee.fullName;
                               return (
                                 <button
                                   key={employee.userId}
                                   type="button"
-                                  className={`w-full text-left py-2 px-3 border-b border-gray-100 transition-colors block ${isSelected ? "border-blue-200" : ""}`}
-                                  style={{ backgroundColor: isSelected ? "#eff6ff" : "white" }}
-                                  onMouseEnter={(e) => {
-                                    if (!isSelected) (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#f9fafb";
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    (e.currentTarget as HTMLButtonElement).style.backgroundColor = isSelected ? "#eff6ff" : "white";
-                                  }}
+                                  className={`w-full text-left py-2 px-3 border-b border-gray-100 transition-colors block ${
+                                    isSelected ? "bg-blue-50 border-blue-200" : "bg-white hover:bg-gray-50"
+                                  }`}
                                   onClick={() => handleSelectEmployee(employee, close)}
                                   title={employee.fullName}
                                 >
@@ -278,15 +239,15 @@ const AuthorSelectorInner: React.FC<any> = (props) => {
   );
 };
 
-export const AuthorSelectorInput = wrapFieldsWithMeta(AuthorSelectorInner);
+export const AuthorSelectorInput = asSchemaComponent(wrapFieldsWithMeta(AuthorSelectorInner));
 
-/** Read a nested value from an object using a dot/bracket path like "authors[0].url" */
-function getNestedValue(obj: any, path: string): any {
+/** Read a nested string value from an object using a dot/bracket path like "authors[0].url" */
+function getNestedValue(obj: Record<string, unknown>, path: string): string | undefined {
   const parts = path.replace(/\[(\d+)]/g, ".$1").split(".");
-  let current = obj;
+  let current: unknown = obj;
   for (const part of parts) {
-    if (current == null) return undefined;
-    current = current[part];
+    if (current == null || typeof current !== "object") return undefined;
+    current = (current as Record<string, unknown>)[part];
   }
-  return current;
+  return typeof current === "string" ? current : undefined;
 }

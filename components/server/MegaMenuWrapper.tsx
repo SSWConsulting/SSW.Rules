@@ -2,11 +2,12 @@
 
 import classNames from "classnames";
 import { Suspense } from "react";
-import { RiAddCircleFill, RiOpenaiFill, RiQuestionFill } from "react-icons/ri";
+import { RiAddCircleFill, RiQuestionFill } from "react-icons/ri";
 import { MegaMenuLayout } from "ssw.megamenu";
 import { getSanitizedBasePath } from "@/lib/withBasePath";
 import SignIn from "../auth/SignIn";
 import { CustomLink } from "../customLink";
+import { SearchTrigger } from "../search/SearchTrigger";
 import Tooltip from "../tooltip/tooltip";
 
 const basePath = getSanitizedBasePath();
@@ -48,18 +49,8 @@ export function MegaMenuWrapper(props) {
 const ActionButtons = () => {
   return (
     <div className="action-btn-container max-sm:order-2 max-sm:mt-4 flex justify-between items-center w-full gap-4">
-      <div className="flex items-center gap-4">
-        <Tooltip text="Try out RulesGPT" showDelay={0} hideDelay={0} opaque={true}>
-          <a
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-            href="https://rulesgpt.ssw.com.au"
-            className="action-btn-link-underlined"
-            aria-label="Try out RulesGPT"
-          >
-            <RiOpenaiFill className="header-icon" />
-          </a>
-        </Tooltip>
+      <div className="flex items-center gap-4 max-sm:gap-3">
+        <SearchTrigger />
 
         <Tooltip text="Create an SSW Rule" showDelay={0} hideDelay={0} opaque={true}>
           <a

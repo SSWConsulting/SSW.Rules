@@ -1,9 +1,9 @@
 "use client";
 
-import { type MouseEvent, useEffect, useLayoutEffect, useState } from "react";
+import { type MouseEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { BreadcrumbCategory } from "@/components/Breadcrumbs";
-import { CategoryReturnState, readCategoryReturnStates, requestScrollRestore, saveCategoryReturnState, takeScrollRestore } from "@/lib/categoryReturnState";
-import { normalizeRuleListSearch } from "@/lib/ruleListUrlState";
+import { CategoryReturnState, readCategoryReturnStates, requestScrollRestore, saveCategoryReturnState, takeListReturnRequest } from "@/lib/categoryReturnState";
+import { normalizeRuleListSearch, parseRuleListSearch, toRuleListSearch } from "@/lib/ruleListUrlState";
 
 /** Points category links at the page of the list the reader left, and restores their scroll position there. */
 export function useCategoryReturnLinks(categories?: BreadcrumbCategory[]): BreadcrumbCategory[] | undefined {
@@ -32,13 +32,33 @@ export function useCategoryReturnLinks(categories?: BreadcrumbCategory[]): Bread
   });
 }
 
-/** On a category page: remembers where the reader left the list, and restores it when they return via a category link. */
-export function useCategoryListReturnPosition(categoryUri?: string) {
+/**
+ * On a category page: remembers where the reader left the list, and restores it when they return via a category link.
+ * `renderedSearch` is the list query the page is rendering now, normalized.
+ */
+export function useCategoryListReturnPosition(categoryUri: string | undefined, renderedSearch: string) {
+  const pendingScrollRef = useRef<{ search: string; scrollY: number } | null>(null);
+
   useLayoutEffect(() => {
     if (!categoryUri) return;
-    const scrollY = takeScrollRestore(categoryUri, normalizeRuleListSearch(window.location.search));
-    if (scrollY !== null) window.scrollTo(0, scrollY);
+    const request = takeListReturnRequest(categoryUri);
+    if (!request) return;
+    // Client navigation to this prerendered route can land without the link's query, so apply the saved list query here
+    const url = new URL(window.location.href);
+    if (normalizeRuleListSearch(url.search) !== request.search) {
+      url.search = toRuleListSearch(parseRuleListSearch(request.search), url.search);
+      window.history.replaceState(null, "", url);
+    }
+    pendingScrollRef.current = request;
   }, [categoryUri]);
+
+  // Scroll only once the list renders the saved page; a restored query re-renders the page after the effect above
+  useLayoutEffect(() => {
+    const pending = pendingScrollRef.current;
+    if (!pending || pending.search !== renderedSearch) return;
+    pendingScrollRef.current = null;
+    window.scrollTo(0, pending.scrollY);
+  }, [renderedSearch]);
 
   useEffect(() => {
     if (!categoryUri) return;

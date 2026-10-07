@@ -62,8 +62,8 @@ export function requestScrollRestore(categoryUri: string) {
   writeStore(store);
 }
 
-/** Returns the saved scroll position once, if a restore was requested for the list query now in the URL. */
-export function takeScrollRestore(categoryUri: string, search: string): number | null {
+/** Returns the saved list query and scroll position once, if a return to this category was just requested. */
+export function takeListReturnRequest(categoryUri: string): { search: string; scrollY: number } | null {
   const store = readCategoryReturnStates();
   const entry = store[categoryUri];
   if (!entry || entry.restoreRequestedAt === null) return null;
@@ -71,5 +71,5 @@ export function takeScrollRestore(categoryUri: string, search: string): number |
   const isFresh = Date.now() - entry.restoreRequestedAt <= RESTORE_REQUEST_TTL_MS;
   entry.restoreRequestedAt = null;
   writeStore(store);
-  return isFresh && entry.search === search ? entry.scrollY : null;
+  return isFresh ? { search: entry.search, scrollY: entry.scrollY } : null;
 }

@@ -37,7 +37,7 @@ export default function ServerCategoryPage({ category, path }: ServerCategoryPag
   );
   const listState = isHydrated ? parseRuleListSearch(searchParams.toString()) : DEFAULT_RULE_LIST_URL_STATE;
   const { includeArchived } = listState;
-  useCategoryListReturnPosition(category?.uri);
+  useCategoryListReturnPosition(category?.uri, toRuleListSearch(listState, ""));
   const title = category?.title ?? "";
   const breadCrumbTitle = category?.title.replace("Rules to Better", "") ?? "";
   const baseRules: any[] = Array.isArray(category?.index) ? category.index.flatMap((i: any) => (i?.rule ? [i.rule] : [])) : [];

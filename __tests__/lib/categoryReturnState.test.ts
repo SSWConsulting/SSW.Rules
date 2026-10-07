@@ -1,4 +1,4 @@
-import { readCategoryReturnStates, requestScrollRestore, saveCategoryReturnState, takeScrollRestore } from "@/lib/categoryReturnState";
+import { readCategoryReturnStates, requestScrollRestore, saveCategoryReturnState, takeListReturnRequest } from "@/lib/categoryReturnState";
 
 describe("categoryReturnState", () => {
   beforeEach(() => window.sessionStorage.clear());
@@ -9,20 +9,13 @@ describe("categoryReturnState", () => {
     expect(readCategoryReturnStates()["rules-to-better-ai"]).toEqual({ search: "?page=2", scrollY: 1500, restoreRequestedAt: null });
   });
 
-  it("restores scroll only after a request, and only once", () => {
+  it("returns the saved list position only after a request, and only once", () => {
     saveCategoryReturnState("rules-to-better-ai", "?page=2", 1500);
-    expect(takeScrollRestore("rules-to-better-ai", "?page=2")).toBeNull();
+    expect(takeListReturnRequest("rules-to-better-ai")).toBeNull();
 
     requestScrollRestore("rules-to-better-ai");
-    expect(takeScrollRestore("rules-to-better-ai", "?page=2")).toBe(1500);
-    expect(takeScrollRestore("rules-to-better-ai", "?page=2")).toBeNull();
-  });
-
-  it("does not restore scroll when the list query changed", () => {
-    saveCategoryReturnState("rules-to-better-ai", "?page=2", 1500);
-    requestScrollRestore("rules-to-better-ai");
-
-    expect(takeScrollRestore("rules-to-better-ai", "?page=3")).toBeNull();
+    expect(takeListReturnRequest("rules-to-better-ai")).toEqual({ search: "?page=2", scrollY: 1500 });
+    expect(takeListReturnRequest("rules-to-better-ai")).toBeNull();
   });
 
   it("ignores a restore request that was never used", () => {
@@ -31,7 +24,7 @@ describe("categoryReturnState", () => {
     requestScrollRestore("rules-to-better-ai");
     jest.advanceTimersByTime(60_000);
 
-    expect(takeScrollRestore("rules-to-better-ai", "?page=2")).toBeNull();
+    expect(takeListReturnRequest("rules-to-better-ai")).toBeNull();
     jest.useRealTimers();
   });
 

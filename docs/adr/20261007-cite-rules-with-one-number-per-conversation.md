@@ -1,7 +1,7 @@
 # Cite rules with one number per rule for the whole conversation
 
 - Status: proposed
-- Deciders: Anton Polkanov
+- Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
 - Date: 2026-10-07
 - Tags: ai-chat, security
 

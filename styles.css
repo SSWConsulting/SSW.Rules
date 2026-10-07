@@ -274,27 +274,25 @@ mark:is(
 
   ul,
   ol {
-    @apply mb-4 ps-8 m-0 p-0;
-  }
-
-  ul {
-   @apply list-[square];
-  }
-
-  ul > li > ul {
-    @apply px-4 pt-2;
-  }
-
-  ul > li > ul > li::marker {
-    color: var(--grey-600);
+    @apply mb-6 ps-8 m-0 p-0 list-[square];
   }
 
   ol {
     @apply list-decimal;
   }
 
+  ul > li > ul,
+  ol > li > ul {
+    @apply px-4 pt-2;
+  }
+
+  ul > li > ul > li::marker,
+  ol > li > ul > li::marker {
+    color: var(--grey-600);
+  }
+
   li {
-    @apply mb-3;
+    @apply mb-2;
   }
 
   blockquote {

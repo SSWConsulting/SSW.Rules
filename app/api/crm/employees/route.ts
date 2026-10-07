@@ -1,17 +1,24 @@
+import { unstable_cache } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { createDynamicsService } from '@/lib/services/dynamics';
 import { normalizeName, toSlug } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
+// The full list only changes when someone joins or leaves SSW, so don't hit Dynamics on every request
+const getCachedEmployees = unstable_cache(
+  () => createDynamicsService().getEmployees({ includeCurrent: true, includePast: true }),
+  ['crm-employees'],
+  { revalidate: 3600, tags: ['crm-employees'] }
+);
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('query');
 
-    const service = createDynamicsService();
-
     if (query) {
+      const service = createDynamicsService();
       const emp = await service.findEmployeeByGitHub(query, {
         includeCurrent: true,
         includePast: true,
@@ -35,7 +42,7 @@ export async function GET(request: Request) {
       });
     }
 
-    const employees = await service.getEmployees({ includeCurrent: true, includePast: true });
+    const employees = await getCachedEmployees();
     return NextResponse.json({ value: employees });
   } catch (error: any) {
     const message = error?.message || 'Unknown error';

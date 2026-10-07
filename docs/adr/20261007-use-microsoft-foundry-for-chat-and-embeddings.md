@@ -2,7 +2,7 @@
 
 - Status: accepted
 - Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
-- Date: 2026-10-08
+- Date: 2026-10-07
 - Tags: ai-chat, ai-provider, infrastructure
 
 ## Context and Problem Statement

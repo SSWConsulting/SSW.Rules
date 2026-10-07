@@ -289,7 +289,7 @@ mark:is(
   ul > li > ol,
   ol > li > ul,
   ol > li > ol {
-    @apply px-4 pt-2;
+    @apply pt-2;
   }
 
   ul > li > ul > li::marker,

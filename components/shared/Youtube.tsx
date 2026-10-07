@@ -8,6 +8,24 @@ export function extractYoutubeId(input?: string | null): string | null {
   return match ? match[1] : null;
 }
 
+// Parses a start time from `t=` or `start=` (e.g. 250, 250s, 4m10s, 1h2m3s) and returns seconds
+export function extractYoutubeStart(input?: string | null): number | null {
+  const value = (input ?? "").trim();
+  const match = value.match(/[?&#](?:t|start)=([0-9hms]+)/i);
+  if (!match) return null;
+  const raw = match[1].toLowerCase();
+  if (/^\d+$/.test(raw)) return Number(raw) || null;
+  const parts = raw.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
+  if (!parts) return null;
+  const seconds = Number(parts[1] ?? 0) * 3600 + Number(parts[2] ?? 0) * 60 + Number(parts[3] ?? 0);
+  return seconds > 0 ? seconds : null;
+}
+
+function buildEmbedSrc(videoId: string, url?: string): string {
+  const start = extractYoutubeStart(url);
+  return `https://www.youtube.com/embed/${videoId}${start ? `?start=${start}` : ""}`;
+}
+
 export function YouTubePlayer({ url = "", description = "" }: { url?: string; description?: string }) {
   const videoId = extractYoutubeId(url);
 
@@ -23,7 +41,7 @@ export function YouTubePlayer({ url = "", description = "" }: { url?: string; de
     <div className="my-4 space-y-2">
       <div className="relative w-full aspect-video">
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
+          src={buildEmbedSrc(videoId, url)}
           title={description || "YouTube video"}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -56,7 +74,7 @@ export function YouTubeShorts({ url = "", description = "" }: { url?: string; de
     <div className="my-0 rounded-xs">
       <div className={`relative w-full ${isShort ? "max-w-md mx-auto aspect-9/16" : "aspect-video"}`}>
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
+          src={buildEmbedSrc(videoId, url)}
           title={description || (isShort ? "YouTube Shorts video" : "YouTube video")}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen

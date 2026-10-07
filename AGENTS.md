@@ -97,3 +97,7 @@ const { data } = await client.queries.latestRulesQuery({
 2. Export from `components/embeds/index.tsx`
 3. Add to `embedTemplates` in TinaCMS schema
 4. Add to `getMarkdownComponentMapping()` for rendering
+
+## Architecture Decision Records
+
+Record architectural decisions as ADRs in `docs/adr/`, managed with Log4brains. Use the `adr-documenter` skill in `.agents/skills/adr-documenter/` to write one.

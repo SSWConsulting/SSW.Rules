@@ -1,8 +1,8 @@
 # Use Azure SQL Database for vector search
 
-- Status: proposed
+- Status: accepted
 - Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
-- Date: 2026-10-07
+- Date: 2026-10-08
 - Tags: ai-chat, search, infrastructure, database
 
 ## Context and Problem Statement

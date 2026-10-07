@@ -1,8 +1,8 @@
 # Limit The Rulekeeper to signed-in users, with daily limits outside SSW
 
-- Status: proposed
+- Status: accepted
 - Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
-- Date: 2026-10-07
+- Date: 2026-10-08
 - Tags: ai-chat, security, cost
 
 ## Context and Problem Statement

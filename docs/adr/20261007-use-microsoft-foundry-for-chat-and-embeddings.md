@@ -1,7 +1,7 @@
 # Use Microsoft Foundry for chat and embedding models
 
 - Status: proposed
-- Deciders: Anton Polkanov
+- Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
 - Date: 2026-10-07
 - Tags: ai-chat, ai-provider, infrastructure
 

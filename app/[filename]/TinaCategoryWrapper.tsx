@@ -6,10 +6,6 @@ import ServerCategoryPage from "./ServerCategoryPage";
 export type TinaCategoryProps = {
   serverCategoryPageProps: {
     path?: string;
-    includeArchived: boolean;
-    view: "titleOnly" | "blurb" | "all";
-    page: number;
-    perPage: number;
   };
   tinaQueryProps: any;
 };

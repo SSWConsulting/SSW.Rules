@@ -18,7 +18,7 @@ ADRs live in `docs/adr/` and are managed with [Log4brains](https://github.com/th
 
 ### 1. Read the existing ADRs
 
-List `docs/adr/` and read the ADRs that touch the same area. This tells you whether the decision is already recorded, whether it replaces an earlier one, and which ADRs to link to. Skip `README.md`, `index.md` and `template.md`; they are not decisions.
+List `docs/adr/` and read the ADRs that touch the same area. This tells you whether the decision is already recorded, whether it replaces an earlier one, and which ADRs to link to. Skip `README.md` and `template.md`; they are not decisions.
 
 ### 2. Interview the user, one question at a time
 
@@ -27,7 +27,6 @@ Ask only for what the conversation has not already made clear. Asking several qu
 - What problem or question the decision answers
 - The options that were considered (at least two; "do nothing" counts)
 - Which option was chosen, and why
-- The consequences: what gets easier, what gets harder, what is still open
 - Who decided. Use real people's names, not a team or a role, because a name tells a future reader who to ask
 - When it was decided
 

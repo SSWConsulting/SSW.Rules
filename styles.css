@@ -294,7 +294,7 @@ mark:is(
 
   ul > li > ul > li::marker,
   ol > li > ul > li::marker {
-    color: var(--grey-600);
+    color: var(--gray-600);
   }
 
   li {

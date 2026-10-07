@@ -1,7 +1,7 @@
 # Embed active rule text with labelled examples, and leave out archived rules
 
 - Status: proposed
-- Deciders: Anton Polkanov
+- Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
 - Date: 2026-10-07
 - Tags: ai-chat, search, content-pipeline
 

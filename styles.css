@@ -297,6 +297,15 @@ mark:is(
     color: var(--gray-600);
   }
 
+  /* Nested ordered lists step through the markers: 1. > a. > i. */
+  li > ol {
+    @apply list-[lower-alpha];
+  }
+
+  li li > ol {
+    @apply list-[lower-roman];
+  }
+
   li {
     @apply mb-2;
   }

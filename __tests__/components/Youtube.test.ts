@@ -36,11 +36,6 @@ describe("extractYoutubeStart", () => {
   ])("returns null for %s", (_name, url) => {
     expect(extractYoutubeStart(url)).toBeNull();
   });
-
-  it("returns null for null and undefined", () => {
-    expect(extractYoutubeStart(null)).toBeNull();
-    expect(extractYoutubeStart(undefined)).toBeNull();
-  });
 });
 
 describe("buildYoutubeEmbedUrl", () => {

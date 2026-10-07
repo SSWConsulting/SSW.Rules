@@ -9,18 +9,14 @@ export function extractYoutubeId(input?: string | null): string | null {
 }
 
 function parseYoutubeTime(raw: string): number | null {
-  const value = raw.trim().toLowerCase();
-  if (/^\d+s?$/.test(value)) return Number.parseInt(value, 10);
-  const match = value.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
+  const match = raw.toLowerCase().match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/);
   if (!match || (!match[1] && !match[2] && !match[3])) return null;
   return Number(match[1] ?? 0) * 3600 + Number(match[2] ?? 0) * 60 + Number(match[3] ?? 0);
 }
 
 /** Reads a start time (seconds) from `t`, `start` or `time_continue` in the query or fragment. Returns null when absent or not > 0. */
-export function extractYoutubeStart(input?: string | null): number | null {
-  const value = (input ?? "").trim();
-  if (!value) return null;
-  const match = value.match(/[?&#](?:t|start|time_continue)=([^&#?]*)/);
+export function extractYoutubeStart(url: string): number | null {
+  const match = url.match(/[?&#](?:t|start|time_continue)=([^&#?]*)/);
   if (!match) return null;
   const seconds = parseYoutubeTime(match[1]);
   return seconds !== null && seconds > 0 ? seconds : null;

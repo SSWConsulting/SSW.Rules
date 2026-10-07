@@ -1,7 +1,7 @@
 # Re-index changed rules from an Azure job on every content merge
 
 - Status: proposed
-- Deciders: Anton Polkanov
+- Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
 - Date: 2026-10-07
 - Tags: ai-chat, search, infrastructure, content-pipeline
 

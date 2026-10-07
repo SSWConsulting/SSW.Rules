@@ -294,7 +294,7 @@ mark:is(
 
   ul > li > ul > li::marker,
   ol > li > ul > li::marker {
-    color: var(--gray-600);
+    color: var(--gray-500);
   }
 
   /* Nested ordered lists step through the markers: 1. > a. > i. */

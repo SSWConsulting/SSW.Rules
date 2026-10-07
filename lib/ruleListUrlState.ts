@@ -56,11 +56,6 @@ export function toRuleListSearch(state: RuleListUrlState, currentSearch: string)
   return query ? `?${query}` : "";
 }
 
-/** The list part of a query string only, in a fixed order, so two URLs for the same list compare equal. */
-export function normalizeRuleListSearch(search: string): string {
-  return toRuleListSearch(parseRuleListSearch(search), "");
-}
-
 export function toPerPageState(itemsPerPage: number, totalRules: number): RuleListPerPage {
   return itemsPerPage >= totalRules ? "all" : itemsPerPage;
 }

@@ -1,12 +1,4 @@
-import {
-  DEFAULT_RULE_LIST_URL_STATE,
-  normalizeRuleListSearch,
-  parseRuleListSearch,
-  resolveCurrentPage,
-  resolvePerPage,
-  toPerPageState,
-  toRuleListSearch,
-} from "@/lib/ruleListUrlState";
+import { DEFAULT_RULE_LIST_URL_STATE, parseRuleListSearch, resolveCurrentPage, resolvePerPage, toPerPageState, toRuleListSearch } from "@/lib/ruleListUrlState";
 import { RuleListFilter } from "@/types/ruleListFilter";
 
 describe("parseRuleListSearch", () => {
@@ -49,13 +41,6 @@ describe("toRuleListSearch", () => {
 
   it("keeps unrelated params and removes params reset to default", () => {
     expect(toRuleListSearch({ ...DEFAULT_RULE_LIST_URL_STATE, page: 2 }, "?utm_source=x&page=4&archived=true")).toBe("?utm_source=x&page=2");
-  });
-});
-
-describe("normalizeRuleListSearch", () => {
-  it("keeps only valid, non-default list params in a fixed order", () => {
-    expect(normalizeRuleListSearch("?utm_source=x&archived=true&page=2&view=blurb")).toBe("?page=2&archived=true");
-    expect(normalizeRuleListSearch("?page=1")).toBe("");
   });
 });
 

@@ -8,7 +8,6 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 import ArchivedReasonContent from "@/components/ArchivedReasonContent";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { CategoryEdit } from "@/components/CategoryEdit";
-import { useCategoryListReturnPosition } from "@/components/hooks/useCategoryReturnLinks";
 import RuleList from "@/components/rule-list/rule-list";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 import { DEFAULT_RULE_LIST_URL_STATE, parseRuleListSearch, RuleListUrlState, resolvePerPage, toPerPageState, toRuleListSearch } from "@/lib/ruleListUrlState";
@@ -37,7 +36,6 @@ export default function ServerCategoryPage({ category, path }: ServerCategoryPag
   );
   const listState = isHydrated ? parseRuleListSearch(searchParams.toString()) : DEFAULT_RULE_LIST_URL_STATE;
   const { includeArchived } = listState;
-  useCategoryListReturnPosition(category?.uri, toRuleListSearch(listState, ""));
   const title = category?.title ?? "";
   const breadCrumbTitle = category?.title.replace("Rules to Better", "") ?? "";
   const baseRules: any[] = Array.isArray(category?.index) ? category.index.flatMap((i: any) => (i?.rule ? [i.rule] : [])) : [];

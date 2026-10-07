@@ -4,15 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { withBasePath } from "@/lib/withBasePath";
 import { parentSiteUrl, siteUrlRelative } from "@/site-config";
 
-export interface BreadcrumbCategory {
-  link: string;
-  title: string;
-  scroll?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
-}
-
 interface BreadcrumbProps {
-  categories?: BreadcrumbCategory[];
+  categories?: { link: string; title: string }[];
   isCategory?: boolean;
   isHomePage?: boolean;
   breadcrumbText?: string;
@@ -21,7 +14,7 @@ interface BreadcrumbProps {
 
 export default function Breadcrumbs({ categories, isCategory = false, isHomePage = false, breadcrumbText, iconSrc = "/uploads/icon.png" }: BreadcrumbProps) {
   const showCategories = typeof categories !== "undefined";
-  const categoryList: BreadcrumbCategory[] = showCategories && (categories?.length ?? 0) > 0 ? categories! : showCategories ? [{ link: "/orphaned", title: "Orphaned" }] : [];
+  const categoryList = showCategories && (categories?.length ?? 0) > 0 ? categories! : showCategories ? [{ link: "/orphaned", title: "Orphaned" }] : [];
 
   const tailText = breadcrumbText ?? (isCategory ? "This category" : "This rule");
 
@@ -31,12 +24,7 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
   // or "SSW Rules" for other non-home pages. Multiple categories use the dropdown.
   const mobileParentLink =
     showCategories && !hasMultipleCategories && categoryList.length > 0
-      ? {
-          href: categoryList[0].link,
-          title: categoryList[0].title.replace(/Rules to(?: Better)?/i, "").trim(),
-          scroll: categoryList[0].scroll,
-          onClick: categoryList[0].onClick,
-        }
+      ? { href: categoryList[0].link, title: categoryList[0].title.replace(/Rules to(?: Better)?/i, "").trim() }
       : !showCategories && !isHomePage
         ? { href: siteUrlRelative, title: "SSW Rules" }
         : null;
@@ -64,7 +52,7 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
     <ul role="menu" className="list-none m-0 py-1 px-0">
       {categoryList.map((cat, i) => (
         <li key={i} role="none" className="mb-0">
-          <Link role="menuitem" href={cat.link} scroll={cat.scroll} onClick={cat.onClick} className="block px-4 py-2 transition hover:text-ssw-red">
+          <Link role="menuitem" href={cat.link} className="block px-4 py-2 transition hover:text-ssw-red">
             {cat.title.replace(/Rules to(?: Better)?/i, "").trim()}
           </Link>
         </li>
@@ -106,8 +94,6 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
         ) : mobileParentLink ? (
           <Link
             href={mobileParentLink.href}
-            scroll={mobileParentLink.scroll}
-            onClick={mobileParentLink.onClick}
             className="inline-flex items-center gap-2 min-w-0 min-h-11 py-2 transition hover:text-ssw-red"
           >
             <svg aria-hidden className="shrink-0" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -176,7 +162,7 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
                   <ul role="menu" className="list-none m-0 py-1 px-0">
                     {categoryList.map((cat, i) => (
                       <li key={i} role="none" className="mb-0">
-                        <Link role="menuitem" href={cat.link} scroll={cat.scroll} onClick={cat.onClick} className="block px-4 py-2 transition hover:text-ssw-red">
+                        <Link role="menuitem" href={cat.link} className="block px-4 py-2 transition hover:text-ssw-red">
                           {cat.title.replace(/Rules to(?: Better)?/i, "").trim()}
                         </Link>
                       </li>
@@ -192,8 +178,6 @@ export default function Breadcrumbs({ categories, isCategory = false, isHomePage
                 <span aria-hidden="true" className="mx-2 md:mx-4 text-gray-400 shrink-0">/</span>
                 <Link
                   href={cat.link}
-                  scroll={cat.scroll}
-                  onClick={cat.onClick}
                   className="truncate min-w-0 max-w-[80ch] transition underline decoration-1 decoration-gray-400 underline-offset-2 duration-150 hover:text-ssw-red hover:decoration-ssw-red"
                 >
                   {cat.title.replace(/Rules to(?: Better)?/i, "").trim()}

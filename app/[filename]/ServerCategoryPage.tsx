@@ -1,15 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useSyncExternalStore } from "react";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import ArchivedReasonContent from "@/components/ArchivedReasonContent";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { CategoryEdit } from "@/components/CategoryEdit";
-import { useRuleListUrlState } from "@/components/hooks/useRuleListUrlState";
+import { useCategoryListReturnPosition } from "@/components/hooks/useCategoryReturnLinks";
 import RuleList from "@/components/rule-list/rule-list";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
-import { resolvePerPage, toPerPageState } from "@/lib/ruleListUrlState";
+import { DEFAULT_RULE_LIST_URL_STATE, parseRuleListSearch, RuleListUrlState, resolvePerPage, toPerPageState, toRuleListSearch } from "@/lib/ruleListUrlState";
+
+const subscribeToNothing = () => () => {};
+
+function updateListUrl(patch: Partial<RuleListUrlState>) {
+  const url = new URL(window.location.href);
+  // Merge into what the URL holds now, not into the rendered state, so two updates in one event both land
+  url.search = toRuleListSearch({ ...parseRuleListSearch(url.search), ...patch }, url.search);
+  window.history.replaceState(null, "", url);
+}
 
 interface ServerCategoryPageProps {
   category: any;
@@ -17,8 +28,16 @@ interface ServerCategoryPageProps {
 }
 
 export default function ServerCategoryPage({ category, path }: ServerCategoryPageProps) {
-  const { state: listState, setPage, setPerPage, setView, setIncludeArchived } = useRuleListUrlState(category?.uri);
+  const searchParams = useSearchParams();
+  // The page is prerendered without a query string, so hydration must render the defaults; the URL applies right after
+  const isHydrated = useSyncExternalStore(
+    subscribeToNothing,
+    () => true,
+    () => false
+  );
+  const listState = isHydrated ? parseRuleListSearch(searchParams.toString()) : DEFAULT_RULE_LIST_URL_STATE;
   const { includeArchived } = listState;
+  useCategoryListReturnPosition(category?.uri);
   const title = category?.title ?? "";
   const breadCrumbTitle = category?.title.replace("Rules to Better", "") ?? "";
   const baseRules: any[] = Array.isArray(category?.index) ? category.index.flatMap((i: any) => (i?.rule ? [i.rule] : [])) : [];
@@ -72,14 +91,14 @@ export default function ServerCategoryPage({ category, path }: ServerCategoryPag
             categoryUri={path}
             rules={finalRules}
             includeArchived={includeArchived}
-            onIncludeArchivedChange={setIncludeArchived}
+            onIncludeArchivedChange={(include) => updateListUrl({ includeArchived: include, page: 1 })}
             showFilterControls={true}
             externalCurrentPage={listState.page}
             externalItemsPerPage={resolvePerPage(listState.perPage, finalRules.length)}
             externalFilter={listState.view}
-            onPageChange={setPage}
-            onItemsPerPageChange={(itemsPerPage) => setPerPage(toPerPageState(itemsPerPage, finalRules.length))}
-            onFilterChange={setView}
+            onPageChange={(page) => updateListUrl({ page })}
+            onItemsPerPageChange={(itemsPerPage) => updateListUrl({ perPage: toPerPageState(itemsPerPage, finalRules.length), page: 1 })}
+            onFilterChange={(view) => updateListUrl({ view })}
           />
         </div>
 

@@ -1,8 +1,9 @@
 "use client";
 
-import { type MouseEvent, useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useLayoutEffect, useState } from "react";
 import type { BreadcrumbCategory } from "@/components/Breadcrumbs";
-import { CategoryReturnState, readCategoryReturnStates, requestScrollRestore } from "@/lib/categoryReturnState";
+import { CategoryReturnState, readCategoryReturnStates, requestScrollRestore, saveCategoryReturnState, takeScrollRestore } from "@/lib/categoryReturnState";
+import { normalizeRuleListSearch } from "@/lib/ruleListUrlState";
 
 /** Points category links at the page of the list the reader left, and restores their scroll position there. */
 export function useCategoryReturnLinks(categories?: BreadcrumbCategory[]): BreadcrumbCategory[] | undefined {
@@ -29,4 +30,25 @@ export function useCategoryReturnLinks(categories?: BreadcrumbCategory[]): Bread
       },
     };
   });
+}
+
+/** On a category page: remembers where the reader left the list, and restores it when they return via a category link. */
+export function useCategoryListReturnPosition(categoryUri?: string) {
+  useLayoutEffect(() => {
+    if (!categoryUri) return;
+    const scrollY = takeScrollRestore(categoryUri, normalizeRuleListSearch(window.location.search));
+    if (scrollY !== null) window.scrollTo(0, scrollY);
+  }, [categoryUri]);
+
+  useEffect(() => {
+    if (!categoryUri) return;
+    // Save on link click: by the time the page unmounts, the navigation has already shrunk the page and reset the scroll
+    const onLinkClick = (event: globalThis.MouseEvent) => {
+      if (event.target instanceof Element && event.target.closest("a[href]")) {
+        saveCategoryReturnState(categoryUri, normalizeRuleListSearch(window.location.search), window.scrollY);
+      }
+    };
+    document.addEventListener("click", onLinkClick, true);
+    return () => document.removeEventListener("click", onLinkClick, true);
+  }, [categoryUri]);
 }

@@ -1,7 +1,7 @@
 # Answer questions from the rules with vector search
 
 - Status: proposed
-- Deciders: Anton Polkanov
+- Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
 - Date: 2026-10-07
 - Tags: ai-chat, search
 

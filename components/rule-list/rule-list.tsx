@@ -5,6 +5,7 @@ import { RiGithubLine, RiPencilLine } from "react-icons/ri";
 import RadioButton from "@/components/radio-button";
 import Pagination from "@/components/ui/pagination";
 import { ICON_SIZE } from "@/constants";
+import { resolveCurrentPage } from "@/lib/ruleListUrlState";
 import { RuleListFilter } from "@/types/ruleListFilter";
 import { setTinaBranchToMainIfExists } from "@/utils/tina/set-branch";
 import { IconLink } from "../ui";
@@ -21,10 +22,12 @@ export interface RuleListProps {
   showPagination?: boolean;
   showFilterControls?: boolean;
   initialFilter?: RuleListFilter;
-  initialPage?: number;
-  initialItemsPerPage?: number;
   externalCurrentPage?: number; // For external pagination control
   externalItemsPerPage?: number; // For external pagination control
+  externalFilter?: RuleListFilter;
+  onPageChange?: (page: number) => void;
+  onItemsPerPageChange?: (itemsPerPage: number) => void;
+  onFilterChange?: (filter: RuleListFilter) => void;
 }
 
 const RuleList: React.FC<RuleListProps> = ({
@@ -38,23 +41,26 @@ const RuleList: React.FC<RuleListProps> = ({
   showPagination = true,
   showFilterControls = true,
   initialFilter = RuleListFilter.Blurb,
-  initialPage = 1,
-  initialItemsPerPage = 20,
   externalCurrentPage,
   externalItemsPerPage,
+  externalFilter,
+  onPageChange,
+  onItemsPerPageChange,
+  onFilterChange,
 }) => {
   const [filter, setFilter] = useState<RuleListFilter>(initialFilter);
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
   const filterSectionRef = useRef<HTMLDivElement>(null);
 
-  // Use external pagination values if provided, otherwise use internal state
-  const effectiveCurrentPage = externalCurrentPage ?? currentPage;
+  // Use external values if provided, otherwise use internal state
+  const effectiveFilter = externalFilter ?? filter;
   const effectiveItemsPerPage = externalItemsPerPage ?? itemsPerPage;
 
   const displayItemsPerPage = useMemo(() => (showPagination ? effectiveItemsPerPage : rules.length), [showPagination, effectiveItemsPerPage, rules.length]);
 
   const totalPages = displayItemsPerPage >= rules.length ? 1 : Math.ceil(rules.length / displayItemsPerPage);
+  const effectiveCurrentPage = resolveCurrentPage(externalCurrentPage ?? currentPage, totalPages, showPagination);
 
   const paginatedRules = useMemo(() => {
     if (displayItemsPerPage >= rules.length) {
@@ -67,6 +73,7 @@ const RuleList: React.FC<RuleListProps> = ({
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    onPageChange?.(page);
     // Scroll to just above the filter options when page changes
     setTimeout(() => {
       if (filterSectionRef.current) {
@@ -80,10 +87,13 @@ const RuleList: React.FC<RuleListProps> = ({
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
     setItemsPerPage(newItemsPerPage);
     setCurrentPage(1); // Reset to first page when changing items per page
+    onItemsPerPageChange?.(newItemsPerPage);
   };
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(e.target.value as RuleListFilter);
+    const newFilter = e.target.value as RuleListFilter;
+    setFilter(newFilter);
+    onFilterChange?.(newFilter);
   };
 
   const handleIncludeArchivedChange = (include: boolean) => {
@@ -111,7 +121,7 @@ const RuleList: React.FC<RuleListProps> = ({
               <RadioButton
                 id="customRadioInline1"
                 value="titleOnly"
-                selectedOption={filter}
+                selectedOption={effectiveFilter}
                 handleOptionChange={handleOptionChange}
                 labelText="Titles"
                 position="first"
@@ -119,7 +129,7 @@ const RuleList: React.FC<RuleListProps> = ({
               <RadioButton
                 id="customRadioInline3"
                 value="blurb"
-                selectedOption={filter}
+                selectedOption={effectiveFilter}
                 handleOptionChange={handleOptionChange}
                 labelText="Blurbs"
                 position="middle"
@@ -127,7 +137,7 @@ const RuleList: React.FC<RuleListProps> = ({
               <RadioButton
                 id="customRadioInline2"
                 value="all"
-                selectedOption={filter}
+                selectedOption={effectiveFilter}
                 handleOptionChange={handleOptionChange}
                 labelText="Everything"
                 position="last"
@@ -179,14 +189,14 @@ const RuleList: React.FC<RuleListProps> = ({
             rule={rule}
             index={(effectiveCurrentPage - 1) * effectiveItemsPerPage + i}
             onBookmarkRemoved={onBookmarkRemoved}
-            filter={filter}
+            filter={effectiveFilter}
           />
         ))}
       </ol>
 
       {showPagination && (
         <Pagination
-          currentPage={currentPage}
+          currentPage={effectiveCurrentPage}
           totalPages={totalPages}
           totalItems={rules.length}
           itemsPerPage={displayItemsPerPage}

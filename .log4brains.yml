@@ -1,0 +1,5 @@
+project:
+  name: SSW.Rules
+  tz: Australia/Sydney
+  adrFolder: ./docs/adr
+  packages: []

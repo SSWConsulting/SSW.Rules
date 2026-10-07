@@ -1,22 +1,41 @@
+"use client";
+
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useSyncExternalStore } from "react";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import ArchivedReasonContent from "@/components/ArchivedReasonContent";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { CategoryEdit } from "@/components/CategoryEdit";
-import RuleListWrapper from "@/components/rule-list/rule-list-wrapper";
+import RuleList from "@/components/rule-list/rule-list";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
+import { DEFAULT_RULE_LIST_URL_STATE, parseRuleListSearch, RuleListUrlState, resolvePerPage, toPerPageState, toRuleListSearch } from "@/lib/ruleListUrlState";
+
+const subscribeToNothing = () => () => {};
+
+function updateListUrl(patch: Partial<RuleListUrlState>) {
+  const url = new URL(window.location.href);
+  // Merge into what the URL holds now, not into the rendered state, so two updates in one event both land
+  url.search = toRuleListSearch({ ...parseRuleListSearch(url.search), ...patch }, url.search);
+  window.history.replaceState(null, "", url);
+}
 
 interface ServerCategoryPageProps {
   category: any;
   path?: string;
-  includeArchived: boolean;
-  view: "titleOnly" | "blurb" | "all";
-  page: number;
-  perPage: number;
 }
 
-export default function ServerCategoryPage({ category, path, includeArchived, view, page, perPage }: ServerCategoryPageProps) {
+export default function ServerCategoryPage({ category, path }: ServerCategoryPageProps) {
+  const searchParams = useSearchParams();
+  // The page is prerendered without a query string, so hydration must render the defaults; the URL applies right after
+  const isHydrated = useSyncExternalStore(
+    subscribeToNothing,
+    () => true,
+    () => false
+  );
+  const listState = isHydrated ? parseRuleListSearch(searchParams.toString()) : DEFAULT_RULE_LIST_URL_STATE;
+  const { includeArchived } = listState;
   const title = category?.title ?? "";
   const breadCrumbTitle = category?.title.replace("Rules to Better", "") ?? "";
   const baseRules: any[] = Array.isArray(category?.index) ? category.index.flatMap((i: any) => (i?.rule ? [i.rule] : [])) : [];
@@ -66,14 +85,18 @@ export default function ServerCategoryPage({ category, path, includeArchived, vi
             <TinaMarkdown content={category?.body} components={MarkdownComponentMapping} />
           </div>
 
-          <RuleListWrapper
+          <RuleList
             categoryUri={path}
-            rules={baseRules}
-            initialView={view}
-            initialPage={page}
-            initialPerPage={perPage}
+            rules={finalRules}
             includeArchived={includeArchived}
+            onIncludeArchivedChange={(include) => updateListUrl({ includeArchived: include, page: 1 })}
             showFilterControls={true}
+            externalCurrentPage={listState.page}
+            externalItemsPerPage={resolvePerPage(listState.perPage, finalRules.length)}
+            externalFilter={listState.view}
+            onPageChange={(page) => updateListUrl({ page })}
+            onItemsPerPageChange={(itemsPerPage) => updateListUrl({ perPage: toPerPageState(itemsPerPage, finalRules.length), page: 1 })}
+            onFilterChange={(view) => updateListUrl({ view })}
           />
         </div>
 

@@ -23,7 +23,7 @@ Where should the vectors live in staging and production?
 
 Chosen option 1: "Azure SQL Database", because the prototype already runs on the same `VECTOR` type, the same database can hold the per-user usage counts the chat needs, and the team already uses SQL Server vector search in HubX.
 
-Each environment that serves the chat gets its own database, in an Australian region: staging and production. PR preview deployments share staging's.
+Each environment that serves the chat gets its own database, in Australia East next to the site: staging and production. PR preview deployments share staging's.
 
 Not decided here:
 

@@ -20,26 +20,26 @@ Where should these models run?
 
 ## Decision Outcome
 
-Chosen option 1: "Microsoft Foundry", because it keeps the models in SSW's Azure tenant, alongside the rest of the Rules site's infrastructure and billing, and it can keep data in Australia.
+Chosen option 1: "Microsoft Foundry", because it keeps the models in SSW's Azure tenant, alongside the rest of the Rules site's infrastructure and billing.
 
 The code talks to any OpenAI-compatible endpoint, configured with `RULES_CHAT_AI_BASE_URL`, `RULES_CHAT_CHAT_MODEL` and `RULES_CHAT_EMBEDDING_MODEL`. Local development uses Ollama (`bge-m3` for embeddings, `qwen3.5:9b` for chat) through the same code.
 
-Data stays in Australia. Models are deployed in an Australian region with a deployment type that processes data in that region. Global deployments, which can process data in any region, are not used. Fewer models are offered this way in Australia than globally, and the price is slightly higher.
+Models:
 
-Not decided here:
+- Chat: `gpt-6-luna`, the fast, low-cost model in the GPT-6 family, with reasoning effort set to the lowest level.
+- Embeddings: `text-embedding-3-large` with `dimensions: 1024`, so the vectors fit the existing `VECTOR(1024)` column. Changing the embedding model means re-embedding every rule (cheap, but every environment must be re-indexed together).
 
-- Which chat model and which embedding model, from those available in Australia. Changing the embedding model means re-embedding every rule (cheap, but every environment must be re-indexed together). One third-party price list says `text-embedding-3-small` is scheduled for deprecation in Azure; check the Foundry catalog before choosing.
+Both use Global Standard deployments, created in the Foundry resource in Australia East. A Global deployment can process a request in any Azure region. That is acceptable because the rules are public, and the only private content sent to a model is what a user types into the chat. Users' identities are never sent.
 
-Expected cost: about $3–5 per 1,000 questions with a "mini" chat model (about 8,000 tokens in and 400 out per question, estimated from the prompt size; Australian regional prices are slightly above the global prices this is based on), and well under $1 to re-embed every rule.
+Expected cost: about $1 per 1,000 questions (about 8,000 tokens in and 400 out per question, estimated from the prompt size, at $0.10 per million input tokens and $0.50 per million output tokens), and about $1 to re-embed every rule.
 
 ## Pros and Cons of the Options
 
 ### Microsoft Foundry
 
 - ✅ Runs in SSW's Azure tenant; one bill and one security boundary.
-- ✅ Can keep data in Australia.
 - ✅ Offers several model families behind one service.
-- ❌ New models can reach Foundry later than the provider's own API, and fewer are available in Australian regions.
+- ❌ New models can reach Foundry later than the provider's own API.
 
 ### A provider's own API directly
 
@@ -53,7 +53,6 @@ One API in front of many providers' models.
 - ✅ One key and one bill for models from many providers, easy to switch between them.
 - ✅ OpenAI-compatible, so it works with the same code.
 - ❌ Another vendor outside Azure, and requests pass through it to the model provider.
-- ❌ Cannot guarantee that data stays in Australia.
 
 ### Self-hosted open models
 
@@ -66,3 +65,4 @@ One API in front of many providers' models.
 
 - Refines [Answer questions from the rules with vector search](20261007-answer-questions-from-the-rules-with-vector-search.md)
 - Azure OpenAI pricing: https://azure.microsoft.com/pricing/details/azure-openai/
+- Region availability for Foundry models: https://learn.microsoft.com/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure-region-availability

@@ -277,8 +277,8 @@ mark:is(
     @apply mb-6 ps-8 m-0 p-0;
   }
 
-  ol {
-    @apply list-decimal;
+  ul {
+   @apply list-[square];
   }
 
   ul > li > ul,

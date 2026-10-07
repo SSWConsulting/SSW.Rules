@@ -274,7 +274,7 @@ mark:is(
 
   ul,
   ol {
-    @apply mb-6 ps-8 m-0 p-0 list-[square];
+    @apply mb-6 ps-8 m-0 p-0;
   }
 
   ol {
@@ -282,7 +282,9 @@ mark:is(
   }
 
   ul > li > ul,
-  ol > li > ul {
+  ul > li > ol,
+  ol > li > ul,
+  ol > li > ol {
     @apply px-4 pt-2;
   }
 

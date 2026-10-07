@@ -278,7 +278,11 @@ mark:is(
   }
 
   ul {
-   @apply list-[square];
+    @apply list-[square];
+  }
+
+  ol {
+    @apply list-decimal;
   }
 
   ul > li > ul,

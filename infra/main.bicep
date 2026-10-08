@@ -72,11 +72,14 @@ param slotName string = ''
 // The Rulekeeper (Rules Chat)
 // ----------------------------------------------------------------------------
 
-@description('Display name of the Microsoft Entra group that administers the Rules Chat SQL server. The Rules Chat resources are only deployed when this and the object ID are set.')
-param rulesChatSqlAdminGroupName string = ''
+@description('Deploys the Rules Chat database, models and identity')
+param deployRulesChat bool = false
 
-@description('Object ID of the Microsoft Entra group that administers the Rules Chat SQL server')
-param rulesChatSqlAdminGroupObjectId string = ''
+@description('Application (client) ID of the deployment pipeline\'s service principal, which administers the Rules Chat SQL server')
+param rulesChatSqlAdminClientId string = ''
+
+@description('Name the Rules Chat SQL server shows for its administrator')
+param rulesChatSqlAdminName string = 'SSW.Rules deployment pipeline'
 
 @description('Name of the user-assigned managed identity the site uses for the Rules Chat database and models')
 param rulesChatIdentityName string = ''
@@ -126,8 +129,6 @@ param rulesChatEmbeddingModel object = {
 // https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/containers
 var acrPullRoleId = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var acrPushRoleId = '8311e382-0749-4cb8-b61a-304f252e45ec'
-
-var deployRulesChat = !empty(rulesChatSqlAdminGroupName) && !empty(rulesChatSqlAdminGroupObjectId)
 
 // ============================================================================
 // APP SERVICE PLAN
@@ -207,8 +208,8 @@ module rulesChatSqlModule 'modules/rulesChatSql.bicep' = if (deployRulesChat) {
     databaseName: rulesChatDatabaseName
     location: location
     environment: environment
-    adminGroupName: rulesChatSqlAdminGroupName
-    adminGroupObjectId: rulesChatSqlAdminGroupObjectId
+    adminName: rulesChatSqlAdminName
+    adminClientId: rulesChatSqlAdminClientId
     databaseSku: rulesChatDatabaseSku
     tags: tags
   }

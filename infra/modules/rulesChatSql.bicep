@@ -13,11 +13,11 @@ param location string = resourceGroup().location
 @description('Environment name for tagging (staging/prod)')
 param environment string
 
-@description('Display name of the Microsoft Entra group that administers the server')
-param adminGroupName string
+@description('Name the server shows for its administrator')
+param adminName string
 
-@description('Object ID of the Microsoft Entra group that administers the server')
-param adminGroupObjectId string
+@description('Application (client) ID of the service principal that administers the server')
+param adminClientId string
 
 @description('Database SKU. Serverless (GP_S_*) pauses when idle; the DTU tiers (S0, S1...) are a fixed price and never pause.')
 param databaseSku object
@@ -44,13 +44,14 @@ resource sqlServer 'Microsoft.Sql/servers@2023-08-01' = {
     minimalTlsVersion: '1.2'
     publicNetworkAccess: 'Enabled'
     // Microsoft Entra sign-in only: no SQL logins or passwords to store or rotate.
+    // The deployment pipeline is the administrator, so it can apply schema changes and grant access on every deploy.
     administrators: {
       administratorType: 'ActiveDirectory'
       azureADOnlyAuthentication: true
-      login: adminGroupName
-      sid: adminGroupObjectId
+      login: adminName
+      sid: adminClientId
       tenantId: subscription().tenantId
-      principalType: 'Group'
+      principalType: 'Application'
     }
   }
 }

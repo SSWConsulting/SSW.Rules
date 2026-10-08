@@ -1,0 +1,11 @@
+{
+  "name": "rules-chat-index-job",
+  "private": true,
+  "description": "Runtime dependencies of the Rules Chat index job image. Direct versions match the site's pnpm-lock.yaml; package-lock.json pins the rest.",
+  "type": "module",
+  "dependencies": {
+    "@azure/identity": "4.13.1",
+    "gray-matter": "4.0.3",
+    "mssql": "12.7.4"
+  }
+}

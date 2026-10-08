@@ -15,6 +15,8 @@
     - id-{project}-chat-{env}   (User-assigned managed identity for the site)
     - sql-{project}-chat-{env}  (Azure SQL server, database RulesChat)
     - aif-{project}-chat-{env}  (Microsoft Foundry resource with the chat and embedding models)
+    - cae-{project}-chat-{env}  (Container Apps environment)
+    - caj-{project}-chat-index-{env} (Container Apps job that indexes the rules)
 
     For staging: Uses existing shared App Service Plan (plan-ssw-shared-dev-linux)
     For production: Creates a dedicated App Service Plan
@@ -38,6 +40,12 @@
 .PARAMETER RulesChatSqlAdminClientId
     Application (client) ID of the service principal that administers the Rules Chat SQL server: the deployment
     pipeline's (the AZURE_CLIENT_ID GitHub secret).
+
+.PARAMETER RulesChatContentBranch
+    SSW.Rules.Content branch the Rules Chat index job reads. Default: main.
+
+.PARAMETER RulesChatAlertEmail
+    Optional email address for index job failure and staleness alerts.
 
 .PARAMETER WhatIf
     Show what would be deployed without actually deploying
@@ -72,6 +80,12 @@ param(
 
     [Parameter(Mandatory = $true)]
     [string]$RulesChatSqlAdminClientId,
+
+    [Parameter(Mandatory = $false)]
+    [string]$RulesChatContentBranch = 'main',
+
+    [Parameter(Mandatory = $false)]
+    [string]$RulesChatAlertEmail = '',
 
     [Parameter(Mandatory = $false)]
     [switch]$WhatIf
@@ -109,6 +123,8 @@ $ContainerRegistryName = "acr$ProjectName$Environment"
 $RulesChatIdentityName = "id-$ProjectName-chat-$Environment"
 $RulesChatSqlServerName = "sql-$ProjectName-chat-$Environment"
 $RulesChatFoundryName = "aif-$ProjectName-chat-$Environment"
+$RulesChatContainerAppsEnvironmentName = "cae-$ProjectName-chat-$Environment"
+$RulesChatIndexJobName = "caj-$ProjectName-chat-index-$Environment"
 
 # App Service Plan - different per environment
 if ($Environment -eq 'staging') {
@@ -431,6 +447,12 @@ $azArgs += '--parameters', "rulesChatSqlAdminClientId=$RulesChatSqlAdminClientId
 $azArgs += '--parameters', "rulesChatIdentityName=$RulesChatIdentityName"
 $azArgs += '--parameters', "rulesChatSqlServerName=$RulesChatSqlServerName"
 $azArgs += '--parameters', "rulesChatFoundryName=$RulesChatFoundryName"
+$azArgs += '--parameters', "rulesChatContainerAppsEnvironmentName=$RulesChatContainerAppsEnvironmentName"
+$azArgs += '--parameters', "rulesChatIndexJobName=$RulesChatIndexJobName"
+$azArgs += '--parameters', "rulesChatContentBranch=$RulesChatContentBranch"
+if ($RulesChatAlertEmail) {
+    $azArgs += '--parameters', "rulesChatAlertEmail=$RulesChatAlertEmail"
+}
 
 if ($WhatIf) {
     $azArgs += '--what-if'

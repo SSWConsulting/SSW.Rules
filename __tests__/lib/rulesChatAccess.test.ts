@@ -4,12 +4,6 @@ jest.mock("next/cache", () => ({ unstable_cache: (fn: unknown) => fn }));
 jest.mock("@/lib/services/dynamics", () => ({
   createDynamicsService: () => ({ getEmployees: async () => [{ gitHubUrl: "https://github.com/AntPolkanov" }] }),
 }));
-// AntPolkanov's GitHub account ID is 1 in these tests.
-const resolveGitHubIds = jest.fn(async (usernames: string[]) => new Set(usernames.includes("antpolkanov") ? [1] : []));
-jest.mock("@/lib/rulesChat/gitHubIds", () => ({
-  ...jest.requireActual("@/lib/rulesChat/gitHubIds"),
-  resolveGitHubIds: (usernames: string[]) => resolveGitHubIds(usernames),
-}));
 
 describe("getRulesChatTier", () => {
   const savedEnv = { ...process.env };
@@ -65,41 +59,32 @@ describe("getRulesChatTier", () => {
     expect(await getRulesChatTier(stranger)).toBeNull();
   });
 
-  it("doesn't give the staff tier to a different account that took an employee's old username", async () => {
-    // Session users carry the GitHub username as nickname; the match ignores it.
-    const renamedAway = { sub: "github|99", nickname: "AntPolkanov" };
-    expect(await getRulesChatTier(renamedAway)).toBe("member");
-  });
-
-  it("falls back to the member tier when the employees' GitHub IDs can't be loaded", async () => {
-    const error = jest.spyOn(console, "error").mockImplementation(() => {});
-    resolveGitHubIds.mockRejectedValueOnce(new Error("GitHub is down"));
-    expect(await getRulesChatTier(employee)).toBe("member");
-    error.mockRestore();
-  });
-
   it("lets nobody in when switched off, when signed out, or when not signed in with GitHub", async () => {
     expect(await getRulesChatTier(null)).toBeNull();
-    const otherSignIn = { sub: "auth0|1", nickname: "AntPolkanov" };
-    expect(await getRulesChatTier(otherSignIn)).toBeNull();
+    expect(await getRulesChatTier({ sub: "auth0|1", nickname: "AntPolkanov" })).toBeNull();
     process.env.RULES_CHAT_ENABLED = "false";
     expect(await getRulesChatTier(employee)).toBeNull();
   });
 });
 
-describe("isEmployeeGitHubUser", () => {
-  const employeeIds = new Set([1, 42]);
+const employeeGitHubUrls = ["https://github.com/AntPolkanov", "https://github.com/someone-else/", ""];
 
-  it("matches on the GitHub account ID in the sub", () => {
-    expect(isEmployeeGitHubUser({ sub: "github|42" }, employeeIds)).toBe(true);
+describe("isEmployeeGitHubUser", () => {
+  it.each([
+    ["an exact username", "AntPolkanov"],
+    ["a different letter case", "antpolkanov"],
+    ["a profile URL with a trailing slash", "someone-else"],
+  ])("allows %s", (_name, nickname) => {
+    expect(isEmployeeGitHubUser({ sub: "github|1", nickname }, employeeGitHubUrls)).toBe(true);
   });
 
   it.each([
     ["no user", null],
-    ["an ID that isn't an employee's", { sub: "github|7" }],
-    ["a non-GitHub sign-in with the same number", { sub: "auth0|42" }],
-    ["a malformed sub", { sub: "github|42abc" }],
+    ["no nickname", { sub: "github|1" }],
+    ["a username that is only part of an employee's", { sub: "github|1", nickname: "ant" }],
+    ["a username that is not in CRM", { sub: "github|1", nickname: "stranger" }],
+    ["a matching nickname from a non-GitHub sign-in", { sub: "auth0|1", nickname: "AntPolkanov" }],
   ])("rejects %s", (_name, user) => {
-    expect(isEmployeeGitHubUser(user, employeeIds)).toBe(false);
+    expect(isEmployeeGitHubUser(user, employeeGitHubUrls)).toBe(false);
   });
 });

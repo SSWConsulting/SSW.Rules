@@ -29,23 +29,26 @@ var schema = builder.AddProject<Projects.RulesChat_Database>("rules-chat-schema"
 
 // Docker on a Mac can't use the GPU, so there the Ollama app on the machine is used. Elsewhere Ollama runs in a
 // container. Both listen on the same port, so the site and the index script don't need to know which.
-string[] models = [embeddingModel, chatModel];
-Func<IResourceBuilder<IResourceWithWaitSupport>, IResourceBuilder<IResourceWithWaitSupport>> waitForModels;
+// Only the index waits for a model (the embedding one). The site starts straight away: the chat model is several GB,
+// and until it's pulled the chat fails cleanly while the rest of the site works.
+Func<IResourceBuilder<IResourceWithWaitSupport>, IResourceBuilder<IResourceWithWaitSupport>> waitForEmbeddingModel;
 if (OperatingSystem.IsMacOS())
 {
     var ollama = builder.AddExternalService("ollama", $"{ollamaUrl}/").WithHttpHealthCheck("/api/tags");
-    var pulls = models
-        .Select(model => builder.AddExecutable($"ollama-pull-{model.Replace(':', '-').Replace('.', '-')}", "ollama", repoRoot, "pull", model).WaitFor(ollama))
-        .ToList();
-    waitForModels = resource => pulls.Aggregate(resource, (current, pull) => current.WaitForCompletion(pull));
+    IResourceBuilder<ExecutableResource> Pull(string model) =>
+        builder.AddExecutable($"ollama-pull-{model.Replace(':', '-').Replace('.', '-')}", "ollama", repoRoot, "pull", model).WaitFor(ollama);
+    var embeddingPull = Pull(embeddingModel);
+    Pull(chatModel);
+    waitForEmbeddingModel = resource => resource.WaitForCompletion(embeddingPull);
 }
 else
 {
     var ollama = builder.AddOllama("ollama", port: 11434)
         .WithDataVolume("ssw-rules-chat-ollama")
         .WithLifetime(ContainerLifetime.Persistent);
-    var pulled = models.Select(model => ollama.AddModel(model)).ToList();
-    waitForModels = resource => pulled.Aggregate(resource, (current, model) => current.WaitFor(model));
+    var embedding = ollama.AddModel(embeddingModel);
+    ollama.AddModel(chatModel);
+    waitForEmbeddingModel = resource => resource.WaitFor(embedding);
 }
 
 // The site and the index script read the same settings, so they're set in one place.
@@ -79,7 +82,6 @@ var site = WithRulesChatSettings(builder.AddJavaScriptApp("site", repoRoot, "dev
     .WithEnvironment("RULES_CHAT_OUTPUT_PRICE_PER_MILLION_TOKENS_USD", "0")
     // The chat API reads the usage table, which a migration creates.
     .WaitForCompletion(schema);
-waitForModels(site);
 
 // "all" indexes every rule; a number indexes that many. Set RulesChat:IndexSample in appsettings.json or user secrets.
 var indexSample = builder.Configuration["RulesChat:IndexSample"] ?? "200";
@@ -93,6 +95,6 @@ if (site.Resource.Annotations.OfType<JavaScriptPackageInstallerAnnotation>().Sin
 {
     index.WaitForCompletion(builder.CreateResourceBuilder(installer.Resource));
 }
-waitForModels(index);
+waitForEmbeddingModel(index);
 
 builder.Build().Run();

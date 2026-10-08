@@ -2,10 +2,13 @@
 
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import type { Hit } from "instantsearch.js";
-import { Search } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useRef, useState } from "react";
 import { Configure, Highlight, InstantSearch, useHits, useInstantSearch, useSearchBox } from "react-instantsearch";
+import { askRulekeeper } from "@/components/chat/askRulekeeper";
+import { RulekeeperMark } from "@/components/chat/RulekeeperMark";
+import { useRulesChatAccess } from "@/components/chat/useRulesChatAccess";
 import Spinner from "@/components/Spinner";
 import { searchClient } from "@/lib/algoliaClient";
 import { onOpenSearch } from "./openSearch";
@@ -16,7 +19,7 @@ const MAX_RESULTS = 8;
 const DEBOUNCE_MS = 300;
 
 type RuleHit = { objectID: string; slug: string; title: string; seoDescription?: string };
-type Item = { kind: "rule"; hit: Hit<RuleHit> } | { kind: "all"; query: string };
+type Item = { kind: "ask"; query: string } | { kind: "rule"; hit: Hit<RuleHit> } | { kind: "all"; query: string };
 
 const highlightClasses = { highlighted: "bg-ssw-red/15 font-semibold text-ssw-black" };
 
@@ -26,6 +29,7 @@ function Results({ onDone }: { onDone: () => void }) {
   const { refine } = useSearchBox();
   const { items: hits } = useHits<RuleHit>();
   const { status } = useInstantSearch({ catchError: true });
+  const canAsk = useRulesChatAccess();
   const query = input.trim();
   const isSearchable = query.length >= MIN_QUERY_LENGTH;
   // Tracked here because useSearchBox's query only moves on after a successful search.
@@ -46,13 +50,28 @@ function Results({ onDone }: { onDone: () => void }) {
   const hasError = isSearchable && !isLoading && status === "error";
   const showResults = isSearchable && !isLoading && !hasError;
   const showNoResults = showResults && hits.length === 0;
-  const items: Item[] = showResults ? [...hits.map((hit) => ({ kind: "rule" as const, hit })), { kind: "all", query }] : [];
+  // Asking The Rulekeeper is always the first option, so Enter asks; the arrow keys reach the rules.
+  const ask: Item[] = canAsk ? [{ kind: "ask", query }] : [];
+  const results: Item[] = showResults ? [...hits.map((hit) => ({ kind: "rule" as const, hit })), { kind: "all", query }] : [];
+  const items = [...ask, ...results];
 
   const activate = (item: Item | null) => {
     if (!item) return;
-    if (item.kind === "rule") router.push(`/${item.hit.slug}`);
+    if (item.kind === "ask") askRulekeeper(item.query);
+    else if (item.kind === "rule") router.push(`/${item.hit.slug}`);
     else router.push(`/search?keyword=${encodeURIComponent(item.query)}`);
     onDone();
+  };
+
+  const optionsList = useRef<HTMLDivElement>(null);
+  // The combobox only highlights an option once the user types, so Enter in an empty box would do nothing.
+  const onInputKeyDown = (event: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter" || optionsList.current?.querySelector("[data-focus]")) return;
+    const first = items[0]?.kind === "ask" ? items[0] : null;
+    if (first) {
+      event.preventDefault();
+      activate(first);
+    }
   };
 
   return (
@@ -65,6 +84,7 @@ function Results({ onDone }: { onDone: () => void }) {
           placeholder="Search rules..."
           className="h-14 flex-1 bg-transparent text-base text-ssw-black outline-none placeholder:text-gray-500"
           onChange={(event) => setInput(event.target.value)}
+          onKeyDown={onInputKeyDown}
           displayValue={() => input}
         />
         {isLoading && (
@@ -75,13 +95,25 @@ function Results({ onDone }: { onDone: () => void }) {
         <kbd className="rounded border border-gray-300 bg-gray-50 px-1.5 py-0.5 font-sans text-gray-600 text-xs">Esc</kbd>
       </div>
 
-      <ComboboxOptions static className="max-h-[min(60vh,32rem)] overflow-y-auto p-2 empty:hidden">
+      <ComboboxOptions static ref={optionsList} className="max-h-[min(60vh,32rem)] overflow-y-auto p-2 empty:hidden">
         {items.map((item) => (
           <ComboboxOption
             key={item.kind === "rule" ? item.hit.objectID : item.kind}
             value={item}
             className="group cursor-pointer rounded-lg px-3 py-2.5 data-focus:bg-gray-100"
           >
+            {item.kind === "ask" && (
+              <span className="flex items-center gap-3">
+                <RulekeeperMark size="small" />
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold text-ssw-black">Ask The Rulekeeper</span>
+                  <span className="block truncate text-gray-600 text-sm">
+                    {item.query ? <>&ldquo;{item.query}&rdquo;</> : "Ask a question and get answers that link to the rules"}
+                  </span>
+                </span>
+                <ArrowRight className="size-4 text-gray-400 group-data-focus:text-ssw-red" aria-hidden />
+              </span>
+            )}
             {item.kind === "rule" && (
               <span className="block">
                 <span className="block font-medium text-ssw-dark-red">

@@ -1,5 +1,6 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { onAskRulekeeper } from "@/components/chat/askRulekeeper";
 import { openSearch } from "@/components/search/openSearch";
 import { SearchDialog } from "@/components/search/SearchDialog";
 import { SearchTrigger } from "@/components/search/SearchTrigger";
@@ -9,6 +10,9 @@ jest.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 
 type Request = { indexName?: string; params?: { query?: string } };
 type Rule = { slug: string; title: string };
+
+let mockHasChatAccess = false;
+jest.mock("@/components/chat/useRulesChatAccess", () => ({ useRulesChatAccess: () => mockHasChatAccess }));
 
 const search = jest.fn();
 jest.mock("@/lib/algoliaClient", () => ({ searchClient: { search: (requests: Request[]) => search(requests) } }));
@@ -58,6 +62,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+  mockHasChatAccess = false;
   push.mockClear();
   search.mockReset();
   respondWith(() => [
@@ -125,6 +130,53 @@ describe("SearchDialog", () => {
     await waitFor(() => expect(screen.queryByRole("combobox")).not.toBeInTheDocument());
     act(() => openSearch());
     expect(await screen.findByRole("combobox", { name: "Search rules" })).toHaveValue("");
+  });
+});
+
+describe("Ask The Rulekeeper", () => {
+  function recordQuestions() {
+    const questions: string[] = [];
+    const stop = onAskRulekeeper((question) => questions.push(question));
+    return { questions, stop };
+  }
+
+  it("isn't offered without chat access", async () => {
+    await openAndType("pull");
+    await screen.findByRole("option", { name: /over the shoulder/ });
+    expect(screen.queryByRole("option", { name: /Ask The Rulekeeper/ })).not.toBeInTheDocument();
+  });
+
+  it("asks with an empty box on Enter", async () => {
+    mockHasChatAccess = true;
+    const { questions, stop } = recordQuestions();
+    const user = userEvent.setup();
+    render(<SearchDialog />);
+    act(() => openSearch());
+    await screen.findByRole("combobox", { name: "Search rules" });
+    expect(screen.getAllByRole("option")[0]).toHaveTextContent("Ask The Rulekeeper");
+    await user.keyboard("{Enter}");
+    expect(questions).toEqual([""]);
+    stop();
+  });
+
+  it("is the first option above the rules, and asks the typed question on Enter", async () => {
+    mockHasChatAccess = true;
+    const { questions, stop } = recordQuestions();
+    const { user } = await openAndType("pull request");
+    await screen.findByRole("option", { name: /over the shoulder/ });
+    const options = screen.getAllByRole("option");
+    expect(options[0]).toHaveTextContent("Ask The Rulekeeper");
+    expect(options[1]).toHaveTextContent("over the shoulder");
+    await user.keyboard("{Enter}");
+    expect(questions).toEqual(["pull request"]);
+    expect(push).not.toHaveBeenCalled();
+    stop();
+  });
+
+  it("names The Rulekeeper on the header button", () => {
+    mockHasChatAccess = true;
+    render(<SearchTrigger />);
+    expect(screen.getByRole("button", { name: "Search rules or ask The Rulekeeper" })).toBeInTheDocument();
   });
 });
 

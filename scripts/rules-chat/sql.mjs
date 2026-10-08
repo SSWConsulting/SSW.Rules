@@ -76,3 +76,8 @@ export async function applySchema(pool) {
     console.log(`Applied ${file}`);
   }
 }
+
+// Drops the index tables, children first, so applySchema recreates them empty.
+export async function dropIndexTables(pool) {
+  await pool.request().batch("DROP TABLE IF EXISTS dbo.RuleChunks; DROP TABLE IF EXISTS dbo.IndexedRules;");
+}

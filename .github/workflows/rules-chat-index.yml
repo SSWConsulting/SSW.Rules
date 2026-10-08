@@ -1,0 +1,93 @@
+name: Index Rules for The Rulekeeper
+
+# Embeds every new or changed rule into The Rulekeeper's database. Unchanged rules are skipped, so only the first run in
+# an environment takes long. Started by hand until rule changes start it automatically.
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to index"
+        type: choice
+        default: staging
+        options:
+          - staging
+          - production
+      reset:
+        description: "Drop the index and embed every rule again"
+        type: boolean
+        default: false
+
+concurrency:
+  group: rules-chat-index-${{ inputs.environment }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  index:
+    name: Index Rules
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 120
+    env:
+      # Resource names follow infra/deploy.ps1, which names the production resources "prod".
+      RESOURCE_SUFFIX: ${{ inputs.environment == 'production' && 'prod' || 'staging' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout SSW.Rules.Content
+        uses: actions/checkout@v4
+        with:
+          repository: SSWConsulting/SSW.Rules.Content
+          path: content
+          sparse-checkout: public/uploads/rules
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Azure CLI - Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Index rules
+        env:
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          # Resolved from the scripts folder, so this is ./content.
+          LOCAL_CONTENT_RELATIVE_PATH: ../content
+          RULES_CHAT_EMBEDDING_MODEL: text-embedding-3-large
+          RULES_CHAT_EMBEDDING_DIMENSIONS: "1024"
+          RULES_CHAT_SQL_DATABASE: RulesChat
+        run: |
+          SQL_SERVER_NAME="sql-sswrules-chat-$RESOURCE_SUFFIX"
+          export RULES_CHAT_SQL_SERVER="$SQL_SERVER_NAME.database.windows.net"
+          export RULES_CHAT_AI_BASE_URL="https://aif-sswrules-chat-$RESOURCE_SUFFIX.openai.azure.com/openai/v1"
+
+          # The SQL firewall only admits Azure services. Open it to this runner for the length of this step.
+          RULE="github-actions-${{ github.run_id }}-${{ github.run_attempt }}"
+          RUNNER_IP=$(curl -fsS https://api.ipify.org)
+          az sql server firewall-rule create --resource-group "$RESOURCE_GROUP" --server "$SQL_SERVER_NAME" --name "$RULE" \
+            --start-ip-address "$RUNNER_IP" --end-ip-address "$RUNNER_IP" --output none
+          trap 'az sql server firewall-rule delete --resource-group "$RESOURCE_GROUP" --server "$SQL_SERVER_NAME" --name "$RULE" --output none' EXIT
+
+          # Signs in to SQL and Foundry as the pipeline, through the Azure CLI login above.
+          if [ "${{ inputs.reset }}" = "true" ]; then
+            pnpm rules-chat:index --reset
+          else
+            pnpm rules-chat:index
+          fi

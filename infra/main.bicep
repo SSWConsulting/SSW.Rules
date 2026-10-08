@@ -225,6 +225,7 @@ module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = if (deploysShar
     chatModel: rulesChatChatModel
     embeddingModel: rulesChatEmbeddingModel
     callerPrincipalId: rulesChatIdentity.properties.principalId
+    pipelinePrincipalId: servicePrincipalObjectId
     tags: tags
   }
 }

@@ -14,6 +14,7 @@
     "lint": "biome lint",
     "dev:build": "next build",
     "prepare:content": "cross-env node ./scripts/prepare-content.js",
+    "rules-chat:index": "node ./scripts/rules-chat/index-rules.mjs",
     "rules-chat:schema": "node ./scripts/rules-chat/apply-schema.mjs",
     "validate:rule-categories": "node ./scripts/validate-rule-categories.js",
     "crawl-sitemap": "node ./scripts/crawl-sitemap.js",
@@ -43,6 +44,7 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.20.0",
+    "@azure/identity": "^4.13.1",
     "@fontsource-variable/inter": "^5.2.8",
     "@fortawesome/fontawesome-free": "^7.2.0",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",

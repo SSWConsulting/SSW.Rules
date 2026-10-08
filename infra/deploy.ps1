@@ -11,6 +11,11 @@
     - acr{project}{env}       (Container Registry - no hyphens allowed)
     - rg-{project}-{env}      (Resource Group)
 
+    The Rulekeeper (Rules Chat), only when an Entra group is given to administer its SQL server:
+    - id-{project}-chat-{env}   (User-assigned managed identity for the site)
+    - sql-{project}-chat-{env}  (Azure SQL server, database RulesChat)
+    - aif-{project}-chat-{env}  (Microsoft Foundry resource with the chat and embedding models)
+
     For staging: Uses existing shared App Service Plan (plan-ssw-shared-dev-linux)
     For production: Creates a dedicated App Service Plan
 
@@ -29,6 +34,13 @@
 
 .PARAMETER SlotName
     Optional deployment slot name (e.g., pr-123). Only used for staging PR deployments.
+
+.PARAMETER RulesChatSqlAdminGroupName
+    Optional display name of the Microsoft Entra group that administers the Rules Chat SQL server.
+    The Rules Chat resources are only deployed when this and RulesChatSqlAdminGroupObjectId are set.
+
+.PARAMETER RulesChatSqlAdminGroupObjectId
+    Optional object ID of that Microsoft Entra group.
 
 .PARAMETER WhatIf
     Show what would be deployed without actually deploying
@@ -60,6 +72,12 @@ param(
 
     [Parameter(Mandatory = $false)]
     [string]$SlotName = '',
+
+    [Parameter(Mandatory = $false)]
+    [string]$RulesChatSqlAdminGroupName = '',
+
+    [Parameter(Mandatory = $false)]
+    [string]$RulesChatSqlAdminGroupObjectId = '',
 
     [Parameter(Mandatory = $false)]
     [switch]$WhatIf
@@ -94,6 +112,15 @@ $AppServiceName = "app-$ProjectName-$Environment"
 $AppInsightsName = "appi-$ProjectName-$Environment"
 $LogAnalyticsWorkspaceName = "log-$ProjectName-$Environment"
 $ContainerRegistryName = "acr$ProjectName$Environment"
+$RulesChatIdentityName = "id-$ProjectName-chat-$Environment"
+$RulesChatSqlServerName = "sql-$ProjectName-chat-$Environment"
+$RulesChatFoundryName = "aif-$ProjectName-chat-$Environment"
+
+if ([string]::IsNullOrEmpty($RulesChatSqlAdminGroupName) -ne [string]::IsNullOrEmpty($RulesChatSqlAdminGroupObjectId)) {
+    Write-Error "Set both RulesChatSqlAdminGroupName and RulesChatSqlAdminGroupObjectId, or neither."
+    exit 1
+}
+$DeployRulesChat = -not [string]::IsNullOrEmpty($RulesChatSqlAdminGroupObjectId)
 
 # App Service Plan - different per environment
 if ($Environment -eq 'staging') {
@@ -205,6 +232,7 @@ function New-ResourceGroup {
 
 $spDisplay = if ($ServicePrincipalObjectId) { $ServicePrincipalObjectId } else { '(not provided - no AcrPush role)' }
 $slotDisplay = if ($SlotName) { $SlotName } else { '(none)' }
+$rulesChatDisplay = if ($DeployRulesChat) { "$RulesChatSqlServerName, $RulesChatFoundryName (SQL admins: $RulesChatSqlAdminGroupName)" } else { '(skipped - no SQL admin group set)' }
 
 Write-Host @"
 
@@ -220,6 +248,7 @@ Write-Host @"
   App Service Plan:   $AppServicePlanName (in $AppServicePlanResourceGroup)
   Deployment Slot:    $slotDisplay
   Service Principal:  $spDisplay
+  Rules Chat:         $rulesChatDisplay
 ================================================================================
 
 "@ -ForegroundColor White
@@ -411,6 +440,14 @@ if ($SlotName) {
     $azArgs += '--parameters', "slotName=$SlotName"
 }
 
+if ($DeployRulesChat) {
+    $azArgs += '--parameters', "rulesChatSqlAdminGroupName=$RulesChatSqlAdminGroupName"
+    $azArgs += '--parameters', "rulesChatSqlAdminGroupObjectId=$RulesChatSqlAdminGroupObjectId"
+    $azArgs += '--parameters', "rulesChatIdentityName=$RulesChatIdentityName"
+    $azArgs += '--parameters', "rulesChatSqlServerName=$RulesChatSqlServerName"
+    $azArgs += '--parameters', "rulesChatFoundryName=$RulesChatFoundryName"
+}
+
 if ($WhatIf) {
     $azArgs += '--what-if'
     Write-Info "Running in What-If mode (resource group exists, running Bicep what-if)..."
@@ -445,6 +482,15 @@ if (-not $WhatIf) {
 "@
     }
 
+    $rulesChatInfo = ""
+    if ($outputs.rulesChatSqlServerFqdn.value) {
+        $rulesChatInfo = @"
+  Rules Chat SQL Server:  $($outputs.rulesChatSqlServerFqdn.value) (database $($outputs.rulesChatDatabaseName.value))
+  Rules Chat Models:      $($outputs.rulesChatAiEndpoint.value) ($($outputs.rulesChatChatModel.value), $($outputs.rulesChatEmbeddingModel.value))
+  Rules Chat Identity:    $RulesChatIdentityName (client ID $($outputs.rulesChatIdentityClientId.value))
+"@
+    }
+
     Write-Host @"
 
 ================================================================================
@@ -454,7 +500,7 @@ if (-not $WhatIf) {
   App Service Name:       $($outputs.appServiceName.value)
   App Service Hostname:   $($outputs.appServiceHostName.value)
   ACR Login Server:       $($outputs.containerRegistryLoginServer.value)
-$slotInfo
+$slotInfo$rulesChatInfo
 ================================================================================
 "@ -ForegroundColor Green
 

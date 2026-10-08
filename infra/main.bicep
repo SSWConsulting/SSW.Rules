@@ -1,5 +1,5 @@
 // Main Bicep Template for SSW Rules Infrastructure
-// Deploys App Service, Application Insights, and Container Registry
+// Deploys App Service, Application Insights, Container Registry, and The Rulekeeper's database and models
 
 targetScope = 'resourceGroup'
 
@@ -68,6 +68,57 @@ param tags object = {
 @description('Optional: Name of the deployment slot (e.g., pr-123). If empty, no slot is created.')
 param slotName string = ''
 
+// ----------------------------------------------------------------------------
+// The Rulekeeper (Rules Chat)
+// ----------------------------------------------------------------------------
+
+@description('Display name of the Microsoft Entra group that administers the Rules Chat SQL server. The Rules Chat resources are only deployed when this and the object ID are set.')
+param rulesChatSqlAdminGroupName string = ''
+
+@description('Object ID of the Microsoft Entra group that administers the Rules Chat SQL server')
+param rulesChatSqlAdminGroupObjectId string = ''
+
+@description('Name of the user-assigned managed identity the site uses for the Rules Chat database and models')
+param rulesChatIdentityName string = ''
+
+@description('Name of the Rules Chat SQL logical server (globally unique)')
+param rulesChatSqlServerName string = ''
+
+@description('Name of the Rules Chat database')
+param rulesChatDatabaseName string = 'RulesChat'
+
+@description('Rules Chat database SKU. Defaults to serverless with auto-pause for staging and a fixed-price S1 for production.')
+param rulesChatDatabaseSku object = environment == 'prod'
+  ? {
+      name: 'S1'
+      tier: 'Standard'
+    }
+  : {
+      name: 'GP_S_Gen5_1'
+      tier: 'GeneralPurpose'
+      family: 'Gen5'
+      capacity: 1
+    }
+
+@description('Name of the Rules Chat Microsoft Foundry resource (globally unique)')
+param rulesChatFoundryName string = ''
+
+@description('Chat model deployment. Capacity is in thousands of tokens per minute.')
+param rulesChatChatModel object = {
+  name: 'gpt-6-luna'
+  version: '2026-09-22'
+  deploymentType: 'GlobalStandard'
+  capacity: 100
+}
+
+@description('Embedding model deployment. Capacity is in thousands of tokens per minute; re-indexing every rule is the peak.')
+param rulesChatEmbeddingModel object = {
+  name: 'text-embedding-3-large'
+  version: '1'
+  deploymentType: 'GlobalStandard'
+  capacity: 150
+}
+
 // ============================================================================
 // VARIABLES - Well-known Azure Role Definition IDs
 // ============================================================================
@@ -75,6 +126,8 @@ param slotName string = ''
 // https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/containers
 var acrPullRoleId = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var acrPushRoleId = '8311e382-0749-4cb8-b61a-304f252e45ec'
+
+var deployRulesChat = !empty(rulesChatSqlAdminGroupName) && !empty(rulesChatSqlAdminGroupObjectId)
 
 // ============================================================================
 // APP SERVICE PLAN
@@ -138,6 +191,42 @@ module containerRegistryModule 'modules/containerRegistry.bicep' = {
   }
 }
 
+// Identity the site (including every slot) uses for the Rules Chat database and models
+resource rulesChatIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (deployRulesChat) {
+  name: rulesChatIdentityName
+  location: location
+  tags: union(tags, {
+    environment: environment
+  })
+}
+
+module rulesChatSqlModule 'modules/rulesChatSql.bicep' = if (deployRulesChat) {
+  name: 'rulesChatSql-${environment}'
+  params: {
+    sqlServerName: rulesChatSqlServerName
+    databaseName: rulesChatDatabaseName
+    location: location
+    environment: environment
+    adminGroupName: rulesChatSqlAdminGroupName
+    adminGroupObjectId: rulesChatSqlAdminGroupObjectId
+    databaseSku: rulesChatDatabaseSku
+    tags: tags
+  }
+}
+
+module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = if (deployRulesChat) {
+  name: 'rulesChatFoundry-${environment}'
+  params: {
+    foundryName: rulesChatFoundryName
+    location: location
+    environment: environment
+    chatModel: rulesChatChatModel
+    embeddingModel: rulesChatEmbeddingModel
+    callerPrincipalId: rulesChatIdentity!.properties.principalId
+    tags: tags
+  }
+}
+
 // App Service with System Assigned Managed Identity
 module appServiceModule 'modules/appService.bicep' = {
   name: 'appService-${environment}'
@@ -151,6 +240,7 @@ module appServiceModule 'modules/appService.bicep' = {
     imageTag: imageTag
     tags: tags
     slotName: slotName
+    userAssignedIdentityId: deployRulesChat ? rulesChatIdentity.id : ''
   }
   dependsOn: [
     containerRegistryModule
@@ -236,3 +326,21 @@ output slotName string = appServiceModule.outputs.slotName
 
 @description('Deployment slot hostname (if created)')
 output slotHostName string = appServiceModule.outputs.slotHostName
+
+@description('Client ID of the Rules Chat managed identity (empty when Rules Chat is not deployed)')
+output rulesChatIdentityClientId string = deployRulesChat ? rulesChatIdentity!.properties.clientId : ''
+
+@description('Rules Chat SQL server hostname (empty when Rules Chat is not deployed)')
+output rulesChatSqlServerFqdn string = deployRulesChat ? rulesChatSqlModule!.outputs.sqlServerFqdn : ''
+
+@description('Rules Chat database name (empty when Rules Chat is not deployed)')
+output rulesChatDatabaseName string = deployRulesChat ? rulesChatSqlModule!.outputs.databaseName : ''
+
+@description('Rules Chat OpenAI-compatible model endpoint (empty when Rules Chat is not deployed)')
+output rulesChatAiEndpoint string = deployRulesChat ? rulesChatFoundryModule!.outputs.openAiEndpoint : ''
+
+@description('Rules Chat chat model deployment name (empty when Rules Chat is not deployed)')
+output rulesChatChatModel string = deployRulesChat ? rulesChatFoundryModule!.outputs.chatDeploymentName : ''
+
+@description('Rules Chat embedding model deployment name (empty when Rules Chat is not deployed)')
+output rulesChatEmbeddingModel string = deployRulesChat ? rulesChatFoundryModule!.outputs.embeddingDeploymentName : ''

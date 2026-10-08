@@ -88,6 +88,10 @@ jobs:
           $params['ResourceGroup'] = "${{ vars.AZURE_RESOURCE_GROUP }}"
           $params['ServicePrincipalObjectId'] = "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}"
 
+          # Rules Chat resources are only deployed once these environment variables are set.
+          $params['RulesChatSqlAdminGroupName'] = "${{ vars.RULES_CHAT_SQL_ADMIN_GROUP_NAME }}"
+          $params['RulesChatSqlAdminGroupObjectId'] = "${{ vars.RULES_CHAT_SQL_ADMIN_GROUP_OBJECT_ID }}"
+
           $slotName = "${{ inputs.slot_name }}"
           if ($slotName) {
               $params['SlotName'] = $slotName

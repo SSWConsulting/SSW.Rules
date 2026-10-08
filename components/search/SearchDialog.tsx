@@ -20,7 +20,8 @@ type Item = { kind: "rule"; hit: Hit<RuleHit> } | { kind: "all"; query: string }
 
 const highlightClasses = { highlighted: "bg-ssw-red/15 font-semibold text-ssw-black" };
 
-function Results({ input, onInputChange, onDone }: { input: string; onInputChange: (value: string) => void; onDone: () => void }) {
+function Results({ onDone }: { onDone: () => void }) {
+  const [input, setInput] = useState("");
   const router = useRouter();
   const { refine } = useSearchBox();
   const { items: hits } = useHits<RuleHit>();
@@ -63,7 +64,7 @@ function Results({ input, onInputChange, onDone }: { input: string; onInputChang
           aria-label="Search rules"
           placeholder="Search rules..."
           className="h-14 flex-1 bg-transparent text-base text-ssw-black outline-none placeholder:text-gray-500"
-          onChange={(event) => onInputChange(event.target.value)}
+          onChange={(event) => setInput(event.target.value)}
           displayValue={() => input}
         />
         {isLoading && (
@@ -113,15 +114,9 @@ function Results({ input, onInputChange, onDone }: { input: string; onInputChang
 
 export function SearchDialog() {
   const [isOpen, setIsOpen] = useState(false);
-  const [input, setInput] = useState("");
   const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME;
 
   useEffect(() => onOpenSearch(() => setIsOpen(true)), []);
-
-  // However the dialog closes (Esc, ⌘K, a click outside, choosing a result), it opens empty next time.
-  useEffect(() => {
-    if (!isOpen) setInput("");
-  }, [isOpen]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -148,7 +143,7 @@ export function SearchDialog() {
         >
           <InstantSearch searchClient={searchClient} indexName={indexName}>
             <Configure hitsPerPage={MAX_RESULTS} />
-            <Results input={input} onInputChange={setInput} onDone={close} />
+            <Results onDone={close} />
           </InstantSearch>
         </DialogPanel>
       </div>

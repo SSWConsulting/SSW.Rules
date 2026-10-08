@@ -47,7 +47,7 @@ It runs:
 - **When rules change.** SSW.Rules.Content sends a `rules-content-changed` dispatch on every merge to `main`, and the **Re-index Rules for The Rulekeeper** workflow starts the staging job. It can also be started by hand for either environment.
 - **By hand from a GitHub runner** with **Index Rules for The Rulekeeper**, the fallback for resetting an index.
 
-Runs never overlap: the index script takes a database lock, and a second run stops straight away. It also stops if the tables don't exist, which means the environment hasn't been deployed yet.
+Runs never overlap: the index script takes a database lock. A second run waits up to 30 minutes for it, then indexes whatever the first run didn't have. It also stops if the tables don't exist, which means the environment hasn't been deployed yet.
 
 **Alerts.** Set the GitHub environment variable `RULES_CHAT_ALERT_EMAIL` to email a distribution group:
 

@@ -52,11 +52,12 @@ function sqlConfig() {
 const FIREWALL_WAIT_MS = 5 * 60 * 1000;
 const FIREWALL_POLL_MS = 15 * 1000;
 
-export async function connect(poolOptions) {
+// `overrides` replaces top-level mssql settings, such as `pool` or `requestTimeout`.
+export async function connect(overrides = {}) {
   const deadline = Date.now() + FIREWALL_WAIT_MS;
   for (;;) {
     try {
-      return await new sql.ConnectionPool({ ...sqlConfig(), ...(poolOptions ? { pool: poolOptions } : {}) }).connect();
+      return await new sql.ConnectionPool({ ...sqlConfig(), ...overrides }).connect();
     } catch (error) {
       const blockedByFirewall = /is not allowed to access the server/.test(error.message);
       if (!blockedByFirewall || Date.now() > deadline) throw error;

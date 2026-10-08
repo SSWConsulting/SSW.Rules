@@ -58,3 +58,4 @@ obj/
 *.user
 *.suo
 **/Properties/launchSettings.json
+aspire.config.json

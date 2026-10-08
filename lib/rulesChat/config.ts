@@ -6,6 +6,16 @@ function requireEnv(name: string): string {
   return value;
 }
 
+const MAX_TOKENS_PARAMETERS = ["max_completion_tokens", "max_tokens"] as const;
+
+// Reasoning models on Foundry take max_completion_tokens; Ollama only honours max_tokens.
+function readMaxTokensParameter(): (typeof MAX_TOKENS_PARAMETERS)[number] {
+  const raw = process.env.RULES_CHAT_MAX_TOKENS_PARAMETER || "max_completion_tokens";
+  const parameter = MAX_TOKENS_PARAMETERS.find((name) => name === raw);
+  if (!parameter) throw new Error(`RULES_CHAT_MAX_TOKENS_PARAMETER must be ${MAX_TOKENS_PARAMETERS.join(" or ")}, not "${raw}"`);
+  return parameter;
+}
+
 // Read lazily so a build without the chat settings still succeeds.
 export function getRulesChatConfig() {
   return {
@@ -19,9 +29,9 @@ export function getRulesChatConfig() {
     // Optional: the lowest effort the model accepts ("none" for local qwen, "minimal" for Foundry's reasoning models).
     reasoningEffort: process.env.RULES_CHAT_REASONING_EFFORT || undefined,
     // Foundry's reasoning models only accept max_completion_tokens; Ollama ignores it and only honours max_tokens.
-    maxTokensParameter: process.env.RULES_CHAT_MAX_TOKENS_PARAMETER === "max_tokens" ? "max_tokens" : "max_completion_tokens",
+    maxTokensParameter: readMaxTokensParameter(),
     // Unset for reasoning models, which reject any temperature but the default.
-    temperature: process.env.RULES_CHAT_TEMPERATURE ? Number(process.env.RULES_CHAT_TEMPERATURE) : undefined,
+    temperature: process.env.RULES_CHAT_TEMPERATURE ? readAmount("RULES_CHAT_TEMPERATURE") : undefined,
     sql: getSqlConfig(),
   };
 }

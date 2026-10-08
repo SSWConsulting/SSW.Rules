@@ -43,8 +43,8 @@ The job runs as the Rules Chat identity and pulls its image (`rules-chat-index:{
 
 It runs:
 
-- **Nightly**, at 15:00 UTC (01:00 Sydney standard time), as a safety net.
-- **When rules change.** SSW.Rules.Content sends a `rules-content-changed` dispatch on every merge to `main`, and the **Re-index Rules for The Rulekeeper** workflow starts the staging job. It can also be started by hand for either environment.
+- **Every hour**, on the hour. A run with no changed rules only clones the rules and compares hashes, so a new or edited rule reaches the chat within an hour.
+- **By hand**, with the **Re-index Rules for The Rulekeeper** workflow or the job's **Run now** in the Azure portal.
 - **By hand from a GitHub runner** with **Index Rules for The Rulekeeper**, the fallback for resetting an index.
 
 Runs never overlap: the index script takes a database lock. A second run waits up to 30 minutes for it, then indexes whatever the first run didn't have. It also stops if the tables don't exist, which means the environment hasn't been deployed yet.

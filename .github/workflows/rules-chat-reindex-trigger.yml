@@ -1,10 +1,7 @@
 name: Re-index Rules for The Rulekeeper
 
-# Starts the Container Apps index job, which embeds only the new and changed rules. SSW.Rules.Content sends
-# repository_dispatch (rules-content-changed) when its main branch changes; it can also be started by hand.
+# Starts the Container Apps index job now, instead of waiting for its hourly run. It embeds only the new and changed rules.
 on:
-  repository_dispatch:
-    types: [rules-content-changed]
   workflow_dispatch:
     inputs:
       environment:
@@ -23,8 +20,7 @@ jobs:
   start-index-job:
     name: Start Index Job
     runs-on: ubuntu-latest
-    # A content change re-indexes staging. Production follows its own release, so it is started by hand or nightly.
-    environment: ${{ inputs.environment || 'staging' }}
+    environment: ${{ inputs.environment }}
     env:
       # Resource names follow infra/deploy.ps1, which names the production resources "prod".
       RESOURCE_SUFFIX: ${{ inputs.environment == 'production' && 'prod' || 'staging' }}

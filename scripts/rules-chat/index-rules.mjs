@@ -169,7 +169,7 @@ async function main() {
     );
   }
 
-  // One connection holds the lock for the whole run, so the scheduled job, a content-merge run and the manual workflow
+  // One connection holds the lock for the whole run, so the hourly job, a run started by hand and the GitHub runner workflow
   // never index the same database at once. The lock ends when the connection closes, so the pool keeps it open even
   // while idle (min: 1). A run that finds the lock taken waits for it: it read the rules after the running one did, so it
   // may hold newer changes.

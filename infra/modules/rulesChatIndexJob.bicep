@@ -1,5 +1,5 @@
 // Rules Chat Index Job Module
-// Deploys a Container Apps environment and a job that indexes changed rules nightly and whenever it's started, plus
+// Deploys a Container Apps environment and a job that indexes changed rules every hour and whenever it's started, plus
 // optional email alerts when a run fails or the index hasn't updated for two days
 
 @description('Name of the Container Apps environment')
@@ -45,8 +45,8 @@ param embeddingModel string
 @description('SSW.Rules.Content branch this environment shows')
 param contentBranch string
 
-@description('When the nightly run starts, as a cron expression in UTC')
-param scheduleCron string = '0 15 * * *'
+@description('When the job runs, as a cron expression in UTC. A run with no changed rules only compares hashes.')
+param scheduleCron string = '0 * * * *'
 
 @description('Optional: email address for failure and staleness alerts. No alerts are created when empty.')
 param alertEmail string = ''
@@ -98,8 +98,8 @@ resource job 'Microsoft.App/jobs@2024-03-01' = {
   properties: {
     environmentId: containerAppsEnvironment.id
     configuration: {
-      // A schedule job can also be started by hand or from a workflow (az containerapp job start). Overlapping runs
-      // are prevented by a lock in the index script.
+      // A schedule job can also be started by hand or from a workflow (az containerapp job start). A run that starts
+      // while another is going waits for the lock in the index script.
       triggerType: 'Schedule'
       scheduleTriggerConfig: {
         cronExpression: scheduleCron

@@ -48,11 +48,13 @@ var site = builder.AddJavaScriptApp("site", repoRoot, "dev")
     .WithPnpm(installArgs: ["--frozen-lockfile"])
     .WithHttpEndpoint(port: 3000, env: "PORT")
     .WithUrlForEndpoint("http", url => url.Url = "/rules");
+// WithPnpm adds this resource to install the packages; the index needs them, but not the running site.
+var siteInstaller = builder.CreateResourceBuilder(site.Resource.Annotations.OfType<JavaScriptPackageInstallerAnnotation>().Single().Resource);
 
 // "all" indexes every rule; a number indexes that many. Set RulesChat:IndexSample in appsettings.json or user secrets.
 var indexSample = builder.Configuration["RulesChat:IndexSample"] ?? "200";
 var index = builder.AddNodeApp("rules-chat-index", repoRoot, "scripts/rules-chat/index-rules.mjs")
-    // The site's installer below installs the packages; a second install here would race it.
+    // The site's installer installs the packages; a second install here would race it.
     .WithPnpm(install: false)
     .WithArgs(indexSample == "all" ? [] : ["--sample", indexSample])
     .WithEnvironment("RULES_CHAT_SQL_SERVER", "localhost")
@@ -65,7 +67,7 @@ var index = builder.AddNodeApp("rules-chat-index", repoRoot, "scripts/rules-chat
     .WithEnvironment("RULES_CHAT_AI_API_KEY", "ollama")
     .WithEnvironment("RULES_CHAT_EMBEDDING_MODEL", embeddingModel)
     .WaitForCompletion(schema)
-    .WaitFor(site);
+    .WaitForCompletion(siteInstaller);
 waitForEmbeddingModel(index);
 
 builder.Build().Run();

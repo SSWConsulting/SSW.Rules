@@ -152,8 +152,9 @@ export function ChatConversation({
             </div>
           </div>
         ) : (
-          // Plain divs: the site's global list styles add bullets and margins to ul/li.
-          <div role="log" aria-live="polite" className="flex flex-col gap-3">
+          // Plain divs: the site's global list styles add bullets and margins to ul/li. Busy while an answer streams,
+          // so a screen reader reads the finished answer once instead of every fragment.
+          <div role="log" aria-live="polite" aria-busy={pending !== null} className="flex flex-col gap-3">
             {messages.map((message) => (
               <Message key={message.id} message={message} openLinksInNewTab={openLinksInNewTab} />
             ))}

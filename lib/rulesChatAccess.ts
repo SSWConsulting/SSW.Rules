@@ -1,8 +1,9 @@
 import { unstable_cache } from "next/cache";
 import { getRulesChatLimits } from "@/lib/rulesChat/config";
+import { gitHubIdFromSub, resolveGitHubIds } from "@/lib/rulesChat/gitHubIds";
 import { createDynamicsService } from "@/lib/services/dynamics";
 
-type SessionUser = { sub?: string; nickname?: string };
+type SessionUser = { sub?: string };
 
 // "staff": a current SSW employee, with a high safety cap. "member": any other GitHub user, with a daily limit.
 export type RulesChatTier = "staff" | "member";
@@ -13,26 +14,34 @@ function gitHubUsername(profileUrl: string): string {
   return profileUrl.trim().replace(/\/+$/, "").split("/").pop()?.toLowerCase() ?? "";
 }
 
-// Only a GitHub sign-in proves the nickname is that person's GitHub username.
-function isGitHubUser(user: SessionUser | null | undefined): user is SessionUser & { sub: string; nickname: string } {
-  return Boolean(user?.nickname && user.sub?.startsWith("github|"));
+// Staff are matched on the GitHub account ID in Auth0's sub, not the username: if an employee renames their account
+// and CRM still has the old URL, whoever registers the old name must not get the staff tier.
+export function isEmployeeGitHubUser(user: SessionUser | null | undefined, employeeGitHubIds: ReadonlySet<number>): boolean {
+  const id = gitHubIdFromSub(user?.sub);
+  return id !== null && employeeGitHubIds.has(id);
 }
 
-// The whole username must match: a substring match would let "ant" in as "AntPolkanov".
-export function isEmployeeGitHubUser(user: SessionUser | null | undefined, employeeGitHubUrls: string[]): boolean {
-  if (!isGitHubUser(user)) return false;
-  const nickname = user.nickname.toLowerCase();
-  return employeeGitHubUrls.some((url) => gitHubUsername(url) === nickname);
-}
-
-const getCurrentEmployeeGitHubUrls = unstable_cache(
+// unstable_cache stores JSON, so the IDs are cached as an array.
+const getCurrentEmployeeGitHubIds = unstable_cache(
   async () => {
     const employees = await createDynamicsService().getEmployees({ includeCurrent: true, includePast: false });
-    return employees.map((employee) => employee.gitHubUrl).filter(Boolean);
+    const usernames = employees.map((employee) => gitHubUsername(employee.gitHubUrl)).filter(Boolean);
+    return [...(await resolveGitHubIds(usernames))];
   },
-  ["rules-chat-current-employee-github-urls"],
+  ["rules-chat-current-employee-github-ids"],
   { revalidate: EMPLOYEE_LIST_TTL_SECONDS }
 );
+
+// If CRM or GitHub can't be reached, nobody gets the staff tier until they can: staff then fall back to the member tier,
+// like any other GitHub user, rather than everyone losing access.
+async function employeeGitHubIdsOrNone(): Promise<ReadonlySet<number>> {
+  try {
+    return new Set(await getCurrentEmployeeGitHubIds());
+  } catch (error) {
+    console.error("[RulesChat] couldn't load the employees' GitHub IDs:", error);
+    return new Set();
+  }
+}
 
 // Read on every request, so The Rulekeeper can be switched off with an app setting and no rebuild.
 function isRulesChatEnabled(): boolean {
@@ -48,7 +57,7 @@ export function hasDevAccess(): boolean {
 export async function getRulesChatTier(user: SessionUser | null | undefined): Promise<RulesChatTier | null> {
   if (!isRulesChatEnabled()) return null;
   if (hasDevAccess() && user?.sub) return "staff";
-  if (!isGitHubUser(user)) return null;
-  if (isEmployeeGitHubUser(user, await getCurrentEmployeeGitHubUrls())) return "staff";
+  if (gitHubIdFromSub(user?.sub) === null) return null;
+  if (isEmployeeGitHubUser(user, await employeeGitHubIdsOrNone())) return "staff";
   return getRulesChatLimits().memberDailyLimit > 0 ? "member" : null;
 }

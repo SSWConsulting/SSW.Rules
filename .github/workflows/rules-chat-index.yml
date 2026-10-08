@@ -1,7 +1,8 @@
 name: Index Rules for The Rulekeeper
 
-# Embeds every new or changed rule into The Rulekeeper's database. Unchanged rules are skipped, so only the first run in
-# an environment takes long. Started by hand until rule changes start it automatically.
+# Embeds every new or changed rule into The Rulekeeper's database, from a GitHub runner. A fallback for the Container
+# Apps index job (rules-chat-reindex-trigger.yml starts that one): use it to reset an index or when the job is broken.
+# Both take the same database lock, so they never run at the same time.
 on:
   workflow_dispatch:
     inputs:

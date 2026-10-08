@@ -1,0 +1,44 @@
+name: Re-index Rules for The Rulekeeper
+
+# Starts the Container Apps index job, which embeds only the new and changed rules. SSW.Rules.Content sends
+# repository_dispatch (rules-content-changed) when its main branch changes; it can also be started by hand.
+on:
+  repository_dispatch:
+    types: [rules-content-changed]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to re-index"
+        type: choice
+        default: staging
+        options:
+          - staging
+          - production
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  start-index-job:
+    name: Start Index Job
+    runs-on: ubuntu-latest
+    # A content change re-indexes staging. Production follows its own release, so it is started by hand or nightly.
+    environment: ${{ inputs.environment || 'staging' }}
+    env:
+      # Resource names follow infra/deploy.ps1, which names the production resources "prod".
+      RESOURCE_SUFFIX: ${{ inputs.environment == 'production' && 'prod' || 'staging' }}
+    steps:
+      - name: Azure CLI - Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # The index script takes a database lock, so a run started while another is going stops without changing anything.
+      - name: Start the index job
+        run: |
+          EXECUTION=$(az containerapp job start --name "caj-sswrules-chat-index-$RESOURCE_SUFFIX" \
+            --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --query name --output tsv)
+          echo "Started execution $EXECUTION. Its logs are in the job's Execution history in the Azure portal."

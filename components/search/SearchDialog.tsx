@@ -134,7 +134,7 @@ export function SearchDialog() {
   const close = () => setIsOpen(false);
 
   return (
-    <Dialog open={isOpen} onClose={close} className="relative z-[1200]">
+    <Dialog open={isOpen} onClose={close} aria-label="Search rules" className="relative z-[1200]">
       <DialogBackdrop transition className="fixed inset-0 bg-gray-900/30 backdrop-blur-sm transition-opacity duration-150 data-closed:opacity-0" />
       <div className="fixed inset-0 overflow-y-auto px-4 pt-[12vh] max-sm:pt-4">
         <DialogPanel

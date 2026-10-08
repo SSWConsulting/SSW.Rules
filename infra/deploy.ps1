@@ -495,6 +495,11 @@ $slotInfo$rulesChatInfo
         "acrName=$($outputs.containerRegistryNameOutput.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "acrLoginServer=$($outputs.containerRegistryLoginServer.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "appInsightsConnectionString=$($outputs.appInsightsConnectionString.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatSqlServerName=$RulesChatSqlServerName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatSqlServerFqdn=$($outputs.rulesChatSqlServerFqdn.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatDatabaseName=$($outputs.rulesChatDatabaseName.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatIdentityName=$RulesChatIdentityName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatIdentityClientId=$($outputs.rulesChatIdentityClientId.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         
         # Slot outputs (for PR deployments)
         if ($outputs.slotName.value) {

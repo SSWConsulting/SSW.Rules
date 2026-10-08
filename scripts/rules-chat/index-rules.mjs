@@ -70,26 +70,36 @@ const delay = (ms) => new Promise((resolveDelay) => setTimeout(resolveDelay, ms)
 // Rate limits (429) and server errors are retried, waiting as long as Retry-After asks or backing off otherwise.
 async function embed(texts) {
   for (let attempt = 1; ; attempt++) {
-    const response = await fetch(`${config.aiBaseUrl}/embeddings`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: await authorization() },
-      body: JSON.stringify({
-        model: config.embeddingModel,
-        input: texts,
-        ...(config.requestDimensions ? { dimensions: config.requestDimensions } : {}),
-      }),
-    });
+    const attemptLabel = `attempt ${attempt} of ${MAX_EMBEDDING_ATTEMPTS}`;
+    let response;
+    try {
+      response = await fetch(`${config.aiBaseUrl}/embeddings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: await authorization() },
+        body: JSON.stringify({
+          model: config.embeddingModel,
+          input: texts,
+          ...(config.requestDimensions ? { dimensions: config.requestDimensions } : {}),
+        }),
+      });
+    } catch (error) {
+      // A dropped connection fails before there's a response. Treat it like a server error.
+      if (attempt === MAX_EMBEDDING_ATTEMPTS) throw new Error(`Embedding request failed (${attemptLabel}): ${error.message}`, { cause: error });
+      console.warn(`Embedding request failed (${error.message}); retrying in ${2 ** attempt}s (${attemptLabel})`);
+      await delay(2 ** attempt * 1000);
+      continue;
+    }
     if (response.ok) {
       const { data } = await response.json();
       return data.map((item) => item.embedding);
     }
     const retryable = response.status === 429 || response.status >= 500;
     if (!retryable || attempt === MAX_EMBEDDING_ATTEMPTS) {
-      throw new Error(`Embedding request failed (${response.status}) after ${attempt} attempts: ${await response.text()}`);
+      throw new Error(`Embedding request failed with ${response.status} (${attemptLabel}): ${await response.text()}`);
     }
     const retryAfterSeconds = Number(response.headers.get("retry-after"));
     const waitMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0 ? retryAfterSeconds * 1000 : 2 ** attempt * 1000;
-    console.warn(`Embedding request returned ${response.status}; retrying in ${Math.round(waitMs / 1000)}s (attempt ${attempt + 1}/${MAX_EMBEDDING_ATTEMPTS})`);
+    console.warn(`Embedding request returned ${response.status}; retrying in ${Math.round(waitMs / 1000)}s (${attemptLabel})`);
     await delay(waitMs);
   }
 }
@@ -166,7 +176,9 @@ async function main() {
     const currentUris = new Set(allRules.map((rule) => rule.uri));
     const removed = sample ? [] : [...indexed.keys()].filter((uri) => !currentUris.has(uri));
     if (!allowRemovals && removed.length > indexed.size * MAX_REMOVED_SHARE) {
-      throw new Error(`This run would remove ${removed.length} of the ${indexed.size} indexed rules. If that's intended, run again with --allow-removals.`);
+      throw new Error(
+        `This run would remove ${removed.length} of the ${indexed.size} indexed rules. If that's intended, run again with --allow-removals (in the Index Rules workflow, tick "Allow removals").`
+      );
     }
     for (const uri of removed) {
       await pool

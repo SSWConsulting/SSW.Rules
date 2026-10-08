@@ -104,6 +104,17 @@ async function embed(texts) {
   }
 }
 
+// Usage rows only back the limits and support questions, which never look back further than this.
+const USAGE_RETENTION_DAYS = 90;
+
+async function deleteOldUsage(pool) {
+  const deleted = await pool
+    .request()
+    .input("days", sql.Int, USAGE_RETENTION_DAYS)
+    .query("DELETE FROM dbo.ChatUsage WHERE StartedAt < DATEADD(DAY, -@days, SYSUTCDATETIME())");
+  console.log(`Deleted ${deleted.rowsAffected[0]} chat usage rows older than ${USAGE_RETENTION_DAYS} days`);
+}
+
 async function saveRule(pool, rule, embeddings) {
   const rows = rule.chunks.map((chunk, index) => ({ index, heading: chunk.heading, content: chunk.content, embedding: JSON.stringify(embeddings[index]) }));
   const transaction = new sql.Transaction(pool);
@@ -169,6 +180,8 @@ async function main() {
 
   const pool = await connect();
   try {
+    await deleteOldUsage(pool);
+
     const indexed = new Map(
       (await pool.request().query("SELECT RuleUri, ContentHash FROM dbo.IndexedRules")).recordset.map((row) => [row.RuleUri, row.ContentHash])
     );

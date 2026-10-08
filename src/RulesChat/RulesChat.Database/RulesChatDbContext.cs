@@ -11,6 +11,8 @@ public sealed class RulesChatDbContext(DbContextOptions<RulesChatDbContext> opti
 
     public DbSet<RuleChunk> RuleChunks => Set<RuleChunk>();
 
+    public DbSet<ChatUsage> ChatUsages => Set<ChatUsage>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<IndexedRule>(rule =>
@@ -27,6 +29,15 @@ public sealed class RulesChatDbContext(DbContextOptions<RulesChatDbContext> opti
             chunk.Property(c => c.RuleUri).HasMaxLength(IndexedRule.RuleUriMaxLength);
             chunk.Property(c => c.Heading).HasMaxLength(RuleChunk.HeadingMaxLength);
             chunk.Property(c => c.Embedding).HasColumnType($"vector({RuleChunk.EmbeddingDimensions})");
+        });
+
+        modelBuilder.Entity<ChatUsage>(usage =>
+        {
+            usage.ToTable("ChatUsage");
+            usage.Property(u => u.UserSub).HasMaxLength(ChatUsage.UserSubMaxLength);
+            usage.Property(u => u.Outcome).HasMaxLength(ChatUsage.OutcomeMaxLength).IsUnicode(false);
+            usage.HasIndex(u => new { u.UserSub, u.StartedAt });
+            usage.HasIndex(u => u.StartedAt);
         });
 
         // No cascades in the database: code that removes a rule removes its chunks first.

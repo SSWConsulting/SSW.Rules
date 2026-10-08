@@ -88,6 +88,15 @@ jobs:
           $params['ResourceGroup'] = "${{ vars.AZURE_RESOURCE_GROUP }}"
           $params['ServicePrincipalObjectId'] = "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}"
 
+          # PR deploys run this workflow from main against the PR's own commit. An older branch's deploy.ps1 can't take
+          # the parameter below, and its Bicep would remove the shared Rules Chat identity from the staging site.
+          if (-not (Get-Command ./infra/deploy.ps1).Parameters.ContainsKey('RulesChatSqlAdminClientId')) {
+              throw "This branch predates The Rulekeeper infrastructure. Merge or rebase main into it, then deploy again."
+          }
+
+          # The pipeline administers the Rules Chat database, so it can apply schema changes on every deploy.
+          $params['RulesChatSqlAdminClientId'] = "${{ secrets.AZURE_CLIENT_ID }}"
+
           $slotName = "${{ inputs.slot_name }}"
           if ($slotName) {
               $params['SlotName'] = $slotName

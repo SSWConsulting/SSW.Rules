@@ -286,24 +286,22 @@ mark:is(
     @apply list-decimal;
   }
 
-  ul > li > ul,
-  ul > li > ol,
-  ol > li > ul,
-  ol > li > ol {
-    @apply pt-2;
+  li > ul,
+  li > ol {
+    @apply pt-2 mb-0 ps-6;
   }
 
-  ul > li > ul > li::marker,
-  ol > li > ul > li::marker {
+  li > ul > li::marker,
+  li > ol > li::marker {
     color: var(--gray-500);
   }
 
   /* Nested ordered lists step through the markers: 1. > a. > i. */
-  li > ol {
+  ol > li > ol {
     @apply list-[lower-alpha];
   }
 
-  li li > ol {
+  ol > li > ol > li > ol {
     @apply list-[lower-roman];
   }
 

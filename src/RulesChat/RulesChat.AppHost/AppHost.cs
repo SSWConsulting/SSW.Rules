@@ -1,7 +1,7 @@
 using Aspire.Hosting.JavaScript;
 
-// Runs The Rulekeeper and the site locally: SQL Server in a container, the schema, the embedding model, a sample index
-// of the rules, and the Next.js site. Start it from the repo root with:
+// Runs The Rulekeeper and the site locally: SQL Server in a container, the schema, the models, a sample index of the
+// rules, and the Next.js site with the chat switched on. Start it from the repo root with:
 //
 //   pnpm aspire    (runs aspire run --project src/RulesChat/RulesChat.AppHost)
 //
@@ -11,6 +11,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 var repoRoot = Path.GetFullPath(Path.Combine(builder.AppHostDirectory, "../../.."));
 const string embeddingModel = "bge-m3";
+const string chatModel = "qwen3.5:9b";
 const string ollamaUrl = "http://localhost:11434";
 const int sqlPort = 14333;
 
@@ -27,35 +28,31 @@ var schema = builder.AddProject<Projects.RulesChat_Database>("rules-chat-schema"
     .WaitFor(database);
 
 // Docker on a Mac can't use the GPU, so there the Ollama app on the machine is used. Elsewhere Ollama runs in a
-// container. Both listen on the same port, so the index script doesn't need to know which.
-Func<IResourceBuilder<NodeAppResource>, IResourceBuilder<NodeAppResource>> waitForEmbeddingModel;
+// container. Both listen on the same port, so the site and the index script don't need to know which.
+// Only the index waits for a model (the embedding one). The site starts straight away: the chat model is several GB,
+// and until it's pulled the chat fails cleanly while the rest of the site works.
+Func<IResourceBuilder<IResourceWithWaitSupport>, IResourceBuilder<IResourceWithWaitSupport>> waitForEmbeddingModel;
 if (OperatingSystem.IsMacOS())
 {
     var ollama = builder.AddExternalService("ollama", $"{ollamaUrl}/").WithHttpHealthCheck("/api/tags");
-    var pull = builder.AddExecutable($"ollama-pull-{embeddingModel}", "ollama", repoRoot, "pull", embeddingModel)
-        .WaitFor(ollama);
-    waitForEmbeddingModel = resource => resource.WaitForCompletion(pull);
+    IResourceBuilder<ExecutableResource> Pull(string model) =>
+        builder.AddExecutable($"ollama-pull-{model.Replace(':', '-').Replace('.', '-')}", "ollama", repoRoot, "pull", model).WaitFor(ollama);
+    var embeddingPull = Pull(embeddingModel);
+    Pull(chatModel);
+    waitForEmbeddingModel = resource => resource.WaitForCompletion(embeddingPull);
 }
 else
 {
-    var model = builder.AddOllama("ollama", port: 11434)
+    var ollama = builder.AddOllama("ollama", port: 11434)
         .WithDataVolume("ssw-rules-chat-ollama")
-        .WithLifetime(ContainerLifetime.Persistent)
-        .AddModel(embeddingModel);
-    waitForEmbeddingModel = resource => resource.WaitFor(model);
+        .WithLifetime(ContainerLifetime.Persistent);
+    var embedding = ollama.AddModel(embeddingModel);
+    ollama.AddModel(chatModel);
+    waitForEmbeddingModel = resource => resource.WaitFor(embedding);
 }
 
-var site = builder.AddJavaScriptApp("site", repoRoot, "dev")
-    .WithPnpm(installArgs: ["--frozen-lockfile"])
-    .WithHttpEndpoint(port: 3000, env: "PORT")
-    .WithUrlForEndpoint("http", url => url.Url = "/rules");
-
-// "all" indexes every rule; a number indexes that many. Set RulesChat:IndexSample in appsettings.json or user secrets.
-var indexSample = builder.Configuration["RulesChat:IndexSample"] ?? "200";
-var index = builder.AddNodeApp("rules-chat-index", repoRoot, "scripts/rules-chat/index-rules.mjs")
-    // The site's installer installs the packages; a second install here would race it.
-    .WithPnpm(install: false)
-    .WithArgs(indexSample == "all" ? [] : ["--sample", indexSample])
+// The site and the index script read the same settings, so they're set in one place.
+IResourceBuilder<T> WithRulesChatSettings<T>(IResourceBuilder<T> resource) where T : IResourceWithEnvironment => resource
     .WithEnvironment("RULES_CHAT_SQL_SERVER", "localhost")
     .WithEnvironment("RULES_CHAT_SQL_PORT", sqlPort.ToString())
     .WithEnvironment("RULES_CHAT_SQL_DATABASE", database.Resource.DatabaseName)
@@ -64,7 +61,34 @@ var index = builder.AddNodeApp("rules-chat-index", repoRoot, "scripts/rules-chat
     .WithEnvironment("RULES_CHAT_SQL_TRUST_CERTIFICATE", "true")
     .WithEnvironment("RULES_CHAT_AI_BASE_URL", $"{ollamaUrl}/v1")
     .WithEnvironment("RULES_CHAT_AI_API_KEY", "ollama")
-    .WithEnvironment("RULES_CHAT_EMBEDDING_MODEL", embeddingModel)
+    .WithEnvironment("RULES_CHAT_EMBEDDING_MODEL", embeddingModel);
+
+var site = WithRulesChatSettings(builder.AddJavaScriptApp("site", repoRoot, "dev"))
+    .WithPnpm(installArgs: ["--frozen-lockfile"])
+    .WithHttpEndpoint(port: 3000, env: "PORT")
+    .WithUrlForEndpoint("http", url => url.Url = "/rules")
+    .WithEnvironment("RULES_CHAT_ENABLED", "true")
+    .WithEnvironment("RULES_CHAT_DEV_ACCESS", "true")
+    .WithEnvironment("RULES_CHAT_CHAT_MODEL", chatModel)
+    // Ollama ignores max_completion_tokens, and qwen takes a temperature; Foundry's reasoning models are the reverse.
+    .WithEnvironment("RULES_CHAT_MAX_TOKENS_PARAMETER", "max_tokens")
+    .WithEnvironment("RULES_CHAT_TEMPERATURE", "0.2")
+    // Local reasoning models answer much faster without reasoning.
+    .WithEnvironment("RULES_CHAT_REASONING_EFFORT", "none")
+    .WithEnvironment("RULES_CHAT_MEMBER_DAILY_LIMIT", "0")
+    .WithEnvironment("RULES_CHAT_MONTHLY_BUDGET_USD", "100")
+    // Local models cost nothing.
+    .WithEnvironment("RULES_CHAT_INPUT_PRICE_PER_MILLION_TOKENS_USD", "0")
+    .WithEnvironment("RULES_CHAT_OUTPUT_PRICE_PER_MILLION_TOKENS_USD", "0")
+    // The chat API reads the usage table, which a migration creates.
+    .WaitForCompletion(schema);
+
+// "all" indexes every rule; a number indexes that many. Set RulesChat:IndexSample in appsettings.json or user secrets.
+var indexSample = builder.Configuration["RulesChat:IndexSample"] ?? "200";
+var index = WithRulesChatSettings(builder.AddNodeApp("rules-chat-index", repoRoot, "scripts/rules-chat/index-rules.mjs"))
+    // The site's installer installs the packages; a second install here would race it.
+    .WithPnpm(install: false)
+    .WithArgs(indexSample == "all" ? [] : ["--sample", indexSample])
     .WaitForCompletion(schema);
 // WithPnpm adds an installer only when running; the index needs its packages, but not the running site.
 if (site.Resource.Annotations.OfType<JavaScriptPackageInstallerAnnotation>().SingleOrDefault() is { } installer)

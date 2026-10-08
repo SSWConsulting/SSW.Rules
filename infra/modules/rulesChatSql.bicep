@@ -77,7 +77,8 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01' = {
   sku: databaseSku
   properties: union(
     {
-      // The index can be rebuilt from the rules repository, so geo-redundant backups add cost without benefit.
+      // The index can be rebuilt from the rules repository and usage counts are short-lived, so geo-redundant
+      // backups add cost without benefit.
       requestedBackupStorageRedundancy: 'Local'
       zoneRedundant: false
     },
@@ -89,13 +90,3 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01' = {
       : {}
   )
 }
-
-// ============================================================================
-// OUTPUTS
-// ============================================================================
-
-@description('Fully qualified domain name of the SQL server')
-output sqlServerFqdn string = sqlServer.properties.fullyQualifiedDomainName
-
-@description('Name of the database')
-output databaseName string = database.name

@@ -60,6 +60,9 @@ resource chatDeployment 'Microsoft.CognitiveServices/accounts/deployments@2025-0
       name: chatModel.name
       version: chatModel.version
     }
+    // Stays on the pinned version until it retires, then Azure moves it to the current default. Bump the version in
+    // main.bicep before the retirement date, so the template never pins a retired version.
+    versionUpgradeOption: 'OnceCurrentVersionExpired'
   }
 }
 
@@ -77,6 +80,7 @@ resource embeddingDeployment 'Microsoft.CognitiveServices/accounts/deployments@2
       name: embeddingModel.name
       version: embeddingModel.version
     }
+    versionUpgradeOption: 'OnceCurrentVersionExpired'
   }
   dependsOn: [
     chatDeployment
@@ -92,16 +96,3 @@ resource callerRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     principalType: 'ServicePrincipal'
   }
 }
-
-// ============================================================================
-// OUTPUTS
-// ============================================================================
-
-@description('OpenAI-compatible endpoint (v1 API) of the Foundry resource')
-output openAiEndpoint string = 'https://${foundry.properties.customSubDomainName}.openai.azure.com/openai/v1'
-
-@description('Name of the chat model deployment')
-output chatDeploymentName string = chatDeployment.name
-
-@description('Name of the embedding model deployment')
-output embeddingDeploymentName string = embeddingDeployment.name

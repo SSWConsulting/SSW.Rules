@@ -198,7 +198,11 @@ resource rulesChatIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@202
   })
 }
 
-module rulesChatSqlModule 'modules/rulesChatSql.bicep' = {
+// PR slot deploys share staging's database and models but leave them alone: two PR deploys can run at once, and a
+// PR branch must not be able to change what every other PR and staging use.
+var deploysSharedRulesChat = empty(slotName)
+
+module rulesChatSqlModule 'modules/rulesChatSql.bicep' = if (deploysSharedRulesChat) {
   name: 'rulesChatSql-${environment}'
   params: {
     sqlServerName: rulesChatSqlServerName
@@ -212,7 +216,7 @@ module rulesChatSqlModule 'modules/rulesChatSql.bicep' = {
   }
 }
 
-module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = {
+module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = if (deploysSharedRulesChat) {
   name: 'rulesChatFoundry-${environment}'
   params: {
     foundryName: rulesChatFoundryName
@@ -328,17 +332,18 @@ output slotHostName string = appServiceModule.outputs.slotHostName
 @description('Client ID of the Rules Chat managed identity')
 output rulesChatIdentityClientId string = rulesChatIdentity.properties.clientId
 
+// Built from the names, so slot deploys report the same values without touching the shared resources.
 @description('Rules Chat SQL server hostname')
-output rulesChatSqlServerFqdn string = rulesChatSqlModule.outputs.sqlServerFqdn
+output rulesChatSqlServerFqdn string = '${rulesChatSqlServerName}${az.environment().suffixes.sqlServerHostname}'
 
 @description('Rules Chat database name')
-output rulesChatDatabaseName string = rulesChatSqlModule.outputs.databaseName
+output rulesChatDatabaseName string = rulesChatDatabaseName
 
 @description('Rules Chat OpenAI-compatible model endpoint')
-output rulesChatAiEndpoint string = rulesChatFoundryModule.outputs.openAiEndpoint
+output rulesChatAiEndpoint string = 'https://${rulesChatFoundryName}.openai.azure.com/openai/v1'
 
 @description('Rules Chat chat model deployment name')
-output rulesChatChatModel string = rulesChatFoundryModule.outputs.chatDeploymentName
+output rulesChatChatModel string = rulesChatChatModel.name
 
 @description('Rules Chat embedding model deployment name')
-output rulesChatEmbeddingModel string = rulesChatFoundryModule.outputs.embeddingDeploymentName
+output rulesChatEmbeddingModel string = rulesChatEmbeddingModel.name

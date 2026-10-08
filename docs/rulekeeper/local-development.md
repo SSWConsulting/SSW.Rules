@@ -56,7 +56,7 @@ The tables are defined by the EF Core model and migrations in `src/RulesChat/Rul
 | See how one rule is split into chunks | `pnpm rules-chat:index --show <rule-uri>` (needs no database) |
 | Re-run the index | The dashboard → `rules-chat-index` → Restart |
 | Change the schema | Edit the entities in `src/RulesChat/RulesChat.Database`, then `cd src/RulesChat && dotnet tool restore && dotnet ef migrations add <Name> --project RulesChat.Database --output-dir Migrations`. Never write migrations by hand. |
-| Run the index outside Aspire | Set the `RULES_CHAT_SQL_*` settings in `.env.local` (see `.env.example`), then `pnpm rules-chat:index`. Add `--reset` to empty the index first. |
+| Run the index outside Aspire | Set the `RULES_CHAT_SQL_*` settings in `.env.local` (see `.env.example`), then `pnpm rules-chat:index`. Add `--reembed` to embed every rule again. |
 | Get the local SQL password | `dotnet user-secrets list --project src/RulesChat/RulesChat.AppHost` |
 | Delete the local database | Stop Aspire, then `docker volume rm ssw-rules-chat-sql` |
 

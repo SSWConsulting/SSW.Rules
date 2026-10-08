@@ -67,6 +67,9 @@ var site = WithRulesChatSettings(builder.AddJavaScriptApp("site", repoRoot, "dev
     .WithEnvironment("RULES_CHAT_ENABLED", "true")
     .WithEnvironment("RULES_CHAT_DEV_ACCESS", "true")
     .WithEnvironment("RULES_CHAT_CHAT_MODEL", chatModel)
+    // Ollama ignores max_completion_tokens, and qwen takes a temperature; Foundry's reasoning models are the reverse.
+    .WithEnvironment("RULES_CHAT_MAX_TOKENS_PARAMETER", "max_tokens")
+    .WithEnvironment("RULES_CHAT_TEMPERATURE", "0.2")
     // Local reasoning models answer much faster without reasoning.
     .WithEnvironment("RULES_CHAT_REASONING_EFFORT", "none")
     .WithEnvironment("RULES_CHAT_MEMBER_DAILY_LIMIT", "0")

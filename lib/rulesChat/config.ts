@@ -16,8 +16,12 @@ export function getRulesChatConfig() {
     // Unset for a model that returns 1024 dimensions natively (bge-m3); text-embedding-3-large is asked for 1024.
     embeddingDimensions: process.env.RULES_CHAT_EMBEDDING_DIMENSIONS ? Number(process.env.RULES_CHAT_EMBEDDING_DIMENSIONS) : undefined,
     chatModel: requireEnv("RULES_CHAT_CHAT_MODEL"),
-    // Optional: local reasoning models answer much faster with "none"; leave unset for models that reject it.
+    // Optional: the lowest effort the model accepts ("none" for local qwen, "minimal" for Foundry's reasoning models).
     reasoningEffort: process.env.RULES_CHAT_REASONING_EFFORT || undefined,
+    // Foundry's reasoning models only accept max_completion_tokens; Ollama ignores it and only honours max_tokens.
+    maxTokensParameter: process.env.RULES_CHAT_MAX_TOKENS_PARAMETER === "max_tokens" ? "max_tokens" : "max_completion_tokens",
+    // Unset for reasoning models, which reject any temperature but the default.
+    temperature: process.env.RULES_CHAT_TEMPERATURE ? Number(process.env.RULES_CHAT_TEMPERATURE) : undefined,
     sql: getSqlConfig(),
   };
 }

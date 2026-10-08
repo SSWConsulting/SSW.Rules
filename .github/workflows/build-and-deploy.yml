@@ -196,6 +196,7 @@ jobs:
                     "RULES_CHAT_IDENTITY_CLIENT_ID=${{ needs.infrastructure.outputs.rulesChatIdentityClientId }}"
                     "RULES_CHAT_AI_BASE_URL=${{ needs.infrastructure.outputs.rulesChatAiEndpoint }}"
                     "RULES_CHAT_CHAT_MODEL=${{ needs.infrastructure.outputs.rulesChatChatModel }}"
+                    "RULES_CHAT_REASONING_EFFORT=minimal"
                     "RULES_CHAT_EMBEDDING_MODEL=${{ needs.infrastructure.outputs.rulesChatEmbeddingModel }}"
                     "RULES_CHAT_EMBEDDING_DIMENSIONS=1024"
                     "RULES_CHAT_MEMBER_DAILY_LIMIT=${{ vars.RULES_CHAT_MEMBER_DAILY_LIMIT || '0' }}"

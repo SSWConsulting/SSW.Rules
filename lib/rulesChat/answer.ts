@@ -3,9 +3,8 @@ import { getRulesChatConfig } from "./config";
 import type { RuleSource } from "./numbering";
 import type { TokenUsage } from "./usage";
 
-export type ChatTurn = { role: "user" | "assistant"; content: string };
-
-const MAX_ANSWER_TOKENS = 1000;
+// Reasoning models count their reasoning against this budget, so it leaves room beyond a typical answer.
+const MAX_ANSWER_TOKENS = 2000;
 const CHARS_PER_TOKEN_ESTIMATE = 4;
 
 const SYSTEM_PROMPT = `You are The Rulekeeper, the assistant on the SSW Rules website. You know the rules well and care about them a lot.
@@ -44,10 +43,17 @@ function estimateTokens(text: string): number {
 
 // Yields the answer text as it is generated. `usage` is kept up to date as the answer streams, so it holds
 // a count even when the answer fails or is cancelled part way; the endpoint's own count replaces it at the end.
-export async function* streamAnswer(history: ChatTurn[], sources: RuleSource[], signal: AbortSignal, usage: TokenUsage): AsyncGenerator<string> {
-  const { aiBaseUrl, chatModel, reasoningEffort } = getRulesChatConfig();
-  const question = history[history.length - 1].content;
-  const messages = [{ role: "system", content: SYSTEM_PROMPT }, ...history.slice(0, -1), { role: "user", content: formatQuestion(question, sources) }];
+//
+// Only the reader's questions go to the model, never earlier answers: those come from the browser, and a forged
+// "answer" could talk the model out of its rules. Rule numbers stay stable through the numbered excerpts instead.
+export async function* streamAnswer(questions: string[], sources: RuleSource[], signal: AbortSignal, usage: TokenUsage): AsyncGenerator<string> {
+  const { aiBaseUrl, chatModel, reasoningEffort, maxTokensParameter, temperature } = getRulesChatConfig();
+  const question = questions[questions.length - 1];
+  const messages = [
+    { role: "system", content: SYSTEM_PROMPT },
+    ...questions.slice(0, -1).map((earlier) => ({ role: "user", content: withoutPromptTags(earlier) })),
+    { role: "user", content: formatQuestion(question, sources) },
+  ];
   usage.inputTokens = estimateTokens(messages.map((message) => message.content).join(""));
   usage.outputTokens = 0;
   const response = await fetch(`${aiBaseUrl}/chat/completions`, {
@@ -58,8 +64,8 @@ export async function* streamAnswer(history: ChatTurn[], sources: RuleSource[], 
       model: chatModel,
       stream: true,
       stream_options: { include_usage: true },
-      temperature: 0.2,
-      max_tokens: MAX_ANSWER_TOKENS,
+      [maxTokensParameter]: MAX_ANSWER_TOKENS,
+      ...(temperature === undefined ? {} : { temperature }),
       ...(reasoningEffort ? { reasoning_effort: reasoningEffort } : {}),
       messages,
     }),
@@ -69,13 +75,16 @@ export async function* streamAnswer(history: ChatTurn[], sources: RuleSource[], 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffered = "";
+  let answerChars = 0;
+  let finishReason: string | undefined;
   for (;;) {
     const { done, value } = await reader.read();
     if (done) break;
     buffered += decoder.decode(value, { stream: true });
     const lines = buffered.split("\n");
     buffered = lines.pop() ?? "";
-    for (const line of lines) {
+    for (const rawLine of lines) {
+      const line = rawLine.replace(/\r$/, "");
       const data = line.startsWith("data:") ? line.slice(5).trim() : "";
       if (!data || data === "[DONE]") continue;
       const chunk = JSON.parse(data);
@@ -84,11 +93,17 @@ export async function* streamAnswer(history: ChatTurn[], sources: RuleSource[], 
         usage.inputTokens = chunk.usage.prompt_tokens ?? usage.inputTokens;
         usage.outputTokens = chunk.usage.completion_tokens ?? usage.outputTokens;
       }
+      finishReason = chunk.choices?.[0]?.finish_reason ?? finishReason;
       const delta = chunk.choices?.[0]?.delta?.content;
       if (delta) {
+        answerChars += delta.length;
         usage.outputTokens += estimateTokens(delta);
         yield delta;
       }
     }
   }
+
+  // "length" means the budget ran out, possibly all on reasoning; "content_filter" means Foundry blocked the answer.
+  if (finishReason && finishReason !== "stop") console.warn(`[RulesChat] answer finished with "${finishReason}" after ${answerChars} characters`);
+  if (answerChars === 0) throw new Error(`The model returned no answer (finish_reason: ${finishReason ?? "none"})`);
 }

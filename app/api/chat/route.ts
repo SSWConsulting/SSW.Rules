@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuth0 } from "@/lib/auth0";
-import { type ChatTurn, streamAnswer } from "@/lib/rulesChat/answer";
+import { streamAnswer } from "@/lib/rulesChat/answer";
 import { getRulesChatLimits } from "@/lib/rulesChat/config";
 import { MAX_MESSAGE_CHARS } from "@/lib/rulesChat/limits";
 import { numberSources, parseCitedRules, referencedUris } from "@/lib/rulesChat/numbering";
@@ -29,6 +29,8 @@ const LIMIT_MESSAGES: Record<LimitReason, string> = {
   day: "You've reached today's question limit.",
   paused: "The Rulekeeper has reached its monthly limit.",
 };
+
+type ChatTurn = { role: "user" | "assistant"; content: string };
 
 function parseHistory(body: unknown): ChatTurn[] | null {
   const messages = (body as { messages?: unknown })?.messages;
@@ -88,16 +90,16 @@ export async function POST(request: Request) {
       let outcome: QuestionOutcome = "answered";
       try {
         // A follow-up like "and for emails?" only makes sense next to the question before it.
-        const userTurns = history.filter((turn) => turn.role === "user").slice(-2);
-        const question = history[history.length - 1].content;
-        const found = await searchRules(userTurns.map((turn) => turn.content).join("\n"), referencedUris(question, citedRules), signal);
+        const questions = history.filter((turn) => turn.role === "user").map((turn) => turn.content);
+        const question = questions[questions.length - 1];
+        const found = await searchRules(questions.slice(-2).join("\n"), referencedUris(question, citedRules), signal);
         const sources = numberSources(found, citedRules);
         send({
           type: "sources",
           sources: sources.map(({ number, uri, title }) => ({ number, title, href: `/${uri}` })),
           remainingToday,
         });
-        for await (const text of streamAnswer(history, sources, signal, tokens)) send({ type: "delta", text });
+        for await (const text of streamAnswer(questions, sources, signal, tokens)) send({ type: "delta", text });
         controller.close();
       } catch (error) {
         // The reader has gone, so there is nobody to tell and the stream is already closed.

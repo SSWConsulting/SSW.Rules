@@ -19,3 +19,5 @@ dist
 .vscode
 .idea
 .DS_Store
+# The Rulekeeper's .NET projects (schema migrator, local Aspire host) aren't part of the site image
+src

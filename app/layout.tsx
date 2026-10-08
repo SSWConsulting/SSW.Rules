@@ -6,7 +6,9 @@ import SiteLayout from "@/components/layout/layout";
 import { cn } from "@/lib/utils";
 import "@/styles.css";
 import UserClientProvider from "@/components/auth/UserClientProvider";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import AppInsightsProvider from "@/components/providers/AppInsightsProvider";
+import { SearchDialog } from "@/components/search/SearchDialog";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
 import { pageMetadata } from "@/lib/pageMetadata";
 import { homepageTitle, siteDescription, siteTitle, siteUrl } from "@/site-config";
@@ -62,6 +64,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppInsightsProvider>
           <UserClientProvider>
             <SiteLayout>{children}</SiteLayout>
+            <ChatWidget />
+            <SearchDialog />
           </UserClientProvider>
         </AppInsightsProvider>
         <TailwindIndicator />

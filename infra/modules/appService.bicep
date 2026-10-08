@@ -25,6 +25,9 @@ param tags object = {}
 @description('Optional: Name of the deployment slot (e.g., pr-123). If empty, no slot is created.')
 param slotName string = ''
 
+@description('Resource ID of the user-assigned managed identity to attach to the app and its slot')
+param userAssignedIdentityId string
+
 // ============================================================================
 // VARIABLES
 // ============================================================================
@@ -38,6 +41,15 @@ var effectiveSlotName = environment == 'prod' ? 'pre-production' : slotName
 // - For prod pre-production: use imageTag (same as main, for swap deployments)
 // - For staging PR slots: use the slotName as the tag
 var slotImageTag = environment == 'prod' ? imageTag : slotName
+
+// The system-assigned identity pulls images from ACR. A shared user-assigned identity is added for access that
+// must survive slot creation, since every PR slot gets a new system-assigned identity.
+var identity = {
+  type: 'SystemAssigned, UserAssigned'
+  userAssignedIdentities: {
+    '${userAssignedIdentityId}': {}
+  }
+}
 
 // Shared site configuration properties
 // NOTE: appSettings are intentionally NOT set here. ARM treats siteConfig.appSettings
@@ -65,9 +77,7 @@ resource appService 'Microsoft.Web/sites@2025-03-01' = {
     environment: environment
   })
   kind: 'app,linux,container'
-  identity: {
-    type: 'SystemAssigned'
-  }
+  identity: identity
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
@@ -89,9 +99,7 @@ resource deploymentSlot 'Microsoft.Web/sites/slots@2025-03-01' = if (!empty(effe
     environment: '${environment}-${effectiveSlotName}'
   })
   kind: 'app,linux,container'
-  identity: {
-    type: 'SystemAssigned'
-  }
+  identity: identity
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true

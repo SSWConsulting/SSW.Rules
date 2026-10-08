@@ -11,6 +11,11 @@
     - acr{project}{env}       (Container Registry - no hyphens allowed)
     - rg-{project}-{env}      (Resource Group)
 
+    The Rulekeeper (Rules Chat):
+    - id-{project}-chat-{env}   (User-assigned managed identity for the site)
+    - sql-{project}-chat-{env}  (Azure SQL server, database RulesChat)
+    - aif-{project}-chat-{env}  (Microsoft Foundry resource with the chat and embedding models)
+
     For staging: Uses existing shared App Service Plan (plan-ssw-shared-dev-linux)
     For production: Creates a dedicated App Service Plan
 
@@ -30,17 +35,21 @@
 .PARAMETER SlotName
     Optional deployment slot name (e.g., pr-123). Only used for staging PR deployments.
 
+.PARAMETER RulesChatSqlAdminClientId
+    Application (client) ID of the service principal that administers the Rules Chat SQL server: the deployment
+    pipeline's (the AZURE_CLIENT_ID GitHub secret).
+
 .PARAMETER WhatIf
     Show what would be deployed without actually deploying
 
 .EXAMPLE
-    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging"
+    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging" -RulesChatSqlAdminClientId "<pipeline client ID>"
 
 .EXAMPLE
-    ./deploy.ps1 -Environment production -ResourceGroup "SSW.Rules" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012"
+    ./deploy.ps1 -Environment production -ResourceGroup "SSW.Rules" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012" -RulesChatSqlAdminClientId "<pipeline client ID>"
 
 .EXAMPLE
-    ./deploy.ps1 -Environment production -ResourceGroup "SSW.Rules" -AppServicePlanSku "P0v3" -WhatIf
+    ./deploy.ps1 -Environment production -ResourceGroup "SSW.Rules" -AppServicePlanSku "P0v3" -RulesChatSqlAdminClientId "<pipeline client ID>" -WhatIf
 #>
 
 [CmdletBinding()]
@@ -60,6 +69,9 @@ param(
 
     [Parameter(Mandatory = $false)]
     [string]$SlotName = '',
+
+    [Parameter(Mandatory = $true)]
+    [string]$RulesChatSqlAdminClientId,
 
     [Parameter(Mandatory = $false)]
     [switch]$WhatIf
@@ -94,6 +106,9 @@ $AppServiceName = "app-$ProjectName-$Environment"
 $AppInsightsName = "appi-$ProjectName-$Environment"
 $LogAnalyticsWorkspaceName = "log-$ProjectName-$Environment"
 $ContainerRegistryName = "acr$ProjectName$Environment"
+$RulesChatIdentityName = "id-$ProjectName-chat-$Environment"
+$RulesChatSqlServerName = "sql-$ProjectName-chat-$Environment"
+$RulesChatFoundryName = "aif-$ProjectName-chat-$Environment"
 
 # App Service Plan - different per environment
 if ($Environment -eq 'staging') {
@@ -220,6 +235,7 @@ Write-Host @"
   App Service Plan:   $AppServicePlanName (in $AppServicePlanResourceGroup)
   Deployment Slot:    $slotDisplay
   Service Principal:  $spDisplay
+  Rules Chat:         $RulesChatSqlServerName, $RulesChatFoundryName, $RulesChatIdentityName
 ================================================================================
 
 "@ -ForegroundColor White
@@ -411,6 +427,11 @@ if ($SlotName) {
     $azArgs += '--parameters', "slotName=$SlotName"
 }
 
+$azArgs += '--parameters', "rulesChatSqlAdminClientId=$RulesChatSqlAdminClientId"
+$azArgs += '--parameters', "rulesChatIdentityName=$RulesChatIdentityName"
+$azArgs += '--parameters', "rulesChatSqlServerName=$RulesChatSqlServerName"
+$azArgs += '--parameters', "rulesChatFoundryName=$RulesChatFoundryName"
+
 if ($WhatIf) {
     $azArgs += '--what-if'
     Write-Info "Running in What-If mode (resource group exists, running Bicep what-if)..."
@@ -445,6 +466,12 @@ if (-not $WhatIf) {
 "@
     }
 
+    $rulesChatInfo = @"
+  Rules Chat SQL Server:  $($outputs.rulesChatSqlServerFqdn.value) (database $($outputs.rulesChatDatabaseName.value))
+  Rules Chat Models:      $($outputs.rulesChatAiEndpoint.value) ($($outputs.rulesChatChatModel.value), $($outputs.rulesChatEmbeddingModel.value))
+  Rules Chat Identity:    $RulesChatIdentityName (client ID $($outputs.rulesChatIdentityClientId.value))
+"@
+
     Write-Host @"
 
 ================================================================================
@@ -454,7 +481,7 @@ if (-not $WhatIf) {
   App Service Name:       $($outputs.appServiceName.value)
   App Service Hostname:   $($outputs.appServiceHostName.value)
   ACR Login Server:       $($outputs.containerRegistryLoginServer.value)
-$slotInfo
+$slotInfo$rulesChatInfo
 ================================================================================
 "@ -ForegroundColor Green
 
@@ -468,6 +495,14 @@ $slotInfo
         "acrName=$($outputs.containerRegistryNameOutput.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "acrLoginServer=$($outputs.containerRegistryLoginServer.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "appInsightsConnectionString=$($outputs.appInsightsConnectionString.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatSqlServerName=$RulesChatSqlServerName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatSqlServerFqdn=$($outputs.rulesChatSqlServerFqdn.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatDatabaseName=$($outputs.rulesChatDatabaseName.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatIdentityName=$RulesChatIdentityName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatIdentityClientId=$($outputs.rulesChatIdentityClientId.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatAiEndpoint=$($outputs.rulesChatAiEndpoint.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatChatModel=$($outputs.rulesChatChatModel.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatEmbeddingModel=$($outputs.rulesChatEmbeddingModel.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         
         # Slot outputs (for PR deployments)
         if ($outputs.slotName.value) {

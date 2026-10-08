@@ -71,43 +71,51 @@ type PointerDragOptions<T> = {
   begin: () => T;
   move: (start: T, deltaX: number, deltaY: number) => void;
   end?: () => void;
+  // Lets a press on a button inside the element start a drag too. A press that doesn't move past the threshold is still a click.
+  fromControls?: boolean;
 };
 
-export function usePointerDrag<T>({ begin, move, end }: PointerDragOptions<T>) {
+export function usePointerDrag<T>({ begin, move, end, fromControls = false }: PointerDragOptions<T>) {
   const suppressNextClick = useRef(false);
 
   const onPointerDown = (downEvent: ReactPointerEvent<HTMLElement>) => {
     if (downEvent.button !== 0) return;
     const element = downEvent.currentTarget;
     const control = (downEvent.target as Element).closest("button, a, input, textarea");
-    if (control && control !== element) return;
+    if (!fromControls && control && control !== element) return;
 
     const start = begin();
+    const pointerId = downEvent.pointerId;
     const startX = downEvent.clientX;
     const startY = downEvent.clientY;
     let dragging = false;
-    element.setPointerCapture(downEvent.pointerId);
 
     const onMove = (moveEvent: PointerEvent) => {
+      if (moveEvent.pointerId !== pointerId) return;
       const deltaX = moveEvent.clientX - startX;
       const deltaY = moveEvent.clientY - startY;
       if (!dragging && Math.abs(deltaX) < DRAG_THRESHOLD && Math.abs(deltaY) < DRAG_THRESHOLD) return;
-      dragging = true;
+      if (!dragging) {
+        dragging = true;
+        // Captured only once it's a drag: a captured press retargets its click to the element, so a button inside wouldn't get it.
+        element.setPointerCapture(pointerId);
+      }
       move(start, deltaX, deltaY);
     };
 
     const onUp = (upEvent: PointerEvent) => {
-      element.removeEventListener("pointermove", onMove);
-      element.removeEventListener("pointerup", onUp);
-      element.removeEventListener("pointercancel", onUp);
+      if (upEvent.pointerId !== pointerId) return;
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
       // The browser fires a click after the pointerup that ends a drag, but not after a pointercancel.
       suppressNextClick.current = dragging && upEvent.type === "pointerup";
       end?.();
     };
 
-    element.addEventListener("pointermove", onMove);
-    element.addEventListener("pointerup", onUp);
-    element.addEventListener("pointercancel", onUp);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
   };
 
   const onClickCapture = (clickEvent: ReactMouseEvent<HTMLElement>) => {

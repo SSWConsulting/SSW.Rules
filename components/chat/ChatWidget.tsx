@@ -4,9 +4,11 @@ import { ExternalLink, Minus, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useIsClient, useLocalStorage, useMediaQuery, useSessionStorage, useWindowSize } from "usehooks-ts";
+import { focusSearchTrigger } from "@/components/search/openSearch";
 import { cn } from "@/lib/utils";
 import { onAskRulekeeper } from "./askRulekeeper";
 import { type ChatActivity, ChatConversation, ChatTitle } from "./ChatConversation";
+import { CHAT_POPOUT_PATH } from "./chatPopOut";
 import {
   type Anchor,
   type AnchorSide,
@@ -25,7 +27,6 @@ import { RulekeeperMark } from "./RulekeeperMark";
 import { useClearChatOfOtherUsers } from "./useChatMessages";
 import { useRulesChatAccess } from "./useRulesChatAccess";
 
-const CHAT_POPOUT_PATH = "/chat";
 const POPOUT_WINDOW_NAME = "sswRulesChat";
 
 // "closed": nothing on screen; the chat is reopened from search. "minimised": a small pill that shows
@@ -50,26 +51,39 @@ export function ChatWidget() {
   const [hasUnread, setHasUnread] = useState(false);
   const [popOutBlocked, setPopOutBlocked] = useState(false);
   const seenAnswerCount = useRef<number | null>(null);
+  const pillOpenButton = useRef<HTMLButtonElement>(null);
+  // Where focus goes once the window it was in is hidden.
+  const focusAfterHiding = useRef<"pill" | "search" | null>(null);
 
   const anchor = clampAnchor(anchorChoice, viewport);
   const side = sideWhileDragging ?? anchorSide(anchor, viewport);
   const panel = panelAtAnchor(anchor, panelSize, side, viewport);
   const pill = pillPosition(anchor, viewport);
 
-  const moveDrag = usePointerDrag({
+  const moveAnchor = {
     begin: () => {
       setSideWhileDragging(side);
       return anchor;
     },
-    move: (start, deltaX, deltaY) => setAnchorChoice(clampAnchor({ right: start.right - deltaX, bottom: start.bottom - deltaY }, viewport)),
+    move: (start: Anchor, deltaX: number, deltaY: number) =>
+      setAnchorChoice(clampAnchor({ right: start.right - deltaX, bottom: start.bottom - deltaY }, viewport)),
     end: () => setSideWhileDragging(null),
-  });
+  };
+  const moveDrag = usePointerDrag(moveAnchor);
+  // The pill is almost all buttons, so it has to be draggable from them.
+  const pillDrag = usePointerDrag({ ...moveAnchor, fromControls: true });
   const resizeDrag = usePointerDrag({
     begin: () => panel,
     move: (start, deltaX, deltaY) => setPanelSize(resizePanel(start, side, deltaX, deltaY, viewport)),
   });
 
   useClearChatOfOtherUsers();
+
+  useEffect(() => {
+    if (focusAfterHiding.current === "pill" && mode === "minimised") pillOpenButton.current?.focus();
+    if (focusAfterHiding.current === "search" && mode === "closed") focusSearchTrigger();
+    focusAfterHiding.current = null;
+  }, [mode]);
   useEffect(() => onAskRulekeeper(() => setMode("open")), [setMode]);
 
   // An answer that finishes while the chat is out of view is flagged on the pill until the chat is opened.
@@ -95,10 +109,21 @@ export function ChatWidget() {
     setMode("closed");
   };
 
+  const minimise = () => {
+    focusAfterHiding.current = "pill";
+    setMode("minimised");
+  };
+
+  // Search is where the chat is reopened, so focus goes back there.
+  const close = () => {
+    focusAfterHiding.current = "search";
+    setMode("closed");
+  };
+
   const onPanelKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape" && !event.nativeEvent.isComposing) {
       event.preventDefault();
-      setMode("minimised");
+      minimise();
     }
   };
 
@@ -131,10 +156,10 @@ export function ChatWidget() {
               >
                 <ExternalLink className="size-4" aria-hidden />
               </button>
-              <button type="button" onClick={() => setMode("minimised")} className={headerButton} aria-label="Minimise" title="Minimise (Esc)">
+              <button type="button" onClick={minimise} className={headerButton} aria-label="Minimise" title="Minimise (Esc)">
                 <Minus className="size-4" aria-hidden />
               </button>
-              <button type="button" onClick={() => setMode("closed")} className={headerButton} aria-label="Close" title="Close">
+              <button type="button" onClick={close} className={headerButton} aria-label="Close" title="Close">
                 <X className="size-4" aria-hidden />
               </button>
             </div>
@@ -163,9 +188,10 @@ export function ChatWidget() {
         <div
           className="fade-in slide-in-from-bottom-2 fixed z-[1000] flex animate-in touch-none select-none items-center rounded-full bg-ssw-black text-white shadow-black/30 shadow-lg duration-150"
           style={{ ...pill, ...PILL_SIZE }}
-          {...moveDrag}
+          {...pillDrag}
         >
           <button
+            ref={pillOpenButton}
             type="button"
             onClick={() => setMode("open")}
             className="flex h-full min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-l-full pr-1 pl-1.5 focus-visible:outline-2 focus-visible:outline-ssw-red focus-visible:outline-offset-2"
@@ -182,7 +208,7 @@ export function ChatWidget() {
           </button>
           <button
             type="button"
-            onClick={() => setMode("closed")}
+            onClick={close}
             className="mr-1.5 flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-white/70 hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-white"
             aria-label="Close The Rulekeeper"
             title="Close"

@@ -190,6 +190,18 @@ jobs:
                     "BUILD_DATE=${{ env.BUILD_DATE }}"
                     "NEXT_PUBLIC_TINA_BRANCH=${{ vars.NEXT_PUBLIC_TINA_BRANCH }}"
                     "COMMIT_HASH=${{ env.COMMIT_HASH }}"
+                    "RULES_CHAT_ENABLED=${{ vars.RULES_CHAT_ENABLED || 'false' }}"
+                    "RULES_CHAT_SQL_SERVER=${{ needs.infrastructure.outputs.rulesChatSqlServerFqdn }}"
+                    "RULES_CHAT_SQL_DATABASE=${{ needs.infrastructure.outputs.rulesChatDatabaseName }}"
+                    "RULES_CHAT_IDENTITY_CLIENT_ID=${{ needs.infrastructure.outputs.rulesChatIdentityClientId }}"
+                    "RULES_CHAT_AI_BASE_URL=${{ needs.infrastructure.outputs.rulesChatAiEndpoint }}"
+                    "RULES_CHAT_CHAT_MODEL=${{ needs.infrastructure.outputs.rulesChatChatModel }}"
+                    "RULES_CHAT_EMBEDDING_MODEL=${{ needs.infrastructure.outputs.rulesChatEmbeddingModel }}"
+                    "RULES_CHAT_EMBEDDING_DIMENSIONS=1024"
+                    "RULES_CHAT_MEMBER_DAILY_LIMIT=${{ vars.RULES_CHAT_MEMBER_DAILY_LIMIT || '0' }}"
+                    "RULES_CHAT_MONTHLY_BUDGET_USD=${{ vars.RULES_CHAT_MONTHLY_BUDGET_USD || '100' }}"
+                    "RULES_CHAT_INPUT_PRICE_PER_MILLION_TOKENS_USD=${{ vars.RULES_CHAT_INPUT_PRICE_PER_MILLION_TOKENS_USD || '0.10' }}"
+                    "RULES_CHAT_OUTPUT_PRICE_PER_MILLION_TOKENS_USD=${{ vars.RULES_CHAT_OUTPUT_PRICE_PER_MILLION_TOKENS_USD || '0.50' }}"
                     --output none
                   )
 

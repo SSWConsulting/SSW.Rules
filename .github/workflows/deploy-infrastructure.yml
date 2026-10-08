@@ -51,6 +51,24 @@ on:
       appInsightsConnectionString:
         description: "Application Insights connection string"
         value: ${{ jobs.deploy.outputs.appInsightsConnectionString }}
+      rulesChatSqlServerFqdn:
+        description: "Rules Chat SQL server hostname"
+        value: ${{ jobs.deploy.outputs.rulesChatSqlServerFqdn }}
+      rulesChatDatabaseName:
+        description: "Rules Chat database name"
+        value: ${{ jobs.deploy.outputs.rulesChatDatabaseName }}
+      rulesChatIdentityClientId:
+        description: "Client ID of the managed identity the site uses for Rules Chat"
+        value: ${{ jobs.deploy.outputs.rulesChatIdentityClientId }}
+      rulesChatAiEndpoint:
+        description: "Rules Chat OpenAI-compatible model endpoint"
+        value: ${{ jobs.deploy.outputs.rulesChatAiEndpoint }}
+      rulesChatChatModel:
+        description: "Rules Chat chat model deployment name"
+        value: ${{ jobs.deploy.outputs.rulesChatChatModel }}
+      rulesChatEmbeddingModel:
+        description: "Rules Chat embedding model deployment name"
+        value: ${{ jobs.deploy.outputs.rulesChatEmbeddingModel }}
 
 jobs:
   deploy:
@@ -66,6 +84,12 @@ jobs:
       acrName: ${{ steps.deploy.outputs.acrName }}
       acrLoginServer: ${{ steps.deploy.outputs.acrLoginServer }}
       appInsightsConnectionString: ${{ steps.deploy.outputs.appInsightsConnectionString }}
+      rulesChatSqlServerFqdn: ${{ steps.deploy.outputs.rulesChatSqlServerFqdn }}
+      rulesChatDatabaseName: ${{ steps.deploy.outputs.rulesChatDatabaseName }}
+      rulesChatIdentityClientId: ${{ steps.deploy.outputs.rulesChatIdentityClientId }}
+      rulesChatAiEndpoint: ${{ steps.deploy.outputs.rulesChatAiEndpoint }}
+      rulesChatChatModel: ${{ steps.deploy.outputs.rulesChatChatModel }}
+      rulesChatEmbeddingModel: ${{ steps.deploy.outputs.rulesChatEmbeddingModel }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

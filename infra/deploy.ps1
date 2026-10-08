@@ -500,6 +500,9 @@ $slotInfo$rulesChatInfo
         "rulesChatDatabaseName=$($outputs.rulesChatDatabaseName.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "rulesChatIdentityName=$RulesChatIdentityName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "rulesChatIdentityClientId=$($outputs.rulesChatIdentityClientId.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatAiEndpoint=$($outputs.rulesChatAiEndpoint.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatChatModel=$($outputs.rulesChatChatModel.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatEmbeddingModel=$($outputs.rulesChatEmbeddingModel.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         
         # Slot outputs (for PR deployments)
         if ($outputs.slotName.value) {

@@ -297,11 +297,11 @@ mark:is(
   }
 
   /* Nested ordered lists step through the markers: 1. > a. > i. */
-  ol > li > ol {
+  :is(ul, ol) > li > ol {
     @apply list-[lower-alpha];
   }
 
-  ol > li > ol > li > ol {
+  :is(ul, ol) > li > :is(ul, ol) > li > ol {
     @apply list-[lower-roman];
   }
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuth0 } from "@/lib/auth0";
 import { streamAnswer } from "@/lib/rulesChat/answer";
 import { getRulesChatLimits } from "@/lib/rulesChat/config";
-import { MAX_MESSAGE_CHARS } from "@/lib/rulesChat/limits";
+import { MAX_HISTORY_QUESTIONS, MAX_MESSAGE_CHARS } from "@/lib/rulesChat/limits";
 import { numberSources, parseCitedRules, referencedUris } from "@/lib/rulesChat/numbering";
 import { isCrossSiteRequest, MAX_BODY_BYTES, readJsonBody } from "@/lib/rulesChat/request";
 import { searchRules } from "@/lib/rulesChat/search";
@@ -19,7 +19,6 @@ import { getRulesChatTier } from "@/lib/rulesChatAccess";
 
 export const dynamic = "force-dynamic";
 
-const MAX_HISTORY_TURNS = 6;
 const ANSWER_TIMEOUT_MS = 90_000;
 
 // The chat window shows its own wording with the retry time in the reader's time zone; these are for other callers.
@@ -32,16 +31,19 @@ const LIMIT_MESSAGES: Record<LimitReason, string> = {
 
 type ChatTurn = { role: "user" | "assistant"; content: string };
 
-function parseHistory(body: unknown): ChatTurn[] | null {
+// The latest questions, newest last. Earlier answers are not read: see streamAnswer.
+function parseQuestions(body: unknown): string[] | null {
   const messages = (body as { messages?: unknown })?.messages;
   if (!Array.isArray(messages) || messages.length === 0) return null;
-  const turns: ChatTurn[] = [];
-  for (const message of messages.slice(-MAX_HISTORY_TURNS)) {
+  const questions: string[] = [];
+  let lastRole: ChatTurn["role"] = "user";
+  for (const message of messages) {
     const { role, content } = (message ?? {}) as Partial<ChatTurn>;
     if ((role !== "user" && role !== "assistant") || typeof content !== "string" || !content.trim() || content.length > MAX_MESSAGE_CHARS) return null;
-    turns.push({ role, content: content.trim() });
+    if (role === "user") questions.push(content.trim());
+    lastRole = role;
   }
-  return turns[turns.length - 1].role === "user" ? turns : null;
+  return lastRole === "user" ? questions.slice(-MAX_HISTORY_QUESTIONS) : null;
 }
 
 // Responds with newline-delimited JSON: one "sources" line, then "delta" lines, or an "error" line.
@@ -60,8 +62,8 @@ export async function POST(request: Request) {
   const read = await readJsonBody(request);
   if (read.tooLarge) return NextResponse.json({ error: `The request must be ${MAX_BODY_BYTES / 1024} KB or smaller` }, { status: 413 });
   const body = read.value;
-  const history = parseHistory(body);
-  if (!history)
+  const questions = parseQuestions(body);
+  if (!questions)
     return NextResponse.json({ error: `Send 1 or more messages of up to ${MAX_MESSAGE_CHARS} characters, ending with a user message` }, { status: 400 });
   const citedRules = parseCitedRules((body as { citedRules?: unknown }).citedRules);
   if (!citedRules) return NextResponse.json({ error: "citedRules must be a list of { number, uri }" }, { status: 400 });
@@ -92,7 +94,6 @@ export async function POST(request: Request) {
       let outcome: QuestionOutcome = "answered";
       try {
         // A follow-up like "and for emails?" only makes sense next to the question before it.
-        const questions = history.filter((turn) => turn.role === "user").map((turn) => turn.content);
         const question = questions[questions.length - 1];
         const found = await searchRules(questions.slice(-2).join("\n"), referencedUris(question, citedRules), signal);
         const sources = numberSources(found, citedRules);

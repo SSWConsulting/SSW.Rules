@@ -1,10 +1,14 @@
-import { FAILURE_TEXT, refusalMessage } from "@/components/chat/refusalMessage";
+import { FAILURE_TEXT, refusalMessage, TOO_LONG_TEXT } from "@/components/chat/refusalMessage";
 
 const now = new Date(2026, 9, 8, 10, 0, 0);
 const later = (minutes: number) => new Date(now.getTime() + minutes * 60_000).toISOString();
 const at = (date: Date) => date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 
 describe("refusalMessage", () => {
+  it.each([400, 413])("asks for a new chat when the request is refused as too long (%i)", (status) => {
+    expect(refusalMessage(status, null, now)).toBe(TOO_LONG_TEXT);
+  });
+
   it("says how many seconds to wait after too many questions in a minute", () => {
     expect(refusalMessage(429, { reason: "minute", retryAt: new Date(now.getTime() + 14_200).toISOString() }, now)).toBe(
       "That's a lot of questions in a minute. Try again in 15 seconds."

@@ -1,9 +1,9 @@
+import { MAX_CITED_RULES } from "./limits";
 import type { FoundRule } from "./search";
 
 export type CitedRule = { number: number; uri: string };
 export type RuleSource = FoundRule & { number: number };
 
-const MAX_CITED_RULES = 100;
 const MAX_REFERENCED_RULES = 3;
 
 // The rules already cited in this conversation, as sent by the chat window.

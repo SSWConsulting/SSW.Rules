@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { useAuth } from "@/components/auth/UserClientProvider";
-import { MAX_MESSAGE_CHARS } from "@/lib/rulesChat/limits";
+import { MAX_CITED_RULES, MAX_HISTORY_QUESTIONS, MAX_MESSAGE_CHARS } from "@/lib/rulesChat/limits";
 import { type ChatSource, numberCitations } from "./citations";
 import { FAILURE_TEXT, refusalMessage } from "./refusalMessage";
 
@@ -77,8 +77,13 @@ export function useChatMessages() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: history.filter((message) => !message.failed).map((message) => ({ role: message.role, content: message.text.slice(0, MAX_MESSAGE_CHARS) })),
-          citedRules: known.map((source) => ({ number: source.number, uri: source.href.slice(1) })),
+          // Only what the server reads, so a long conversation never outgrows the request limits.
+          messages: history
+            .filter((message) => message.role === "user")
+            .slice(-MAX_HISTORY_QUESTIONS)
+            .map((message) => ({ role: message.role, content: message.text.slice(0, MAX_MESSAGE_CHARS) })),
+          // The most recent ones. An older rule that comes up again still keeps its number, because numberCitations matches by link.
+          citedRules: known.slice(-MAX_CITED_RULES).map((source) => ({ number: source.number, uri: source.href.slice(1) })),
         }),
       });
       if (!response.ok) {

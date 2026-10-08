@@ -1,4 +1,5 @@
 export const FAILURE_TEXT = "Something went wrong while answering. Please try again.";
+export const TOO_LONG_TEXT = "This chat has got too long. Start a new chat.";
 
 type RefusalBody = { reason?: unknown; retryAt?: unknown } | null;
 
@@ -19,6 +20,8 @@ function dayAndTime(retryAt: Date, now: Date): string {
 // What to tell the user when the chat API turns a question down, with times in their own time zone.
 export function refusalMessage(status: number, body: RefusalBody, now = new Date()): string {
   if (status === 403) return "The Rulekeeper isn't available for your account.";
+  // The request outgrew the server's limits. Asking again sends the same request, so only a new chat helps.
+  if (status === 400 || status === 413) return TOO_LONG_TEXT;
   if (status !== 429) return FAILURE_TEXT;
 
   const retryAt = parseRetryAt(body);

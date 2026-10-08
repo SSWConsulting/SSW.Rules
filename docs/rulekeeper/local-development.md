@@ -5,7 +5,7 @@ The Rulekeeper answers questions from the rules. It looks up the rule excerpts c
 ## What you need
 
 - **The .NET 10 SDK** and the **Aspire CLI 13.6 or later**, no older than the AppHost's Aspire packages. Install it with `curl -sSL https://aspire.dev/install.sh | bash`, or update with `aspire update --self`. Check with `aspire --version`. An old CLI, for example the `aspire.cli` .NET global tool, can stop at "Connecting to AppHost...". Remove it with `dotnet tool uninstall -g aspire.cli`.
-- **Docker Desktop**, running.
+- **A container runtime**, running. On macOS, [OrbStack](https://orbstack.dev) is recommended: SQL Server's image is Intel-only, and OrbStack runs it through Rosetta, faster and lighter than Docker Desktop. Docker Desktop works too.
 - **Ollama** from [ollama.com](https://ollama.com), running. Aspire uses the Ollama app on macOS, because Docker on a Mac can't use the GPU. On Windows and Linux, Aspire runs Ollama in a container instead.
 - **This repo set up as usual.** That's `pnpm install` and a `.env.local` with `LOCAL_CONTENT_RELATIVE_PATH` pointing at your `SSW.Rules.Content` clone (see the README).
 
@@ -57,6 +57,7 @@ The tables are defined by the EF Core model and migrations in `src/RulesChat/Rul
 | Re-run the index | The dashboard → `rules-chat-index` → Restart |
 | Change the schema | Edit the entities in `src/RulesChat/RulesChat.Database`, then `cd src/RulesChat && dotnet tool restore && dotnet ef migrations add <Name> --project RulesChat.Database --output-dir Migrations`. Never write migrations by hand. |
 | Run the index outside Aspire | Set the `RULES_CHAT_SQL_*` settings in `.env.local` (see `.env.example`), then `pnpm rules-chat:index`. Add `--reembed` to embed every rule again. |
+| Index refuses to remove many rules | A full run stops before removing more than a fifth of the index, in case the rules were read wrongly. If that many really were archived or deleted, pass `--allow-removals`, or tick "Allow removals" in the Index Rules workflow. |
 | Get the local SQL password | `dotnet user-secrets list --project src/RulesChat/RulesChat.AppHost` |
 | Delete the local database | Stop Aspire, then `docker volume rm ssw-rules-chat-sql` |
 

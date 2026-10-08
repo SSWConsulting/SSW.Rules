@@ -27,10 +27,36 @@ Nothing uses keys or passwords:
 
 The subscription needs, once:
 
-- **Providers.** `Microsoft.Sql`, `Microsoft.CognitiveServices` and `Microsoft.ManagedIdentity` are registered.
+- **Providers.** `Microsoft.Sql`, `Microsoft.CognitiveServices`, `Microsoft.ManagedIdentity` and `Microsoft.App` are registered.
 - **Quota.** There is Global Standard quota in Australia East for both models: 100K tokens per minute of `gpt-6-luna` and 150K of `text-embedding-3-large`. Check with `az cognitiveservices usage list -l australiaeast -o table`.
 
 The pipeline also gives the site access to the database, together with the database schema. It creates the identity's database user with `CREATE USER … WITH SID = …, TYPE = E`, where the SID comes from the identity's client ID (the `rulesChatIdentityClientId` output). That needs no directory lookup, so the SQL server doesn't need Microsoft Graph permissions or the Directory Readers role. The catch is that SQL doesn't check the ID: a wrong client ID creates the user without an error, and only shows up later as a failed sign-in from the site.
+
+### Keeping the index up to date
+
+| Resource | Name | Purpose |
+|---|---|---|
+| Container Apps environment | `cae-sswrules-chat-{env}` | Hosts the index job; logs go to the environment's Log Analytics workspace |
+| Container Apps job | `caj-sswrules-chat-index-{env}` | Runs `scripts/rules-chat/job`: fetches SSW.Rules.Content and embeds the new and changed rules |
+
+The job runs as the Rules Chat identity and pulls its image (`rules-chat-index:{staging|production}`) from the environment's registry. Each staging and production deploy rebuilds and pushes that image before deploying the job.
+
+It runs:
+
+- **Nightly**, at 15:00 UTC (01:00 Sydney standard time), as a safety net.
+- **When rules change.** SSW.Rules.Content sends a `rules-content-changed` dispatch on every merge to `main`, and the **Re-index Rules for The Rulekeeper** workflow starts the staging job. It can also be started by hand for either environment.
+- **By hand from a GitHub runner** with **Index Rules for The Rulekeeper**, the fallback for resetting an index.
+
+Runs never overlap: the index script takes a database lock, and a second run stops straight away. It also stops if the tables don't exist, which means the environment hasn't been deployed yet.
+
+**Alerts.** Set the GitHub environment variable `RULES_CHAT_ALERT_EMAIL` to email a distribution group:
+
+- when a run fails;
+- when no run has succeeded for two days.
+
+Without it, no alerts are created. Both alerts search the job's logs for markers the index script prints (`RULES_CHAT_INDEX_FAILED` and `RULES_CHAT_INDEX_SUCCEEDED`). The staleness alert also fires in the two days after a new environment's first deploy, until the job first succeeds.
+
+The job reads the content branch the site shows: the `NEXT_PUBLIC_TINA_BRANCH` GitHub variable, or `main`.
 
 ### Looking at the data
 

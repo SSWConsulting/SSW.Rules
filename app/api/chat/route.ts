@@ -81,7 +81,9 @@ export async function POST(request: Request) {
   const { usageId, remainingToday } = started;
 
   const startedAt = Date.now();
-  const signal = AbortSignal.any([request.signal, AbortSignal.timeout(ANSWER_TIMEOUT_MS)]);
+  // The response stream's cancel() fires when the reader goes, even if request.signal doesn't.
+  const readerGone = new AbortController();
+  const signal = AbortSignal.any([request.signal, readerGone.signal, AbortSignal.timeout(ANSWER_TIMEOUT_MS)]);
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
@@ -103,7 +105,7 @@ export async function POST(request: Request) {
         controller.close();
       } catch (error) {
         // The reader has gone, so there is nobody to tell and the stream is already closed.
-        if (request.signal.aborted) {
+        if (request.signal.aborted || readerGone.signal.aborted) {
           outcome = "cancelled";
           return;
         }
@@ -115,6 +117,9 @@ export async function POST(request: Request) {
         logQuestion({ userSub, tier, outcome, durationMs: Date.now() - startedAt, tokens });
         await finishQuestion(usageId, outcome, tokens).catch((error) => console.error("[RulesChat] recording usage failed:", error));
       }
+    },
+    cancel() {
+      readerGone.abort();
     },
   });
 

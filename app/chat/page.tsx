@@ -14,7 +14,7 @@ export default async function ChatPopOutPage() {
   if (!(await getRulesChatTier(session?.user))) notFound();
 
   return (
-    // Covers the site header and footer, which the root layout renders on every route.
+    // Fills the window over the site layout's padding. The layout leaves out its header and footer on this route.
     <div className="fixed inset-0 z-[1100] flex flex-col bg-white">
       <header className="flex shrink-0 items-center bg-ssw-black px-4 py-3">
         <ChatTitle />

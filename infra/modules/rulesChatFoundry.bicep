@@ -19,6 +19,9 @@ param embeddingModel object
 @description('Principal ID of the managed identity that calls the models')
 param callerPrincipalId string
 
+@description('Optional: object ID of the deployment pipeline\'s service principal, which embeds the rules when indexing')
+param pipelinePrincipalId string = ''
+
 @description('Tags to apply to the resource')
 param tags object = {}
 
@@ -85,6 +88,16 @@ resource embeddingDeployment 'Microsoft.CognitiveServices/accounts/deployments@2
   dependsOn: [
     chatDeployment
   ]
+}
+
+resource pipelineRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(pipelinePrincipalId)) {
+  name: guid(foundry.id, pipelinePrincipalId, cognitiveServicesOpenAIUserRoleId)
+  scope: foundry
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cognitiveServicesOpenAIUserRoleId)
+    principalId: pipelinePrincipalId
+    principalType: 'ServicePrincipal'
+  }
 }
 
 resource callerRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {

@@ -88,11 +88,8 @@ jobs:
           $params['ResourceGroup'] = "${{ vars.AZURE_RESOURCE_GROUP }}"
           $params['ServicePrincipalObjectId'] = "${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}"
 
-          if ("${{ vars.RULES_CHAT_ENABLED }}" -eq 'true') {
-              $params['RulesChat'] = $true
-              # The pipeline administers the Rules Chat database, so it can apply schema changes on every deploy.
-              $params['RulesChatSqlAdminClientId'] = "${{ secrets.AZURE_CLIENT_ID }}"
-          }
+          # The pipeline administers the Rules Chat database, so it can apply schema changes on every deploy.
+          $params['RulesChatSqlAdminClientId'] = "${{ secrets.AZURE_CLIENT_ID }}"
 
           $slotName = "${{ inputs.slot_name }}"
           if ($slotName) {

@@ -72,20 +72,17 @@ param slotName string = ''
 // The Rulekeeper (Rules Chat)
 // ----------------------------------------------------------------------------
 
-@description('Deploys the Rules Chat database, models and identity')
-param deployRulesChat bool = false
-
 @description('Application (client) ID of the deployment pipeline\'s service principal, which administers the Rules Chat SQL server')
-param rulesChatSqlAdminClientId string = ''
+param rulesChatSqlAdminClientId string
 
 @description('Name the Rules Chat SQL server shows for its administrator')
 param rulesChatSqlAdminName string = 'SSW.Rules deployment pipeline'
 
 @description('Name of the user-assigned managed identity the site uses for the Rules Chat database and models')
-param rulesChatIdentityName string = ''
+param rulesChatIdentityName string
 
 @description('Name of the Rules Chat SQL logical server (globally unique)')
-param rulesChatSqlServerName string = ''
+param rulesChatSqlServerName string
 
 @description('Name of the Rules Chat database')
 param rulesChatDatabaseName string = 'RulesChat'
@@ -104,7 +101,7 @@ param rulesChatDatabaseSku object = environment == 'prod'
     }
 
 @description('Name of the Rules Chat Microsoft Foundry resource (globally unique)')
-param rulesChatFoundryName string = ''
+param rulesChatFoundryName string
 
 @description('Chat model deployment. Capacity is in thousands of tokens per minute.')
 param rulesChatChatModel object = {
@@ -193,7 +190,7 @@ module containerRegistryModule 'modules/containerRegistry.bicep' = {
 }
 
 // Identity the site (including every slot) uses for the Rules Chat database and models
-resource rulesChatIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (deployRulesChat) {
+resource rulesChatIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: rulesChatIdentityName
   location: location
   tags: union(tags, {
@@ -201,7 +198,7 @@ resource rulesChatIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@202
   })
 }
 
-module rulesChatSqlModule 'modules/rulesChatSql.bicep' = if (deployRulesChat) {
+module rulesChatSqlModule 'modules/rulesChatSql.bicep' = {
   name: 'rulesChatSql-${environment}'
   params: {
     sqlServerName: rulesChatSqlServerName
@@ -215,7 +212,7 @@ module rulesChatSqlModule 'modules/rulesChatSql.bicep' = if (deployRulesChat) {
   }
 }
 
-module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = if (deployRulesChat) {
+module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = {
   name: 'rulesChatFoundry-${environment}'
   params: {
     foundryName: rulesChatFoundryName
@@ -223,7 +220,7 @@ module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = if (deployRules
     environment: environment
     chatModel: rulesChatChatModel
     embeddingModel: rulesChatEmbeddingModel
-    callerPrincipalId: rulesChatIdentity!.properties.principalId
+    callerPrincipalId: rulesChatIdentity.properties.principalId
     tags: tags
   }
 }
@@ -241,7 +238,7 @@ module appServiceModule 'modules/appService.bicep' = {
     imageTag: imageTag
     tags: tags
     slotName: slotName
-    userAssignedIdentityId: deployRulesChat ? rulesChatIdentity.id : ''
+    userAssignedIdentityId: rulesChatIdentity.id
   }
   dependsOn: [
     containerRegistryModule
@@ -328,20 +325,20 @@ output slotName string = appServiceModule.outputs.slotName
 @description('Deployment slot hostname (if created)')
 output slotHostName string = appServiceModule.outputs.slotHostName
 
-@description('Client ID of the Rules Chat managed identity (empty when Rules Chat is not deployed)')
-output rulesChatIdentityClientId string = deployRulesChat ? rulesChatIdentity!.properties.clientId : ''
+@description('Client ID of the Rules Chat managed identity')
+output rulesChatIdentityClientId string = rulesChatIdentity.properties.clientId
 
-@description('Rules Chat SQL server hostname (empty when Rules Chat is not deployed)')
-output rulesChatSqlServerFqdn string = deployRulesChat ? rulesChatSqlModule!.outputs.sqlServerFqdn : ''
+@description('Rules Chat SQL server hostname')
+output rulesChatSqlServerFqdn string = rulesChatSqlModule.outputs.sqlServerFqdn
 
-@description('Rules Chat database name (empty when Rules Chat is not deployed)')
-output rulesChatDatabaseName string = deployRulesChat ? rulesChatSqlModule!.outputs.databaseName : ''
+@description('Rules Chat database name')
+output rulesChatDatabaseName string = rulesChatSqlModule.outputs.databaseName
 
-@description('Rules Chat OpenAI-compatible model endpoint (empty when Rules Chat is not deployed)')
-output rulesChatAiEndpoint string = deployRulesChat ? rulesChatFoundryModule!.outputs.openAiEndpoint : ''
+@description('Rules Chat OpenAI-compatible model endpoint')
+output rulesChatAiEndpoint string = rulesChatFoundryModule.outputs.openAiEndpoint
 
-@description('Rules Chat chat model deployment name (empty when Rules Chat is not deployed)')
-output rulesChatChatModel string = deployRulesChat ? rulesChatFoundryModule!.outputs.chatDeploymentName : ''
+@description('Rules Chat chat model deployment name')
+output rulesChatChatModel string = rulesChatFoundryModule.outputs.chatDeploymentName
 
-@description('Rules Chat embedding model deployment name (empty when Rules Chat is not deployed)')
-output rulesChatEmbeddingModel string = deployRulesChat ? rulesChatFoundryModule!.outputs.embeddingDeploymentName : ''
+@description('Rules Chat embedding model deployment name')
+output rulesChatEmbeddingModel string = rulesChatFoundryModule.outputs.embeddingDeploymentName

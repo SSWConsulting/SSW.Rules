@@ -11,7 +11,7 @@
     - acr{project}{env}       (Container Registry - no hyphens allowed)
     - rg-{project}-{env}      (Resource Group)
 
-    The Rulekeeper (Rules Chat), only with -RulesChat:
+    The Rulekeeper (Rules Chat):
     - id-{project}-chat-{env}   (User-assigned managed identity for the site)
     - sql-{project}-chat-{env}  (Azure SQL server, database RulesChat)
     - aif-{project}-chat-{env}  (Microsoft Foundry resource with the chat and embedding models)
@@ -35,24 +35,21 @@
 .PARAMETER SlotName
     Optional deployment slot name (e.g., pr-123). Only used for staging PR deployments.
 
-.PARAMETER RulesChat
-    Deploys The Rulekeeper's database, models and identity.
-
 .PARAMETER RulesChatSqlAdminClientId
     Application (client) ID of the service principal that administers the Rules Chat SQL server: the deployment
-    pipeline's. Required with -RulesChat.
+    pipeline's (the AZURE_CLIENT_ID GitHub secret).
 
 .PARAMETER WhatIf
     Show what would be deployed without actually deploying
 
 .EXAMPLE
-    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging"
+    ./deploy.ps1 -Environment staging -ResourceGroup "SSW.Rules.Staging" -RulesChatSqlAdminClientId "<pipeline client ID>"
 
 .EXAMPLE
-    ./deploy.ps1 -Environment production -ResourceGroup "SSW.Rules" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012"
+    ./deploy.ps1 -Environment production -ResourceGroup "SSW.Rules" -ServicePrincipalObjectId "12345678-1234-1234-1234-123456789012" -RulesChatSqlAdminClientId "<pipeline client ID>"
 
 .EXAMPLE
-    ./deploy.ps1 -Environment production -ResourceGroup "SSW.Rules" -AppServicePlanSku "P0v3" -WhatIf
+    ./deploy.ps1 -Environment production -ResourceGroup "SSW.Rules" -AppServicePlanSku "P0v3" -RulesChatSqlAdminClientId "<pipeline client ID>" -WhatIf
 #>
 
 [CmdletBinding()]
@@ -73,11 +70,8 @@ param(
     [Parameter(Mandatory = $false)]
     [string]$SlotName = '',
 
-    [Parameter(Mandatory = $false)]
-    [switch]$RulesChat,
-
-    [Parameter(Mandatory = $false)]
-    [string]$RulesChatSqlAdminClientId = '',
+    [Parameter(Mandatory = $true)]
+    [string]$RulesChatSqlAdminClientId,
 
     [Parameter(Mandatory = $false)]
     [switch]$WhatIf
@@ -115,11 +109,6 @@ $ContainerRegistryName = "acr$ProjectName$Environment"
 $RulesChatIdentityName = "id-$ProjectName-chat-$Environment"
 $RulesChatSqlServerName = "sql-$ProjectName-chat-$Environment"
 $RulesChatFoundryName = "aif-$ProjectName-chat-$Environment"
-
-if ($RulesChat -and -not $RulesChatSqlAdminClientId) {
-    Write-Error "-RulesChat needs -RulesChatSqlAdminClientId: the deployment pipeline's application (client) ID."
-    exit 1
-}
 
 # App Service Plan - different per environment
 if ($Environment -eq 'staging') {
@@ -231,7 +220,6 @@ function New-ResourceGroup {
 
 $spDisplay = if ($ServicePrincipalObjectId) { $ServicePrincipalObjectId } else { '(not provided - no AcrPush role)' }
 $slotDisplay = if ($SlotName) { $SlotName } else { '(none)' }
-$rulesChatDisplay = if ($RulesChat) { "$RulesChatSqlServerName, $RulesChatFoundryName" } else { '(skipped - not turned on)' }
 
 Write-Host @"
 
@@ -247,7 +235,7 @@ Write-Host @"
   App Service Plan:   $AppServicePlanName (in $AppServicePlanResourceGroup)
   Deployment Slot:    $slotDisplay
   Service Principal:  $spDisplay
-  Rules Chat:         $rulesChatDisplay
+  Rules Chat:         $RulesChatSqlServerName, $RulesChatFoundryName, $RulesChatIdentityName
 ================================================================================
 
 "@ -ForegroundColor White
@@ -439,13 +427,10 @@ if ($SlotName) {
     $azArgs += '--parameters', "slotName=$SlotName"
 }
 
-if ($RulesChat) {
-    $azArgs += '--parameters', "deployRulesChat=true"
-    $azArgs += '--parameters', "rulesChatSqlAdminClientId=$RulesChatSqlAdminClientId"
-    $azArgs += '--parameters', "rulesChatIdentityName=$RulesChatIdentityName"
-    $azArgs += '--parameters', "rulesChatSqlServerName=$RulesChatSqlServerName"
-    $azArgs += '--parameters', "rulesChatFoundryName=$RulesChatFoundryName"
-}
+$azArgs += '--parameters', "rulesChatSqlAdminClientId=$RulesChatSqlAdminClientId"
+$azArgs += '--parameters', "rulesChatIdentityName=$RulesChatIdentityName"
+$azArgs += '--parameters', "rulesChatSqlServerName=$RulesChatSqlServerName"
+$azArgs += '--parameters', "rulesChatFoundryName=$RulesChatFoundryName"
 
 if ($WhatIf) {
     $azArgs += '--what-if'
@@ -481,14 +466,11 @@ if (-not $WhatIf) {
 "@
     }
 
-    $rulesChatInfo = ""
-    if ($outputs.rulesChatSqlServerFqdn.value) {
-        $rulesChatInfo = @"
+    $rulesChatInfo = @"
   Rules Chat SQL Server:  $($outputs.rulesChatSqlServerFqdn.value) (database $($outputs.rulesChatDatabaseName.value))
   Rules Chat Models:      $($outputs.rulesChatAiEndpoint.value) ($($outputs.rulesChatChatModel.value), $($outputs.rulesChatEmbeddingModel.value))
   Rules Chat Identity:    $RulesChatIdentityName (client ID $($outputs.rulesChatIdentityClientId.value))
 "@
-    }
 
     Write-Host @"
 

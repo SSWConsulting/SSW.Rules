@@ -35,6 +35,9 @@ var pending = (await db.Database.GetPendingMigrationsAsync()).ToList();
 await db.Database.MigrateAsync();
 logger.LogInformation("Applied {Count} migrations: {Migrations}", pending.Count, pending.Count == 0 ? "none pending" : string.Join(", ", pending));
 
+var deleted = await UsageRetention.DeleteOldRows(db, CancellationToken.None);
+logger.LogInformation("Deleted {Count} chat usage rows older than {Days} days", deleted, UsageRetention.RetentionDays);
+
 if (!string.IsNullOrEmpty(identityName))
 {
     if (!Guid.TryParse(identityClientId, out var clientId))

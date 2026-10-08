@@ -1,7 +1,7 @@
 namespace RulesChat.Database.Entities;
 
-// One row per question asked, with no question or answer text. Backs the per-user and monthly limits; the index script
-// deletes rows older than 90 days.
+// One row per question asked, with no question or answer text. Backs the per-user and monthly limits; the migrator
+// deletes rows older than UsageRetention.RetentionDays on every deploy.
 public sealed class ChatUsage
 {
     public const int UserSubMaxLength = 200;

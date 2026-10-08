@@ -240,6 +240,5 @@ async function main() {
 
 main().catch((error) => {
   console.error(error);
-  console.error("RULES_CHAT_INDEX_FAILED");
   process.exitCode = 1;
 });

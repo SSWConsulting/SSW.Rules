@@ -21,7 +21,7 @@ Nothing uses keys or passwords:
 
 - **SQL** accepts Microsoft Entra sign-in only. Its administrator is the deployment pipeline's service principal, the same one GitHub Actions already signs in to Azure with, so every deployment can apply schema changes and grant the site access without a person running scripts.
 - **Foundry** has API keys turned off, and the managed identity has the Cognitive Services OpenAI User role on it.
-- **PR slots** share staging's database and models through the same identity. Every PR slot gets a new system-assigned identity, so access can't be granted to those.
+- **PR slots** share staging's database and models through the same identity. Every PR slot gets a new system-assigned identity, so access can't be granted to those. A PR deploy only attaches the identity; it never changes the shared database or models, so PR branches can't change what staging uses.
 
 ### Before the first deployment
 
@@ -30,11 +30,13 @@ The subscription needs, once:
 - **Providers.** `Microsoft.Sql`, `Microsoft.CognitiveServices` and `Microsoft.ManagedIdentity` are registered.
 - **Quota.** There is Global Standard quota in Australia East for both models: 100K tokens per minute of `gpt-6-luna` and 150K of `text-embedding-3-large`. Check with `az cognitiveservices usage list -l australiaeast -o table`.
 
-The site's database access is granted by the pipeline too, together with the database schema.
+The pipeline also gives the site access to the database, together with the database schema. It creates the identity's database user with `CREATE USER … WITH SID = …, TYPE = E`, where the SID comes from the identity's client ID (the `rulesChatIdentityClientId` output). That needs no directory lookup, so the SQL server doesn't need Microsoft Graph permissions or the Directory Readers role. The catch is that SQL doesn't check the ID: a wrong client ID creates the user without an error, and only shows up later as a failed sign-in from the site.
 
 ### Looking at the data
 
-Nobody signs in to the database day to day. To look at data while debugging, someone with Owner rights on the subscription can temporarily make themselves the administrator in the portal: the SQL server → **Settings** → **Microsoft Entra ID** → **Set admin**. The next deployment sets the pipeline back as the administrator.
+Nobody signs in to the database day to day. To look at data while debugging, someone with Owner rights on the subscription can temporarily make themselves the administrator in the portal: the SQL server → **Settings** → **Microsoft Entra ID** → **Set admin**.
+
+That access only lasts until the next deployment of that environment, which sets the pipeline back as the administrator. Staging deploys on every merge to `main`, so expect to lose access whenever something merges.
 
 ### Sizes and cost
 
@@ -46,3 +48,7 @@ Nobody signs in to the database day to day. To look at data while debugging, som
 The first question after staging's database pauses waits while it resumes. Production uses S1 so real users never wait for that.
 
 Global Standard model deployments can process a request in any Azure region. See the ADR [Use Microsoft Foundry for chat and embedding models](../docs/adr/20261007-use-microsoft-foundry-for-chat-and-embeddings.md).
+
+### Model versions
+
+`main.bicep` pins each model's version. Azure keeps a deployment on that version until the version retires, then moves it to the current default. Before a retirement date (listed on Microsoft's model retirement page), bump the version in `main.bicep` and deploy, so the template never pins a retired version.

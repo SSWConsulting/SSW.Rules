@@ -21,7 +21,7 @@ The terminal prints a link to the Aspire dashboard. It shows each part's state a
 
 | Resource | What it does |
 |---|---|
-| `sql` / `RulesChat` | SQL Server 2025 in Docker, on `localhost:14333`. It keeps its data between runs. |
+| `sql` / `RulesChat` | SQL Server 2025 in a container, on `localhost:14333`. The container keeps running between runs, so its data stays. |
 | `rules-chat-schema` | Applies the EF Core migrations, then finishes. |
 | `ollama`, `ollama-pull-bge-m3` | The embedding model. It downloads about 1 GB the first time. |
 | `rules-chat-index` | Indexes a sample of 200 rules. The first run takes under a minute; later runs skip unchanged rules. |
@@ -59,7 +59,7 @@ The tables are defined by the EF Core model and migrations in `src/RulesChat/Rul
 | Run the index outside Aspire | Set the `RULES_CHAT_SQL_*` settings in `.env.local` (see `.env.example`), then `pnpm rules-chat:index`. Add `--reembed` to embed every rule again. |
 | Index refuses to remove many rules | A full run stops before removing more than a fifth of the index, in case the rules were read wrongly. If that many really were archived or deleted, pass `--allow-removals`, or tick "Allow removals" in the Index Rules workflow. |
 | Get the local SQL password | `dotnet user-secrets list --project src/RulesChat/RulesChat.AppHost` |
-| Delete the local database | Stop Aspire, then `docker volume rm ssw-rules-chat-sql` |
+| Delete the local database | Stop Aspire, then remove the `sql-…` container (`docker rm -f $(docker ps -aq --filter name=^sql-)`). The next run creates it again. |
 
 After changing how rules are cleaned or chunked in `scripts/rules-chat/index-rules.mjs`, bump `CHUNKING_VERSION` in that file. The next index run then re-embeds every rule.
 
@@ -67,7 +67,7 @@ After changing how rules are cleaned or chunked in `scripts/rules-chat/index-rul
 
 | Problem | Fix |
 |---|---|
-| `sql` stays Unhealthy, and its log says "Password did not match" | The data volume keeps the password SQL Server first started with, and the AppHost's user secrets now hold a different one. Delete the volume (`docker volume rm ssw-rules-chat-sql`) and run again. |
+| `sql` stays Unhealthy, and its log says "Password did not match" | The database was created with another password, for example by an older version of this setup that used a volume. Stop Aspire, run `docker rm -f $(docker ps -aq --filter name=^sql-)` and `docker volume rm ssw-rules-chat-sql`, then run again. |
 | `ollama` is Unhealthy (macOS) | Start the Ollama app. |
 | SQL Server takes minutes to start, or the Mac gets hot | Microsoft only publishes the image for Intel, so Apple Silicon emulates it. It's slow the first time and usually fine after. |
 | Stuck at "Connecting to AppHost..." | Check `aspire --version`. It must be 13.6 or later; see What you need. |

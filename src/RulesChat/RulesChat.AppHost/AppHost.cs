@@ -14,10 +14,11 @@ const string embeddingModel = "bge-m3";
 const string ollamaUrl = "http://localhost:11434";
 const int sqlPort = 14333;
 
-// The password is generated on first run and kept in this project's user secrets, so it survives restarts.
+// The password is generated on first run and kept in this project's user secrets. The data lives in the persistent
+// container rather than a volume: SQL Server keeps the password it first started with, so a volume would refuse a new
+// one, while a changed password makes Aspire recreate the container (with an empty database the next run refills).
 var sql = builder.AddSqlServer("sql", port: sqlPort)
     .WithImageTag("2025-latest")
-    .WithDataVolume("ssw-rules-chat-sql")
     .WithLifetime(ContainerLifetime.Persistent);
 var database = sql.AddDatabase("RulesChat");
 

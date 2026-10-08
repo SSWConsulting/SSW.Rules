@@ -8,8 +8,11 @@ export function SearchTrigger() {
   const [shortcut, setShortcut] = useState("Ctrl K");
 
   useEffect(() => {
-    if (/Mac|iPhone|iPad/.test(navigator.platform)) setShortcut("⌘ K");
+    if (/Mac|iPhone|iPad/.test(navigator.userAgent)) setShortcut("⌘ K");
   }, []);
+
+  // Without an index the search dialog doesn't render, so the button would do nothing.
+  if (!process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME) return null;
 
   // An icon only where the header is tight: phones under 390px, sm (logo and actions share a row) and xl up (the full menu shows).
   return (

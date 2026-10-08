@@ -1,6 +1,6 @@
 # Replace RulesGPT with The Rulekeeper, built into the Rules site
 
-- Status: proposed
+- Status: accepted
 - Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
 - Date: 2026-10-07
 - Tags: ai-chat, rulesgpt

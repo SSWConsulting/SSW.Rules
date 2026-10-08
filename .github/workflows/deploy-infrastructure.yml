@@ -118,29 +118,19 @@ jobs:
           fi
 
       # The Rules Chat database is shared by staging and its PR slots, so only staging and production deploys change it.
-      - name: Setup Node.js
+      - name: Setup .NET
         if: inputs.slot_name == ''
-        uses: actions/setup-node@v4
+        uses: actions/setup-dotnet@v4
         with:
-          node-version-file: .nvmrc
+          global-json-file: src/RulesChat/global.json
 
-      - name: Setup pnpm
-        if: inputs.slot_name == ''
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.10.0
-
-      - name: Install dependencies
-        if: inputs.slot_name == ''
-        run: pnpm install --frozen-lockfile
-
-      - name: Apply Rules Chat database schema
+      - name: Migrate Rules Chat database
         if: inputs.slot_name == ''
         env:
           RESOURCE_GROUP: ${{ steps.deploy.outputs.resourceGroup }}
           SQL_SERVER_NAME: ${{ steps.deploy.outputs.rulesChatSqlServerName }}
-          RULES_CHAT_SQL_SERVER: ${{ steps.deploy.outputs.rulesChatSqlServerFqdn }}
-          RULES_CHAT_SQL_DATABASE: ${{ steps.deploy.outputs.rulesChatDatabaseName }}
+          # Signs in as the pipeline, the server's Microsoft Entra admin, through the Azure CLI login above.
+          ConnectionStrings__RulesChat: "Server=tcp:${{ steps.deploy.outputs.rulesChatSqlServerFqdn }},1433;Database=${{ steps.deploy.outputs.rulesChatDatabaseName }};Authentication=Active Directory Default;Encrypt=True"
           RULES_CHAT_SITE_IDENTITY_NAME: ${{ steps.deploy.outputs.rulesChatIdentityName }}
           RULES_CHAT_SITE_IDENTITY_CLIENT_ID: ${{ steps.deploy.outputs.rulesChatIdentityClientId }}
         run: |
@@ -151,5 +141,4 @@ jobs:
             --start-ip-address "$RUNNER_IP" --end-ip-address "$RUNNER_IP" --output none
           trap 'az sql server firewall-rule delete --resource-group "$RESOURCE_GROUP" --server "$SQL_SERVER_NAME" --name "$RULE" --output none' EXIT
 
-          # Signs in to SQL as the pipeline, which is the server's Microsoft Entra admin, through the Azure CLI login above.
-          pnpm rules-chat:schema
+          dotnet run --project src/RulesChat/RulesChat.Database --configuration Release

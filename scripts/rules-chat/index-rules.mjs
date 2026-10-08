@@ -2,7 +2,7 @@
 // chunks, embeds them and stores them in SQL Server. Safe to re-run: unchanged rules are skipped.
 //
 //   pnpm rules-chat:index                index new and changed rules
-//   pnpm rules-chat:index --reset        drop the tables and index everything again
+//   pnpm rules-chat:index --reset        empty the index and index everything again
 //   pnpm rules-chat:index --sample <n>   index only the first n rules, for a quick local setup
 //   pnpm rules-chat:index --show <uri>   print the chunks for one rule without indexing
 
@@ -12,13 +12,13 @@ import { join, resolve } from "node:path";
 import { DefaultAzureCredential } from "@azure/identity";
 import matter from "gray-matter";
 import sql from "mssql";
-import { applySchema, connect, dropIndexTables, ensureLocalDatabase, loadEnv, requireEnv, siteRoot } from "./sql.mjs";
+import { connect, loadEnv, requireEnv, siteRoot } from "./sql.mjs";
 
 loadEnv();
 
 const MAX_CHUNK_CHARS = 1800;
 const EMBEDDING_BATCH_SIZE = 16;
-// Must match VECTOR(1024) in db/rules-chat/020-RuleChunks.sql.
+// Must match RuleChunk.EmbeddingDimensions in src/RulesChat/RulesChat.Database.
 const EMBEDDING_DIMENSIONS = 1024;
 // Bump when the cleaning or chunking rules change, so every rule is re-indexed on the next run.
 const CHUNKING_VERSION = "4";
@@ -230,6 +230,7 @@ async function saveRule(pool, rule, embeddings) {
       .input("hash", sql.Char(64), rule.hash)
       .input("rows", sql.NVarChar(sql.MAX), JSON.stringify(rows))
       .query(`
+        DELETE FROM dbo.RuleChunks WHERE RuleUri = @uri;
         DELETE FROM dbo.IndexedRules WHERE RuleUri = @uri;
         INSERT INTO dbo.IndexedRules (RuleUri, RuleTitle, ContentHash) VALUES (@uri, @title, @hash);
         INSERT INTO dbo.RuleChunks (RuleUri, ChunkIndex, Heading, Content, Embedding)
@@ -279,11 +280,9 @@ async function main() {
     );
   }
 
-  await ensureLocalDatabase();
   const pool = await connect();
   try {
-    if (reset) await dropIndexTables(pool);
-    await applySchema(pool);
+    if (reset) await pool.request().batch("DELETE FROM dbo.RuleChunks; DELETE FROM dbo.IndexedRules;");
 
     const indexed = new Map(
       (await pool.request().query("SELECT RuleUri, ContentHash FROM dbo.IndexedRules")).recordset.map((row) => [row.RuleUri, row.ContentHash])
@@ -291,7 +290,12 @@ async function main() {
     // A sample leaves the other rules out on purpose, so only a full run removes rules that no longer exist.
     const currentUris = new Set(allRules.map((rule) => rule.uri));
     const removed = sample ? [] : [...indexed.keys()].filter((uri) => !currentUris.has(uri));
-    for (const uri of removed) await pool.request().input("uri", sql.NVarChar(400), uri).query("DELETE FROM dbo.IndexedRules WHERE RuleUri = @uri");
+    for (const uri of removed) {
+      await pool
+        .request()
+        .input("uri", sql.NVarChar(400), uri)
+        .query("DELETE FROM dbo.RuleChunks WHERE RuleUri = @uri; DELETE FROM dbo.IndexedRules WHERE RuleUri = @uri;");
+    }
 
     const pending = rules.filter((rule) => indexed.get(rule.uri) !== rule.hash);
     console.log(`${pending.length} to index, ${rules.length - pending.length} unchanged, ${removed.length} removed (${config.embeddingModel})`);

@@ -2,6 +2,8 @@ export type ChatSource = { number: number; title: string; href: string };
 
 const CODE = /(```[\s\S]*?(?:```|$)|`[^`\n]*`)/;
 const CITATION = /\[(\d+)\]/g;
+// With the space before it, so a dropped citation leaves no gap before the punctuation that follows.
+const SPACED_CITATION = /(\s*)\[(\d+)\]/g;
 
 // Applies `rewrite` to the prose only, so "items[0]" in a code sample is never read as a citation.
 function rewriteOutsideCode(text: string, rewrite: (prose: string) => string): string {
@@ -21,11 +23,11 @@ export function numberCitations(text: string, retrieved: ChatSource[], known: Ch
   let next = Math.max(0, ...known.map((source) => source.number)) + 1;
   const cited = new Map<string, ChatSource>();
   const rewritten = rewriteOutsideCode(text, (prose) =>
-    prose.replace(CITATION, (_citation, digits) => {
+    prose.replace(SPACED_CITATION, (_citation, space, digits) => {
       const given = byGivenNumber.get(Number(digits));
       if (!given) return "";
       if (!cited.has(given.href)) cited.set(given.href, { ...given, number: knownNumbers.get(given.href) ?? next++ });
-      return `[${cited.get(given.href)?.number}]`;
+      return `${space}[${cited.get(given.href)?.number}]`;
     })
   );
   return { text: rewritten, sources: [...cited.values()] };

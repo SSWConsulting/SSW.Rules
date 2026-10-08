@@ -46,7 +46,7 @@ describe("numberCitations", () => {
 
   it("drops citations to numbers that belong to no rule", () => {
     const result = numberCitations("Made up [12], real [2].", retrieved, []);
-    expect(result.text).toBe("Made up , real [1].");
+    expect(result.text).toBe("Made up, real [1].");
     expect(result.sources).toEqual([rule(1, 2)]);
   });
 

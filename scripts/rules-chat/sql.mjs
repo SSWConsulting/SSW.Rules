@@ -48,6 +48,20 @@ function sqlConfig() {
   };
 }
 
+// A firewall rule opened just before connecting can take up to five minutes to apply on Azure SQL.
+const FIREWALL_WAIT_MS = 5 * 60 * 1000;
+const FIREWALL_POLL_MS = 15 * 1000;
+
 export async function connect() {
-  return new sql.ConnectionPool(sqlConfig()).connect();
+  const deadline = Date.now() + FIREWALL_WAIT_MS;
+  for (;;) {
+    try {
+      return await new sql.ConnectionPool(sqlConfig()).connect();
+    } catch (error) {
+      const blockedByFirewall = /is not allowed to access the server/.test(error.message);
+      if (!blockedByFirewall || Date.now() > deadline) throw error;
+      console.log("The SQL firewall doesn't admit this machine yet; trying again in 15s");
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, FIREWALL_POLL_MS));
+    }
+  }
 }

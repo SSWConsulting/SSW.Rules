@@ -30,6 +30,7 @@ var logger = host.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Ru
 await using var scope = host.Services.CreateAsyncScope();
 var db = scope.ServiceProvider.GetRequiredService<RulesChatDbContext>();
 
+await FirewallWait.OpenConnection(db, logger);
 var pending = (await db.Database.GetPendingMigrationsAsync()).ToList();
 await db.Database.MigrateAsync();
 logger.LogInformation("Applied {Count} migrations: {Migrations}", pending.Count, pending.Count == 0 ? "none pending" : string.Join(", ", pending));

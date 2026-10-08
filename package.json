@@ -14,6 +14,7 @@
     "lint": "biome lint",
     "dev:build": "next build",
     "prepare:content": "cross-env node ./scripts/prepare-content.js",
+    "aspire": "aspire run --project src/RulesChat/RulesChat.AppHost",
     "rules-chat:index": "node ./scripts/rules-chat/index-rules.mjs",
     "validate:rule-categories": "node ./scripts/validate-rule-categories.js",
     "crawl-sitemap": "node ./scripts/crawl-sitemap.js",

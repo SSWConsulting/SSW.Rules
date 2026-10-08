@@ -3,7 +3,7 @@ using Aspire.Hosting.JavaScript;
 // Runs The Rulekeeper and the site locally: SQL Server in a container, the schema, the embedding model, a sample index
 // of the rules, and the Next.js site. Start it from the repo root with:
 //
-//   aspire run --project src/RulesChat/RulesChat.AppHost
+//   pnpm aspire    (runs aspire run --project src/RulesChat/RulesChat.AppHost)
 //
 // See docs/rulekeeper/local-development.md.
 

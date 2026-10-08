@@ -14,8 +14,10 @@ The Rulekeeper answers questions from the rules. It looks up the rule excerpts c
 From the repo root:
 
 ```bash
-aspire run --project src/RulesChat/RulesChat.AppHost
+pnpm aspire
 ```
+
+That runs `aspire run --project src/RulesChat/RulesChat.AppHost`.
 
 The terminal prints a link to the Aspire dashboard. It shows each part's state and logs:
 

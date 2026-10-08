@@ -16,6 +16,10 @@ on:
         description: "Embed every rule again, replacing each one as it goes (the chat keeps a full index throughout)"
         type: boolean
         default: false
+      allow_removals:
+        description: "Allow removals: let this run remove more than a fifth of the index (only when that many rules really were archived or deleted)"
+        type: boolean
+        default: false
 
 concurrency:
   group: rules-chat-index-${{ inputs.environment }}
@@ -86,8 +90,7 @@ jobs:
           trap 'az sql server firewall-rule delete --resource-group "$RESOURCE_GROUP" --server "$SQL_SERVER_NAME" --name "$RULE" --output none' EXIT
 
           # Signs in to SQL and Foundry as the pipeline, through the Azure CLI login above.
-          if [ "${{ inputs.reembed }}" = "true" ]; then
-            pnpm rules-chat:index --reembed
-          else
-            pnpm rules-chat:index
-          fi
+          ARGS=()
+          if [ "${{ inputs.reembed }}" = "true" ]; then ARGS+=(--reembed); fi
+          if [ "${{ inputs.allow_removals }}" = "true" ]; then ARGS+=(--allow-removals); fi
+          pnpm rules-chat:index "${ARGS[@]}"

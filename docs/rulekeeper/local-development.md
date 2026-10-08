@@ -4,7 +4,7 @@ The Rulekeeper answers questions from the rules. It looks up the rule excerpts c
 
 ## What you need
 
-- **The .NET 10 SDK** and the **Aspire CLI**. Install the CLI with `curl -sSL https://aspire.dev/install.sh | bash`, or see [aspire.dev](https://aspire.dev).
+- **The .NET 10 SDK** and the **Aspire CLI 13.6 or later**, no older than the AppHost's Aspire packages. Install it with `curl -sSL https://aspire.dev/install.sh | bash`, or update with `aspire update --self`. Check with `aspire --version`. An old CLI, for example the `aspire.cli` .NET global tool, can stop at "Connecting to AppHost...". Remove it with `dotnet tool uninstall -g aspire.cli`.
 - **Docker Desktop**, running.
 - **Ollama** from [ollama.com](https://ollama.com), running. Aspire uses the Ollama app on macOS, because Docker on a Mac can't use the GPU. On Windows and Linux, Aspire runs Ollama in a container instead.
 - **This repo set up as usual.** That's `pnpm install` and a `.env.local` with `LOCAL_CONTENT_RELATIVE_PATH` pointing at your `SSW.Rules.Content` clone (see the README).
@@ -69,7 +69,8 @@ After changing how rules are cleaned or chunked in `scripts/rules-chat/index-rul
 | `sql` stays Unhealthy, and its log says "Password did not match" | The data volume keeps the password SQL Server first started with, and the AppHost's user secrets now hold a different one. Delete the volume (`docker volume rm ssw-rules-chat-sql`) and run again. |
 | `ollama` is Unhealthy (macOS) | Start the Ollama app. |
 | SQL Server takes minutes to start, or the Mac gets hot | Microsoft only publishes the image for Intel, so Apple Silicon emulates it. It's slow the first time and usually fine after. |
-| Port 3000 or 14333 is in use | Stop whatever else is using it, for example another `pnpm dev`. |
+| Stuck at "Connecting to AppHost..." | Check `aspire --version`. It must be 13.6 or later; see What you need. |
+| Port 3000 or 14333 is in use | Stop whatever else is using it, for example another `pnpm dev` (port 3000) or another SQL Server container (port 14333). |
 | `rules-chat-index` says the model returned a different number of dimensions | `RULES_CHAT_EMBEDDING_DIMENSIONS` doesn't match the model. Leave it unset for `bge-m3`. |
 
 ## In Azure

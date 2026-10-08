@@ -2,8 +2,8 @@
 
 import { ArrowUp } from "lucide-react";
 import Link from "next/link";
-import { type FormEvent, type KeyboardEvent, useEffect, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import { type ComponentType, type FormEvent, type KeyboardEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
+import type { Options as MarkdownOptions } from "react-markdown";
 import { MAX_MESSAGE_CHARS } from "@/lib/rulesChat/limits";
 import { onAskRulekeeper } from "./askRulekeeper";
 import { isCitedRuleLink, linkCitations } from "./citations";
@@ -13,6 +13,19 @@ import { type ChatMessage, useChatMessages } from "./useChatMessages";
 const SUGGESTIONS = ["Do you have a rule about pull requests?", "Do you have a rule about email etiquette?", "Do you have a rule about Definition of Done?"];
 
 export type ChatActivity = { isAnswering: boolean; answerCount: number };
+
+function PlainText({ children }: MarkdownOptions) {
+  return <p className="whitespace-pre-wrap">{children}</p>;
+}
+
+// Loaded on demand: the chat window is in the root layout, so a static import would add the markdown renderer to every
+// page, including for visitors who can't use the chat. If it fails to load, answers show as plain text.
+const loadMarkdown = (): Promise<{ default: ComponentType<MarkdownOptions> }> =>
+  import("react-markdown").catch((error) => {
+    console.error("[RulesChat] loading the markdown renderer failed:", error);
+    return { default: PlainText };
+  });
+const ReactMarkdown = lazy(loadMarkdown);
 
 export function ChatTitle() {
   return (
@@ -39,21 +52,23 @@ function Message({ message, openLinksInNewTab }: { message: ChatMessage; openLin
     <div className="max-w-[92%] self-start break-words rounded-2xl rounded-bl-sm bg-gray-100 px-3.5 py-2 text-sm text-ssw-black leading-relaxed">
       {message.text ? (
         <div className="[&_li]:mb-1 [&_ol]:mb-2 [&_ol]:ps-5 [&_p:last-child]:mb-0 [&_p]:mb-2 [&_ul]:mb-2 [&_ul]:ps-5">
-          <ReactMarkdown
-            disallowedElements={["img"]}
-            components={{
-              a: ({ href, children }) =>
-                isCitedRuleLink(href, message.sources) ? (
-                  <Link href={href} target={target} className={linkClass}>
-                    {children}
-                  </Link>
-                ) : (
-                  <>{children}</>
-                ),
-            }}
-          >
-            {linkCitations(message.text, message.sources)}
-          </ReactMarkdown>
+          <Suspense fallback={<PlainText>{message.text}</PlainText>}>
+            <ReactMarkdown
+              disallowedElements={["img"]}
+              components={{
+                a: ({ href, children }) =>
+                  isCitedRuleLink(href, message.sources) ? (
+                    <Link href={href} target={target} className={linkClass}>
+                      {children}
+                    </Link>
+                  ) : (
+                    <>{children}</>
+                  ),
+              }}
+            >
+              {linkCitations(message.text, message.sources)}
+            </ReactMarkdown>
+          </Suspense>
         </div>
       ) : (
         <span className="animate-pulse text-gray-600">Checking the rules...</span>
@@ -85,6 +100,11 @@ export function ChatConversation({
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
   const answerCount = messages.filter((message) => message.role === "assistant").length;
+
+  // Fetched as soon as the conversation is on screen, so the first answer doesn't wait for it.
+  useEffect(() => {
+    loadMarkdown();
+  }, []);
 
   useEffect(() => {
     onActivity?.({ isAnswering: pending !== null, answerCount });

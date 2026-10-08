@@ -167,8 +167,21 @@ async function main() {
     );
   }
 
+  // One connection holds the lock for the whole run, so the scheduled job, a content-merge run and the manual workflow
+  // never index the same database at once. The lock ends when the connection closes.
+  const lockConnection = await connect({ max: 1 });
   const pool = await connect();
   try {
+    const tables = await pool.request().query("SELECT OBJECT_ID('dbo.IndexedRules') AS Rules, OBJECT_ID('dbo.RuleChunks') AS Chunks");
+    if (!tables.recordset[0].Rules || !tables.recordset[0].Chunks) {
+      throw new Error("The index tables don't exist yet. Deploy the environment first: the deploy pipeline applies the EF Core migrations.");
+    }
+    const lock = await lockConnection
+      .request()
+      .output("result", sql.Int)
+      .query("EXEC @result = sp_getapplock @Resource = 'rules-chat-index', @LockMode = 'Exclusive', @LockOwner = 'Session', @LockTimeout = 0");
+    if (lock.output.result < 0) throw new Error("Another index run is already in progress for this database. Try again when it finishes.");
+
     const indexed = new Map(
       (await pool.request().query("SELECT RuleUri, ContentHash FROM dbo.IndexedRules")).recordset.map((row) => [row.RuleUri, row.ContentHash])
     );
@@ -210,12 +223,16 @@ async function main() {
     const totals = (await pool.request().query("SELECT (SELECT COUNT(*) FROM dbo.IndexedRules) AS Rules, (SELECT COUNT(*) FROM dbo.RuleChunks) AS Chunks"))
       .recordset[0];
     console.log(`Index now holds ${totals.Rules} rules in ${totals.Chunks} chunks`);
+    // The failure and staleness alerts in infra/modules/rulesChatIndexJob.bicep search the job's logs for these markers.
+    console.log("RULES_CHAT_INDEX_SUCCEEDED");
   } finally {
     await pool.close();
+    await lockConnection.close();
   }
 }
 
 main().catch((error) => {
   console.error(error);
+  console.error("RULES_CHAT_INDEX_FAILED");
   process.exitCode = 1;
 });

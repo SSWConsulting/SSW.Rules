@@ -52,11 +52,11 @@ function sqlConfig() {
 const FIREWALL_WAIT_MS = 5 * 60 * 1000;
 const FIREWALL_POLL_MS = 15 * 1000;
 
-export async function connect() {
+export async function connect(poolOptions) {
   const deadline = Date.now() + FIREWALL_WAIT_MS;
   for (;;) {
     try {
-      return await new sql.ConnectionPool(sqlConfig()).connect();
+      return await new sql.ConnectionPool({ ...sqlConfig(), ...(poolOptions ? { pool: poolOptions } : {}) }).connect();
     } catch (error) {
       const blockedByFirewall = /is not allowed to access the server/.test(error.message);
       if (!blockedByFirewall || Date.now() > deadline) throw error;

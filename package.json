@@ -16,6 +16,7 @@
     "prepare:content": "cross-env node ./scripts/prepare-content.js",
     "rules-chat:index": "node ./scripts/rules-chat/index-rules.mjs",
     "rules-chat:schema": "node ./scripts/rules-chat/apply-schema.mjs",
+    "rules-chat:setup": "node ./scripts/rules-chat/setup.mjs",
     "validate:rule-categories": "node ./scripts/validate-rule-categories.js",
     "crawl-sitemap": "node ./scripts/crawl-sitemap.js",
     "test": "jest",

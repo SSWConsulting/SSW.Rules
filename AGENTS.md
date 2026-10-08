@@ -98,6 +98,10 @@ const { data } = await client.queries.latestRulesQuery({
 3. Add to `embedTemplates` in TinaCMS schema
 4. Add to `getMarkdownComponentMapping()` for rendering
 
+## The Rulekeeper (Rules Chat)
+
+The AI chat that answers questions from the rules. To run it locally, see `docs/rulekeeper/local-development.md`. Its Azure resources are described in `infra/README.md`.
+
 ## Architecture Decision Records
 
 Record architectural decisions as ADRs in `docs/adr/`, managed with Log4brains. Use the `adr-documenter` skill in `.agents/skills/adr-documenter/` to write one.

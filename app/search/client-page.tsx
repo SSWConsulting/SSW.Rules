@@ -163,6 +163,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
                     lastUpdated={result.lastUpdated ?? result.created ?? null}
                     index={index}
                     authorUrl={getAuthorUrl(result)}
+                    isArchived={result.isArchived === true}
                   />
                 ))}
               </div>

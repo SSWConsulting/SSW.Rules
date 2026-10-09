@@ -6,11 +6,13 @@ import { ArrowRight, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useRef, useState } from "react";
 import { Configure, Highlight, InstantSearch, useHits, useInstantSearch, useSearchBox } from "react-instantsearch";
+import { ArchivedBadge } from "@/components/ArchivedBadge";
 import { askRulekeeper } from "@/components/chat/askRulekeeper";
 import { RulekeeperMark } from "@/components/chat/RulekeeperMark";
 import { useRulesChatAccess } from "@/components/chat/useRulesChatAccess";
 import Spinner from "@/components/Spinner";
 import { searchClient } from "@/lib/algoliaClient";
+import { archivedLast } from "@/lib/search/archivedLast";
 import { onOpenSearch } from "./openSearch";
 
 // The search proxy ignores shorter queries.
@@ -18,7 +20,7 @@ const MIN_QUERY_LENGTH = 3;
 const MAX_RESULTS = 8;
 const DEBOUNCE_MS = 300;
 
-type RuleHit = { objectID: string; slug: string; title: string; seoDescription?: string };
+type RuleHit = { objectID: string; slug: string; title: string; seoDescription?: string; isArchived?: boolean | null };
 type Item = { kind: "ask"; query: string } | { kind: "rule"; hit: Hit<RuleHit> } | { kind: "all"; query: string };
 
 const highlightClasses = { highlighted: "bg-ssw-red/15 font-semibold text-ssw-black" };
@@ -52,7 +54,7 @@ function Results({ onDone }: { onDone: () => void }) {
   const showNoResults = showResults && hits.length === 0;
   // Asking The Rulekeeper is always the first option, so Enter asks; the arrow keys reach the rules.
   const ask: Item[] = canAsk ? [{ kind: "ask", query }] : [];
-  const results: Item[] = showResults ? [...hits.map((hit) => ({ kind: "rule" as const, hit })), { kind: "all", query }] : [];
+  const results: Item[] = showResults ? [...archivedLast(hits).map((hit) => ({ kind: "rule" as const, hit })), { kind: "all", query }] : [];
   const items = [...ask, ...results];
 
   const activate = (item: Item | null) => {
@@ -118,6 +120,7 @@ function Results({ onDone }: { onDone: () => void }) {
               <span className="block">
                 <span className="block font-medium text-ssw-dark-red">
                   <Highlight attribute="title" hit={item.hit} classNames={highlightClasses} />
+                  {item.hit.isArchived && <ArchivedBadge className="ml-2 px-1.5 py-0.5 align-middle text-xs" />}
                 </span>
                 {/* The index does not search descriptions, so they come back without highlights. */}
                 {item.hit.seoDescription && <span className="mt-0.5 line-clamp-2 block text-gray-600 text-sm">{item.hit.seoDescription}</span>}

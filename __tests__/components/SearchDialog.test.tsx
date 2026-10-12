@@ -9,7 +9,7 @@ const push = jest.fn();
 jest.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 
 type Request = { indexName?: string; params?: { query?: string } };
-type Rule = { slug: string; title: string };
+type Rule = { slug: string; title: string; isArchived?: boolean };
 
 let mockHasChatAccess = false;
 jest.mock("@/components/chat/useRulesChatAccess", () => ({ useRulesChatAccess: () => mockHasChatAccess }));
@@ -108,6 +108,22 @@ describe("SearchDialog", () => {
     await openAndType("pull");
     expect(await screen.findByRole("alert")).toHaveTextContent("Search is unavailable right now. Try again in a minute.");
     expect(screen.queryByText(/No rules match/)).not.toBeInTheDocument();
+  });
+
+  it("lists archived rules after active ones, and labels them", async () => {
+    respondWith(() => [
+      { slug: "radhtmlcontrol-style", title: "How to use SSW style in RadHtmlControl?", isArchived: true },
+      { slug: "stylesheet", title: "Do you have a stylesheet file for all your formatting?", isArchived: false },
+      { slug: "image-styles", title: "Do you use image styles?" },
+    ]);
+    await openAndType("style");
+
+    const rules = (await screen.findAllByRole("option")).slice(0, 3);
+    expect(rules.map((option) => option.textContent)).toEqual([
+      "Do you have a stylesheet file for all your formatting?",
+      "Do you use image styles?",
+      "How to use SSW style in RadHtmlControl?Archived",
+    ]);
   });
 
   it("opens the highlighted rule on Enter", async () => {

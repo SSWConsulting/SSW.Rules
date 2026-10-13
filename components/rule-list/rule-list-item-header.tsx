@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React, { useRef } from "react";
+import { ArchivedBadge } from "@/components/ArchivedBadge";
 import { Rule } from "@/types";
 import RuleActionButtons from "../RuleActionButtons";
 
@@ -23,9 +24,7 @@ const RuleListItemHeader: React.FC<RuleListItemHeaderProps> = ({ rule, index }) 
               <Link href={`/${rule.uri}`} title={rule.title} ref={linkRef} className="no-underline">
                 {rule.title}
               </Link>
-              {rule.isArchived && (
-                <span className="inline-block bg-ssw-red text-white text-sm px-2 py-1 ml-2 rounded font-medium relative -top-0.5">Archived</span>
-              )}
+              {rule.isArchived && <ArchivedBadge className="relative -top-0.5 ml-2 px-2 py-1 text-sm" />}
             </h2>
           </div>
         </div>

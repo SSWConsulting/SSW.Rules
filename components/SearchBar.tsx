@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { InstantSearch, useHits, useInstantSearch, useSearchBox } from "react-instantsearch";
 import { searchClient } from "@/lib/algoliaClient";
+import { archivedLast } from "@/lib/search/archivedLast";
 import Spinner from "./Spinner";
 
 interface SearchResult {
   objectID: string;
   title: string;
   slug: string;
+  isArchived?: boolean | null;
   [key: string]: any;
 }
 
@@ -57,9 +59,11 @@ function SearchResults({
     } else if (sortBy === "lastUpdated") {
       sortedHits.sort((a, b) => new Date(b.lastUpdated || b.created || 0).getTime() - new Date(a.lastUpdated || a.created || 0).getTime());
     }
+    // Whatever the sort, archived rules come after active ones.
+    const orderedHits = archivedLast(sortedHits);
 
     const sortLabel = sortBy ?? "relevance";
-    const ids = sortedHits.map((h) => h.objectID);
+    const ids = orderedHits.map((h) => h.objectID);
 
     const sortChanged = sortLabel !== lastSortRef.current;
     const idsChanged = ids.length !== lastIdsRef.current.length || ids.some((id, i) => id !== lastIdsRef.current[i]);
@@ -68,7 +72,7 @@ function SearchResults({
     if (sortChanged || idsChanged) {
       lastSortRef.current = sortLabel;
       lastIdsRef.current = ids;
-      onResults?.(sortedHits);
+      onResults?.(orderedHits);
     }
   }, [hits, onResults, sortBy]);
 

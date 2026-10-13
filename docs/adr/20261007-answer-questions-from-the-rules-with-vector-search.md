@@ -1,6 +1,6 @@
 # Answer questions from the rules with vector search
 
-- Status: proposed
+- Status: accepted
 - Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
 - Date: 2026-10-07
 - Tags: ai-chat, search

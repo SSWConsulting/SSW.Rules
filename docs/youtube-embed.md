@@ -28,7 +28,20 @@ The component accepts the following formats for the `url` field:
   `https://youtu.be/dQw4w9WgXcQ`
 
 If the input does not match any of these formats, the component displays the message:  
-`Invalid YouTube URL`
+`Please add Video URL/ID`
+
+## Start time
+
+A start time in the URL is passed to the embed as `?start=<seconds>`.
+It is read from the `t`, `start` or `time_continue` parameter, in the query or the `#` fragment.
+
+- Seconds: `https://youtu.be/dQw4w9WgXcQ?t=93`
+- Seconds with suffix: `https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=93s`
+- Hours, minutes, seconds: `https://youtu.be/dQw4w9WgXcQ?t=1h2m3s`
+- Embed `start`: `https://www.youtube.com/embed/dQw4w9WgXcQ?start=93`
+- Fragment: `https://youtu.be/dQw4w9WgXcQ#t=93`
+
+Missing, zero or invalid times start the video at 0:00. A bare video ID has no start time.
 
 ## How to Get a YouTube URL or Video ID
 

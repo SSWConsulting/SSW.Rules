@@ -50,3 +50,12 @@ public/people-latest-rules.json
 
 # OG card preview output (pnpm verify:og)
 og-preview/
+
+# .NET (src/RulesChat): build output, IDE state and local launch settings
+bin/
+obj/
+.vs/
+*.user
+*.suo
+**/Properties/launchSettings.json
+aspire.config.json

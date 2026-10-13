@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="RulesChat.AppHost/RulesChat.AppHost.csproj" />
+  <Project Path="RulesChat.Database/RulesChat.Database.csproj" />
+</Solution>

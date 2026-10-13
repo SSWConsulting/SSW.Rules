@@ -31,8 +31,12 @@ const AuthorSelectorInner = ({ input, form }: TinaFieldProps) => {
     return input.name.replace(/\.title$/, ".url");
   }, [input.name]);
 
-  // `form` is the Final Form instance behind the Tina form
-  const updateUrlField = (value: string) => form.change(urlFieldName, value);
+  // `form` is the Final Form instance behind the Tina form.
+  // Changing the author resets the profile URL; drop any custom image with it so a stale photo doesn't carry over.
+  const updateUrlField = (value: string) => {
+    form.change(urlFieldName, value);
+    form.change(input.name.replace(/\.title$/, ".img"), undefined);
+  };
 
   // Read the current URL value so we can initialise the non‑SSW toggle state.
   const currentUrl = getNestedValue(form.getState().values, urlFieldName) ?? "";

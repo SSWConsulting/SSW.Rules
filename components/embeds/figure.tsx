@@ -4,15 +4,30 @@ import React from "react";
 export type FigurePrefix = "none" | "bad" | "ok" | "good";
 
 function renderFigureText(text: string): React.ReactNode {
+  // First, split by markdown links [text](url)
   const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+  
+  // Then process each part for bold markdown **text**
   return parts.map((part, index) => {
-    const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-    if (!match) return <span key={index}>{part}</span>;
-    const [, label, url] = match;
-    if (url.startsWith("/")) {
-      return <Link key={index} href={url} className="underline">{label}</Link>;
+    // Check if this part is a markdown link
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (linkMatch) {
+      const [, label, url] = linkMatch;
+      if (url.startsWith("/")) {
+        return <Link key={index} href={url} className="underline">{label}</Link>;
+      }
+      return <a key={index} href={url} className="underline" target="_blank" rel="noopener noreferrer">{label}</a>;
     }
-    return <a key={index} href={url} className="underline" target="_blank" rel="noopener noreferrer">{label}</a>;
+    
+    // Process bold markdown **text** in non-link parts
+    const boldParts = part.split(/(\*\*[^\*]+\*\*)/g);
+    return boldParts.map((boldPart, boldIndex) => {
+      const boldMatch = boldPart.match(/^\*\*([^\*]+)\*\*$/);
+      if (boldMatch) {
+        return <strong key={`${index}-${boldIndex}`}>{boldMatch[1]}</strong>;
+      }
+      return <span key={`${index}-${boldIndex}`}>{boldPart}</span>;
+    });
   });
 }
 

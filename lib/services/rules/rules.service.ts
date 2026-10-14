@@ -260,3 +260,51 @@ export async function fetchPaginatedRules(variables: RuleQueryVars = {}): Promis
     totalCount: conn?.totalCount ?? 0,
   };
 }
+
+export async function findRuleByRedirect(slug: string): Promise<string | null> {
+  try {
+    let hasNextPage = true;
+    let after: string | null = null;
+
+    while (hasNextPage) {
+      const res = await client.queries.allRulesPaths({
+        first: 100,
+        after,
+      });
+
+      const edges = res?.data?.ruleConnection?.edges ?? [];
+      for (const edge of edges) {
+        const node = edge?.node;
+        if (node) {
+          const relativePath = node._sys?.relativePath;
+          const folder = relativePath?.split("/")?.[0];
+
+          if (folder) {
+            try {
+              const ruleData = await client.queries.ruleData({
+                relativePath: `${folder}/rule.mdx`,
+              });
+
+              const rule = ruleData?.data?.rule;
+              const redirects = rule?.redirects || [];
+
+              if (Array.isArray(redirects) && redirects.includes(slug)) {
+                return rule?.uri || folder;
+              }
+            } catch {
+              continue;
+            }
+          }
+        }
+      }
+
+      hasNextPage = !!res?.data?.ruleConnection?.pageInfo?.hasNextPage;
+      after = res?.data?.ruleConnection?.pageInfo?.endCursor ?? null;
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`[findRuleByRedirect] Error finding rule with redirect "${slug}":`, error);
+    return null;
+  }
+}

@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 enum TINA_CONTENT_CHANGE_TYPE {
   Modified = "content.modified",
   Added = "content.added",
+  Deleted = "content.deleted",
 }
 
 export async function POST(req: Request) {
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
 
     const body = await req.json().catch(() => ({}));
     const eventType = body?.type;
-    if (eventType !== TINA_CONTENT_CHANGE_TYPE.Modified && eventType !== TINA_CONTENT_CHANGE_TYPE.Added) {
+    if (eventType !== TINA_CONTENT_CHANGE_TYPE.Modified && eventType !== TINA_CONTENT_CHANGE_TYPE.Added && eventType !== TINA_CONTENT_CHANGE_TYPE.Deleted) {
       return NextResponse.json({ revalidated: false, ignored: true, reason: `Unhandled type: ${eventType}` }, { status: 200 });
     }
 
@@ -48,6 +49,12 @@ export async function POST(req: Request) {
           shouldRevalidateRuleCount = true;
           routesToRevalidate.add("/api/rules");
         }
+        // If change type is delete, also revalidate the API routes
+        if (eventType === TINA_CONTENT_CHANGE_TYPE.Deleted) {
+          shouldRevalidateLatestRules = true;
+          shouldRevalidateRuleCount = true;
+          routesToRevalidate.add("/api/rules");
+        }
       }
 
       // Example: categories/communication/rules-to-better-email.mdx -> /rules-to-better-email
@@ -69,6 +76,10 @@ export async function POST(req: Request) {
         }
         // If change type is add then we also need to revalidate the /api/categories route
         if (eventType === TINA_CONTENT_CHANGE_TYPE.Added) {
+          routesToRevalidate.add("/api/categories");
+        }
+        // If change type is delete, also revalidate the API routes
+        if (eventType === TINA_CONTENT_CHANGE_TYPE.Deleted) {
           routesToRevalidate.add("/api/categories");
         }
       }

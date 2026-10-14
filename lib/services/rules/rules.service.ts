@@ -7,7 +7,7 @@ import { PaginationResult, PaginationVars } from "@/models/Pagination";
 import { QueryResult } from "@/models/QueryResult";
 import { Rule } from "@/models/Rule";
 import client from "@/tina/__generated__/client";
-import { CategoryRuleCountsQueryDocument } from "@/tina/__generated__/types";
+import { ArchivedRulesQueryDocument, CategoryRuleCountsQueryDocument } from "@/tina/__generated__/types";
 import { QuickLink } from "@/types/quickLink";
 
 type RuleSearchField = "title" | "uri";
@@ -187,13 +187,29 @@ export async function fetchCategoryRuleCounts(): Promise<Record<string, number>>
 }
 
 export async function fetchArchivedRules(variables: { first?: number; after?: string } = {}): Promise<QueryResult<Rule>> {
-  const result = await client.queries.archivedRulesQuery(variables);
+  const res: any = await (client as any).request({
+    query: ArchivedRulesQueryDocument,
+    variables: {
+      first: variables.first,
+      after: variables.after,
+    },
+    errorPolicy: "all",
+  });
 
-  const archivedRules = result.data.ruleConnection?.edges ? result.data.ruleConnection.edges.map((edge: any) => edge.node) : [];
+  const errorMessages = (res?.errors ?? [])
+    .map((e: any) => (typeof e === "string" ? e : e?.message))
+    .filter((m: any): m is string => typeof m === "string" && m.length > 0);
+
+  const missingCategoryErrors = errorMessages.filter((m) => m.includes("Unable to find record"));
+  if (missingCategoryErrors.length > 0) {
+    console.warn(`[fetchArchivedRules] Missing category references detected:\n${missingCategoryErrors.join("\n")}`);
+  }
+
+  const archivedRules = res?.data?.ruleConnection?.edges ? res.data.ruleConnection.edges.map((edge: any) => edge.node) : [];
 
   return {
     data: archivedRules as Rule[],
-    pageInfo: result.data.ruleConnection?.pageInfo || { hasNextPage: false, endCursor: "" },
+    pageInfo: res?.data?.ruleConnection?.pageInfo || { hasNextPage: false, endCursor: "" },
   };
 }
 

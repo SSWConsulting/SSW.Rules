@@ -22,6 +22,8 @@ const EMBEDDING_BATCH_SIZE = 16;
 const MAX_EMBEDDING_ATTEMPTS = 5;
 // A full run that would remove more than this share of the index more likely read the rules wrongly than lost them.
 const MAX_REMOVED_SHARE = 0.2;
+// Well inside the job's two-hour replica timeout (replicaTimeout in infra/modules/rulesChatIndexJob.bicep).
+const LOCK_WAIT_MS = 30 * 60 * 1000;
 // Must match RuleChunk.EmbeddingDimensions in src/RulesChat/RulesChat.Database.
 const EMBEDDING_DIMENSIONS = 1024;
 // Bump when the cleaning or chunking rules change, so every rule is re-indexed on the next run.
@@ -167,8 +169,26 @@ async function main() {
     );
   }
 
-  const pool = await connect();
+  // One connection holds the lock for the whole run, so the hourly job, a run started by hand and the GitHub runner workflow
+  // never index the same database at once. The lock ends when the connection closes, so the pool keeps it open even
+  // while idle (min: 1). A run that finds the lock taken waits for it: it read the rules after the running one did, so it
+  // may hold newer changes.
+  let lockConnection;
+  let pool;
   try {
+    lockConnection = await connect({ pool: { min: 1, max: 1 }, requestTimeout: LOCK_WAIT_MS + 60_000 });
+    pool = await connect();
+    const tables = await pool.request().query("SELECT OBJECT_ID('dbo.IndexedRules') AS Rules, OBJECT_ID('dbo.RuleChunks') AS Chunks");
+    if (!tables.recordset[0].Rules || !tables.recordset[0].Chunks) {
+      throw new Error("The index tables don't exist yet. Deploy the environment first: the deploy pipeline applies the EF Core migrations.");
+    }
+    const lock = await lockConnection
+      .request()
+      .input("timeout", sql.Int, LOCK_WAIT_MS)
+      .output("result", sql.Int)
+      .query("EXEC @result = sp_getapplock @Resource = 'rules-chat-index', @LockMode = 'Exclusive', @LockOwner = 'Session', @LockTimeout = @timeout");
+    if (lock.output.result < 0) throw new Error(`Another index run held the lock for over ${LOCK_WAIT_MS / 60_000} minutes. Try again when it finishes.`);
+
     const indexed = new Map(
       (await pool.request().query("SELECT RuleUri, ContentHash FROM dbo.IndexedRules")).recordset.map((row) => [row.RuleUri, row.ContentHash])
     );
@@ -210,8 +230,11 @@ async function main() {
     const totals = (await pool.request().query("SELECT (SELECT COUNT(*) FROM dbo.IndexedRules) AS Rules, (SELECT COUNT(*) FROM dbo.RuleChunks) AS Chunks"))
       .recordset[0];
     console.log(`Index now holds ${totals.Rules} rules in ${totals.Chunks} chunks`);
+    // The failure and staleness alerts in infra/modules/rulesChatIndexJob.bicep search the job's logs for these markers.
+    console.log("RULES_CHAT_INDEX_SUCCEEDED");
   } finally {
-    await pool.close();
+    await pool?.close();
+    await lockConnection?.close();
   }
 }
 

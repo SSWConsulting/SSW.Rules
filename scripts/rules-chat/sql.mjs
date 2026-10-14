@@ -48,20 +48,28 @@ function sqlConfig() {
   };
 }
 
-// A firewall rule opened just before connecting can take up to five minutes to apply on Azure SQL.
-const FIREWALL_WAIT_MS = 5 * 60 * 1000;
-const FIREWALL_POLL_MS = 15 * 1000;
+// A firewall rule opened just before connecting can take up to five minutes to apply on Azure SQL. A serverless database
+// paused after an hour unused can take a minute to resume, longer than one connection attempt allows.
+const CONNECT_WAIT_MS = 5 * 60 * 1000;
+const CONNECT_POLL_MS = 15 * 1000;
 
-export async function connect() {
-  const deadline = Date.now() + FIREWALL_WAIT_MS;
+function waitReason(error) {
+  if (/is not allowed to access the server/.test(error.message)) return "The SQL firewall doesn't admit this machine yet";
+  if (error.code === "ETIMEOUT" || /\b40613\b|is not currently available/.test(error.message)) return "The database is resuming";
+  return null;
+}
+
+// `overrides` replaces top-level mssql settings, such as `pool` or `requestTimeout`.
+export async function connect(overrides = {}) {
+  const deadline = Date.now() + CONNECT_WAIT_MS;
   for (;;) {
     try {
-      return await new sql.ConnectionPool(sqlConfig()).connect();
+      return await new sql.ConnectionPool({ ...sqlConfig(), ...overrides }).connect();
     } catch (error) {
-      const blockedByFirewall = /is not allowed to access the server/.test(error.message);
-      if (!blockedByFirewall || Date.now() > deadline) throw error;
-      console.log("The SQL firewall doesn't admit this machine yet; trying again in 15s");
-      await new Promise((resolveDelay) => setTimeout(resolveDelay, FIREWALL_POLL_MS));
+      const reason = waitReason(error);
+      if (!reason || Date.now() > deadline) throw error;
+      console.log(`${reason}; trying again in 15s`);
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, CONNECT_POLL_MS));
     }
   }
 }

@@ -103,6 +103,17 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # The index job's image must exist before the Bicep below points the job at it. The registry already exists in
+      # staging and production. PR slot deploys share staging's job, so they skip this.
+      - name: Build and push Rules Chat index job image
+        if: inputs.slot_name == ''
+        run: |
+          ACR_NAME="acrsswrules${{ inputs.environment == 'production' && 'prod' || inputs.environment }}"
+          IMAGE="$ACR_NAME.azurecr.io/rules-chat-index:${{ inputs.environment }}"
+          az acr login --name "$ACR_NAME"
+          docker build --platform linux/amd64 -f scripts/rules-chat/job/Dockerfile -t "$IMAGE" scripts/rules-chat
+          docker push "$IMAGE"
+
       - name: Deploy Infrastructure
         id: deploy
         shell: pwsh
@@ -120,6 +131,9 @@ jobs:
 
           # The pipeline administers the Rules Chat database, so it can apply schema changes on every deploy.
           $params['RulesChatSqlAdminClientId'] = "${{ secrets.AZURE_CLIENT_ID }}"
+          # The index job reads the content branch this environment shows, like the site build does.
+          $params['RulesChatContentBranch'] = "${{ vars.NEXT_PUBLIC_TINA_BRANCH || 'main' }}"
+          $params['RulesChatAlertEmail'] = "${{ vars.RULES_CHAT_ALERT_EMAIL }}"
 
           $slotName = "${{ inputs.slot_name }}"
           if ($slotName) {

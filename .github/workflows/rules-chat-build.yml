@@ -2,12 +2,13 @@ name: Build The Rulekeeper
 
 # Builds the RulesChat .NET projects so NuGet audit errors (new advisories on our packages) show up on PRs
 # and in a daily run, instead of first breaking the database migration step of a production deploy.
+# Builds the whole solution, AppHost included, so local setup breaks are caught too.
 on:
   pull_request:
     paths:
       - "src/RulesChat/**"
       - ".github/workflows/rules-chat-build.yml"
-  # Daily, ahead of the 06:00 UTC scheduled production deploy
+  # Daily on main, ahead of the 06:00 UTC scheduled production deploy (which builds the latest release branch)
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:

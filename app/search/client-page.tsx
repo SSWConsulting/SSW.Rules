@@ -125,7 +125,6 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
       <div className="layout-two-columns">
         <div className="layout-main-section">
           <div className="h-20">
-            {/* Keyed so a new keyword in the URL remounts it: InstantSearch and the input only read the keyword on mount. */}
             <SearchBar
               key={keyword}
               keyword={keyword}

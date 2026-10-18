@@ -39,7 +39,8 @@ export function MegaMenuWrapper(props) {
         rightSideActionsOverride={() => <ActionButtons />}
         linkComponent={linkComponent}
         url={basePath ? `/${basePath}` : "/"}
-        searchUrl="https://www.ssw.com.au/rules"
+        // A full navigation, because the package keeps its drawer open across client-side route changes.
+        callback={(searchTerm) => window.location.assign(`${basePath ? `/${basePath}` : ""}/search?keyword=${encodeURIComponent(searchTerm)}`)}
         isFlagVisible={false}
       />
     </div>

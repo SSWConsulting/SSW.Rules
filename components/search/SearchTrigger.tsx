@@ -25,7 +25,7 @@ export function SearchTrigger() {
         onClick={openSearch}
         {...{ [SEARCH_TRIGGER_ATTRIBUTE]: "" }}
         aria-label={label}
-        className="flex h-9 w-9 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-[4px] border border-black/20 bg-white text-black/60 outline-none transition-colors focus-visible:border-black/45 focus-visible:ring-3 focus-visible:ring-black/10 min-[390px]:max-sm:w-36 min-[390px]:max-sm:justify-start min-[390px]:max-sm:px-3 md:w-44 md:justify-start md:px-3 lg:w-64 xl:w-9 xl:justify-center xl:px-0"
+        className="flex h-9 w-9 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-full border border-black/20 bg-white text-black/60 outline-none transition-colors focus-visible:border-black/45 focus-visible:ring-3 focus-visible:ring-black/10 min-[390px]:max-sm:w-36 min-[390px]:max-sm:justify-start min-[390px]:max-sm:rounded-[4px] min-[390px]:max-sm:px-3 md:w-44 md:rounded-[4px] md:justify-start md:px-3 lg:w-64 xl:w-9 xl:justify-center xl:rounded-full xl:px-0"
       >
         <Search className="size-4 shrink-0" aria-hidden />
         <span className="hidden min-w-0 flex-1 truncate text-left text-sm min-[390px]:max-sm:block md:block xl:hidden">Search rules</span>

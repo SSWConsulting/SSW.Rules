@@ -28,7 +28,7 @@ const Tooltip = ({ children, text, showDelay, hideDelay, className = '', opaque 
       className={`group relative inline-flex items-center justify-center ${className}`}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
-      onFocus={() => setShowTooltip(true)}
+      onFocus={(e) => e.target.matches(':focus-visible') && setShowTooltip(true)}
       onBlur={() => setShowTooltip(false)}
     >
       {children}

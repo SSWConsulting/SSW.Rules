@@ -125,6 +125,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
       <div className="layout-two-columns">
         <div className="layout-main-section">
           <div className="h-20">
+            {/* Remounts on a new URL keyword, which the search bar only reads on mount. */}
             <SearchBar
               key={keyword}
               keyword={keyword}

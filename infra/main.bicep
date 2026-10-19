@@ -111,6 +111,18 @@ param rulesChatChatModel object = {
   capacity: 100
 }
 
+@description('Name of the Container Apps environment that runs the Rules Chat index job')
+param rulesChatContainerAppsEnvironmentName string
+
+@description('Name of the Container Apps job that indexes the rules (32 characters at most)')
+param rulesChatIndexJobName string
+
+@description('SSW.Rules.Content branch the index job reads, matching the content this environment shows')
+param rulesChatContentBranch string = 'main'
+
+@description('Optional: email address for index job failure and staleness alerts. No alerts are created when empty.')
+param rulesChatAlertEmail string = ''
+
 @description('Embedding model deployment. Capacity is in thousands of tokens per minute; re-indexing every rule is the peak.')
 param rulesChatEmbeddingModel object = {
   name: 'text-embedding-3-large'
@@ -228,6 +240,46 @@ module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = if (deploysShar
     pipelinePrincipalId: servicePrincipalObjectId
     tags: tags
   }
+}
+
+// The job pulls its image from ACR as the Rules Chat identity.
+module acrPullRulesChatIdentity 'modules/acrRoleAssignment.bicep' = if (deploysSharedRulesChat) {
+  name: 'acr-pull-rules-chat-${environment}'
+  params: {
+    containerRegistryName: containerRegistryName
+    roleDefinitionId: acrPullRoleId
+    principalId: rulesChatIdentity.properties.principalId
+  }
+  dependsOn: [
+    containerRegistryModule
+  ]
+}
+
+module rulesChatIndexJobModule 'modules/rulesChatIndexJob.bicep' = if (deploysSharedRulesChat) {
+  name: 'rulesChatIndexJob-${environment}'
+  params: {
+    containerAppsEnvironmentName: rulesChatContainerAppsEnvironmentName
+    jobName: rulesChatIndexJobName
+    location: location
+    environment: environment
+    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    containerRegistryLoginServer: containerRegistryModule.outputs.loginServer
+    // Pushed by the deploy-infrastructure workflow before this template runs.
+    image: '${containerRegistryModule.outputs.loginServer}/rules-chat-index:${imageTag}'
+    identityId: rulesChatIdentity.id
+    identityClientId: rulesChatIdentity.properties.clientId
+    sqlServerFqdn: '${rulesChatSqlServerName}${az.environment().suffixes.sqlServerHostname}'
+    databaseName: rulesChatDatabaseName
+    aiEndpoint: 'https://${rulesChatFoundryName}.openai.azure.com/openai/v1'
+    embeddingModel: rulesChatEmbeddingModel.name
+    contentBranch: rulesChatContentBranch
+    alertEmail: rulesChatAlertEmail
+    tags: tags
+  }
+  dependsOn: [
+    logAnalyticsModule
+    acrPullRulesChatIdentity
+  ]
 }
 
 // App Service with System Assigned Managed Identity

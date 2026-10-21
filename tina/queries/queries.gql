@@ -302,7 +302,6 @@ query ruleData($relativePath: String!) {
       _sys {
         filename
         basename
-        hasReferences
         breadcrumbs
         path
         relativePath
@@ -360,7 +359,6 @@ query ruleDataBasic($relativePath: String!) {
       _sys {
         filename
         basename
-        hasReferences
         breadcrumbs
         path
         relativePath

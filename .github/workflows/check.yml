@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  test:
+  check:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,6 +32,9 @@ jobs:
       # credentials are needed here.
       - name: Generate Tina client
         run: pnpm exec tinacms build --local --skip-indexing --skip-cloud-checks
+
+      - name: Lint
+        run: pnpm lint
 
       - name: Test
         run: pnpm test

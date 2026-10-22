@@ -1,0 +1,40 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # tina/__generated__ is gitignored, and two suites import the generated
+      # client. --local builds against a local GraphQL server, so no TinaCloud
+      # credentials are needed here.
+      - name: Generate Tina client
+        run: pnpm exec tinacms build --local --skip-indexing --skip-cloud-checks
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test

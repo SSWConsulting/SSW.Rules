@@ -2,6 +2,8 @@ import { unstable_cache } from "next/cache";
 import { getGitHubAppToken } from "./github.utils";
 
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
+// Only applies when a page re-renders. Rule pages are force-static, so in practice
+// the number refreshes on each deploy, or when a rule edit revalidates its page.
 const SIX_HOURS = 6 * 60 * 60;
 const PAGE_SIZE = 100;
 // Safety stop so a pagination bug can never loop forever. 100 pages = 10,000 discussions.
@@ -42,6 +44,18 @@ interface DiscussionNumberNode {
   comments: { totalCount: number };
 }
 
+interface DiscussionNumbersResponse {
+  data?: {
+    repository?: {
+      discussions?: {
+        pageInfo: { hasNextPage: boolean; endCursor: string | null };
+        nodes: (DiscussionNumberNode | null)[] | null;
+      } | null;
+    } | null;
+  };
+  errors?: { message: string }[];
+}
+
 async function fetchDiscussionNumbersByGuid(): Promise<Record<string, number>> {
   const org = process.env.NEXT_PUBLIC_GITHUB_ORG;
   const repoName = process.env.GISCUS_ACTIVITY_REPO_NAME ?? process.env.NEXT_PUBLIC_GISCUS_REPO_NAME;
@@ -77,7 +91,7 @@ async function fetchDiscussionNumbersByGuid(): Promise<Record<string, number>> {
       throw new Error(`GitHub Discussions API error: ${res.status} ${res.statusText}`);
     }
 
-    const json = await res.json();
+    const json: DiscussionNumbersResponse = await res.json();
 
     if (json.errors?.length) {
       throw new Error(`GitHub GraphQL errors: ${JSON.stringify(json.errors)}`);
@@ -86,10 +100,10 @@ async function fetchDiscussionNumbersByGuid(): Promise<Record<string, number>> {
     const connection = json.data?.repository?.discussions;
     if (!connection) break;
 
-    for (const node of (connection.nodes ?? []) as DiscussionNumberNode[]) {
+    for (const node of connection.nodes ?? []) {
       // giscus titles each discussion with the rule GUID.
-      const guid = node?.title?.trim().toLowerCase();
-      if (!guid || typeof node.number !== "number") continue;
+      const guid = node?.title.trim().toLowerCase();
+      if (!node || !guid) continue;
 
       const comments = node.comments?.totalCount ?? 0;
       const incumbent = best[guid];
@@ -111,18 +125,24 @@ export const getCachedDiscussionNumbersByGuid = unstable_cache(fetchDiscussionNu
   tags: ["giscus-discussion-numbers"],
 });
 
+// unstable_cache doesn't cache failures, so after one failed lookup skip GitHub for
+// a few minutes. Otherwise every rule page in a build retries during an outage.
+const RETRY_AFTER_MS = 5 * 60 * 1000;
+let lastFailureAt = 0;
+
 /**
  * Returns the discussion number for a rule GUID, or null when there is no discussion
  * yet or the lookup fails. Callers fall back to `mapping="specific"` on null, so a
  * failure here degrades to today's behaviour rather than breaking the page.
  */
 export async function getDiscussionNumberForGuid(guid?: string | null): Promise<number | null> {
-  if (!guid) return null;
+  if (!guid || Date.now() - lastFailureAt < RETRY_AFTER_MS) return null;
 
   try {
     const byGuid = await getCachedDiscussionNumbersByGuid();
     return byGuid[guid.trim().toLowerCase()] ?? null;
   } catch (error) {
+    lastFailureAt = Date.now();
     console.warn(`[giscusDiscussions] Could not resolve a discussion number for guid="${guid}":`, error);
     return null;
   }

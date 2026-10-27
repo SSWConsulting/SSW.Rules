@@ -58,11 +58,14 @@ interface DiscussionNumbersResponse {
 
 async function fetchDiscussionNumbersByGuid(): Promise<Record<string, number>> {
   const org = process.env.NEXT_PUBLIC_GITHUB_ORG;
-  const repoName = process.env.GISCUS_ACTIVITY_REPO_NAME ?? process.env.NEXT_PUBLIC_GISCUS_REPO_NAME;
+  // Must be the same repo the widget points at (components/Discussion.tsx), since a
+  // discussion number only means anything within one repo. Deliberately does not honour
+  // GISCUS_ACTIVITY_REPO_NAME, which overrides the repo for the activity feed only.
+  const repoName = process.env.NEXT_PUBLIC_GISCUS_REPO_NAME;
   const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || null;
 
   if (!org || !repoName) {
-    throw new Error("Missing NEXT_PUBLIC_GITHUB_ORG or GISCUS_ACTIVITY_REPO_NAME / NEXT_PUBLIC_GISCUS_REPO_NAME environment variables.");
+    throw new Error("Missing NEXT_PUBLIC_GITHUB_ORG or NEXT_PUBLIC_GISCUS_REPO_NAME environment variables.");
   }
 
   const token = await getGitHubAppToken();

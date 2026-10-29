@@ -21,6 +21,7 @@ import { Card } from "@/components/ui/card";
 export interface ServerRulePageProps {
   rule: any;
   brokenReferences?: BrokenReferences | null;
+  discussionNumber?: number | null;
 }
 
 export type ServerRulePagePropsWithTinaProps = {
@@ -99,7 +100,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
 
           <div className="hidden md:block">
             <hr className="my-6 mx-0" />
-            <Discussion ruleGuid={rule?.guid || ""} />
+            <Discussion ruleGuid={rule?.guid || ""} discussionNumber={serverRulePageProps.discussionNumber} />
           </div>
         </Card>
 
@@ -114,7 +115,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
           <RelatedRulesCard relatedRules={rule.related} />
           <HelpCard />
           <div className="block md:hidden">
-            <Discussion ruleGuid={rule.guid} />
+            <Discussion ruleGuid={rule.guid} discussionNumber={serverRulePageProps.discussionNumber} />
           </div>
         </div>
       </div>

@@ -2,44 +2,27 @@
  * Register extra Prism grammars into prism-react-renderer.
  *
  * TinaCMS's rich-text Prism wrapper uses prism-react-renderer, whose bundled
- * language set omits csharp, bash, powershell, http and dotenv. Hundreds of
- * SSW Rules are tagged with those languages and otherwise render monochrome.
+ * language set omits csharp, bash, powershell and http. Hundreds of SSW Rules
+ * are tagged with those languages and otherwise render monochrome.
+ *
+ * Uses prism-react-renderer's documented custom-language approach: assign the
+ * vendored Prism to globalThis, then load upstream prismjs/components so they
+ * register onto that same instance. No custom grammars.
  *
  * Side-effect import this module once from the typography components so the
  * shared Prism registry gains the grammars before any code_block renders.
  */
 import { Prism } from "prism-react-renderer";
-import PrismJS from "prismjs";
-import "prismjs/components/prism-csharp";
-import "prismjs/components/prism-bash";
-import "prismjs/components/prism-powershell";
-import "prismjs/components/prism-json";
-import "prismjs/components/prism-http";
 
-// The PowerShell component omits native-command flags such as dotnet's -n and --framework.
-PrismJS.languages.insertBefore("powershell", "operator", {
-  parameter: {
-    pattern: /(^|[ \t])(?:--[\w-]+|-[A-Za-z])(?=[ \t]|$)/m,
-    lookbehind: true,
-    alias: "variable",
-  },
-});
+const root = globalThis as typeof globalThis & { Prism?: typeof Prism };
+root.Prism = Prism;
 
-for (const language of ["csharp", "bash", "powershell", "http"] as const) {
-  Prism.languages[language] = PrismJS.languages[language];
-}
+require("prismjs/components/prism-csharp");
+require("prismjs/components/prism-bash");
+require("prismjs/components/prism-powershell");
+require("prismjs/components/prism-http");
+
 Prism.languages.cs = Prism.languages.csharp;
+Prism.languages.dotnet = Prism.languages.csharp;
+Prism.languages.sh = Prism.languages.bash;
 Prism.languages.shell = Prism.languages.bash;
-// PrismJS has no dotenv component. Highlight the assignment syntax without treating values as shell commands.
-Prism.languages.dotenv = {
-  comment: {
-    pattern: /^\s*#.*$/m,
-    greedy: true,
-  },
-  property: /^\s*(?:export\s+)?[\w.-]+(?=\s*=)/m,
-  string: {
-    pattern: /("(?:\\.|[^"\\])*"|'[^']*')/,
-    greedy: true,
-  },
-  operator: /=/,
-};

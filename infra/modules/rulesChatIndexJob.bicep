@@ -169,8 +169,9 @@ resource failedRunAlert 'Microsoft.Insights/scheduledQueryRules@2023-12-01' = if
     scopes: [
       logAnalytics.id
     ]
+    // Two hours checked every hour, so a marker that reaches Log Analytics after its hour's check still alerts.
     evaluationFrequency: 'PT1H'
-    windowSize: 'PT1H'
+    windowSize: 'PT2H'
     skipQueryValidation: true
     autoMitigate: true
     criteria: {

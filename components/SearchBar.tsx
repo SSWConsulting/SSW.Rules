@@ -190,6 +190,7 @@ function CustomSearchBox({
           type="text"
           className="block w-full h-10 pl-10 pr-3 py-2 mb-4 bg-white border placeholder-slate-400 focus:ring-gray-400 rounded-md"
           placeholder="Search..."
+          autoFocus={!!query}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />

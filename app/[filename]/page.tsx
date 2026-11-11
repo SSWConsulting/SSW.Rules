@@ -3,6 +3,7 @@ import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { extractBodyPreview } from "@/lib/bodyUtils";
 import { pageMetadata } from "@/lib/pageMetadata";
+import { getDiscussionNumberForGuid } from "@/lib/services/github/giscusDiscussions.service";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 import ClientFallbackPage from "./ClientFallbackPage";
@@ -308,6 +309,8 @@ export default async function Page({ params }: { params: Promise<{ filename: str
   const rule = await getRuleData(filename);
 
   if (rule?.data) {
+    const discussionNumber = await getDiscussionNumberForGuid(rule.data.rule?.guid);
+
     return (
       <Section>
         <TinaRuleWrapper
@@ -315,6 +318,7 @@ export default async function Page({ params }: { params: Promise<{ filename: str
           serverRulePageProps={{
             rule: rule.data.rule,
             brokenReferences: rule.brokenReferences,
+            discussionNumber,
           }}
         />
       </Section>

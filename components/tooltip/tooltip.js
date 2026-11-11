@@ -3,6 +3,13 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+// Focus moved by code after a key press (e.g. Escape closing a dialog) also matches :focus-visible, so only Tab counts.
+let lastKey = null;
+if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', (e) => { lastKey = e.key; }, true);
+  document.addEventListener('pointerdown', () => { lastKey = null; }, true);
+}
+
 const Tooltip = ({ children, text, showDelay, hideDelay, className = '', opaque = false }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -28,7 +35,7 @@ const Tooltip = ({ children, text, showDelay, hideDelay, className = '', opaque 
       className={`group relative inline-flex items-center justify-center ${className}`}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
-      onFocus={() => setShowTooltip(true)}
+      onFocus={() => lastKey === 'Tab' && setShowTooltip(true)}
       onBlur={() => setShowTooltip(false)}
     >
       {children}

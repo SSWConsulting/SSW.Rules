@@ -14,7 +14,7 @@ git -C /tmp/content sparse-checkout set public/uploads/rules
 echo "Indexing SSW.Rules.Content $CONTENT_BRANCH at $(git -C /tmp/content rev-parse --short HEAD)"
 
 # In the background, so a stop signal reaches the trap above instead of waiting for node to exit.
-LOCAL_CONTENT_RELATIVE_PATH=/tmp/content node /app/scripts/rules-chat/index-rules.mjs "$@" &
+LOCAL_CONTENT_RELATIVE_PATH=/tmp/content node /app/scripts/rules-chat/index-rules.mjs --refresh-content "$@" &
 INDEX_PID=$!
 wait "$INDEX_PID"
 trap - EXIT

@@ -6,7 +6,10 @@
 //   pnpm rules-chat:index --allow-removals   let a full run remove more than a fifth of the index
 //   pnpm rules-chat:index --sample <n>   index only the first n rules, for a quick local setup
 //   pnpm rules-chat:index --show <uri>   print the chunks for one rule without indexing
+//   pnpm rules-chat:index --refresh-content   fetch the content checkout's branch again once the lock is held, discarding
+//                                             local changes in it (for the job and the runner workflow, not a local checkout)
 
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -22,6 +25,8 @@ const EMBEDDING_BATCH_SIZE = 16;
 const MAX_EMBEDDING_ATTEMPTS = 5;
 // A full run that would remove more than this share of the index more likely read the rules wrongly than lost them.
 const MAX_REMOVED_SHARE = 0.2;
+// Well inside the job's two-hour replica timeout (replicaTimeout in infra/modules/rulesChatIndexJob.bicep).
+const LOCK_WAIT_MS = 30 * 60 * 1000;
 // Must match RuleChunk.EmbeddingDimensions in src/RulesChat/RulesChat.Database.
 const EMBEDDING_DIMENSIONS = 1024;
 // Bump when the cleaning or chunking rules change, so every rule is re-indexed on the next run.
@@ -128,6 +133,15 @@ async function saveRule(pool, rule, embeddings) {
   }
 }
 
+function refreshContent() {
+  const git = (...args) => execFileSync("git", ["-C", config.rulesDir, ...args], { encoding: "utf8" }).trim();
+  const branch = git("rev-parse", "--abbrev-ref", "HEAD");
+  if (branch === "HEAD") throw new Error(`--refresh-content needs a branch checked out in ${config.rulesDir}, not a detached HEAD`);
+  git("fetch", "--quiet", "--depth", "1", "origin", branch);
+  git("reset", "--quiet", "--hard", "FETCH_HEAD");
+  console.log(`Fetched ${branch} again at ${git("rev-parse", "--short", "HEAD")}`);
+}
+
 function readArgument(name) {
   const index = process.argv.indexOf(name);
   return index === -1 ? undefined : (process.argv[index + 1] ?? "");
@@ -136,6 +150,7 @@ function readArgument(name) {
 async function main() {
   const reembed = process.argv.includes("--reembed");
   const allowRemovals = process.argv.includes("--allow-removals");
+  const refresh = process.argv.includes("--refresh-content");
   if (!existsSync(config.rulesDir)) throw new Error(`Rules folder not found: ${config.rulesDir}`);
 
   const showUri = readArgument("--show");
@@ -151,14 +166,6 @@ async function main() {
   const sample = sampleArgument === undefined ? undefined : Number(sampleArgument);
   if (sample !== undefined && !(Number.isInteger(sample) && sample > 0)) throw new Error("Pass a whole number of rules after --sample");
 
-  const allRules = readdirSync(config.rulesDir)
-    .sort()
-    .map(readRule)
-    .filter((rule) => rule && rule.chunks.length > 0);
-  if (allRules.length === 0) throw new Error(`No active rules found in ${config.rulesDir}. Check the content checkout and the rule front matter.`);
-  const rules = sample ? allRules.slice(0, sample) : allRules;
-  console.log(`Read ${allRules.length} active rules from ${config.rulesDir}${sample ? `, indexing the first ${rules.length}` : ""}`);
-
   const [probe] = await embed(["dimension probe"]);
   if (probe.length !== EMBEDDING_DIMENSIONS) {
     throw new Error(
@@ -167,8 +174,42 @@ async function main() {
     );
   }
 
-  const pool = await connect();
+  // One connection holds the lock for the whole run, so the hourly job, a run started by hand and the GitHub runner workflow
+  // never index the same database at once. The lock ends when the connection closes, so the pool keeps it open even
+  // while idle (min: 1). A run that finds the lock taken waits for it. Its checkout may be older than the one the
+  // running job indexed, so the rules are read only once the lock is held, after --refresh-content fetches them again.
+  let lockConnection;
+  let pool;
   try {
+    lockConnection = await connect({ pool: { min: 1, max: 1 }, requestTimeout: LOCK_WAIT_MS + 60_000 });
+    pool = await connect();
+    const tables = await pool.request().query("SELECT OBJECT_ID('dbo.IndexedRules') AS Rules, OBJECT_ID('dbo.RuleChunks') AS Chunks");
+    if (!tables.recordset[0].Rules || !tables.recordset[0].Chunks) {
+      throw new Error("The index tables don't exist yet. Deploy the environment first: the deploy pipeline applies the EF Core migrations.");
+    }
+    const lock = await lockConnection
+      .request()
+      .input("timeout", sql.Int, LOCK_WAIT_MS)
+      .output("result", sql.Int)
+      .query("EXEC @result = sp_getapplock @Resource = 'rules-chat-index', @LockMode = 'Exclusive', @LockOwner = 'Session', @LockTimeout = @timeout");
+    // A long run, such as a first full index or a re-embed, can outlast the wait. That isn't a failure, so this run logs
+    // neither marker and leaves the rules to the run that holds the lock. The staleness alert catches a lock that never frees.
+    // sp_getapplock returns -1 on a timeout. Other negative results (cancelled, deadlock, bad call) are real failures.
+    if (lock.output.result === -1) {
+      console.log(`Another index run held the lock for over ${LOCK_WAIT_MS / 60_000} minutes, so this run indexed nothing.`);
+      return;
+    }
+    if (lock.output.result < 0) throw new Error(`sp_getapplock failed with ${lock.output.result}`);
+
+    if (refresh) refreshContent();
+    const allRules = readdirSync(config.rulesDir)
+      .sort()
+      .map(readRule)
+      .filter((rule) => rule && rule.chunks.length > 0);
+    if (allRules.length === 0) throw new Error(`No active rules found in ${config.rulesDir}. Check the content checkout and the rule front matter.`);
+    const rules = sample ? allRules.slice(0, sample) : allRules;
+    console.log(`Read ${allRules.length} active rules from ${config.rulesDir}${sample ? `, indexing the first ${rules.length}` : ""}`);
+
     const indexed = new Map(
       (await pool.request().query("SELECT RuleUri, ContentHash FROM dbo.IndexedRules")).recordset.map((row) => [row.RuleUri, row.ContentHash])
     );
@@ -210,8 +251,11 @@ async function main() {
     const totals = (await pool.request().query("SELECT (SELECT COUNT(*) FROM dbo.IndexedRules) AS Rules, (SELECT COUNT(*) FROM dbo.RuleChunks) AS Chunks"))
       .recordset[0];
     console.log(`Index now holds ${totals.Rules} rules in ${totals.Chunks} chunks`);
+    // The failure and staleness alerts in infra/modules/rulesChatIndexJob.bicep search the job's logs for these markers.
+    console.log("RULES_CHAT_INDEX_SUCCEEDED");
   } finally {
-    await pool.close();
+    await pool?.close();
+    await lockConnection?.close();
   }
 }
 

@@ -1,6 +1,6 @@
 # Re-index changed rules from an Azure job on every content merge
 
-- Status: accepted
+- Status: superseded by [Re-index changed rules from an hourly Azure job](20261008-reindex-changed-rules-from-an-hourly-azure-job.md)
 - Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
 - Date: 2026-10-07
 - Tags: ai-chat, search, infrastructure, content-pipeline

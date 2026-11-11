@@ -17,6 +17,11 @@ on:
         required: false
         default: ""
         description: "Git ref to checkout (defaults to github.sha if not specified)"
+      content_branch:
+        type: string
+        required: false
+        default: ""
+        description: "SSW.Rules.Content branch the Rules Chat index job reads (defaults to the NEXT_PUBLIC_TINA_BRANCH variable)"
     secrets:
       AZURE_CLIENT_ID:
         required: true
@@ -103,6 +108,35 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # The index job's image must exist before the Bicep below points the job at it. The registry already exists in
+      # staging and production. PR slot deploys share staging's job, so they skip this. Each build gets its own tag, so
+      # the job never runs an older image cached under a reused one.
+      - name: Build and push Rules Chat index job image
+        id: index_image
+        if: inputs.slot_name == ''
+        run: |
+          ACR_NAME="acrsswrules${{ inputs.environment == 'production' && 'prod' || inputs.environment }}"
+          TAG="${{ inputs.environment }}-$(git rev-parse --short=12 HEAD)"
+          IMAGE="$ACR_NAME.azurecr.io/rules-chat-index:$TAG"
+          az acr login --name "$ACR_NAME"
+          docker build --platform linux/amd64 -f scripts/rules-chat/job/Dockerfile -t "$IMAGE" scripts/rules-chat
+          docker push "$IMAGE"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      # Matches the site build (build-artifacts.yml): a manual deploy's branch, else the variable, else main when the
+      # branch doesn't exist in SSW.Rules.Content.
+      - name: Resolve Rules Chat content branch
+        id: content_branch
+        if: inputs.slot_name == ''
+        run: |
+          DESIRED_BRANCH="${{ inputs.content_branch || vars.NEXT_PUBLIC_TINA_BRANCH || 'main' }}"
+          if git ls-remote --exit-code --heads "https://github.com/SSWConsulting/SSW.Rules.Content.git" "$DESIRED_BRANCH" > /dev/null 2>&1; then
+            echo "branch=$DESIRED_BRANCH" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::SSW.Rules.Content has no branch '$DESIRED_BRANCH', so the Rules Chat index job reads main"
+            echo "branch=main" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Deploy Infrastructure
         id: deploy
         shell: pwsh
@@ -120,6 +154,10 @@ jobs:
 
           # The pipeline administers the Rules Chat database, so it can apply schema changes on every deploy.
           $params['RulesChatSqlAdminClientId'] = "${{ secrets.AZURE_CLIENT_ID }}"
+          # The index job reads the content branch this environment shows, like the site build does.
+          $params['RulesChatContentBranch'] = "${{ steps.content_branch.outputs.branch || 'main' }}"
+          $params['RulesChatIndexImageTag'] = "${{ steps.index_image.outputs.tag }}"
+          $params['RulesChatAlertEmail'] = "${{ vars.RULES_CHAT_ALERT_EMAIL }}"
 
           $slotName = "${{ inputs.slot_name }}"
           if ($slotName) {

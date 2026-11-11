@@ -42,6 +42,7 @@ jobs:
         uses: ./.github/workflows/deploy-infrastructure.yml
         with:
             environment: ${{ github.event.inputs.environment || 'staging' }}
+            content_branch: ${{ github.event.inputs.tina_branch }}
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}

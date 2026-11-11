@@ -1,7 +1,8 @@
 name: Index Rules for The Rulekeeper
 
-# Embeds every new or changed rule into The Rulekeeper's database. Unchanged rules are skipped, so only the first run in
-# an environment takes long. Started by hand until rule changes start it automatically.
+# Embeds every new or changed rule into The Rulekeeper's database, from a GitHub runner. A fallback for the Container
+# Apps index job (rules-chat-reindex-trigger.yml starts that one): use it to reset an index or when the job is broken.
+# Both take the same database lock, so they never run at the same time.
 on:
   workflow_dispatch:
     inputs:
@@ -42,13 +43,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Checkout SSW.Rules.Content
-        uses: actions/checkout@v4
-        with:
-          repository: SSWConsulting/SSW.Rules.Content
-          path: content
-          sparse-checkout: public/uploads/rules
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -68,6 +62,29 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Indexes the branch the Container Apps job reads, so the two never overwrite each other with different content.
+      - name: Read the index job's content branch
+        id: content_branch
+        env:
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+        run: |
+          BRANCH=$(az containerapp job show --resource-group "$RESOURCE_GROUP" --name "caj-sswrules-chat-index-$RESOURCE_SUFFIX" \
+            --query "properties.template.containers[0].env[?name=='RULES_CONTENT_BRANCH'].value | [0]" --output tsv || true)
+          if [ -z "$BRANCH" ]; then
+            echo "::warning::Couldn't read the index job's content branch, so this run indexes main"
+            BRANCH=main
+          fi
+          echo "Indexing SSW.Rules.Content $BRANCH"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout SSW.Rules.Content
+        uses: actions/checkout@v4
+        with:
+          repository: SSWConsulting/SSW.Rules.Content
+          ref: ${{ steps.content_branch.outputs.branch }}
+          path: content
+          sparse-checkout: public/uploads/rules
 
       - name: Index rules
         env:
@@ -90,7 +107,7 @@ jobs:
           trap 'az sql server firewall-rule delete --resource-group "$RESOURCE_GROUP" --server "$SQL_SERVER_NAME" --name "$RULE" --output none' EXIT
 
           # Signs in to SQL and Foundry as the pipeline, through the Azure CLI login above.
-          ARGS=()
+          ARGS=(--refresh-content)
           if [ "${{ inputs.reembed }}" = "true" ]; then ARGS+=(--reembed); fi
           if [ "${{ inputs.allow_removals }}" = "true" ]; then ARGS+=(--allow-removals); fi
           pnpm rules-chat:index "${ARGS[@]}"

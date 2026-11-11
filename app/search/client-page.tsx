@@ -125,7 +125,9 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
       <div className="layout-two-columns">
         <div className="layout-main-section">
           <div className="h-20">
+            {/* Remounts on a new URL keyword, which the search bar only reads on mount. */}
             <SearchBar
+              key={keyword}
               keyword={keyword}
               sortBy={sortBy}
               onResults={setSearchResults}
@@ -163,6 +165,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
                     lastUpdated={result.lastUpdated ?? result.created ?? null}
                     index={index}
                     authorUrl={getAuthorUrl(result)}
+                    isArchived={result.isArchived === true}
                   />
                 ))}
               </div>

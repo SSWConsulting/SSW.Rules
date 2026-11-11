@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { RiTimeFill } from "react-icons/ri";
 import { timeAgo } from "@/lib/dateUtils";
+import { ArchivedBadge } from "./ArchivedBadge";
 import { Card } from "./ui/card";
 
 interface RuleCardProps {
@@ -11,6 +12,7 @@ interface RuleCardProps {
   index?: number;
   authorUrl?: string | null;
   skeletonMeta?: boolean;
+  isArchived?: boolean;
 }
 
 function isHttpUrl(value?: string | null) {
@@ -18,7 +20,7 @@ function isHttpUrl(value?: string | null) {
   return /^https?:\/\//i.test(value.trim());
 }
 
-export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, index, authorUrl, skeletonMeta }: RuleCardProps) {
+export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, index, authorUrl, skeletonMeta, isArchived }: RuleCardProps) {
   const showLink = !skeletonMeta && isHttpUrl(authorUrl) && (lastUpdatedBy || "Unknown") !== "Unknown";
 
   return (
@@ -28,7 +30,10 @@ export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, inde
 
         <div className="flex flex-col">
           <Link href={`/${slug}`} className="no-underline">
-            <h2 className="m-0 mb-2 text-2xl max-sm:text-lg hover:text-ssw-red">{title}</h2>
+            <h2 className="m-0 mb-2 text-2xl max-sm:text-lg hover:text-ssw-red">
+              {title}
+              {isArchived && <ArchivedBadge className="relative -top-0.5 ml-2 px-2 py-1 text-sm" />}
+            </h2>
           </Link>
 
           {skeletonMeta ? (

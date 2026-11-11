@@ -302,7 +302,6 @@ query ruleData($relativePath: String!) {
       _sys {
         filename
         basename
-        hasReferences
         breadcrumbs
         path
         relativePath
@@ -318,6 +317,7 @@ query ruleData($relativePath: String!) {
       authors {
         title
         url
+        img
       }
       categories {
         category {
@@ -359,7 +359,6 @@ query ruleDataBasic($relativePath: String!) {
       _sys {
         filename
         basename
-        hasReferences
         breadcrumbs
         path
         relativePath
@@ -375,6 +374,7 @@ query ruleDataBasic($relativePath: String!) {
       authors {
         title
         url
+        img
       }
       categories {
         category {

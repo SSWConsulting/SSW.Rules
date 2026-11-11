@@ -1,5 +1,6 @@
 import { algoliasearch } from "algoliasearch";
 import { NextRequest, NextResponse } from "next/server";
+import { mergeStemmedResults, withStemmedQueries } from "@/lib/search/stemmedSearch";
 
 // Simple in-memory rate limiter
 // In production, consider using Redis or a service like Upstash for distributed rate limiting
@@ -95,9 +96,11 @@ export async function POST(request: NextRequest) {
     }
 
     const client = algoliasearch(appId, apiKey);
-    const result = await client.search(requests);
+    // The index has no stemming, so a stemmed copy of each query also finds other forms of its words.
+    const stemmedSearch = withStemmedQueries(requests);
+    const { results } = await client.search(stemmedSearch.requests);
 
-    return NextResponse.json(result);
+    return NextResponse.json({ results: mergeStemmedResults(results, stemmedSearch.stemmedIndexes) });
   } catch (error) {
     console.error("Search API error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

@@ -2,6 +2,7 @@ import { Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { Prism } from "tinacms/dist/rich-text/prism";
+import "@/lib/prism-grammars";
 import { CustomLink } from "@/components/customLink";
 import MermaidElement from "@/components/mermaid/MermaidElement";
 import { toSlug } from "@/lib/utils";

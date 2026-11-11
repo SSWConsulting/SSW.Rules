@@ -5,4 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- Pins the patched version over the vulnerable ones SqlClient and Aspire pull in (CVE-2026-70162, CVE-2026-84008).
+         Remove once those packages depend on a patched version. -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+  </ItemGroup>
 </Project>

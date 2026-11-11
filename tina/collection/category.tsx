@@ -202,7 +202,7 @@ const Category: Collection = {
           name: "seoDescription",
           label: "SEO Description",
           description:
-            "Page summary used for SEO. Can be generated with AI. See https://www.ssw.com.au/rules/html-meta-tags/#rectifying-the-missing-meta-tags-issue",
+            'Page summary used for SEO. Can be generated with AI. See <a href="https://www.ssw.com.au/rules/html-meta-tags/#rectifying-the-missing-meta-tags-issue" target="_blank">how to fix missing meta tags</a>',
           searchable: false,
           ui: {
             ...({ textarea: true, rows: 3 } as any),

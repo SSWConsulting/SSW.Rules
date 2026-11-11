@@ -32,7 +32,8 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # The index script takes a database lock, so a run started while another is going stops without changing anything.
+      # The index script takes a database lock, so a run started while another is going waits up to 30 minutes for it to
+      # finish, then indexes any rules that changed since.
       - name: Start the index job
         run: |
           EXECUTION=$(az containerapp job start --name "caj-sswrules-chat-index-$RESOURCE_SUFFIX" \

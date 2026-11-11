@@ -117,6 +117,9 @@ param rulesChatContainerAppsEnvironmentName string
 @description('Name of the Container Apps job that indexes the rules (32 characters at most)')
 param rulesChatIndexJobName string
 
+@description('Tag of the index job image. A tag unique to each build, so the job never runs an older image cached under the same tag.')
+param rulesChatIndexImageTag string = imageTag
+
 @description('SSW.Rules.Content branch the index job reads, matching the content this environment shows')
 param rulesChatContentBranch string = 'main'
 
@@ -265,7 +268,7 @@ module rulesChatIndexJobModule 'modules/rulesChatIndexJob.bicep' = if (deploysSh
     logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
     containerRegistryLoginServer: containerRegistryModule.outputs.loginServer
     // Pushed by the deploy-infrastructure workflow before this template runs.
-    image: '${containerRegistryModule.outputs.loginServer}/rules-chat-index:${imageTag}'
+    image: '${containerRegistryModule.outputs.loginServer}/rules-chat-index:${rulesChatIndexImageTag}'
     identityId: rulesChatIdentity.id
     identityClientId: rulesChatIdentity.properties.clientId
     sqlServerFqdn: '${rulesChatSqlServerName}${az.environment().suffixes.sqlServerHostname}'

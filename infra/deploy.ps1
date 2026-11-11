@@ -44,6 +44,9 @@
 .PARAMETER RulesChatContentBranch
     SSW.Rules.Content branch the Rules Chat index job reads. Default: main.
 
+.PARAMETER RulesChatIndexImageTag
+    Tag of the rules-chat-index image the index job runs. Default: the same tag as the site image.
+
 .PARAMETER RulesChatAlertEmail
     Optional email address for index job failure and staleness alerts.
 
@@ -83,6 +86,9 @@ param(
 
     [Parameter(Mandatory = $false)]
     [string]$RulesChatContentBranch = 'main',
+
+    [Parameter(Mandatory = $false)]
+    [string]$RulesChatIndexImageTag = '',
 
     [Parameter(Mandatory = $false)]
     [string]$RulesChatAlertEmail = '',
@@ -450,6 +456,9 @@ $azArgs += '--parameters', "rulesChatFoundryName=$RulesChatFoundryName"
 $azArgs += '--parameters', "rulesChatContainerAppsEnvironmentName=$RulesChatContainerAppsEnvironmentName"
 $azArgs += '--parameters', "rulesChatIndexJobName=$RulesChatIndexJobName"
 $azArgs += '--parameters', "rulesChatContentBranch=$RulesChatContentBranch"
+if ($RulesChatIndexImageTag) {
+    $azArgs += '--parameters', "rulesChatIndexImageTag=$RulesChatIndexImageTag"
+}
 if ($RulesChatAlertEmail) {
     $azArgs += '--parameters', "rulesChatAlertEmail=$RulesChatAlertEmail"
 }

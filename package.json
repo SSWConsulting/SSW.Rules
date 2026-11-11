@@ -98,6 +98,7 @@
     "react-use-measure": "^2.1.7",
     "shiki": "^3.23.0",
     "ssw.megamenu": "^4.13.10",
+    "stemmer": "2.0.1",
     "styled-jsx": "^5.1.7",
     "svg-react-loader": "^0.4.6",
     "tailwind-merge": "^3.5.0",

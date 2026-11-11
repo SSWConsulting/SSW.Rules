@@ -1,11 +1,30 @@
 /**
  * @jest-environment node
  */
+type FakePool = { connect: jest.Mock; close: jest.Mock; on: jest.Mock; emitError: (error: Error) => void };
+
 const connect = jest.fn();
+const created: FakePool[] = [];
 
 jest.mock("mssql", () => ({
   __esModule: true,
-  default: { ConnectionPool: jest.fn().mockImplementation(() => ({ connect, on: jest.fn() })) },
+  default: {
+    ConnectionPool: jest.fn().mockImplementation(() => {
+      const listeners: ((error: Error) => void)[] = [];
+      const fake: FakePool = {
+        connect,
+        close: jest.fn().mockResolvedValue(undefined),
+        on: jest.fn((event: string, listener: (error: Error) => void) => {
+          if (event === "error") listeners.push(listener);
+        }),
+        emitError: (error) => {
+          for (const listener of listeners) listener(error);
+        },
+      };
+      created.push(fake);
+      return fake;
+    }),
+  },
 }));
 jest.mock("@/lib/rulesChat/config", () => ({ getRulesChatConfig: () => ({ sql: {} }) }));
 
@@ -14,8 +33,10 @@ const timeout = Object.assign(new Error("Failed to connect to sql-sswrules-chat-
 beforeEach(() => {
   jest.resetModules();
   connect.mockReset();
+  created.length = 0;
   jest.useFakeTimers();
   jest.spyOn(console, "warn").mockImplementation(() => {});
+  jest.spyOn(console, "error").mockImplementation(() => {});
 });
 
 afterEach(() => {
@@ -26,14 +47,37 @@ afterEach(() => {
 describe("getPool", () => {
   it("waits for a paused database to resume instead of failing", async () => {
     const { getPool } = await import("@/lib/rulesChat/db");
-    const connected = { name: "pool" };
-    connect.mockRejectedValueOnce(timeout).mockResolvedValueOnce(connected);
+    connect.mockRejectedValueOnce(timeout).mockResolvedValueOnce(undefined);
 
     const pool = getPool();
     await jest.advanceTimersByTimeAsync(5_000);
 
-    await expect(pool).resolves.toBe(connected);
+    await expect(pool).resolves.toBe(created[1]);
     expect(connect).toHaveBeenCalledTimes(2);
+    expect(created[0].close).toHaveBeenCalled();
+  });
+
+  it("keeps the connected pool when a failed attempt reports an error later", async () => {
+    const { getPool } = await import("@/lib/rulesChat/db");
+    connect.mockRejectedValueOnce(timeout).mockResolvedValueOnce(undefined);
+
+    const pool = getPool();
+    await jest.advanceTimersByTimeAsync(5_000);
+    await pool;
+    created[0].emitError(new Error("socket closed"));
+
+    expect(getPool()).toBe(pool);
+  });
+
+  it("connects again after the connected pool reports an error", async () => {
+    const { getPool } = await import("@/lib/rulesChat/db");
+    connect.mockResolvedValue(undefined);
+
+    const pool = getPool();
+    await pool;
+    created[0].emitError(new Error("socket closed"));
+
+    expect(getPool()).not.toBe(pool);
   });
 
   it("fails straight away on an error that isn't the database resuming", async () => {

@@ -16,14 +16,21 @@ async function connectWhileWaking(config: sql.config): Promise<sql.ConnectionPoo
   const deadline = Date.now() + WAKE_WAIT_MS;
   for (;;) {
     const created = new sql.ConnectionPool(config);
-    // Without a listener, a dropped connection would be thrown as an uncaught exception.
+    // Without a listener, a dropped connection would be thrown as an uncaught exception. A failed attempt's late error must
+    // not drop the pool a later attempt connected.
     created.on("error", (error) => {
       console.error("[RulesChat] SQL pool error:", error);
-      pool = undefined;
+      if (connected === created) {
+        connected = undefined;
+        pool = undefined;
+      }
     });
     try {
-      return await created.connect();
+      await created.connect();
+      connected = created;
+      return created;
     } catch (error) {
+      created.close().catch((closeError) => console.error("[RulesChat] closing a failed SQL pool:", closeError));
       if (!isDatabaseWaking(error) || Date.now() > deadline) throw error;
       console.warn("[RulesChat] the database is resuming; connecting again in 5s");
       await new Promise((resolve) => setTimeout(resolve, WAKE_POLL_MS));
@@ -32,6 +39,7 @@ async function connectWhileWaking(config: sql.config): Promise<sql.ConnectionPoo
 }
 
 let pool: Promise<sql.ConnectionPool> | undefined;
+let connected: sql.ConnectionPool | undefined;
 
 export function getPool() {
   if (!pool) {

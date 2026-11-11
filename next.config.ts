@@ -22,9 +22,6 @@ const nextConfig: NextConfig = {
   // This tells Next.js to use the Node.js runtime version instead of bundling it
   serverExternalPackages: ["applicationinsights", "diagnostic-channel", "diagnostic-channel-publishers"],
 
-  // ESM-only packages; next/jest only transforms node_modules packages listed here.
-  transpilePackages: ["stemmer"],
-
   images: {
     remotePatterns: [
       {

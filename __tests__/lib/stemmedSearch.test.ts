@@ -22,6 +22,12 @@ describe("withStemmedQueries", () => {
     expect(requests[1].params?.query).toBe("squash .net commit c#");
   });
 
+  it("stems to real word forms where Porter2 can", () => {
+    const { requests } = withStemmedQueries([request("deploying using")]);
+
+    expect(requests[1].params?.query).toBe("deploy use");
+  });
+
   it("adds no copy when stemming changes nothing, so typos are searched once as typed", () => {
     expect(withStemmedQueries([request("squash")]).stemmedIndexes).toEqual([undefined]);
     expect(withStemmedQueries([request("sqush")]).stemmedIndexes).toEqual([undefined]);

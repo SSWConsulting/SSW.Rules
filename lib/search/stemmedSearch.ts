@@ -1,5 +1,5 @@
 import type { LegacySearchMethodProps, SearchResult } from "algoliasearch";
-import { stemmer } from "stemmer";
+import { stem } from "porter2";
 
 type SearchRequest = LegacySearchMethodProps[number];
 
@@ -10,7 +10,7 @@ function stemQuery(query: string): string {
     .trim()
     .toLowerCase()
     .split(/\s+/)
-    .map((word) => (PLAIN_WORD.test(word) ? stemmer(word) : word))
+    .map((word) => (PLAIN_WORD.test(word) ? stem(word) : word))
     .join(" ");
 }
 

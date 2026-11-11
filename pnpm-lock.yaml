@@ -116,6 +116,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      porter2:
+        specifier: 2.0.0
+        version: 2.0.0
       prism-react-renderer:
         specifier: 2.4.1
         version: 2.4.1(react@19.2.5)
@@ -167,9 +170,6 @@ importers:
       ssw.megamenu:
         specifier: ^4.13.10
         version: 4.13.10(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      stemmer:
-        specifier: 2.0.1
-        version: 2.0.1
       styled-jsx:
         specifier: ^5.1.7
         version: 5.1.7(@babel/core@7.29.0)(react@19.2.5)
@@ -7250,6 +7250,9 @@ packages:
   popmotion@8.7.6:
     resolution: {integrity: sha512-gzU0mRAik8FIEOP4Nk5yqYptJIvHLoq/IRU+rANmKjDZ7tynAivYQ9cIJAxVaoS9h0zfXvN0cFBAg93ncmHHkA==}
 
+  porter2@2.0.0:
+    resolution: {integrity: sha512-xPP5MpmapEh5sekPO/6TynotcXfIuLjPwPMybnew68QE2Wmf9+OJ7xuyRZy6VIthS8uh2PQIyq0wOeYgkmA8dA==}
+
   pose-core@2.1.1:
     resolution: {integrity: sha512-fV1sDfu80debHmKerikypqGoORMEUHVwGh/BlWnqUSmmzQGYIg8neDrdwe66hFeRO+adr2qS4ZERSu/ZVjOiSQ==}
 
@@ -8103,10 +8106,6 @@ packages:
   statuses@2.0.2:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
-
-  stemmer@2.0.1:
-    resolution: {integrity: sha512-bkWvSX2JR4nSZFfs113kd4C6X13bBBrg4fBKv2pVdzpdQI2LA5pZcWzTFNdkYsiUNl13E4EzymSRjZ0D55jBYg==}
-    hasBin: true
 
   stopword@3.1.5:
     resolution: {integrity: sha512-OgLYGVFCNa430WOrj9tYZhQge5yg6vd6JsKredveAqEhdLVQkfrpnQIGjx0L9lLqzL4Kq4J8yNTcfQR/MpBwhg==}
@@ -17372,6 +17371,8 @@ snapshots:
       stylefire: 7.0.3
       tslib: 1.14.1
 
+  porter2@2.0.0: {}
+
   pose-core@2.1.1(rollup@4.63.4):
     dependencies:
       '@types/invariant': 2.2.37
@@ -18455,8 +18456,6 @@ snapshots:
   state-local@1.0.7: {}
 
   statuses@2.0.2: {}
-
-  stemmer@2.0.1: {}
 
   stopword@3.1.5: {}
 

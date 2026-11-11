@@ -2,6 +2,7 @@ import { Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { Prism } from "tinacms/dist/rich-text/prism";
+import "@/lib/prism-grammars";
 import { CustomLink } from "@/components/customLink";
 import MermaidElement from "@/components/mermaid/MermaidElement";
 import { toSlug } from "@/lib/utils";
@@ -42,7 +43,7 @@ const createHeading =
         {props.children}
         <a
           href={`#${id}`}
-          className="inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 no-underline"
+          className="inline-block ml-2 opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100 focus-visible:opacity-100 transition-opacity duration-200 no-underline"
           aria-label={`Link to ${textContent}`}
         >
           <LinkIcon size={iconSize} className="text-gray-400 hover:text-ssw-red" />

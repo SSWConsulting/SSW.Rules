@@ -84,7 +84,7 @@ async function getRecentRulesForUser(username: string, limit: number): Promise<R
 
     return edges
       .map(e => e?.node)
-      .filter((node): node is { title: string; uri: string, body: any } => 
+      .filter((node): node is NonNullable<typeof node> => 
         !!node && typeof node.title === 'string' && typeof node.uri === 'string'
       )
       .map(node => {

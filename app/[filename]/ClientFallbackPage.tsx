@@ -12,10 +12,9 @@ import { TinaRuleWrapper } from "./TinaRuleWrapper";
 
 interface ClientFallbackPageProps {
   filename: string;
-  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default function ClientFallbackPage({ filename, searchParams }: ClientFallbackPageProps) {
+export default function ClientFallbackPage({ filename }: ClientFallbackPageProps) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
   const [isNotFound, setIsNotFound] = useState(false);
@@ -104,19 +103,10 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
               const categoryResult = await categoryRes.json();
 
               if (categoryResult?.data?.category) {
-                const includeArchived = String(searchParams.archived ?? "") === "true";
-                const view = String(searchParams.view ?? "blurb") as "titleOnly" | "blurb" | "all";
-                const page = Math.max(1, parseInt(String(searchParams.page ?? "1"), 10) || 1);
-                const perPage = Math.max(1, Math.min(50, parseInt(String(searchParams.perPage ?? "10"), 10) || 10));
-
                 setData({
                   type: "category",
                   category: categoryResult.data.category,
                   path: fullPath,
-                  includeArchived,
-                  view,
-                  page,
-                  perPage,
                   tinaQueryProps: {
                     data: categoryResult.data,
                     query: categoryResult.query,
@@ -183,7 +173,7 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
     };
 
     fetchData();
-  }, [filename, searchParams]);
+  }, [filename]);
 
   // Wait for admin check to complete before deciding whether to show 404
   if (isAdminLoading) {
@@ -228,10 +218,6 @@ export default function ClientFallbackPage({ filename, searchParams }: ClientFal
           tinaQueryProps={data.tinaQueryProps}
           serverCategoryPageProps={{
             path: data.path,
-            includeArchived: data.includeArchived,
-            view: data.view,
-            page: data.page,
-            perPage: data.perPage,
           }}
         />
       </Section>

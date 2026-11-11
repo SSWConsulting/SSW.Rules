@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { tinaField } from "tinacms/dist/react";
 import { Card } from "@/components/ui/card";
+import { authorImageUrl } from "@/lib/authorImage";
 
 interface Author {
   title?: string;
@@ -28,28 +29,7 @@ export default function AuthorsCard({ authors }: AuthorsCardProps) {
 
       if (img?.includes("http")) return img;
 
-      if (url?.includes("ssw.com.au/people")) {
-        // Extract the part after '/people/'
-        const match = url.match(/people\/([^/?#]+)/);
-        const slug = match ? match[1] : null;
-
-        if (slug) {
-          // Capitalize each word
-          const formattedTitle = slug
-            .split("-")
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join("-");
-
-          return `https://raw.githubusercontent.com/SSWConsulting/SSW.People.Profiles/main/${formattedTitle}/Images/${formattedTitle}-Profile.jpg`;
-        }
-      }
-
-      if (url?.includes("github.com/")) {
-        const gitHubUsername = url.split("github.com/").pop();
-        return `https://avatars.githubusercontent.com/${gitHubUsername}`;
-      }
-
-      return placeholderImg;
+      return authorImageUrl(url) ?? placeholderImg;
     },
     [placeholderImg]
   );

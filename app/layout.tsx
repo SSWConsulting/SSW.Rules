@@ -6,8 +6,12 @@ import SiteLayout from "@/components/layout/layout";
 import { cn } from "@/lib/utils";
 import "@/styles.css";
 import UserClientProvider from "@/components/auth/UserClientProvider";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import AppInsightsProvider from "@/components/providers/AppInsightsProvider";
+import { SearchDialog } from "@/components/search/SearchDialog";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
+import { pageMetadata } from "@/lib/pageMetadata";
+import { homepageTitle, siteDescription, siteTitle, siteUrl } from "@/site-config";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -25,10 +29,20 @@ const lato = Lato({
   weight: "400",
 });
 
+const defaultTitle = `${siteTitle} | ${homepageTitle}`;
+
+// Canonical is dropped on purpose - every page sets its own via pageMetadata, and a
+// page without one (e.g. /preview, not-found) should not inherit the home page's.
+const { alternates: _pageCanonical, ...siteDefaults } = pageMetadata({ title: defaultTitle, description: siteDescription });
+
 export const metadata: Metadata = {
-  title: "SSW.Rules | Secret Ingredients to Quality Software (Open Source on GitHub)",
-  description:
-    "Secret Ingredients to Quality Software | SSW Rules provides best practices for developing secure, reliable, and efficient .NET, Azure, CRM, Angular, React, Dynamics, and AI applications. Learn more today!",
+  ...siteDefaults,
+  // Must include the /rules basePath. Next emits the image path WITHOUT basePath
+  // (e.g. /reply-done/opengraph-image) and resolveUrl joins metadataBase.pathname onto
+  // it, so an origin-only base drops /rules and the og:image 404s. Verified on a
+  // pr-deploy slot: with the origin it emitted www.ssw.com.au/reply-done/opengraph-image
+  // while the card actually lives at /rules/reply-done/opengraph-image.
+  metadataBase: new URL(siteUrl),
 };
 
 const jsonLd = [
@@ -50,6 +64,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppInsightsProvider>
           <UserClientProvider>
             <SiteLayout>{children}</SiteLayout>
+            <ChatWidget />
+            <SearchDialog />
           </UserClientProvider>
         </AppInsightsProvider>
         <TailwindIndicator />

@@ -1,5 +1,5 @@
 // Main Bicep Template for SSW Rules Infrastructure
-// Deploys App Service, Application Insights, and Container Registry
+// Deploys App Service, Application Insights, Container Registry, and The Rulekeeper's database and models
 
 targetScope = 'resourceGroup'
 
@@ -67,6 +67,57 @@ param tags object = {
 
 @description('Optional: Name of the deployment slot (e.g., pr-123). If empty, no slot is created.')
 param slotName string = ''
+
+// ----------------------------------------------------------------------------
+// The Rulekeeper (Rules Chat)
+// ----------------------------------------------------------------------------
+
+@description('Application (client) ID of the deployment pipeline\'s service principal, which administers the Rules Chat SQL server')
+param rulesChatSqlAdminClientId string
+
+@description('Name the Rules Chat SQL server shows for its administrator')
+param rulesChatSqlAdminName string = 'SSW.Rules deployment pipeline'
+
+@description('Name of the user-assigned managed identity the site uses for the Rules Chat database and models')
+param rulesChatIdentityName string
+
+@description('Name of the Rules Chat SQL logical server (globally unique)')
+param rulesChatSqlServerName string
+
+@description('Name of the Rules Chat database')
+param rulesChatDatabaseName string = 'RulesChat'
+
+@description('Rules Chat database SKU. Defaults to serverless with auto-pause for staging and a fixed-price S1 for production.')
+param rulesChatDatabaseSku object = environment == 'prod'
+  ? {
+      name: 'S1'
+      tier: 'Standard'
+    }
+  : {
+      name: 'GP_S_Gen5_1'
+      tier: 'GeneralPurpose'
+      family: 'Gen5'
+      capacity: 1
+    }
+
+@description('Name of the Rules Chat Microsoft Foundry resource (globally unique)')
+param rulesChatFoundryName string
+
+@description('Chat model deployment. Capacity is in thousands of tokens per minute.')
+param rulesChatChatModel object = {
+  name: 'gpt-6-luna'
+  version: '2026-09-22'
+  deploymentType: 'GlobalStandard'
+  capacity: 100
+}
+
+@description('Embedding model deployment. Capacity is in thousands of tokens per minute; re-indexing every rule is the peak.')
+param rulesChatEmbeddingModel object = {
+  name: 'text-embedding-3-large'
+  version: '1'
+  deploymentType: 'GlobalStandard'
+  capacity: 150
+}
 
 // ============================================================================
 // VARIABLES - Well-known Azure Role Definition IDs
@@ -138,6 +189,47 @@ module containerRegistryModule 'modules/containerRegistry.bicep' = {
   }
 }
 
+// Identity the site (including every slot) uses for the Rules Chat database and models
+resource rulesChatIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: rulesChatIdentityName
+  location: location
+  tags: union(tags, {
+    environment: environment
+  })
+}
+
+// PR slot deploys share staging's database and models but leave them alone: two PR deploys can run at once, and a
+// PR branch must not be able to change what every other PR and staging use.
+var deploysSharedRulesChat = empty(slotName)
+
+module rulesChatSqlModule 'modules/rulesChatSql.bicep' = if (deploysSharedRulesChat) {
+  name: 'rulesChatSql-${environment}'
+  params: {
+    sqlServerName: rulesChatSqlServerName
+    databaseName: rulesChatDatabaseName
+    location: location
+    environment: environment
+    adminName: rulesChatSqlAdminName
+    adminClientId: rulesChatSqlAdminClientId
+    databaseSku: rulesChatDatabaseSku
+    tags: tags
+  }
+}
+
+module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = if (deploysSharedRulesChat) {
+  name: 'rulesChatFoundry-${environment}'
+  params: {
+    foundryName: rulesChatFoundryName
+    location: location
+    environment: environment
+    chatModel: rulesChatChatModel
+    embeddingModel: rulesChatEmbeddingModel
+    callerPrincipalId: rulesChatIdentity.properties.principalId
+    pipelinePrincipalId: servicePrincipalObjectId
+    tags: tags
+  }
+}
+
 // App Service with System Assigned Managed Identity
 module appServiceModule 'modules/appService.bicep' = {
   name: 'appService-${environment}'
@@ -151,6 +243,7 @@ module appServiceModule 'modules/appService.bicep' = {
     imageTag: imageTag
     tags: tags
     slotName: slotName
+    userAssignedIdentityId: rulesChatIdentity.id
   }
   dependsOn: [
     containerRegistryModule
@@ -236,3 +329,22 @@ output slotName string = appServiceModule.outputs.slotName
 
 @description('Deployment slot hostname (if created)')
 output slotHostName string = appServiceModule.outputs.slotHostName
+
+@description('Client ID of the Rules Chat managed identity')
+output rulesChatIdentityClientId string = rulesChatIdentity.properties.clientId
+
+// Built from the names, so slot deploys report the same values without touching the shared resources.
+@description('Rules Chat SQL server hostname')
+output rulesChatSqlServerFqdn string = '${rulesChatSqlServerName}${az.environment().suffixes.sqlServerHostname}'
+
+@description('Rules Chat database name')
+output rulesChatDatabaseName string = rulesChatDatabaseName
+
+@description('Rules Chat OpenAI-compatible model endpoint')
+output rulesChatAiEndpoint string = 'https://${rulesChatFoundryName}.openai.azure.com/openai/v1'
+
+@description('Rules Chat chat model deployment name')
+output rulesChatChatModel string = rulesChatChatModel.name
+
+@description('Rules Chat embedding model deployment name')
+output rulesChatEmbeddingModel string = rulesChatEmbeddingModel.name

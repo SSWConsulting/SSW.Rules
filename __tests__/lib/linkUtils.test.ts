@@ -1,4 +1,4 @@
-import { isExternalSSWSite, isExternalLink } from "@/lib/linkUtils";
+import { isExternalLink, isExternalSSWSite } from "@/lib/linkUtils";
 
 describe("isExternalSSWSite", () => {
   it("handles handles main site links", () => {

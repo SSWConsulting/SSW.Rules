@@ -59,6 +59,7 @@ query topCategoryWithIndexQuery($first: Float, $after: String) {
           }
           index {
             category {
+              __typename
               ... on CategoryCategory {
                 title
                 _sys {
@@ -93,6 +94,7 @@ query mainCategoryQuery {
               category {
                 ... on CategoryCategory {
                   title
+                  isArchived
                   _sys {
                     filename
                   }
@@ -114,6 +116,8 @@ query categoryWithRulesQuery($relativePath: String!) {
       body
       uri
       seoDescription
+      isArchived
+      archivedreason
       index {
         rule {
           ... on Rule {
@@ -314,6 +318,7 @@ query ruleData($relativePath: String!) {
       authors {
         title
         url
+        img
       }
       categories {
         category {
@@ -369,6 +374,7 @@ query ruleDataBasic($relativePath: String!) {
       authors {
         title
         url
+        img
       }
       categories {
         category {

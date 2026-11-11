@@ -160,7 +160,7 @@ export default function UserDropdown() {
         <button
           ref={buttonRef}
           onClick={handleOpen}
-          className="flex items-center gap-2 rounded-full border border-gray-200 bg-white shadow-sm hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+          className="flex items-center gap-2 rounded-full border border-gray-200 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
           aria-haspopup="menu"
           aria-expanded={open}
         >

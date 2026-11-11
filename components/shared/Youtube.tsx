@@ -8,6 +8,25 @@ export function extractYoutubeId(input?: string | null): string | null {
   return match ? match[1] : null;
 }
 
+function parseYoutubeTime(raw: string): number | null {
+  const match = raw.toLowerCase().match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/);
+  if (!match || (!match[1] && !match[2] && !match[3])) return null;
+  return Number(match[1] ?? 0) * 3600 + Number(match[2] ?? 0) * 60 + Number(match[3] ?? 0);
+}
+
+/** Reads a start time (seconds) from `t`, `start` or `time_continue` in the query or fragment. Returns null when absent or not > 0. */
+export function extractYoutubeStart(url: string): number | null {
+  const match = url.match(/[?&#](?:t|start|time_continue)=([^&#?]*)/);
+  if (!match) return null;
+  const seconds = parseYoutubeTime(match[1]);
+  return seconds !== null && seconds > 0 ? seconds : null;
+}
+
+export function buildYoutubeEmbedUrl(videoId: string, start: number | null): string {
+  const base = `https://www.youtube.com/embed/${videoId}`;
+  return start ? `${base}?start=${start}` : base;
+}
+
 export function YouTubePlayer({ url = "", description = "" }: { url?: string; description?: string }) {
   const videoId = extractYoutubeId(url);
 
@@ -23,7 +42,7 @@ export function YouTubePlayer({ url = "", description = "" }: { url?: string; de
     <div className="my-4 space-y-2">
       <div className="relative w-full aspect-video">
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
+          src={buildYoutubeEmbedUrl(videoId, extractYoutubeStart(url))}
           title={description || "YouTube video"}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -56,7 +75,7 @@ export function YouTubeShorts({ url = "", description = "" }: { url?: string; de
     <div className="my-0 rounded-xs">
       <div className={`relative w-full ${isShort ? "max-w-md mx-auto aspect-9/16" : "aspect-video"}`}>
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
+          src={buildYoutubeEmbedUrl(videoId, extractYoutubeStart(url))}
           title={description || (isShort ? "YouTube Shorts video" : "YouTube video")}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen

@@ -1,10 +1,10 @@
 import React from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Section } from "@/components/layout/section";
+import { pageMetadata } from "@/lib/pageMetadata";
 import { OrphanedRulesData } from "@/models/OrphanedRule";
 import { Rule } from "@/models/Rule";
 import orphanedRulesData from "@/orphaned_rules.json";
-import { siteUrl } from "@/site-config";
 import client from "@/tina/__generated__/client";
 import OrphanedClientPage from "./client-page";
 
@@ -54,11 +54,5 @@ export default async function OrphanedPage() {
 }
 
 export async function generateMetadata() {
-  return {
-    title: "Orphaned Rules | SSW Rules",
-    description: "Rules that have no parent category",
-    alternates: {
-      canonical: `${siteUrl}/orphaned`,
-    },
-  };
+  return pageMetadata({ title: "Orphaned Rules | SSW Rules", description: "Rules that have no parent category", path: "orphaned" });
 }

@@ -16,28 +16,36 @@ function renderFigureText(text: string): React.ReactNode {
   });
 }
 
-export function getPrefix(prefix?: FigurePrefix): string {
+function getPrefixLabel(prefix?: FigurePrefix): string {
   switch (prefix) {
     case "bad":
-      return "❌ Figure: Bad example - ";
+      return "❌ Figure: Bad example";
     case "ok":
-      return "🙂 Figure: OK example - ";
+      return "🙂 Figure: OK example";
     case "good":
-      return "✅ Figure: Good example - ";
+      return "✅ Figure: Good example";
     case "none":
     default:
-      return "Figure: ";
+      return "Figure:";
   }
+}
+
+export function getPrefix(prefix?: FigurePrefix, hasText = true): string {
+  const label = getPrefixLabel(prefix);
+  if (!hasText) return label;
+  return prefix === "none" || !prefix ? `${label} ` : `${label} - `;
 }
 
 export function Figure({ prefix = "none", text, className }: { prefix?: FigurePrefix; text?: string; className?: string }) {
   const trimmed = text?.trim();
-  if (!trimmed) return null;
-  const prefixText = getPrefix(prefix);
+  const hasText = Boolean(trimmed);
+  // Nothing to show when there is neither an example type nor caption text
+  if (!hasText && (prefix === "none" || !prefix)) return null;
+  const prefixText = getPrefix(prefix, hasText);
   return (
     <p className={`font-bold mt-1 ${className ?? ""}`.trim()}>
       {prefixText}
-      {renderFigureText(trimmed)}
+      {hasText ? renderFigureText(trimmed as string) : null}
     </p>
   );
 }

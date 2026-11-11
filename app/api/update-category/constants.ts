@@ -15,6 +15,7 @@ query CategoryFull($relativePath: String!) {
         guid
         consulting
         experts
+        seoDescription
         redirects
         body
         created
@@ -47,6 +48,7 @@ query CategoryFullNoIndex($relativePath: String!) {
         guid
         consulting
         experts
+        seoDescription
         redirects
         body
         created

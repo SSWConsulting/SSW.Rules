@@ -300,7 +300,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: .nvmrc
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -309,6 +309,10 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # Every rule needs an existing category: fails in seconds, naming each rule, instead of an opaque /archived prerender error deep into the Docker build
+      - name: Validate rule categories
+        run: pnpm run validate:rule-categories content
 
       - name: Generate people-latest-rules.json
         env:

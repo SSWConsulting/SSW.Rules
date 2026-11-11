@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Section } from "@/components/layout/section";
-import { siteUrl } from "@/site-config";
+import { pageMetadata } from "@/lib/pageMetadata";
 import UserRulesClientPage from "./client-page";
 
 export const revalidate = 300;
@@ -16,10 +16,5 @@ export default async function UserRulesPage() {
 }
 
 export async function generateMetadata() {
-  return {
-    title: "Profile | SSW.Rules",
-    alternates: {
-      canonical: `${siteUrl}/user`,
-    },
-  };
+  return pageMetadata({ title: "Profile | SSW.Rules", path: "user" });
 }

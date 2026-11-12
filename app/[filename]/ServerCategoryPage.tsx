@@ -11,6 +11,7 @@ import { CategoryEdit } from "@/components/CategoryEdit";
 import RuleList from "@/components/rule-list/rule-list";
 import MarkdownComponentMapping from "@/components/tina-markdown/markdown-component-mapping";
 import { DEFAULT_RULE_LIST_URL_STATE, parseRuleListSearch, RuleListUrlState, resolvePerPage, toPerPageState, toRuleListSearch } from "@/lib/ruleListUrlState";
+import { withTinaImageSrc } from "@/lib/tinaAssets";
 
 const subscribeToNothing = () => () => {};
 
@@ -82,7 +83,7 @@ export default function ServerCategoryPage({ category, path }: ServerCategoryPag
           </div>
 
           <div className="text-md rule-content" data-tina-field={tinaField(category, "body")}>
-            <TinaMarkdown content={category?.body} components={MarkdownComponentMapping} />
+            <TinaMarkdown content={withTinaImageSrc(category?.body)} components={MarkdownComponentMapping} />
           </div>
 
           <RuleList

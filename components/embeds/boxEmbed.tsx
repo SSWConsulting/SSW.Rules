@@ -4,6 +4,7 @@ import ReactCountryFlag from "react-country-flag";
 import { FaLightbulb } from "react-icons/fa6";
 import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import { withTinaImageSrc } from "@/lib/tinaAssets";
 import { withBasePath } from "@/lib/withBasePath";
 import { toolbarFields } from "@/tina/collection/shared/toolbarFields";
 import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
@@ -125,7 +126,10 @@ export function BoxEmbed(props: any) {
               [&_img]:max-w-full [&_img]:h-auto
               [&_p:last-child]:mb-0"
           >
-            <TinaMarkdown content={data.body} components={variant === "greybox" ? getGreyboxMarkdownComponents() : MarkdownComponentMapping} />
+            <TinaMarkdown
+              content={withTinaImageSrc(data.body)}
+              components={variant === "greybox" ? getGreyboxMarkdownComponents() : MarkdownComponentMapping}
+            />
           </div>
         </div>
       </div>

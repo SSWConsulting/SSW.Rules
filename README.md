@@ -122,6 +122,7 @@ This means if your PR requires a new `tina-lock.json` (e.g. you added or changed
 - **`validate-rule-categories.js`**  
   Fails when a non-archived rule has no category, or when a rule's `categories` frontmatter points at a category file that doesn't exist (e.g. after a category was moved), naming every offending rule.  
   Runs in `prepare-content.js` and in the build workflow before the Docker build, so the build fails in seconds instead of as a `/archived` prerender error.  
+  When the check passes, it also writes `rule-folders.json`, the rule list that `generateStaticParams` reads.  
   Run it manually with `pnpm validate:rule-categories`, which uses `LOCAL_CONTENT_RELATIVE_PATH`, or pass the content repo path as an argument.
 
 #### In the Content Repository

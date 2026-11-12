@@ -81,6 +81,9 @@ param rulesChatSqlAdminName string = 'SSW.Rules deployment pipeline'
 @description('Name of the user-assigned managed identity the site uses for the Rules Chat database and models')
 param rulesChatIdentityName string
 
+@description('Name of the user-assigned managed identity the Rules Chat index job runs as')
+param rulesChatIndexJobIdentityName string
+
 @description('Name of the Rules Chat SQL logical server (globally unique)')
 param rulesChatSqlServerName string
 
@@ -217,6 +220,16 @@ resource rulesChatIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@202
 // PR branch must not be able to change what every other PR and staging use.
 var deploysSharedRulesChat = empty(slotName)
 
+// The index job has its own identity, so the internet-facing site never holds the job's write access to the index or
+// its registry access.
+resource rulesChatIndexJobIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (deploysSharedRulesChat) {
+  name: rulesChatIndexJobIdentityName
+  location: location
+  tags: union(tags, {
+    environment: environment
+  })
+}
+
 module rulesChatSqlModule 'modules/rulesChatSql.bicep' = if (deploysSharedRulesChat) {
   name: 'rulesChatSql-${environment}'
   params: {
@@ -239,19 +252,22 @@ module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = if (deploysShar
     environment: environment
     chatModel: rulesChatChatModel
     embeddingModel: rulesChatEmbeddingModel
-    callerPrincipalId: rulesChatIdentity.properties.principalId
+    callerPrincipalIds: [
+      rulesChatIdentity.properties.principalId
+      rulesChatIndexJobIdentity!.properties.principalId
+    ]
     pipelinePrincipalId: servicePrincipalObjectId
     tags: tags
   }
 }
 
-// The job pulls its image from ACR as the Rules Chat identity.
-module acrPullRulesChatIdentity 'modules/acrRoleAssignment.bicep' = if (deploysSharedRulesChat) {
-  name: 'acr-pull-rules-chat-${environment}'
+// The job pulls its image from ACR as its own identity.
+module acrPullRulesChatIndexJobIdentity 'modules/acrRoleAssignment.bicep' = if (deploysSharedRulesChat) {
+  name: 'acr-pull-rules-chat-index-${environment}'
   params: {
     containerRegistryName: containerRegistryName
     roleDefinitionId: acrPullRoleId
-    principalId: rulesChatIdentity.properties.principalId
+    principalId: rulesChatIndexJobIdentity!.properties.principalId
   }
   dependsOn: [
     containerRegistryModule
@@ -269,8 +285,8 @@ module rulesChatIndexJobModule 'modules/rulesChatIndexJob.bicep' = if (deploysSh
     containerRegistryLoginServer: containerRegistryModule.outputs.loginServer
     // Pushed by the deploy-infrastructure workflow before this template runs.
     image: '${containerRegistryModule.outputs.loginServer}/rules-chat-index:${rulesChatIndexImageTag}'
-    identityId: rulesChatIdentity.id
-    identityClientId: rulesChatIdentity.properties.clientId
+    identityId: rulesChatIndexJobIdentity!.id
+    identityClientId: rulesChatIndexJobIdentity!.properties.clientId
     sqlServerFqdn: '${rulesChatSqlServerName}${az.environment().suffixes.sqlServerHostname}'
     databaseName: rulesChatDatabaseName
     aiEndpoint: 'https://${rulesChatFoundryName}.openai.azure.com/openai/v1'
@@ -281,7 +297,7 @@ module rulesChatIndexJobModule 'modules/rulesChatIndexJob.bicep' = if (deploysSh
   }
   dependsOn: [
     logAnalyticsModule
-    acrPullRulesChatIdentity
+    acrPullRulesChatIndexJobIdentity
   ]
 }
 
@@ -387,6 +403,9 @@ output slotHostName string = appServiceModule.outputs.slotHostName
 
 @description('Client ID of the Rules Chat managed identity')
 output rulesChatIdentityClientId string = rulesChatIdentity.properties.clientId
+
+@description('Client ID of the Rules Chat index job\'s managed identity (empty for slot deploys, which leave the job alone)')
+output rulesChatIndexJobIdentityClientId string = deploysSharedRulesChat ? rulesChatIndexJobIdentity!.properties.clientId : ''
 
 // Built from the names, so slot deploys report the same values without touching the shared resources.
 @description('Rules Chat SQL server hostname')

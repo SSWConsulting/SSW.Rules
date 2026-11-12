@@ -19,8 +19,8 @@ The Rulekeeper needs three more resources in each environment, deployed with eve
 
 Nothing uses keys or passwords:
 
-- **SQL** accepts Microsoft Entra sign-in only. Its administrator is the deployment pipeline's service principal, the same one GitHub Actions already signs in to Azure with, so every deployment can apply schema changes and grant the site access without a person running scripts.
-- **Foundry** has API keys turned off, and the managed identity has the Cognitive Services OpenAI User role on it.
+- **SQL** accepts Microsoft Entra sign-in only. Its administrator is the deployment pipeline's service principal, the same one GitHub Actions already signs in to Azure with, so every deployment can apply schema changes and grant the site and the index job access without a person running scripts.
+- **Foundry** has API keys turned off. The site's identity and the index job's identity (see [Keeping the index up to date](#keeping-the-index-up-to-date)) have the Cognitive Services OpenAI User role on it.
 - **PR slots** share staging's database and models through the same identity. Every PR slot gets a new system-assigned identity, so access can't be granted to those. A PR deploy only attaches the identity; it never changes the shared database or models, so PR branches can't change what staging uses.
 
 ### Before the first deployment
@@ -30,7 +30,16 @@ The subscription needs, once:
 - **Providers.** `Microsoft.Sql`, `Microsoft.CognitiveServices`, `Microsoft.ManagedIdentity` and `Microsoft.App` are registered.
 - **Quota.** There is Global Standard quota in Australia East for both models: 100K tokens per minute of `gpt-6-luna` and 150K of `text-embedding-3-large`. Check with `az cognitiveservices usage list -l australiaeast -o table`.
 
-The pipeline also gives the site access to the database, together with the database schema. It creates the identity's database user with `CREATE USER … WITH SID = …, TYPE = E`, where the SID comes from the identity's client ID (the `rulesChatIdentityClientId` output). That needs no directory lookup, so the SQL server doesn't need Microsoft Graph permissions or the Directory Readers role. The catch is that SQL doesn't check the ID: a wrong client ID creates the user without an error, and only shows up later as a failed sign-in from the site.
+The pipeline also gives the site and the index job access to the database, together with the database schema. Nobody runs SQL by hand. `src/RulesChat/RulesChat.Database` creates each identity's database user with `CREATE USER … WITH SID = …, TYPE = E`, where the SID comes from the identity's client ID (the `rulesChatIdentityClientId` and `rulesChatIndexJobIdentityClientId` outputs). That needs no directory lookup, so the SQL server doesn't need Microsoft Graph permissions or the Directory Readers role. The catch is that SQL doesn't check the ID: a wrong client ID creates the user without an error, and only shows up later as a failed sign-in.
+
+Each identity gets only the access it needs:
+
+| Identity | Database | Foundry | Container registry |
+|---|---|---|---|
+| Site, `id-sswrules-chat-{env}` | `db_datareader`, plus `INSERT` and `UPDATE` on `ChatUsage` to record questions | Cognitive Services OpenAI User | None (the App Service pulls its image with its system-assigned identity) |
+| Index job, `id-sswrules-chat-index-{env}` | `SELECT`, `INSERT` and `DELETE` on `IndexedRules` and `RuleChunks` only, so it can't read the GitHub user IDs in `ChatUsage` | Cognitive Services OpenAI User | AcrPull |
+
+The site faces the internet, so it can't change the index. The pipeline grants these on every deploy, after the migrations. A new table needs its grants added to `DatabaseAccess.cs`.
 
 ### Keeping the index up to date
 
@@ -38,8 +47,9 @@ The pipeline also gives the site access to the database, together with the datab
 |---|---|---|
 | Container Apps environment | `cae-sswrules-chat-{env}` | Hosts the index job; logs go to the environment's Log Analytics workspace |
 | Container Apps job | `caj-sswrules-chat-index-{env}` | Runs `scripts/rules-chat/job`: fetches SSW.Rules.Content and embeds the new and changed rules |
+| User-assigned managed identity | `id-sswrules-chat-index-{env}` | The identity the job runs as and pulls its image with |
 
-The job runs as the Rules Chat identity and pulls its image from the environment's registry. Each staging and production deploy builds and pushes the image under a new tag (`rules-chat-index:{staging|production}-<commit>`) before deploying the job, so a run never uses an older image cached under a reused tag.
+The job runs as its own identity, not the site's, and pulls its image from the environment's registry. Each staging and production deploy builds and pushes the image under a new tag (`rules-chat-index:{staging|production}-<commit>`) before deploying the job, so a run never uses an older image cached under a reused tag.
 
 Only the workflow builds that image. A manual `deploy.ps1` run keeps the image the job runs now, unless you pass the tag of an image you pushed with `-RulesChatIndexImageTag`. Either way, the script stops before the Bicep deployment if the registry doesn't have that tag.
 

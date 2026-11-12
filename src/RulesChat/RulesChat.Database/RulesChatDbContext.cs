@@ -3,8 +3,8 @@ using RulesChat.Database.Entities;
 
 namespace RulesChat.Database;
 
-// Owns The Rulekeeper's schema. The site (Node) reads and writes these tables with plain SQL, so a renamed table or
-// column here must be renamed in scripts/rules-chat and lib/rulesChat too.
+// Owns The Rulekeeper's schema. The site and the index script (Node) read and write these tables with plain SQL, so a
+// renamed table or column here must be renamed in scripts/rules-chat, lib/rulesChat and the grants in DatabaseAccess too.
 public sealed class RulesChatDbContext(DbContextOptions<RulesChatDbContext> options) : DbContext(options)
 {
     public DbSet<IndexedRule> IndexedRules => Set<IndexedRule>();

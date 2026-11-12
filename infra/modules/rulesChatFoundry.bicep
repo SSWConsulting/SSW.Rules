@@ -16,8 +16,8 @@ param chatModel object
 @description('Embedding model deployment')
 param embeddingModel object
 
-@description('Principal ID of the managed identity that calls the models')
-param callerPrincipalId string
+@description('Principal IDs of the managed identities that call the models')
+param callerPrincipalIds array
 
 @description('Optional: object ID of the deployment pipeline\'s service principal, which embeds the rules when indexing')
 param pipelinePrincipalId string = ''
@@ -100,12 +100,14 @@ resource pipelineRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = if 
   }
 }
 
-resource callerRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(foundry.id, callerPrincipalId, cognitiveServicesOpenAIUserRoleId)
-  scope: foundry
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cognitiveServicesOpenAIUserRoleId)
-    principalId: callerPrincipalId
-    principalType: 'ServicePrincipal'
+resource callerRoles 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for callerPrincipalId in callerPrincipalIds: {
+    name: guid(foundry.id, callerPrincipalId, cognitiveServicesOpenAIUserRoleId)
+    scope: foundry
+    properties: {
+      roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cognitiveServicesOpenAIUserRoleId)
+      principalId: callerPrincipalId
+      principalType: 'ServicePrincipal'
+    }
   }
-}
+]

@@ -4,8 +4,10 @@ import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 
 // These loaders return null only when the record does not exist. Every other Tina error is retried and then
-// thrown: the build then retries or fails the page, and at run time Next keeps serving the previous version.
-// A fallback rendered after a throttled request would be cached as NOT FOUND until the next deploy.
+// thrown, and Next caches nothing for that render. The build then fails (staticGenerationRetryCount allows one
+// attempt). At run time a background revalidation keeps the stale page, and a render with no usable cached page
+// (for example after revalidatePath) returns a 500. A fallback rendered after a throttled request would be cached
+// as NOT FOUND until the next deploy.
 
 // TinaCloud returns throttling as a GraphQL error with HTTP 200. Next's data cache stores any 200 fetch response
 // during a build and replays it for the same request body, so one throttled response would fail every retry and
@@ -117,8 +119,8 @@ export const getRuleData = cache(async (filename: string) => {
     fullError = error;
   }
 
-  // "Unable to find record" from ruleData means the rule or one of its related rules is missing.
-  // ruleDataBasic does not resolve related rules, so it tells the two cases apart.
+  // "Unable to find record" from ruleData means the rule, one of its related rules or one of its categories is missing.
+  // ruleDataBasic does not resolve related rules, so it separates a missing related rule from the other two cases.
   let basic;
   try {
     basic = await withTinaRetry(`ruleDataBasic ${relativePath}`, () => client.queries.ruleDataBasic({ relativePath }, tinaFetch));

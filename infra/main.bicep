@@ -256,7 +256,6 @@ module rulesChatFoundryModule 'modules/rulesChatFoundry.bicep' = if (deploysShar
       rulesChatIdentity.properties.principalId
       rulesChatIndexJobIdentity!.properties.principalId
     ]
-    pipelinePrincipalId: servicePrincipalObjectId
     tags: tags
   }
 }

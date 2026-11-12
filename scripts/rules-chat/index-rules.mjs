@@ -17,6 +17,7 @@ import { DefaultAzureCredential } from "@azure/identity";
 import matter from "gray-matter";
 import sql from "mssql";
 import { chunkRule, toPlainText } from "./chunking.mjs";
+import { assertIndexLockHeld, INDEX_LOCK } from "./lock.mjs";
 import { connect, loadEnv, requireEnv, siteRoot } from "./sql.mjs";
 
 loadEnv();
@@ -189,9 +190,10 @@ async function main() {
     }
     const lock = await lockConnection
       .request()
+      .input("resource", sql.NVarChar(255), INDEX_LOCK)
       .input("timeout", sql.Int, LOCK_WAIT_MS)
       .output("result", sql.Int)
-      .query("EXEC @result = sp_getapplock @Resource = 'rules-chat-index', @LockMode = 'Exclusive', @LockOwner = 'Session', @LockTimeout = @timeout");
+      .query("EXEC @result = sp_getapplock @Resource = @resource, @LockMode = 'Exclusive', @LockOwner = 'Session', @LockTimeout = @timeout");
     // A long run, such as a first full index or a re-embed, can outlast the wait. That isn't a failure, so this run logs
     // neither marker and leaves the rules to the run that holds the lock. The staleness alert catches a lock that never frees.
     // sp_getapplock returns -1 on a timeout. Other negative results (cancelled, deadlock, bad call) are real failures.
@@ -221,6 +223,7 @@ async function main() {
         `This run would remove ${removed.length} of the ${indexed.size} indexed rules. If that's intended, run again with --allow-removals (in the Index Rules workflow, tick "Allow removals").`
       );
     }
+    await assertIndexLockHeld(lockConnection, "removing rules");
     for (const uri of removed) {
       await pool
         .request()
@@ -251,6 +254,8 @@ async function main() {
     const totals = (await pool.request().query("SELECT (SELECT COUNT(*) FROM dbo.IndexedRules) AS Rules, (SELECT COUNT(*) FROM dbo.RuleChunks) AS Chunks"))
       .recordset[0];
     console.log(`Index now holds ${totals.Rules} rules in ${totals.Chunks} chunks`);
+    // A run that lost the lock part way through may have overlapped another run, so it doesn't report success.
+    await assertIndexLockHeld(lockConnection, "reporting success");
     // The failure and staleness alerts in infra/modules/rulesChatIndexJob.bicep search the job's logs for these markers.
     console.log("RULES_CHAT_INDEX_SUCCEEDED");
   } finally {

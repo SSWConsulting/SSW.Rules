@@ -195,6 +195,8 @@ jobs:
           ConnectionStrings__RulesChat: "Server=tcp:${{ steps.deploy.outputs.rulesChatSqlServerFqdn }},1433;Database=${{ steps.deploy.outputs.rulesChatDatabaseName }};Authentication=Active Directory Default;Encrypt=True"
           RULES_CHAT_SITE_IDENTITY_NAME: ${{ steps.deploy.outputs.rulesChatIdentityName }}
           RULES_CHAT_SITE_IDENTITY_CLIENT_ID: ${{ steps.deploy.outputs.rulesChatIdentityClientId }}
+          RULES_CHAT_INDEX_JOB_IDENTITY_NAME: ${{ steps.deploy.outputs.rulesChatIndexJobIdentityName }}
+          RULES_CHAT_INDEX_JOB_IDENTITY_CLIENT_ID: ${{ steps.deploy.outputs.rulesChatIndexJobIdentityClientId }}
         run: |
           # The SQL firewall only admits Azure services. Open it to this runner for the length of this step.
           RULE="github-actions-${{ github.run_id }}-${{ github.run_attempt }}"

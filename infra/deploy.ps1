@@ -17,6 +17,7 @@
     - aif-{project}-chat-{env}  (Microsoft Foundry resource with the chat and embedding models)
     - cae-{project}-chat-{env}  (Container Apps environment)
     - caj-{project}-chat-index-{env} (Container Apps job that indexes the rules)
+    - id-{project}-chat-index-{env}  (User-assigned managed identity the index job runs as)
 
     For staging: Uses existing shared App Service Plan (plan-ssw-shared-dev-linux)
     For production: Creates a dedicated App Service Plan
@@ -131,6 +132,7 @@ $RulesChatSqlServerName = "sql-$ProjectName-chat-$Environment"
 $RulesChatFoundryName = "aif-$ProjectName-chat-$Environment"
 $RulesChatContainerAppsEnvironmentName = "cae-$ProjectName-chat-$Environment"
 $RulesChatIndexJobName = "caj-$ProjectName-chat-index-$Environment"
+$RulesChatIndexJobIdentityName = "id-$ProjectName-chat-index-$Environment"
 
 # App Service Plan - different per environment
 if ($Environment -eq 'staging') {
@@ -257,7 +259,7 @@ Write-Host @"
   App Service Plan:   $AppServicePlanName (in $AppServicePlanResourceGroup)
   Deployment Slot:    $slotDisplay
   Service Principal:  $spDisplay
-  Rules Chat:         $RulesChatSqlServerName, $RulesChatFoundryName, $RulesChatIdentityName
+  Rules Chat:         $RulesChatSqlServerName, $RulesChatFoundryName, $RulesChatIdentityName, $RulesChatIndexJobIdentityName
 ================================================================================
 
 "@ -ForegroundColor White
@@ -455,6 +457,7 @@ $azArgs += '--parameters', "rulesChatSqlServerName=$RulesChatSqlServerName"
 $azArgs += '--parameters', "rulesChatFoundryName=$RulesChatFoundryName"
 $azArgs += '--parameters', "rulesChatContainerAppsEnvironmentName=$RulesChatContainerAppsEnvironmentName"
 $azArgs += '--parameters', "rulesChatIndexJobName=$RulesChatIndexJobName"
+$azArgs += '--parameters', "rulesChatIndexJobIdentityName=$RulesChatIndexJobIdentityName"
 $azArgs += '--parameters', "rulesChatContentBranch=$RulesChatContentBranch"
 if ($RulesChatIndexImageTag) {
     $azArgs += '--parameters', "rulesChatIndexImageTag=$RulesChatIndexImageTag"
@@ -501,6 +504,7 @@ if (-not $WhatIf) {
   Rules Chat SQL Server:  $($outputs.rulesChatSqlServerFqdn.value) (database $($outputs.rulesChatDatabaseName.value))
   Rules Chat Models:      $($outputs.rulesChatAiEndpoint.value) ($($outputs.rulesChatChatModel.value), $($outputs.rulesChatEmbeddingModel.value))
   Rules Chat Identity:    $RulesChatIdentityName (client ID $($outputs.rulesChatIdentityClientId.value))
+  Index Job Identity:     $RulesChatIndexJobIdentityName (client ID $($outputs.rulesChatIndexJobIdentityClientId.value))
 "@
 
     Write-Host @"
@@ -531,6 +535,8 @@ $slotInfo$rulesChatInfo
         "rulesChatDatabaseName=$($outputs.rulesChatDatabaseName.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "rulesChatIdentityName=$RulesChatIdentityName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "rulesChatIdentityClientId=$($outputs.rulesChatIdentityClientId.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatIndexJobIdentityName=$RulesChatIndexJobIdentityName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "rulesChatIndexJobIdentityClientId=$($outputs.rulesChatIndexJobIdentityClientId.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "rulesChatAiEndpoint=$($outputs.rulesChatAiEndpoint.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "rulesChatChatModel=$($outputs.rulesChatChatModel.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "rulesChatEmbeddingModel=$($outputs.rulesChatEmbeddingModel.value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append

@@ -169,10 +169,13 @@ jobs:
           echo "  Commit: $COMMIT_HASH"
 
       - name: Log build information
+        env:
+          SOURCE_BRANCH: ${{ inputs.source_branch || 'Not specified' }}
+          TINA_BRANCH: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH || 'Default' }}
         run: |
           echo "Starting NO-CACHE build process"
-          echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
-          echo "Tina branch: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH || 'Default' }}"
+          echo "Source branch: $SOURCE_BRANCH"
+          echo "Tina branch: $TINA_BRANCH"
           echo "Environment tag: ${{ inputs.tag }}"
           echo "Registry: ${{ inputs.acr_name }}"
           echo "Image: ${{ inputs.image_name }}"
@@ -240,8 +243,11 @@ jobs:
 
       - name: Resolve SSW.Rules.Content branch
         id: resolve_content_branch
+        # The branch comes from the caller, so the script reads it from the environment instead of having it pasted into
+        # its source.
+        env:
+          DESIRED_BRANCH: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
         run: |
-          DESIRED_BRANCH="${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}"
           echo "Checking if branch '$DESIRED_BRANCH' exists in SSW.Rules.Content..."
           if git ls-remote --exit-code --heads "https://github.com/SSWConsulting/SSW.Rules.Content.git" "$DESIRED_BRANCH" > /dev/null 2>&1; then
             echo "Branch '$DESIRED_BRANCH' found"
@@ -606,12 +612,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Image info
+        env:
+          SOURCE_BRANCH: ${{ inputs.source_branch || 'Not specified' }}
+          CONTENT_BRANCH: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}
         run: |
           echo "NO-CACHE Build completed successfully!"
           echo "Image tag   : ${{ steps.meta.outputs.tags }}"
           echo "Image digest: ${{ steps.build.outputs.digest }}"
-          echo "Source branch: ${{ inputs.source_branch || 'Not specified' }}"
-          echo "Content branch: ${{ inputs.tina_branch || vars.NEXT_PUBLIC_TINA_BRANCH }}"
+          echo "Source branch: $SOURCE_BRANCH"
+          echo "Content branch: $CONTENT_BRANCH"
           echo "Build Info:"
           echo "  Build Date: ${{ env.BUILD_DATE }}"
           echo "  Version: ${{ env.VERSION_DEPLOYED }}"

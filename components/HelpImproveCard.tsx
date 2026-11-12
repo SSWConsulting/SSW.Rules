@@ -3,6 +3,7 @@ import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { Card } from "@/components/ui/card";
+import { withTinaImageSrc } from "@/lib/tinaAssets";
 
 interface HelpImproveCardProps {
   data?: any;
@@ -21,7 +22,7 @@ export default function HelpImproveCard({ data }: HelpImproveCardProps) {
       <blockquote data-tina-field={tinaField(data, "quote")}>
         <RiDoubleQuotesL className="inline" />
         <TinaMarkdown
-          content={data?.quote || fallbackQuote}
+          content={withTinaImageSrc(data?.quote || fallbackQuote)}
           components={{
             p: (props?: { children: React.ReactNode }) => <span>{props?.children}</span>,
             a: (props?: { url: string; children: React.ReactNode }) => (

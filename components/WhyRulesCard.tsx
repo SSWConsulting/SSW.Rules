@@ -2,6 +2,7 @@ import React from "react";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { Card } from "@/components/ui/card";
+import { withTinaImageSrc } from "@/lib/tinaAssets";
 
 interface WhyRulesCardProps {
   data?: any;
@@ -13,7 +14,7 @@ export default function WhyRulesCard({ data }: WhyRulesCardProps) {
       <div data-tina-field={tinaField(data, "body")}>
         {data?.body ? (
           <TinaMarkdown
-            content={data.body}
+            content={withTinaImageSrc(data.body)}
             components={{
               a: (props?: { url: string; children: React.ReactNode }) => (
                 <a className="underline" href={props?.url} target="_blank" rel="noopener noreferrer nofollow">

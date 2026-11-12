@@ -271,6 +271,11 @@ jobs:
         uses: ./.github/workflows/crawl-sitemap.yml
         with:
             sitemap_url: https://www.ssw.com.au/rules/sitemap-index-0.xml
+            # This crawl starts minutes after the build. Each page is then newer than its revalidate period, so the
+            # server answers from its cache and a request starts no render. The crawler permits 20 requests each
+            # second at most.
+            batch_size: '20'
+            delay_ms: '0'
 
     check-content-freshness:
         name: Check Content Freshness & Retrigger if Stale

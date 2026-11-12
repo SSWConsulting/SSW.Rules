@@ -7,6 +7,19 @@ on:
                 type: string
                 required: true
                 description: 'URL of the sitemap to crawl'
+            # Only a caller can set the request rate. A crawl that a person starts uses the default rate of the crawler
+            # (5 requests, then 250 ms). A request for a page that is older than its revalidate period starts a render
+            # that reads TinaCloud, and a fast crawl of such pages can cause TinaCloud throttling.
+            batch_size:
+                type: string
+                required: false
+                default: ''
+                description: 'Number of requests at the same time (SITEMAP_BATCH_SIZE). Empty: the default of the crawler.'
+            delay_ms:
+                type: string
+                required: false
+                default: ''
+                description: 'Delay between batches in milliseconds (SITEMAP_DELAY_MS). Empty: the default of the crawler.'
         outputs:
             total_pages:
                 description: 'Total number of pages crawled'
@@ -72,6 +85,9 @@ jobs:
             - name: Run sitemap crawler
               id: crawl_sitemap
               continue-on-error: true
+              env:
+                  SITEMAP_BATCH_SIZE: ${{ inputs.batch_size }}
+                  SITEMAP_DELAY_MS: ${{ inputs.delay_ms }}
               run: |
                   echo "🔍 Running sitemap crawler..."
                   echo "Sitemap URL: ${{ steps.set_url.outputs.sitemap_url }}"

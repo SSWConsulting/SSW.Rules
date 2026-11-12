@@ -56,7 +56,7 @@ Only the workflow builds that image. A manual `deploy.ps1` run keeps the image t
 It runs:
 
 - **Every hour**, on the hour. A run with no changed rules only clones the rules and compares hashes, so a new or edited rule reaches the chat within an hour.
-- **By hand**, with the **Index Rules for The Rulekeeper** workflow or the job's **Run now** in the Azure portal. The workflow can also re-embed every rule, or let a run remove more than a fifth of the index.
+- **By hand**, with the **Index Rules for The Rulekeeper** workflow or the job's **Run now** in the Azure portal. The workflow can also re-embed every rule, or let a run remove more than a fifth of the index. It waits for the run and fails if the run fails.
 
 Runs never overlap: the index script takes a database lock. A second run waits up to 30 minutes for it, fetches the content branch again, and only then reads the rules, so it never indexes older content than the first run did. A run still waiting after 30 minutes, such as during a first full index or a re-embed, indexes nothing and isn't counted as a failure. The script also stops if the tables don't exist, which means the environment hasn't been deployed yet.
 

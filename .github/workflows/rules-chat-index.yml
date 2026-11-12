@@ -1,7 +1,7 @@
 name: Index Rules for The Rulekeeper
 
-# Starts the Container Apps index job now, instead of waiting for its hourly run. Without options it embeds only the new
-# and changed rules, like the hourly run.
+# Starts the Container Apps index job now, instead of waiting for its hourly run, and waits for it to finish. Without
+# options it embeds only the new and changed rules, like the hourly run.
 on:
   workflow_dispatch:
     inputs:
@@ -30,6 +30,12 @@ jobs:
     name: Start Index Job
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    # Covers the index job's own two-hour limit (replicaTimeout in infra/modules/rulesChatIndexJob.bicep).
+    timeout-minutes: 130
+    defaults:
+      run:
+        # Naming the shell adds -o pipefail, so a failed az call in a pipeline fails the step.
+        shell: bash
     env:
       # Resource names follow infra/deploy.ps1, which names the production resources "prod".
       RESOURCE_SUFFIX: ${{ inputs.environment == 'production' && 'prod' || 'staging' }}
@@ -42,8 +48,9 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # The index script takes a database lock, so a run started while another is going waits up to 30 minutes for it to
-      # finish, then indexes any rules that changed since.
+      # finish. If it gets the lock it indexes as usual; if not, it indexes nothing and still ends Succeeded.
       - name: Start the index job
+        id: start
         env:
           RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
           REEMBED: ${{ inputs.reembed }}
@@ -67,4 +74,53 @@ jobs:
             EXECUTION=$(az rest --method post --url "https://management.azure.com$JOB_ID/start?api-version=2024-03-01" \
               --headers "Content-Type=application/json" --body "$TEMPLATE" --query name --output tsv)
           fi
+          if [ -z "$EXECUTION" ]; then
+            echo "::error::Azure didn't return the name of the started execution."
+            exit 1
+          fi
           echo "Started execution $EXECUTION${ARGS[*]:+ with ${ARGS[*]}}. Its logs are in the job's Execution history in the Azure portal."
+          echo "execution=$EXECUTION" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for the index job
+        env:
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          EXECUTION: ${{ steps.start.outputs.execution }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        run: |
+          JOB_NAME="caj-sswrules-chat-index-$RESOURCE_SUFFIX"
+
+          # The Azure CLI can't renew its token with the GitHub token it logged in with, because that token expires after a
+          # few minutes (AADSTS700024). So a long run logs in again with a new one.
+          login_again() {
+            local token
+            token=$(curl -fsS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+              "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq -r .value)
+            az login --service-principal --username "$AZURE_CLIENT_ID" --tenant "$AZURE_TENANT_ID" --federated-token "$token" --output none
+            az account set --subscription "$AZURE_SUBSCRIPTION_ID"
+          }
+
+          status() {
+            az containerapp job execution show --name "$JOB_NAME" --resource-group "$RESOURCE_GROUP" \
+              --job-execution-name "$EXECUTION" --query properties.status --output tsv
+          }
+
+          while :; do
+            if ! STATUS=$(status); then
+              echo "Reading the execution's status failed. Logging in to Azure again."
+              login_again
+              STATUS=$(status)
+            fi
+            case "$STATUS" in
+              Succeeded)
+                echo "Execution $EXECUTION succeeded."
+                break
+                ;;
+              Failed | Stopped | Degraded)
+                echo "::error::Execution $EXECUTION ended $STATUS. Its logs are in the job's Execution history in the Azure portal."
+                exit 1
+                ;;
+            esac
+            sleep 60
+          done

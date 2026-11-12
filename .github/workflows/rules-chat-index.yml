@@ -26,8 +26,8 @@ permissions:
   contents: read
 
 jobs:
-  start-index-job:
-    name: Start Index Job
+  index:
+    name: Index Rules
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     # Covers the index job's own two-hour limit (replicaTimeout in infra/modules/rulesChatIndexJob.bicep).
@@ -93,12 +93,14 @@ jobs:
 
           # The Azure CLI can't renew its token with the GitHub token it logged in with, because that token expires after a
           # few minutes (AADSTS700024). So a long run logs in again with a new one.
+          # Called from an if, where -e doesn't apply, so each command returns on failure itself.
           login_again() {
             local token
             token=$(curl -fsS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-              "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq -r .value)
-            az login --service-principal --username "$AZURE_CLIENT_ID" --tenant "$AZURE_TENANT_ID" --federated-token "$token" --output none
-            az account set --subscription "$AZURE_SUBSCRIPTION_ID"
+              "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq -er .value) || return 1
+            az login --service-principal --username "$AZURE_CLIENT_ID" --tenant "$AZURE_TENANT_ID" --federated-token "$token" \
+              --output none || return 1
+            az account set --subscription "$AZURE_SUBSCRIPTION_ID" || return 1
           }
 
           status() {
@@ -106,12 +108,21 @@ jobs:
               --job-execution-name "$EXECUTION" --query properties.status --output tsv
           }
 
+          # A failed read can be a passing ARM or network error while the run goes on, so only several in a row fail the step.
+          FAILED_READS=0
           while :; do
             if ! STATUS=$(status); then
-              echo "Reading the execution's status failed. Logging in to Azure again."
-              login_again
-              STATUS=$(status)
+              FAILED_READS=$((FAILED_READS + 1))
+              if [ "$FAILED_READS" -ge 3 ]; then
+                echo "::error::Reading the status of execution $EXECUTION failed 3 times in a row. It may still be running; check the job's Execution history in the Azure portal."
+                exit 1
+              fi
+              echo "Reading the execution's status failed ($FAILED_READS of 3). Logging in to Azure again."
+              if ! login_again; then echo "Logging in to Azure again failed."; fi
+              sleep 60
+              continue
             fi
+            FAILED_READS=0
             case "$STATUS" in
               Succeeded)
                 echo "Execution $EXECUTION succeeded."

@@ -52,13 +52,15 @@ jobs:
     # ============================================================================
     # BUILD AND PUSH CONTAINER
     # ============================================================================
+    # The build runs at the same time as the infrastructure job, so it cannot read the registry name from the outputs
+    # of that job. The acr_name value follows the naming rule in infra/deploy.ps1. The deploy job stops if the image is
+    # not in the registry that the infrastructure job reports.
     build:
         name: Build and Push Container
-        needs: infrastructure
         uses: ./.github/workflows/build-artifacts.yml
         with:
             tag: ${{ github.event.inputs.environment || 'staging' }}
-            acr_name: ${{ needs.infrastructure.outputs.acrName }}
+            acr_name: acrsswrules${{ github.event.inputs.environment == 'production' && 'prod' || github.event.inputs.environment || 'staging' }}
             image_name: ssw-rules
             tina_branch: ${{ github.event.inputs.tina_branch }}
             source_branch: ${{ github.event.inputs.branch_name }}
@@ -91,6 +93,17 @@ jobs:
         needs: [infrastructure, build]
         environment: ${{ github.event.inputs.environment || 'staging' }}
         steps:
+            - name: Check that the image is in the registry of the infrastructure
+              env:
+                  IMAGE: ${{ needs.build.outputs.image_tag }}
+                  ACR_LOGIN_SERVER: ${{ needs.infrastructure.outputs.acrLoginServer }}
+              run: |
+                  if [[ -z "$ACR_LOGIN_SERVER" || "$IMAGE" != "$ACR_LOGIN_SERVER/"* ]]; then
+                      echo "::error::The build job pushed the image '$IMAGE', but the registry of the infrastructure is '$ACR_LOGIN_SERVER'. Make the acr_name value of the build job agree with the registry name in infra/deploy.ps1."
+                      exit 1
+                  fi
+                  echo "The image $IMAGE is in the registry of the infrastructure ($ACR_LOGIN_SERVER)"
+
             - name: Use build info from build job
               id: build_info
               run: |

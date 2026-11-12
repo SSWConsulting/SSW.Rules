@@ -8,12 +8,16 @@
  * ClientFallbackPage and /archived aborts the Next.js export ~12 minutes into the Docker build,
  * without naming the rule. This check runs in seconds and names every offending rule.
  *
+ * When the check passes, it also writes the rule folder list (rule-folders.json) that the site build reads.
+ * This script is the only content preparation that the build workflow and prepare-content.js both run.
+ *
  * Usage: node scripts/validate-rule-categories.js [path-to-SSW.Rules.Content]
  * Without a path, falls back to LOCAL_CONTENT_RELATIVE_PATH from .env.local / .env.
  */
 const fs = require("node:fs");
 const path = require("node:path");
 const matter = require("gray-matter");
+const { listRuleFolders, writeRuleFolders } = require("./rule-folders");
 
 const RULES_DIR = path.join("public", "uploads", "rules");
 const CATEGORIES_DIR = "categories";
@@ -39,10 +43,9 @@ function validateRuleCategories(contentRoot) {
   const uncategorizedRules = [];
   const danglingReferences = [];
 
-  for (const folder of fs.readdirSync(path.join(contentRoot, RULES_DIR)).sort()) {
+  for (const folder of listRuleFolders(contentRoot)) {
     const ruleFile = toPosix(path.join(RULES_DIR, folder, "rule.mdx"));
     const fullPath = path.join(contentRoot, ruleFile);
-    if (!fs.existsSync(fullPath)) continue;
 
     let frontmatter;
     try {
@@ -126,6 +129,8 @@ function main() {
   const result = validateRuleCategories(contentRoot);
   if (result.uncategorizedRules.length === 0 && result.danglingReferences.length === 0) {
     console.log("✅ validate-rule-categories: every rule belongs to an existing category");
+    const { folders, outputPath } = writeRuleFolders(contentRoot);
+    console.log(`📋 validate-rule-categories: wrote ${folders.length} rule folders to ${outputPath}`);
     return;
   }
 

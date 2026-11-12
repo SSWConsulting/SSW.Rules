@@ -88,15 +88,41 @@ describe("getPool", () => {
     expect(connect).toHaveBeenCalledTimes(1);
   });
 
-  it("gives up once the database has had two minutes to resume", async () => {
+  it("gives up once the database has had two minutes to resume, starting no attempt after that", async () => {
     const { getPool } = await import("@/lib/rulesChat/db");
     connect.mockRejectedValue(timeout);
 
     const pool = getPool();
     const failed = expect(pool).rejects.toBe(timeout);
-    await jest.advanceTimersByTimeAsync(2 * 60_000 + 10_000);
+    await jest.advanceTimersByTimeAsync(3 * 60_000);
 
     await failed;
+    // One attempt every 5 seconds from 0s to 120s.
+    expect(connect).toHaveBeenCalledTimes(25);
+    expect(console.error).toHaveBeenCalledWith(expect.stringContaining("SQL connection failed after waiting 120s"));
+    expect(console.error).toHaveBeenCalledWith(expect.stringContaining("Giving up"));
+  });
+
+  it("logs that a connection timeout may be a network or firewall problem, not only a paused database", async () => {
+    const { getPool } = await import("@/lib/rulesChat/db");
+    connect.mockRejectedValueOnce(timeout).mockResolvedValueOnce(undefined);
+
+    const pool = getPool();
+    await jest.advanceTimersByTimeAsync(5_000);
+    await pool;
+
+    expect(console.warn).toHaveBeenCalledWith(expect.stringContaining("may be resuming or a network or firewall problem may block it"));
+  });
+
+  it("logs that the database is resuming when Azure SQL says so", async () => {
+    const { getPool } = await import("@/lib/rulesChat/db");
+    connect.mockRejectedValueOnce(new Error("Database 'RulesChat' on server 'x' is not currently available. 40613")).mockResolvedValueOnce(undefined);
+
+    const pool = getPool();
+    await jest.advanceTimersByTimeAsync(5_000);
+    await pool;
+
+    expect(console.warn).toHaveBeenCalledWith(expect.stringContaining("the database is resuming. Connecting again in 5s"));
   });
 });
 

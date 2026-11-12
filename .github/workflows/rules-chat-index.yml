@@ -64,16 +64,22 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # Indexes the branch the Container Apps job reads, so the two never overwrite each other with different content.
+      # There is no default branch: indexing one the job doesn't read would put the wrong content in the shared index
+      # until the job's next run changes it back.
       - name: Read the index job's content branch
         id: content_branch
         env:
           RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
         run: |
-          BRANCH=$(az containerapp job show --resource-group "$RESOURCE_GROUP" --name "caj-sswrules-chat-index-$RESOURCE_SUFFIX" \
-            --query "properties.template.containers[0].env[?name=='RULES_CONTENT_BRANCH'].value | [0]" --output tsv || true)
+          JOB_NAME="caj-sswrules-chat-index-$RESOURCE_SUFFIX"
+          if ! BRANCH=$(az containerapp job show --resource-group "$RESOURCE_GROUP" --name "$JOB_NAME" \
+            --query "properties.template.containers[0].env[?name=='RULES_CONTENT_BRANCH'].value | [0]" --output tsv); then
+            echo "::error::Couldn't read $JOB_NAME. Deploy the environment, or check the pipeline's access to the job."
+            exit 1
+          fi
           if [ -z "$BRANCH" ]; then
-            echo "::warning::Couldn't read the index job's content branch, so this run indexes main"
-            BRANCH=main
+            echo "::error::$JOB_NAME has no RULES_CONTENT_BRANCH setting. Deploy the environment to set it."
+            exit 1
           fi
           echo "Indexing SSW.Rules.Content $BRANCH"
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"

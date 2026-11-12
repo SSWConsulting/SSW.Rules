@@ -56,7 +56,7 @@ Runs never overlap: the index script takes a database lock. A second run waits u
 
 Without it, no alerts are created. Both alerts search the job's logs for markers the index script prints (`RULES_CHAT_INDEX_FAILED` and `RULES_CHAT_INDEX_SUCCEEDED`). The staleness alert also fires in the two days after a new environment's first deploy, until the job first succeeds.
 
-The job reads the content branch the site shows, resolved the way the site build resolves it: a manual deploy's `tina_branch`, else the `NEXT_PUBLIC_TINA_BRANCH` GitHub variable, else `main`. If SSW.Rules.Content has no such branch, the job reads `main`. The GitHub runner fallback reads the same branch as the job.
+The job reads the content branch the site shows, resolved the way the site build resolves it: a manual deploy's `tina_branch`, else the `NEXT_PUBLIC_TINA_BRANCH` GitHub variable, else `main`. If SSW.Rules.Content has no such branch, the job reads `main`. The GitHub runner fallback reads the same branch as the job, and fails if it can't read the job's branch.
 
 ### Looking at the data
 

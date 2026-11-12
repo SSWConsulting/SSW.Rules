@@ -1,5 +1,5 @@
-// The application lock that keeps the hourly job, a run started by hand and the GitHub runner workflow from indexing the
-// same database at once. index-rules.mjs takes it with sp_getapplock on a connection of its own.
+// The application lock that keeps the hourly job and a run started by hand from indexing the same database at once.
+// index-rules.mjs takes it with sp_getapplock on a connection of its own.
 
 export const INDEX_LOCK = "rules-chat-index";
 

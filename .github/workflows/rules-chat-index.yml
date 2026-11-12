@@ -1,8 +1,7 @@
 name: Index Rules for The Rulekeeper
 
-# Embeds every new or changed rule into The Rulekeeper's database, from a GitHub runner. A fallback for the Container
-# Apps index job (rules-chat-reindex-trigger.yml starts that one): use it to reset an index or when the job is broken.
-# Both take the same database lock, so they never run at the same time.
+# Starts the Container Apps index job now, instead of waiting for its hourly run. Without options it embeds only the new
+# and changed rules, like the hourly run.
 on:
   workflow_dispatch:
     inputs:
@@ -22,40 +21,19 @@ on:
         type: boolean
         default: false
 
-concurrency:
-  group: rules-chat-index-${{ inputs.environment }}
-  cancel-in-progress: false
-
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  index:
-    name: Index Rules
+  start-index-job:
+    name: Start Index Job
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    timeout-minutes: 120
     env:
       # Resource names follow infra/deploy.ps1, which names the production resources "prod".
       RESOURCE_SUFFIX: ${{ inputs.environment == 'production' && 'prod' || 'staging' }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.10.0
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: Azure CLI - Login
         uses: azure/login@v2
         with:
@@ -63,57 +41,30 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # Indexes the branch the Container Apps job reads, so the two never overwrite each other with different content.
-      # There is no default branch: indexing one the job doesn't read would put the wrong content in the shared index
-      # until the job's next run changes it back.
-      - name: Read the index job's content branch
-        id: content_branch
+      # The index script takes a database lock, so a run started while another is going waits up to 30 minutes for it to
+      # finish, then indexes any rules that changed since.
+      - name: Start the index job
         env:
           RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          REEMBED: ${{ inputs.reembed }}
+          ALLOW_REMOVALS: ${{ inputs.allow_removals }}
         run: |
           JOB_NAME="caj-sswrules-chat-index-$RESOURCE_SUFFIX"
-          if ! BRANCH=$(az containerapp job show --resource-group "$RESOURCE_GROUP" --name "$JOB_NAME" \
-            --query "properties.template.containers[0].env[?name=='RULES_CONTENT_BRANCH'].value | [0]" --output tsv); then
-            echo "::error::Couldn't read $JOB_NAME. Deploy the environment, or check the pipeline's access to the job."
-            exit 1
+          ARGS=()
+          if [ "$REEMBED" = "true" ]; then ARGS+=(--reembed); fi
+          if [ "$ALLOW_REMOVALS" = "true" ]; then ARGS+=(--allow-removals); fi
+
+          if [ ${#ARGS[@]} -eq 0 ]; then
+            EXECUTION=$(az containerapp job start --name "$JOB_NAME" --resource-group "$RESOURCE_GROUP" --query name --output tsv)
+          else
+            # az containerapp job start --args sends a container with only the arguments, not the job's image and settings.
+            # So this starts the run with the job's own container, plus the arguments.
+            JOB_ID=$(az containerapp job show --name "$JOB_NAME" --resource-group "$RESOURCE_GROUP" --query id --output tsv)
+            ARGS_JSON=$(printf '%s\n' "${ARGS[@]}" | jq --raw-input . | jq --slurp --compact-output .)
+            TEMPLATE=$(az containerapp job show --name "$JOB_NAME" --resource-group "$RESOURCE_GROUP" \
+              --query "properties.template.{containers: containers, initContainers: initContainers}" --output json \
+              | jq --argjson args "$ARGS_JSON" '.containers[0].args = $args')
+            EXECUTION=$(az rest --method post --url "https://management.azure.com$JOB_ID/start?api-version=2024-03-01" \
+              --headers "Content-Type=application/json" --body "$TEMPLATE" --query name --output tsv)
           fi
-          if [ -z "$BRANCH" ]; then
-            echo "::error::$JOB_NAME has no RULES_CONTENT_BRANCH setting. Deploy the environment to set it."
-            exit 1
-          fi
-          echo "Indexing SSW.Rules.Content $BRANCH"
-          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-
-      - name: Checkout SSW.Rules.Content
-        uses: actions/checkout@v4
-        with:
-          repository: SSWConsulting/SSW.Rules.Content
-          ref: ${{ steps.content_branch.outputs.branch }}
-          path: content
-          sparse-checkout: public/uploads/rules
-
-      - name: Index rules
-        env:
-          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
-          # Resolved from the scripts folder, so this is ./content.
-          LOCAL_CONTENT_RELATIVE_PATH: ../content
-          RULES_CHAT_EMBEDDING_MODEL: text-embedding-3-large
-          RULES_CHAT_EMBEDDING_DIMENSIONS: "1024"
-          RULES_CHAT_SQL_DATABASE: RulesChat
-        run: |
-          SQL_SERVER_NAME="sql-sswrules-chat-$RESOURCE_SUFFIX"
-          export RULES_CHAT_SQL_SERVER="$SQL_SERVER_NAME.database.windows.net"
-          export RULES_CHAT_AI_BASE_URL="https://aif-sswrules-chat-$RESOURCE_SUFFIX.openai.azure.com/openai/v1"
-
-          # The SQL firewall only admits Azure services. Open it to this runner for the length of this step.
-          RULE="github-actions-${{ github.run_id }}-${{ github.run_attempt }}"
-          RUNNER_IP=$(curl -fsS https://api.ipify.org)
-          az sql server firewall-rule create --resource-group "$RESOURCE_GROUP" --server "$SQL_SERVER_NAME" --name "$RULE" \
-            --start-ip-address "$RUNNER_IP" --end-ip-address "$RUNNER_IP" --output none
-          trap 'az sql server firewall-rule delete --resource-group "$RESOURCE_GROUP" --server "$SQL_SERVER_NAME" --name "$RULE" --output none' EXIT
-
-          # Signs in to SQL and Foundry as the pipeline, through the Azure CLI login above.
-          ARGS=(--refresh-content)
-          if [ "${{ inputs.reembed }}" = "true" ]; then ARGS+=(--reembed); fi
-          if [ "${{ inputs.allow_removals }}" = "true" ]; then ARGS+=(--allow-removals); fi
-          pnpm rules-chat:index "${ARGS[@]}"
+          echo "Started execution $EXECUTION${ARGS[*]:+ with ${ARGS[*]}}. Its logs are in the job's Execution history in the Azure portal."

@@ -45,7 +45,9 @@
     SSW.Rules.Content branch the Rules Chat index job reads. Default: main.
 
 .PARAMETER RulesChatIndexImageTag
-    Tag of the rules-chat-index image the index job runs. Default: the same tag as the site image.
+    Tag of the rules-chat-index image the index job runs. The tag must exist in the environment's registry.
+    Default: the tag the job runs now. The deploy-infrastructure workflow builds the image and passes its tag.
+    PR slot deploys don't change the job, so they ignore this parameter.
 
 .PARAMETER RulesChatAlertEmail
     Optional email address for index job failure and staleness alerts.
@@ -352,6 +354,28 @@ if ($Environment -eq 'staging') {
     } else {
         Write-Success "App Service Plan exists - will update if needed"
     }
+}
+
+# Only the deploy-infrastructure workflow builds and pushes the index job image, so a deploy without a tag keeps the
+# image the job runs now. PR slot deploys share staging's job and never change it.
+if (-not $SlotName) {
+    Write-Step "Checking the Rules Chat index job image..."
+    if (-not $RulesChatIndexImageTag) {
+        $currentImage = az resource show --resource-type 'Microsoft.App/jobs' --name $RulesChatIndexJobName --resource-group $ResourceGroup --query 'properties.template.containers[0].image' --output tsv 2>$null
+        if ($LASTEXITCODE -ne 0 -or $currentImage -notmatch '/rules-chat-index:(?<tag>[^:@/]+)$') {
+            Write-Error "Can't read the rules-chat-index image that '$RulesChatIndexJobName' runs: the job doesn't exist yet, or you can't read it. Pass the tag of an image in '$ContainerRegistryName' with -RulesChatIndexImageTag."
+            exit 1
+        }
+        $RulesChatIndexImageTag = $Matches.tag
+        Write-Info "No -RulesChatIndexImageTag given. Keeping the tag the job runs now: $RulesChatIndexImageTag"
+    }
+
+    az acr repository show --name $ContainerRegistryName --image "rules-chat-index:$RulesChatIndexImageTag" --output none 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Can't find rules-chat-index:$RulesChatIndexImageTag in '$ContainerRegistryName': the tag doesn't exist, or you can't read the registry. Push the image first, or pass a tag that exists with -RulesChatIndexImageTag."
+        exit 1
+    }
+    Write-Success "Index job image: rules-chat-index:$RulesChatIndexImageTag"
 }
 
 # Build deployment parameters

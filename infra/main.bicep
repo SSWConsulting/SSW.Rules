@@ -117,8 +117,8 @@ param rulesChatContainerAppsEnvironmentName string
 @description('Name of the Container Apps job that indexes the rules (32 characters at most)')
 param rulesChatIndexJobName string
 
-@description('Tag of the index job image. A tag unique to each build, so the job never runs an older image cached under the same tag.')
-param rulesChatIndexImageTag string = imageTag
+@description('Tag of the index job image, which must already be in the registry. Required unless slotName is set. A tag unique to each build, so the job never runs an older image cached under the same tag.')
+param rulesChatIndexImageTag string = ''
 
 @description('SSW.Rules.Content branch the index job reads, matching the content this environment shows')
 param rulesChatContentBranch string = 'main'

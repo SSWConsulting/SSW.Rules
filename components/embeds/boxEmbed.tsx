@@ -12,9 +12,15 @@ import { imageEmbedTemplate } from "./imageEmbed";
 import { youtubeEmbedTemplate } from "./youtubeEmbed";
 
 // Inline code inside greybox needs a white background to contrast with the gray container
-const greyboxMarkdownComponents = {
-  ...MarkdownComponentMapping,
-  code: (props: any) => <code className="bg-white py-1 px-2 rounded-sm" {...props} />,
+const GreyboxInlineCode = (props: any) => <code className="bg-white py-1 px-2 rounded-sm" {...props} />;
+
+// Built on first render, never at module load: markdown-component-mapping imports this module
+// through embeds/index, so MarkdownComponentMapping is still uninitialized while this module
+// evaluates, and reading it here fails the production build ("Cannot access ... before initialization").
+let greyboxMarkdownComponents: typeof MarkdownComponentMapping | undefined;
+const getGreyboxMarkdownComponents = () => {
+  greyboxMarkdownComponents ??= { ...MarkdownComponentMapping, code: GreyboxInlineCode };
+  return greyboxMarkdownComponents;
 };
 
 function YakShaverIcon() {
@@ -119,7 +125,7 @@ export function BoxEmbed(props: any) {
               [&_img]:max-w-full [&_img]:h-auto
               [&_p:last-child]:mb-0"
           >
-            <TinaMarkdown content={data.body} components={variant === "greybox" ? greyboxMarkdownComponents : MarkdownComponentMapping} />
+            <TinaMarkdown content={data.body} components={variant === "greybox" ? getGreyboxMarkdownComponents() : MarkdownComponentMapping} />
           </div>
         </div>
       </div>

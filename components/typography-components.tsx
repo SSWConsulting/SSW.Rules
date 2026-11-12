@@ -5,6 +5,7 @@ import { Prism } from "tinacms/dist/rich-text/prism";
 import "@/lib/prism-grammars";
 import { CustomLink } from "@/components/customLink";
 import MermaidElement from "@/components/mermaid/MermaidElement";
+import { tinaImageSrc, toTinaAssetUrl } from "@/lib/tinaAssets";
 import { toSlug } from "@/lib/utils";
 import { withBasePath } from "@/lib/withBasePath";
 
@@ -65,16 +66,10 @@ const getFilenameFromHref = (href: string): string => {
   return href.split("/").pop() || "";
 };
 
+// Tina changes the path of an image to a URL, but not the path in a link. Thus a link to a file has the stored path with each data source.
 const rewriteUploadsToAssets = (href?: string) => {
-  const TINA_CLIENT_ID = process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "";
-  const ALLOWED_EXTS = DOWNLOADABLE_EXTS;
-
-  if (!href || !TINA_CLIENT_ID || !href.startsWith("/uploads/rules/")) {
-    return href;
-  }
-  const ext = href.split(".").pop()?.toLowerCase() || "";
-  if (!ALLOWED_EXTS.has(ext)) return href;
-  return `https://assets.tina.io/${TINA_CLIENT_ID}/${href.replace(/^\/uploads\//, "")}`;
+  if (!href?.startsWith("/uploads/rules/") || !isDownloadableFile(href)) return href;
+  return toTinaAssetUrl(href);
 };
 
 export const getTypographyComponents = (enableAnchors = false) => ({
@@ -110,7 +105,7 @@ export const getTypographyComponents = (enableAnchors = false) => ({
     );
   },
   img: (props: any) => {
-    const src = props?.src || props?.url || "";
+    const src = tinaImageSrc(props?.src || props?.url || "");
     // Apply basePath to local image URLs to ensure they work correctly with Next.js basePath configuration
     const adjustedSrc = withBasePath(src);
     // Destructure to exclude non-standard properties

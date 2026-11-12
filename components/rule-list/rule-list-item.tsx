@@ -3,6 +3,7 @@
 import React, { RefObject, useRef } from "react";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import { withTinaImageSrc } from "@/lib/tinaAssets";
 import { RuleListFilter } from "@/types/ruleListFilter";
 import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
 import RuleListItemHeader from "./rule-list-item-header";
@@ -72,7 +73,7 @@ const RuleListItem: React.FC<RuleListItemProps> = ({ rule, index, filter, onBook
 
       {filter !== RuleListFilter.TitleOnly && (
         <div data-tina-field={tinaField(rule, "body")} className="pt-4 pl-8 pr-2" ref={contentRef}>
-          <TinaMarkdown content={getContentForViewStyle(filter, rule.body)} components={MarkdownComponentMapping} />
+          <TinaMarkdown content={withTinaImageSrc(getContentForViewStyle(filter, rule.body))} components={MarkdownComponentMapping} />
         </div>
       )}
     </li>

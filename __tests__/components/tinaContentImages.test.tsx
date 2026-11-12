@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import ServerRulePage from "@/app/[filename]/ServerRulePage";
+import HelpImproveCard from "@/components/HelpImproveCard";
 import RuleListItem from "@/components/rule-list/rule-list-item";
+import WhyRulesCard from "@/components/WhyRulesCard";
 import { RuleListFilter } from "@/types/ruleListFilter";
 
 // TinaMarkdown shows an image in a table cell with its default components, so these tests look at the content that it gets
@@ -53,6 +55,7 @@ const bodyWithTable = (url: string) => ({
     { type: "table", children: [{ type: "tr", children: [{ type: "td", children: [{ type: "p", children: [image(url)] }] }] }] },
   ],
 });
+const textWithImage = (url: string) => ({ type: "root", children: [{ type: "p", children: [text("Text"), image(url)] }] });
 const shownContent = () => JSON.parse(screen.getByTestId("content").textContent ?? "null");
 
 describe("ServerRulePage", () => {
@@ -100,5 +103,23 @@ describe("RuleListItem", () => {
   it("gives only the intro to TinaMarkdown in the blurb view", () => {
     renderItem(bodyWithTable(STORED), RuleListFilter.Blurb);
     expect(shownContent()).toEqual({ type: "root", children: [{ type: "p", children: [text("Intro")] }] });
+  });
+});
+
+// These cards give only some components to TinaMarkdown, so it shows an image with its default component
+describe("homepage cards", () => {
+  it("gives the TinaCloud URL of an image in the quote to TinaMarkdown", () => {
+    render(<HelpImproveCard data={{ quote: textWithImage(STORED) }} />);
+    expect(shownContent()).toEqual(textWithImage(CLOUD));
+  });
+
+  it("gives the TinaCloud URL of an image in the body to TinaMarkdown", () => {
+    render(<WhyRulesCard data={{ body: textWithImage(STORED) }} />);
+    expect(shownContent()).toEqual(textWithImage(CLOUD));
+  });
+
+  it("does not change content from TinaCloud", () => {
+    render(<WhyRulesCard data={{ body: textWithImage(CLOUD) }} />);
+    expect(shownContent()).toEqual(textWithImage(CLOUD));
   });
 });

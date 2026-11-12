@@ -1,0 +1,140 @@
+import { cache } from "react";
+import { classifyTinaError, isRecordNotFound, tinaErrorMessage, withTinaRetry } from "@/lib/tina/tinaRequest";
+import client from "@/tina/__generated__/client";
+import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
+
+// These loaders return null only when the record does not exist. Every other Tina error is retried and then
+// thrown: the build then retries or fails the page, and at run time Next keeps serving the previous version.
+// A fallback rendered after a throttled request would be cached as NOT FOUND until the next deploy.
+
+// TinaCloud returns throttling as a GraphQL error with HTTP 200. Next's data cache stores any 200 fetch response
+// during a build and replays it for the same request body, so one throttled response would fail every retry and
+// every later page that sends the same query. "no-store" keeps Tina responses out of that cache. The page stays
+// static because of `dynamic = "force-static"`.
+const tinaFetch = { fetchOptions: { cache: "no-store" as const } };
+
+export interface BrokenReferences {
+  detected: boolean;
+  paths: string[];
+}
+
+const getFullRelativePathFromFilename = async (filename: string): Promise<string | null> => {
+  let hasNextPage = true;
+  let after: string | null = null;
+
+  while (hasNextPage) {
+    let res;
+    try {
+      res = await withTinaRetry(`topCategoryWithIndexQuery after=${after}`, () => client.queries.topCategoryWithIndexQuery({ first: 50, after }, tinaFetch));
+    } catch (error) {
+      if (!isRecordNotFound(error)) throw error;
+      // A top category that lists a missing category: the lookup cannot finish, so treat the page as a rule
+      console.warn(`[getFullRelativePathFromFilename] topCategoryWithIndexQuery has a missing record, filename="${filename}":`, tinaErrorMessage(error));
+      return null;
+    }
+
+    const topCategories = res?.data?.categoryConnection?.edges || [];
+    for (const edge of topCategories) {
+      const node = edge?.node;
+      if (node?.__typename === "CategoryTop_category") {
+        const topDir = node._sys.relativePath.replace("/index.mdx", "");
+
+        for (const child of node.index || []) {
+          if (child?.category?._sys?.filename === filename) {
+            return `${topDir}/${filename}.mdx`;
+          }
+        }
+      }
+    }
+
+    hasNextPage = !!res?.data?.categoryConnection?.pageInfo?.hasNextPage;
+    after = res?.data?.categoryConnection?.pageInfo?.endCursor ?? null;
+  }
+
+  return null;
+};
+
+const responseErrorMessages = (res: any): string[] =>
+  (res?.errors ?? []).map((e: any) => (typeof e === "string" ? e : e?.message)).filter((m: any): m is string => typeof m === "string" && m.length > 0);
+
+// React cache: the page and generateMetadata share one result for each render
+export const getCategoryData = cache(async (filename: string) => {
+  const fullPath = await getFullRelativePathFromFilename(filename);
+  if (!fullPath) return null;
+
+  const query = String(CategoryWithRulesQueryDocument);
+  const variables = { relativePath: fullPath };
+  let res: any;
+  try {
+    // The client from `tinacms build` stores each response in a build cache keyed by the request body.
+    // With the default "throw" policy a response with errors throws before it is stored, so a retry
+    // sends a new request.
+    res = await withTinaRetry(`categoryWithRulesQuery ${fullPath}`, () => (client as any).request({ query, variables }, tinaFetch));
+  } catch (error) {
+    if (!isRecordNotFound(error)) throw error;
+
+    // Some rules of the category are missing: errorPolicy "all" returns the category without them.
+    // The cache stores this response with its errors, so each attempt adds a GraphQL comment that
+    // changes the cache key. Otherwise a retry reads the throttled response back.
+    res = await withTinaRetry(`categoryWithRulesQuery (with missing records) ${fullPath}`, async (attempt) => {
+      const response: any = await (client as any).request({ query: `${query}\n# attempt ${attempt}`, variables, errorPolicy: "all" }, tinaFetch);
+      const messages = responseErrorMessages(response);
+      if (messages.some((m) => classifyTinaError(m) === "transient")) {
+        throw new Error(`categoryWithRulesQuery returned errors:\n${messages.join("\n")}`);
+      }
+      return response;
+    });
+  }
+
+  const errorMessages = responseErrorMessages(res);
+  // A missing rule is the only error that may leave a gap in the list. Any other error could hide rules.
+  const otherErrors = errorMessages.filter((m) => classifyTinaError(m) !== "not-found");
+  if (otherErrors.length > 0) {
+    throw new Error(`[getCategoryData] failed for filename="${filename}" relativePath="${fullPath}":\n${otherErrors.join("\n")}`);
+  }
+  if (errorMessages.length > 0) {
+    console.warn(`[getCategoryData] Missing rule references in category relativePath="${fullPath}":\n${errorMessages.join("\n")}`);
+  }
+
+  // errorPolicy "all" returns { category: null } when the category file itself is missing
+  if (!res?.data?.category) {
+    console.error(`[getCategoryData] returned null for filename="${filename}" relativePath="${fullPath}" errors="${errorMessages.join(" | ")}"`);
+    return null;
+  }
+
+  return { data: res.data, query, variables };
+});
+
+export const getRuleData = cache(async (filename: string) => {
+  const relativePath = `${filename}/rule.mdx`;
+
+  let fullError: unknown;
+  try {
+    const full = await withTinaRetry(`ruleData ${relativePath}`, () => client.queries.ruleData({ relativePath }, tinaFetch));
+    return { data: full.data, query: full.query, variables: full.variables, brokenReferences: null as BrokenReferences | null };
+  } catch (error) {
+    if (!isRecordNotFound(error)) throw error;
+    fullError = error;
+  }
+
+  // "Unable to find record" from ruleData means the rule or one of its related rules is missing.
+  // ruleDataBasic does not resolve related rules, so it tells the two cases apart.
+  let basic;
+  try {
+    basic = await withTinaRetry(`ruleDataBasic ${relativePath}`, () => client.queries.ruleDataBasic({ relativePath }, tinaFetch));
+  } catch (error) {
+    if (isRecordNotFound(error)) return null;
+    throw error;
+  }
+
+  const brokenPaths = Array.from(tinaErrorMessage(fullError).matchAll(/Unable to find record ([^\n]+)/g), (match) => match[1].trim());
+  if (brokenPaths.length === 0) brokenPaths.push("unknown path");
+  console.warn(`[getRuleData] broken related rule references for filename="${filename}", rendering without related rules: ${brokenPaths.join(", ")}`);
+
+  return {
+    data: { ...basic.data, rule: { ...basic.data.rule, related: [] } },
+    query: basic.query,
+    variables: basic.variables,
+    brokenReferences: { detected: true, paths: brokenPaths } as BrokenReferences | null,
+  };
+});

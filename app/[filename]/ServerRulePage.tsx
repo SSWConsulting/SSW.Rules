@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
-import type { BrokenReferences } from "@/app/[filename]/page";
+import type { BrokenReferences } from "@/app/[filename]/pageData";
 import ArchivedReasonContent from "@/components/ArchivedReasonContent";
 import AuthorsCard from "@/components/AuthorsCard";
 import Breadcrumbs from "@/components/Breadcrumbs";

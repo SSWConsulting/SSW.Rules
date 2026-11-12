@@ -41,6 +41,8 @@ The pipeline also gives the site access to the database, together with the datab
 
 The job runs as the Rules Chat identity and pulls its image from the environment's registry. Each staging and production deploy builds and pushes the image under a new tag (`rules-chat-index:{staging|production}-<commit>`) before deploying the job, so a run never uses an older image cached under a reused tag.
 
+Only the workflow builds that image. A manual `deploy.ps1` run keeps the image the job runs now, unless you pass the tag of an image you pushed with `-RulesChatIndexImageTag`. Either way, the script stops before the Bicep deployment if the registry doesn't have that tag.
+
 It runs:
 
 - **Every hour**, on the hour. A run with no changed rules only clones the rules and compares hashes, so a new or edited rule reaches the chat within an hour.

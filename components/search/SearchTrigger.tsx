@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRulesChatAccess } from "@/components/chat/useRulesChatAccess";
 import Tooltip from "@/components/tooltip/tooltip";
-import { openSearch, SEARCH_TRIGGER_ATTRIBUTE } from "./openSearch";
+import { openSearch } from "./openSearch";
 
 export function SearchTrigger() {
   const [shortcut, setShortcut] = useState("Ctrl K");
@@ -23,7 +23,6 @@ export function SearchTrigger() {
       <button
         type="button"
         onClick={openSearch}
-        {...{ [SEARCH_TRIGGER_ATTRIBUTE]: "" }}
         aria-label={label}
         className="flex h-9 w-9 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-full border border-black/20 bg-white text-black/60 outline-none transition-colors focus-visible:border-black/45 focus-visible:ring-3 focus-visible:ring-black/10 min-[390px]:max-sm:w-36 min-[390px]:max-sm:justify-start min-[390px]:max-sm:rounded-[4px] min-[390px]:max-sm:px-3 md:w-auto md:rounded-[4px] md:px-3 xl:max-[1360px]:w-9 xl:max-[1360px]:rounded-full xl:max-[1360px]:px-0"
       >

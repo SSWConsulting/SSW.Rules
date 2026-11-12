@@ -1,10 +1,9 @@
 "use client";
 
-import { ExternalLink, Minus, X } from "lucide-react";
+import { ExternalLink, Minus } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useIsClient, useLocalStorage, useMediaQuery, useSessionStorage, useWindowSize } from "usehooks-ts";
-import { focusSearchTrigger } from "@/components/search/openSearch";
 import { cn } from "@/lib/utils";
 import { onAskRulekeeper } from "./askRulekeeper";
 import { type ChatActivity, ChatConversation, ChatTitle } from "./ChatConversation";
@@ -29,12 +28,18 @@ import { useRulesChatAccess } from "./useRulesChatAccess";
 
 const POPOUT_WINDOW_NAME = "sswRulesChat";
 
-// "closed": nothing on screen; the chat is reopened from search. "minimised": a small pill that shows
-// progress and unread answers. Kept per browser tab, so a reload leaves the chat where it was.
-type Mode = "closed" | "open" | "minimised";
+// "minimised": a small pill, always on screen while the chat is hidden, that shows progress and unread answers.
+// Kept per browser tab, so a reload leaves the chat where it was.
+type Mode = "open" | "minimised";
 
 const headerButton =
   "flex size-8 cursor-pointer items-center justify-center rounded-md text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-white";
+
+function pillStatus(activity: ChatActivity, hasUnread: boolean): string {
+  if (activity.isAnswering) return "Checking the rules...";
+  if (hasUnread) return "New answer";
+  return activity.answerCount > 0 ? "Continue chat" : "Ask about the rules";
+}
 
 export function ChatWidget() {
   const isClient = useIsClient();
@@ -42,7 +47,7 @@ export function ChatWidget() {
   const pathname = usePathname();
   const viewport = useWindowSize();
   const isPhone = useMediaQuery("(max-width: 639px)");
-  const [mode, setMode] = useSessionStorage<Mode>("ssw.rulesChat.mode.v1", "closed");
+  const [mode, setMode] = useSessionStorage<Mode>("ssw.rulesChat.mode.v2", "minimised");
   const [anchorChoice, setAnchorChoice] = useLocalStorage<Anchor>("ssw.rulesChat.anchor.v1", DEFAULT_ANCHOR);
   const [panelSize, setPanelSize] = useLocalStorage<PanelSize>("ssw.rulesChat.panelSize.v1", DEFAULT_PANEL_SIZE);
   // Held while dragging, so the window does not flip to the other side under the cursor.
@@ -52,8 +57,7 @@ export function ChatWidget() {
   const [popOutBlocked, setPopOutBlocked] = useState(false);
   const seenAnswerCount = useRef<number | null>(null);
   const pillOpenButton = useRef<HTMLButtonElement>(null);
-  // Where focus goes once the window it was in is hidden.
-  const focusAfterHiding = useRef<"pill" | "search" | null>(null);
+  const focusPillOnHide = useRef(false);
 
   const anchor = clampAnchor(anchorChoice, viewport);
   const side = sideWhileDragging ?? anchorSide(anchor, viewport);
@@ -80,9 +84,8 @@ export function ChatWidget() {
   useClearChatOfOtherUsers();
 
   useEffect(() => {
-    if (focusAfterHiding.current === "pill" && mode === "minimised") pillOpenButton.current?.focus();
-    if (focusAfterHiding.current === "search" && mode === "closed") focusSearchTrigger();
-    focusAfterHiding.current = null;
+    if (focusPillOnHide.current && mode === "minimised") pillOpenButton.current?.focus();
+    focusPillOnHide.current = false;
   }, [mode]);
   useEffect(() => onAskRulekeeper(() => setMode("open")), [setMode]);
 
@@ -98,7 +101,7 @@ export function ChatWidget() {
 
   if (!isClient || !hasAccess || pathname === CHAT_POPOUT_PATH) return null;
 
-  // The separate window shares the conversation through local storage, so this one can simply close.
+  // The separate window shares the conversation through local storage, so this one can simply shrink to the pill.
   const popOut = () => {
     const opened = window.open(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${CHAT_POPOUT_PATH}`, POPOUT_WINDOW_NAME, "popup,width=480,height=720");
     if (!opened || opened.closed) {
@@ -106,18 +109,12 @@ export function ChatWidget() {
       return;
     }
     setPopOutBlocked(false);
-    setMode("closed");
-  };
-
-  const minimise = () => {
-    focusAfterHiding.current = "pill";
     setMode("minimised");
   };
 
-  // Search is where the chat is reopened, so focus goes back there.
-  const close = () => {
-    focusAfterHiding.current = "search";
-    setMode("closed");
+  const minimise = () => {
+    focusPillOnHide.current = true;
+    setMode("minimised");
   };
 
   const onPanelKeyDown = (event: KeyboardEvent) => {
@@ -159,9 +156,6 @@ export function ChatWidget() {
               <button type="button" onClick={minimise} className={headerButton} aria-label="Minimise" title="Minimise (Esc)">
                 <Minus className="size-4" aria-hidden />
               </button>
-              <button type="button" onClick={close} className={headerButton} aria-label="Close" title="Close">
-                <X className="size-4" aria-hidden />
-              </button>
             </div>
           </header>
           {popOutBlocked && (
@@ -184,7 +178,7 @@ export function ChatWidget() {
         />
       </section>
 
-      {mode === "minimised" && (
+      {mode !== "open" && (
         <div
           className="fade-in slide-in-from-bottom-2 fixed z-[1000] flex animate-in touch-none select-none items-center rounded-full bg-ssw-black text-white shadow-black/30 shadow-lg duration-150"
           style={{ ...pill, ...PILL_SIZE }}
@@ -194,26 +188,15 @@ export function ChatWidget() {
             ref={pillOpenButton}
             type="button"
             onClick={() => setMode("open")}
-            className="flex h-full min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-l-full pr-1 pl-1.5 focus-visible:outline-2 focus-visible:outline-ssw-red focus-visible:outline-offset-2"
+            className="flex h-full min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full pr-3 pl-1.5 focus-visible:outline-2 focus-visible:outline-ssw-red focus-visible:outline-offset-2"
             aria-label={hasUnread ? "Open The Rulekeeper, new answer" : "Open The Rulekeeper"}
           >
             <RulekeeperMark size="small" />
             <span className="min-w-0 flex-1 text-left leading-tight">
               <span className="block truncate font-semibold text-sm">The Rulekeeper</span>
-              <span className={cn("block truncate text-xs", hasUnread ? "text-white" : "text-white/70")}>
-                {activity.isAnswering ? "Checking the rules..." : hasUnread ? "New answer" : "Continue chat"}
-              </span>
+              <span className={cn("block truncate text-xs", hasUnread ? "text-white" : "text-white/70")}>{pillStatus(activity, hasUnread)}</span>
             </span>
             {hasUnread && <span className="size-2.5 shrink-0 rounded-full bg-ssw-red ring-2 ring-ssw-black" aria-hidden />}
-          </button>
-          <button
-            type="button"
-            onClick={close}
-            className="mr-1.5 flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-white/70 hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-white"
-            aria-label="Close The Rulekeeper"
-            title="Close"
-          >
-            <X className="size-3.5" aria-hidden />
           </button>
         </div>
       )}

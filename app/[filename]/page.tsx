@@ -167,37 +167,6 @@ export async function generateStaticParams() {
 
     const filenames = new Set<string>(await getRuleFolders());
 
-    const fetchAllPages = async (queryFunction: (args?: any) => Promise<any>, queryName: string) => {
-      const allEdges: any[] = [];
-      let hasNextPage = true;
-      let after: string | null = null;
-
-      while (hasNextPage) {
-        try {
-          const result = await queryFunction({ first: 50, after }).catch((err) => {
-            const isRecordNotFound = err?.message?.includes("Unable to find record");
-            if (!isRecordNotFound) {
-              console.warn(`Error fetching ${queryName}:`, err?.message || err);
-            }
-            return { data: { [`${queryName}Connection`]: { edges: [], pageInfo: { hasNextPage: false } } } };
-          });
-
-          const connection = result?.data?.[`${queryName}Connection`];
-          if (connection?.edges && Array.isArray(connection.edges)) {
-            allEdges.push(...connection.edges);
-          }
-
-          hasNextPage = connection?.pageInfo?.hasNextPage || false;
-          after = connection?.pageInfo?.endCursor || null;
-        } catch (err) {
-          console.warn(`Error fetching ${queryName} page:`, err);
-          hasNextPage = false;
-        }
-      }
-
-      return allEdges;
-    };
-
     const fetchAllTopCategoriesWithChildren = async () => {
       const allChildCategories: { filename: string }[] = [];
       let hasNextPage = true;
@@ -234,19 +203,8 @@ export async function generateStaticParams() {
       return allChildCategories;
     };
 
-    const [allCategoryEdges, childCategories] = await Promise.all([
-      fetchAllPages(client.queries.categoryConnection, "category"),
-      fetchAllTopCategoriesWithChildren(),
-    ]);
-
-    for (const page of allCategoryEdges) {
-      try {
-        const fn = page?.node?._sys?.filename;
-        if (fn && fn !== "index") filenames.add(fn);
-      } catch (err) {
-        console.warn("Error processing category page:", err);
-      }
-    }
+    // The page finds a category only in the index of a top category, so these children are all the category pages.
+    const childCategories = await fetchAllTopCategoriesWithChildren();
     for (const c of childCategories) {
       filenames.add(c.filename);
     }

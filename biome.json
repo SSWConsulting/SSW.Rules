@@ -42,6 +42,7 @@
 				"useHookAtTopLevel": "warn"
 			},
 			"style": {
+				"noCommonJs": "error",
 				"noInferrableTypes": "off",
 				"noNamespace": "error",
 				"noNonNullAssertion": "off",
@@ -73,6 +74,16 @@
 		}
 	},
 	"overrides": [
+		{
+			"includes": ["*.js", "scripts/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noCommonJs": "off"
+					}
+				}
+			}
+		},
 		{
 			"includes": [
 				"*.ts",

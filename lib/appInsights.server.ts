@@ -15,6 +15,7 @@ export function trackServerException(
   try {
     // applicationinsights is only available after instrumentation.ts has run.
     // Use require() so this file is safe to import in any server context.
+    // biome-ignore lint/style/noCommonJs: a static import would load applicationinsights in each server context
     const appInsights = require("applicationinsights");
     const client = appInsights.defaultClient;
     if (!client) return;
@@ -35,6 +36,7 @@ export function trackServerEvent(
   properties?: Record<string, string>
 ): void {
   try {
+    // biome-ignore lint/style/noCommonJs: a static import would load applicationinsights in each server context
     const appInsights = require("applicationinsights");
     const client = appInsights.defaultClient;
     if (!client) return;

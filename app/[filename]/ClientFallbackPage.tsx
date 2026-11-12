@@ -1,6 +1,5 @@
 "use client";
 
-import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import NotFound from "@/app/not-found";
 import { useAdminBackBlock } from "@/components/hooks/useAdminBackBlock";
@@ -188,11 +187,6 @@ export default function ClientFallbackPage({ filename }: ClientFallbackPageProps
       </Section>
     );
   }
-
-  // If this is not an admin page, return a not found response. This is called only when the page
-  // is not found in the actual branch. When a user is not in Tina mode and creates a new rule,
-  // it should appear only in Tina mode and should not attempt to load on the live site.
-  if (!isAdminPage) return notFound();
 
   if (loading) {
     return (

@@ -3,6 +3,7 @@ import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
 import { extractBodyPreview } from "@/lib/bodyUtils";
 import { pageMetadata } from "@/lib/pageMetadata";
+import { getRuleFolders } from "@/lib/ruleFolders";
 import { getDiscussionNumberForGuid } from "@/lib/services/github/giscusDiscussions.service";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
@@ -164,33 +165,7 @@ export async function generateStaticParams() {
       return [];
     }
 
-    const filenames = new Set<string>();
-    let after: string | null = null;
-    let hasNext = true;
-
-    while (hasNext) {
-      const res = await client.queries
-        .allRulesPaths({
-          first: 200,
-          after,
-        })
-        .catch((err: any) => {
-          console.warn("allRuleFoldersQuery page fetch error:", err?.message || err);
-          return null;
-        });
-
-      const edges = res?.data?.ruleConnection?.edges ?? [];
-      for (const e of edges) {
-        // e.g. "definition-of-done/rule.mdx" => "definition-of-done"
-        const rel = e?.node?._sys?.relativePath;
-        const folder = rel?.split("/")?.[0];
-        if (folder) filenames.add(folder);
-      }
-
-      const p = res?.data?.ruleConnection?.pageInfo;
-      hasNext = !!p?.hasNextPage;
-      after = p?.endCursor ?? null;
-    }
+    const filenames = new Set<string>(await getRuleFolders());
 
     const fetchAllPages = async (queryFunction: (args?: any) => Promise<any>, queryName: string) => {
       const allEdges: any[] = [];

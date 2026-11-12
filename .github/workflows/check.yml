@@ -33,6 +33,17 @@ jobs:
       - name: Generate Tina client
         run: pnpm exec tinacms build --local --skip-indexing --skip-cloud-checks
 
+      # TinaCloud serves the schema from the committed tina-lock.json on main, and
+      # every deploy build fails its cloud check when the lock differs from the
+      # schema that tina/ generates. The build above rewrites the lock, so a diff
+      # here means the PR changed tina/ without committing the regenerated lock.
+      - name: Check tina-lock.json is up to date
+        run: |
+          if ! git diff --quiet -- tina/tina-lock.json; then
+            echo "::error file=tina/tina-lock.json::tina-lock.json is out of date. Run 'pnpm exec tinacms build --local --skip-indexing --skip-cloud-checks' and commit tina/tina-lock.json."
+            exit 1
+          fi
+
       - name: Lint
         run: pnpm lint
 

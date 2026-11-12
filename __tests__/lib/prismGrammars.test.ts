@@ -1,3 +1,4 @@
+import PrismJS from "prismjs";
 import { Prism } from "prism-react-renderer";
 import "@/lib/prism-grammars";
 
@@ -49,6 +50,10 @@ describe("prism-grammars", () => {
   it("registers powershell from upstream prismjs", () => {
     const code = 'Write-Host "hello"';
     expect(tokenTypes("powershell", code).length).toBeGreaterThan(1);
+  });
+
+  it("turns off the automatic highlight of the prismjs core", () => {
+    expect(PrismJS.manual).toBe(true);
   });
 
   it("registers http from upstream prismjs", () => {

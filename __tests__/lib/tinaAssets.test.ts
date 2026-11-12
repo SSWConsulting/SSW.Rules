@@ -15,7 +15,7 @@ afterAll(() => {
   process.env = savedEnv;
 });
 
-// The values that TinaCloud and the local Tina server return in the same form
+// Values that are not a path of the media library
 const UNCHANGED = [
   ["a TinaCloud asset URL", `${ASSETS}/rules/my-rule/image.png`],
   ["an asset URL of a different Tina project", "https://assets.tina.io/11111111-1111-1111-1111-111111111111/rules/my-rule/file.pdf"],

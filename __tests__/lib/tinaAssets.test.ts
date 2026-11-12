@@ -55,6 +55,18 @@ describe("toTinaAssetUrl", () => {
     expect(toTinaAssetUrl("/uploadshttps://github.com/user-attachments/assets/9b67be39")).toBe("https://github.com/user-attachments/assets/9b67be39");
   });
 
+  it.each([
+    "/uploads/rules/my-rule/image.png",
+    "/uploads/rules/uploads/image.png",
+    "/uploads/__staging/tina/my-branch/__file/rules/my-rule/image.jpg",
+    "/uploadshttps://github.com/user-attachments/assets/9b67be39",
+  ])("gives the same URL when %s is converted two times", (value) => {
+    const once = toTinaAssetUrl(value);
+    expect(once).not.toBe(value);
+    expect(toTinaAssetUrl(once)).toBe(once);
+    expect(tinaImageSrc(tinaImageSrc(value))).toBe(once);
+  });
+
   it.each(UNCHANGED)("does not change %s", (_name, value) => {
     expect(toTinaAssetUrl(value)).toBe(value);
   });
@@ -136,6 +148,11 @@ describe("withTinaImageSrc", () => {
       { type: "mdxJsxFlowElement", name: "youtubeEmbed", children: [text("")], props: { url: STORED } }
     );
     expect(withTinaImageSrc(content)).toBe(content);
+  });
+
+  it("gives the same object when the content is converted two times", () => {
+    const once = withTinaImageSrc(body(paragraph(image(STORED)), box(body(table(image(STORED))))));
+    expect(withTinaImageSrc(once)).toBe(once);
   });
 
   it("gives the same object for content from TinaCloud", () => {

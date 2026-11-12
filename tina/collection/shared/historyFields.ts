@@ -22,15 +22,6 @@ export const historyFields: TinaField[] = [
     },
   },
   {
-    type: "string",
-    name: "lastUpdatedByEmail",
-    label: "Last Updated By Email",
-    description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
-    ui: {
-      component: "hidden",
-    },
-  },
-  {
     type: "boolean",
     name: "isArchived",
     label: "Archived",
@@ -74,7 +65,6 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
     values = { ...values, uri: values.uri.trim() };
   }
 
-  let userEmail: string | undefined;
   let userName: string | undefined;
 
   // Update categories for both create and update forms
@@ -154,12 +144,10 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
   try {
     const user = await cms.api.tina?.authProvider?.getUser();
     if (user) {
-      userEmail = user.email;
       userName = user.fullName;
     }
   } catch (err) {
     console.error("Auth error:", err);
-    userEmail = undefined;
     userName = undefined;
   }
 
@@ -168,7 +156,6 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
       ...values,
       lastUpdated: new Date().toISOString(),
       lastUpdatedBy: userName ?? "",
-      lastUpdatedByEmail: userEmail ?? "",
     };
   }
 
@@ -176,6 +163,5 @@ export const historyBeforeSubmit = async ({ form, cms, values }: { form: Form; c
     ...values,
     lastUpdated: new Date().toISOString(),
     lastUpdatedBy: userName ?? "",
-    lastUpdatedByEmail: userEmail ?? "",
   };
 };

@@ -25,13 +25,4 @@ export const createdInfoFields: TinaField[] = [
       component: UserInfoField,
     },
   },
-  {
-    type: "string",
-    name: "createdByEmail",
-    label: "Created By Email",
-    description: "If you see this field, contact a dev immediately 😳 (should be a hidden field generated in the background).",
-    ui: {
-      component: UserInfoField,
-    },
-  },
 ];

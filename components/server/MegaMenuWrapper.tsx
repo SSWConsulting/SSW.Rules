@@ -11,6 +11,7 @@ import { SearchTrigger } from "../search/SearchTrigger";
 import Tooltip from "../tooltip/tooltip";
 
 const basePath = getSanitizedBasePath();
+const rootPath = basePath ? `/${basePath}` : "";
 
 export function MegaMenuWrapper(props) {
   const linkComponent = (linkProps: any) => {
@@ -38,8 +39,13 @@ export function MegaMenuWrapper(props) {
         subtitle="Secret ingredients to quality software"
         rightSideActionsOverride={() => <ActionButtons />}
         linkComponent={linkComponent}
-        url={basePath ? `/${basePath}` : "/"}
-        searchUrl="https://www.ssw.com.au/rules"
+        url={rootPath || "/"}
+        // A full navigation, because the package keeps its drawer open across client-side route changes.
+        callback={(searchTerm) => {
+          const keyword = searchTerm.trim();
+          if (keyword.length < 3) return;
+          window.location.assign(`${rootPath}/search?keyword=${encodeURIComponent(keyword)}`);
+        }}
         isFlagVisible={false}
       />
     </div>

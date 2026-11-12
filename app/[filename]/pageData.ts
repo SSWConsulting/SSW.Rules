@@ -1,5 +1,12 @@
 import { cache } from "react";
-import { classifyTinaError, isRecordNotFound, tinaErrorMessage, withTinaRetry } from "@/lib/tina/tinaRequest";
+import {
+  classifyTinaError,
+  isRecordNotFound,
+  tinaErrorMessage,
+  tinaResponseErrorMessages,
+  withTinaRetry,
+  withTinaRetryAllowingErrors,
+} from "@/lib/tina/tinaRequest";
 import client from "@/tina/__generated__/client";
 import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 
@@ -56,9 +63,6 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
   return null;
 };
 
-const responseErrorMessages = (res: any): string[] =>
-  (res?.errors ?? []).map((e: any) => (typeof e === "string" ? e : e?.message)).filter((m: any): m is string => typeof m === "string" && m.length > 0);
-
 // React cache: the page and generateMetadata share one result for each render
 export const getCategoryData = cache(async (filename: string) => {
   const fullPath = await getFullRelativePathFromFilename(filename);
@@ -75,20 +79,13 @@ export const getCategoryData = cache(async (filename: string) => {
   } catch (error) {
     if (!isRecordNotFound(error)) throw error;
 
-    // Some rules of the category are missing: errorPolicy "all" returns the category without them.
-    // The cache stores this response with its errors, so each attempt adds a GraphQL comment that
-    // changes the cache key. Otherwise a retry reads the throttled response back.
-    res = await withTinaRetry(`categoryWithRulesQuery (with missing records) ${fullPath}`, async (attempt) => {
-      const response: any = await (client as any).request({ query: `${query}\n# attempt ${attempt}`, variables, errorPolicy: "all" }, tinaFetch);
-      const messages = responseErrorMessages(response);
-      if (messages.some((m) => classifyTinaError(m) === "transient")) {
-        throw new Error(`categoryWithRulesQuery returned errors:\n${messages.join("\n")}`);
-      }
-      return response;
-    });
+    // Some rules of the category are missing: errorPolicy "all" returns the category without them
+    res = await withTinaRetryAllowingErrors(`categoryWithRulesQuery (with missing records) ${fullPath}`, query, (attemptQuery) =>
+      (client as any).request({ query: attemptQuery, variables, errorPolicy: "all" }, tinaFetch)
+    );
   }
 
-  const errorMessages = responseErrorMessages(res);
+  const errorMessages = tinaResponseErrorMessages(res);
   // A missing rule is the only error that may leave a gap in the list. Any other error could hide rules.
   const otherErrors = errorMessages.filter((m) => classifyTinaError(m) !== "not-found");
   if (otherErrors.length > 0) {

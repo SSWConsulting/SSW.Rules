@@ -2,6 +2,7 @@ import React from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Section } from "@/components/layout/section";
 import { pageMetadata } from "@/lib/pageMetadata";
+import { tinaRetryOptions, withTinaRetry } from "@/lib/tina/tinaRequest";
 import { OrphanedRulesData } from "@/models/OrphanedRule";
 import { Rule } from "@/models/Rule";
 import orphanedRulesData from "@/orphaned_rules.json";
@@ -16,9 +17,8 @@ const fetchOrphanedRulesData = async (): Promise<Rule[]> => {
   console.log(typedOrphanedRulesData);
   for (const orphanedRule of typedOrphanedRulesData) {
     try {
-      const ruleData = await client.queries.rule({
-        relativePath: `${orphanedRule.uri}/rule.mdx`,
-      });
+      const relativePath = `${orphanedRule.uri}/rule.mdx`;
+      const ruleData = await withTinaRetry(`rule ${relativePath}`, (attempt) => client.queries.rule({ relativePath }, tinaRetryOptions(attempt)));
 
       if (ruleData?.data?.rule) {
         const rule = ruleData.data.rule;

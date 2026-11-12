@@ -1,7 +1,14 @@
 /**
  * @jest-environment node
  */
-import { classifyTinaError, isRecordNotFound, withTinaRetry } from "@/lib/tina/tinaRequest";
+import {
+  classifyTinaError,
+  isRecordNotFound,
+  tinaResponseErrorMessages,
+  tinaRetryOptions,
+  withTinaRetry,
+  withTinaRetryAllowingErrors,
+} from "@/lib/tina/tinaRequest";
 
 // Error texts as the Tina client throws them (copied from production build logs)
 const graphqlError = (message: string) =>
@@ -84,5 +91,83 @@ describe("withTinaRetry", () => {
     await expect(withTinaRetry("ruleData x", request, { sleep })).rejects.toBe(error);
     expect(request).toHaveBeenCalledTimes(1);
     expect(sleep).not.toHaveBeenCalled();
+  });
+});
+
+describe("tinaRetryOptions", () => {
+  const revalidate60 = { fetchOptions: { next: { revalidate: 60 } } };
+
+  it("sends the first attempt unchanged, so it can use the data cache", () => {
+    expect(tinaRetryOptions(1)).toEqual({});
+    expect(tinaRetryOptions(1, revalidate60)).toBe(revalidate60);
+  });
+
+  it("adds a retry header to each later attempt, so Next uses a new data cache key", () => {
+    expect(tinaRetryOptions(2)).toEqual({ fetchOptions: { headers: { "x-tina-retry": "2" } } });
+    expect(tinaRetryOptions(3, revalidate60)).toEqual({ fetchOptions: { next: { revalidate: 60 }, headers: { "x-tina-retry": "3" } } });
+  });
+
+  it("keeps the headers that the caller sets", () => {
+    const options = { fetchOptions: { headers: { "x-branch": "main" } } };
+
+    expect(tinaRetryOptions(2, options).fetchOptions?.headers).toEqual({ "x-branch": "main", "x-tina-retry": "2" });
+    expect(options.fetchOptions.headers).toEqual({ "x-branch": "main" });
+  });
+});
+
+describe("tinaResponseErrorMessages", () => {
+  it("reads string and object errors and ignores empty ones", () => {
+    expect(tinaResponseErrorMessages({ errors: [{ message: "a" }, "b", { message: "" }, null] })).toEqual(["a", "b"]);
+    expect(tinaResponseErrorMessages({ errors: null })).toEqual([]);
+    expect(tinaResponseErrorMessages(null)).toEqual([]);
+  });
+});
+
+describe("withTinaRetryAllowingErrors", () => {
+  const sleep = jest.fn((_ms: number) => Promise.resolve());
+  const THROTTLED = "Error retrieving data from DynamoDB: Throughput exceeds the current capacity of your table or index.";
+  const MISSING = "Unable to find record public/uploads/rules/gone/rule.mdx";
+
+  beforeEach(() => {
+    sleep.mockClear();
+    jest.spyOn(console, "warn").mockImplementation(() => {});
+  });
+
+  afterEach(() => jest.restoreAllMocks());
+
+  it("returns a response whose only errors are missing records", async () => {
+    const response = { data: { ok: true }, errors: [{ message: MISSING }] };
+    const send = jest.fn().mockResolvedValue(response);
+
+    await expect(withTinaRetryAllowingErrors("categoryRuleCountsQuery", "query q", send, { sleep })).resolves.toBe(response);
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(send).toHaveBeenCalledWith("query q");
+  });
+
+  it("retries a response with a throttling error and changes the query text for each retry", async () => {
+    const good = { data: { ok: true }, errors: null };
+    const send = jest
+      .fn()
+      .mockResolvedValueOnce({ data: null, errors: [{ message: THROTTLED }] })
+      .mockResolvedValueOnce({ data: { partial: true }, errors: [{ message: MISSING }, { message: THROTTLED }] })
+      .mockResolvedValue(good);
+
+    await expect(withTinaRetryAllowingErrors("categoryRuleCountsQuery", "query q", send, { sleep })).resolves.toBe(good);
+    expect(send.mock.calls.map(([query]) => query)).toEqual(["query q", "query q\n# attempt 2", "query q\n# attempt 3"]);
+  });
+
+  it("throws after the last attempt when the throttling does not stop", async () => {
+    const send = jest.fn().mockResolvedValue({ data: null, errors: [{ message: THROTTLED }] });
+
+    await expect(withTinaRetryAllowingErrors("categoryRuleCountsQuery", "query q", send, { sleep, attempts: 3 })).rejects.toThrow("Throughput exceeds");
+    expect(send).toHaveBeenCalledTimes(3);
+  });
+
+  it("returns a response with a fatal error for the caller to handle", async () => {
+    const response = { data: null, errors: [{ message: "Internal resolver error" }] };
+    const send = jest.fn().mockResolvedValue(response);
+
+    await expect(withTinaRetryAllowingErrors("categoryRuleCountsQuery", "query q", send, { sleep })).resolves.toBe(response);
+    expect(send).toHaveBeenCalledTimes(1);
   });
 });

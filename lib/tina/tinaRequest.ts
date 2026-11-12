@@ -4,7 +4,8 @@
 // - "fatal": anything else, for example a query that the schema rejects. Retrying cannot help.
 //
 // Only "not-found" may turn into a fallback page. Pages are static, so a fallback rendered after
-// any other error is cached and shown as NOT FOUND until the next deploy.
+// any other error is cached and shown as NOT FOUND until the next deploy. The same applies to every
+// default value that a loader returns after an error: the static page caches it.
 export type TinaErrorKind = "not-found" | "transient" | "fatal";
 
 const NOT_FOUND_PATTERN = /Unable to find record/;
@@ -72,3 +73,39 @@ export const withTinaRetry = async <T>(label: string, request: (attempt: number)
     }
   }
 };
+
+export interface TinaRequestOptions {
+  fetchOptions?: Omit<RequestInit, "body" | "method">;
+}
+
+// TinaCloud returns throttling with HTTP 200, and Next's data cache stores a 200 response under a key that includes
+// the request headers. A retry adds a header, so it sends a new request instead of reading back the throttled
+// response. The first attempt sends the request unchanged, so it can still use the cache. The Tina client's disk
+// cache does not store a response that throws with the default "throw" error policy.
+export const tinaRetryOptions = (attempt: number, options: TinaRequestOptions = {}): TinaRequestOptions => {
+  if (attempt === 1) return options;
+  const headers = { ...(options.fetchOptions?.headers as Record<string, string> | undefined), "x-tina-retry": String(attempt) };
+  return { ...options, fetchOptions: { ...options.fetchOptions, headers } };
+};
+
+export const tinaResponseErrorMessages = (response: unknown): string[] =>
+  ((response as { errors?: unknown[] | null } | null)?.errors ?? [])
+    .map((e) => (typeof e === "string" ? e : (e as { message?: unknown } | null)?.message))
+    .filter((m): m is string => typeof m === "string" && m.length > 0);
+
+// For errorPolicy "all": the response carries its errors instead of throwing them, so a transient error in it is
+// thrown here to start a retry. The Tina disk cache stores these responses by request body, and each retry adds a
+// GraphQL comment to the query so that it cannot read the throttled response back.
+export const withTinaRetryAllowingErrors = <T>(label: string, query: string, send: (query: string) => Promise<T>, options?: TinaRetryOptions): Promise<T> =>
+  withTinaRetry(
+    label,
+    async (attempt) => {
+      const response = await send(attempt === 1 ? query : `${query}\n# attempt ${attempt}`);
+      const messages = tinaResponseErrorMessages(response);
+      if (messages.some((m) => classifyTinaError(m) === "transient")) {
+        throw new Error(`${label} returned errors:\n${messages.join("\n")}`);
+      }
+      return response;
+    },
+    options
+  );

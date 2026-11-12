@@ -128,8 +128,9 @@ jobs:
       - name: Resolve Rules Chat content branch
         id: content_branch
         if: inputs.slot_name == ''
+        env:
+          DESIRED_BRANCH: ${{ inputs.content_branch || vars.NEXT_PUBLIC_TINA_BRANCH || 'main' }}
         run: |
-          DESIRED_BRANCH="${{ inputs.content_branch || vars.NEXT_PUBLIC_TINA_BRANCH || 'main' }}"
           if git ls-remote --exit-code --heads "https://github.com/SSWConsulting/SSW.Rules.Content.git" "$DESIRED_BRANCH" > /dev/null 2>&1; then
             echo "branch=$DESIRED_BRANCH" >> "$GITHUB_OUTPUT"
           else
@@ -140,6 +141,11 @@ jobs:
       - name: Deploy Infrastructure
         id: deploy
         shell: pwsh
+        # Branch and slot names come from callers, so the script reads them from the environment instead of having them
+        # pasted into its source.
+        env:
+          CONTENT_BRANCH: ${{ steps.content_branch.outputs.branch || 'main' }}
+          SLOT_NAME: ${{ inputs.slot_name }}
         run: |
           $params = @{}
           $params['Environment'] = "${{ inputs.environment }}"
@@ -155,11 +161,11 @@ jobs:
           # The pipeline administers the Rules Chat database, so it can apply schema changes on every deploy.
           $params['RulesChatSqlAdminClientId'] = "${{ secrets.AZURE_CLIENT_ID }}"
           # The index job reads the content branch this environment shows, like the site build does.
-          $params['RulesChatContentBranch'] = "${{ steps.content_branch.outputs.branch || 'main' }}"
+          $params['RulesChatContentBranch'] = $env:CONTENT_BRANCH
           $params['RulesChatIndexImageTag'] = "${{ steps.index_image.outputs.tag }}"
           $params['RulesChatAlertEmail'] = "${{ vars.RULES_CHAT_ALERT_EMAIL }}"
 
-          $slotName = "${{ inputs.slot_name }}"
+          $slotName = $env:SLOT_NAME
           if ($slotName) {
               $params['SlotName'] = $slotName
           }

@@ -31,6 +31,27 @@ updates:
       - dependency-name: "tinacms"
       - dependency-name: "@tinacms/*"
 
+  # The Rules Chat index job builds its own image with its own lockfile.
+  - package-ecosystem: "npm"
+    directory: "/scripts/rules-chat/job"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "Type: Dependencies"
+    commit-message:
+      prefix: "⬆️ NPM"
+    rebase-strategy: auto
+
+  - package-ecosystem: "docker"
+    directory: "/scripts/rules-chat/job"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "Type: Dependencies"
+    commit-message:
+      prefix: "⬆️ Docker"
+    rebase-strategy: auto
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

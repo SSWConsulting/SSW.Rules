@@ -352,6 +352,9 @@ jobs:
       - name: Set up Docker Buildx (no cache)
         uses: docker/setup-buildx-action@v3
         with:
+          # GitHub discards the runner after the job. The removal of the builder deletes its build cache, which takes
+          # time and has no benefit on such a runner.
+          cleanup: false
           driver-opts: |
             env.BUILDKIT_STEP_LOG_MAX_SIZE=10485760
             env.BUILDKIT_STEP_LOG_MAX_SPEED=10485760
@@ -393,7 +396,35 @@ jobs:
           echo "=== Home directory usage ==="
           du -h -d 2 /home/runner 2>/dev/null | head -20 || true
 
+      # The image build writes less than 20 GB to the Docker data directory. The cleanup takes 1 to 3 minutes, so it runs
+      # only when the file system of that directory has less free space than MIN_FREE_GB. It also runs when this step
+      # cannot read the free space.
+      - name: Check if the disk cleanup is necessary
+        id: disk_space
+        env:
+          MIN_FREE_GB: 30
+        run: |
+          DOCKER_ROOT=$(timeout 30 docker info --format '{{.DockerRootDir}}' 2>/dev/null || true)
+          DOCKER_ROOT=${DOCKER_ROOT:-/var/lib/docker}
+          FREE_KB=$(df --output=avail -k "$DOCKER_ROOT" 2>/dev/null | awk 'NR==2 {print $1}' || true)
+
+          if [[ "$FREE_KB" =~ ^[0-9]+$ ]]; then
+            FREE_GB=$((FREE_KB / 1024 / 1024))
+            echo "Free disk space for Docker ($DOCKER_ROOT): ${FREE_GB} GB"
+            echo "Minimum to build with no cleanup: ${MIN_FREE_GB} GB"
+            if [ "$FREE_GB" -ge "$MIN_FREE_GB" ]; then
+              echo "Result: the disk cleanup is not necessary"
+              echo "enough_free_space=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "::notice::Free disk space for Docker is ${FREE_GB} GB, which is less than ${MIN_FREE_GB} GB. The disk cleanup runs."
+          else
+            echo "::warning::Could not read the free disk space of $DOCKER_ROOT. The disk cleanup runs."
+          fi
+          echo "enough_free_space=false" >> "$GITHUB_OUTPUT"
+
       - name: Aggressive disk space cleanup (pre-build)
+        if: steps.disk_space.outputs.enough_free_space != 'true'
         timeout-minutes: 5
         run: |
           echo "=== Starting aggressive disk cleanup ==="
@@ -451,6 +482,7 @@ jobs:
           echo "=== Cleanup completed ==="
 
       - name: Check disk usage after cleanup
+        if: steps.disk_space.outputs.enough_free_space != 'true'
         timeout-minutes: 2
         run: |
           echo "=== Disk Usage After Cleanup ==="
@@ -515,32 +547,10 @@ jobs:
           # Clean up intermediate containers after build
           pull: true
 
-      - name: Post-build cleanup
+      # Shows how much disk space the image build used, to check the minimum of the cleanup decision.
+      - name: Check disk usage after build
         if: always()
-        run: |
-          echo "=== Post-build cleanup ==="
-
-          # Clean Docker buildx cache immediately after build
-          echo "Cleaning Docker buildx cache..."
-          docker buildx prune -af || true
-
-          # Remove intermediate build containers and images
-          echo "Removing intermediate Docker resources..."
-          docker system prune -af --volumes || true
-          docker builder prune -af || true
-
-          # Clean runner diagnostic logs that may have grown large
-          echo "Cleaning runner diagnostic logs..."
-          sudo find /home/runner/actions-runner/cached/_diag -name "*.log" -type f -size +100M -delete || true
-          sudo find /home/runner/actions-runner/cached/_diag -name "*.log" -type f -mtime +0 -delete || true
-
-          # Final disk usage check
-          echo ""
-          echo "=== Final Disk Usage ==="
-          df -h
-          echo ""
-          AVAILABLE=$(df -h / | awk 'NR==2 {print $4}')
-          echo "Available disk space: $AVAILABLE"
+        run: df -h || true
 
       - name: Record build completion and analyze performance
         run: |

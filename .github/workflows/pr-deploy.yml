@@ -3,8 +3,11 @@ on:
   issue_comment:
     types: [created]
 
+# Each comment starts this workflow, and GitHub applies the concurrency group before the `if` of the validate job.
+# Only a /deploy comment shares the group of its pull request. Another comment gets a group of its own, so it cannot
+# cancel a deploy that is in progress.
 concurrency:
-  group: pr-${{ github.event.issue.number }}
+  group: pr-${{ github.event.issue.number }}-${{ github.event.issue.pull_request && github.event.comment.body == '/deploy' && 'deploy' || github.run_id }}
   cancel-in-progress: true
 
 permissions:

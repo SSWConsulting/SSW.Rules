@@ -1,5 +1,6 @@
 import { unstable_cache } from "next/cache";
 import { extractBodyPreview } from "@/lib/bodyUtils";
+import { tinaRetryOptions, withTinaRetry } from "@/lib/tina/tinaRequest";
 import { ActivityRule } from "@/models/ActivityRule";
 import { RecentComment } from "@/models/RecentComment";
 import client from "@/tina/__generated__/client";
@@ -160,7 +161,7 @@ async function fetchRulesByGuids(
   >();
   if (guids.length === 0) return map;
 
-  const res = await client.queries.rulesByGuidQuery({ guids });
+  const res = await withTinaRetry("rulesByGuidQuery", (attempt) => client.queries.rulesByGuidQuery({ guids }, tinaRetryOptions(attempt)));
   const edges = res?.data?.ruleConnection?.edges ?? [];
 
   for (const edge of edges) {

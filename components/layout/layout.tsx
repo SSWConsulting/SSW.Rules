@@ -1,4 +1,5 @@
 import React, { PropsWithChildren } from "react";
+import { tinaRetryOptions, withTinaRetry } from "@/lib/tina/tinaRequest";
 import { getMegamenu } from "@/utils/get-mega-menu";
 import client from "../../tina/__generated__/client";
 import { HiddenOnChatPopOut } from "./HiddenOnChatPopOut";
@@ -12,23 +13,23 @@ type LayoutProps = PropsWithChildren & {
 };
 
 export default async function Layout({ children, rawPageData }: LayoutProps) {
-  const { data: globalData } = await client.queries
-    .global(
+  const { data: globalData } = await withTinaRetry("global", (attempt) =>
+    client.queries.global(
       {
         relativePath: "index.json",
       },
-      {
+      tinaRetryOptions(attempt, {
         fetchOptions: {
           next: {
             revalidate: 60,
           },
         },
-      }
+      })
     )
-    .catch((error) => {
-      console.error("[SiteLayout] global query failed:", error);
-      throw error;
-    });
+  ).catch((error) => {
+    console.error("[SiteLayout] global query failed:", error);
+    throw error;
+  });
 
   const { menuGroups } = await getMegamenu();
 

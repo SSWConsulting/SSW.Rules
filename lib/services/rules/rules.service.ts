@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { extractBodyPreview } from "@/lib/bodyUtils";
+import { classifyTinaError, tinaResponseErrorMessages, tinaRetryOptions, withTinaRetry, withTinaRetryAllowingErrors } from "@/lib/tina/tinaRequest";
 import { toSlug } from "@/lib/utils";
 import { ActivityRule } from "@/models/ActivityRule";
 import { PaginationResult, PaginationVars } from "@/models/Pagination";
@@ -20,7 +21,7 @@ type RuleQueryVars = PaginationVars & {
 
 async function fetchActivityLatestRulesData(size: number = 200): Promise<ActivityRule[]> {
   try {
-    const res = await client.queries.activityLatestRulesQuery({ size });
+    const res = await withTinaRetry("activityLatestRulesQuery", (attempt) => client.queries.activityLatestRulesQuery({ size }, tinaRetryOptions(attempt)));
 
     const rules = res?.data?.ruleConnection?.edges?.filter((edge: any) => edge?.node?.guid).map((edge: any) => edge.node) || [];
 
@@ -59,11 +60,16 @@ export async function fetchActivityLatestRules(size: number = 200): Promise<Acti
 
 // Internal function that performs the actual data fetching
 async function fetchLatestRulesData(size: number = 5, sortOption: "lastUpdated" | "created" = "lastUpdated", includeBody: boolean = false) {
-  const res = await client.queries.latestRulesQuery({
-    size,
-    sortOption,
-    includeBody,
-  });
+  const res = await withTinaRetry("latestRulesQuery", (attempt) =>
+    client.queries.latestRulesQuery(
+      {
+        size,
+        sortOption,
+        includeBody,
+      },
+      tinaRetryOptions(attempt)
+    )
+  );
 
   const results = res?.data?.ruleConnection?.edges?.filter((edge: any) => edge && edge.node).map((edge: any) => edge.node) || [];
 
@@ -104,18 +110,17 @@ async function fetchCategoryRuleData(): Promise<{
   let hasNextPage = true;
 
   while (hasNextPage) {
-    const res: any = await (client as any).request({
-      query: CategoryRuleCountsQueryDocument,
-      variables: {
-        first: 50,
-        after,
-      },
-      errorPolicy: "all",
-    });
+    const variables = { first: 50, after };
+    const res: any = await withTinaRetryAllowingErrors(`categoryRuleCountsQuery after=${after}`, String(CategoryRuleCountsQueryDocument), (query) =>
+      (client as any).request({ query, variables, errorPolicy: "all" })
+    );
 
-    const errorMessages = (res?.errors ?? [])
-      .map((e: any) => (typeof e === "string" ? e : e?.message))
-      .filter((m: any): m is string => typeof m === "string" && m.length > 0);
+    const errorMessages = tinaResponseErrorMessages(res);
+    // A missing rule only lowers a count. Any other error could drop whole categories from the result.
+    const otherErrors = errorMessages.filter((m) => classifyTinaError(m) !== "not-found");
+    if (otherErrors.length > 0) {
+      throw new Error(`[fetchCategoryRuleData] categoryRuleCountsQuery failed after=${after}:\n${otherErrors.join("\n")}`);
+    }
 
     const missingRecordErrors = errorMessages.filter((m) => m.includes("Unable to find record"));
     if (missingRecordErrors.length > 0) {
@@ -187,7 +192,7 @@ export async function fetchCategoryRuleCounts(): Promise<Record<string, number>>
 }
 
 export async function fetchArchivedRules(variables: { first?: number; after?: string } = {}): Promise<QueryResult<Rule>> {
-  const result = await client.queries.archivedRulesQuery(variables);
+  const result = await withTinaRetry("archivedRulesQuery", (attempt) => client.queries.archivedRulesQuery(variables, tinaRetryOptions(attempt)));
 
   const archivedRules = result.data.ruleConnection?.edges ? result.data.ruleConnection.edges.map((edge: any) => edge.node) : [];
 
@@ -217,14 +222,16 @@ export async function fetchAllArchivedRules(firstPerPage = 50): Promise<Rule[]> 
   return all;
 }
 
+const fetchHomepage = () => withTinaRetry("homepage", (attempt) => client.queries.homepage({ relativePath: "index.json" }, tinaRetryOptions(attempt)));
+
 export async function fetchQuickLinks(): Promise<QuickLink[]> {
-  const res = await client.queries.homepage({ relativePath: "index.json" });
+  const res = await fetchHomepage();
   return Array.isArray(res.data.homepage.quickLinks?.links) ? (res.data.homepage.quickLinks.links as QuickLink[]) : [];
 }
 
 export const fetchHomepageData = cache(async () => {
   try {
-    const res = await client.queries.homepage({ relativePath: "index.json" });
+    const res = await fetchHomepage();
     return { data: res.data, query: res.query, variables: res.variables };
   } catch (error) {
     console.error("Failed to fetch homepage data from Tina CMS:", error);
@@ -237,14 +244,23 @@ export async function fetchPaginatedRules(variables: RuleQueryVars = {}): Promis
 
   const filter = q && q.trim() ? { [field]: { startsWith: q.trim() } } : undefined;
 
-  const res = await client.queries.paginatedRulesQuery({
-    first,
-    last,
-    after,
-    before,
-    sort,
-    filter,
-  });
+  // Only the paginated rules API calls this, while a visitor waits, so it retries once (about 1 s) instead of four times
+  const res = await withTinaRetry(
+    "paginatedRulesQuery",
+    (attempt) =>
+      client.queries.paginatedRulesQuery(
+        {
+          first,
+          last,
+          after,
+          before,
+          sort,
+          filter,
+        },
+        tinaRetryOptions(attempt)
+      ),
+    { attempts: 2 }
+  );
 
   const conn = res?.data?.ruleConnection;
   const nodes = (conn?.edges ?? []).map((e: any) => e?.node).filter(Boolean);

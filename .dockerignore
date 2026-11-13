@@ -3,6 +3,15 @@
 .github
 
 content-temp
+# build-artifacts.yml puts the SSW.Rules.Content checkout in the content folder. Its git data and its images are
+# approximately 3 GB, and the image build does not read them. The MDX and JSON files stay in the build context, because
+# Tailwind reads the text files of the build folder to find the class names for the CSS.
+content/**
+!content/**/*.mdx
+!content/**/*.json
+# A git ref is a file with the name of its branch, and that name can end in .json or .mdx.
+content/.git/**
+
 # scripts are needed during build (postbuild runs generate-archived-rules.js)
 # so keep scripts excluded by default, but include the one required file
 scripts

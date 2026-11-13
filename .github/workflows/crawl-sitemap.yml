@@ -7,6 +7,19 @@ on:
                 type: string
                 required: true
                 description: 'URL of the sitemap to crawl'
+            # Only a caller can set the request rate. A crawl that a person starts uses the default rate of the crawler
+            # (5 requests, then 250 ms). A request for a page that is older than its revalidate period starts a render
+            # that reads TinaCloud, and a fast crawl of such pages can cause TinaCloud throttling.
+            batch_size:
+                type: string
+                required: false
+                default: ''
+                description: 'Number of requests at the same time (SITEMAP_BATCH_SIZE). Empty: the default of the crawler.'
+            delay_ms:
+                type: string
+                required: false
+                default: ''
+                description: 'Delay between batches in milliseconds (SITEMAP_DELAY_MS). Empty: the default of the crawler.'
         outputs:
             total_pages:
                 description: 'Total number of pages crawled'
@@ -62,29 +75,23 @@ jobs:
 
             - name: Checkout code
               uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
                   node-version-file: .nvmrc
 
-            - name: Install pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 10.10.0
-
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
+            # The crawler imports only modules that are part of Node.js, so this job does not install dependencies.
             - name: Run sitemap crawler
               id: crawl_sitemap
               continue-on-error: true
+              env:
+                  SITEMAP_BATCH_SIZE: ${{ inputs.batch_size }}
+                  SITEMAP_DELAY_MS: ${{ inputs.delay_ms }}
               run: |
                   echo "🔍 Running sitemap crawler..."
                   echo "Sitemap URL: ${{ steps.set_url.outputs.sitemap_url }}"
-                  pnpm crawl-sitemap "${{ steps.set_url.outputs.sitemap_url }}" || true
+                  node ./scripts/crawl-sitemap.js "${{ steps.set_url.outputs.sitemap_url }}" || true
 
             - name: Extract statistics
               id: extract_stats

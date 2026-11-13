@@ -65,12 +65,13 @@ jobs:
             EXECUTION=$(az containerapp job start --name "$JOB_NAME" --resource-group "$RESOURCE_GROUP" --query name --output tsv)
           else
             # az containerapp job start --args sends a container with only the arguments, not the job's image and settings.
-            # So this starts the run with the job's own container, plus the arguments.
+            # So this starts the run with the job's own container, plus the arguments. It copies only the fields the run
+            # needs, because the job can carry fields newer than the API version this request uses (such as imageType).
             JOB_ID=$(az containerapp job show --name "$JOB_NAME" --resource-group "$RESOURCE_GROUP" --query id --output tsv)
             ARGS_JSON=$(printf '%s\n' "${ARGS[@]}" | jq --raw-input . | jq --slurp --compact-output .)
             TEMPLATE=$(az containerapp job show --name "$JOB_NAME" --resource-group "$RESOURCE_GROUP" \
-              --query "properties.template.{containers: containers, initContainers: initContainers}" --output json \
-              | jq --argjson args "$ARGS_JSON" '.containers[0].args = $args')
+              --query "properties.template.containers[0]" --output json \
+              | jq --argjson args "$ARGS_JSON" '{containers: [{name, image, env, resources, args: $args}]}')
             EXECUTION=$(az rest --method post --url "https://management.azure.com$JOB_ID/start?api-version=2024-03-01" \
               --headers "Content-Type=application/json" --body "$TEMPLATE" --query name --output tsv)
           fi

@@ -17,6 +17,7 @@ import RuleActionButtons from "@/components/RuleActionButtons";
 import { SocialVideoEmbed } from "@/components/shared/SocialVideoEmbed";
 import { getMarkdownComponentMapping } from "@/components/tina-markdown/markdown-component-mapping";
 import { Card } from "@/components/ui/card";
+import { tinaImageSrc, withTinaImageSrc } from "@/lib/tinaAssets";
 
 export interface ServerRulePageProps {
   rule: any;
@@ -79,7 +80,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
           <div className="flex border-b pb-2">
             {rule?.thumbnail && (
               <div className="w-[175px] h-[175px] relative mr-4">
-                <Image src={rule.thumbnail} alt="thumbnail image for the rule" fill className="object-cover object-center" />
+                <Image src={tinaImageSrc(rule.thumbnail)} alt="thumbnail image for the rule" fill className="object-cover object-center" />
               </div>
             )}
             <div className="flex flex-col flex-1 justify-between">
@@ -95,7 +96,7 @@ export default function ServerRulePage({ serverRulePageProps, tinaProps }: Serve
           </div>
 
           <div className="mt-8 rule-content" data-tina-field={tinaField(rule, "body")}>
-            <TinaMarkdown content={rule?.body} components={getMarkdownComponentMapping(true)} />
+            <TinaMarkdown content={withTinaImageSrc(rule?.body)} components={getMarkdownComponentMapping(true)} />
           </div>
 
           <div className="hidden md:block">

@@ -1,5 +1,5 @@
 // Main Bicep Template for SSW Rules Infrastructure
-// Deploys App Service, Application Insights, Container Registry, and The Rulekeeper's database and models
+// Deploys App Service, Application Insights, Container Registry, and The Ruleferret's database and models
 
 targetScope = 'resourceGroup'
 
@@ -69,7 +69,7 @@ param tags object = {
 param slotName string = ''
 
 // ----------------------------------------------------------------------------
-// The Rulekeeper (Rules Chat)
+// The Ruleferret (Rules Chat)
 // ----------------------------------------------------------------------------
 
 @description('Application (client) ID of the deployment pipeline\'s service principal, which administers the Rules Chat SQL server')

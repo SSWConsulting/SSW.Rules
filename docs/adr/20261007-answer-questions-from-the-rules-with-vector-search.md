@@ -7,11 +7,11 @@
 
 ## Context and Problem Statement
 
-The Rulekeeper has to answer two kinds of question: "do we have rules about X?", where people expect every relevant rule, and "what do the rules say about X?", where people expect an answer with the rules it came from.
+The Ruleferret has to answer two kinds of question: "do we have rules about X?", where people expect every relevant rule, and "what do the rules say about X?", where people expect an answer with the rules it came from.
 
 Today the site's Algolia index holds titles, SEO descriptions, authors and categories, but not rule text, and it is rebuilt only during a deploy (daily for production). Nothing in the site embeds or vectorises content.
 
-How should The Rulekeeper find the rules that answer a question?
+How should The Ruleferret find the rules that answer a question?
 
 ## Considered Options
 
@@ -53,6 +53,6 @@ Hybrid search (keyword plus vector) is not part of this decision. It can be adde
 
 ## Links
 
-- Refines [Replace RulesGPT with The Rulekeeper, built into the Rules site](20261007-replace-rulesgpt-with-the-rulekeeper.md)
+- Refines [Replace RulesGPT with The Ruleferret, built into the Rules site](20261007-replace-rulesgpt-with-the-ruleferret.md)
 - Refined by [Use Azure SQL Database for vector search](20261007-use-azure-sql-database-for-vector-search.md)
 - Refined by [Embed active rule text with labelled examples, and leave out archived rules](20261007-embed-active-rule-text-with-labelled-examples.md)

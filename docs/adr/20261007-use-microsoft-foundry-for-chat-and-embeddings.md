@@ -7,7 +7,7 @@
 
 ## Context and Problem Statement
 
-The Rulekeeper needs two models: an embedding model that turns rule chunks and questions into vectors, and a chat model that writes answers from the retrieved excerpts.
+The Ruleferret needs two models: an embedding model that turns rule chunks and questions into vectors, and a chat model that writes answers from the retrieved excerpts.
 
 Where should these models run?
 

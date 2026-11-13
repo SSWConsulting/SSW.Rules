@@ -75,7 +75,7 @@ function readAmount(name: string, fallback?: number): number {
 }
 
 export type RulesChatLimits = {
-  // 0 keeps The Rulekeeper to SSW staff.
+  // 0 keeps The Ruleferret to SSW staff.
   memberDailyLimit: number;
   monthlyBudgetUsd: number;
   inputPricePerMillionTokensUsd: number;

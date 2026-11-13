@@ -5,7 +5,7 @@ import { getAuth0 } from "@/lib/auth0";
 import { getRulesChatTier } from "@/lib/rulesChatAccess";
 
 export const metadata: Metadata = {
-  title: "The Rulekeeper",
+  title: "The Ruleferret",
   robots: { index: false },
 };
 

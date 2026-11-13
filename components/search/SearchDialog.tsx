@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useRef, useState } from "react";
 import { Configure, Highlight, InstantSearch, useHits, useInstantSearch, useSearchBox } from "react-instantsearch";
 import { ArchivedBadge } from "@/components/ArchivedBadge";
-import { askRulekeeper } from "@/components/chat/askRulekeeper";
-import { RulekeeperMark } from "@/components/chat/RulekeeperMark";
+import { askRuleferret } from "@/components/chat/askRuleferret";
+import { RuleferretMark } from "@/components/chat/RuleferretMark";
 import { useRulesChatAccess } from "@/components/chat/useRulesChatAccess";
 import Spinner from "@/components/Spinner";
 import { searchClient } from "@/lib/algoliaClient";
@@ -52,14 +52,14 @@ function Results({ onDone }: { onDone: () => void }) {
   const hasError = isSearchable && !isLoading && status === "error";
   const showResults = isSearchable && !isLoading && !hasError;
   const showNoResults = showResults && hits.length === 0;
-  // Asking The Rulekeeper is always the first option, so Enter asks; the arrow keys reach the rules.
+  // Asking The Ruleferret is always the first option, so Enter asks; the arrow keys reach the rules.
   const ask: Item[] = canAsk ? [{ kind: "ask", query }] : [];
   const results: Item[] = showResults ? [...archivedLast(hits).map((hit) => ({ kind: "rule" as const, hit })), { kind: "all", query }] : [];
   const items = [...ask, ...results];
 
   const activate = (item: Item | null) => {
     if (!item) return;
-    if (item.kind === "ask") askRulekeeper(item.query);
+    if (item.kind === "ask") askRuleferret(item.query);
     else if (item.kind === "rule") router.push(`/${item.hit.slug}`);
     else router.push(`/search?keyword=${encodeURIComponent(item.query)}`);
     onDone();
@@ -106,9 +106,9 @@ function Results({ onDone }: { onDone: () => void }) {
           >
             {item.kind === "ask" && (
               <span className="flex items-center gap-3">
-                <RulekeeperMark size="small" />
+                <RuleferretMark size="small" />
                 <span className="min-w-0 flex-1">
-                  <span className="block font-semibold text-ssw-black">Ask The Rulekeeper</span>
+                  <span className="block font-semibold text-ssw-black">Ask The Ruleferret</span>
                   <span className="block truncate text-gray-600 text-sm">
                     {item.query ? <>&ldquo;{item.query}&rdquo;</> : "Ask a question and get answers that link to the rules"}
                   </span>

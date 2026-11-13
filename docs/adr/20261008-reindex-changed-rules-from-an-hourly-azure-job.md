@@ -21,7 +21,7 @@ How should a rule change start re-indexing?
 
 ## Decision Outcome
 
-Chosen option 1: "An hourly schedule on the Azure job", because it needs no credential outside Azure and no change to the content repo, and an hour is quick enough for rules to reach The Rulekeeper.
+Chosen option 1: "An hourly schedule on the Azure job", because it needs no credential outside Azure and no change to the content repo, and an hour is quick enough for rules to reach The Ruleferret.
 
 How it works:
 

@@ -35,7 +35,7 @@ describe("refusalMessage", () => {
 
   it("names the day the monthly pause ends", () => {
     const message = refusalMessage(429, { reason: "paused", retryAt: later(60 * 24 * 20) }, now);
-    expect(message).toMatch(/^The Rulekeeper has reached its limit for this month\. It's back on .+\.$/);
+    expect(message).toMatch(/^The Ruleferret has reached its limit for this month\. It's back on .+\.$/);
   });
 
   it("falls back to plain wording without a usable retry time", () => {
@@ -43,7 +43,7 @@ describe("refusalMessage", () => {
   });
 
   it("explains a refused account and treats anything else as a failure", () => {
-    expect(refusalMessage(403, null, now)).toBe("The Rulekeeper isn't available for your account.");
+    expect(refusalMessage(403, null, now)).toBe("The Ruleferret isn't available for your account.");
     expect(refusalMessage(500, null, now)).toBe(FAILURE_TEXT);
     expect(refusalMessage(429, { reason: "unknown" }, now)).toBe(FAILURE_TEXT);
   });

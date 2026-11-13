@@ -7,7 +7,7 @@
 
 ## Context and Problem Statement
 
-New and edited rules must reach The Rulekeeper quickly; slow discovery of new rules is why it exists. Rules are created and edited through TinaCMS or pull requests, and both end up as commits on `main` in `SSW.Rules.Content`.
+New and edited rules must reach The Ruleferret quickly; slow discovery of new rules is why it exists. Rules are created and edited through TinaCMS or pull requests, and both end up as commits on `main` in `SSW.Rules.Content`.
 
 The index script (`SSW.Rules/scripts/rules-chat/index-rules.mjs`) is incremental. It compares a hash of each rule file with what is stored, so a run embeds only new and changed rules, removes deleted and archived ones, and re-embeds everything when the embedding model or chunking rules change.
 
@@ -63,7 +63,7 @@ Not decided here:
 ### Only during the daily site deploy
 
 - ✅ No new trigger; the deploy already syncs Algolia.
-- ❌ New rules wait up to a day, which is the problem The Rulekeeper is meant to fix.
+- ❌ New rules wait up to a day, which is the problem The Ruleferret is meant to fix.
 
 ## Links
 

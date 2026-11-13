@@ -5,9 +5,9 @@ import Link from "next/link";
 import { type ComponentType, type FormEvent, type KeyboardEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
 import type { Options as MarkdownOptions } from "react-markdown";
 import { MAX_MESSAGE_CHARS } from "@/lib/rulesChat/limits";
-import { onAskRulekeeper } from "./askRulekeeper";
+import { onAskRuleferret } from "./askRuleferret";
 import { isCitedRuleLink, linkCitations } from "./citations";
-import { RulekeeperMark } from "./RulekeeperMark";
+import { RuleferretMark } from "./RuleferretMark";
 import { type ChatMessage, useChatMessages } from "./useChatMessages";
 
 const SUGGESTIONS = ["Do you have a rule about pull requests?", "Do you have a rule about email etiquette?", "Do you have a rule about Definition of Done?"];
@@ -30,8 +30,8 @@ const ReactMarkdown = lazy(loadMarkdown);
 export function ChatTitle() {
   return (
     <div className="flex min-w-0 items-center gap-2 text-white">
-      <RulekeeperMark size="small" />
-      <span className="truncate font-semibold">The Rulekeeper</span>
+      <RuleferretMark size="small" />
+      <span className="truncate font-semibold">The Ruleferret</span>
       <span className="rounded-full bg-white/15 px-2 py-0.5 text-xs font-medium text-white">Beta</span>
     </div>
   );
@@ -129,7 +129,7 @@ export function ChatConversation({
     if (pending) setDraft(question.slice(0, MAX_MESSAGE_CHARS));
     else send(question.slice(0, MAX_MESSAGE_CHARS));
   };
-  useEffect(() => onAskRulekeeper((question) => askFromElsewhere.current(question)), []);
+  useEffect(() => onAskRuleferret((question) => askFromElsewhere.current(question)), []);
 
   const submit = (text: string) => {
     const question = text.trim();
@@ -155,8 +155,8 @@ export function ChatConversation({
       <div ref={scroller} className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-4">
         {messages.length === 0 && !pending ? (
           <div className="m-auto flex flex-col items-center gap-3 text-center">
-            <RulekeeperMark size="large" />
-            <p className="text-lg font-semibold text-ssw-black">Ask The Rulekeeper about SSW Rules</p>
+            <RuleferretMark size="large" />
+            <p className="text-lg font-semibold text-ssw-black">Ask The Ruleferret about SSW Rules</p>
             <p className="max-w-72 text-sm text-gray-600">There's a rule for that. Probably several. Answers link to the rules they come from.</p>
             <div className="mt-2 flex flex-col gap-2">
               {SUGGESTIONS.map((suggestion) => (

@@ -1,11 +1,11 @@
 using Aspire.Hosting.JavaScript;
 
-// Runs The Rulekeeper and the site locally: SQL Server in a container, the schema, the models, a sample index of the
+// Runs The Ruleferret and the site locally: SQL Server in a container, the schema, the models, a sample index of the
 // rules, and the Next.js site with the chat switched on. Start it from the repo root with:
 //
 //   pnpm aspire    (runs aspire run --project src/RulesChat/RulesChat.AppHost)
 //
-// See docs/rulekeeper/local-development.md.
+// See docs/ruleferret/local-development.md.
 
 var builder = DistributedApplication.CreateBuilder(args);
 

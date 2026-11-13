@@ -11,7 +11,7 @@
     - acr{project}{env}       (Container Registry - no hyphens allowed)
     - rg-{project}-{env}      (Resource Group)
 
-    The Rulekeeper (Rules Chat):
+    The Ruleferret (Rules Chat):
     - id-{project}-chat-{env}   (User-assigned managed identity for the site)
     - sql-{project}-chat-{env}  (Azure SQL server, database RulesChat)
     - aif-{project}-chat-{env}  (Microsoft Foundry resource with the chat and embedding models)

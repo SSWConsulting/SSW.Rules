@@ -38,12 +38,12 @@ const getCurrentEmployeeGitHubUrls = unstable_cache(
   { revalidate: EMPLOYEE_LIST_TTL_SECONDS }
 );
 
-// Read on every request, so The Rulekeeper can be switched off with an app setting and no rebuild.
+// Read on every request, so The Ruleferret can be switched off with an app setting and no rebuild.
 function isRulesChatEnabled(): boolean {
   return process.env.RULES_CHAT_ENABLED === "true";
 }
 
-// Lets any signed-in developer use The Rulekeeper locally without CRM credentials. Only a development server honours it,
+// Lets any signed-in developer use The Ruleferret locally without CRM credentials. Only a development server honours it,
 // so a production build ignores the setting even if it is set by mistake.
 export function hasDevAccess(): boolean {
   return process.env.NODE_ENV === "development" && process.env.RULES_CHAT_DEV_ACCESS === "true";

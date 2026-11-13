@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useIsClient, useLocalStorage, useMediaQuery, useSessionStorage, useWindowSize } from "usehooks-ts";
 import { cn } from "@/lib/utils";
-import { onAskRulekeeper } from "./askRulekeeper";
+import { onAskRuleferret } from "./askRuleferret";
 import { type ChatActivity, ChatConversation, ChatTitle } from "./ChatConversation";
 import { CHAT_POPOUT_PATH } from "./chatPopOut";
 import {
@@ -22,7 +22,7 @@ import {
   resizePanel,
   usePointerDrag,
 } from "./floating";
-import { RulekeeperMark } from "./RulekeeperMark";
+import { RuleferretMark } from "./RuleferretMark";
 import { useClearChatOfOtherUsers } from "./useChatMessages";
 import { useRulesChatAccess } from "./useRulesChatAccess";
 
@@ -87,7 +87,7 @@ export function ChatWidget() {
     if (focusPillOnHide.current && mode === "minimised") pillOpenButton.current?.focus();
     focusPillOnHide.current = false;
   }, [mode]);
-  useEffect(() => onAskRulekeeper(() => setMode("open")), [setMode]);
+  useEffect(() => onAskRuleferret(() => setMode("open")), [setMode]);
 
   // An answer that finishes while the chat is out of view is flagged on the pill until the chat is opened.
   useEffect(() => {
@@ -127,7 +127,7 @@ export function ChatWidget() {
   return (
     <>
       <section
-        aria-label="The Rulekeeper"
+        aria-label="The Ruleferret"
         onKeyDown={onPanelKeyDown}
         // Stays mounted while hidden so a half-typed question and a streaming answer survive.
         className={cn(
@@ -189,11 +189,11 @@ export function ChatWidget() {
             type="button"
             onClick={() => setMode("open")}
             className="flex h-full min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full pr-3 pl-1.5 focus-visible:outline-2 focus-visible:outline-ssw-red focus-visible:outline-offset-2"
-            aria-label={hasUnread ? "Open The Rulekeeper, new answer" : "Open The Rulekeeper"}
+            aria-label={hasUnread ? "Open The Ruleferret, new answer" : "Open The Ruleferret"}
           >
-            <RulekeeperMark size="small" />
+            <RuleferretMark size="small" />
             <span className="min-w-0 flex-1 text-left leading-tight">
-              <span className="block truncate font-semibold text-sm">The Rulekeeper</span>
+              <span className="block truncate font-semibold text-sm">The Ruleferret</span>
               <span className={cn("block truncate text-xs", hasUnread ? "text-white" : "text-white/70")}>{pillStatus(activity, hasUnread)}</span>
             </span>
             {hasUnread && <span className="size-2.5 shrink-0 rounded-full bg-ssw-red ring-2 ring-ssw-black" aria-hidden />}

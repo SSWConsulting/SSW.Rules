@@ -1,5 +1,5 @@
 // Rules Chat SQL Module
-// Deploys an Azure SQL logical server and database for The Rulekeeper's vector index and usage counts
+// Deploys an Azure SQL logical server and database for The Ruleferret's vector index and usage counts
 
 @description('Name of the SQL logical server (globally unique)')
 param sqlServerName string

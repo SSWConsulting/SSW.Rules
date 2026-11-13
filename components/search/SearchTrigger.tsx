@@ -8,7 +8,7 @@ import { openSearch } from "./openSearch";
 
 export function SearchTrigger() {
   const [shortcut, setShortcut] = useState("Ctrl K");
-  const label = useRulesChatAccess() ? "Search rules or ask The Rulekeeper" : "Search rules";
+  const label = useRulesChatAccess() ? "Search rules or ask The Ruleferret" : "Search rules";
 
   useEffect(() => {
     if (/Mac|iPhone|iPad/.test(navigator.userAgent)) setShortcut("⌘ K");

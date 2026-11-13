@@ -7,7 +7,7 @@
 
 ## Context and Problem Statement
 
-The Rulekeeper's answers must show which rules they come from, so people can check them. The model writes citations such as [2], which are turned into links.
+The Ruleferret's answers must show which rules they come from, so people can check them. The model writes citations such as [2], which are turned into links.
 
 Two questions came up while testing. First, the model numbers rules by their position in the search results, so an answer could show [1] and [7] with nothing in between. Second, people want to refer back to an earlier answer, as in "tell me more about [2]", which only works if [2] means the same rule throughout.
 

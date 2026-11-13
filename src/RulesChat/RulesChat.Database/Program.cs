@@ -1,4 +1,4 @@
-// Brings The Rulekeeper's database up to date: applies any pending EF Core migrations, then, when the deploy pipeline
+// Brings The Ruleferret's database up to date: applies any pending EF Core migrations, then, when the deploy pipeline
 // passes the managed identities of the site and the index job, gives each one its access. Safe to run on every deploy
 // and every local start.
 //

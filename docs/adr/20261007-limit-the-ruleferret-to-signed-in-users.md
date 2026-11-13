@@ -1,4 +1,4 @@
-# Limit The Rulekeeper to signed-in users, with daily limits outside SSW
+# Limit The Ruleferret to signed-in users, with daily limits outside SSW
 
 - Status: accepted
 - Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
@@ -7,11 +7,11 @@
 
 ## Context and Problem Statement
 
-Every question costs money, and the Rules site is public. Without limits, anyone could run up the AI bill or use The Rulekeeper as a free general chatbot.
+Every question costs money, and the Rules site is public. Without limits, anyone could run up the AI bill or use The Ruleferret as a free general chatbot.
 
 Sign-in on the Rules site is through Auth0 with GitHub, and is optional. The signed-in profile carries the person's GitHub username and their GitHub email, which is usually not an `@ssw.com.au` address. The site can already look up current employees in Dynamics CRM, which stores each employee's GitHub profile URL.
 
-Who can use The Rulekeeper, and how much?
+Who can use The Ruleferret, and how much?
 
 ## Considered Options
 
@@ -21,13 +21,13 @@ Who can use The Rulekeeper, and how much?
 
 ## Decision Outcome
 
-Chosen option 1: "Signed-in users only", because it opens The Rulekeeper beyond SSW without the work and risk of anonymous access: no identifying visitors by cookie and IP address, no bot protection, and no public privacy notice for anonymous users.
+Chosen option 1: "Signed-in users only", because it opens The Ruleferret beyond SSW without the work and risk of anonymous access: no identifying visitors by cookie and IP address, no bot protection, and no public privacy notice for anonymous users.
 
 How it works:
 
 - **SSW staff** are signed-in users whose GitHub sign-in username exactly matches the GitHub profile CRM holds for a current employee. They get a high safety cap (for example 200 questions a day) so a leaked session or a runaway script cannot run up the bill.
 - **Other signed-in users** get a daily limit (for example 20–30 questions). Anyone can create a GitHub account, so this tier is treated as close to anonymous.
-- **A monthly spending cap** across everyone switches The Rulekeeper off for non-SSW users when reached.
+- **A monthly spending cap** across everyone switches The Ruleferret off for non-SSW users when reached.
 - **Usage counts** are stored in the chat database, so limits survive restarts and are shared between server instances.
 - **Conversations** are kept only in the user's browser; questions are not stored on the server.
 
@@ -59,4 +59,4 @@ Not decided here:
 
 ## Links
 
-- Refines [Replace RulesGPT with The Rulekeeper, built into the Rules site](20261007-replace-rulesgpt-with-the-rulekeeper.md)
+- Refines [Replace RulesGPT with The Ruleferret, built into the Rules site](20261007-replace-rulesgpt-with-the-ruleferret.md)

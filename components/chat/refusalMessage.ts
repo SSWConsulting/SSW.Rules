@@ -19,7 +19,7 @@ function dayAndTime(retryAt: Date, now: Date): string {
 
 // What to tell the user when the chat API turns a question down, with times in their own time zone.
 export function refusalMessage(status: number, body: RefusalBody, now = new Date()): string {
-  if (status === 403) return "The Rulekeeper isn't available for your account.";
+  if (status === 403) return "The Ruleferret isn't available for your account.";
   // The request outgrew the server's limits. Asking again sends the same request, so only a new chat helps.
   if (status === 400 || status === 413) return TOO_LONG_TEXT;
   if (status !== 429) return FAILURE_TEXT;
@@ -38,8 +38,8 @@ export function refusalMessage(status: number, body: RefusalBody, now = new Date
         : "You've used today's questions. Try again tomorrow.";
     case "paused":
       return retryAt
-        ? `The Rulekeeper has reached its limit for this month. It's back on ${retryAt.toLocaleDateString([], { day: "numeric", month: "long" })}.`
-        : "The Rulekeeper has reached its limit for this month.";
+        ? `The Ruleferret has reached its limit for this month. It's back on ${retryAt.toLocaleDateString([], { day: "numeric", month: "long" })}.`
+        : "The Ruleferret has reached its limit for this month.";
     default:
       return FAILURE_TEXT;
   }

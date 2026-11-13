@@ -26,7 +26,7 @@ const LIMIT_MESSAGES: Record<LimitReason, string> = {
   busy: "One question at a time. Wait for the answer to finish.",
   minute: "Too many questions in a minute. Wait a moment and try again.",
   day: "You've reached today's question limit.",
-  paused: "The Rulekeeper has reached its monthly limit.",
+  paused: "The Ruleferret has reached its monthly limit.",
 };
 
 type ChatTurn = { role: "user" | "assistant"; content: string };
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
   const session = await getAuth0().getSession();
   const tier = await getRulesChatTier(session?.user);
-  if (!session || !tier) return NextResponse.json({ error: "The Rulekeeper is not available for this account" }, { status: 403 });
+  if (!session || !tier) return NextResponse.json({ error: "The Ruleferret is not available for this account" }, { status: 403 });
   const userSub = session.user.sub;
 
   const read = await readJsonBody(request);
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     started = await startQuestion(userSub, tier, getRulesChatLimits());
   } catch (error) {
     console.error("[RulesChat] usage check failed:", error);
-    return NextResponse.json({ error: "The Rulekeeper is unavailable right now. Try again soon." }, { status: 503 });
+    return NextResponse.json({ error: "The Ruleferret is unavailable right now. Try again soon." }, { status: 503 });
   }
   if (!started.allowed) {
     const { reason, retryAt } = started;

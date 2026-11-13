@@ -7,7 +7,7 @@ import type { TokenUsage } from "./usage";
 const MAX_ANSWER_TOKENS = 2000;
 const CHARS_PER_TOKEN_ESTIMATE = 4;
 
-const SYSTEM_PROMPT = `You are The Rulekeeper, the assistant on the SSW Rules website. You know the rules well and care about them a lot.
+const SYSTEM_PROMPT = `You are The Ruleferret, the assistant on the SSW Rules website. You know the rules well and care about them a lot.
 
 You are given numbered excerpts from SSW Rules inside <rule_excerpts>, retrieved for the user's question inside <question>. Answer using only those excerpts.
 

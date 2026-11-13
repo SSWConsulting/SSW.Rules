@@ -1,6 +1,6 @@
-# Running The Rulekeeper locally
+# Running The Ruleferret locally
 
-The Rulekeeper answers questions from the rules. It looks up the rule excerpts closest to a question in a vector index, then writes an answer from them. Locally, everything runs on your machine, started by .NET Aspire. You don't need an Azure account.
+The Ruleferret answers questions from the rules. It looks up the rule excerpts closest to a question in a vector index, then writes an answer from them. Locally, everything runs on your machine, started by .NET Aspire. You don't need an Azure account.
 
 ## What you need
 
@@ -78,4 +78,4 @@ After changing how rules are cleaned or chunked in `scripts/rules-chat/index-rul
 
 ## In Azure
 
-Staging and production use Azure SQL and Microsoft Foundry instead (see [`infra/README.md`](../../infra/README.md)). They sign in with a managed identity, so they have no passwords or API keys. To index them, run the **Index Rules for The Rulekeeper** workflow from the Actions tab.
+Staging and production use Azure SQL and Microsoft Foundry instead (see [`infra/README.md`](../../infra/README.md)). They sign in with a managed identity, so they have no passwords or API keys. To index them, run the **Index Rules for The Ruleferret** workflow from the Actions tab.

@@ -1,4 +1,4 @@
-name: Index Rules for The Rulekeeper
+name: Index Rules for The Ruleferret
 
 # Starts the Container Apps index job now, instead of waiting for its hourly run, and waits for it to finish. Without
 # options it embeds only the new and changed rules, like the hourly run.

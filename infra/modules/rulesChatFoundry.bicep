@@ -1,5 +1,5 @@
 // Rules Chat Foundry Module
-// Deploys a Microsoft Foundry (AI Services) resource with The Rulekeeper's chat and embedding models
+// Deploys a Microsoft Foundry (AI Services) resource with The Ruleferret's chat and embedding models
 
 @description('Name of the Foundry resource; also its custom subdomain, so it must be globally unique')
 param foundryName string

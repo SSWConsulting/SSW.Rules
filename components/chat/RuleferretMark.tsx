@@ -2,7 +2,7 @@ import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Kept apart from ChatConversation so the search dialog, on every page, doesn't load the chat's markdown renderer.
-export function RulekeeperMark({ size }: { size: "small" | "large" }) {
+export function RuleferretMark({ size }: { size: "small" | "large" }) {
   return (
     <span
       aria-hidden

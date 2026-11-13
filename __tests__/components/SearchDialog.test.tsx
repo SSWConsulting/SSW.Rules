@@ -1,6 +1,6 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { onAskRulekeeper } from "@/components/chat/askRulekeeper";
+import { onAskRuleferret } from "@/components/chat/askRuleferret";
 import { openSearch } from "@/components/search/openSearch";
 import { SearchDialog } from "@/components/search/SearchDialog";
 import { SearchTrigger } from "@/components/search/SearchTrigger";
@@ -149,17 +149,17 @@ describe("SearchDialog", () => {
   });
 });
 
-describe("Ask The Rulekeeper", () => {
+describe("Ask The Ruleferret", () => {
   function recordQuestions() {
     const questions: string[] = [];
-    const stop = onAskRulekeeper((question) => questions.push(question));
+    const stop = onAskRuleferret((question) => questions.push(question));
     return { questions, stop };
   }
 
   it("isn't offered without chat access", async () => {
     await openAndType("pull");
     await screen.findByRole("option", { name: /over the shoulder/ });
-    expect(screen.queryByRole("option", { name: /Ask The Rulekeeper/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: /Ask The Ruleferret/ })).not.toBeInTheDocument();
   });
 
   it("asks with an empty box on Enter", async () => {
@@ -169,7 +169,7 @@ describe("Ask The Rulekeeper", () => {
     render(<SearchDialog />);
     act(() => openSearch());
     await screen.findByRole("combobox", { name: "Search rules" });
-    expect(screen.getAllByRole("option")[0]).toHaveTextContent("Ask The Rulekeeper");
+    expect(screen.getAllByRole("option")[0]).toHaveTextContent("Ask The Ruleferret");
     await user.keyboard("{Enter}");
     expect(questions).toEqual([""]);
     stop();
@@ -181,7 +181,7 @@ describe("Ask The Rulekeeper", () => {
     const { user } = await openAndType("pull request");
     await screen.findByRole("option", { name: /over the shoulder/ });
     const options = screen.getAllByRole("option");
-    expect(options[0]).toHaveTextContent("Ask The Rulekeeper");
+    expect(options[0]).toHaveTextContent("Ask The Ruleferret");
     expect(options[1]).toHaveTextContent("over the shoulder");
     await user.keyboard("{Enter}");
     expect(questions).toEqual(["pull request"]);
@@ -189,10 +189,10 @@ describe("Ask The Rulekeeper", () => {
     stop();
   });
 
-  it("names The Rulekeeper on the header button", () => {
+  it("names The Ruleferret on the header button", () => {
     mockHasChatAccess = true;
     render(<SearchTrigger />);
-    expect(screen.getByRole("button", { name: "Search rules or ask The Rulekeeper" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Search rules or ask The Ruleferret" })).toBeInTheDocument();
   });
 });
 

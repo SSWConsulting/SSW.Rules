@@ -1,4 +1,4 @@
-# Replace RulesGPT with The Rulekeeper, built into the Rules site
+# Replace RulesGPT with The Ruleferret, built into the Rules site
 
 - Status: accepted
 - Deciders: Anton Polkanov, Tom Iwainski, Josh Berman
@@ -15,21 +15,21 @@ Should we fix RulesGPT, build a new chat into the Rules site, or only improve si
 
 ## Considered Options
 
-1. Build a new chat, The Rulekeeper, into the Rules site and retire RulesGPT
+1. Build a new chat, The Ruleferret, into the Rules site and retire RulesGPT
 2. Fix RulesGPT and keep it as a separate app
 3. Improve site search only (put it on every page and index rule text), with no AI
 
 ## Decision Outcome
 
-Chosen option 1: "Build a new chat, The Rulekeeper, into the Rules site and retire RulesGPT", because it puts the chat on every page people are already reading, removes a second app and pipeline that has been broken for months without anyone noticing, and lets the chat share the site's sign-in, hosting and content pipeline.
+Chosen option 1: "Build a new chat, The Ruleferret, into the Rules site and retire RulesGPT", because it puts the chat on every page people are already reading, removes a second app and pipeline that has been broken for months without anyone noticing, and lets the chat share the site's sign-in, hosting and content pipeline.
 
-Site search stays: The Rulekeeper is added alongside it, not instead of it. Search will also be improved: today it only appears on some pages, matches titles and descriptions but not rule text, and updates only during the daily deploy. How to improve it is a separate decision.
+Site search stays: The Ruleferret is added alongside it, not instead of it. Search will also be improved: today it only appears on some pages, matches titles and descriptions but not rule text, and updates only during the daily deploy. How to improve it is a separate decision.
 
-When The Rulekeeper goes live, the RulesGPT header link (`SSW.Rules/components/server/MegaMenuWrapper.tsx`) is removed, and RulesGPT's Azure resources and Supabase project are shut down.
+When The Ruleferret goes live, the RulesGPT header link (`SSW.Rules/components/server/MegaMenuWrapper.tsx`) is removed, and RulesGPT's Azure resources and Supabase project are shut down.
 
 ## Pros and Cons of the Options
 
-### Build a new chat, The Rulekeeper, into the Rules site and retire RulesGPT
+### Build a new chat, The Ruleferret, into the Rules site and retire RulesGPT
 
 - ✅ Available on every page, as a floating window that can also be popped out.
 - ✅ Uses the site's existing sign-in, hosting and deployments.

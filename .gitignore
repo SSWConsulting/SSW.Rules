@@ -44,6 +44,7 @@ rule-to-categories.json
 orphaned_rules.json
 archived-rules.json
 redirects.json
+rule-folders.json
 
 # Generated at build-time (used by SSW.People)
 public/people-latest-rules.json

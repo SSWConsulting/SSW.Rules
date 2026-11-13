@@ -35,8 +35,8 @@ export function toTinaAssetUrl<T>(value: T): T | string {
  * or the URL of a markdown image.
  */
 export function tinaImageSrc<T>(value: T): T | string {
-  // The development server serves the stored path from the local content repository (see proxy.ts).
-  // Thus an image that is not in TinaCloud yet is visible during local work.
+  // The development server serves only `/uploads/rules/` images and files from the local content repository (see proxy.ts).
+  // Thus a rule image that is not in TinaCloud yet is visible during local work.
   if (process.env.NODE_ENV === "development") return value;
 
   return toTinaAssetUrl(value);

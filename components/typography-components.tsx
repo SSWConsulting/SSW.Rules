@@ -66,7 +66,7 @@ const getFilenameFromHref = (href: string): string => {
   return href.split("/").pop() || "";
 };
 
-// Tina changes the path of an image to a URL, but not the path in a link. Thus a link to a file has the stored path with each data source.
+// Tina leaves the path in a link unchanged, so convert a `/uploads/rules/` link to the asset URL here.
 const rewriteUploadsToAssets = (href?: string) => {
   if (!href?.startsWith("/uploads/rules/") || !isDownloadableFile(href)) return href;
   return toTinaAssetUrl(href);

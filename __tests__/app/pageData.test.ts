@@ -35,15 +35,19 @@ const ruleResult = (data: object) => ({
   variables: { relativePath: "fix-bugs-first/rule.mdx" },
 });
 
-const topCategories = (filename: string) => ({
+const topCategories = (
+  filename: string,
+  pageInfo: { hasNextPage: boolean; endCursor: string | null } = { hasNextPage: false, endCursor: null },
+  top = "software-engineering"
+) => ({
   data: {
     categoryConnection: {
       edges: [
         {
-          node: { __typename: "CategoryTop_category", _sys: { relativePath: "software-engineering/index.mdx" }, index: [{ category: { _sys: { filename } } }] },
+          node: { __typename: "CategoryTop_category", _sys: { relativePath: `${top}/index.mdx` }, index: [{ category: { _sys: { filename } } }] },
         },
       ],
-      pageInfo: { hasNextPage: false, endCursor: null },
+      pageInfo,
     },
   },
 });
@@ -85,6 +89,40 @@ describe("getRuleData", () => {
     expect(topCategoryWithIndexQuery).toHaveBeenCalledWith(expect.anything(), noStore);
     expect(request).toHaveBeenCalledWith(expect.anything(), noStore);
     expect(ruleData).toHaveBeenCalledWith(expect.anything(), noStore);
+  });
+
+  it.each(["foo bar", "foo%20bar", "../etc/passwd", "rule?x=1"])("returns null for %j without a Tina request", async (filename) => {
+    await expect(getRuleData(filename)).resolves.toBeNull();
+    await expect(getCategoryData(filename)).resolves.toBeNull();
+    expect(ruleData).not.toHaveBeenCalled();
+    expect(topCategoryWithIndexQuery).not.toHaveBeenCalled();
+  });
+
+  it("returns null when Tina rejects the path", async () => {
+    const invalid = graphqlError("Invalid path: relativePath contains invalid characters");
+    ruleData.mockRejectedValue(invalid);
+    ruleDataBasic.mockRejectedValue(invalid);
+
+    await expect(getRuleData("valid-looking-name")).resolves.toBeNull();
+    expect(ruleData).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not retry a missing rule whose name looks like a network error", async () => {
+    ruleData.mockRejectedValue(notFound("public/uploads/rules/ECONNRESET/rule.mdx"));
+    ruleDataBasic.mockRejectedValue(notFound("public/uploads/rules/ECONNRESET/rule.mdx"));
+
+    await expect(getRuleData("ECONNRESET")).resolves.toBeNull();
+    expect(ruleData).toHaveBeenCalledTimes(1);
+    expect(ruleDataBasic).toHaveBeenCalledTimes(1);
+  });
+
+  it("sends ruleDataBasic with no-store too", async () => {
+    ruleData.mockRejectedValue(notFound("public/uploads/rules/deleted-rule/rule.mdx"));
+    ruleDataBasic.mockResolvedValue(ruleResult({}));
+
+    await getRuleData("fix-bugs-first");
+
+    expect(ruleDataBasic).toHaveBeenCalledWith(expect.anything(), { fetchOptions: { cache: "no-store" } });
   });
 
   it("retries a throttled request and does not report a broken reference", async () => {
@@ -146,6 +184,29 @@ describe("getCategoryData", () => {
     expect(request).not.toHaveBeenCalled();
   });
 
+  it("reads the next page of top categories until it finds the filename", async () => {
+    topCategoryWithIndexQuery
+      .mockResolvedValueOnce(topCategories("rules-to-better-email", { hasNextPage: true, endCursor: "c1" }))
+      .mockResolvedValueOnce(topCategories("rules-to-better-teams", { hasNextPage: false, endCursor: null }, "communication"));
+    request.mockResolvedValue({ data: { category: { title: "Rules to Better Teams" } }, errors: null });
+
+    const result = await getCategoryData("rules-to-better-teams");
+
+    expect(result?.variables).toEqual({ relativePath: "communication/rules-to-better-teams.mdx" });
+    expect(topCategoryWithIndexQuery.mock.calls.map(([vars]) => vars)).toEqual([
+      { first: 50, after: null },
+      { first: 50, after: "c1" },
+    ]);
+  });
+
+  it("treats the page as a rule when a top category lists a missing category", async () => {
+    topCategoryWithIndexQuery.mockRejectedValue(notFound("categories/software-engineering/deleted.mdx"));
+
+    await expect(getCategoryData("rules-to-better-email")).resolves.toBeNull();
+    expect(topCategoryWithIndexQuery).toHaveBeenCalledTimes(1);
+    expect(request).not.toHaveBeenCalled();
+  });
+
   it("throws when the top category lookup stays throttled, so a category page cannot become a fallback", async () => {
     topCategoryWithIndexQuery.mockRejectedValue(throttled());
 
@@ -196,6 +257,19 @@ describe("getCategoryData", () => {
     expect(result?.data.category.title).toBe("Rules to Better Email");
     expect(result?.query).toBe("query categoryWithRulesQuery");
     expect(request.mock.calls.map(([args]) => args.errorPolicy)).toEqual([undefined, "all"]);
+  });
+
+  it("gives the errorPolicy all request a different body, so the disk cache cannot hand its errors to a default-policy request", async () => {
+    topCategoryWithIndexQuery.mockResolvedValue(topCategories("rules-to-better-email"));
+    tinaRequest({ data: email, errors: [missingRule] });
+
+    await getCategoryData("rules-to-better-email");
+
+    const [[first, firstOptions], [all, allOptions]] = request.mock.calls;
+    expect(all.query).not.toBe(first.query);
+    expect(all.variables).toEqual(first.variables);
+    expect(firstOptions).toEqual({ fetchOptions: { cache: "no-store" } });
+    expect(allOptions).toEqual({ fetchOptions: { cache: "no-store" } });
   });
 
   it("changes the request body for each partial attempt, so the build cache cannot return a throttled response", async () => {

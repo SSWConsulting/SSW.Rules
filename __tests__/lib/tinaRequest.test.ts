@@ -102,15 +102,23 @@ describe("tinaRetryOptions", () => {
     expect(tinaRetryOptions(1, revalidate60)).toBe(revalidate60);
   });
 
+  const retryHeader = (options: ReturnType<typeof tinaRetryOptions>) => (options.fetchOptions?.headers as Record<string, string>)["x-tina-retry"];
+
   it("adds a retry header to each later attempt, so Next uses a new data cache key", () => {
-    expect(tinaRetryOptions(2)).toEqual({ fetchOptions: { headers: { "x-tina-retry": "2" } } });
-    expect(tinaRetryOptions(3, revalidate60)).toEqual({ fetchOptions: { next: { revalidate: 60 }, headers: { "x-tina-retry": "3" } } });
+    expect(retryHeader(tinaRetryOptions(2))).toMatch(/^2-[a-z0-9]+$/);
+    const third = tinaRetryOptions(3, revalidate60);
+    expect(third.fetchOptions?.next).toEqual({ revalidate: 60 });
+    expect(retryHeader(third)).toMatch(/^3-[a-z0-9]+$/);
+  });
+
+  it("uses a new header value for each call, so a retry cannot read a response that another page's retry stored", () => {
+    expect(retryHeader(tinaRetryOptions(2))).not.toBe(retryHeader(tinaRetryOptions(2)));
   });
 
   it("keeps the headers that the caller sets", () => {
     const options = { fetchOptions: { headers: { "x-branch": "main" } } };
 
-    expect(tinaRetryOptions(2, options).fetchOptions?.headers).toEqual({ "x-branch": "main", "x-tina-retry": "2" });
+    expect(tinaRetryOptions(2, options).fetchOptions?.headers).toEqual({ "x-branch": "main", "x-tina-retry": expect.stringMatching(/^2-/) });
     expect(options.fetchOptions.headers).toEqual({ "x-branch": "main" });
   });
 });
@@ -141,7 +149,15 @@ describe("withTinaRetryAllowingErrors", () => {
 
     await expect(withTinaRetryAllowingErrors("categoryRuleCountsQuery", "query q", send, { sleep })).resolves.toBe(response);
     expect(send).toHaveBeenCalledTimes(1);
-    expect(send).toHaveBeenCalledWith("query q");
+  });
+
+  it("marks every request, so the disk cache key differs from a default-policy request with the same query", async () => {
+    const send = jest.fn().mockResolvedValue({ data: { ok: true }, errors: [{ message: MISSING }] });
+
+    await withTinaRetryAllowingErrors("categoryRuleCountsQuery", "query q", send, { sleep });
+
+    expect(send.mock.calls[0][0]).not.toBe("query q");
+    expect(send.mock.calls[0][0]).toBe("query q\n# errorPolicy all");
   });
 
   it("retries a response with a throttling error and changes the query text for each retry", async () => {
@@ -153,7 +169,10 @@ describe("withTinaRetryAllowingErrors", () => {
       .mockResolvedValue(good);
 
     await expect(withTinaRetryAllowingErrors("categoryRuleCountsQuery", "query q", send, { sleep })).resolves.toBe(good);
-    expect(send.mock.calls.map(([query]) => query)).toEqual(["query q", "query q\n# attempt 2", "query q\n# attempt 3"]);
+    const queries = send.mock.calls.map(([query]) => query);
+    expect(queries[0]).toBe("query q\n# errorPolicy all");
+    expect(queries[1]).toMatch(/^query q\n# errorPolicy all, retry 2-[a-z0-9]+$/);
+    expect(queries[2]).toMatch(/^query q\n# errorPolicy all, retry 3-[a-z0-9]+$/);
   });
 
   it("throws after the last attempt when the throttling does not stop", async () => {
@@ -169,5 +188,30 @@ describe("withTinaRetryAllowingErrors", () => {
 
     await expect(withTinaRetryAllowingErrors("categoryRuleCountsQuery", "query q", send, { sleep })).resolves.toBe(response);
     expect(send).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("classifyTinaError with a requested path in the message", () => {
+  it.each([
+    "ECONNRESET",
+    "ETIMEDOUT",
+    "EPIPE",
+    "UND_ERR_SOCKET",
+    "ProvisionedThroughputExceeded",
+    "EAI_AGAIN",
+  ])("treats a missing record at /rules/%s as not-found, not transient", (slug) => {
+    const error = notFound(`public/uploads/rules/${slug}/rule.mdx`);
+    expect(classifyTinaError(error)).toBe("not-found");
+  });
+
+  it("still finds a real throttling error next to a missing record", () => {
+    const error = graphqlError(
+      "Unable to find record public/uploads/rules/ECONNRESET/rule.mdx\nError retrieving data from DynamoDB: Throughput exceeds the current capacity of your table or index."
+    );
+    expect(classifyTinaError(error)).toBe("transient");
+  });
+
+  it("treats Tina's invalid path error as not-found", () => {
+    expect(classifyTinaError(graphqlError("Invalid path: relativePath contains invalid characters"))).toBe("not-found");
   });
 });

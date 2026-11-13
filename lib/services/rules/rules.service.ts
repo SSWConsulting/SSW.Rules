@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { extractBodyPreview } from "@/lib/bodyUtils";
-import { tinaRetryOptions, withTinaRetry, withTinaRetryAllowingErrors } from "@/lib/tina/tinaRequest";
+import { classifyTinaError, tinaResponseErrorMessages, tinaRetryOptions, withTinaRetry, withTinaRetryAllowingErrors } from "@/lib/tina/tinaRequest";
 import { toSlug } from "@/lib/utils";
 import { ActivityRule } from "@/models/ActivityRule";
 import { PaginationResult, PaginationVars } from "@/models/Pagination";
@@ -115,9 +115,12 @@ async function fetchCategoryRuleData(): Promise<{
       (client as any).request({ query, variables, errorPolicy: "all" })
     );
 
-    const errorMessages = (res?.errors ?? [])
-      .map((e: any) => (typeof e === "string" ? e : e?.message))
-      .filter((m: any): m is string => typeof m === "string" && m.length > 0);
+    const errorMessages = tinaResponseErrorMessages(res);
+    // A missing rule only lowers a count. Any other error could drop whole categories from the result.
+    const otherErrors = errorMessages.filter((m) => classifyTinaError(m) !== "not-found");
+    if (otherErrors.length > 0) {
+      throw new Error(`[fetchCategoryRuleData] categoryRuleCountsQuery failed after=${after}:\n${otherErrors.join("\n")}`);
+    }
 
     const missingRecordErrors = errorMessages.filter((m) => m.includes("Unable to find record"));
     if (missingRecordErrors.length > 0) {
@@ -241,18 +244,22 @@ export async function fetchPaginatedRules(variables: RuleQueryVars = {}): Promis
 
   const filter = q && q.trim() ? { [field]: { startsWith: q.trim() } } : undefined;
 
-  const res = await withTinaRetry("paginatedRulesQuery", (attempt) =>
-    client.queries.paginatedRulesQuery(
-      {
-        first,
-        last,
-        after,
-        before,
-        sort,
-        filter,
-      },
-      tinaRetryOptions(attempt)
-    )
+  // Only the paginated rules API calls this, while a visitor waits, so it retries once (about 1 s) instead of four times
+  const res = await withTinaRetry(
+    "paginatedRulesQuery",
+    (attempt) =>
+      client.queries.paginatedRulesQuery(
+        {
+          first,
+          last,
+          after,
+          before,
+          sort,
+          filter,
+        },
+        tinaRetryOptions(attempt)
+      ),
+    { attempts: 2 }
   );
 
   const conn = res?.data?.ruleConnection;

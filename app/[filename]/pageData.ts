@@ -22,6 +22,10 @@ import { CategoryWithRulesQueryDocument } from "@/tina/__generated__/types";
 // static because of `dynamic = "force-static"`.
 const tinaFetch = { fetchOptions: { cache: "no-store" as const } };
 
+// Every rule folder and category file name uses only these characters. Another name cannot be a record, so it
+// needs no Tina request, and Tina would reject it with "Invalid path".
+const isPossibleFilename = (filename: string) => /^[A-Za-z0-9._-]+$/.test(filename);
+
 export interface BrokenReferences {
   detected: boolean;
   paths: string[];
@@ -65,6 +69,7 @@ const getFullRelativePathFromFilename = async (filename: string): Promise<string
 
 // React cache: the page and generateMetadata share one result for each render
 export const getCategoryData = cache(async (filename: string) => {
+  if (!isPossibleFilename(filename)) return null;
   const fullPath = await getFullRelativePathFromFilename(filename);
   if (!fullPath) return null;
 
@@ -105,6 +110,7 @@ export const getCategoryData = cache(async (filename: string) => {
 });
 
 export const getRuleData = cache(async (filename: string) => {
+  if (!isPossibleFilename(filename)) return null;
   const relativePath = `${filename}/rule.mdx`;
 
   let fullError: unknown;

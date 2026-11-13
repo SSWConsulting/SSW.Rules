@@ -8,6 +8,9 @@ content-temp
 scripts
 !scripts/generate-archived-rules.js
 coverage
+# Tests run in the check workflow. Some import files from scripts/, which is not in the image, so the type check
+# of next build fails on them.
+__tests__
 tests
 tmp
 *.log

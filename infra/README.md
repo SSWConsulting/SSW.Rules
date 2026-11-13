@@ -56,8 +56,7 @@ Only the workflow builds that image. A manual `deploy.ps1` run keeps the image t
 It runs:
 
 - **Every hour**, on the hour. A run with no changed rules only clones the rules and compares hashes, so a new or edited rule reaches the chat within an hour.
-- **By hand**, with the **Re-index Rules for The Rulekeeper** workflow or the job's **Run now** in the Azure portal.
-- **By hand from a GitHub runner** with **Index Rules for The Rulekeeper**, the fallback for resetting an index.
+- **By hand**, with the **Index Rules for The Rulekeeper** workflow or the job's **Run now** in the Azure portal. The workflow can also re-embed every rule, or let a run remove more than a fifth of the index. It waits for the run and fails if the run fails.
 
 Runs never overlap: the index script takes a database lock. A second run waits up to 30 minutes for it, fetches the content branch again, and only then reads the rules, so it never indexes older content than the first run did. A run still waiting after 30 minutes, such as during a first full index or a re-embed, indexes nothing and isn't counted as a failure. The script also stops if the tables don't exist, which means the environment hasn't been deployed yet.
 
@@ -68,7 +67,7 @@ Runs never overlap: the index script takes a database lock. A second run waits u
 
 Without it, no alerts are created. Both alerts search the job's logs for markers the index script prints (`RULES_CHAT_INDEX_FAILED` and `RULES_CHAT_INDEX_SUCCEEDED`). The staleness alert also fires in the two days after a new environment's first deploy, until the job first succeeds.
 
-The job reads the content branch the site shows, resolved the way the site build resolves it: a manual deploy's `tina_branch`, else the `NEXT_PUBLIC_TINA_BRANCH` GitHub variable, else `main`. If SSW.Rules.Content has no such branch, the job reads `main`. The GitHub runner fallback reads the same branch as the job, and fails if it can't read the job's branch.
+The job reads the content branch the site shows, resolved the way the site build resolves it: a manual deploy's `tina_branch`, else the `NEXT_PUBLIC_TINA_BRANCH` GitHub variable, else `main`. If SSW.Rules.Content has no such branch, the job reads `main`.
 
 ### Looking at the data
 

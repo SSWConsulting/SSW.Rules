@@ -7,7 +7,7 @@
 //   pnpm rules-chat:index --sample <n>   index only the first n rules, for a quick local setup
 //   pnpm rules-chat:index --show <uri>   print the chunks for one rule without indexing
 //   pnpm rules-chat:index --refresh-content   fetch the content checkout's branch again once the lock is held, discarding
-//                                             local changes in it (for the job and the runner workflow, not a local checkout)
+//                                             local changes in it (for the job, not a local checkout)
 
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -175,10 +175,10 @@ async function main() {
     );
   }
 
-  // One connection holds the lock for the whole run, so the hourly job, a run started by hand and the GitHub runner workflow
-  // never index the same database at once. The lock ends when the connection closes, so the pool keeps it open even
-  // while idle (min: 1). A run that finds the lock taken waits for it. Its checkout may be older than the one the
-  // running job indexed, so the rules are read only once the lock is held, after --refresh-content fetches them again.
+  // One connection holds the lock for the whole run, so the hourly job and a run started by hand never index the same
+  // database at once. The lock ends when the connection closes, so the pool keeps it open even while idle (min: 1). A
+  // run that finds the lock taken waits for it. Its checkout may be older than the one the running job indexed, so the
+  // rules are read only once the lock is held, after --refresh-content fetches them again.
   let lockConnection;
   let pool;
   try {

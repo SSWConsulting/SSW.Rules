@@ -1,5 +1,6 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
+import { GLOBAL_SETTINGS_TAG } from "@/lib/services/global";
 
 enum TINA_CONTENT_CHANGE_TYPE {
   Modified = "content.modified",
@@ -28,9 +29,15 @@ export async function POST(req: Request) {
     let shouldRevalidateCategoryTitles = false;
     let shouldRevalidateLatestRules = false;
     let shouldRevalidateRuleCount = false;
+    let shouldRevalidateGlobalSettings = false;
 
     for (const changedPath of changedPaths) {
       if (typeof changedPath !== "string") continue;
+
+      // Example: global/index.json
+      if (changedPath.startsWith("global/")) {
+        shouldRevalidateGlobalSettings = true;
+      }
 
       // Example: public/uploads/rules/3-steps-to-a-pbi/rule.mdx => /3-steps-to-a-pbi
       if (changedPath.startsWith("public/uploads/rules/")) {
@@ -88,6 +95,13 @@ export async function POST(req: Request) {
       revalidateTag("category-rule-data", { expire: 0 });
       // The root card carries the site-wide rule total
       revalidatePath("/opengraph-image");
+    }
+
+    if (shouldRevalidateGlobalSettings) {
+      // The tag is on each page. "max" marks the pages stale: a visitor gets the current page and Next.js
+      // renders the new one in the background. With `expire: 0`, the next visitor of each page waits for the
+      // render, and gets an error page if that render fails.
+      revalidateTag(GLOBAL_SETTINGS_TAG, "max");
     }
 
     for (const route of routesToRevalidate) {

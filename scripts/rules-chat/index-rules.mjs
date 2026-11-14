@@ -199,6 +199,7 @@ async function main() {
     // sp_getapplock returns -1 on a timeout. Other negative results (cancelled, deadlock, bad call) are real failures.
     if (lock.output.result === -1) {
       console.log(`Another index run held the lock for over ${LOCK_WAIT_MS / 60_000} minutes, so this run indexed nothing.`);
+      process.exitCode = 1;
       return;
     }
     if (lock.output.result < 0) throw new Error(`sp_getapplock failed with ${lock.output.result}`);

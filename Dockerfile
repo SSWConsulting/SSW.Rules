@@ -91,7 +91,11 @@
         GH_APP_PRIVATE_KEY=$GH_APP_PRIVATE_KEY \
         GITHUB_APP_INSTALLATION_ID=$GITHUB_APP_INSTALLATION_ID \
         NEXT_TELEMETRY_DISABLED=1
-    
+
+    # The workflow puts the SSW.Rules.Content checkout in /app/content. `tinacms build --content=local` reads the rules
+    # from it, so the page build sends no request to TinaCloud. The path is relative to the tina folder.
+    ENV LOCAL_CONTENT_RELATIVE_PATH=../content
+
     # Build the Next.js application
     RUN if [ -f yarn.lock ]; then yarn build; \
         elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \

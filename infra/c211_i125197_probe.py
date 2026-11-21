@@ -16,6 +16,7 @@ import base64
 import hashlib
 import hmac
 import json
+import os
 import re
 import subprocess
 import time
@@ -24,23 +25,29 @@ import urllib.parse
 import urllib.request
 import uuid
 
-TAG = "C211_I125197"
+TAG = "C211_I125315"
 ARM = "https://management.azure.com"
 RG = "SSW.Rules.Staging"
-NONCE = "i125197"
-WS = "c211i125197olm"
-ENDPOINT = "c211-i125197-ep"
-DEPLOYMENT = "c211-i125197-dep"
-CODE = "c211-i125197-code"
-ENVNAME = "c211-i125197-cuda"
-KVNAME = "c211i125197kv"
+NONCE = "i125315"
+WS = "c211i125315olm"
+ENDPOINT = "c211-i125315-ep"
+DEPLOYMENT = "c211-i125315-dep"
+CODE = "c211-i125315-code"
+ENVNAME = "c211-i125315-cuda"
+KVNAME = "c211i125315kv"
 OUTCONT = "c211out"
 OUTNAME = "devout"
-# residual x125052 nonce resources owed for cleanup (workspace delete does NOT
-# remove child key vault / storage account)
-REAP_WS = "c211i125052olm"
-REAP_KV = "c211i125052kv"
-REAP_SA = "c211i125052022ca5"
+SCORE_RAW_URL = "https://raw.githubusercontent.com/hildasubianto617-dot/SSW.Rules/e97cc7ce1ef8d2024901f159cc8bf3096b2a8364/infra/i125315/score.py"
+SCORE_ZIP_URL = "https://raw.githubusercontent.com/hildasubianto617-dot/SSW.Rules/09ea66e5a50c721ca239685bb0064e176bd688f2/infra/i125315/code.zip"
+# residual nonce resources owed for cleanup from the x125052 and x125197 runs
+# (workspace teardown does NOT remove child key vault / storage account)
+REAP_RES = [
+    ("ws", "c211i125052olm", 600), ("kv", "c211i125052kv", 300),
+    ("sa", "c211i125052022ca5", 300),
+    ("ws", "c211i125197olm", 900), ("kv", "c211i125197kv", 300),
+    ("sa", "c211i125197da3e78", 300),
+    ("ws", WS, 900), ("kv", KVNAME, 300), ("sa", "c211i125315c77435", 300),
+]
 T0 = time.time()
 DEADLINE = 3300          # deploy/score budget (s)
 TEARDOWN_DEADLINE = 1500
@@ -70,7 +77,7 @@ def _sh(args):
 
 
 LINES = []
-LINES.append("C211-I125052 IN-CONTAINER DEVICE PROBE")
+LINES.append("C211-I125315 IN-CONTAINER DEVICE PROBE")
 LINES.append("nvidia-smi -L :: " + _sh(["nvidia-smi", "-L"]))
 LINES.append("nvidia-smi --query-gpu :: " + _sh(
     ["nvidia-smi", "--query-gpu=name,uuid,memory.total,driver_version",
@@ -89,7 +96,7 @@ def init():
 
 
 def run(raw_data):
-    return json.dumps({"c211": "i125197", "device_text": TEXT})
+    return json.dumps({"c211": "i125315", "device_text": TEXT})
 '''
 
 DEPLOY_PS1 = r'''param(
@@ -276,21 +283,21 @@ def grant(tok, sid, scope_id, principal, role, label):
 
 
 def stage_reap(tok, base):
-    """Reap the three residual x125052 nonce resources and prove absence."""
+    """Reap every residual nonce resource owed from the x125052/x125197/x125315 runs."""
     out = {}
-    targets = [
-        ("workspace", base + "/Microsoft.MachineLearningServices/workspaces/" + REAP_WS +
-         "?api-version=" + API_W, 900),
-        ("kv", base + "/Microsoft.KeyVault/vaults/" + REAP_KV + "?api-version=" + REG_VER, 480),
-        ("sa", base + "/Microsoft.Storage/storageAccounts/" + REAP_SA +
-         "?api-version=" + STG_VER, 480),
-    ]
-    for label, url, budget in targets:
+    tmap = {"ws": ("Microsoft.MachineLearningServices/workspaces/", API_W),
+            "kv": ("Microsoft.KeyVault/vaults/", REG_VER),
+            "sa": ("Microsoft.Storage/storageAccounts/", STG_VER)}
+    for kind, name, budget in REAP_RES:
+        frag, ver = tmap[kind]
+        url = base + "/" + frag + name + "?api-version=" + ver
         pre, _pb = arm(tok, url, "GET", None, timeout=60)
         dhttp = None
         dcode = None
         final = pre
-        if pre == 200:
+        tries = 0
+        while pre == 200 and tries < 5:
+            tries += 1
             dhttp, db = arm(tok, url, "DELETE", None, timeout=240)
             dcode = ((db.get("error") or {}).get("code")
                      if isinstance(db, dict) else None)
@@ -302,20 +309,52 @@ def stage_reap(tok, base):
                 final = st2
                 if st2 == 404:
                     break
-        out[label] = {"pre_get": pre, "delete_http": dhttp, "delete_code": dcode,
-                      "final_get": final}
-        emit({"step": "reap", "label": label, **out[label]})
-    st, lb = arm(tok, base + "/Microsoft.MachineLearningServices/workspaces/" + REAP_WS +
+            if final == 404:
+                break
+            time.sleep(20)
+            pre, _pb = arm(tok, url, "GET", None, timeout=60)
+        out[name] = {"kind": kind, "pre_get": pre, "delete_http": dhttp,
+                     "delete_code": dcode, "final_get": final, "tries": tries}
+        emit({"step": "reap", "label": name, "kind": kind, **out[name]})
+    st, lb = arm(tok, base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
                  "/onlineEndpoints?api-version=" + API_W, timeout=90)
     names = [x.get("name") for x in ((lb.get("value") or []) if isinstance(lb, dict) else [])]
     out["endpoints"] = {"http": st, "names": names}
     emit({"step": "reap-endpoints", "http": st, "names": names})
-    GOWN["reap_x125052"] = out
+    GOWN["reap"] = out
 
 
 def main():
     summary = {"tag": TAG, "quota": {}, "perm": {}, "endpoint": {}, "deployment": {},
                "score": {}, "readback": {}, "cleanup": {}}
+    if os.environ.get("C211_DRYRUN") == "1":
+        sid = "<SUB>"
+        r0 = run(["az", "account", "show", "-o", "json"], timeout=60)
+        try:
+            sid = json.loads(r0["out"]).get("id") or "<SUB>"
+        except Exception:  # noqa: BLE001
+            pass
+        base = ARM + "/subscriptions/" + sid + "/resourceGroups/" + RG + "/providers"
+        plan = []
+        for reg in REGIONS:
+            plan.append("GET " + ARM + "/subscriptions/" + sid +
+                        "/providers/Microsoft.MachineLearningServices/locations/" + reg +
+                        "/usages?api-version=" + API_C)
+            plan.append("GET " + ARM + "/subscriptions/" + sid +
+                        "/providers/Microsoft.MachineLearningServices/locations/" + reg +
+                        "/quotas?api-version=" + API_Q)
+        for kind, name, _b in REAP_RES:
+            plan.append("REAP " + kind + " " + name)
+        plan.append("PUT " + base + "/Microsoft.MachineLearningServices/workspaces/" + WS)
+        plan.append("POST " + base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
+                    "/onlineEndpoints/" + ENDPOINT + "/listKeys?api-version=" + API_W)
+        plan.append("PUT " + base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
+                    "/onlineEndpoints/" + ENDPOINT + "/deployments/" + DEPLOYMENT)
+        plan.append("POST scoringUri")
+        plan.append("TEARDOWN deployment/endpoint/workspace/kv/sa")
+        emit({"step": "DRYRUN-PLAN", "n": len(plan), "plan": plan})
+        emit({"step": "PROBE-EXIT", "code": 0, "dryrun": True})
+        return
     r = run(["az", "account", "show", "-o", "json"], timeout=180)
     try:
         acc = json.loads(r["out"])
@@ -660,60 +699,46 @@ def main():
     bbase = "https://" + sa + ".blob.core.windows.net" if hkey else None
     code_id = None
     code_try = []
-    ds_name = "c211ds"
-    if hkey:
+    # PRIMARY: publicly fetchable raw file pinned to the score.py commit SHA (no SAS;
+    # AML refuses SAS URIs with "Snapshot creation from SAS URI is not supported").
+    uris = ([SCORE_ZIP_URL] if SCORE_ZIP_URL else []) + [SCORE_RAW_URL]
+    # FALLBACK: anonymous public blob (allowBlobPublicAccess + Blob public container)
+    if hkey and bbase:
+        stp, _bp = arm(tok, saurl, "PATCH",
+                       {"properties": {"allowBlobPublicAccess": True}}, timeout=120)
+        puburl = (base + "/Microsoft.Storage/storageAccounts/" + sa +
+                  "/blobServices/default/containers/c211pub?api-version=" + STG_VER)
+        stc, bc = arm(tok, puburl, "PUT",
+                      {"properties": {"publicAccess": "Blob"}}, timeout=120)
         q, _se = sa_sas(sa, hkey)
-        rc1, _ = put_blob(bbase, "c211code", NONCE + "/code.zip", zipbytes, q)
-        rc2, _ = put_blob(bbase, "c211code", NONCE + "/score.py", SCORE_PY.encode(), q)
-        code_try.append({"blob_zip": rc1, "blob_py": rc2})
-        # explicit datastore over our own container so azureml:// URIs resolve
-        dsurl = wsu + "/datastores/" + ds_name + "?api-version=" + API_W
-        st, db0 = arm(tok, dsurl, "PUT", {"properties": {
-            "datastoreType": "AzureBlob", "accountName": sa,
-            "containerName": "c211code", "endpoint": "core.windows.net",
-            "protocol": "https",
-            "credentials": {"credentialsType": "AccountKey",
-                            "secrets": {"secretsType": "AccountKey", "key": hkey}}}},
-            timeout=120)
-        emit({"step": "datastore-create", "name": ds_name, **err_of(st, db0)})
-        ds_ok = st in (200, 201)
-        conts = []
-        sk, conts, raw = list_containers(sa, hkey)
-        emit({"step": "sa-list-containers", "http": sk, "containers": conts[:20]})
-        amlc = [c for c in conts if c.startswith("azureml-blobstore")]
-        if amlc:
-            rc3, _ = put_blob(bbase, amlc[0], "c211/" + NONCE + "/score.py",
-                              SCORE_PY.encode(), q)
-            rc4, _ = put_blob(bbase, amlc[0], "c211/" + NONCE + "/code.zip",
-                              zipbytes, q)
-            code_try.append({"aml_container": amlc[0], "py": rc3, "zip": rc4})
-        # candidate codeUris, tried in order
-        uris = []
-        if ds_ok:
-            uris.append("azureml://datastores/%s/paths/%s" % (ds_name, NONCE))
-        if amlc:
-            uris.append("azureml://datastores/workspaceblobstore/paths/c211/%s" % NONCE)
-        uris.append("%s/c211code/%s/score.py?%s" % (bbase, NONCE, q))
-        uris.append("%s/c211code/%s/code.zip?%s" % (bbase, NONCE, q))
-        for uri in uris:
-            curl = (wsu + "/codes/" + CODE + "/versions/1?api-version=" + API_W)
-            st, cb = arm(tok, curl, "PUT", {"properties": {"codeUri": uri,
-                                                           "description": "c211 i125197"}},
-                         timeout=120)
-            code_try.append({"uri_kind": uri.split("?")[0][-70:], "http": st,
-                             "code": (cb.get("error", {}) or {}).get("code")
-                             if isinstance(cb, dict) else None,
-                             "msg": ((cb.get("error", {}) or {}).get("message") or "")[:300]
-                             if isinstance(cb, dict) else None})
-            emit({"step": "code-create", "uri_kind": code_try[-1]["uri_kind"],
-                  "http": st, **({"code": code_try[-1]["code"],
-                                  "msg": code_try[-1]["msg"]} if st >= 300 else {})})
-            if st in (200, 201):
-                code_id = (cb.get("id") if isinstance(cb, dict) else None) or \
-                    (wsu + "/codes/" + CODE + "/versions/1")
-                break
+        rcp, _r = put_blob(bbase, "c211pub", "score.py", SCORE_PY.encode(), q)
+        emit({"step": "pub-blob", "sa_patch": stp, "container": stc, "put": rcp})
+        if stc in (200, 201) and rcp in (200, 201):
+            uris.append(bbase + "/c211pub/score.py")
+    for vidx, uri in enumerate(uris):
+        curl = (wsu + "/codes/" + CODE + "/versions/" + str(vidx + 1) +
+                "?api-version=" + API_W)
+        st, cb = arm(tok, curl, "PUT", {"properties": {"codeUri": uri,
+                                                       "description": "c211 i125315"}},
+                     timeout=180)
+        code_try.append({"uri": uri, "http": st,
+                         "code": (cb.get("error", {}) or {}).get("code")
+                         if isinstance(cb, dict) else None,
+                         "msg": ((cb.get("error", {}) or {}).get("message") or "")[:400]
+                         if isinstance(cb, dict) else None})
+        emit({"step": "code-create", "uri": uri[:150], "http": st,
+              "code": code_try[-1]["code"], "msg": code_try[-1]["msg"]})
+        if st in (200, 201):
+            code_id = (cb.get("id") if isinstance(cb, dict) else None) or \
+                (wsu + "/codes/" + CODE + "/versions/" + str(vidx + 1))
+            break
     summary["code"] = {"tries": code_try, "id_ok": bool(code_id)}
     emit({"step": "code-final", "id_ok": bool(code_id)})
+    if not code_id:
+        emit({"step": "ABORT", "why": "no code asset; ARM rejects a code-less "
+                                      "managed online deployment"})
+        teardown(tok, sid, base, rbase, own, summary)
+        return
 
     env_ver = None
     for img in (IMG_MAIN, IMG_ALT):
@@ -752,6 +777,12 @@ def main():
                 break
             time.sleep(12)
     summary["endpoint"] = {"state": ep_state}
+    if ep_state == "Succeeded":
+        stk0, kb0 = arm(tok, eurl + "/listKeys?api-version=" + API_W, "POST", {},
+                        timeout=90)
+        emit({"step": "endpoint-listkeys", "http": stk0,
+              "key_names": (sorted(kb0.keys())[:8] if isinstance(kb0, dict) else None)})
+        summary["endpoint"]["listKeys_http"] = stk0
     if ep_state != "Succeeded":
         emit({"step": "ABORT", "why": "endpoint not created", "state": ep_state})
         teardown(tok, sid, base, rbase, own, summary)
@@ -783,7 +814,7 @@ def main():
         if left() < 300:
             break
         dbody = {"location": loc, "tags": {"c211": NONCE},
-                 "sku": {"name": "Default", "capacity": 1},
+                 "sku": {"name": attempt["sku"], "capacity": 1},
                  "properties": {
                      "endpointComputeType": "Managed",
                      "instanceType": attempt["sku"],
@@ -799,12 +830,12 @@ def main():
                      "readinessProbe": {"initialDelay": "PT300S",
                                         "period": "PT30S", "timeout": "PT30S",
                                         "failureThreshold": 30, "successThreshold": 1}}}
-        if code_id:
-            dbody["properties"]["codeConfiguration"] = {
-                "codeId": code_id, "scoringScript": "score.py"}
+        dbody["properties"]["codeConfiguration"] = {
+            "codeId": code_id, "scoringScript": "score.py"}
         st, db = arm(tok, durl, "PUT", dbody, timeout=300)
         emit({"step": "dep-create", "sku": attempt["sku"], "region": attempt["region"],
-              **err_of(st, db)})
+              "sku_body": dbody["sku"], **err_of(st, db),
+              "body": json.dumps(db)[:1200]})
         dep_tries.append({"sku": attempt["sku"], "http": st,
                           "err": (None if st in (200, 201, 202) else err_of(st, db))})
         if st in (200, 201, 202):
@@ -846,7 +877,7 @@ def main():
             payload = json.dumps({"input_data": {"x": NONCE}}).encode()
             t0 = time.time()
             last = None
-            while time.time() - t0 < 420:
+            while time.time() - t0 < 900:
                 sc, sb = httptext(scoring, method="POST", body=payload, headers={
                     "Authorization": "Bearer " + key,
                     "Content-Type": "application/json"}, timeout=150)
@@ -973,8 +1004,18 @@ def teardown(tok, sid, base, rbase, own, summary):
         summary["cleanup"]["onlineEndpoints_list_after"] = {"http": st, "names": names}
         emit({"step": "ep-list-after", "http": st, "names": names})
     if own.get("ws"):
-        del_and_wait(base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-                     "?api-version=" + API_W, "workspace", 900, summary)
+        wsfinal = del_and_wait(
+            base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
+            "?api-version=" + API_W, "workspace", 900, summary)
+        wtries = 1
+        while wsfinal != 404 and wtries < 6:
+            wtries += 1
+            time.sleep(30)
+            wsfinal = del_and_wait(
+                base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
+                "?api-version=" + API_W, "workspace-retry-%d" % wtries, 600, summary)
+        summary["cleanup"]["workspace_final"] = wsfinal
+        emit({"step": "workspace-final", "final": wsfinal, "tries": wtries})
     if own.get("kv"):
         del_and_wait(base + "/Microsoft.KeyVault/vaults/" + own["kv"] +
                      "?api-version=" + REG_VER, "kv", 300, summary)

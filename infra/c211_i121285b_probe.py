@@ -42,7 +42,7 @@ import uuid
 TAG = "C211_I121285"
 ARM = "https://management.azure.com"
 RG = "SSW.Rules.Staging"
-NONCE = "i121441"
+NONCE = "i121441e"
 WS = "c211i121441aml"
 SUF = hashlib.sha256(NONCE.encode()).hexdigest()[:8]
 JOB = "c211-i121441-dev"
@@ -132,16 +132,26 @@ def prov_state(body):
     return None
 
 
-def poll_prov(tok, url, label, budget=300, sleep_s=10):
+def poll_prov(tok, url, label, budget=300, sleep_s=10, grace404=0):
+    """Poll provisioningState. grace404 tolerates the ARM replication lag right after
+    an async 202 PUT (the GET can 404 for a few seconds before the resource appears)."""
     ps = None
     t0 = time.time()
+    first404 = None
     while time.time() - t0 < budget:
         st, b = arm(tok, url, timeout=90)
         ps = prov_state(b)
         emit({"step": label + "-poll", "http": st, "state": ps,
               "t": round(time.time() - t0)})
-        if ps in ("Succeeded", "Failed", "Canceled") or st == 404:
+        if ps in ("Succeeded", "Failed", "Canceled"):
             break
+        if st == 404:
+            if first404 is None:
+                first404 = time.time()
+            if time.time() - first404 > grace404:
+                break
+        else:
+            first404 = None
         time.sleep(sleep_s)
     return ps
 
@@ -388,21 +398,27 @@ def main():
     emit({"step": "ws-create", **err_of(st, b)})
     ws_ok = st in (200, 201, 202)
     if not ws_ok and not kv_id:
-        # Soft-deleted key vault name (409 ConflictError) left keyVault out of the
-        # workspace json -> 400 "Missing dependent resources". Retry ONCE with a
-        # second nonce vault name, then re-PUT the same workspace.
-        kv2 = kv + "x"
-        kv2url = base + "/Microsoft.KeyVault/vaults/" + kv2 + "?api-version=" + REG_VER
-        st2, b2 = arm(tok, kv2url, "PUT",
-                      {"location": loc, "tags": {"c211": NONCE},
-                       "properties": {"tenantId": tenant,
-                                      "sku": {"family": "A", "name": "standard"},
-                                      "accessPolicies": [], "enableSoftDelete": True,
-                                      "enableRbacAuthorization": True}}, timeout=180)
-        emit({"step": "kv-create-retry", "name": kv2, **err_of(st2, b2)})
-        if st2 in (200, 201, 202):
-            own["kv"] = kv2
-            kv_id = rbase + "/Microsoft.KeyVault/vaults/" + kv2
+        # A 409 ConflictError ("vault with the same name already exists in deleted
+        # state") leaves keyVault out of the workspace json -> 400 "Missing dependent
+        # resources". Try at most three alternate nonce vault names, then re-PUT the
+        # same workspace body with the accepted keyVault id.
+        kv2url = None
+        for cand in (kv + "x", kv + "y", kv + "z"):
+            candurl = base + "/Microsoft.KeyVault/vaults/" + cand + \
+                "?api-version=" + REG_VER
+            st2, b2 = arm(tok, candurl, "PUT",
+                          {"location": loc, "tags": {"c211": NONCE},
+                           "properties": {"tenantId": tenant,
+                                          "sku": {"family": "A", "name": "standard"},
+                                          "accessPolicies": [], "enableSoftDelete": True,
+                                          "enableRbacAuthorization": True}}, timeout=180)
+            emit({"step": "kv-create-retry", "name": cand, **err_of(st2, b2)})
+            if st2 in (200, 201, 202):
+                own["kv"] = cand
+                kv_id = rbase + "/Microsoft.KeyVault/vaults/" + cand
+                kv2url = candurl
+                break
+        if kv_id:
             props["keyVault"] = kv_id
             poll_prov(tok, kv2url, "kv", 180)
             st, b = arm(tok, wurl, "PUT", wbody, timeout=300)
@@ -410,7 +426,7 @@ def main():
             ws_ok = st in (200, 201, 202)
     if ws_ok:
         own["ws"] = WS
-        ps = poll_prov(tok, wurl, "ws", 600, 15)
+        ps = poll_prov(tok, wurl, "ws", 600, 15, grace404=90)
         emit({"step": "ws-final", "state": ps})
         if ps == "Succeeded":
             st, wb = arm(tok, wurl, timeout=90)

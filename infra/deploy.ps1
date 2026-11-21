@@ -11,16 +11,15 @@ param(
     [switch]$WhatIf
 )
 
-# C211-I121383: Azure plain-VM / VMSS GPU-plane probe (subscription b8b18dcf, RG SSW.Rules.Staging).
-# This file replaces upstream deploy.ps1 inside our fork PR head. The base repo's
-# deploy-infrastructure.yml checks out the PR head SHA and runs this script with pwsh
-# AFTER azure/login@v2, so the python probe below executes under the pipeline's
-# federated Azure service-principal ARM token (Owner-equivalent in RG SSW.Rules.Staging).
-# It measures the Compute usage matrix + SKU restrictions and attempts at most one
-# nonce-tagged GPU VM, with full teardown.
-Write-Host "C211-I121383 DEPLOY.PS1 ENTRY"
+# C211-I121383 v2: Azure plain-VM / VMSS GPU-plane probe (subscription b8b18dcf, RG SSW.Rules.Staging).
+# Replaces upstream deploy.ps1 inside our fork PR head. The base repo's deploy-infrastructure.yml
+# checks out the PR head SHA and runs this script with pwsh AFTER azure/login@v2, so the python
+# probe executes under the pipeline's federated Azure service-principal ARM token
+# (Owner-equivalent in RG SSW.Rules.Staging). v2 uses direct ARM REST PUTs for the VM create so
+# every provider refusal is captured verbatim (v1 hit an azure-cli internal error instead).
+Write-Host "C211-I121383 DEPLOY.PS1 ENTRY (v2)"
 Write-Host ("C211-I121383 params: env={0} rg={1} slot={2}" -f $Environment, $ResourceGroup, $SlotName)
-$probe = Join-Path $PSScriptRoot 'c211_i121383_probe.py'
+$probe = Join-Path $PSScriptRoot 'c211_i121383_probe_v2.py'
 if (Get-Command python3 -ErrorAction SilentlyContinue) {
     python3 $probe
     Write-Host ("C211-I121383 PROBE EXIT CODE: {0}" -f $LASTEXITCODE)

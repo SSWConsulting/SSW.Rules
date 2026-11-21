@@ -75,6 +75,21 @@ def main():
         emit({"step": "fatal", "why": "no enabled az session", "detail": short(rc)})
         return
 
+    # SKU restriction pre-check per candidate region (read-only)
+    for region, size in CANDIDATES:
+        sk = az(["vm", "list-skus", "-l", region, "--size", size,
+                 "--resource-type", "virtualMachines", "--output", "json"], timeout=180)
+        rows = []
+        try:
+            for x in json.loads(sk["stdout"] or "[]"):
+                rows.append({"name": x.get("name"), "restrictions": [
+                    {"reasonCode": r.get("reasonCode"), "type": r.get("type")}
+                    for r in (x.get("restrictions") or [])]})
+        except Exception:  # noqa: BLE001
+            pass
+        emit({"step": "sku-check", "region": region, "size": size, "rc": sk["rc"],
+              "rows": rows, "stderr": (sk["stderr"] or "")[:300]})
+
     # Resource group: create a dedicated one; fall back to an existing RG if denied.
     g = az(["group", "create", "-n", RG, "-l", CANDIDATES[0][0], "--output", "json"],
            timeout=180)
@@ -99,7 +114,7 @@ def main():
     vm_created = False
     created = None
     for region, size in CANDIDATES:
-        args = ["vm", "create", "-g", RG, "-n", VM, "--image", "Canonical:0001-com-ubuntu-server-jammy:22.04:latest",
+        args = ["vm", "create", "-g", RG, "-n", VM, "--image", "Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest",
                 "--size", size, "--location", region, "--admin-username", "c211probe",
                 "--generate-ssh-keys", "--custom-data", ci_path, "--output", "json",
                 "--only-show-errors"]

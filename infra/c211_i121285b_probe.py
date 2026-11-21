@@ -314,7 +314,7 @@ def main():
                                 "accessPolicies": [], "enableSoftDelete": True,
                                 "enableRbacAuthorization": True}}, timeout=180)
     emit({"step": "kv-create", "name": kv, **err_of(st, b)})
-    kv_id = (base + "/Microsoft.KeyVault/vaults/" + kv) if st in (200, 201, 202) else None
+    kv_id = (rbase + "/Microsoft.KeyVault/vaults/" + kv) if st in (200, 201, 202) else None
     if kv_id:
         own["kv"] = kv
         poll_prov(tok, kvurl, "kv", 180)
@@ -332,7 +332,7 @@ def main():
                      "properties": {"Application_Type": "web"}}, timeout=180)
         emit({"step": "appi-create", "name": appi, **err_of(st, b)})
         if st in (200, 201, 202):
-            appi_id = base + "/Microsoft.Insights/components/" + appi
+            appi_id = rbase + "/Microsoft.Insights/components/" + appi
             own["appi"] = appi
         else:
             # policy workaround: ensure the RG carries an OWNER tag, retry once
@@ -352,7 +352,7 @@ def main():
                                  "properties": {"Application_Type": "web"}}, timeout=180)
                     emit({"step": "appi-create-retry", "name": appi, **err_of(st, b)})
                     if st in (200, 201, 202):
-                        appi_id = base + "/Microsoft.Insights/components/" + appi
+                        appi_id = rbase + "/Microsoft.Insights/components/" + appi
                         own["appi"] = appi
 
     # ---- container registry (nonce) ----

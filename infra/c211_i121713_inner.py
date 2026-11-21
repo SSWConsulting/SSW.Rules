@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""C211-I121713 INNER probe: runs INSIDE the nonce-tagged CPU-only Azure Container Instance
+"""C211-I121713 INNER probe (v2, fixed GPU-family filter): runs INSIDE the nonce-tagged CPU-only Azure Container Instance
 that has the harvested user-assigned managed identity attached. It fetches the identity token
 from IMDS (client_id scoped) and measures, read-only:
   (a) every subscription visible to the identity (/subscriptions),
@@ -193,7 +193,8 @@ def main():
             for u in (d.get("value") or []):
                 nm = ((u.get("name") or {}).get("value") or "")
                 low = nm.lower()
-                if any(k in low for k in ("nc", "nd", "nv", "gpu", "t4", "a100", "v100", "p100")):
+                if (low.startswith("standardnc") or low.startswith("standardnd")
+                        or low.startswith("standardnv") or "gpu" in low):
                     cur, lim = u.get("currentValue"), u.get("limit")
                     rows.append({"name": nm, "current": cur, "limit": lim,
                                  "unit": u.get("unit")})
@@ -205,7 +206,7 @@ def main():
                     except Exception:  # noqa: BLE001
                         pass
             emit({"step": "gpu-usage", "sub": sid, "region": region, "http": st,
-                  "n": len(rows), "rows": rows[:30],
+                  "n": len(rows), "rows": rows[:60],
                   "err": (summarize_err(raw) if st != 200 else None)})
 
     # ---------------- (c) ACR AAD exchange + catalog ----------------

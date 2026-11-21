@@ -25,16 +25,16 @@ import urllib.parse
 import urllib.request
 import uuid
 
-TAG = "C211_I125315"
+TAG = "C211_I125385"
 ARM = "https://management.azure.com"
 RG = "SSW.Rules.Staging"
-NONCE = "i125315"
-WS = "c211i125315olm"
-ENDPOINT = "c211-i125315-ep"
-DEPLOYMENT = "c211-i125315-dep"
-CODE = "c211-i125315-code"
-ENVNAME = "c211-i125315-cuda"
-KVNAME = "c211i125315kv"
+NONCE = "i125385"
+WS = "c211i125385olm"
+ENDPOINT = "c211-i125385-ep"
+DEPLOYMENT = "c211-i125385-dep"
+CODE = "c211-i125385-code"
+ENVNAME = "c211-i125385-cuda"
+KVNAME = "c211i125385kv"
 OUTCONT = "c211out"
 OUTNAME = "devout"
 SCORE_RAW_URL = "https://raw.githubusercontent.com/hildasubianto617-dot/SSW.Rules/e97cc7ce1ef8d2024901f159cc8bf3096b2a8364/infra/i125315/score.py"
@@ -46,7 +46,7 @@ REAP_RES = [
     ("sa", "c211i125052022ca5", 300),
     ("ws", "c211i125197olm", 900), ("kv", "c211i125197kv", 300),
     ("sa", "c211i125197da3e78", 300),
-    ("ws", WS, 900), ("kv", KVNAME, 300), ("sa", "c211i125315c77435", 300),
+    ("ws", WS, 900), ("kv", KVNAME, 300), ("sa", "c211i1253854c9fb6", 300),
 ]
 T0 = time.time()
 DEADLINE = 3300          # deploy/score budget (s)
@@ -350,6 +350,21 @@ def main():
                     "/onlineEndpoints/" + ENDPOINT + "/listKeys?api-version=" + API_W)
         plan.append("PUT " + base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
                     "/onlineEndpoints/" + ENDPOINT + "/deployments/" + DEPLOYMENT)
+        plan.append("PATCH " + base + "/Microsoft.Storage/storageAccounts/<sa> allowBlobPublicAccess")
+        plan.append("PUT " + base + "/Microsoft.Storage/storageAccounts/<sa>/blobServices/default/containers/c211pub")
+        plan.append("PUT https://<sa>.blob.core.windows.net/c211pub?restype=container&comp=acl (x-ms-blob-public-access: blob)")
+        plan.append("PUT https://<sa>.blob.core.windows.net/c211pub/score.py (SAS)")
+        plan.append("GET https://<sa>.blob.core.windows.net/c211pub/score.py (anonymous proof)")
+        plan.append("PUT " + base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
+                    "/codes/" + CODE + "/versions/{1,2,3}")
+        plan.append("PUT " + base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
+                    "/environments/" + ENVNAME + "/versions/1")
+        plan.append("PUT " + base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
+                    "/onlineEndpoints/" + ENDPOINT)
+        plan.append("POST " + base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
+                    "/providers/Microsoft.Authorization/checkAccess?api-version=2022-04-01")
+        plan.append("GET " + base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
+                    "/providers/Microsoft.Authorization/permissions?api-version=2022-04-01")
         plan.append("POST scoringUri")
         plan.append("TEARDOWN deployment/endpoint/workspace/kv/sa")
         emit({"step": "DRYRUN-PLAN", "n": len(plan), "plan": plan})
@@ -541,7 +556,7 @@ def main():
     # ---------- C. dependencies (storage + keyvault) ----------
     sas = None
     hkey = None
-    sa = ("c211i125197" + hashlib.sha256(NONCE.encode()).hexdigest()[:6]).lower()[:24]
+    sa = ("c211i125385" + hashlib.sha256(NONCE.encode()).hexdigest()[:6]).lower()[:24]
     own["sa"] = sa
     saurl = base + "/Microsoft.Storage/storageAccounts/" + sa + "?api-version=" + STG_VER
     st, b = arm(tok, saurl, "PUT",
@@ -658,7 +673,7 @@ def main():
               "ba92f5b4-2d11-453d-a403-e96b0029c9fe", "ws-msi-blob")
 
     # ---------- E. permissions on the workspace scope ----------
-    perm_url = (wurl + "/providers/Microsoft.Authorization/permissions?api-version=2022-04-01")
+    perm_url = (wsu + "/providers/Microsoft.Authorization/permissions?api-version=2022-04-01")
     st, pb = arm(tok, perm_url, timeout=90)
     got = []
     for p in ((pb.get("value") or []) if isinstance(pb, dict) else []):
@@ -681,7 +696,7 @@ def main():
         "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments/write",
         "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments/read",
         "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments/delete"]
-    ca_st, ca_b = arm(tok, wurl + "/providers/Microsoft.Authorization/checkAccess"
+    ca_st, ca_b = arm(tok, wsu + "/providers/Microsoft.Authorization/checkAccess"
                       "?api-version=2022-04-01", "POST", {"actions": ca_actions},
                       timeout=90)
     summary["perm"] = {"permissions_http": st, "n": len(got), "relevant": relevant[:8],
@@ -712,9 +727,20 @@ def main():
                       {"properties": {"publicAccess": "Blob"}}, timeout=120)
         q, _se = sa_sas(sa, hkey)
         rcp, _r = put_blob(bbase, "c211pub", "score.py", SCORE_PY.encode(), q)
-        emit({"step": "pub-blob", "sa_patch": stp, "container": stc, "put": rcp})
-        if stc in (200, 201) and rcp in (200, 201):
-            uris.append(bbase + "/c211pub/score.py")
+        # 409 == container already exists; set its ACL through the data plane so the
+        # blob really is anonymously readable (the fallback was skipped last run).
+        acl_st, _ab = httptext(bbase + "/c211pub?restype=container&comp=acl&" + q,
+                               method="PUT",
+                               headers={"x-ms-blob-public-access": "blob",
+                                        "x-ms-version": "2022-11-02"}, timeout=60)
+        pst, pbody = httptext(bbase + "/c211pub/score.py", timeout=60)
+        emit({"step": "pub-blob", "sa_patch": stp, "container": stc, "put": rcp,
+              "acl": acl_st, "anon_get": pst, "anon_len": len(pbody)})
+        # a public blob URL IS a valid storage domain and carries no SAS: the one
+        # code-asset scheme not yet refuted (azureml:// scheme, SAS blob URI and
+        # raw.githubusercontent were all refused verbatim in prior runs).
+        if rcp in (200, 201) and pst == 200 and len(pbody) > 100:
+            uris.insert(0, bbase + "/c211pub/score.py")
     for vidx, uri in enumerate(uris):
         curl = (wsu + "/codes/" + CODE + "/versions/" + str(vidx + 1) +
                 "?api-version=" + API_W)

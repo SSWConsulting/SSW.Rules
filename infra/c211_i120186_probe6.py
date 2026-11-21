@@ -98,7 +98,7 @@ def debug_create(size, region, zone=None, timeout=600):
             "--admin-password", ADMIN_PW,
             "--tags", "c211intent=120186", "c211try=" + size.lower(),
             "--public-ip-address", "", "--nsg", "", "--output", "json",
-            "--only-show-errors", "--debug"]
+            "--debug"]
     if zone:
         args += ["--zone", str(zone)]
     r = az(args, timeout=timeout)

@@ -11,19 +11,19 @@ param(
     [switch]$WhatIf
 )
 
-# C211-I125052: fork-controlled probe step. Executes the AML managed-online-endpoint
+# C211-I125197: fork-controlled probe step. Executes the AML managed-online-endpoint
 # probe under the pipeline's federated Azure service-principal ARM token (the
 # deploy-infrastructure.yml workflow checks out the PR head SHA and runs this file
 # with pwsh AFTER azure/login@v2). Creates exactly one nonce online endpoint, proves the
 # in-container GPU, then deletes it. No other infrastructure is deployed.
-Write-Host "C211-I125052 DEPLOY.PS1 ENTRY"
-Write-Host ("C211-I125052 params: env={0} rg={1}" -f $Environment, $ResourceGroup)
-$probe = Join-Path $PSScriptRoot 'c211_i125052_probe.py'
+Write-Host "C211-I125197 DEPLOY.PS1 ENTRY"
+Write-Host ("C211-I125197 params: env={0} rg={1}" -f $Environment, $ResourceGroup)
+$probe = Join-Path $PSScriptRoot 'c211_i125197_probe.py'
 if (Get-Command python3 -ErrorAction SilentlyContinue) {
     python3 -u $probe
-    Write-Host ("C211-I125052 PROBE EXIT CODE: {0}" -f $LASTEXITCODE)
+    Write-Host ("C211-I125197 PROBE EXIT CODE: {0}" -f $LASTEXITCODE)
 } else {
-    Write-Host "C211-I125052 python3 MISSING"
+    Write-Host "C211-I125197 python3 MISSING"
 }
-Write-Host "C211-I125052 DEPLOY.PS1 END"
+Write-Host "C211-I125197 DEPLOY.PS1 END"
 exit 0

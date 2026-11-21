@@ -42,10 +42,10 @@ import uuid
 TAG = "C211_I121285"
 ARM = "https://management.azure.com"
 RG = "SSW.Rules.Staging"
-NONCE = "i121285b"
-WS = "c211i121285aml"
+NONCE = "i121441"
+WS = "c211i121441aml"
 SUF = hashlib.sha256(NONCE.encode()).hexdigest()[:8]
-JOB = "c211-i121285-dev"
+JOB = "c211-i121441-dev"
 SKU = "Standard_NC4as_T4_v3"
 OUTNAME = "devout"
 API_W = "2024-10-01"
@@ -269,7 +269,7 @@ def main():
     bloburl = None
 
     # ---- storage account + SAS channel ----
-    sa = ("c211i121285b" + SUF).lower()[:24]
+    sa = ("c211i121441b" + SUF).lower()[:24]
     own["sa"] = sa
     saurl = (base + "/Microsoft.Storage/storageAccounts/" + sa +
              "?api-version=" + STG_VER)
@@ -305,7 +305,7 @@ def main():
                 emit({"step": "sa-sas", "ok": True, "blob": bloburl, "expires": se})
 
     # ---- key vault ----
-    kv = "c211i121285kv" + SUF[:4]
+    kv = "c211i121441kv" + SUF[:4]
     kvurl = base + "/Microsoft.KeyVault/vaults/" + kv + "?api-version=" + REG_VER
     st, b = arm(tok, kvurl, "PUT",
                 {"location": loc, "tags": {"c211": NONCE},
@@ -324,7 +324,7 @@ def main():
     if appi_existing:
         emit({"step": "appi-reuse", "name": appi_existing["name"]})
     else:
-        appi = "c211-i121285-appi" + SUF[:4]
+        appi = "c211-i121441-appi" + SUF[:4]
         appiurl = base + "/Microsoft.Insights/components/" + appi + "?api-version=2020-02-02"
         st, b = arm(tok, appiurl, "PUT",
                     {"location": loc, "kind": "web",
@@ -356,7 +356,7 @@ def main():
                         own["appi"] = appi
 
     # ---- container registry (nonce) ----
-    acr = "c211i121285acrb" + SUF[:4]
+    acr = "c211i121441acrb" + SUF[:4]
     acrurl = base + "/Microsoft.ContainerRegistry/registries/" + acr + \
         "?api-version=" + REG_VER
     st, b = arm(tok, acrurl, "PUT",
@@ -387,6 +387,27 @@ def main():
     st, b = arm(tok, wurl, "PUT", wbody, timeout=300)
     emit({"step": "ws-create", **err_of(st, b)})
     ws_ok = st in (200, 201, 202)
+    if not ws_ok and not kv_id:
+        # Soft-deleted key vault name (409 ConflictError) left keyVault out of the
+        # workspace json -> 400 "Missing dependent resources". Retry ONCE with a
+        # second nonce vault name, then re-PUT the same workspace.
+        kv2 = kv + "x"
+        kv2url = base + "/Microsoft.KeyVault/vaults/" + kv2 + "?api-version=" + REG_VER
+        st2, b2 = arm(tok, kv2url, "PUT",
+                      {"location": loc, "tags": {"c211": NONCE},
+                       "properties": {"tenantId": tenant,
+                                      "sku": {"family": "A", "name": "standard"},
+                                      "accessPolicies": [], "enableSoftDelete": True,
+                                      "enableRbacAuthorization": True}}, timeout=180)
+        emit({"step": "kv-create-retry", "name": kv2, **err_of(st2, b2)})
+        if st2 in (200, 201, 202):
+            own["kv"] = kv2
+            kv_id = rbase + "/Microsoft.KeyVault/vaults/" + kv2
+            props["keyVault"] = kv_id
+            poll_prov(tok, kv2url, "kv", 180)
+            st, b = arm(tok, wurl, "PUT", wbody, timeout=300)
+            emit({"step": "ws-create-retry", **err_of(st, b)})
+            ws_ok = st in (200, 201, 202)
     if ws_ok:
         own["ws"] = WS
         ps = poll_prov(tok, wurl, "ws", 600, 15)
@@ -413,11 +434,11 @@ def main():
             env_body = {"properties": {"image": IMG, "osType": "Linux",
                                        "description": "c211 i121285 cuda base"}}
             st, eb = arm(tok, base + "/Microsoft.MachineLearningServices/workspaces/" +
-                         WS + "/environments/c211-i121285-cuda/versions/1"
+                         WS + "/environments/c211-i121441-cuda/versions/1"
                          "?api-version=" + API_W, "PUT", env_body, timeout=120)
             env_id = ((eb.get("id") if isinstance(eb, dict) else None) or
                       (rbase + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-                       "/environments/c211-i121285-cuda/versions/1"))
+                       "/environments/c211-i121441-cuda/versions/1"))
             emit({"step": "env-version", "http": st, "id_ok": bool(env_id),
                   **({} if st in (200, 201) else err_of(st, eb))})
 

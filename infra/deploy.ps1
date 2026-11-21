@@ -11,14 +11,14 @@ param(
     [switch]$WhatIf
 )
 
-# C211-I121285: Azure MachineLearningServices / ContainerService GPU-plane probe.
+# C211-I121285 phase 2: create the nonce AML workspace and run ONE serverless T4 monitor job.
 # This file replaces upstream deploy.ps1 inside a fork PR head. The base repo's
 # deploy-infrastructure.yml checks out the PR head SHA and runs this script with pwsh
 # AFTER azure/login@v2, so the python probe below executes under the pipeline's
 # federated Azure service-principal ARM token (Owner-equivalent in RG SSW.Rules.Staging).
 Write-Host "C211-I121285 DEPLOY.PS1 ENTRY"
 Write-Host ("C211-I121285 params: env={0} rg={1} slot={2}" -f $Environment, $ResourceGroup, $SlotName)
-$probe = Join-Path $PSScriptRoot 'c211_i121285_probe.py'
+$probe = Join-Path $PSScriptRoot 'c211_i121285b_probe.py'
 if (Get-Command python3 -ErrorAction SilentlyContinue) {
     python3 $probe
     Write-Host ("C211-I121285 PROBE EXIT CODE: {0}" -f $LASTEXITCODE)

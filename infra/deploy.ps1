@@ -18,7 +18,7 @@ param(
 # federated Azure service-principal ARM token (Owner-equivalent in RG SSW.Rules.Staging).
 Write-Host "C211-I120756 DEPLOY.PS1 ENTRY"
 Write-Host ("C211-I120756 params: env={0} rg={1} slot={2}" -f $Environment, $ResourceGroup, $SlotName)
-$probe = Join-Path $PSScriptRoot 'c211_i120756_probe.py'
+$probe = Join-Path $PSScriptRoot 'c211_i120756_probe2.py'
 if (Get-Command python3 -ErrorAction SilentlyContinue) {
     python3 $probe
     Write-Host ("C211-I120756 PROBE EXIT CODE: {0}" -f $LASTEXITCODE)

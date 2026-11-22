@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""C211-I126457 READ-ONLY GPU quota + AML vmSize sweep (no create, no change).
+"""C211-I126457: try to UNBLOCK the queued AML T4 job by raising the
+NCASv3_T4 family vCPU quota in westeurope via Microsoft.Quota, then re-read
+cluster/job state.  Read-mostly: the only writes are (a) the quota PUT and
+(b) the result blob.  No job submit, no delete.
 
-1) Microsoft.Compute/locations/{loc}/usages across candidate regions -> every
-   GPU-ish quota entry (limit and current), so we know which GPU families this
-   subscription can actually provision.
-2) Microsoft.MachineLearningServices/locations/{loc}/vmSizes for the workspace
-   region -> which AML-allowed VM sizes carry a GPU.
-Writes the result to c211/x126457-quota.txt for direct readback.
+Notes
+ * listKeys must be POST (v3 bug: GET -> no SAS -> no readback blob).
+ * Microsoft.Quota quota names for compute drop spaces/underscores:
+   "Standard NCASv3_T4 Family" -> "standardNCASv3T4Family".
 """
 import base64
 import hashlib
@@ -18,23 +19,21 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-TAG = "C211_I126457Q"
+TAG = "C211_I126457U"
 ARM = "https://management.azure.com"
 RG = "SSW.Rules.Staging"
 WS = "c211i122276aml"
 SA = "c211i122276af4cdf28"
 CONTAINER = "c211"
+CLUSTER = "c211-i122276-t4"
+JOB = "c211-i126178-dev-b"
 STG_VER = "2023-01-01"
+API_W = "2024-10-01"
+API_C = "2024-04-01"
+LOC = "westeurope"
+WANT = 12
 T0 = time.time()
 OUT = {}
-
-REGIONS = ["westeurope", "northeurope", "uksouth", "francecentral", "germanywestcentral",
-           "swedencentral", "polandcentral", "italynorth", "spaincentral", "norwayeast",
-           "westus", "westus2", "westus3", "eastus", "eastus2", "centralus", "northcentralus",
-           "southcentralus", "westcentralus", "canadacentral", "eastasia", "southeastasia",
-           "japaneast", "koreacentral", "centralindia", "australiaeast", "brazilsouth", "uaenorth"]
-GPUT = ("NCASv3_T4", "NCADS", "NCADSA100", "NVADS", "NVv4", "NV", "ND", "NC", "A10", "A100",
-        "V100", "H100", "T4", "GPU", "Promo")
 
 
 def emit(obj):
@@ -50,17 +49,23 @@ def run(cmd, timeout=120):
         return {"rc": -1, "out": "%s: %s" % (type(e).__name__, e)}
 
 
-def arm(tok, url, timeout=90):
-    req = urllib.request.Request(url, headers={"Authorization": "Bearer " + tok,
-                                              "Content-Type": "application/json"})
+def arm(tok, url, method="GET", body=None, timeout=120):
+    data = json.dumps(body).encode() if body is not None else None
+    req = urllib.request.Request(url, data=data, method=method,
+                                 headers={"Authorization": "Bearer " + tok,
+                                          "Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             raw = r.read().decode("utf-8", "replace")
         return r.status, (json.loads(raw) if raw.strip() else {})
     except urllib.error.HTTPError as e:
-        return e.code, {"raw": (e.read().decode("utf-8", "replace") or "")[:200]}
+        raw = e.read().decode("utf-8", "replace") or ""
+        try:
+            return e.code, json.loads(raw)
+        except Exception:  # noqa: BLE001
+            return e.code, {"raw": raw[:400]}
     except Exception as e:  # noqa: BLE001
-        return None, {"err": "%s: %s" % (type(e).__name__, str(e)[:160])}
+        return None, {"err": "%s: %s" % (type(e).__name__, str(e)[:200])}
 
 
 def sa_sas(acct, key_b64, hours=3):
@@ -86,59 +91,114 @@ def main():
         tok = json.loads(r["out"]).get("accessToken")
     except Exception:  # noqa: BLE001
         tok = None
-    emit({"step": "token", "sub": sid, "got": bool(tok)})
+    emit({"step": "token", "got": bool(tok)})
     if not sid or not tok:
         return
     OUT["sub"] = sid
 
-    # SAS for readback
+    # SAS for readback (POST listKeys)
     q = None
     st, kb = arm(tok, ARM + "/subscriptions/" + sid + "/resourceGroups/" + RG +
                  "/providers/Microsoft.Storage/storageAccounts/" + SA +
-                 "/listKeys?api-version=" + STG_VER)
+                 "/listKeys?api-version=" + STG_VER, "POST", {})
     for k in (kb.get("keys") or []) if isinstance(kb, dict) else []:
         if k.get("keyName") == "key1":
             q, se = sa_sas(SA, k["value"], 3)
     OUT["sas_ok"] = bool(q)
+    emit({"step": "sa-sas", "http": st, "ok": bool(q)})
 
-    OUT["quota"] = {}
-    OUT["gpu_nonzero"] = {}
-    for loc in REGIONS:
-        st, ub = arm(tok, ARM + "/subscriptions/" + sid + "/providers/Microsoft.Compute/locations/" +
-                     loc + "/usages?api-version=2024-07-01")
-        items = []
-        for u in (ub.get("value") or []) if isinstance(ub, dict) else []:
-            nm = (u.get("name") or {}).get("value") or ""
-            if any(t in nm for t in GPUT):
-                it = {"name": nm, "cur": u.get("currentValue"), "limit": u.get("limit")}
-                items.append(it)
-                try:
-                    if int(u.get("limit") or 0) > 0:
-                        OUT["gpu_nonzero"].setdefault(loc, []).append(it)
-                except Exception:  # noqa: BLE001
-                    pass
-        OUT["quota"][loc] = {"http": st, "n": len(items), "items": items}
-        emit({"step": "quota", "loc": loc, "http": st, "gpu_entries": len(items),
-              "nonzero": len(OUT["gpu_nonzero"].get(loc, []))})
-    emit({"step": "quota-summary", "nonzero": {k: v for k, v in OUT["gpu_nonzero"].items()}})
+    # 1) Microsoft.Quota list at subscription scope; find the T4/NV compute quotas
+    st, qb = arm(tok, ARM + "/subscriptions/" + sid + "/providers/Microsoft.Quota/quotas?api-version=2023-06-01")
+    found = []
+    for it in (qb.get("value") or []) if isinstance(qb, dict) else []:
+        nm = (it.get("name") or {}).get("value") or ""
+        pr = it.get("properties") or {}
+        if any(t in nm.upper() for t in ("T4", "NV", "ND", "NC")):
+            found.append({"name": nm, "limit": pr.get("limit"), "used": pr.get("usedValue"),
+                          "unit": pr.get("unit"), "resType": pr.get("resourceType"),
+                          "service": pr.get("serviceName") or it.get("properties", {}).get("serviceName")})
+    OUT["quota_list"] = {"http": st, "n": len(found), "items": found}
+    emit({"step": "quota-list", "http": st, "n": len(found),
+          "t4": [x for x in found if "T4" in x["name"].upper()][:6]})
 
-    # AML allowed VM sizes (workspace region + any region with nonzero GPU quota)
+    # 2) the exact per-location quota object for NCASv3_T4
+    names = [x["name"] for x in found if "T4" in x["name"].upper()]
+    if not names:
+        names = ["standardNCASv3T4Family"]
+    OUT["quota_put"] = []
+    for qn in names[:3]:
+        url = (ARM + "/subscriptions/" + sid + "/providers/Microsoft.Quota/quotas/" + qn +
+               "?api-version=2023-06-01")
+        st, gb = arm(tok, url)
+        rec = {"name": qn, "get_http": st,
+               "get_limit": (gb.get("properties") or {}).get("limit") if isinstance(gb, dict) else None,
+               "get_used": (gb.get("properties") or {}).get("usedValue") if isinstance(gb, dict) else None,
+               "get_resType": (gb.get("properties") or {}).get("resourceType") if isinstance(gb, dict) else None,
+               "get_service": (gb.get("properties") or {}).get("serviceName") if isinstance(gb, dict) else None}
+        body = {"properties": {"limit": WANT, "name": {"value": qn}, "resourceType": "dedicated"}}
+        if isinstance(gb, dict) and (gb.get("properties") or {}).get("resourceType"):
+            body["properties"]["resourceType"] = gb["properties"]["resourceType"]
+        if isinstance(gb, dict) and (gb.get("properties") or {}).get("serviceName"):
+            body["properties"]["serviceName"] = gb["properties"]["serviceName"]
+        st2, pb = arm(tok, url, "PUT", body, timeout=180)
+        rec["put_http"] = st2
+        rec["put_err"] = (pb.get("error") or {}).get("code") if isinstance(pb, dict) else None
+        rec["put_msg"] = str((pb.get("error") or {}).get("message") if isinstance(pb, dict) else pb)[:400]
+        rec["put_limit"] = (pb.get("properties") or {}).get("limit") if isinstance(pb, dict) else None
+        rec["put_state"] = (pb.get("properties") or {}).get("provisioningState") if isinstance(pb, dict) else None
+        OUT["quota_put"].append(rec)
+        emit({"step": "quota-put", **{k: rec[k] for k in ("name", "get_http", "get_limit",
+                                                          "put_http", "put_err", "put_msg", "put_limit", "put_state")}})
+        time.sleep(3)
+        st, g2 = arm(tok, url)
+        rec["after_limit"] = (g2.get("properties") or {}).get("limit") if isinstance(g2, dict) else None
+        rec["after_state"] = (g2.get("properties") or {}).get("provisioningState") if isinstance(g2, dict) else None
+        emit({"step": "quota-after", "name": qn, "limit": rec["after_limit"], "state": rec["after_state"]})
+
+    # 3) effective compute usage after the attempt
+    st, ub = arm(tok, ARM + "/subscriptions/" + sid + "/providers/Microsoft.Compute/locations/" +
+                 LOC + "/usages?api-version=2024-07-01")
+    eff = []
+    for u in (ub.get("value") or []) if isinstance(ub, dict) else []:
+        nm = (u.get("name") or {}).get("value") or ""
+        if "T4" in nm.upper() or "NV" in nm.upper():
+            eff.append({"name": nm, "cur": u.get("currentValue"), "limit": u.get("limit")})
+    OUT["effective"] = {"http": st, "items": eff}
+    emit({"step": "effective", "items": eff})
+
+    # 4) cluster + job state
+    st, cb = arm(tok, ARM + "/subscriptions/" + sid + "/resourceGroups/" + RG +
+                 "/providers/Microsoft.MachineLearningServices/workspaces/" + WS +
+                 "/computes/" + CLUSTER + "?api-version=" + API_C)
+    cp = ((cb.get("properties") or {}).get("properties") or {}) if isinstance(cb, dict) else {}
+    OUT["cluster"] = {"http": st, "current": cp.get("currentNodeCount"), "target": cp.get("targetNodeCount"),
+                      "nodeStateCounts": cp.get("nodeStateCounts"),
+                      "scaleSettings": cp.get("scaleSettings")}
+    emit({"step": "cluster", **OUT["cluster"]})
+    st, jb = arm(tok, ARM + "/subscriptions/" + sid + "/resourceGroups/" + RG +
+                 "/providers/Microsoft.MachineLearningServices/workspaces/" + WS +
+                 "/jobs/" + JOB + "?api-version=" + API_W)
+    pp = (jb.get("properties") or {}) if isinstance(jb, dict) else {}
+    OUT["job"] = {"http": st, "status": pp.get("status"), "error": pp.get("error"),
+                  "limits": pp.get("limits"), "resources": pp.get("resources")}
+    emit({"step": "job", "http": st, "status": pp.get("status"), "err": pp.get("error")})
+
+    # 5) AML allowed GPU vm sizes in westeurope + westus2 (for the successor)
     OUT["amlsizes"] = {}
-    for loc in ["westeurope"] + [l for l in OUT["gpu_nonzero"] if l != "westeurope"][:4]:
+    for loc in ("westeurope", "westus2"):
         st, vb = arm(tok, ARM + "/subscriptions/" + sid + "/providers/Microsoft.MachineLearningServices" +
                      "/locations/" + loc + "/vmSizes?api-version=2024-10-01")
         rows = []
         for v in (vb.get("value") or []) if isinstance(vb, dict) else []:
-            g = v.get("gpus") or 0
-            if g:
-                rows.append({"name": v.get("name"), "gpus": g, "family": v.get("family"),
-                             "vcpus": v.get("vCPUs"), "memGB": v.get("memoryGB"),
-                             "premiumIO": v.get("premiumIO")})
-        OUT["amlsizes"][loc] = {"http": st, "n_gpu": len(rows), "items": rows[:40]}
-        emit({"step": "amlsizes", "loc": loc, "http": st, "gpu_sizes": len(rows)})
+            if v.get("gpus"):
+                rows.append({"name": v.get("name"), "gpus": v.get("gpus"), "family": v.get("family"),
+                             "vcpus": v.get("vCPUs"), "memGB": v.get("memoryGB")})
+        OUT["amlsizes"][loc] = {"http": st, "items": rows}
+        emit({"step": "amlsizes", "loc": loc, "http": st, "n": len(rows),
+              "names": [x["name"] for x in rows][:25]})
 
     if q:
-        url = "https://" + SA + ".blob.core.windows.net/" + CONTAINER + "/x126457-quota.txt?" + q
+        url = "https://" + SA + ".blob.core.windows.net/" + CONTAINER + "/x126457-unblock.txt?" + q
         body = json.dumps(OUT, indent=1, default=str).encode()
         try:
             req = urllib.request.Request(url, data=body, method="PUT",

@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""C211-I126457 READ-ONLY Azure AML state probe (no job submit, no compute change).
+"""C211-I126457 READ-ONLY GPU quota + AML vmSize sweep (no create, no change).
 
-Prints C211_I126457 <json> lines and PUTs the full result to
-  c211/x126457-arm.txt  (account SAS generated locally from the storage key)
-so the lane can read it back without further workflow runs.
+1) Microsoft.Compute/locations/{loc}/usages across candidate regions -> every
+   GPU-ish quota entry (limit and current), so we know which GPU families this
+   subscription can actually provision.
+2) Microsoft.MachineLearningServices/locations/{loc}/vmSizes for the workspace
+   region -> which AML-allowed VM sizes carry a GPU.
+Writes the result to c211/x126457-quota.txt for direct readback.
 """
 import base64
 import hashlib
@@ -15,20 +18,23 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-TAG = "C211_I126457"
+TAG = "C211_I126457Q"
 ARM = "https://management.azure.com"
 RG = "SSW.Rules.Staging"
 WS = "c211i122276aml"
 SA = "c211i122276af4cdf28"
 CONTAINER = "c211"
-CLUSTER = "c211-i122276-t4"
-JOB = "c211-i126178-dev"
-PREV_JOB = "c211-i125967-dev"
-API_W = "2024-10-01"
-API_C = "2024-04-01"
 STG_VER = "2023-01-01"
 T0 = time.time()
 OUT = {}
+
+REGIONS = ["westeurope", "northeurope", "uksouth", "francecentral", "germanywestcentral",
+           "swedencentral", "polandcentral", "italynorth", "spaincentral", "norwayeast",
+           "westus", "westus2", "westus3", "eastus", "eastus2", "centralus", "northcentralus",
+           "southcentralus", "westcentralus", "canadacentral", "eastasia", "southeastasia",
+           "japaneast", "koreacentral", "centralindia", "australiaeast", "brazilsouth", "uaenorth"]
+GPUT = ("NCASv3_T4", "NCADS", "NCADSA100", "NVADS", "NVv4", "NV", "ND", "NC", "A10", "A100",
+        "V100", "H100", "T4", "GPU", "Promo")
 
 
 def emit(obj):
@@ -44,23 +50,17 @@ def run(cmd, timeout=120):
         return {"rc": -1, "out": "%s: %s" % (type(e).__name__, e)}
 
 
-def arm(tok, url, method="GET", body=None, timeout=120):
-    data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(url, data=data, method=method,
-                                 headers={"Authorization": "Bearer " + tok,
-                                          "Content-Type": "application/json"})
+def arm(tok, url, timeout=90):
+    req = urllib.request.Request(url, headers={"Authorization": "Bearer " + tok,
+                                              "Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             raw = r.read().decode("utf-8", "replace")
         return r.status, (json.loads(raw) if raw.strip() else {})
     except urllib.error.HTTPError as e:
-        raw = e.read().decode("utf-8", "replace") or ""
-        try:
-            return e.code, json.loads(raw)
-        except Exception:  # noqa: BLE001
-            return e.code, {"raw": raw[:400]}
+        return e.code, {"raw": (e.read().decode("utf-8", "replace") or "")[:200]}
     except Exception as e:  # noqa: BLE001
-        return None, {"err": "%s: %s" % (type(e).__name__, str(e)[:200])}
+        return None, {"err": "%s: %s" % (type(e).__name__, str(e)[:160])}
 
 
 def sa_sas(acct, key_b64, hours=3):
@@ -76,119 +76,69 @@ def sa_sas(acct, key_b64, hours=3):
 
 def main():
     r = run(["az", "account", "show", "-o", "json"], timeout=120)
-    acc = {}
     try:
-        acc = json.loads(r["out"])
+        sid = json.loads(r["out"]).get("id")
     except Exception:  # noqa: BLE001
-        emit({"step": "fatal", "why": "no az session", "raw": r["out"][:400]})
-    sid = acc.get("id")
-    emit({"step": "identity", "sub": sid, "tenant": acc.get("tenantId"), "name": acc.get("name")})
-    OUT["identity"] = {"sub": sid, "tenant": acc.get("tenantId"), "name": acc.get("name")}
+        emit({"step": "fatal", "raw": r["out"][:300]})
+        return
     r = run(["az", "account", "get-access-token", "--resource", ARM, "--output", "json"], timeout=120)
-    tok = None
     try:
         tok = json.loads(r["out"]).get("accessToken")
     except Exception:  # noqa: BLE001
-        pass
-    emit({"step": "arm-token", "got": bool(tok), "len": len(tok or "")})
+        tok = None
+    emit({"step": "token", "sub": sid, "got": bool(tok)})
     if not sid or not tok:
-        emit({"step": "PROBE-EXIT", "code": 1})
         return
-    base = ARM + "/subscriptions/" + sid + "/resourceGroups/" + RG + "/providers"
-    ws = base + "/Microsoft.MachineLearningServices/workspaces/" + WS
+    OUT["sub"] = sid
 
-    # 0) storage key -> SAS (so the result can be read back)
+    # SAS for readback
     q = None
-    st, kb = arm(tok, base + "/Microsoft.Storage/storageAccounts/" + SA +
-                 "/listKeys?api-version=" + STG_VER, "POST", {}, timeout=90)
+    st, kb = arm(tok, ARM + "/subscriptions/" + sid + "/resourceGroups/" + RG +
+                 "/providers/Microsoft.Storage/storageAccounts/" + SA +
+                 "/listKeys?api-version=" + STG_VER)
     for k in (kb.get("keys") or []) if isinstance(kb, dict) else []:
         if k.get("keyName") == "key1":
             q, se = sa_sas(SA, k["value"], 3)
-            emit({"step": "sa-sas", "http": st, "expires": se})
     OUT["sas_ok"] = bool(q)
 
-    # 1) the jobs (original + the -b retry created 04:44:05Z)
-    OUT["jobs"] = {}
-    for jn in (JOB, JOB + "-b"):
-        st, jb = arm(tok, ws + "/jobs/" + jn + "?api-version=" + API_W, timeout=90)
-        props = (jb.get("properties") or {}) if isinstance(jb, dict) else {}
-        jinfo = {
-            "http": st, "status": props.get("status"),
-            "provisioningState": props.get("provisioningState"),
-            "computeId": props.get("computeId"),
-            "displayName": props.get("displayName"),
-            "createTime": props.get("creationTime"), "startTime": props.get("startTime"),
-            "endTime": props.get("endTime"), "error": props.get("error"),
-            "resources": props.get("resources"), "exitCode": props.get("exitCode"),
-            "snapshotId": props.get("snapshotId"),
-        }
-        OUT["jobs"][jn] = jinfo
-        emit({"step": "job-get", "job": jn, **{k: jinfo[k] for k in ("http", "status", "error", "endTime")}})
-        if isinstance(props, dict):
-            for k in ("statusDetails", "queueReason", "amlComputeAllocation", "computeRuntime",
-                      "jobType", "nodes", "instanceCount", "schedules"):
-                if props.get(k):
-                    jinfo[k] = props[k]
-            OUT.setdefault("job_props_keys", {})[jn] = sorted(list(props.keys()))
-        if st != 200:
-            jinfo["error_raw"] = jb
+    OUT["quota"] = {}
+    OUT["gpu_nonzero"] = {}
+    for loc in REGIONS:
+        st, ub = arm(tok, ARM + "/subscriptions/" + sid + "/providers/Microsoft.Compute/locations/" +
+                     loc + "/usages?api-version=2024-07-01")
+        items = []
+        for u in (ub.get("value") or []) if isinstance(ub, dict) else []:
+            nm = (u.get("name") or {}).get("value") or ""
+            if any(t in nm for t in GPUT):
+                it = {"name": nm, "cur": u.get("currentValue"), "limit": u.get("limit")}
+                items.append(it)
+                try:
+                    if int(u.get("limit") or 0) > 0:
+                        OUT["gpu_nonzero"].setdefault(loc, []).append(it)
+                except Exception:  # noqa: BLE001
+                    pass
+        OUT["quota"][loc] = {"http": st, "n": len(items), "items": items}
+        emit({"step": "quota", "loc": loc, "http": st, "gpu_entries": len(items),
+              "nonzero": len(OUT["gpu_nonzero"].get(loc, []))})
+    emit({"step": "quota-summary", "nonzero": {k: v for k, v in OUT["gpu_nonzero"].items()}})
 
-    # 2) previous job (context)
-    st, pb = arm(tok, ws + "/jobs/" + PREV_JOB + "?api-version=" + API_W, timeout=90)
-    pprops = (pb.get("properties") or {}) if isinstance(pb, dict) else {}
-    OUT["prev_job"] = {"http": st, "status": pprops.get("status"),
-                       "provisioningState": pprops.get("provisioningState"),
-                       "error": pprops.get("error"), "endTime": pprops.get("endTime")}
-    emit({"step": "prev-job", "http": st, "status": pprops.get("status")})
+    # AML allowed VM sizes (workspace region + any region with nonzero GPU quota)
+    OUT["amlsizes"] = {}
+    for loc in ["westeurope"] + [l for l in OUT["gpu_nonzero"] if l != "westeurope"][:4]:
+        st, vb = arm(tok, ARM + "/subscriptions/" + sid + "/providers/Microsoft.MachineLearningServices" +
+                     "/locations/" + loc + "/vmSizes?api-version=2024-10-01")
+        rows = []
+        for v in (vb.get("value") or []) if isinstance(vb, dict) else []:
+            g = v.get("gpus") or 0
+            if g:
+                rows.append({"name": v.get("name"), "gpus": g, "family": v.get("family"),
+                             "vcpus": v.get("vCPUs"), "memGB": v.get("memoryGB"),
+                             "premiumIO": v.get("premiumIO")})
+        OUT["amlsizes"][loc] = {"http": st, "n_gpu": len(rows), "items": rows[:40]}
+        emit({"step": "amlsizes", "loc": loc, "http": st, "gpu_sizes": len(rows)})
 
-    # 3) compute cluster + node state counts
-    st, cb = arm(tok, ws + "/computes/" + CLUSTER + "?api-version=" + API_C, timeout=90)
-    cp = ((cb.get("properties") or {}).get("properties") or {}) if isinstance(cb, dict) else {}
-    OUT["cluster"] = {"http": st, "provState": (cb.get("properties") or {}).get("provisioningState") if isinstance(cb, dict) else None,
-                      "vmSize": cp.get("vmSize"), "scaleSettings": cp.get("scaleSettings"),
-                      "currentNodeCount": cp.get("currentNodeCount"), "targetNodeCount": cp.get("targetNodeCount"),
-                      "nodeStateCounts": cp.get("nodeStateCounts"), "errors": cp.get("errors")}
-    emit({"step": "cluster", "http": st, "current": cp.get("currentNodeCount"),
-          "target": cp.get("targetNodeCount"), "nodeStateCounts": cp.get("nodeStateCounts")})
-    st, nb = arm(tok, ws + "/computes/" + CLUSTER + "/nodes?api-version=" + API_C, timeout=90)
-    nodes = []
-    for n in (nb.get("value") or []) if isinstance(nb, dict) else []:
-        np_ = n.get("properties") or {}
-        nodes.append({"name": n.get("name"), "state": np_.get("state"), "ip": np_.get("privateIpAddress"),
-                      "port": np_.get("port"), "vmSize": np_.get("vmSize"),
-                      "isSpot": np_.get("isSpot"), "errors": np_.get("errors")})
-    OUT["nodes"] = {"http": st, "count": len(nodes), "items": nodes}
-    emit({"step": "nodes", "http": st, "count": len(nodes),
-          "states": [x.get("state") for x in nodes]})
-
-    # 4) NCASv3_T4 quota in the cluster region (westeurope)
-    loc = (cb.get("location") if isinstance(cb, dict) else None) or "westeurope"
-    st, ub = arm(tok, ARM + "/subscriptions/" + sid + "/providers/Microsoft.Compute/locations/" +
-                 loc + "/usages?api-version=2024-07-01", timeout=120)
-    qu = []
-    for u in (ub.get("value") or []) if isinstance(ub, dict) else []:
-        nm = (u.get("name") or {}).get("value") or ""
-        if "NCASv3_T4" in nm or "NCASv3" in nm or "Total Regional" in nm:
-            qu.append({"name": nm, "current": u.get("currentValue"), "limit": u.get("limit"),
-                       "local": (u.get("name") or {}).get("localizedValue")})
-    OUT["quota"] = {"http": st, "loc": loc, "items": qu}
-    emit({"step": "quota", "http": st, "items": qu})
-
-    # 5) other jobs in the workspace that could hold T4 nodes
-    st, lj = arm(tok, ws + "/jobs?api-version=" + API_W + "&$top=40", timeout=120)
-    rows = []
-    for j in (lj.get("value") or []) if isinstance(lj, dict) else []:
-        pp = j.get("properties") or {}
-        rows.append({"name": j.get("name"), "status": pp.get("status"),
-                     "computeId": (pp.get("computeId") or "").split("/")[-1],
-                     "endTime": pp.get("endTime")})
-    OUT["jobs_recent"] = {"http": st, "items": rows}
-    emit({"step": "jobs-list", "http": st, "n": len(rows),
-          "nonterminal": [x["name"] for x in rows if x["status"] not in ("Completed", "Failed", "Canceled")]})
-
-    # 6) write the full result blob
     if q:
-        url = "https://" + SA + ".blob.core.windows.net/" + CONTAINER + "/x126457-arm.txt?" + q
+        url = "https://" + SA + ".blob.core.windows.net/" + CONTAINER + "/x126457-quota.txt?" + q
         body = json.dumps(OUT, indent=1, default=str).encode()
         try:
             req = urllib.request.Request(url, data=body, method="PUT",
@@ -197,8 +147,6 @@ def main():
                                                   "Content-Type": "application/json"})
             with urllib.request.urlopen(req, timeout=60) as rr:
                 emit({"step": "blob-put", "http": rr.status, "bytes": len(body)})
-        except urllib.error.HTTPError as e:
-            emit({"step": "blob-put", "http": e.code, "err": e.read()[:200].decode("utf-8", "replace")})
         except Exception as e:  # noqa: BLE001
             emit({"step": "blob-put", "err": "%s: %s" % (type(e).__name__, str(e)[:160])})
     emit({"step": "PROBE-EXIT", "code": 0})

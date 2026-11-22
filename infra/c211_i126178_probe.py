@@ -107,37 +107,31 @@ def main():
             emit({"step": "sa-sas", "http": st, "expires": se})
     OUT["sas_ok"] = bool(q)
 
-    # 1) the job
-    st, jb = arm(tok, ws + "/jobs/" + JOB + "?api-version=" + API_W, timeout=90)
-    props = (jb.get("properties") or {}) if isinstance(jb, dict) else {}
-    jstatus = props.get("status")
-    jprov = props.get("provisioningState")
-    jinfo = {
-        "http": st, "status": jstatus, "provisioningState": jprov,
-        "computeId": props.get("computeId"),
-        "displayName": props.get("displayName"),
-        "experimentName": props.get("experimentName"),
-        "creationContext": props.get("creationContext", {}).get("createdBy", {}).get("userObjectId") if isinstance(props.get("creationContext"), dict) else None,
-        "creationTime": props.get("creationTime"),
-        "startTime": props.get("startTime"),
-        "endTime": props.get("endTime"),
-        "error": props.get("error"),
-        "notification": props.get("notification"),
-        "resources": props.get("resources"),
-        "exitCode": props.get("exitCode"),
-        "content": {k: props.get(k) for k in ("command", "environmentVariables") if props.get(k)},
-        "tags": (jb.get("tags") if isinstance(jb, dict) else None),
-    }
-    emit({"step": "job-get", **{k: jinfo[k] for k in ("http", "status", "provisioningState", "error", "endTime")}})
-    OUT["job"] = jinfo
-    # raw status detail: queue reason / node allocation
-    if isinstance(props, dict):
-        OUT["job_props_keys"] = sorted(list(props.keys()))
-        for k in ("statusDetails", "queueReason", "amlComputeAllocation", "computeRuntime"):
-            if props.get(k):
-                OUT["job_" + k] = props.get(k)
-    if st != 200:
-        OUT["job_error_raw"] = jb
+    # 1) the jobs (original + the -b retry created 04:44:05Z)
+    OUT["jobs"] = {}
+    for jn in (JOB, JOB + "-b"):
+        st, jb = arm(tok, ws + "/jobs/" + jn + "?api-version=" + API_W, timeout=90)
+        props = (jb.get("properties") or {}) if isinstance(jb, dict) else {}
+        jinfo = {
+            "http": st, "status": props.get("status"),
+            "provisioningState": props.get("provisioningState"),
+            "computeId": props.get("computeId"),
+            "displayName": props.get("displayName"),
+            "createTime": props.get("creationTime"), "startTime": props.get("startTime"),
+            "endTime": props.get("endTime"), "error": props.get("error"),
+            "resources": props.get("resources"), "exitCode": props.get("exitCode"),
+            "snapshotId": props.get("snapshotId"),
+        }
+        OUT["jobs"][jn] = jinfo
+        emit({"step": "job-get", "job": jn, **{k: jinfo[k] for k in ("http", "status", "error", "endTime")}})
+        if isinstance(props, dict):
+            for k in ("statusDetails", "queueReason", "amlComputeAllocation", "computeRuntime",
+                      "jobType", "nodes", "instanceCount", "schedules"):
+                if props.get(k):
+                    jinfo[k] = props[k]
+            OUT.setdefault("job_props_keys", {})[jn] = sorted(list(props.keys()))
+        if st != 200:
+            jinfo["error_raw"] = jb
 
     # 2) previous job (context)
     st, pb = arm(tok, ws + "/jobs/" + PREV_JOB + "?api-version=" + API_W, timeout=90)

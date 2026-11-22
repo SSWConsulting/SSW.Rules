@@ -268,11 +268,13 @@ jobs:
 
       - name: Capture SSW.Rules.Content commit SHA
         id: capture_content_sha
+        env:
+          CONTENT_BRANCH: ${{ steps.resolve_content_branch.outputs.content_branch }}
         run: |
           CONTENT_SHA=$(git -C content-temp rev-parse HEAD)
           echo "content_sha=$CONTENT_SHA" >> $GITHUB_OUTPUT
           echo "SSW.Rules.Content SHA at build time: $CONTENT_SHA"
-          echo "SSW.Rules.Content branch: ${{ steps.resolve_content_branch.outputs.content_branch }}"
+          echo "SSW.Rules.Content branch: $CONTENT_BRANCH"
 
       # ────────────────────────────── PYTHON + MAPPING FILES ────────────────
       - name: Setup Python

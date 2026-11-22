@@ -363,6 +363,12 @@ def qdecode(m):
         name, lloc = (nm or ""), ""
     props = m.get("properties") if isinstance(m.get("properties"), dict) else {}
     seen = []
+    # FIX (i126286): BOTH the AML usages/quotas API and Microsoft.Compute
+    # usages return limit/currentValue at the TOP level of each item; the
+    # inherited qdecode only walked properties, so every limit was lost.
+    for k in ("limit", "currentValue", "usage", "unit", "quotaType"):
+        if k in m and isinstance(m.get(k), (int, float, str)):
+            seen.append(("/" + k, m[k]))
 
     def walk(x, path=""):
         if isinstance(x, dict):
@@ -395,7 +401,12 @@ def quota_scan(tok, sid, regions, summary):
                                          "online", "gpu")):
                     hits.append({"name": d["name"],
                                  "loc": d["localized"],
-                                 "fields": d["fields"]})
+                                 "fields": d["fields"],
+                                 "type": m.get("type"),
+                                 "id_suffix": str(m.get("id") or "")[-90:],
+                                 "raw_t4": (json.dumps(m)[:1200]
+                                            if re.search(r"(?i)ncasv3_t4|ncasv3",
+                                                         d["name"]) else None)})
             out[reg + "/" + api] = {"http": st, "n": n, "hits": hits[:40]}
             emit({"step": "aml-" + api, "region": reg, "http": st, "n": n,
                   "gpu_hits": [h["name"] + "=" + str(h["fields"]) for h in hits[:12]]})
@@ -1225,7 +1236,7 @@ def compute_quota_scan(tok, sid, regions, summary):
     return out
 
 
-def t4_capacity(summary, reg):
+def t4_capacity_compute_only(summary, reg):
     cq = (summary.get("compute_quota") or {}).get(reg) or {}
     g = cq.get("gpu") or {}
     best = None
@@ -1234,19 +1245,71 @@ def t4_capacity(summary, reg):
             continue
         try:
             lim = int(v.get("limit"))
-            cur = int(v.get("current") or 0)
         except Exception:  # noqa: BLE001
             continue
-        if cur < 0:
-            cur = 0
-        free = lim - cur
-        if best is None or free > best["free_vcpu"]:
-            best = {"meter": name, "limit": lim, "current": cur,
-                    "free_vcpu": free}
-    if best is None:
-        return None
-    best["n"] = max(0, min(3, best["free_vcpu"] // 4))
+        best = {"meter": name, "limit": lim, "current": v.get("current")}
     return best
+
+
+def t4_capacity(summary, reg):
+    """N from the AML subscription-level dedicated-cores quota (the pool that
+    actually gates AML managed online endpoints) cross-checked against the
+    Microsoft.Compute regional family usages."""
+    out = {}
+    # ---- (a) AML quotas: subscription-level vmFamily/dedicatedCores entry ----
+    sub = None
+    ws_entries = []
+    for h in (((summary.get("quota") or {}).get(reg + "/quotas") or {}).get("hits") or []):
+        if not re.search(r"(?i)ncasv3_t4|ncas|_t4", h.get("name") or ""):
+            continue
+        f = dict(h.get("fields") or [])
+        try:
+            lim = int(f.get("/limit"))
+        except Exception:  # noqa: BLE001
+            continue
+        typ = str(h.get("type") or "")
+        rec = {"meter": h.get("name"), "type": typ, "id_suffix": h.get("id_suffix"),
+               "limit": lim, "raw_t4": h.get("raw_t4")}
+        if "vmFamily/dedicatedCores/quotas" in typ:
+            if sub is None or lim > sub["limit"]:
+                sub = dict(rec)
+        else:
+            ws_entries.append(rec)
+    # ---- (b) AML usages: current consumption of the same family ----
+    cur = None
+    for h in (((summary.get("quota") or {}).get(reg + "/usages") or {}).get("hits") or []):
+        if not re.search(r"(?i)ncasv3_t4|ncas|_t4", h.get("name") or ""):
+            continue
+        f = dict(h.get("fields") or [])
+        try:
+            cur = int(f.get("/currentValue"))
+        except Exception:  # noqa: BLE001
+            cur = None
+        if cur is not None:
+            break
+    # ---- (c) Microsoft.Compute regional family usages (cross-check) ----
+    cq = ((summary.get("compute_quota") or {}).get(reg) or {}).get("gpu") or {}
+    cbest = None
+    for name, v in cq.items():
+        if not re.search(r"(?i)ncasv3_t4|ncas|_t4", name):
+            continue
+        try:
+            clim, ccur = int(v.get("limit")), int(v.get("current") or 0)
+        except Exception:  # noqa: BLE001
+            continue
+        cbest = {"meter": name, "limit": clim, "current": ccur}
+    out["compute_crosscheck"] = cbest
+    out["workspace_entries"] = ws_entries[:4]
+    if sub is None:
+        out["verdict"] = "no AML subscription-level dedicated-cores entry for this family"
+        return out
+    if cur is None:
+        cur = 0
+    free = sub["limit"] - cur
+    out.update({"meter": sub["meter"], "type": sub["type"], "limit": sub["limit"],
+                "current": cur, "free_vcpu": free,
+                "n": max(0, min(3, free // 4))})
+    return out
 
 
 CAP = 1

@@ -49,10 +49,27 @@ CLUSTER = "c211-i125603-amlc"
 JOB = "c211-i125603-dev"
 ENVNAME = "c211-i125603-cuda"
 OUTNAME = "c211out"
-API_W = "2024-10-01"     # AML workspace / environments / jobs / onlineEndpoints
-API_C = "2024-04-01"     # AML computes / usages
+API_W = "2024-10-01"     # AML workspace / environments / jobs (default; re-probed live)
+API_C = "2024-04-01"     # AML computes / usages (default; re-probed live)
 REG_VER = "2023-07-01"
 STG_VER = "2023-01-01"
+# x125603 run 1 (job 137040109381) verbatim: PUT storage 2023-01-01 and PUT workspace
+# 2024-10-01 both returned HTTP 400 InvalidApiVersionParameter with the supported list
+# '2026-06-01,2025-04-01,2025-03-01,2024-10-01-preview,2024-11-01,2024-08-01,2024-07-01,
+#  2024-06-01-preview,2024-03-01,2023-07-01,...' and KV 2023-07-01 returned a URI 404 -
+# an OWN-CODE defect (the version catalog moved), not a provider refusal.  Every write
+# path now re-probes the live catalog first and uses the first accepted version.
+VER = {"aml": API_W, "stg": STG_VER, "kv": REG_VER, "usage": API_C}
+VER_CAND = {
+    "stg": ["2024-11-01", "2025-04-01", "2024-07-01", "2023-07-01",
+            "2024-10-01-preview", "2026-06-01", "2023-01-01"],
+    "aml": ["2024-11-01", "2025-04-01", "2024-07-01", "2024-10-01-preview",
+            "2023-07-01", "2026-06-01", "2024-04-01", "2024-10-01"],
+    "kv": ["2024-11-01", "2025-04-01", "2024-07-01", "2023-07-01", "2022-07-01",
+           "2021-10-01"],
+    "usage": ["2024-04-01", "2024-11-01", "2025-04-01", "2024-07-01",
+              "2024-10-01-preview"],
+}
 IMG = "mcr.microsoft.com/azureml/openmpi4.1.0-cuda11.8-cudnn8-ubuntu22.04:latest"
 ROLE_SBLOB = "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
 T0 = time.time()
@@ -174,6 +191,23 @@ def grant(tok, scope_id, principal, role, label):
           "code": (b.get("error") or {}).get("code") if isinstance(b, dict) else None})
 
 
+def pick_version(tok, list_tpl, key, timeout=60):
+    """Probe a live RP LIST endpoint with each candidate api-version and return the
+    first one that is not rejected as an invalid/unregistered api-version."""
+    for v in VER_CAND[key]:
+        st, b = arm(tok, list_tpl % v, timeout=timeout)
+        code = None
+        if isinstance(b, dict):
+            code = ((b.get("error") or {}).get("code")) or b.get("code")
+        emit({"step": "ver-probe", "rp": key, "v": v, "http": st, "code": code})
+        if st in (200, 204):
+            return v
+        if code not in ("InvalidApiVersionParameter", "NoRegisteredProviderFound",
+                        None, "NotFound", "ResourceNotFound"):
+            return v
+    return VER_CAND[key][0]
+
+
 def emit_summary(summary):
     raw = json.dumps(summary, default=str).encode()
     blob = base64.b64encode(raw).decode()
@@ -190,39 +224,40 @@ def dryrun():
     sid = "<subscription>"
     base = ARM + "/subscriptions/" + sid + "/resourceGroups/" + RG
     plan = [("GET", ARM + "/subscriptions/" + sid + "/providers/Microsoft.MachineLearningServices"
-             "/locations/<r>/usages?api-version=" + API_C) for r in REGIONS]
+             "/locations/<r>/usages?api-version=" + VER['usage']) for r in REGIONS]
     plan += [
         ("POST", "az account get-access-token --resource https://management.azure.com/"),
         ("PUT", base + "/Microsoft.Storage/storageAccounts/c211i125603" + SUF +
-         "?api-version=" + STG_VER),
-        ("POST", base + "/Microsoft.Storage/storageAccounts/<sa>/listKeys?api-version=" + STG_VER),
+         "?api-version=" + VER['stg']),
+        ("POST", base + "/Microsoft.Storage/storageAccounts/<sa>/listKeys?api-version=" + VER['stg']),
         ("PUT", "https://<sa>.blob.core.windows.net/c211?restype=container&<sas>"),
-        ("PUT", base + "/Microsoft.KeyVault/vaults/c211i125603kv?api-version=" + REG_VER),
+        ("PUT", base + "/Microsoft.KeyVault/vaults/c211i125603kv?api-version=" + VER['kv']),
         ("GET", base + "/resources?api-version=2021-04-01"),
         ("PUT", base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-         "?api-version=" + API_W),
+         "?api-version=" + VER['aml']),
         ("PUT", base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-         "/environments/" + ENVNAME + "/versions/1?api-version=" + API_W),
+         "/environments/" + ENVNAME + "/versions/1?api-version=" + VER['aml']),
         ("PUT", base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-         "/computes/" + CLUSTER + "?api-version=" + API_C),
+         "/computes/" + CLUSTER + "?api-version=" + VER['aml']),
         ("GET", base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-         "/computes/" + CLUSTER + "?api-version=" + API_C),
+         "/computes/" + CLUSTER + "?api-version=" + VER['aml']),
         ("PUT", base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-         "/jobs/" + JOB + "?api-version=" + API_W),
+         "/jobs/" + JOB + "?api-version=" + VER['aml']),
         ("GET", base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-         "/jobs/" + JOB + "?api-version=" + API_W),
+         "/jobs/" + JOB + "?api-version=" + VER['aml']),
         ("DELETE", base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-         "/jobs/" + JOB + "?api-version=" + API_W),
+         "/jobs/" + JOB + "?api-version=" + VER['aml']),
         ("DELETE", base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-         "/computes/" + CLUSTER + "?api-version=" + API_C),
+         "/computes/" + CLUSTER + "?api-version=" + VER['aml']),
         ("DELETE", base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-         "?api-version=" + API_W),
-        ("DELETE", base + "/Microsoft.KeyVault/vaults/c211i125603kv?api-version=" + REG_VER),
-        ("DELETE", base + "/Microsoft.Storage/storageAccounts/<sa>?api-version=" + STG_VER),
+         "?api-version=" + VER['aml']),
+        ("DELETE", base + "/Microsoft.KeyVault/vaults/c211i125603kv?api-version=" + VER['kv']),
+        ("DELETE", base + "/Microsoft.Storage/storageAccounts/<sa>?api-version=" + VER['stg']),
     ]
     print("DRY-RUN: %d planned calls (no network)" % len(plan))
     for m, u in plan:
         print("  %-6s %s" % (m, u))
+    print("VERSION CANDIDATES:", json.dumps(VER_CAND))
     print("LADDER:", json.dumps([(a, b, c) for a, b, c in LADDER]))
     print("NONCE names: WS=%s SA=c211i125603%s KV=c211i125603kv CLUSTER=%s JOB=%s ENV=%s" %
           (WS, SUF, CLUSTER, JOB, ENVNAME))
@@ -258,12 +293,25 @@ def main():
         return
     base = ARM + "/subscriptions/" + sid + "/resourceGroups/" + RG
     rbase = ARM + "/subscriptions/" + sid + "/resourceGroups/" + RG
+    # live api-version catalog probe (own-code defect from run 1: fixed offline)
+    VER["stg"] = pick_version(
+        tok, base + "/providers/Microsoft.Storage/storageAccounts?api-version=%s", "stg")
+    VER["aml"] = pick_version(
+        tok, base + "/providers/Microsoft.MachineLearningServices/workspaces"
+        "?api-version=%s", "aml")
+    VER["kv"] = pick_version(
+        tok, base + "/providers/Microsoft.KeyVault/vaults?api-version=%s", "kv")
+    VER["usage"] = pick_version(
+        tok, ARM + "/subscriptions/" + sid + "/providers/Microsoft.MachineLearningServices"
+        "/locations/westeurope/usages?api-version=%s", "usage")
+    emit({"step": "versions-chosen", "ver": dict(VER)})
+    summary["versions"] = dict(VER)
 
     # ---------- A. AML usages/quotas matrix BEFORE creating anything ----------
     quota = {}
     for reg in REGIONS:
         u = (ARM + "/subscriptions/" + sid + "/providers/Microsoft.MachineLearningServices"
-             "/locations/" + reg + "/usages?api-version=" + API_C)
+             "/locations/" + reg + "/usages?api-version=" + VER['usage'])
         st, b = arm(tok, u, timeout=90)
         fam = {}
         for m in ((b.get("value") or []) if isinstance(b, dict) else []):
@@ -315,7 +363,7 @@ def main():
     own["sa"] = sa
     loc0 = (plan[0]["choice"] or {}).get("region") if plan and plan[0]["choice"] else None
     dep_loc = loc0 or "westeurope"
-    saurl = base + "/Microsoft.Storage/storageAccounts/" + sa + "?api-version=" + STG_VER
+    saurl = base + "/Microsoft.Storage/storageAccounts/" + sa + "?api-version=" + VER['stg']
     st, b = arm(tok, saurl, "PUT",
                 {"location": dep_loc, "sku": {"name": "Standard_LRS"}, "kind": "StorageV2",
                  "tags": {"c211": NONCE},
@@ -332,7 +380,7 @@ def main():
                 break
             time.sleep(8)
         st, kb = arm(tok, base + "/Microsoft.Storage/storageAccounts/" + sa +
-                     "/listKeys?api-version=" + STG_VER, "POST", {}, timeout=90)
+                     "/listKeys?api-version=" + VER['stg'], "POST", {}, timeout=90)
         key = None
         try:
             key = (kb.get("keys") or [{}])[0].get("value")
@@ -350,7 +398,7 @@ def main():
                 emit({"step": "sa-sas", "ok": True, "expires": se})
 
     kv = "c211i125603kv"
-    kvurl = base + "/Microsoft.KeyVault/vaults/" + kv + "?api-version=" + REG_VER
+    kvurl = base + "/Microsoft.KeyVault/vaults/" + kv + "?api-version=" + VER['kv']
     st, b = arm(tok, kvurl, "PUT",
                 {"location": dep_loc, "tags": {"c211": NONCE},
                  "properties": {"tenantId": tenant,
@@ -377,7 +425,7 @@ def main():
 
     # ---------- D. nonce workspace ----------
     wurl = base + "/Microsoft.MachineLearningServices/workspaces/" + WS + \
-        "?api-version=" + API_W
+        "?api-version=" + VER['aml']
     props = {"friendlyName": "c211-i125603 nonce workspace", "hbiWorkspace": False,
              "v1LegacyMode": False,
              "storageAccount": rbase + "/Microsoft.Storage/storageAccounts/" + sa}
@@ -426,7 +474,7 @@ def main():
             grant(tok, rbase + "/Microsoft.Storage/storageAccounts/" + sa, msi,
                   ROLE_SBLOB, "ws-msi-blob")
         # environment version (proven shape)
-        eu = wsu + "/environments/" + ENVNAME + "/versions/1?api-version=" + API_W
+        eu = wsu + "/environments/" + ENVNAME + "/versions/1?api-version=" + VER['aml']
         st, eb = arm(tok, eu, "PUT", {"properties": {"image": IMG, "osType": "Linux",
                                                     "description": "c211 i125603 cuda"}},
                      timeout=180)
@@ -479,7 +527,7 @@ def main():
                                          "why": "deadline"})
                 break
             reg = ch["region"]
-            curl_u = wsu + "/computes/" + CLUSTER + "?api-version=" + API_C
+            curl_u = wsu + "/computes/" + CLUSTER + "?api-version=" + VER['aml']
             cb = {"location": reg, "tags": {"c211": NONCE},
                   "properties": {"computeType": "AmlCompute", "computeLocation": reg,
                                  "description": "c211 i125603 %s probe" % rung["sku"],
@@ -534,7 +582,7 @@ def main():
                 own.pop("cluster", None)
                 continue
             # ---------- F. ONE inline-command job on the cluster ----------
-            jurl = wsu + "/jobs/" + JOB + "?api-version=" + API_W
+            jurl = wsu + "/jobs/" + JOB + "?api-version=" + VER['aml']
             jp = {"jobType": "Command", "displayName": JOB,
                   "experimentName": "c211-i125603",
                   "description": "c211 i125603 %s inline nvidia-smi probe" % rung["sku"],
@@ -623,21 +671,21 @@ def main():
 
     if own.get("job"):
         del_and_wait(base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-                     "/jobs/" + JOB + "?api-version=" + API_W, "job", 180)
+                     "/jobs/" + JOB + "?api-version=" + VER['aml'], "job", 180)
     if own.get("cluster"):
         del_and_wait(base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-                     "/computes/" + CLUSTER + "?api-version=" + API_C, "cluster", 300)
+                     "/computes/" + CLUSTER + "?api-version=" + VER['aml'], "cluster", 300)
     if own.get("ws"):
         del_and_wait(base + "/Microsoft.MachineLearningServices/workspaces/" + WS +
-                     "?api-version=" + API_W, "ws", 600)
+                     "?api-version=" + VER['aml'], "ws", 600)
     if own.get("kv"):
         del_and_wait(base + "/Microsoft.KeyVault/vaults/" + own["kv"] +
-                     "?api-version=" + REG_VER, "kv", 240)
+                     "?api-version=" + VER['kv'], "kv", 240)
     if own.get("sa"):
         del_and_wait(base + "/Microsoft.Storage/storageAccounts/" + own["sa"] +
-                     "?api-version=" + STG_VER, "sa", 300)
+                     "?api-version=" + VER['stg'], "sa", 300)
     st, lb = arm(tok, base + "/Microsoft.MachineLearningServices/workspaces"
-                 "?api-version=" + API_W, timeout=90)
+                 "?api-version=" + VER['aml'], timeout=90)
     names = [x.get("name") for x in ((lb.get("value") or [])
                                      if isinstance(lb, dict) else [])]
     emit({"step": "ws-absence-list", "http": st, "names": names[:20],

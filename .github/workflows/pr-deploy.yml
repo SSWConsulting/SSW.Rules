@@ -33,7 +33,27 @@ jobs:
       pr_number: ${{ steps.pr.outputs.pr_number }}
       head_ref: ${{ steps.pr.outputs.head_ref }}
       head_sha: ${{ steps.pr.outputs.head_sha }}
+      is_fork: ${{ steps.pr.outputs.is_fork }}
     steps:
+      # The `if` above is only a cheap pre-filter. Write access is the real check.
+      - name: Check commenter has write access
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          permission=$(gh api "repos/${{ github.repository }}/collaborators/$COMMENTER/permission" --jq '.permission' 2>/dev/null || echo none)
+
+          case "$permission" in
+            admin|maintain|write) echo "✅ $COMMENTER has '$permission' permission." ;;
+            *)
+              gh api "repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments" \
+                -f body="🛑 Sorry @$COMMENTER - write access to this repo is required to deploy a staging slot." --silent
+              echo "::error::$COMMENTER has '$permission' permission - write access is required to deploy."
+              exit 1
+              ;;
+          esac
+
       - name: Get PR details
         id: pr
         env:
@@ -46,9 +66,15 @@ jobs:
           HEAD_REF=$(echo "$PR_DATA" | jq -r '.head.ref')
           HEAD_SHA=$(echo "$PR_DATA" | jq -r '.head.sha')
           PR_STATE=$(echo "$PR_DATA" | jq -r '.state')
+          HEAD_REPO=$(echo "$PR_DATA" | jq -r '.head.repo.full_name // ""')
 
           echo "head_ref=$HEAD_REF" >> $GITHUB_OUTPUT
           echo "head_sha=$HEAD_SHA" >> $GITHUB_OUTPUT
+          if [ "$HEAD_REPO" = "${{ github.repository }}" ]; then
+            echo "is_fork=false" >> $GITHUB_OUTPUT
+          else
+            echo "is_fork=true" >> $GITHUB_OUTPUT
+          fi
 
           echo "PR #$PR_NUMBER"
           echo "  State: $PR_STATE"
@@ -59,6 +85,18 @@ jobs:
             echo "::error::PR #$PR_NUMBER is not open (state: $PR_STATE)"
             exit 1
           fi
+
+      # A fork's infra/deploy.ps1 and build would run with our Azure identity and secrets.
+      - name: Refuse fork PRs
+        if: steps.pr.outputs.is_fork == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh api "repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments" \
+            -f body="🛑 Previews aren't available for forked PRs. Push the branch to this repo instead." --silent
+          echo "::error::Fork PRs are not supported - the fork's code would run with our Azure identity."
+          exit 1
 
       - name: Add reaction to comment
         env:
@@ -164,10 +202,12 @@ jobs:
           echo "  Deployment URL: $DEPLOYMENT_URL"
 
       - name: Log deployment info
+        env:
+          HEAD_REF: ${{ needs.validate.outputs.head_ref }}
         run: |
           echo "Deploying PR Preview"
           echo "PR Number: ${{ needs.validate.outputs.pr_number }}"
-          echo "Source branch: ${{ needs.validate.outputs.head_ref }}"
+          echo "Source branch: $HEAD_REF"
           echo "Slot name: ${{ needs.infrastructure.outputs.slotName }}"
           echo "Build timestamp: ${{ env.BUILD_TIMESTAMP }}"
           echo "Build version: ${{ env.VERSION_DEPLOYED }}"
@@ -239,11 +279,13 @@ jobs:
           slot-name: ${{ needs.infrastructure.outputs.slotName }}
 
       - name: Verify deployment
+        env:
+          HEAD_REF: ${{ needs.validate.outputs.head_ref }}
         run: |
           echo "PR Preview deployed successfully!"
           echo "Image: ${{ needs.build.outputs.image_tag }}"
           echo "Preview URL: https://${{ needs.infrastructure.outputs.slotHostName }}"
-          echo "Source branch: ${{ needs.validate.outputs.head_ref }}"
+          echo "Source branch: $HEAD_REF"
           echo "Build Info:"
           echo "  Deployed: ${{ env.BUILD_DATE }}"
           echo "  Version: ${{ env.VERSION_DEPLOYED }}"

@@ -30,80 +30,26 @@ jobs:
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
     runs-on: ubuntu-latest
     outputs:
-      pr_number: ${{ steps.pr.outputs.pr_number }}
-      head_ref: ${{ steps.pr.outputs.head_ref }}
-      head_sha: ${{ steps.pr.outputs.head_sha }}
-      is_fork: ${{ steps.pr.outputs.is_fork }}
+      pr_number: ${{ github.event.issue.number }}
+      head_ref: ${{ steps.gate.outputs.head_ref }}
+      head_sha: ${{ steps.gate.outputs.head_sha }}
     steps:
-      # The `if` above is only a cheap pre-filter. Write access is the real check.
-      - name: Check commenter has write access
-        env:
-          GH_TOKEN: ${{ github.token }}
-          COMMENTER: ${{ github.event.comment.user.login }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-        run: |
-          permission=$(gh api "repos/${{ github.repository }}/collaborators/$COMMENTER/permission" --jq '.permission' 2>/dev/null || echo none)
-
-          case "$permission" in
-            admin|maintain|write) echo "✅ $COMMENTER has '$permission' permission." ;;
-            *)
-              gh api "repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments" \
-                -f body="🛑 Sorry @$COMMENTER - write access to this repo is required to deploy a staging slot." --silent
-              echo "::error::$COMMENTER has '$permission' permission - write access is required to deploy."
-              exit 1
-              ;;
-          esac
-
-      - name: Get PR details
-        id: pr
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          PR_NUMBER="${{ github.event.issue.number }}"
-          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
-
-          PR_DATA=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER)
-          HEAD_REF=$(echo "$PR_DATA" | jq -r '.head.ref')
-          HEAD_SHA=$(echo "$PR_DATA" | jq -r '.head.sha')
-          PR_STATE=$(echo "$PR_DATA" | jq -r '.state')
-          HEAD_REPO=$(echo "$PR_DATA" | jq -r '.head.repo.full_name // ""')
-
-          echo "head_ref=$HEAD_REF" >> $GITHUB_OUTPUT
-          echo "head_sha=$HEAD_SHA" >> $GITHUB_OUTPUT
-          if [ "$HEAD_REPO" = "${{ github.repository }}" ]; then
-            echo "is_fork=false" >> $GITHUB_OUTPUT
-          else
-            echo "is_fork=true" >> $GITHUB_OUTPUT
-          fi
-
-          echo "PR #$PR_NUMBER"
-          echo "  State: $PR_STATE"
-          echo "  Branch: $HEAD_REF"
-          echo "  SHA: $HEAD_SHA"
-
-          if [ "$PR_STATE" != "open" ]; then
-            echo "::error::PR #$PR_NUMBER is not open (state: $PR_STATE)"
-            exit 1
-          fi
-
-      # A fork's infra/deploy.ps1 and build would run with our Azure identity and secrets.
-      - name: Refuse fork PRs
-        if: steps.pr.outputs.is_fork == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-        run: |
-          gh api "repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments" \
-            -f body="🛑 Previews aren't available for forked PRs. Push the branch to this repo instead." --silent
-          echo "::error::Fork PRs are not supported - the fork's code would run with our Azure identity."
-          exit 1
-
-      - name: Add reaction to comment
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
-            -f content='rocket' --silent
+      # Write access, open PR, and no forks. Pinned to a release, not main.
+      - name: Gate /deploy
+        id: gate
+        uses: SSWConsulting/comment-command-gate@v2.0.0
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          issue_number: ${{ github.event.issue.number }}
+          comment_id: ${{ github.event.comment.id }}
+          comment_body: ${{ github.event.comment.body }}
+          commenter: ${{ github.event.comment.user.login }}
+          command: /deploy
+          min_role: write
+          require_same_repo_branch: "true"
+          deny_message: "🛑 Sorry @{commenter} - write access to this repo is required to deploy a staging slot."
+          refuse_message: "🛑 Previews aren't available for forked PRs. Push the branch to this repo instead."
 
   # ============================================================================
   # INFRASTRUCTURE DEPLOYMENT

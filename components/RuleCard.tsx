@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { RiTimeFill } from "react-icons/ri";
-import { timeAgo } from "@/lib/dateUtils";
+import { TimeAgo } from "@/components/TimeAgo";
 import { ArchivedBadge } from "./ArchivedBadge";
 import { Card } from "./ui/card";
 
@@ -56,7 +56,7 @@ export default function RuleCard({ title, slug, lastUpdatedBy, lastUpdated, inde
               {lastUpdated && (
                 <div className="flex items-center ml-4 text-xs text-gray-400">
                   <RiTimeFill className="inline mr-1" />
-                  <span>{timeAgo(lastUpdated)}</span>
+                  <TimeAgo date={lastUpdated} />
                 </div>
               )}
             </h4>

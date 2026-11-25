@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { RiTimeFill } from "react-icons/ri";
 import { Card } from "@/components/ui/card";
-import { timeAgo } from "@/lib/dateUtils";
+import { TimeAgo } from "@/components/TimeAgo";
 import { RecentComment } from "@/models/RecentComment";
 
 interface RecentCommentsCardProps {
@@ -36,7 +36,7 @@ export default function RecentCommentsCard({ comments }: RecentCommentsCardProps
 
                   <p className="text-xs text-gray-400 flex items-center gap-1 m-0 mb-3">
                     <RiTimeFill className="flex-shrink-0" />
-                    <span>{timeAgo(comment.commentedAt)}</span>
+                    <TimeAgo date={comment.commentedAt} />
                   </p>
                 </div>
               </div>

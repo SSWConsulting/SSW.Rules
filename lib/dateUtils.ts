@@ -1,4 +1,4 @@
-function parseDateInput(input: string): Date {
+export function parseDateInput(input: string): Date {
   if (/^\d{10}$/.test(input)) return new Date(Number(input) * 1000);
   if (/^\d{13}$/.test(input)) return new Date(Number(input));
   return new Date(input);
@@ -23,11 +23,12 @@ export function timeAgo(isoString: string): string {
   return `${diffYear} year${diffYear > 1 ? "s" : ""} ago`;
 }
 
-export function formatDateLong(iso: string): string {
+export function formatDateLong(iso: string, timeZone?: string): string {
   const date = parseDateInput(iso);
   return date.toLocaleDateString("en-AU", {
     day: "2-digit",
     month: "short",
     year: "numeric",
+    timeZone,
   });
 }

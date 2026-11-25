@@ -40,10 +40,9 @@ const getCategoryTitles = unstable_cache(
  * page.tsx's precedence, so the card and the page cannot disagree about what a
  * filename is.
  *
- * Anything unresolved returns "generic" rather than 404ing. page.tsx serves every
- * unresolved filename via ClientFallbackPage, so a 404 here would mean a live page
- * with a broken og:image - and a Tina outage is indistinguishable from a genuine miss
- * anyway, because the category map is cached and will not throw when it is warm.
+ * Anything unresolved returns "generic" rather than 404ing. A Tina outage is
+ * indistinguishable from a genuine miss here, because the category map is cached and
+ * will not throw when it is warm, so a 404 could give a live page a broken og:image.
  */
 export async function resolveOgTarget(filename: string): Promise<OgTarget> {
   try {

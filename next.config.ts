@@ -22,6 +22,14 @@ const nextConfig: NextConfig = {
   // This tells Next.js to use the Node.js runtime version instead of bundling it
   serverExternalPackages: ["applicationinsights", "diagnostic-channel", "diagnostic-channel-publishers"],
 
+  turbopack: {
+    resolveAlias: {
+      // ssw.megamenu imports one icon from the CommonJS build of react-icons/fa, which cannot be tree-shaken, so every page
+      // loaded all ~1,600 Font Awesome icons (about 500 KB gzipped). The ESM entry lets the bundler keep only that icon.
+      "react-icons/fa/index.js": "react-icons/fa",
+    },
+  },
+
   images: {
     remotePatterns: [
       {

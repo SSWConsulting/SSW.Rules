@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from "react";
-import { tinaRetryOptions, withTinaRetry } from "@/lib/tina/tinaRequest";
+import { getGlobalSettings } from "@/lib/services/global";
 import { getMegamenu } from "@/utils/get-mega-menu";
-import client from "../../tina/__generated__/client";
 import { HiddenOnChatPopOut } from "./HiddenOnChatPopOut";
 import { LayoutProvider } from "./layout-context";
 import { MenuProvider } from "./MenuProvider";
@@ -13,20 +12,7 @@ type LayoutProps = PropsWithChildren & {
 };
 
 export default async function Layout({ children, rawPageData }: LayoutProps) {
-  const { data: globalData } = await withTinaRetry("global", (attempt) =>
-    client.queries.global(
-      {
-        relativePath: "index.json",
-      },
-      tinaRetryOptions(attempt, {
-        fetchOptions: {
-          next: {
-            revalidate: 60,
-          },
-        },
-      })
-    )
-  ).catch((error) => {
+  const globalSettings = await getGlobalSettings().catch((error) => {
     console.error("[SiteLayout] global query failed:", error);
     throw error;
   });
@@ -34,7 +20,7 @@ export default async function Layout({ children, rawPageData }: LayoutProps) {
   const { menuGroups } = await getMegamenu();
 
   return (
-    <LayoutProvider globalSettings={globalData.global} pageData={rawPageData}>
+    <LayoutProvider globalSettings={globalSettings} pageData={rawPageData}>
       <MenuProvider initialMenuGroups={menuGroups}>
         <div className="flex flex-col flex-1 min-h-full">
           <HiddenOnChatPopOut>

@@ -2,9 +2,6 @@ import { unstable_cache } from "next/cache";
 import { getGitHubAppToken } from "./github.utils";
 
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
-// Only applies when a page re-renders. Rule pages are force-static, so in practice
-// the number refreshes on each deploy, or when a rule edit revalidates its page.
-const SIX_HOURS = 6 * 60 * 60;
 const PAGE_SIZE = 100;
 // Safety stop so a pagination bug can never loop forever. 100 pages = 10,000 discussions.
 const MAX_PAGES = 100;
@@ -123,8 +120,11 @@ async function fetchDiscussionNumbersByGuid(): Promise<Record<string, number>> {
   return Object.fromEntries(Object.entries(best).map(([guid, { number }]) => [guid, number]));
 }
 
+// No `revalidate`: Next.js copies a number to each page that calls this function and renders the page again
+// after that time. Each rule page calls it, and a rule page must stay static until its rule changes.
+// The numbers are read again in each build, and when the Tina webhook revalidates a rule page: that render
+// does not use a cache entry that is older than the revalidation.
 export const getCachedDiscussionNumbersByGuid = unstable_cache(fetchDiscussionNumbersByGuid, ["giscus-discussion-numbers"], {
-  revalidate: SIX_HOURS,
   tags: ["giscus-discussion-numbers"],
 });
 

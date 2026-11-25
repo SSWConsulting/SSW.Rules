@@ -8,7 +8,15 @@ interface HelpImproveCardProps {
   data?: any;
 }
 
-const fallbackQuote = "The SSW Rules website works just like Wikipedia. If you think something should be changed, hit the pencil icon and make an edit! Or if you are cool [tweet me](https://twitter.com/adamcogan)\n";
+// TinaMarkdown renders nothing for a plain string, so the fallback is JSX, not markdown
+const fallbackQuote = (
+  <span>
+    The SSW Rules website works just like Wikipedia. If you think something should be changed, hit the pencil icon and make an edit! Or if you are cool{" "}
+    <a className="underline" href="https://twitter.com/adamcogan" target="_blank" rel="noopener noreferrer nofollow">
+      tweet me
+    </a>
+  </span>
+);
 
 export default function HelpImproveCard({ data }: HelpImproveCardProps) {
   const personName = data?.personName || "Adam Cogan";
@@ -20,17 +28,21 @@ export default function HelpImproveCard({ data }: HelpImproveCardProps) {
     <Card title={data?.title || "Help Improve Our Rules"}>
       <blockquote data-tina-field={tinaField(data, "quote")}>
         <RiDoubleQuotesL className="inline" />
-        <TinaMarkdown
-          content={data?.quote || fallbackQuote}
-          components={{
-            p: (props?: { children: React.ReactNode }) => <span>{props?.children}</span>,
-            a: (props?: { url: string; children: React.ReactNode }) => (
-              <a className="underline" href={props?.url} target="_blank" rel="noopener noreferrer nofollow">
-                {props?.children}
-              </a>
-            ),
-          }}
-        />
+        {data?.quote ? (
+          <TinaMarkdown
+            content={data.quote}
+            components={{
+              p: (props?: { children: React.ReactNode }) => <span>{props?.children}</span>,
+              a: (props?: { url: string; children: React.ReactNode }) => (
+                <a className="underline" href={props?.url} target="_blank" rel="noopener noreferrer nofollow">
+                  {props?.children}
+                </a>
+              ),
+            }}
+          />
+        ) : (
+          fallbackQuote
+        )}
         <RiDoubleQuotesR className="inline ml-1" />
       </blockquote>
       <div className="flex flex-col gap-4 items-center mt-4">

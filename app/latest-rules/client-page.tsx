@@ -10,14 +10,16 @@ import RuleCount from "@/components/RuleCount";
 import SearchBar from "@/components/SearchBarWrapper";
 import WhyRulesCard from "@/components/WhyRulesCard";
 import { LatestRule } from "@/models/LatestRule";
+import type { HomepageHelpImprove } from "@/tina/__generated__/types";
 
 interface LatestRuleClientPageProps {
   ruleCount: number;
   latestRulesByUpdated: LatestRule[];
   latestRulesByCreated: LatestRule[];
+  helpImprove?: HomepageHelpImprove | null;
 }
 
-export default function LatestRuleClientPage({ ruleCount, latestRulesByUpdated, latestRulesByCreated }: LatestRuleClientPageProps) {
+export default function LatestRuleClientPage({ ruleCount, latestRulesByUpdated, latestRulesByCreated, helpImprove }: LatestRuleClientPageProps) {
   return (
     <>
       <Breadcrumbs breadcrumbText="Latest Rules" />
@@ -33,7 +35,7 @@ export default function LatestRuleClientPage({ ruleCount, latestRulesByUpdated, 
         <div className="layout-sidebar">
           <div className="h-14">{ruleCount && <RuleCount count={ruleCount} />}</div>
           <WhyRulesCard />
-          <HelpImproveCard />
+          <HelpImproveCard data={helpImprove} />
           <HelpCard />
           <AboutSSWCard />
           <JoinConversationCard />

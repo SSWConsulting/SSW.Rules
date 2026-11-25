@@ -17,6 +17,7 @@ import Dropdown from "@/components/ui/dropdown";
 import WhyRulesCard from "@/components/WhyRulesCard";
 import { toSlug } from "@/lib/utils";
 import { LatestRule } from "@/models/LatestRule";
+import type { HomepageHelpImprove } from "@/tina/__generated__/types";
 
 interface SearchResult {
   objectID: string;
@@ -28,9 +29,10 @@ interface SearchResult {
 interface RuleSearchClientPageProps {
   ruleCount: number;
   latestRulesByUpdated: LatestRule[];
+  helpImprove?: HomepageHelpImprove | null;
 }
 
-export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated }: RuleSearchClientPageProps) {
+export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated, helpImprove }: RuleSearchClientPageProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const keyword = searchParams.get("keyword") || "";
@@ -177,7 +179,7 @@ export default function RulesSearchClientPage({ ruleCount, latestRulesByUpdated 
           <div className="h-14">{ruleCount && <RuleCount count={ruleCount} />}</div>
           <LatestRulesCard rules={latestRulesByUpdated} />
           <WhyRulesCard />
-          <HelpImproveCard />
+          <HelpImproveCard data={helpImprove} />
           <HelpCard />
           <AboutSSWCard />
           <JoinConversationCard />

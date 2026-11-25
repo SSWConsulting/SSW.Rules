@@ -10,7 +10,8 @@ jest.mock("@/app/[filename]/pageData", () => ({
   getRuleData: (...args: unknown[]) => getRuleData(...args),
 }));
 jest.mock("@/tina/__generated__/client", () => ({ __esModule: true, default: { queries: {} } }));
-jest.mock("@/category-uri-title-map.json", () => ({ categories: {} }), { virtual: true });
+// prepare:content writes this file, and CI does not run it
+jest.mock(`${process.cwd()}/category-uri-title-map.json`, () => ({ categories: {} }), { virtual: true });
 jest.mock("@/lib/services/github/giscusDiscussions.service", () => ({ getDiscussionNumberForGuid: async () => null }));
 jest.mock("@/app/[filename]/TinaRuleWrapper", () => ({ TinaRuleWrapper: () => <p>rule page</p> }));
 jest.mock("@/app/[filename]/TinaCategoryWrapper", () => ({ TinaCategoryWrapper: () => <p>category page</p> }));

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { Template } from "tinacms";
+import { tinaImageSrc } from "@/lib/tinaAssets";
 import { Figure, inlineFigureDefaultItem, inlineFigureFields } from "./figure";
 
 const normalizeSrc = (input?: string) => {
@@ -18,7 +19,7 @@ const normalizeSrc = (input?: string) => {
 };
 
 export function ImageEmbed({ data }: { data: any }) {
-  const src = normalizeSrc(data.src);
+  const src = normalizeSrc(tinaImageSrc(data.src));
 
   const sizeClasses = {
     small: "max-w-xs",

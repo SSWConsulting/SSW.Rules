@@ -3,6 +3,7 @@
 import React, { RefObject, useRef } from "react";
 import { Template } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import { withTinaImageSrc } from "@/lib/tinaAssets";
 import MarkdownComponentMapping from "../tina-markdown/markdown-component-mapping";
 import { Figure, inlineFigureDefaultItem, inlineFigureFields } from "./figure";
 
@@ -38,7 +39,7 @@ export function EmailEmbed({ data }: { data: any }) {
           <div className="mt-6 sm:pl-24">
             <div className="bg-white border p-4 rounded">
               <div ref={contentRef}>
-                <TinaMarkdown content={data.body} components={MarkdownComponentMapping} />
+                <TinaMarkdown content={withTinaImageSrc(data.body)} components={MarkdownComponentMapping} />
               </div>
             </div>
           </div>

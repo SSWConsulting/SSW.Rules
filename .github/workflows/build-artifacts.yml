@@ -52,11 +52,6 @@ on:
         required: false
         default: ""
         description: "Algolia index name"
-      NEXT_PUBLIC_ALGOLIA_API_KEY:
-        type: string
-        required: false
-        default: ""
-        description: "Algolia search-only API key"
       NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING:
         type: string
         required: false
@@ -529,7 +524,6 @@ jobs:
             NEXT_PUBLIC_ALGOLIA_APP_ID=${{ inputs.NEXT_PUBLIC_ALGOLIA_APP_ID }}
             NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
             NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ inputs.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
-            NEXT_PUBLIC_ALGOLIA_API_KEY=${{ inputs.NEXT_PUBLIC_ALGOLIA_API_KEY }}
             NEXT_PUBLIC_TINA_BRANCH=${{ steps.resolve_content_branch.outputs.content_branch }}
             NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
             NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }}

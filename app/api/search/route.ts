@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     // Initialize Algolia client with server-side credentials
     const appId = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID;
-    const apiKey = process.env.ALGOLIA_SEARCH_API_KEY || process.env.NEXT_PUBLIC_ALGOLIA_API_KEY;
+    const apiKey = process.env.ALGOLIA_SEARCH_API_KEY;
 
     if (!appId || !apiKey) {
       console.error("Algolia credentials not configured");

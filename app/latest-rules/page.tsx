@@ -1,6 +1,6 @@
 import { Section } from "@/components/layout/section";
 import { pageMetadata } from "@/lib/pageMetadata";
-import { fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
+import { fetchHomepageData, fetchLatestRules, fetchRuleCount } from "@/lib/services/rules";
 import LatestRuleClientPage from "./client-page";
 
 export const revalidate = 300;
@@ -25,15 +25,21 @@ export default async function LatestRulePage({ searchParams }: LatestRulePagePro
     size = MAX_SIZE;
   }
 
-  const [ruleCount, latestRulesByUpdated, latestRulesByCreated] = await Promise.all([
+  const [ruleCount, latestRulesByUpdated, latestRulesByCreated, homepageData] = await Promise.all([
     fetchRuleCount(),
     fetchLatestRules(size, "lastUpdated", true),
     fetchLatestRules(size, "created", true),
+    fetchHomepageData(),
   ]);
 
   return (
     <Section>
-      <LatestRuleClientPage ruleCount={ruleCount} latestRulesByUpdated={latestRulesByUpdated} latestRulesByCreated={latestRulesByCreated} />
+      <LatestRuleClientPage
+        ruleCount={ruleCount}
+        latestRulesByUpdated={latestRulesByUpdated}
+        latestRulesByCreated={latestRulesByCreated}
+        helpImprove={homepageData?.data.homepage.helpImprove}
+      />
     </Section>
   );
 }

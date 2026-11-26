@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import React from "react";
 import categoryTitleIndex from "@/category-uri-title-map.json";
 import { Section } from "@/components/layout/section";
@@ -6,7 +7,6 @@ import { pageMetadata } from "@/lib/pageMetadata";
 import { getRuleFolders } from "@/lib/ruleFolders";
 import { getDiscussionNumberForGuid } from "@/lib/services/github/giscusDiscussions.service";
 import client from "@/tina/__generated__/client";
-import ClientFallbackPage from "./ClientFallbackPage";
 import { getCategoryData, getRuleData } from "./pageData";
 import { TinaCategoryWrapper } from "./TinaCategoryWrapper";
 import { TinaRuleWrapper } from "./TinaRuleWrapper";
@@ -117,9 +117,9 @@ export default async function Page({ params }: { params: Promise<{ filename: str
     );
   }
 
-  // If data is not found statically, try fetching on client side with branch support
-  console.error(`[ClientFallbackPage] rendering fallback for filename="${filename}" category=null rule=null`);
-  return <ClientFallbackPage filename={filename} />;
+  // A real 404 status. Inside the Tina editor, app/not-found.tsx loads a rule that exists only on the editor's branch.
+  console.warn(`[filename] no category or rule for filename="${filename}", returning 404`);
+  notFound();
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ filename: string }> }) {

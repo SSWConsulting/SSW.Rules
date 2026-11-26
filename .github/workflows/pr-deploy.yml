@@ -155,7 +155,7 @@ jobs:
       TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
       TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
       TINA_WEBHOOK_SECRET: ${{ secrets.TINA_WEBHOOK_SECRET }}
-      NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
+      ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
       GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
   # ============================================================================

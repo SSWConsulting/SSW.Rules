@@ -34,7 +34,7 @@ const IconLink: React.FC<IconLinkProps> = ({ href, children, className = "", tit
   const effectiveTarget = target ?? (isExternal ? "_blank" : undefined);
 
   const link = (
-    <a href={adjustedHref} className={`${baseClasses} ${className}`} target={effectiveTarget} rel={effectiveRel} onClick={onClick}>
+    <a href={adjustedHref} className={`${baseClasses} ${className}`} target={effectiveTarget} rel={effectiveRel} onClick={onClick} aria-label={title}>
       {children}
     </a>
   );

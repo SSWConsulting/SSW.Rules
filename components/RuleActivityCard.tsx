@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FaComment, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { RiTimeFill } from "react-icons/ri";
 import { Card } from "@/components/ui/card";
-import { timeAgo } from "@/lib/dateUtils";
+import { TimeAgo, useHydrated } from "@/components/TimeAgo";
 import { ActivityRule } from "@/models/ActivityRule";
 
 interface RuleActivityCardProps {
@@ -15,11 +15,12 @@ interface RuleActivityCardProps {
   activeSort?: string;
 }
 
-function formatDate(dateStr: string | null): string | null {
+/** Pass timeZone "UTC" until hydration, so the server HTML and the first browser render show the same date. */
+function formatDate(dateStr: string | null, timeZone?: string): string | null {
   if (!dateStr) return null;
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return null;
-  return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone });
 }
 
 function shortenCategory(title: string): string {
@@ -44,14 +45,21 @@ function metricAnimProps(
 }
 
 export default function RuleActivityCard({ rule, rank, animatingMetric, animationEpoch = 0, activeSort }: RuleActivityCardProps) {
-  const publishDate = formatDate(rule.lastUpdated ?? rule.created);
+  const hydrated = useHydrated();
+  const publishDate = formatDate(rule.lastUpdated ?? rule.created, hydrated ? undefined : "UTC");
 
   const displayBy = rule.lastUpdatedBy || rule.createdBy || (rule.authors.length > 0 ? rule.authors.join(", ") : null);
 
   const categoryLabels = rule.categories.length > 0 ? rule.categories.map((cat) => shortenCategory(cat.title)).join(", ") : null;
 
   const dateAnim = metricAnimProps("latestRules", animatingMetric, animationEpoch, activeSort, "inline-flex font-medium text-gray-500");
-  const likedAnim = metricAnimProps("mostLiked", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer");
+  const likedAnim = metricAnimProps(
+    "mostLiked",
+    animatingMetric,
+    animationEpoch,
+    activeSort,
+    "flex items-center gap-1 no-underline text-gray-500 transition-colors cursor-pointer"
+  );
   const commentedAnim = metricAnimProps("mostCommented", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1");
   const lastCommentedAnim = metricAnimProps("lastCommented", animatingMetric, animationEpoch, activeSort, "flex items-center gap-1 text-gray-400 ml-auto");
 
@@ -75,7 +83,10 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
             <p className="text-xs text-gray-400 m-0">
               {publishDate && (
                 <span>
-                  Last updated on <span key={dateAnim.key} className={dateAnim.className}>{publishDate}</span>
+                  Last updated on{" "}
+                  <span key={dateAnim.key} className={dateAnim.className}>
+                    {publishDate}
+                  </span>
                 </span>
               )}
               {publishDate && displayBy && <span> by </span>}
@@ -131,7 +142,9 @@ export default function RuleActivityCard({ rule, rank, animatingMetric, animatio
               {/* Last commented: icon + label + timestamp animate together */}
               <span key={lastCommentedAnim.key} className={lastCommentedAnim.className}>
                 <RiTimeFill />
-                <span>Last commented {timeAgo(rule.lastCommentAt)}</span>
+                <span>
+                  Last commented <TimeAgo date={rule.lastCommentAt} />
+                </span>
               </span>
             </div>
           )}

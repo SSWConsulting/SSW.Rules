@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { RiTimeFill } from "react-icons/ri";
 import { Card } from "@/components/ui/card";
-import { timeAgo } from "@/lib/dateUtils";
+import { TimeAgo } from "@/components/TimeAgo";
 import { LatestRule } from "@/models/LatestRule";
 
 interface LatestRulesProps {
@@ -20,7 +20,7 @@ export default function LatestRulesCard({ rules }: LatestRulesProps) {
             {rule?.lastUpdated && (
               <p className="text-xs text-gray-400 mt-1 flex items-center">
                 <RiTimeFill className="inline mr-1"></RiTimeFill>
-                {timeAgo(rule?.lastUpdated)}
+                <TimeAgo date={rule?.lastUpdated} />
               </p>
             )}
           </li>

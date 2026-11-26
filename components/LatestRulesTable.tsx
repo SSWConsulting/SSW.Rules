@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CgSortAz } from "react-icons/cg";
 import { RiTimeFill } from "react-icons/ri";
-import { timeAgo } from "@/lib/dateUtils";
+import { TimeAgo } from "@/components/TimeAgo";
 import { LatestRule } from "@/models/LatestRule";
 import { Card } from "./ui/card";
 import Dropdown from "./ui/dropdown";
@@ -139,7 +139,7 @@ export default function LatestRulesTable({ rulesByUpdated, rulesByCreated, title
                 {rule.lastUpdated ? (
                   <div className="flex items-center ml-4 text-xs text-gray-400">
                     <RiTimeFill className="inline mr-1" />
-                    <span>{timeAgo(rule.lastUpdated)}</span>
+                    <TimeAgo date={rule.lastUpdated} />
                   </div>
                 ) : (
                   ""

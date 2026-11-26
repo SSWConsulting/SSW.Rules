@@ -52,11 +52,6 @@ on:
         required: false
         default: ""
         description: "Algolia index name"
-      NEXT_PUBLIC_ALGOLIA_API_KEY:
-        type: string
-        required: false
-        default: ""
-        description: "Algolia search-only API key"
       NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING:
         type: string
         required: false
@@ -89,7 +84,7 @@ on:
         required: false
       TINA_WEBHOOK_SECRET:
         required: true
-      NEXT_PUBLIC_ALGOLIA_ADMIN_KEY:
+      ALGOLIA_ADMIN_KEY:
         required: false
       GH_APP_PRIVATE_KEY:
         required: true
@@ -527,9 +522,7 @@ jobs:
             TINA_WEBHOOK_SECRET=${{ secrets.TINA_WEBHOOK_SECRET }}
             NEXT_PUBLIC_TINA_CLIENT_ID=${{ inputs.NEXT_PUBLIC_TINA_CLIENT_ID }}
             NEXT_PUBLIC_ALGOLIA_APP_ID=${{ inputs.NEXT_PUBLIC_ALGOLIA_APP_ID }}
-            NEXT_PUBLIC_ALGOLIA_ADMIN_KEY=${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
             NEXT_PUBLIC_ALGOLIA_INDEX_NAME=${{ inputs.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
-            NEXT_PUBLIC_ALGOLIA_API_KEY=${{ inputs.NEXT_PUBLIC_ALGOLIA_API_KEY }}
             NEXT_PUBLIC_TINA_BRANCH=${{ steps.resolve_content_branch.outputs.content_branch }}
             NEXT_PUBLIC_GITHUB_ORG=${{ vars.NEXT_PUBLIC_GITHUB_ORG }}
             NEXT_PUBLIC_GITHUB_REPO=${{ vars.NEXT_PUBLIC_GITHUB_REPO }}
@@ -668,6 +661,7 @@ jobs:
         working-directory: content/scripts/tina-migration
         env:
           NEXT_PUBLIC_ALGOLIA_APP_ID: ${{ inputs.NEXT_PUBLIC_ALGOLIA_APP_ID }}
-          NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_ADMIN_KEY }}
+          # algolia_sync.py in SSW.Rules.Content reads the key under this name.
+          NEXT_PUBLIC_ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
           NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ inputs.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
         run: python algolia_sync.py

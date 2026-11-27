@@ -11,7 +11,6 @@ describe("getRulesChatTier", () => {
   const stranger = { sub: "github|2", nickname: "stranger" };
 
   beforeEach(() => {
-    process.env.RULES_CHAT_ENABLED = "true";
     process.env.RULES_CHAT_MEMBER_DAILY_LIMIT = "20";
     process.env.RULES_CHAT_MONTHLY_BUDGET_USD = "100";
     process.env.RULES_CHAT_INPUT_PRICE_PER_MILLION_TOKENS_USD = "1";
@@ -59,11 +58,9 @@ describe("getRulesChatTier", () => {
     expect(await getRulesChatTier(stranger)).toBeNull();
   });
 
-  it("lets nobody in when switched off, when signed out, or when not signed in with GitHub", async () => {
+  it("lets nobody in when signed out or when not signed in with GitHub", async () => {
     expect(await getRulesChatTier(null)).toBeNull();
     expect(await getRulesChatTier({ sub: "auth0|1", nickname: "AntPolkanov" })).toBeNull();
-    process.env.RULES_CHAT_ENABLED = "false";
-    expect(await getRulesChatTier(employee)).toBeNull();
   });
 });
 

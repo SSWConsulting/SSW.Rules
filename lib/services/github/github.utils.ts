@@ -207,7 +207,7 @@ async function getInstallationToken(appId: string, privateKey: string, installat
 export async function getGitHubAppToken(): Promise<string> {
   const appId = process.env.GH_APP_ID;
   const privateKey = process.env.GH_APP_PRIVATE_KEY;
-  const installationId = process.env.GITHUB_APP_INSTALLATION_ID;
+  const installationId = process.env.GH_APP_INSTALLATION_ID;
 
   if (!appId && !privateKey) {
     throw new Error("GitHub App credentials are not configured. Please set GH_APP_ID and GH_APP_PRIVATE_KEY environment variables.");

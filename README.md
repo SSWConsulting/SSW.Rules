@@ -196,6 +196,6 @@ The Bookmark feature uses the **[SSW.Rules.Functions](https://github.com/SSWCons
 - For GitHub App authentication, set the following environment variables:
   - `GH_APP_ID`: Your GitHub App ID
   - `GH_APP_PRIVATE_KEY`: Your GitHub App private key (PEM format, can be base64 encoded)
-  - `GITHUB_APP_INSTALLATION_ID`: (Optional) The installation ID. If not provided, the first installation will be used.
+  - `GH_APP_INSTALLATION_ID`: (Optional) The installation ID. If not provided, the first installation will be used.
   
   See [GitHub App authentication documentation](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-as-a-github-app-installation) for more details.

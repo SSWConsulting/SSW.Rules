@@ -60,12 +60,12 @@ It runs:
 
 Runs never overlap: the index script takes a database lock. A second run waits up to 30 minutes for it, fetches the content branch again, and only then reads the rules, so it never indexes older content than the first run did. A run still waiting after 30 minutes, such as during a first full index or a re-embed, indexes nothing and isn't counted as a failure. The script also stops if the tables don't exist, which means the environment hasn't been deployed yet.
 
-**Alerts.** Set the GitHub environment variable `RULES_CHAT_ALERT_EMAIL` to email a distribution group:
+**Alerts.** Every deploy creates two alerts that email `SSWRulesDevs@ssw.com.au`, the `rulesChatAlertEmail` parameter in `main.bicep`:
 
 - when a run fails;
 - when no run has succeeded for two days.
 
-Without it, no alerts are created. Both alerts search the job's logs for markers the index script prints (`RULES_CHAT_INDEX_FAILED` and `RULES_CHAT_INDEX_SUCCEEDED`). The staleness alert also fires in the two days after a new environment's first deploy, until the job first succeeds.
+An empty `rulesChatAlertEmail` creates no alerts. Both alerts search the job's logs for markers the index script prints (`RULES_CHAT_INDEX_FAILED` and `RULES_CHAT_INDEX_SUCCEEDED`). The staleness alert also fires in the two days after a new environment's first deploy, until the job first succeeds.
 
 The job reads the content branch the site shows, resolved the way the site build resolves it: a manual deploy's `tina_branch`, else the `NEXT_PUBLIC_TINA_BRANCH` GitHub variable, else `main`. If SSW.Rules.Content has no such branch, the job reads `main`.
 

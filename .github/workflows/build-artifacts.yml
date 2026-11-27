@@ -62,7 +62,7 @@ on:
         required: false
         default: ""
         description: "Public API base URL"
-      GITHUB_APP_INSTALLATION_ID:
+      GH_APP_INSTALLATION_ID:
         type: string
         required: false
         default: ""
@@ -536,7 +536,7 @@ jobs:
             NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ inputs.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
             GH_APP_ID=${{ inputs.GH_APP_ID }}
             GH_APP_PRIVATE_KEY=${{ env.GH_APP_PK_B64 }}
-            GITHUB_APP_INSTALLATION_ID=${{ inputs.GITHUB_APP_INSTALLATION_ID }}
+            GH_APP_INSTALLATION_ID=${{ inputs.GH_APP_INSTALLATION_ID }}
           # CACHE COMPLETELY DISABLED
           no-cache: true
           # Clean up intermediate containers after build

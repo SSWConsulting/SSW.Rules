@@ -126,8 +126,8 @@ param rulesChatIndexImageTag string = ''
 @description('SSW.Rules.Content branch the index job reads, matching the content this environment shows')
 param rulesChatContentBranch string = 'main'
 
-@description('Optional: email address for index job failure and staleness alerts. No alerts are created when empty.')
-param rulesChatAlertEmail string = ''
+@description('Email address for index job failure and staleness alerts. No alerts are created when empty.')
+param rulesChatAlertEmail string = 'SSWRulesDevs@ssw.com.au'
 
 @description('Embedding model deployment. Capacity is in thousands of tokens per minute; re-indexing every rule is the peak.')
 param rulesChatEmbeddingModel object = {

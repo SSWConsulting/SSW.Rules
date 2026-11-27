@@ -163,7 +163,6 @@ jobs:
           # The index job reads the content branch this environment shows, like the site build does.
           $params['RulesChatContentBranch'] = $env:CONTENT_BRANCH
           $params['RulesChatIndexImageTag'] = "${{ steps.index_image.outputs.tag }}"
-          $params['RulesChatAlertEmail'] = "${{ vars.RULES_CHAT_ALERT_EMAIL }}"
 
           $slotName = $env:SLOT_NAME
           if ($slotName) {

@@ -146,7 +146,7 @@ jobs:
       NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ vars.NEXT_PUBLIC_ALGOLIA_INDEX_NAME }}
       NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ vars.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
       NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
-      GITHUB_APP_INSTALLATION_ID: ${{ vars.GITHUB_APP_INSTALLATION_ID }}
+      GH_APP_INSTALLATION_ID: ${{ vars.GH_APP_INSTALLATION_ID }}
       GH_APP_ID: ${{ vars.GH_APP_ID }}
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -238,7 +238,7 @@ jobs:
             "AUTH0_AUDIENCE=${{ vars.AUTH0_AUDIENCE }}" \
             "GH_APP_ID=${{ vars.GH_APP_ID }}" \
             "GH_APP_PRIVATE_KEY=${{ secrets.GH_APP_PRIVATE_KEY }}" \
-            "GITHUB_APP_INSTALLATION_ID=${{ vars.GITHUB_APP_INSTALLATION_ID }}" \
+            "GH_APP_INSTALLATION_ID=${{ vars.GH_APP_INSTALLATION_ID }}" \
             "CRM_TENANT=${{ vars.CRM_TENANT }}" \
             "CRM_TENANT_ID=${{ vars.CRM_TENANT_ID }}" \
             "CRM_APP_ID=${{ vars.CRM_APP_ID }}" \
@@ -255,7 +255,6 @@ jobs:
             "BUILD_DATE=${{ env.BUILD_DATE }}" \
             "NEXT_PUBLIC_TINA_BRANCH=${{ vars.NEXT_PUBLIC_TINA_BRANCH }}" \
             "COMMIT_HASH=${{ env.COMMIT_HASH }}" \
-            "RULES_CHAT_ENABLED=${{ vars.RULES_CHAT_ENABLED || 'false' }}" \
             "RULES_CHAT_SQL_SERVER=${{ needs.infrastructure.outputs.rulesChatSqlServerFqdn }}" \
             "RULES_CHAT_SQL_DATABASE=${{ needs.infrastructure.outputs.rulesChatDatabaseName }}" \
             "RULES_CHAT_IDENTITY_CLIENT_ID=${{ needs.infrastructure.outputs.rulesChatIdentityClientId }}" \

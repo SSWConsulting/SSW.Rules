@@ -1,7 +1,7 @@
 using Aspire.Hosting.JavaScript;
 
 // Runs The Ruleferret and the site locally: SQL Server in a container, the schema, the models, a sample index of the
-// rules, and the Next.js site with the chat switched on. Start it from the repo root with:
+// rules, and the Next.js site. Start it from the repo root with:
 //
 //   pnpm aspire    (runs aspire run --project src/RulesChat/RulesChat.AppHost)
 //
@@ -67,7 +67,6 @@ var site = WithRulesChatSettings(builder.AddJavaScriptApp("site", repoRoot, "dev
     .WithPnpm(installArgs: ["--frozen-lockfile"])
     .WithHttpEndpoint(port: 3000, env: "PORT")
     .WithUrlForEndpoint("http", url => url.Url = "/rules")
-    .WithEnvironment("RULES_CHAT_ENABLED", "true")
     .WithEnvironment("RULES_CHAT_DEV_ACCESS", "true")
     .WithEnvironment("RULES_CHAT_CHAT_MODEL", chatModel)
     // Ollama ignores max_completion_tokens, and qwen takes a temperature; Foundry's reasoning models are the reverse.

@@ -278,7 +278,7 @@ export async function createGitHubService(): Promise<GitHubService> {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Failed to get GitHub App token";
     throw new Error(
-      `GitHub App authentication failed: ${errorMessage}. Please check that GH_APP_ID, GH_APP_PRIVATE_KEY, and optionally GITHUB_APP_INSTALLATION_ID are set correctly.`
+      `GitHub App authentication failed: ${errorMessage}. Please check that GH_APP_ID, GH_APP_PRIVATE_KEY, and optionally GH_APP_INSTALLATION_ID are set correctly.`
     );
   }
 

@@ -38,11 +38,6 @@ const getCurrentEmployeeGitHubUrls = unstable_cache(
   { revalidate: EMPLOYEE_LIST_TTL_SECONDS }
 );
 
-// Read on every request, so The Ruleferret can be switched off with an app setting and no rebuild.
-function isRulesChatEnabled(): boolean {
-  return process.env.RULES_CHAT_ENABLED === "true";
-}
-
 // Lets any signed-in developer use The Ruleferret locally without CRM credentials. Only a development server honours it,
 // so a production build ignores the setting even if it is set by mistake.
 export function hasDevAccess(): boolean {
@@ -50,7 +45,6 @@ export function hasDevAccess(): boolean {
 }
 
 export async function getRulesChatTier(user: SessionUser | null | undefined): Promise<RulesChatTier | null> {
-  if (!isRulesChatEnabled()) return null;
   if (hasDevAccess() && user?.sub) return "staff";
   if (!isGitHubUser(user)) return null;
   if (isEmployeeGitHubUser(user, await getCurrentEmployeeGitHubUrls())) return "staff";

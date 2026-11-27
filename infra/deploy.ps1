@@ -51,7 +51,7 @@
     PR slot deploys don't change the job, so they ignore this parameter.
 
 .PARAMETER RulesChatAlertEmail
-    Optional email address for index job failure and staleness alerts.
+    Optional. Replaces the alert email set in main.bicep for index job failure and staleness alerts.
 
 .PARAMETER WhatIf
     Show what would be deployed without actually deploying

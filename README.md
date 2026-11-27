@@ -69,7 +69,7 @@ To test changes to MDX rules:
 
 ### Content Changes (SSW.Rules.Content)
 
-Changes made in **SSW.Rules.Content** (e.g. rule MDX, categories, images) will **go live after the PR is merged**.
+Changes made in **SSW.Rules.Content** (e.g. rule MDX, categories, images) will **go live after the PR is merged**. Search results, redirects for renamed rules and the orphaned rules list update with the next production deploy, which runs daily at 06:00 UTC.
 
 🎥 Watch the video: [TinaCMS for GitHub - The SSW Rules Migration | Jake Bayliss | SSW Consulting](https://www.youtube.com/watch?v=lqqduKKhH_o)
 
@@ -80,10 +80,9 @@ Changes made in **SSW.Rules.Content** (e.g. rule MDX, categories, images) will *
 Code changes made to **SSW.Rules** are deployed as follows:
 
 - **main** deploys to **staging**: https://app-sswrules-staging.azurewebsites.net/rules
-- To deploy to **production**:
-  - Create a `release/xx` branch from the current `main` commit you want to ship
-  - Manually run the production deployment workflow in [GitHub Actions](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/build-and-deploy.yml)
-  - **production**: https://www.ssw.com.au/rules
+- **main** deploys to **production** every day at 06:00 UTC: https://www.ssw.com.au/rules
+  - To ship sooner, run [Scheduled Production Deploy](https://github.com/SSWConsulting/SSW.Rules/actions/workflows/scheduled-production-deploy.yml) manually
+  - The `staging` and `production` environments accept `main` only, so other branches cannot deploy
 
 
 ### PR Preview Deploy

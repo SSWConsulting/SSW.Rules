@@ -25,10 +25,6 @@ on:
     secrets:
       AZURE_CLIENT_ID:
         required: true
-      AZURE_TENANT_ID:
-        required: true
-      AZURE_SUBSCRIPTION_ID:
-        required: true
       AZURE_SERVICE_PRINCIPAL_OBJECT_ID:
         required: true
     outputs:
@@ -105,8 +101,8 @@ jobs:
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
       # The index job's image must exist before the Bicep below points the job at it. The registry already exists in
       # staging and production. PR slot deploys share staging's job, so they skip this. Each build gets its own tag, so

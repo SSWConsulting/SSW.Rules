@@ -45,8 +45,6 @@ jobs:
             content_branch: ${{ github.event.inputs.tina_branch }}
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-            AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-            AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
             AZURE_SERVICE_PRINCIPAL_OBJECT_ID: ${{ secrets.AZURE_SERVICE_PRINCIPAL_OBJECT_ID }}
 
     # ============================================================================
@@ -74,8 +72,6 @@ jobs:
             GH_APP_ID: ${{ vars.GH_APP_ID }}
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-            AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-            AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
             TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
             TINA_SEARCH_TOKEN: ${{ secrets.TINA_SEARCH_TOKEN }}
             TINA_WEBHOOK_SECRET: ${{ secrets.TINA_WEBHOOK_SECRET }}
@@ -139,8 +135,8 @@ jobs:
               uses: azure/login@v2
               with:
                   client-id: ${{ secrets.AZURE_CLIENT_ID }}
-                  tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-                  subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+                  tenant-id: ${{ vars.AZURE_TENANT_ID }}
+                  subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
             - name: Set deployment slot
               id: slot
